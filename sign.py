@@ -1,7 +1,7 @@
 # Marquee Lighted Sign Project
-# Version 1.0 - Connor's graduation party
+# Version 1.1.0 - 27th Wedding Anniversary
 
-import functools
+import functools as ft
 import serial
 import time
 
@@ -54,16 +54,25 @@ def seq_build_left():
 def seq_build_right():
     lights = [0] * LIGHT_COUNT
     yield lights
-    for t, b in zip(reversed(TOP_LIGHTS_LEFT_TO_RIGHT), reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)):
+    for t, b in zip(
+        reversed(TOP_LIGHTS_LEFT_TO_RIGHT), 
+        reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)
+    ):
         lights[t], lights[b] = 1, 1
         yield lights
 
 def seq_move_left():
-    for t, b in zip(TOP_LIGHTS_LEFT_TO_RIGHT, BOTTOM_LIGHTS_LEFT_TO_RIGHT):
+    for t, b in zip(
+        TOP_LIGHTS_LEFT_TO_RIGHT, 
+        BOTTOM_LIGHTS_LEFT_TO_RIGHT
+    ):
         yield [int(y == t or y == b) for y in range(LIGHT_COUNT)]
 
 def seq_move_right():
-    for t, b in zip(reversed(TOP_LIGHTS_LEFT_TO_RIGHT), reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)):
+    for t, b in zip(
+        reversed(TOP_LIGHTS_LEFT_TO_RIGHT), 
+        reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)
+    ):
         yield [int(y == t or y == b) for y in range(LIGHT_COUNT)]
 
 def seq_invert_all():
@@ -71,7 +80,6 @@ def seq_invert_all():
 
 def set_lights(light_pattern):
     global current_light_pattern
-    
     # print("light_pattern: " + str(light_pattern))
     relay_pattern = [0] * RELAY_COUNT
     for i, l in enumerate(light_pattern):
@@ -95,16 +103,19 @@ def do_sequence(sequence, count, delay):
         
 def program():
     while True:
-        do_sequence(seq_clockwise, 2, 0.4)
-        do_sequence(seq_counterclockwise, 2, 0.4)
-        do_sequence(seq_blink_all, 4, 0.4)
-        do_sequence(seq_blink_alternate, 4, 0.4)
-        do_sequence(functools.partial(seq_clockwise_multiple, '1100000000'), 4, 0.3)
-        do_sequence(functools.partial(seq_clockwise_multiple, '1101000000'), 4, 0.3)
-        do_sequence(functools.partial(seq_clockwise_multiple, '1111111110'), 4, 0.3)
-        do_sequence(seq_move_left, 10, 0.2)
-        do_sequence(seq_build_left, 10, 0.2)
-        do_sequence(seq_clockwise, 8, 0.05)
+        # do_sequence(seq_clockwise, 2, 0.4)
+        # do_sequence(seq_counterclockwise, 2, 0.4)
+        # do_sequence(seq_blink_all, 4, 0.4)
+        # do_sequence(seq_blink_alternate, 4, 0.4)
+        do_sequence(ft.partial(seq_clockwise_multiple, '1000000000'), 4, 0.2)
+        do_sequence(ft.partial(seq_clockwise_multiple, '1100000000'), 4, 0.2)
+        do_sequence(ft.partial(seq_clockwise_multiple, '1101000000'), 4, 0.2)
+        do_sequence(ft.partial(seq_clockwise_multiple, '1101010000'), 4, 0.2)
+        do_sequence(ft.partial(seq_clockwise_multiple, '1101010100'), 4, 0.2)
+        do_sequence(ft.partial(seq_clockwise_multiple, '1111111110'), 4, 0.2)
+        # do_sequence(seq_move_left, 10, 0.2)
+        # do_sequence(seq_build_left, 10, 0.2)
+        do_sequence(seq_clockwise, 8, 0.06)
         set_lights([1, 0, 1, 0, 1, 0, 1, 0, 1, 0])
         time.sleep(900)
 
@@ -115,10 +126,10 @@ def setup():
     set_lights([0] * 10)
 
 def main():
+    time.sleep(10)  # HACK - give Pi Zero time for relay board to show up
     setup()
     program()
 
 if __name__ == "__main__":
     main()
-
 
