@@ -138,9 +138,9 @@ def indicate_mode_desired():
 def mode_selection():
     """User uses the physical button to select 
        the next mode to execute."""
-    mode.button.wait(5)
-    if mode.button.just_pressed():
-        if mode.desired is None:
+    while True:
+        # Button was pressed
+        if mode.desired is None:  # Just now entering selection mode
             mode.desired = mode.previous
             print(f"Desired mode is now {mode.desired}")
         else:
@@ -149,12 +149,15 @@ def mode_selection():
                 mode.desired = 1
             print(f"Desired mode is now {mode.desired}")
         indicate_mode_desired()
-    else:
-        mode.current = mode.desired
-        print (f"Current mode is now {mode.current}")
-        mode.desired = None
-        print(f"Desired mode is now {mode.desired}")
-    mode.button.reset()
+        mode.button.reset()
+        pressed_again = mode.button.wait(5)
+        if not pressed_again:
+            mode.current = mode.desired
+            print (f"Current mode is now {mode.current}")
+            mode.desired = None
+            print(f"Desired mode is now {mode.desired}")
+            mode.button.reset()
+            break
 
 def set_lights(lights):
     relays.set_relays_from_pattern(lights)
@@ -175,8 +178,9 @@ def main():
             MODES[mode.current]()
         except button.ButtonPressed:
             print("Execute Caught Button Press")
-            mode.previous = mode.current
-            mode.current = 0
+            if mode.current != 0:
+                mode.previous = mode.current
+                mode.current = 0
 
 MODES = [
     mode_selection,  # Must be first
