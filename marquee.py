@@ -1,16 +1,16 @@
 # Marquee Lighted Sign Project - main
 # Version 2.0.0 - Mode Selection Button
+
 # ??? ADD A CHANGELOG?
 # !!! remove debug stmts
-# ---- Future: all sequences as modes?  all modes, including 0, to not exit prematurely, when mode selection initiated, start at current mode?
 # !!! PEP8 !!!
+
+import functools
+import time
+import types
 
 import button
 import relayboard
-
-import functools
-import threading
-import time
 
 LIGHT_COUNT = 10
 RELAY_COUNT = 16
@@ -29,28 +29,41 @@ LIGHT_TO_RELAY = {
 RELAY_TO_LIGHT = {v: k for k, v in LIGHT_TO_RELAY.items()}
 TOP_LIGHTS_LEFT_TO_RIGHT = [9, 0, 1, 2, 3]
 BOTTOM_LIGHTS_LEFT_TO_RIGHT = [8, 7, 6, 5, 4]
-current_mode = None
-desired_mode = None
-previous_mode = None
-mode_button = None
-relays = None
+
+def seq_all_on():
+    yield [1] * LIGHT_COUNT
     
+def seq_all_off():
+    yield [0] * LIGHT_COUNT
+
+def seq_blink_all():
+    """All lights on and then off."""
+    yield next(seq_all_on())
+    yield next(seq_all_off())
+
+def seq_even_on():
+    yield [y % 2 for y in range(LIGHT_COUNT)]
+
+def seq_even_off():
+    yield [(y + 1) % 2 for y in range(LIGHT_COUNT)]
+
+def seq_blink_alternate():
+    """Every other light on and then off."""
+    yield next(seq_even_on())
+    yield next(seq_even_off())
+
 def seq_rotate(pattern = None, clockwise = True):
+    """Rotate a pattern of lights counter/clockwise.
+       Pattern is a string of length LIGHT_COUNT containing 0 and 1."""
     if pattern is None:
         pattern = [1] + [0] * (LIGHT_COUNT - 1)
     for i in range(LIGHT_COUNT, 0, -1 if clockwise else +1):
         rotated_pattern = pattern[i:] + pattern[:i]
         yield rotated_pattern
-                
-def seq_blink_all():
-    yield [1] * LIGHT_COUNT
-    yield [0] * LIGHT_COUNT
-
-def seq_blink_alternate():
-    yield [y % 2 for y in range(LIGHT_COUNT)]
-    yield [(y + 1) % 2 for y in range(LIGHT_COUNT)]
 
 def seq_build(from_left = True):
+    """Grow the upper and lower rows, 
+       starting from the left or the right."""
     lights = [0] * LIGHT_COUNT
     yield lights  # ???? SHOULD OTHERS DO THIS AS WELL ?????
     if from_left:
@@ -64,6 +77,8 @@ def seq_build(from_left = True):
         yield lights
 
 def seq_move(from_left = True):
+    """Move lit lights in the upper and lower rows, 
+       starting from the left or the right."""
     if from_left:
         top = TOP_LIGHTS_LEFT_TO_RIGHT
         bot = BOTTOM_LIGHTS_LEFT_TO_RIGHT
@@ -71,15 +86,26 @@ def seq_move(from_left = True):
         top = reversed(TOP_LIGHTS_LEFT_TO_RIGHT)
         bot = reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)
     for t, b in zip(top, bot):
-        yield [int(y == t or y == b) for y in range(LIGHT_COUNT)]
+        yield [int(y in {t, b}) for y in range(LIGHT_COUNT)]
 
 def do_sequence(sequence, count, delay):
-    for c in range(count):
-        for s in sequence():
-            set_lights(s)
-            mode_button.wait(delay)
-        
-def mode_variety():
+    """Execute sequence count times, with delay seconds in between."""
+    for _ in range(count):
+        do_simple_mode(sequence, delay)
+
+def simple_mode(sequence, delay=None):
+    """Execute sequence indefinitely, with delay seconds in between.
+       Delay=None is an infinite delay, so the sequence should have
+       only 1 step."""
+    def template(sequence, delay):
+        while True:
+            for s in sequence():
+                set_lights(s)
+                mode.button.wait(delay)
+    return template
+    
+def mode_variety_1():
+    """Perform a variety of sequences."""
     while True:
         # !!! do_sequence(seq_clockwise, 2, 0.4)
         # !!! do_sequence(seq_counterclockwise, 2, 0.4)
@@ -95,55 +121,41 @@ def mode_variety():
         # do_sequence(seq_move_left, 10, 0.2)
         # do_sequence(seq_build_left, 10, 0.2)
         mode_half_on()
-        mode_button.wait(900)
+        mode.button.wait(900)
 
-
-def mode_all_on():
-    set_lights([1] * LIGHT_COUNT)
-    mode_button.wait(60)
-
-def mode_all_off():
-    set_lights([0] * LIGHT_COUNT)
-    mode_button.wait(60)
-
-def mode_half_on():
-    set_lights([(i + 1) % 2 for i in range(LIGHT_COUNT)])    
-    mode_button.wait(60)
-
-def mode_blink_alternate():
-    do_sequence(seq_blink_alternate, 10, 0.4)
-        
-def mode_selection():
-    global current_mode
-    global desired_mode
-
-    if mode_button.just_pressed():
-        if desired_mode is None:
-            desired_mode = previous_mode
-            print(f"Desired mode is now {desired_mode} ({threading.get_ident()})")
-        else:
-            desired_mode += 1
-            if desired_mode == MODE_COUNT:
-                desired_mode = 1
-            print(f"Desired mode is now {desired_mode} ({threading.get_ident()})")
-        # Indicate desired mode
-        lights = [0] * LIGHT_COUNT
+def indicate_mode_desired():
+    """Show user what desired mode number is currently selected."""
+    lights = [0] * LIGHT_COUNT
+    set_lights(lights)
+    time.sleep(0.6)
+    for t in range(mode.desired):
+        time.sleep(0.2)
+        lights[TOP_LIGHTS_LEFT_TO_RIGHT[t]] = 1
         set_lights(lights)
-        time.sleep(0.6)
-        for t in range(desired_mode):
-            time.sleep(0.2)
-            lights[TOP_LIGHTS_LEFT_TO_RIGHT[t]] = 1
-            set_lights(lights)
+
+def mode_selection():
+    """User uses the physical button to select 
+       the next mode to execute."""
+    mode.button.wait(5)
+    if mode.button.just_pressed():
+        if mode.desired is None:
+            mode.desired = mode.previous
+            print(f"Desired mode is now {mode.desired}")
+        else:
+            mode.desired += 1
+            if mode.desired == MODE_COUNT:
+                mode.desired = 1
+            print(f"Desired mode is now {mode.desired}")
+        indicate_mode_desired()
     else:
-        now = time.time()
-        if now - mode_button.last_pressed >= 5:
-            current_mode = desired_mode
-            print (f"Current mode is now {current_mode} ({threading.get_ident()})")
-            desired_mode = None
-            print(f"Desired mode is now {desired_mode} ({threading.get_ident()})")
-    mode_button.reset()
+        mode.current = mode.desired
+        print (f"Current mode is now {mode.current}")
+        mode.desired = None
+        print(f"Desired mode is now {mode.desired}")
+    mode.button.reset()
 
 def lights_to_relays(light_pattern):
+    # !! This could probably use optimizing !!
     relay_pattern = [0] * RELAY_COUNT
     for i, l in enumerate(light_pattern):
         relay_pattern[RELAY_COUNT - 1 - LIGHT_TO_RELAY[i]] = l
@@ -153,43 +165,39 @@ def lights_to_relays(light_pattern):
 def set_lights(light_pattern):
     relays.set_relays(lights_to_relays(light_pattern))
 
-def setup():
-    global current_mode
-    global mode_button
-    global relays 
-    relays = relayboard.RelayBoard()
-    set_lights([0] * 10)
-    mode_button = button.Button()
-    current_mode = 1  # Default mode
-    print(f"Current mode is {current_mode} ({threading.get_ident()})")
+def main():
+    """Marquee application main."""
 
-def execute():
-    global current_mode
-    global previous_mode
+    # HACK - give Pi Zero time for relay board to show up during boot
+    time.sleep(1)
+
+    mode.current = 1
+    mode.button = button.Button()
+    set_lights([0] * 10)
+
     while True:
         try:
-            print (f"Current mode is {current_mode} ({threading.get_ident()})")
-            MODES[current_mode]()
-            mode_button.wait(1)
+            print (f"Current mode is {mode.current}")
+            MODES[mode.current]()
         except button.ButtonPressed:
-            print(f"Execute Caught Button Press ({threading.get_ident()})")
-            previous_mode = current_mode
-            current_mode = 0
-
-def main():
-    time.sleep(1)  # HACK - give Pi Zero time for relay board to show up during boot
-    setup()
-    execute()
+            print("Execute Caught Button Press")
+            mode.previous = mode.current
+            mode.current = 0
 
 MODES = [
-    mode_selection,
-    mode_all_on, 
-    mode_half_on, 
-    mode_all_off, 
-    mode_blink_alternate,
-    mode_variety,
+    mode_selection,  # Must be first
+    simple_mode(seq_all_off),
+    simple_mode(seq_even_on),
+    simple_mode(seq_even_off),
+    simple_mode(seq_all_on),
+    simple_mode(seq_blink_all, 1),
+    simple_mode(seq_blink_alternate, 1),
+    mode_variety_1,
 ]
 MODE_COUNT = len(MODES)
+
+mode = types.SimpleNamespace()
+relays = relayboard.RelayBoard()
 
 if __name__ == "__main__":
     main()
