@@ -12,8 +12,6 @@ import types
 import button
 import relayboard
 
-LIGHT_COUNT = 10
-RELAY_COUNT = 16
 LIGHT_TO_RELAY = {
     0:  9,
     1: 13,
@@ -26,14 +24,16 @@ LIGHT_TO_RELAY = {
     8:  7,
     9:  8,
 }
-RELAY_TO_LIGHT = {v: k for k, v in LIGHT_TO_RELAY.items()}
+LIGHT_COUNT = len(LIGHT_TO_RELAY)
 TOP_LIGHTS_LEFT_TO_RIGHT = [9, 0, 1, 2, 3]
 BOTTOM_LIGHTS_LEFT_TO_RIGHT = [8, 7, 6, 5, 4]
 
 def seq_all_on():
+    """ """
     yield [1] * LIGHT_COUNT
     
 def seq_all_off():
+    """ """
     yield [0] * LIGHT_COUNT
 
 def seq_blink_all():
@@ -42,9 +42,11 @@ def seq_blink_all():
     yield next(seq_all_off())
 
 def seq_even_on():
+    """ """
     yield [y % 2 for y in range(LIGHT_COUNT)]
 
 def seq_even_off():
+    """ """
     yield [(y + 1) % 2 for y in range(LIGHT_COUNT)]
 
 def seq_blink_alternate():
@@ -154,16 +156,8 @@ def mode_selection():
         print(f"Desired mode is now {mode.desired}")
     mode.button.reset()
 
-def lights_to_relays(light_pattern):
-    # !! This could probably use optimizing !!
-    relay_pattern = [0] * RELAY_COUNT
-    for i, l in enumerate(light_pattern):
-        relay_pattern[RELAY_COUNT - 1 - LIGHT_TO_RELAY[i]] = l
-    val = hex(int(''.join(str(e) for e in relay_pattern), 2))[2:]
-    return f"{val:>04}"
-
-def set_lights(light_pattern):
-    relays.set_relays(lights_to_relays(light_pattern))
+def set_lights(lights):
+    relays.set_relays_from_pattern(lights)
 
 def main():
     """Marquee application main."""
@@ -197,7 +191,7 @@ MODES = [
 MODE_COUNT = len(MODES)
 
 mode = types.SimpleNamespace()
-relays = relayboard.RelayBoard()
+relays = relayboard.RelayBoard(LIGHT_TO_RELAY)
 
 if __name__ == "__main__":
     main()
