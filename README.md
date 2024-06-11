@@ -1,4 +1,4 @@
 **Marquee semi-retro lighted sign probject**
 
-![alt text](https://github.com/mjmccaffrey/marquee/blob/main/bama_grad.jpg)
-![my_image](readme/bama_grad.jpg)
+![BAMA Grad incarnation of Marquee project](https://github.com/mjmccaffrey/marquee/blob/main/bama_grad.jpg?raw=true)
+![BAMA Grad incarnation of Marquee project](readme/bama_grad.jpg)
