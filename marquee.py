@@ -1,9 +1,7 @@
 # Marquee Lighted Sign Project - main
 # Version 2.0.0 - Mode Selection Button
 
-# ??? ADD A CHANGELOG?
 # Test all modes / functionality
-# !!! PEP8 !!!
 # Look at clearing all the lights before / after
 
 import functools
@@ -40,8 +38,8 @@ def seq_all_off():
 
 def seq_blink_all():
     """All lights on and then off."""
-    yield next(seq_all_on(), None)
-    yield next(seq_all_off(), None)
+    yield next(seq_all_on())
+    yield next(seq_all_off())
 
 def seq_even_on():
     """Even-numbered lights on; others off."""
@@ -53,8 +51,8 @@ def seq_even_off():
 
 def seq_blink_alternate():
     """Every other light on and then off."""
-    yield next(seq_even_on(), None)
-    yield next(seq_even_off(), None)
+    yield next(seq_even_on())
+    yield next(seq_even_off())
 
 def seq_rotate(pattern=None, clockwise=True):
     """Rotate a pattern of lights counter/clockwise.
@@ -68,14 +66,13 @@ def seq_rotate(pattern=None, clockwise=True):
 def seq_build(from_left=True):
     """Grow the upper and lower rows, 
        starting from the left or the right."""
-    lights = [0] * LIGHT_COUNT
-    yield lights  # ???? SHOULD OTHERS DO THIS AS WELL ?????
     if from_left:
         top = TOP_LIGHTS_LEFT_TO_RIGHT
         bot = BOTTOM_LIGHTS_LEFT_TO_RIGHT
     else:  # from right
         top = reversed(TOP_LIGHTS_LEFT_TO_RIGHT)
         bot = reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)
+    lights = [0] * LIGHT_COUNT
     for t, b in zip(top, bot):
         lights[t], lights[b] = 1, 1
         yield lights
@@ -166,7 +163,6 @@ def set_lights(lights):
 
 def main():
     """Execute Marquee application."""
-
     global mode
     global relays
 
@@ -178,7 +174,6 @@ def main():
     mode.current = 1
     mode.desired = None
     mode.button = button.Button()
-    set_lights([0] * 10)
 
     while True:
         try:
