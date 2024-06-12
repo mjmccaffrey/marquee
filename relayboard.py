@@ -1,19 +1,15 @@
-## Marquee Lighted Sign Project - relayboard
-
-# !!!!!!!!!!! make and model of board
-# !!!!!! put light-to-relay mapping here ??????
-
-""" """
+"""Marquee Lighted Sign Project - relayboard"""
 
 import serial
 
 class RelayBoard():
-    """ """
+    """Support the Numato 16 Channel USB Relay Module (RL160001)."""
 
     RELAY_COUNT = 16
 
     def __init__(self, device_mapping):
-        """ """
+        """Create the RelayBoard object, where device_mapping
+           is a dict mapping device indices to relay indices."""
         self.device_mapping = device_mapping
         self._relay_board = serial.Serial("/dev/ttyACM0")
 
@@ -25,9 +21,9 @@ class RelayBoard():
     def _devices_to_relays(self, device_pattern):
         """ """
         # !! This could probably use optimizing !!
-        relay_pattern = [0] * RELAY_COUNT
+        relay_pattern = [0] * self.RELAY_COUNT
         for i, l in enumerate(device_pattern):
-            relay_pattern[RELAY_COUNT - 1 - self.device_mapping[i]] = l
+            relay_pattern[self.RELAY_COUNT - 1 - self.device_mapping[i]] = l
         val = hex(int(''.join(str(e) for e in relay_pattern), 2))[2:]
         return f"{val:>04}"
 
