@@ -1,7 +1,12 @@
 """Marquee Lighted Sign Project - main"""
 
-# ! Test all modes / functionality
-# ! Break main back up into setup and execute
+# Video of variety with steady cam 
+# Rs232
+# Modify back cover
+# Picture with back cover
+# Paint touch-up w/ brush?
+# Video to kevin and paul
+# Test cleanup
 
 import functools as ft
 import signal
@@ -93,10 +98,12 @@ def seq_move(from_left=True):
     for t, b in zip(top, bot):
         yield [int(y in {t, b}) for y in range(LIGHT_COUNT)]
 
-def do_sequence(sequence, count, delay):
+def do_sequence(sequence, count, delay, stop=None):
     """Execute sequence count times, with delay seconds in between."""
     for _ in range(count):
-        for s in sequence():
+        for i, s in enumerate(sequence()):
+            if stop is not None and i == stop:
+                break
             set_lights(s)
             mode.button.wait(delay)
 
@@ -108,17 +115,6 @@ def simple_mode(sequence, delay=None):
         while True:
             do_sequence(sequence, 1, delay)
     return template
-
-def mode_variety_1():
-    """Perform a variety of sequences."""
-    while True:
-        do_sequence(ft.partial(seq_rotate, '1000000000'), 4, 0.2)
-        do_sequence(ft.partial(seq_rotate, '1100000000'), 4, 0.2)
-        do_sequence(ft.partial(seq_rotate, '1101000000'), 4, 0.2)
-        do_sequence(ft.partial(seq_rotate, '1101010000'), 4, 0.2)
-        do_sequence(ft.partial(seq_rotate, '1101010100'), 4, 0.2)
-        do_sequence(ft.partial(seq_rotate, '1111111110'), 4, 0.2)
-        mode.button.wait(900)
 
 def indicate_mode_desired():
     """Show user what desired mode number is currently selected."""
@@ -138,18 +134,15 @@ def mode_selection():
         # Button was pressed
         if mode.desired is None:  # Just now entering selection mode
             mode.desired = mode.previous
-            # print(f"Desired mode is now {mode.desired}")
         else:
             mode.desired += 1
             if mode.desired == MODE_COUNT:
                 mode.desired = 1
-            # print(f"Desired mode is now {mode.desired}")
         indicate_mode_desired()
         mode.button.reset()
         pressed_again = mode.button.wait(5)
         if not pressed_again:
             mode.current = mode.desired
-            # print(f"Current mode is now {mode.current}")
             mode.desired = None
             mode.button.reset()
             break
@@ -162,17 +155,12 @@ def virtual_button_pressed(_, __):
     """Respond to receiving signal SIGUSR1 as if the physical
        button was pushed. Would be better if this raised a 
        unique exception, allowing for cleaner handling."""
-    # print("Virtual button pressed")
     raise button.ButtonPressed
 
-def main():
-    """Execute Marquee application."""
-    global mode
+def setup():
+    """Prepare devices and initial state."""
     global relays
-
-    # HACK - give Pi Zero time for relay board to show up during boot
-    time.sleep(1)
-
+    global mode
     relays = relayboard.RelayBoard(LIGHT_TO_RELAY)
     mode = types.SimpleNamespace()
     mode.current = 1
@@ -180,18 +168,32 @@ def main():
     mode.button = button.Button()
     signal.signal(signal.SIGUSR1, virtual_button_pressed)
 
+def execute():
+    """Outermost application loop."""
     while True:
         try:
-            # print(f"Executing mode {mode.current}")
             MODES[mode.current]()
         except button.ButtonPressed:
-            # print("Button Press Exception Caught")
             if mode.current != 0:
                 mode.previous = mode.current
                 mode.current = 0
 
+def cleanup():
+    """Close devices."""
+    mode.button.close()
+    relays.close()
+
+def main():
+    """Execute Marquee application."""
+    # HACK - give Pi Zero time for relay board to show up during boot
+    time.sleep(1)
+    #
+    setup()
+    execute()
+    cleanup()
+
 MODES = [
-    mode_selection,  # Must be first
+    mode_selection, # Must be first
     simple_mode(seq_all_on),
     simple_mode(seq_even_on),
     simple_mode(seq_even_off),
@@ -201,7 +203,8 @@ MODES = [
     mode_variety_1,
 ]
 MODE_COUNT = len(MODES)
-mode, relays = None, None
+relays = None
+mode = None
 
 if __name__ == "__main__":
     main()

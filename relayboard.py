@@ -13,6 +13,10 @@ class RelayBoard():
            Establish connection to relay board via serial port."""
         self.device_mapping = device_mapping
         self._relay_board = serial.Serial("/dev/ttyACM0")
+        
+    def close(self):
+        """Clean up."""
+        self._relay_board.close()
 
     def _set_relays(self, relay_pattern_hex):
         """Send command to relay board to set all relays."""

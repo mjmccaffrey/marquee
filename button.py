@@ -17,14 +17,16 @@ class Button():
         self._button = gpiozero.Button(pin=4, bounce_time=0.10)
         self.last_pressed = None
         self.reset()
+        
+    def close(self):
+        """Clean up."""
+        self._button.close()
 
     def _button_pressed_ignore(self):
         """Callback for button press at undesired time."""
-        # print("Button.button_pressed called - ignoring")
 
     def _button_pressed_act(self):
         """Callback for button press to change desired mode."""
-        # print("Button.button_pressed called - acting")
         self.last_pressed = time.time()
         self._pressed_event.set()
         self._button.when_pressed = self._button_pressed_ignore
