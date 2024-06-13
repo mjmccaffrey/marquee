@@ -116,6 +116,42 @@ def simple_mode(sequence, delay=None):
             do_sequence(sequence, 1, delay)
     return template
 
+def program():
+    while True:
+        do_sequence(seq_clockwise, 2, 0.4)
+        do_sequence(seq_counterclockwise, 2, 0.4)
+        do_sequence(seq_blink_all, 4, 0.4)
+        do_sequence(seq_blink_alternate, 4, 0.4)
+        do_sequence(functools.partial(seq_clockwise_multiple, '1100000000'), 4, 0.3)
+        do_sequence(functools.partial(seq_clockwise_multiple, '1101000000'), 4, 0.3)
+        do_sequence(functools.partial(seq_clockwise_multiple, '1111111110'), 4, 0.3)
+        do_sequence(seq_move_left, 10, 0.2)
+        do_sequence(seq_build_left, 10, 0.2)
+        do_sequence(seq_clockwise, 8, 0.05)
+        set_lights([1, 0, 1, 0, 1, 0, 1, 0, 1, 0])
+        time.sleep(900)
+
+def mode_variety_1():
+    """Perform a variety of sequences."""
+    while True:
+        do_sequence(seq_blink_alternate, 2, 0.8)
+        do_sequence(seq_blink_all, 2, 0.8)
+        do_sequence(ft.partial(seq_move, from_left=True), 2, 0.4)
+        do_sequence(ft.partial(seq_move, from_left=False), 2, 0.4)
+        do_sequence(ft.partial(seq_build, from_left=True),  2, 0.4)
+        do_sequence(ft.partial(seq_build, from_left=False), 2, 0.4)
+        do_sequence(ft.partial(seq_rotate, '1000000000', clockwise=True), 2, 0.2)
+        do_sequence(ft.partial(seq_rotate, '1000000000', clockwise=False), 2, 0.2)
+        mode.button.wait(900)
+
+
+        do_sequence(ft.partial(seq_rotate, '1100000000'), 4, 0.2)
+        do_sequence(ft.partial(seq_rotate, '1101000000'), 4, 0.2)
+        do_sequence(ft.partial(seq_rotate, '1101010000'), 4, 0.2)
+        do_sequence(ft.partial(seq_rotate, '1101010100'), 4, 0.2)
+        do_sequence(ft.partial(seq_rotate, '1111111110'), 4, 0.2)
+        mode.button.wait(900)
+        
 def indicate_mode_desired():
     """Show user what desired mode number is currently selected."""
     assert MODE_COUNT <= LIGHT_COUNT, "Cannot indicate this many modes"
