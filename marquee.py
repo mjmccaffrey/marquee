@@ -1,12 +1,12 @@
 """Marquee Lighted Sign Project - main"""
 
 # Video of variety with steady cam 
-# Rs232
 # Modify back cover
 # Picture with back cover
 # Paint touch-up w/ brush?
 # Video to kevin and paul
-# Test cleanup
+# Test cleanup()
+# 4 step sequence - 4 horizontal rows
 
 import functools as ft
 import signal
@@ -32,6 +32,7 @@ LIGHT_COUNT = len(LIGHT_TO_RELAY)
 TOP_LIGHTS_LEFT_TO_RIGHT = [9, 0, 1, 2, 3]
 BOTTOM_LIGHTS_LEFT_TO_RIGHT = [8, 7, 6, 5, 4]
 LIGHTS_CLOCKWISE = [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+LIGHTS_BY_ROW = [[0, 1, 2], [3, 9], [4, 8], [5, 6, 7]]
 
 def seq_all_on():
     """All lights on."""
@@ -58,6 +59,11 @@ def seq_blink_alternate():
     """Every other light on and then off."""
     yield next(seq_even_on())
     yield next(seq_even_off())
+
+def seq_build_rows(from_top=True):
+    """ """
+    for row in LIGHTS_BY_ROW:
+        
 
 def seq_rotate(pattern=None, clockwise=True):
     """Rotate a pattern of lights counter/clockwise.
@@ -183,7 +189,7 @@ def mode_variety_1():
         )
         do_sequence(seq_rotate, 8, 0.04)
         set_lights(next(seq_all_on()))
-        mode.button.wait(3.2)
+        mode.button.wait(6.4)
         set_lights(next(seq_all_off()))
 
         mode.button.wait(900)
@@ -246,12 +252,13 @@ def setup():
     mode.desired = None
     mode.button = button.Button()
     signal.signal(signal.SIGUSR1, virtual_button_pressed)
+    print(mode)
+    print(id(mode))
 
 def execute():
     """Outermost application loop."""
     while True:
         try:
-            print(mode)
             MODES[mode.current]()
         except button.ButtonPressed:
             if mode.current != 0:
@@ -260,8 +267,14 @@ def execute():
 
 def cleanup():
     """Close devices."""
-    mode.button.close()
-    relays.close()
+    try:
+        mode.button.close()
+    except button.ButtonPressed:
+        pass
+    try:
+        relays.close()
+    except:
+        pass
 
 def main():
     """Execute Marquee application."""
@@ -283,8 +296,8 @@ MODES = [
     mode_variety_1,
 ]
 MODE_COUNT = len(MODES)
-relays = None
-mode = None
+# relays = None
+# mode = None
 
 if __name__ == "__main__":
     main()
