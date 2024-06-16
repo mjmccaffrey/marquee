@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - main"""
 
-# Video of variety with steady cam 
+# Video of variety with steady cam
 # Modify back cover
 # Picture with back cover
 # Paint touch-up w/ brush?
@@ -60,10 +60,20 @@ def seq_blink_alternate():
     yield next(seq_even_on())
     yield next(seq_even_off())
 
-def seq_build_rows(from_top=True):
+def seq_build_rows(pattern=None, from_top=True):
     """ """
-    for row in LIGHTS_BY_ROW:
-        
+    if pattern is None:
+        pattern = "1"
+    antipattern = "0" if pattern == "1" else "1"
+    if from_top:
+        rows = LIGHTS_BY_ROW
+    else:  # from_bottom
+        rows = reversed(LIGHTS_BY_ROW)
+    lights = [pattern] * LIGHT_COUNT
+    for row in rows:
+        for light in row:
+            lights[light] = pattern
+        yield lights
 
 def seq_rotate(pattern=None, clockwise=True):
     """Rotate a pattern of lights counter/clockwise.
@@ -125,53 +135,73 @@ def simple_mode(sequence, delay=None):
 def mode_variety_1():
     """Perform a variety of sequences."""
     while True:
+        do_sequence(
+            ft.partial(seq_build_rows, pattern="1", from_top=True),
+            4,
+            1,
+        )
+        do_sequence(
+            ft.partial(seq_build_rows, pattern="1", from_top=False),
+            4,
+            1,
+        )
+        do_sequence(
+            ft.partial(seq_build_rows, pattern="0", from_top=True),
+            4,
+            1,
+        )
+        do_sequence(
+            ft.partial(seq_build_rows, pattern="0", from_top=False),
+            4,
+            1,
+        )
         do_sequence(seq_blink_alternate, 2, 0.8)
         do_sequence(seq_blink_all, 2, 0.8)
         do_sequence(
             ft.partial(seq_move, from_left=True),
-            2, 
+            2,
             0.4,
             stop=4,
         )
         do_sequence(
             ft.partial(seq_move, from_left=False),
-            2, 
+            2,
             0.4,
             stop=4,
         )
         do_sequence(
             ft.partial(seq_build, from_left=True),
-            2, 
+            2,
             0.4,
             stop=4,
         )
         do_sequence(
             ft.partial(seq_build, from_left=False),
-            2, 
+            2,
             0.4,
             stop=4,
         )
         do_sequence(
             ft.partial(seq_rotate, '1000000000', clockwise=True), 
-            2, 
+            2,
             0.2,
             stop=4,
         )
         do_sequence(
             ft.partial(seq_rotate, '0000000001', clockwise=False), 
-            2, 
+            2,
             0.2,
             stop=4,
         )
         do_sequence(
             ft.partial(seq_rotate, '0111111111', clockwise=True), 
-            2, 
+            2,
             0.2,
             stop=4,
         )
         do_sequence(
             ft.partial(seq_rotate, '1111111110', clockwise=False), 
-            2, 
+            2,
             0.2,
             stop=4,
         )
@@ -187,7 +217,9 @@ def mode_variety_1():
             0.1,
             stop=8,
         )
-        do_sequence(seq_rotate, 8, 0.04)
+
+        do_sequence(seq_rotate, 7, 0.04)
+        do_sequence(seq_rotate, 1, 0.04, stop=9)
         set_lights(next(seq_all_on()))
         mode.button.wait(6.4)
         set_lights(next(seq_all_off()))
