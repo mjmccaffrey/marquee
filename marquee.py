@@ -7,306 +7,216 @@
 # Video to kevin and paul
 # Test cleanup()
 # 4 step sequence - 4 horizontal rows
+# Test seq_rotate_build
+# Future: remember current light state, ability to flip lights
+# # # 0 1 + (identity) - (negation)
 
-import functools as ft
-import signal
+
 import time
 import types
 
-import button
-import relayboard
+from sequences import *
+import signs
+from signs import LIGHT_COUNT
 
-LIGHT_TO_RELAY = {
-    0:  9,
-    1: 13,
-    2: 14,
-    3: 15,
-    4:  2,
-    5:  1,
-    6:  0,
-    7:  6,
-    8:  7,
-    9:  8,
-}
-LIGHT_COUNT = len(LIGHT_TO_RELAY)
-TOP_LIGHTS_LEFT_TO_RIGHT = [9, 0, 1, 2, 3]
-BOTTOM_LIGHTS_LEFT_TO_RIGHT = [8, 7, 6, 5, 4]
-LIGHTS_CLOCKWISE = [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
-LIGHTS_BY_ROW = [[0, 1, 2], [3, 9], [4, 8], [5, 6, 7]]
-
-def seq_all_on():
-    """All lights on."""
-    yield [1] * LIGHT_COUNT
-
-def seq_all_off():
-    """All lights off."""
-    yield [0] * LIGHT_COUNT
-
-def seq_blink_all():
-    """All lights on and then off."""
-    yield next(seq_all_on())
-    yield next(seq_all_off())
-
-def seq_even_on():
-    """Even-numbered lights on; others off."""
-    yield [y % 2 for y in range(LIGHT_COUNT)]
-
-def seq_even_off():
-    """Even-numbered lights off; others on."""
-    yield [(y + 1) % 2 for y in range(LIGHT_COUNT)]
-
-def seq_blink_alternate():
-    """Every other light on and then off."""
-    yield next(seq_even_on())
-    yield next(seq_even_off())
-
-def seq_build_rows(pattern=None, from_top=True):
-    """ """
-    if pattern is None:
-        pattern = "1"
-    antipattern = "0" if pattern == "1" else "1"
-    if from_top:
-        rows = LIGHTS_BY_ROW
-    else:  # from_bottom
-        rows = reversed(LIGHTS_BY_ROW)
-    lights = [pattern] * LIGHT_COUNT
-    for row in rows:
-        for light in row:
-            lights[light] = pattern
-        yield lights
-
-def seq_rotate(pattern=None, clockwise=True):
-    """Rotate a pattern of lights counter/clockwise.
-       Pattern is a string of length LIGHT_COUNT containing 0 and 1."""
-    if pattern is None:
-        pattern = [1] + [0] * (LIGHT_COUNT - 1)
-    if clockwise:
-        light_range = range(LIGHT_COUNT, 0, -1)
-    else:  # counterclockwise
-        light_range = range(0, LIGHT_COUNT, 1)
-    for i in light_range:
-        rotated_pattern = pattern[i:] + pattern[:i]
-        yield rotated_pattern
-
-def seq_build(from_left=True):
-    """Grow the upper and lower rows, 
-       starting from the left or the right."""
-    if from_left:
-        top = TOP_LIGHTS_LEFT_TO_RIGHT
-        bot = BOTTOM_LIGHTS_LEFT_TO_RIGHT
-    else:  # from right
-        top = reversed(TOP_LIGHTS_LEFT_TO_RIGHT)
-        bot = reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)
-    lights = [0] * LIGHT_COUNT
-    for t, b in zip(top, bot):
-        lights[t], lights[b] = 1, 1
-        yield lights
-
-def seq_move(from_left=True):
-    """Move lit lights in the upper and lower rows, 
-       starting from the left or the right."""
-    if from_left:
-        top = TOP_LIGHTS_LEFT_TO_RIGHT
-        bot = BOTTOM_LIGHTS_LEFT_TO_RIGHT
-    else:  # from right
-        top = reversed(TOP_LIGHTS_LEFT_TO_RIGHT)
-        bot = reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)
-    for t, b in zip(top, bot):
-        yield [int(y in {t, b}) for y in range(LIGHT_COUNT)]
-
-def do_sequence(sequence, count, delay, stop=None):
-    """Execute sequence count times, with delay seconds in between."""
+def do_sequence(sequence, count=1, delay=0, stop=None):
+    """Execute sequence count times, with delay seconds in between.
+       If stop is specified, end the sequence just before the nth pattern."""
     for _ in range(count):
-        for i, s in enumerate(sequence()):
+        for i, lights in enumerate(sequence()):
             if stop is not None and i == stop:
                 break
-            set_lights(s)
-            mode.button.wait(delay)
+            sign.set_lights(lights)
+            sign.wait_for_interrupt(delay)
 
 def simple_mode(sequence, delay=None):
     """Execute sequence indefinitely, with delay seconds in between.
-       Delay=None is an infinite delay, so the sequence should have
-       only 1 step."""
+       Delay=None is an infinite delay, so in this case
+       the sequence should have only 1 step."""
     def template():
         while True:
             do_sequence(sequence, 1, delay)
     return template
 
-def mode_variety_1():
-    """Perform a variety of sequences."""
-    while True:
-        do_sequence(
-            ft.partial(seq_build_rows, pattern="1", from_top=True),
-            4,
-            1,
-        )
-        do_sequence(
-            ft.partial(seq_build_rows, pattern="1", from_top=False),
-            4,
-            1,
-        )
-        do_sequence(
-            ft.partial(seq_build_rows, pattern="0", from_top=True),
-            4,
-            1,
-        )
-        do_sequence(
-            ft.partial(seq_build_rows, pattern="0", from_top=False),
-            4,
-            1,
-        )
-        do_sequence(seq_blink_alternate, 2, 0.8)
-        do_sequence(seq_blink_all, 2, 0.8)
-        do_sequence(
-            ft.partial(seq_move, from_left=True),
-            2,
-            0.4,
-            stop=4,
-        )
-        do_sequence(
-            ft.partial(seq_move, from_left=False),
-            2,
-            0.4,
-            stop=4,
-        )
-        do_sequence(
-            ft.partial(seq_build, from_left=True),
-            2,
-            0.4,
-            stop=4,
-        )
-        do_sequence(
-            ft.partial(seq_build, from_left=False),
-            2,
-            0.4,
-            stop=4,
-        )
-        do_sequence(
-            ft.partial(seq_rotate, '1000000000', clockwise=True), 
-            2,
-            0.2,
-            stop=4,
-        )
-        do_sequence(
-            ft.partial(seq_rotate, '0000000001', clockwise=False), 
-            2,
-            0.2,
-            stop=4,
-        )
-        do_sequence(
-            ft.partial(seq_rotate, '0111111111', clockwise=True), 
-            2,
-            0.2,
-            stop=4,
-        )
-        do_sequence(
-            ft.partial(seq_rotate, '1111111110', clockwise=False), 
-            2,
-            0.2,
-            stop=4,
-        )
-        do_sequence(
-            ft.partial(seq_rotate, '1100000000', clockwise=True),
-            2,
-            0.1,
-            stop=8,
-        )
-        do_sequence(
-            ft.partial(seq_rotate, '1111111100', clockwise=False),
-            2,
-            0.1,
-            stop=8,
-        )
-
-        do_sequence(seq_rotate, 7, 0.04)
-        do_sequence(seq_rotate, 1, 0.04, stop=9)
-        set_lights(next(seq_all_on()))
-        mode.button.wait(6.4)
-        set_lights(next(seq_all_off()))
-
-        mode.button.wait(900)
-
-        do_sequence(ft.partial(seq_rotate, '1100000000'), 4, 0.2)
-        do_sequence(ft.partial(seq_rotate, '1101000000'), 4, 0.2)
-        do_sequence(ft.partial(seq_rotate, '1101010000'), 4, 0.2)
-        do_sequence(ft.partial(seq_rotate, '1101010100'), 4, 0.2)
-        do_sequence(ft.partial(seq_rotate, '1111111110'), 4, 0.2)
-        mode.button.wait(900)
-        
 def indicate_mode_desired():
     """Show user what desired mode number is currently selected."""
     assert MODE_COUNT <= LIGHT_COUNT, "Cannot indicate this many modes"
-    lights = [0] * LIGHT_COUNT
-    set_lights(lights)
+    do_sequence(seq_all_on)
     time.sleep(0.6)
-    for t in range(mode.desired):
-        time.sleep(0.2)
-        lights[LIGHTS_CLOCKWISE[t]] = 1
-        set_lights(lights)
+    do_sequence(seq_rotate_build, delay=0.2, stop=mode.desired)
 
 def mode_selection():
-    """User uses the physical button to select 
+    """User presses the button to select 
        the next mode to execute."""
     while True:
         # Button was pressed
-        if mode.desired is None:  # Just now entering selection mode
+        if mode.desired is None:
+            # Just now entering selection mode
             mode.desired = mode.previous
         else:
             mode.desired += 1
             if mode.desired == MODE_COUNT:
                 mode.desired = 1
         indicate_mode_desired()
-        mode.button.reset()
-        pressed_again = mode.button.wait(5)
-        if not pressed_again:
+        sign.interrupt_reset()
+        try:
+            sign.wait_for_interrupt(5)
+        except signs.ButtonPressed:
+            pass
+        else:
+            # If we get here, the time elapsed
+            # without the button being pressed.
             mode.current = mode.desired
             mode.desired = None
-            mode.button.reset()
+            sign.interrupt_reset()
             break
 
-def set_lights(lights):
-    """Set all lights per the supplied pattern."""
-    relays.set_relays_from_pattern(lights)
+def mode_rhythmic_demo():
+    """Perform a rhythmic demonstration."""
+    while True:
 
-def virtual_button_pressed(_, __):
-    """Respond to receiving signal SIGUSR1 as if the physical
-       button was pushed. Would be better if this raised a 
-       unique exception, allowing for cleaner handling."""
-    raise button.ButtonPressed
+        do_sequence(seq_all_on)
+
+
+
+        do_sequence(
+            lambda: seq_build_rows(pattern="1", from_top=True),
+            count=4,
+            delay=1,
+        )
+        do_sequence(
+            lambda: seq_build_rows(pattern="1", from_top=False),
+            count=4,
+            delay=1,
+        )
+        do_sequence(
+            lambda: seq_build_rows(pattern="0", from_top=True),
+            count=4,
+            delay=1,
+        )
+        do_sequence(
+            lambda: seq_build_rows(pattern="0", from_top=False),
+            count=4,
+            delay=1,
+        )
+        
+        do_sequence(
+            seq_blink_alternate, 
+            count=2, 
+            delay=0.8,
+        )
+        do_sequence(
+            seq_blink_all,
+            count=2, 
+            delay=0.8,
+        )
+
+        do_sequence(
+            lambda: seq_move(from_left=True),
+            count=2, 
+            delay=0.4,
+            stop=4,
+        )
+        do_sequence(
+            lambda: seq_move(from_left=False),
+            count=2, 
+            delay=0.4,
+            stop=4,
+        )
+        do_sequence(
+            lambda: seq_build(from_left=True),
+            count=2, 
+            delay=0.4,
+            stop=4,
+        )
+        do_sequence(
+            lambda: seq_build(from_left=False),
+            count=2, 
+            delay=0.4,
+            stop=4,
+        )
+        do_sequence(
+            lambda: seq_rotate('1000000000', clockwise=True), 
+            count=2, 
+            delay=0.2,
+            stop=4,
+        )
+        do_sequence(
+            lambda: seq_rotate('0000000001', clockwise=False), 
+            count=2, 
+            delay=0.2,
+            stop=4,
+        )
+        do_sequence(
+            lambda: seq_rotate('0111111111', clockwise=True), 
+            count=2, 
+            delay=0.2,
+            stop=4,
+        )
+        do_sequence(
+            lambda: seq_rotate('1111111110', clockwise=False), 
+            count=2, 
+            delay=0.2,
+            stop=4,
+        )
+        do_sequence(
+            lambda: seq_rotate('1100000000', clockwise=True),
+            count=2, 
+            delay=0.1,
+            stop=8,
+        )
+        do_sequence(
+            lambda: seq_rotate('1111111100', clockwise=False),
+            count=2,
+            delay=0.1,
+            stop=8,
+        )
+        
+        #
+        do_sequence(
+            seq_rotate,
+            count=8,
+            delay=0.04,
+        )
+
+        # !!!! OR, just rotate 8 lights per beat, rather than 10
+
+        # !!!! do_sequence(seq_rotate, 7, 0.04, stop=9)
+
+        do_sequence(seq_all_on)
+        sign.wait_for_interrupt(6.4)
+        do_sequence(seq_all_off)
+        sign.wait_for_interrupt(900)
+
+        do_sequence(ft.partial(seq_rotate, '1100000000'), 4, 0.2)
+        do_sequence(ft.partial(seq_rotate, '1101000000'), 4, 0.2)
+        do_sequence(ft.partial(seq_rotate, '1101010000'), 4, 0.2)
+        do_sequence(ft.partial(seq_rotate, '1101010100'), 4, 0.2)
+        do_sequence(ft.partial(seq_rotate, '1111111110'), 4, 0.2)
+        sign.wait_for_interrupt(900)
 
 def setup():
-    """Prepare devices and initial state."""
-    global relays
+    """Set up devices and initial state."""
     global mode
-    relays = relayboard.RelayBoard(LIGHT_TO_RELAY)
+    global sign
     mode = types.SimpleNamespace()
     mode.current = 7
     mode.desired = None
-    mode.button = button.Button()
-    signal.signal(signal.SIGUSR1, virtual_button_pressed)
-    print(mode)
-    print(id(mode))
+    sign = signs.Sign()
 
 def execute():
     """Outermost application loop."""
     while True:
         try:
             MODES[mode.current]()
-        except button.ButtonPressed:
-            if mode.current != 0:
-                mode.previous = mode.current
-                mode.current = 0
+        except signs.ButtonPressed:
+            # Enter selection mode
+            mode.previous = mode.current
+            mode.current = 0
 
 def cleanup():
     """Close devices."""
-    try:
-        mode.button.close()
-    except button.ButtonPressed:
-        pass
-    try:
-        relays.close()
-    except:
-        pass
+    sign.close()
 
 def main():
     """Execute Marquee application."""
@@ -323,13 +233,11 @@ MODES = [
     simple_mode(seq_even_on),
     simple_mode(seq_even_off),
     simple_mode(seq_all_off),
-    simple_mode(seq_blink_all, 1),
-    simple_mode(seq_blink_alternate, 1),
-    mode_variety_1,
+    simple_mode(seq_blink_all, delay=1),
+    simple_mode(seq_blink_alternate, delay=1),
+    mode_rhythmic_demo,
 ]
 MODE_COUNT = len(MODES)
-# relays = None
-# mode = None
 
 if __name__ == "__main__":
     main()

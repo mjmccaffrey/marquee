@@ -1,0 +1,113 @@
+"""Marquee Lighted Sign Project - sequences"""
+
+from signs import (
+    LIGHT_COUNT,
+    TOP_LIGHTS_LEFT_TO_RIGHT,
+    BOTTOM_LIGHTS_LEFT_TO_RIGHT,
+    LIGHTS_CLOCKWISE,
+    LIGHTS_BY_ROW,
+)
+
+def opposite_pattern(pattern):
+    """Return pattern with the 'bits' flipped."""
+    return "".join("1" if p == "0" else "0" for p in str(pattern))
+
+def seq_all_on():
+    """All lights on."""
+    yield [1] * LIGHT_COUNT
+
+def seq_all_off():
+    """All lights off."""
+    yield [0] * LIGHT_COUNT
+
+def seq_blink_all():
+    """All lights on and then off."""
+    yield next(seq_all_on())
+    yield next(seq_all_off())
+
+def seq_even_on():
+    """Even-numbered lights on; others off."""
+    yield [y % 2 for y in range(LIGHT_COUNT)]
+
+def seq_even_off():
+    """Even-numbered lights off; others on."""
+    yield [(y + 1) % 2 for y in range(LIGHT_COUNT)]
+
+def seq_blink_alternate():
+    """Every other light on and then off."""
+    yield next(seq_even_on())
+    yield next(seq_even_off())
+
+def seq_build_rows(pattern=None, from_top=True):
+    """Successive rows on / off."""
+    if pattern is None:
+        pattern = "1"
+    if from_top:
+        rows = LIGHTS_BY_ROW
+    else:  # from_bottom
+        rows = reversed(LIGHTS_BY_ROW)
+    lights = [opposite_pattern(pattern)] * LIGHT_COUNT
+    for row in rows:
+        for light in row:
+            lights[light] = pattern
+        yield lights
+
+def seq_build_rows_4(pattern, from_top):
+    """Successive rows on / off, grouping the middle rows together, 
+       and starting with no rows."""
+    yield [opposite_pattern(pattern)] * LIGHT_COUNT
+    seq = seq_build_rows(pattern, from_top)
+    yield next(seq)  # Row 0
+    _ = next(seq)  # Row 1
+    yield next(seq)  # Row 2
+    yield next(seq)  # Row 3
+
+def seq_build_halves(from_left=True):
+    """Grow the upper and lower halves together, 
+       starting from the left or the right."""
+    if from_left:
+        top = TOP_LIGHTS_LEFT_TO_RIGHT
+        bot = BOTTOM_LIGHTS_LEFT_TO_RIGHT
+    else:  # from right
+        top = reversed(TOP_LIGHTS_LEFT_TO_RIGHT)
+        bot = reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)
+    lights = [0] * LIGHT_COUNT
+    for t, b in zip(top, bot):
+        lights[t], lights[b] = 1, 1
+        yield lights
+
+def seq_move_halves(from_left=True):
+    """Move lit lights in the upper and lower halves, 
+       starting from the left or the right."""
+    if from_left:
+        top = TOP_LIGHTS_LEFT_TO_RIGHT
+        bot = BOTTOM_LIGHTS_LEFT_TO_RIGHT
+    else:  # from right
+        top = reversed(TOP_LIGHTS_LEFT_TO_RIGHT)
+        bot = reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)
+    for t, b in zip(top, bot):
+        yield [int(y in {t, b}) for y in range(LIGHT_COUNT)]
+
+def seq_rotate(pattern=None, clockwise=True):
+    """Rotate a pattern of lights counter/clockwise.
+       Pattern is a string of length LIGHT_COUNT containing 0 and 1."""
+    if pattern is None:
+        pattern = [1] + [0] * (LIGHT_COUNT - 1)
+    if clockwise:
+        light_range = range(LIGHT_COUNT, 0, -1)
+    else:  # counterclockwise
+        light_range = range(0, LIGHT_COUNT, 1)
+    for i in light_range:
+        rotated_pattern = pattern[i:] + pattern[:i]
+        yield rotated_pattern
+
+def seq_rotate_build(clockwise=True):
+    """Successive lights on, rotating around."""
+    if clockwise:
+        light_range = LIGHTS_CLOCKWISE
+    else:  # counterclockwise
+        light_range = reversed(LIGHTS_CLOCKWISE)
+    lights = [0] * LIGHT_COUNT
+    for l in light_range:
+        lights[l] = 1
+        yield lights
