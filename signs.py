@@ -1,12 +1,14 @@
 """Marquee Lighted Sign Project - signs"""
 
-import buttons_mock as buttons
-from buttons import (
+import logging
+
+import buttons
+from buttons import (  # pylint: disable=unused-import
     ButtonPressed,
     PhysicalButtonPressed,
     VirtualButtonPressed,
 )
-import relayboards_mock as relayboards
+import relayboards
 
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
@@ -43,12 +45,12 @@ class Sign:
         """Clean up."""
         try:
             self._button.close()
-        except Exception:
-            pass
+        except Exception as e:
+            logging.exception(e)
         try:
             self._relayboard.close()
-        except Exception:
-            pass
+        except Exception as e:
+            logging.exception(e)
 
     def set_lights(self, lights):
         """Set all lights per the supplied pattern."""

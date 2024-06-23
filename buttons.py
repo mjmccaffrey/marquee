@@ -23,7 +23,7 @@ class Button:
         self._button = gpiozero.Button(pin=4, bounce_time=0.10)
         self.reset()
         signal.signal(
-            signal.SIGUSR1,
+            signal.SIGUSR1,  # pylint: disable=no-member
             lambda _, __: self.virtual_button_pressed(),
         )
 
