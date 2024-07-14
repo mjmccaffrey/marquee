@@ -65,3 +65,8 @@ class Sign:
     def interrupt_reset(self):
         """Prepare for a button press."""
         self._button.reset()
+
+    @staticmethod
+    def is_valid_light_pattern(arg):
+        """ Return True if arg is a valid light pattern, otherwise False. """
+        return len(arg) == LIGHT_COUNT and all(e in {"0", "1"} for e in arg)
