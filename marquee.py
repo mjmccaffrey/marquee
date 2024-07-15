@@ -67,46 +67,53 @@ def mode_selection():
             sign.interrupt_reset()
             break
 
-def add_mode(index, name, function):
+def add_mode(index, name, function, private=False):
     """Register the mode function, identified by index and name."""
-    assert (  # pylint: disable=assert-on-tuple
-        all(k not in mode.id_to_index for k in (index, name)),
-        "Duplicate mode ID"
-    )
+    assert all(k not in mode.id_to_index for k in (str(index), name)), \
+           "Duplicate mode ID"
     mode.table[index] = types.SimpleNamespace(name=name, function=function)
     mode.count = len(mode.table)
-    mode.id_to_index[str(index)] = index
-    mode.id_to_index[name] = index
+    if not private:
+        mode.id_to_index[str(index)] = index
+        mode.id_to_index[name] = index
 
 def display_help():
     """"Display the command-line syntax."""
-    print("Usage: marquee.py {mode_index | mode_name | light_pattern}\n")
-    print("Valid modes\n")
+    print()
+    print("Usage: marquee.py {mode_index | mode_name | light_pattern}")
+    print()
+    print("Examples:")
+    print("  marquee.py 5")
+    print("  marquee.py blink_all")
+    print("  marquee.py 0000000000")
+    print()
+    print("Modes:")
     for index, entry in mode.table.items():
         if index != 0:
-            print(f'{index}\t{entry.name}\n')
+            print(f'{index: >2}  {entry.name}')
+    print()
 
 def register_modes():
     """Register the operating modes as part of setup."""
     mode.id_to_index = {}
     mode.table = {}
-    add_mode(0, "selection", mode_selection)  # Must be first
+    add_mode(0, "selection", mode_selection, private=True)  # Must be first
     add_mode(1, "all_on", simple_mode(seq_all_on))
     add_mode(2, "even_on", simple_mode(seq_even_on))
     add_mode(3, "even_off", simple_mode(seq_even_off))
     add_mode(4, "all_off", simple_mode(seq_all_off))
-    add_mode(6, "blink_all", simple_mode(seq_blink_all, pace=1))
+    add_mode(5, "blink_all", simple_mode(seq_blink_all, pace=1))
     add_mode(6, "blink_alternate", simple_mode(seq_blink_alternate, pace=1))
     add_mode(7, "demo", lambda: mode_rhythmic_demo(do_sequence))
 
-def process_runtime_argument():
+def process_runtime_argument(argv):
     """Validate the runtime argument as part of setup.
        If a light pattern is specified, set the lights accordingly
        and initiate exit."""
-    if len(sys.argv) != 2:
+    if len(argv) != 2:
         display_help()
         raise ApplicationExit
-    arg = sys.argv[1]
+    arg = argv[1]
     if sign.is_valid_light_pattern(arg):
         sign.set_lights(arg)
         raise ApplicationExit
@@ -116,7 +123,7 @@ def process_runtime_argument():
     mode.current = mode.id_to_index[arg]
     return True
 
-def setup():
+def setup(argv):
     """Set up devices and initial state."""
     global mode
     global sign
@@ -124,7 +131,7 @@ def setup():
     mode.desired = None
     sign = signs.Sign()
     register_modes()
-    process_runtime_argument()
+    process_runtime_argument(argv)
 
 def execute():
     """Outermost application loop."""
@@ -143,10 +150,10 @@ def cleanup():
 def main():
     """Execute Marquee application."""
     # HACK - give Pi Zero time for relay board to show up during boot
-    time.sleep(1)
+    # time.sleep(1)
     #
     try:
-        setup()
+        setup(sys.argv)
     except ApplicationExit:
         pass
     else:
