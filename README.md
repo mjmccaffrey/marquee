@@ -6,7 +6,11 @@ While the relay board and Raspberry Pi are relatively modern, the incandescent b
 
 Shortly after our son's graduation came our 27th wedding anniversary, hence the large gold numerals.
 
-Version 2 includes the following:
+Version 2.1.0 includes the following:
+* Command-line specification of the initial mode.
+* Command-line specification of a light pattern.  If specified, the application will set the lights accordingly and then exit.
+
+Version 2.0.0 includes the following:
 * Added a button to the back of the cabinet to allow the operator to change modes at any time.
 * Added an RS-232 port for easy Raspberry Pi console access.
 * Reworked the code rather extensively.
