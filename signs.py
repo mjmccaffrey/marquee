@@ -40,6 +40,7 @@ class Sign:
         """Prepare devices and initial state."""
         self._relayboard = relayboards.RelayBoard(_LIGHT_TO_RELAY)
         self._button = buttons.Button()
+        self._current_pattern = None
 
     def close(self):
         """Clean up."""
@@ -52,9 +53,15 @@ class Sign:
         except Exception as e:
             logging.exception(e)
 
-    def set_lights(self, lights):
+    def set_lights(self, pattern):
         """Set all lights per the supplied pattern."""
-        self._relayboard.set_relays_from_pattern(lights)
+        self._relayboard.set_relays_from_pattern(pattern)
+        self._current_pattern = pattern
+
+    @property
+    def current_pattern(self):
+        """Return the currenly active light pattern."""
+        return self._current_pattern.copy()
 
     def wait_for_interrupt(self, seconds):
         """Pause the thread until either the seconds have elapsed
