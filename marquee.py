@@ -63,11 +63,13 @@ def add_mode(index, name, function):
 
 def display_help():
     """"Display the command-line syntax."""
-    print("\nUsage: marquee.py {mode_index | mode_name | light_pattern}\n")
+    print()
+    print("Usage: marquee.py {mode_index | mode_name | light_pattern}\n")
     print("Valid modes")
     for index, entry in mode.table.items():
         if index != 0:
             print(f'{index}\t{entry.name}')
+    print()
 
 def register_modes():
     """Register the operating modes as part of setup."""
