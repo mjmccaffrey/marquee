@@ -53,7 +53,7 @@ def mode_selection():
 
 def add_mode(index, name, function):
     """Register the mode function, identified by index and name."""
-    assert \  # pylint: disable=assert-on-tuple
+    assert  # pylint: disable=assert-on-tuple \
         all(k not in mode.id_to_index for k in (index, name)), \
         "Duplicate mode ID"
     mode.table[index] = types.SimpleNamespace(name=name, function=function)
