@@ -35,9 +35,10 @@ def mode_selection():
             # Just now entering selection mode
             mode.desired = mode.previous
         else:
-            mode.desired += 1
             if mode.desired == mode.count:
                 mode.desired = 1
+            else:
+                mode.desired += 1
         indicate_mode_desired()
         try:
             sign.wait_for_interrupt(5)
@@ -63,10 +64,10 @@ def add_mode(index, name, function):
 def display_help():
     """"Display the command-line syntax."""
     print("\nUsage: marquee.py {mode_index | mode_name | light_pattern}\n")
-    print("Valid modes\n")
+    print("Valid modes")
     for index, entry in mode.table.items():
         if index != 0:
-            print(f'{index}\t{entry.name}\n')
+            print(f'{index}\t{entry.name}')
 
 def register_modes():
     """Register the operating modes as part of setup."""
