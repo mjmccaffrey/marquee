@@ -62,7 +62,7 @@ def add_mode(index, name, function):
 
 def display_help():
     """"Display the command-line syntax."""
-    print("Usage: marquee.py {mode_index | mode_name | light_pattern}\n")
+    print("\nUsage: marquee.py {mode_index | mode_name | light_pattern}\n")
     print("Valid modes\n")
     for index, entry in mode.table.items():
         if index != 0:

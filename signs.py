@@ -53,6 +53,20 @@ class Sign:
         except Exception as e:
             logging.exception(e)
 
+    def do_sequence(
+            self, sequence, count=1, pace=0, stop=None, post_delay=None):
+        """Execute sequence count times, with pace seconds in between.
+           If stop is specified, end the sequence just before the nth pattern.
+           Pause for post_delay seconds before exiting."""
+        for _ in range(count):
+            for i, lights in enumerate(sequence()):
+                if stop is not None and i == stop:
+                    break
+                self.set_lights(lights)
+                self.wait_for_interrupt(pace)
+        if post_delay is not None:
+            self.wait_for_interrupt(post_delay)
+
     def set_lights(self, pattern):
         """Set all lights per the supplied pattern."""
         self._relayboard.set_relays_from_pattern(pattern)
