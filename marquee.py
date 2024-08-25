@@ -9,37 +9,21 @@ from sequences import *
 import signs
 from signs import LIGHT_COUNT
 
-class ApplicationExit(Exception):
-    """Runtime argument, or lack thereof, necessitates an early exit."""
-
-def do_sequence(sequence, count=1, pace=0, stop=None, post_delay=None):
-    """Execute sequence count times, with pace seconds in between.
-       If stop is specified, end the sequence just before the nth pattern.
-       Pause for post_delay seconds before exiting."""
-    for _ in range(count):
-        for i, lights in enumerate(sequence()):
-            if stop is not None and i == stop:
-                break
-            sign.set_lights(lights)
-            sign.wait_for_interrupt(pace)
-    if post_delay is not None:
-        sign.wait_for_interrupt(post_delay)
-
 def simple_mode(sequence, pace=None):
     """Execute sequence indefinitely, with pace seconds in between.
        Pace=None is an infinite pace, so in this case
        the sequence should have only 1 step."""
     def template():
         while True:
-            do_sequence(sequence, 1, pace)
+            sign.do_sequence(sequence, 1, pace)
     return template
 
 def indicate_mode_desired():
     """Show user what desired mode number is currently selected."""
     assert mode.count <= LIGHT_COUNT, "Cannot indicate this many modes"
-    do_sequence(seq_all_off)
+    sign.do_sequence(seq_all_off)
     time.sleep(0.6)
-    do_sequence(seq_rotate_build, pace=0.2, stop=mode.desired)
+    sign.do_sequence(seq_rotate_build, pace=0.2, stop=mode.desired)
 
 def mode_selection():
     """User presses the button to select 
@@ -69,10 +53,9 @@ def mode_selection():
 
 def add_mode(index, name, function):
     """Register the mode function, identified by index and name."""
-    assert (  # pylint: disable=assert-on-tuple
-        all(k not in mode.id_to_index for k in (index, name)),
+    assert \  # pylint: disable=assert-on-tuple
+        all(k not in mode.id_to_index for k in (index, name)), \
         "Duplicate mode ID"
-    )
     mode.table[index] = types.SimpleNamespace(name=name, function=function)
     mode.count = len(mode.table)
     mode.id_to_index[str(index)] = index
@@ -97,22 +80,22 @@ def register_modes():
     add_mode(4, "all_off", simple_mode(seq_all_off))
     add_mode(6, "blink_all", simple_mode(seq_blink_all, pace=1))
     add_mode(6, "blink_alternate", simple_mode(seq_blink_alternate, pace=1))
-    add_mode(7, "demo", lambda: mode_rhythmic_demo(do_sequence))
+    add_mode(7, "demo", lambda: mode_rhythmic_demo(sign))
 
 def process_runtime_argument():
-    """Validate the runtime argument as part of setup.
-       If a light pattern is specified, set the lights accordingly
-       and initiate exit."""
+    """Validate the runtime argument.
+       If a light pattern is specified, set the lights accordingly.
+       Return False if the application should terminate, otherwise True."""
     if len(sys.argv) != 2:
         display_help()
-        raise ApplicationExit
+        return False
     arg = sys.argv[1]
     if sign.is_valid_light_pattern(arg):
         sign.set_lights(arg)
-        raise ApplicationExit
+        return False
     if arg not in mode.id_to_index:
         display_help()
-        raise ApplicationExit
+        return False
     mode.current = mode.id_to_index[arg]
     return True
 
@@ -122,9 +105,9 @@ def setup():
     global sign
     mode = types.SimpleNamespace()
     mode.desired = None
+    mode.current = 1
     sign = signs.Sign()
     register_modes()
-    process_runtime_argument()
 
 def execute():
     """Outermost application loop."""
@@ -147,11 +130,10 @@ def main():
     #
     try:
         setup()
-    except ApplicationExit:
-        pass
-    else:
-        execute()
-    cleanup()
+        if process_runtime_argument():
+            execute()
+    finally:
+        cleanup()
 
 if __name__ == "__main__":
     main()

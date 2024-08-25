@@ -110,6 +110,11 @@ def seq_rotate_build(clockwise=True):
         lights[l] = 1
         yield lights
 
+def seq_center_alternate():
+    """Alternate the top and bottom center lights."""
+    yield "0100000000"
+    yield "0000001000"
+
 def seq_random(pattern="1"):
     """Random light on / off, never immediately repeating a light."""
     opposite = [opposite_pattern(pattern)]
