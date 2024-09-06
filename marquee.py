@@ -48,7 +48,7 @@ def main():
     #
     try:
         player = players.Player()
-        register_modes()
+        register_modes(player)
         arg = process_runtime_argument(player)
         if arg:
             player.execute(**arg)
