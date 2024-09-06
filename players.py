@@ -25,6 +25,7 @@ class Player:
     # pylint: disable=too-many-arguments
     def add_mode(self, index, name, function, simple=False, pace=None):
         """Register the mode function, identified by index and name."""
+        print(index, name)
         assert all(k not in self.mode_id_to_index for k in (index, name)), \
                "Duplicate mode ID"
         assert all(k in self.mode_table for k in range(index)), \
