@@ -115,43 +115,29 @@ def seq_center_alternate():
     yield "0100000000"
     yield "0000001000"
 
-def seq_random(pattern="1"):
-    """Random light on / off, never immediately repeating a light."""
-    opposite = [opposite_pattern(pattern)]
-    pattern = [pattern]
-    old, new = -1, -1
-    while True:
-        while new == old:
-            new = random.randrange(LIGHT_COUNT)
-        yield (
-            opposite * new +
-            pattern +
-            opposite * (LIGHT_COUNT - new - 1)
-        )
-        old = new
-
-def seq_random_flip_old(get_current_pattern):
-    """ """
-    old, new = -1, -1
-    while True:
-        while new == old:
-            new = random.randrange(LIGHT_COUNT)
-        yield [
-            opposite_pattern(e) if i == new else e
-            for i, e in enumerate(get_current_pattern())
-        ]
-        old = new
-
 @staticmethod
 def _random_light_gen():
     """ """
-    # ??? SEED ???
+    # !!! SEED ???
     new = -1
     while True:
         old = new
         while new == old:
             new = random.randrange(LIGHT_COUNT)
         yield new
+
+def seq_random(pattern="1"):
+    """Random light on / off, never immediately repeating a light."""
+    opposite = [opposite_pattern(pattern)]
+    pattern = [pattern]
+    random_gen = _random_light_gen()
+    while True:
+        index = next(random_gen)
+        yield (
+            opposite * index +
+            pattern +
+            opposite * (LIGHT_COUNT - index - 1)
+        )
 
 def seq_random_flip(current_pattern):
     """  """

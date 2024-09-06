@@ -14,7 +14,7 @@ class Player:
         self.mode_desired = None
         self.mode_previous = None
         self.mode_id_to_index = {}
-        self.mode_table = {}
+        self.modes = {}
         self.add_mode(0, "selection", self._mode_selection)
         self.sign = signs.Sign()
 
@@ -22,20 +22,20 @@ class Player:
         """Close devices."""
         self.sign.close()
 
-    # pylint: disable=too-many-arguments
-    def add_mode(self, index, name, function, simple=False, pace=None):
+    def add_mode(self, index, function, simple, pace):
         """Register the mode function, identified by index and name."""
-        assert all(str(k) not in self.mode_id_to_index for k in (index, name)), \
-               "Duplicate mode index or name"
-        assert all(k in self.mode_table for k in range(index)), \
-               "Non-sequential mode index"
+        assert all(
+            str(k) not in self.mode_id_to_index for k in (index, name)
+            ), "Duplicate mode index or name"
+        assert all(
+            k in self.modes for k in range(index)
+            ), "Non-sequential mode index"
         if simple:
             function = self._simple_mode(function, pace)
-        self.mode_table[index] = types.SimpleNamespace(
+        self.modes[index] = types.SimpleNamespace(
             name=name,
             function=function,
         )
-        self.mode_count = len(self.mode_table)
         self.mode_id_to_index[str(index)] = index
         self.mode_id_to_index[name] = index
 
@@ -50,8 +50,12 @@ class Player:
         return template
 
     def do_sequence(self, *args, **kwargs):
-        """Wrapper for Sign method."""
+        """Wrapper for Sign.do_sequence."""
         return self.sign.do_sequence(*args, **kwargs)
+
+    def is_valid_light_pattern(self, *args, **kwargs):
+        """Wrapper for Sign.is_valid_light_pattern."""
+        return self.sign.is_valid_light_pattern(*args, **kwargs)
 
     def execute(self, mode=None, pattern=None):
         """ """
@@ -62,7 +66,7 @@ class Player:
             self.mode_current = mode
             while True:
                 try:
-                    self.mode_table[self.mode_current].function()
+                    self.modes[self.mode_current].function()
                 except signs.ButtonPressed:
                     # Enter selection mode
                     self.mode_previous = self.mode_current
@@ -71,7 +75,7 @@ class Player:
 
     def _indicate_mode_desired(self):
         """Show user what desired mode number is currently selected."""
-        assert self.mode_count <= signs.LIGHT_COUNT, \
+        assert len(self.modes) <= signs.LIGHT_COUNT, \
                "Cannot indicate this many modes"
         self.sign.do_sequence(seq_all_off)
         time.sleep(0.6)
@@ -87,7 +91,7 @@ class Player:
                 # Just now entering selection mode
                 self.mode_desired = self.mode_previous
             else:
-                if self.mode_desired == self.mode_count:
+                if self.mode_desired == len(self.modes)
                     self.mode_desired = 1
                 else:
                     self.mode_desired += 1

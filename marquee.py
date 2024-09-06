@@ -11,7 +11,7 @@ def display_help(player):
     print()
     print("Usage: marquee.py {mode_index | mode_name | light_pattern}\n")
     print("Valid modes:")
-    for index, entry in player.mode_table.items():
+    for index, entry in player.modes.items():
         if index != 0:
             print(f'{index}\t{entry.name}')
     print()
@@ -33,10 +33,10 @@ def process_runtime_argument(player):
     if len(sys.argv) != 2:
         return False
     arg = sys.argv[1]
-    if player.sign.is_valid_light_pattern(arg):  # !!
+    if player.is_valid_light_pattern(arg):
         player_args = {"pattern": arg}
-    elif arg in player.mode_id_to_index:  # !!
-        player_args = {"mode": player.mode_id_to_index[arg]}  # !!
+    elif arg in player.mode_id_to_index:
+        player_args = {"mode": player.mode_id_to_index[arg]}
     else:
         return False
     return player_args
