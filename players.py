@@ -10,20 +10,22 @@ class Player:
     """ """
     def __init__(self):
         """Set up devices and initial state."""
+        self.mode_current = None
         self.mode_desired = None
-        self.mode_current = 1
+        self.mode_previous = None
         self.mode_id_to_index = {}
         self.mode_table = {}
-        self.add_mode(0, "selection", self.section)
+        self.add_mode(0, "selection", self._mode_selection)
         self.sign = signs.Sign()
 
     def close(self):
         """Close devices."""
         self.sign.close()
 
+    # pylint: disable=too-many-arguments
     def add_mode(self, index, name, function, simple=False, pace=None):
         """Register the mode function, identified by index and name."""
-        assert all(k not in mode_id_to_index for k in (index, name)), \
+        assert all(k not in self.mode_id_to_index for k in (index, name)), \
                "Duplicate mode ID"
         assert all(k in self.mode_table for k in range(index)), \
                "Missing mode ID"
@@ -33,9 +35,9 @@ class Player:
             name=name,
             function=function,
         )
-        mode.count = len(self.mode_table)
-        mode_id_to_index[str(index)] = index
-        mode_id_to_index[name] = index
+        self.mode_count = len(self.mode_table)
+        self.mode_id_to_index[str(index)] = index
+        self.mode_id_to_index[name] = index
 
     def _simple_mode(self, sequence, pace):
         """Return closure to execute sequence indefinitely, 
@@ -57,7 +59,7 @@ class Player:
             self.sign.set_lights(pattern)
             return
         if mode is not None:
-            self.current_mode = mode
+            self.mode_current = mode
             while True:
                 try:
                     self.mode_table[self.mode_current].function()
@@ -69,7 +71,7 @@ class Player:
 
     def _indicate_mode_desired(self):
         """Show user what desired mode number is currently selected."""
-        assert mode.count <= signs.LIGHT_COUNT, \
+        assert self.mode_count <= signs.LIGHT_COUNT, \
                "Cannot indicate this many modes"
         self.sign.do_sequence(seq_all_off)
         time.sleep(0.6)
@@ -85,7 +87,7 @@ class Player:
                 # Just now entering selection mode
                 self.mode_desired = self.mode_previous
             else:
-                if self.mode_desired == mode.count:
+                if self.mode_desired == self.mode_count:
                     self.mode_desired = 1
                 else:
                     self.mode_desired += 1
