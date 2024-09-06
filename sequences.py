@@ -127,7 +127,8 @@ def _random_light_gen():
         yield new
 
 def seq_random(pattern="1"):
-    """Random light on / off, never immediately repeating a light."""
+    """Random light on / off, never immediately repeating a light.
+       This sequence does not end on its own."""
     opposite = [opposite_pattern(pattern)]
     pattern = [pattern]
     random_gen = _random_light_gen()
@@ -140,7 +141,7 @@ def seq_random(pattern="1"):
         )
 
 def seq_random_flip(current_pattern):
-    """  """
+    """ !! This sequence does not end on its own."""
     lights = list(current_pattern)
     random_gen = _random_light_gen()
     while True:
