@@ -26,9 +26,9 @@ class Player:
     def add_mode(self, index, name, function, simple=False, pace=None):
         """Register the mode function, identified by index and name."""
         print(self.mode_id_to_index, index, name, '\n')
-        assert all(k not in self.mode_id_to_index for k in (index, name)), \
+        assert all(str(k) not in self.mode_id_to_index for k in (index, name)), \
                "Duplicate mode index or name"
-        assert all(k in self.mode_table for k in range(index)), \
+        assert all(str(k) in self.mode_table for k in range(index)), \
                "Non-sequential mode index"
         if simple:
             function = self._simple_mode(function, pace)
