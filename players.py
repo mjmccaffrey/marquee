@@ -91,7 +91,7 @@ class Player:
                 # Just now entering selection mode
                 self.mode_desired = self.mode_previous
             else:
-                if self.mode_desired == len(self.modes)
+                if self.mode_desired == len(self.modes):
                     self.mode_desired = 1
                 else:
                     self.mode_desired += 1
