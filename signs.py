@@ -53,6 +53,7 @@ class Sign:
         except Exception as e:
             logging.exception(e)
 
+    # pylint: disable=too-many-arguments
     def do_sequence(
             self, sequence, count=1, pace=0, stop=None, post_delay=None):
         """Execute sequence count times, with pace seconds in between.

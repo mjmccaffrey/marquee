@@ -24,19 +24,19 @@ def register_modes(player):
     player.add_mode(4, "all_off", seq_all_off, simple=True)
     player.add_mode(6, "blink_all", seq_blink_all, simple=True, pace=1)
     player.add_mode(6, "blink_alternate", seq_blink_alternate, simple=True, pace=1)
-    player.add_mode(7, "demo", lambda: mode_rhythmic_demo(sign))
+    player.add_mode(7, "demo", lambda: mode_rhythmic_demo(player))
 
-def process_runtime_argument():
+def process_runtime_argument(player):
     """Validate the runtime argument.
        If a light pattern is specified, set the lights accordingly.
        Return False if the application should terminate, otherwise True."""
     if len(sys.argv) != 2:
         return False
     arg = sys.argv[1]
-    if self.sign.is_valid_light_pattern(arg):
+    if player.sign.is_valid_light_pattern(arg):  # !!
         player_args = {"pattern": arg}
-    elif arg in mode.id_to_index:
-        player_args = {"mode": mode.id_to_index[arg]}
+    elif arg in player.mode_id_to_index:  # !!
+        player_args = {"mode": player.mode_id_to_index[arg]}  # !!
     else:
         return False
     return player_args
@@ -49,7 +49,7 @@ def main():
     try:
         player = players.Player()
         register_modes()
-        arg = process_runtime_argument()
+        arg = process_runtime_argument(player)
         if arg:
             player.execute(**arg)
         else:

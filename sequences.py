@@ -124,8 +124,8 @@ def seq_random(pattern="1"):
         while new == old:
             new = random.randrange(LIGHT_COUNT)
         yield (
-            opposite * new + 
-            pattern + 
+            opposite * new +
+            pattern +
             opposite * (LIGHT_COUNT - new - 1)
         )
         old = new
@@ -137,7 +137,7 @@ def seq_random_flip_old(get_current_pattern):
         while new == old:
             new = random.randrange(LIGHT_COUNT)
         yield [
-            self.opposite_pattern(e) if i == new else e
+            opposite_pattern(e) if i == new else e
             for i, e in enumerate(get_current_pattern())
         ]
         old = new
