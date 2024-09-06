@@ -3,6 +3,7 @@
 import time
 import types
 
+from sequences import seq_all_off, seq_rotate_build
 import signs
 
 class Player:
@@ -11,9 +12,9 @@ class Player:
         """Set up devices and initial state."""
         self.mode_desired = None
         self.mode_current = 1
-        self.mode.id_to_index = {}
+        self.mode_id_to_index = {}
         self.mode_table = {}
-        self.add_mode(0, "selection", _mode_selection)
+        self.add_mode(0, "selection", self.section)
         self.sign = signs.Sign()
 
     def close(self):
@@ -22,7 +23,7 @@ class Player:
 
     def add_mode(self, index, name, function, simple=False, pace=None):
         """Register the mode function, identified by index and name."""
-        assert all(k not in mode.id_to_index for k in (index, name)), \
+        assert all(k not in mode_id_to_index for k in (index, name)), \
                "Duplicate mode ID"
         assert all(k in self.mode_table for k in range(index)), \
                "Missing mode ID"
@@ -33,8 +34,8 @@ class Player:
             function=function,
         )
         mode.count = len(self.mode_table)
-        mode.id_to_index[str(index)] = index
-        mode.id_to_index[name] = index
+        mode_id_to_index[str(index)] = index
+        mode_id_to_index[name] = index
 
     def _simple_mode(self, sequence, pace):
         """Return closure to execute sequence indefinitely, 
@@ -48,7 +49,7 @@ class Player:
 
     def do_sequence(self, *args, **kwargs):
         """Wrapper for Sign method."""
-        return self.sign(*args, **kwargs)
+        return self.sign.do_sequence(*args, **kwargs)
 
     def execute(self, mode=None, pattern=None):
         """ """
@@ -74,7 +75,7 @@ class Player:
         time.sleep(0.6)
         self.sign.do_sequence(seq_rotate_build, pace=0.2, stop=self.mode_desired)
 
-    def _mode_selection():
+    def _mode_selection(self):
         """User presses the button to select 
            the next mode to execute."""
         while True:
