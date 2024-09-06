@@ -28,7 +28,7 @@ class Player:
         print(self.mode_id_to_index, index, name, '\n')
         assert all(str(k) not in self.mode_id_to_index for k in (index, name)), \
                "Duplicate mode index or name"
-        assert all(str(k) in self.mode_table for k in range(index)), \
+        assert all(k in self.mode_table for k in range(index)), \
                "Non-sequential mode index"
         if simple:
             function = self._simple_mode(function, pace)
