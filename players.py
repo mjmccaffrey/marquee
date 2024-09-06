@@ -25,11 +25,11 @@ class Player:
     # pylint: disable=too-many-arguments
     def add_mode(self, index, name, function, simple=False, pace=None):
         """Register the mode function, identified by index and name."""
-        print(index, name)
+        print(self.mode_id_to_index, index, name, '\n')
         assert all(k not in self.mode_id_to_index for k in (index, name)), \
-               "Duplicate mode ID"
+               "Duplicate mode index or name"
         assert all(k in self.mode_table for k in range(index)), \
-               "Missing mode ID"
+               "Non-sequential mode index"
         if simple:
             function = self._simple_mode(function, pace)
         self.mode_table[index] = types.SimpleNamespace(
