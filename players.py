@@ -22,7 +22,7 @@ class Player:
         """Close devices."""
         self.sign.close()
 
-    def add_mode(self, index, function, simple=False, pace=2):
+    def add_mode(self, index, name, function, simple=False, pace=2):
         """Register the mode function, identified by index and name."""
         assert all(
             str(k) not in self.mode_id_to_index for k in (index, name)
