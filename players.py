@@ -1,7 +1,9 @@
 """ """
 
+import time
+import types
+
 import signs
-from signs import LIGHT_COUNT
 
 class Player:
     """ """
@@ -18,12 +20,14 @@ class Player:
         """Close devices."""
         self.sign.close()
 
-    def add_mode(index, name, function):
+    def add_mode(self, index, name, function, simple=False, pace=None):
         """Register the mode function, identified by index and name."""
         assert all(k not in mode.id_to_index for k in (index, name)), \
                "Duplicate mode ID"
         assert all(k in self.mode_table for k in range(index)), \
                "Missing mode ID"
+        if simple:
+            function = self._simple_mode(function, pace)
         self.mode_table[index] = types.SimpleNamespace(
             name=name,
             function=function,
@@ -31,6 +35,20 @@ class Player:
         mode.count = len(self.mode_table)
         mode.id_to_index[str(index)] = index
         mode.id_to_index[name] = index
+
+    def _simple_mode(self, sequence, pace):
+        """Return closure to execute sequence indefinitely, 
+           with pace seconds in between.
+           Pace=None is an infinite pace, so in this case
+           the sequence should have only 1 step."""
+        def template():
+            while True:
+                self.do_sequence(sequence, 1, pace)
+        return template
+
+    def do_sequence(self, *args, **kwargs):
+        """Wrapper for Sign method."""
+        return self.sign(*args, **kwargs)
 
     def execute(self, mode=None, pattern=None):
         """ """
@@ -48,19 +66,9 @@ class Player:
                 self.mode_current = 0
         raise ValueError("Nothing to do.")
 
-    def simple_mode(self, sequence, pace=None):
-        """Return closure to execute sequence indefinitely, 
-           with pace seconds in between.
-           Pace=None is an infinite pace, so in this case
-           the sequence should have only 1 step."""
-        def template():
-            while True:
-                self.sign.do_sequence(sequence, 1, pace)
-        return template
-
     def _indicate_mode_desired(self):
         """Show user what desired mode number is currently selected."""
-        assert mode.count <= LIGHT_COUNT, \
+        assert mode.count <= signs.LIGHT_COUNT, \
                "Cannot indicate this many modes"
         self.sign.do_sequence(seq_all_off)
         time.sleep(0.6)

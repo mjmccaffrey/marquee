@@ -1,31 +1,29 @@
 """Marquee Lighted Sign Project - main"""
 
 import sys
-import time
-import types
 
 from modes import *
 import players
 from sequences import *
 
-def display_help():
+def display_help(player):
     """"Display the command-line syntax."""
     print()
     print("Usage: marquee.py {mode_index | mode_name | light_pattern}\n")
     print("Valid modes:")
-    for index, entry in self.mode_table.items():
+    for index, entry in player.mode_table.items():
         if index != 0:
             print(f'{index}\t{entry.name}')
     print()
 
 def register_modes(player):
     """Register the operating modes."""
-    player.add_mode(1, "all_on", simple_mode(seq_all_on))
-    player.add_mode(2, "even_on", simple_mode(seq_even_on))
-    player.add_mode(3, "even_off", simple_mode(seq_even_off))
-    player.add_mode(4, "all_off", simple_mode(seq_all_off))
-    player.add_mode(6, "blink_all", simple_mode(seq_blink_all, pace=1))
-    player.add_mode(6, "blink_alternate", simple_mode(seq_blink_alternate, pace=1))
+    player.add_mode(1, "all_on", seq_all_on, simple=True)
+    player.add_mode(2, "even_on", seq_even_on, simple=True)
+    player.add_mode(3, "even_off", seq_even_off, simple=True)
+    player.add_mode(4, "all_off", seq_all_off, simple=True)
+    player.add_mode(6, "blink_all", seq_blink_all, simple=True, pace=1)
+    player.add_mode(6, "blink_alternate", seq_blink_alternate, simple=True, pace=1)
     player.add_mode(7, "demo", lambda: mode_rhythmic_demo(sign))
 
 def process_runtime_argument():
@@ -55,7 +53,7 @@ def main():
         if arg:
             player.execute(**arg)
         else:
-            display_help()
+            display_help(player)
     finally:
         player.close()
 
