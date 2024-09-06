@@ -43,7 +43,7 @@ def process_runtime_argument(player):
 
 def main():
     """Execute Marquee application."""
-    # # HACK - give Pi Zero time for relay board to show up during boot
+    # # HACK - give Pi Zero time for relay board to show up during boot !!
     # time.sleep(1)
     #
     try:

@@ -55,7 +55,7 @@ class Sign:
 
     # pylint: disable=too-many-arguments
     def do_sequence(
-            self, sequence, count=1, pace=0, stop=None, post_delay=None):
+            self, sequence, count=1, pace=2, stop=None, post_delay=None):
         """Execute sequence count times, with pace seconds in between.
            If stop is specified, end the sequence just before the nth pattern.
            Pause for post_delay seconds before exiting."""
