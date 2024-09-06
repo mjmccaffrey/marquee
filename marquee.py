@@ -22,8 +22,8 @@ def register_modes(player):
     player.add_mode(2, "even_on", seq_even_on, simple=True)
     player.add_mode(3, "even_off", seq_even_off, simple=True)
     player.add_mode(4, "all_off", seq_all_off, simple=True)
-    player.add_mode(6, "blink_all", seq_blink_all, simple=True, pace=1)
-    player.add_mode(6, "blink_alternate", seq_blink_alternate, simple=True, pace=1)
+    player.add_mode(5, "blink_all", seq_blink_all, simple=True, pace=1)
+    player.add_mode(5, "blink_alternate", seq_blink_alternate, simple=True, pace=1)
     player.add_mode(7, "demo", lambda: mode_rhythmic_demo(player))
 
 def process_runtime_argument(player):
