@@ -45,7 +45,7 @@ class RelayBoard:
         )
         print(relay_pattern)
         val = hex(int(''.join(str(e) for e in relay_pattern), 2))[2:]
-        return f"{val:>04}"
+        return f"{val:>0{RELAY_COUNT}}"
 
     def _relays_to_devices(self, relay_pattern):
         """ """
