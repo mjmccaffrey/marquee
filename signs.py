@@ -41,7 +41,7 @@ class Sign:
         """Prepare devices and initial state."""
         self._relayboard = relayboards.RelayBoard(_LIGHT_TO_RELAY)
         self._button = buttons.Button()
-        self._current_pattern = None  # !!
+        self._current_pattern = self._relayboard.get_state_of_devices()
 
     def close(self):
         """Clean up."""
