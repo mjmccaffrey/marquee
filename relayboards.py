@@ -38,7 +38,7 @@ class RelayBoard:
            to a relay pattern, in which the first relay is the
            rightmost bit of the binary / hex value."""
         print(device_pattern)
-        relay_pattern = ''.append(
+        relay_pattern = ''.join(
             device_pattern.get(self._bit_to_device[b], 0)
             for b in range(RELAY_COUNT)
         )
@@ -49,7 +49,7 @@ class RelayBoard:
     def _relays_to_devices(self, relay_pattern):
         """ """
         print(relay_pattern)
-        device_pattern = ''.append(
+        device_pattern = ''.join(
             relay_pattern[self._device_to_bit[d]]
             for d in range(self.device_count)
         )
