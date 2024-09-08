@@ -40,7 +40,7 @@ class RelayBoard:
         print(device_pattern)
         relay_pattern = ''.join(
             device_pattern[self._bit_to_device[b]]
-            if b in self._bit_to_device else ''
+            if b in self._bit_to_device else '0'
             for b in range(RELAY_COUNT)
         )
         print(relay_pattern)
