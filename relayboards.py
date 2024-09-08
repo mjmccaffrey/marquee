@@ -11,7 +11,7 @@ class RelayBoard:
         """Create the RelayBoard object, where device_mapping
            is a dict mapping device indices to relay indices.
            Establish connection to relay board via serial port."""
-        self._serial_port = serial.Serial("/dev/ttyACM0")
+        self._serial_port = serial.Serial("/dev/ttyACM0", timeout=1)
         self.device_mapping = device_mapping
         last_relay = RELAY_COUNT - 1
         self._device_to_bit = {
