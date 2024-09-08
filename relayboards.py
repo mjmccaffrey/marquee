@@ -39,7 +39,8 @@ class RelayBoard:
            rightmost bit of the binary / hex value."""
         print(device_pattern)
         relay_pattern = ''.join(
-            device_pattern.get(self._bit_to_device[b], 0)
+            device_pattern[self._bit_to_device[b]]
+            if b in self._bit_to_device else ''
             for b in range(RELAY_COUNT)
         )
         print(relay_pattern)
