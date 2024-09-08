@@ -31,6 +31,7 @@ _LIGHT_TO_RELAY = {
     8:  7,
     9:  8,
 }
+
 LIGHT_COUNT = len(_LIGHT_TO_RELAY)
 
 class Sign:
@@ -40,7 +41,7 @@ class Sign:
         """Prepare devices and initial state."""
         self._relayboard = relayboards.RelayBoard(_LIGHT_TO_RELAY)
         self._button = buttons.Button()
-        self._current_pattern = None
+        self._current_pattern = None  # !!
 
     def close(self):
         """Clean up."""
