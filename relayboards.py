@@ -69,9 +69,11 @@ class RelayBoard:
         # b'relay readall\n\n\r0000\n\r>'
         response = self._serial_port.read(23)
         val = response[-7:-3].decode('utf-8')
-        return bin(int(val, base=16))[2:]
+        val = bin(int(val, base=16))[2:]
+        return f"{val:>04}"
 
     def get_state_of_devices(self):
         """ """
         relays = self._get_relays()
+        print relays
         return self._relays_to_devices(relays)
