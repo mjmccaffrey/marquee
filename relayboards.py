@@ -45,7 +45,7 @@ class RelayBoard:
         )
         print(relay_pattern)
         val = hex(int(''.join(str(e) for e in relay_pattern), 2))[2:]
-        return f"{val:>0{RELAY_COUNT}}"
+        return f"{val:>04}"
 
     def _relays_to_devices(self, relay_pattern):
         """ """
@@ -68,9 +68,12 @@ class RelayBoard:
         self._serial_port.write(bytes(command, 'utf-8'))
         # b'relay readall\n\n\r0000\n\r>'
         response = self._serial_port.read(23)
+        print(response)
         val = response[-7:-3].decode('utf-8')
+        print(val)
         val = bin(int(val, base=16))[2:]
-        return f"{val:>04}"
+        print(val)
+        return f"{val:>0{RELAY_COUNT}}"
 
     def get_state_of_devices(self):
         """ """
