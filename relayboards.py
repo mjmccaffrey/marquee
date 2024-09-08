@@ -75,5 +75,4 @@ class RelayBoard:
     def get_state_of_devices(self):
         """ """
         relays = self._get_relays()
-        print relays
         return self._relays_to_devices(relays)
