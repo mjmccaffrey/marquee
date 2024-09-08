@@ -63,7 +63,7 @@ class RelayBoard:
 
     def _get_relays(self):
         """ """
-        command = "relay readeall\n\r"
+        command = "relay readall\n\r"
         self._serial_port.write(bytes(command, 'utf-8'))
         # b'relay readall\n\n\r0000\n\r>'
         response = self._serial_port.read(23)
