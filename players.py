@@ -13,7 +13,7 @@ class Player:
         self.mode_current = None
         self.mode_desired = None
         self.mode_previous = None
-        self.mode_id_to_index =_ {}
+        self.mode_id_to_index = {}
         self.modes = {}
         self.add_mode(0, "selection", self._mode_selection)
         self._sign = signs.Sign()
