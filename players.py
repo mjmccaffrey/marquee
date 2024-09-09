@@ -13,7 +13,7 @@ class Player:
         self.mode_current = None
         self.mode_desired = None
         self.mode_previous = None
-        self.mode_id_to_index = {}
+        self.mode_id_to_index =_ {}
         self.modes = {}
         self.add_mode(0, "selection", self._mode_selection)
         self._sign = signs.Sign()
@@ -86,7 +86,7 @@ class Player:
         """Show user what desired mode number is currently selected."""
         assert len(self.modes) <= signs.LIGHT_COUNT, \
                "Cannot indicate this many modes"
-        self._sign.do_sequence(seq_all_off)
+        self._sign.do_sequence(seq_all_off, pace=0)
         time.sleep(0.6)
         self._sign.do_sequence(seq_rotate_build, pace=0.2, stop=self.mode_desired)
 
@@ -100,7 +100,7 @@ class Player:
                 # Just now entering selection mode
                 self.mode_desired = self.mode_previous
             else:
-                if self.mode_desired == len(self.modes):
+                if self.mode_desired == len(self.modes) - 1:
                     self.mode_desired = 1
                 else:
                     self.mode_desired += 1
