@@ -79,7 +79,7 @@ class Player:
                 except signs.ButtonPressed:
                     # Enter selection mode
                     self.mode_previous = self.mode_current
-                self.mode_current = 0
+                    self.mode_current = 0
         raise ValueError("Nothing to do.")
 
     def _indicate_mode_desired(self):
