@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - relayboard"""
+"""Marquee Lighted Sign Project - relayboards"""
 
 import serial
 
@@ -26,10 +26,31 @@ class RelayBoard:
         """Clean up."""
         self._serial_port.close()
 
+    def set_state_of_devices(self, device_pattern):
+        """Set the physical relays per device_pattern."""
+        relay_pattern = self._devices_to_relays(device_pattern)
+        self._set_relays(relay_pattern)
+
+    def get_state_of_devices(self):
+        """Get the state of all devices and output a device pattern."""
+        relays = self._get_relays()
+        return self._relays_to_devices(relays)
+
     def _set_relays(self, relay_pattern_hex):
         """Send command to relay board to set all relays."""
         command = f"relay writeall {relay_pattern_hex}\n\r"
         self._serial_port.write(bytes(command, 'utf-8'))
+
+    def _get_relays(self):
+        """Get the state of all relays and output a relay pattern."""
+        self._serial_port.reset_input_buffer()
+        command = "relay readall\n\r"
+        self._serial_port.write(bytes(command, 'utf-8'))
+        # Response example: b'relay readall\n\n\r0000\n\r>'
+        response = self._serial_port.read(23)
+        val = response[-7:-3].decode('utf-8')
+        val = bin(int(val, base=16))[2:]
+        return f"{val:>0{RELAY_COUNT}}"
 
     def _devices_to_relays(self, device_pattern):
         """Convert desired device (light) pattern,
@@ -45,30 +66,9 @@ class RelayBoard:
         return f"{val:>04}"
 
     def _relays_to_devices(self, relay_pattern):
-        """ """
+        """Convert a relay pattern to a device pattern."""
         device_pattern = ''.join(
             relay_pattern[self._device_to_bit[d]]
             for d in range(self.device_count)
         )
         return device_pattern
-
-    def set_relays_from_pattern(self, device_pattern):
-        """Set the physical relays per the supplied pattern."""
-        relay_pattern = self._devices_to_relays(device_pattern)
-        self._set_relays(relay_pattern)
-
-    def _get_relays(self):
-        """ """
-        self._serial_port.reset_input_buffer()
-        command = "relay readall\n\r"
-        self._serial_port.write(bytes(command, 'utf-8'))
-        # b'relay readall\n\n\r0000\n\r>'
-        response = self._serial_port.read(23)
-        val = response[-7:-3].decode('utf-8')
-        val = bin(int(val, base=16))[2:]
-        return f"{val:>0{RELAY_COUNT}}"
-
-    def get_state_of_devices(self):
-        """ """
-        relays = self._get_relays()
-        return self._relays_to_devices(relays)

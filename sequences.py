@@ -11,7 +11,7 @@ from signs import (
 )
 
 def opposite_pattern(pattern):
-    """Return pattern with the 'bits' flipped."""
+    """Return pattern with the states flipped."""
     return "".join("1" if p == "0" else "0" for p in str(pattern))
 
 def seq_all_on():
@@ -88,7 +88,7 @@ def seq_move_halves(from_left=True):
     for t, b in zip(top, bot):
         yield [int(y in {t, b}) for y in range(LIGHT_COUNT)]
 
-def seq_rotate(pattern=[1]+[0]*(LIGHT_COUNT-1), clockwise=True):
+def seq_rotate(pattern="1"+"0"*(LIGHT_COUNT-1), clockwise=True):
     """Rotate a pattern of lights counter/clockwise.
        Pattern is a string of length LIGHT_COUNT containing 0 and 1."""
     if clockwise:
@@ -117,8 +117,8 @@ def seq_center_alternate():
 
 @staticmethod
 def _random_light_gen():
-    """ """
-    # !!! SEED ???
+    """Generate random light indexes 
+       that never immediately repeats."""
     new = -1
     while True:
         old = new
@@ -128,6 +128,7 @@ def _random_light_gen():
 
 def seq_random(pattern="1"):
     """Random light on / off, never immediately repeating a light.
+       Starts with setting all lights to the opposite of pattern.
        This sequence does not end on its own."""
     opposite = [opposite_pattern(pattern)]
     pattern = [pattern]
@@ -141,7 +142,10 @@ def seq_random(pattern="1"):
         )
 
 def seq_random_flip(current_pattern):
-    """ !! This sequence does not end on its own."""
+    """Random light on / off, never immediately repeating a light.
+       Starts with the lights in their current state, and flips
+       each selected light.
+       This sequence does not end on its own."""
     lights = list(current_pattern)
     random_gen = _random_light_gen()
     while True:

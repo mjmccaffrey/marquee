@@ -1,4 +1,4 @@
-"""Custom operating modes."""
+"""Marquee Lighted Sign Project - modes"""
 
 from sequences import *
 

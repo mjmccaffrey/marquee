@@ -1,4 +1,4 @@
-""" """
+"""Marquee Lighted Sign Project - players"""
 
 import time
 import types
@@ -7,7 +7,7 @@ from sequences import seq_all_off, seq_rotate_build
 import signs
 
 class Player:
-    """ """
+    """Manages execution at a high level."""
     def __init__(self):
         """Set up devices and initial state."""
         self.mode_current = None
@@ -67,7 +67,7 @@ class Player:
         return self._sign.set_lights(*args, **kwargs)
 
     def execute(self, mode=None, pattern=None):
-        """ """
+        """Effects the specified mode or pattern."""
         if pattern is not None:
             self._sign.set_lights(pattern)
             return
@@ -86,9 +86,13 @@ class Player:
         """Show user what desired mode number is currently selected."""
         assert len(self.modes) <= signs.LIGHT_COUNT, \
                "Cannot indicate this many modes"
-        self._sign.do_sequence(seq_all_off, pace=0)
+        self._sign.do_sequence(
+            seq_all_off, pace=0
+        )
         time.sleep(0.6)
-        self._sign.do_sequence(seq_rotate_build, pace=0.2, stop=self.mode_desired)
+        self._sign.do_sequence(
+            seq_rotate_build, pace=0.2, stop=self.mode_desired
+        )
 
     def _mode_selection(self):
         """User presses the button to select 

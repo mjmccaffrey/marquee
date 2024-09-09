@@ -23,11 +23,11 @@ def register_modes(player):
     player.add_mode(3, "even_off", seq_even_off, simple=True)
     player.add_mode(4, "all_off", seq_all_off, simple=True)
     player.add_mode(5, "blink_all", seq_blink_all, simple=True, pace=1)
-    player.add_mode(6, "blink_alternate", 
+    player.add_mode(6, "blink_alternate",
         seq_blink_alternate, simple=True, pace=1
     )
     player.add_mode(7, "random", seq_random, simple=True, pace=0.5)
-    player.add_mode(8, "random_flip", 
+    player.add_mode(8, "random_flip",
         lambda: seq_random_flip(player.current_pattern),
         simple=True, pace=0.5
     )
