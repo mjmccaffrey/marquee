@@ -13,15 +13,14 @@ class RelayBoard:
            Establish connection to relay board via serial port."""
         self._serial_port = serial.Serial("/dev/ttyACM0", timeout=1)
         self.device_mapping = device_mapping
-        last_relay = RELAY_COUNT - 1
+        self.device_count = max(device_mapping.keys()) + 1
         self._device_to_bit = {
-            l: last_relay - r
+            l: RELAY_COUNT - 1 - r
             for l, r in self.device_mapping.items()
         }
         self._bit_to_device = {
             v: k for k, v in self._device_to_bit.items()
         }
-        self.device_count = max(device_mapping.keys()) + 1
 
     def close(self):
         """Clean up."""
@@ -37,24 +36,20 @@ class RelayBoard:
            in which the first light is the leftmost 0 or 1 of the string,
            to a relay pattern, in which the first relay is the
            rightmost bit of the binary / hex value."""
-        print(device_pattern)
         relay_pattern = ''.join(
             str(device_pattern[self._bit_to_device[b]])
             if b in self._bit_to_device else '0'
             for b in range(RELAY_COUNT)
         )
-        print(relay_pattern)
         val = hex(int(''.join(str(e) for e in relay_pattern), 2))[2:]
         return f"{val:>04}"
 
     def _relays_to_devices(self, relay_pattern):
         """ """
-        print(relay_pattern)
         device_pattern = ''.join(
             relay_pattern[self._device_to_bit[d]]
             for d in range(self.device_count)
         )
-        print(device_pattern)
         return device_pattern
 
     def set_relays_from_pattern(self, device_pattern):
@@ -69,11 +64,8 @@ class RelayBoard:
         self._serial_port.write(bytes(command, 'utf-8'))
         # b'relay readall\n\n\r0000\n\r>'
         response = self._serial_port.read(23)
-        print(response)
         val = response[-7:-3].decode('utf-8')
-        print(val)
         val = bin(int(val, base=16))[2:]
-        print(val)
         return f"{val:>0{RELAY_COUNT}}"
 
     def get_state_of_devices(self):

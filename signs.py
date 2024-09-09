@@ -70,14 +70,16 @@ class Sign:
             self.wait_for_interrupt(post_delay)
 
     def set_lights(self, pattern):
-        """Set all lights per the supplied pattern."""
+        """Set all lights per the supplied pattern.
+           Set _current_pattern, always as a string
+           rather than a list."""
         self._relayboard.set_relays_from_pattern(pattern)
-        self._current_pattern = pattern
+        self._current_pattern = ''.join(pattern)
 
     @property
     def current_pattern(self):
         """Return the currenly active light pattern."""
-        return self._current_pattern.copy()
+        return self._current_pattern
 
     def wait_for_interrupt(self, seconds):
         """Pause the thread until either the seconds have elapsed
