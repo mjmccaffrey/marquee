@@ -49,6 +49,7 @@ class Player:
                 self.do_sequence(sequence, 1, pace)
         return template
 
+    @property
     def current_pattern(self):
         """Wrapper for Sign.current_pattern."""
         return self._sign.current_pattern
