@@ -74,7 +74,7 @@ class Sign:
            Set _current_pattern, always as a string
            rather than a list."""
         self._relayboard.set_relays_from_pattern(pattern)
-        self._current_pattern = ''.join(pattern)
+        self._current_pattern = ''.join(str(e) for e in pattern)
 
     @property
     def current_pattern(self):
