@@ -440,6 +440,7 @@ disable=raw-checker-failed,
         global-statement,
         global-variable-undefined,
         stop-iteration-return,
+        too-many-arguments,
         unused-wildcard-import,
         wildcard-import,
 

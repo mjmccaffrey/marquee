@@ -16,11 +16,11 @@ class Player:
         self.mode_id_to_index = {}
         self.modes = {}
         self.add_mode(0, "selection", self._mode_selection)
-        self.sign = signs.Sign()
+        self._sign = signs.Sign()
 
     def close(self):
         """Close devices."""
-        self.sign.close()
+        self._sign.close()
 
     def add_mode(self, index, name, function, simple=False, pace=2):
         """Register the mode function, identified by index and name."""
@@ -49,18 +49,26 @@ class Player:
                 self.do_sequence(sequence, 1, pace)
         return template
 
+    def current_pattern(self):
+        """Wrapper for Sign.current_pattern."""
+        return self._sign.current_pattern
+
     def do_sequence(self, *args, **kwargs):
         """Wrapper for Sign.do_sequence."""
-        return self.sign.do_sequence(*args, **kwargs)
+        return self._sign.do_sequence(*args, **kwargs)
 
     def is_valid_light_pattern(self, *args, **kwargs):
         """Wrapper for Sign.is_valid_light_pattern."""
-        return self.sign.is_valid_light_pattern(*args, **kwargs)
+        return self._sign.is_valid_light_pattern(*args, **kwargs)
+
+    def set_lights(self, *args, **kwargs):
+        """Wrapper for Sign.set_lights."""
+        return self._sign.set_lights(*args, **kwargs)
 
     def execute(self, mode=None, pattern=None):
         """ """
         if pattern is not None:
-            self.sign.set_lights(pattern)
+            self._sign.set_lights(pattern)
             return
         if mode is not None:
             self.mode_current = mode
@@ -77,16 +85,16 @@ class Player:
         """Show user what desired mode number is currently selected."""
         assert len(self.modes) <= signs.LIGHT_COUNT, \
                "Cannot indicate this many modes"
-        self.sign.do_sequence(seq_all_off)
+        self._sign.do_sequence(seq_all_off)
         time.sleep(0.6)
-        self.sign.do_sequence(seq_rotate_build, pace=0.2, stop=self.mode_desired)
+        self._sign.do_sequence(seq_rotate_build, pace=0.2, stop=self.mode_desired)
 
     def _mode_selection(self):
         """User presses the button to select 
            the next mode to execute."""
         while True:
             # Button was pressed
-            self.sign.interrupt_reset()
+            self._sign.interrupt_reset()
             if self.mode_desired is None:
                 # Just now entering selection mode
                 self.mode_desired = self.mode_previous
@@ -97,7 +105,7 @@ class Player:
                     self.mode_desired += 1
             self._indicate_mode_desired()
             try:
-                self.sign.wait_for_interrupt(5)
+                self._sign.wait_for_interrupt(5)
             except signs.ButtonPressed:
                 pass
             else:
@@ -105,5 +113,5 @@ class Player:
                 # without the button being pressed.
                 self.mode_current = self.mode_desired
                 self.mode_desired = None
-                self.sign.interrupt_reset()
+                self._sign.interrupt_reset()
                 break

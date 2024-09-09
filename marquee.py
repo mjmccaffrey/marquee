@@ -28,7 +28,7 @@ def register_modes(player):
     )
     player.add_mode(7, "random", seq_random, simple=True, pace=0.5)
     player.add_mode(8, "random_flip", 
-        lambda: seq_random_flip(player.sign.current_pattern), # !!
+        lambda: seq_random_flip(player.current_pattern),
         simple=True, pace=0.5
     )
     player.add_mode(9, "demo", lambda: mode_rhythmic_demo(player))
@@ -50,9 +50,6 @@ def process_runtime_argument(player):
 
 def main():
     """Execute Marquee application."""
-    # # HACK - give Pi Zero time for relay board to show up during boot !!
-    # time.sleep(1)
-    #
     try:
         player = players.Player()
         register_modes(player)
