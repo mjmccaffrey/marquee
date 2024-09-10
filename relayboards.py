@@ -54,7 +54,7 @@ class RelayBoard:
 
     def _devices_to_relays(self, device_pattern):
         """Convert desired device (light) pattern,
-           in which the first light is the leftmost 0 or 1 of the string,
+           in which the first light is the string's leftmost 0 or 1,
            to a relay pattern, in which the first relay is the
            rightmost bit of the binary / hex value."""
         relay_pattern = ''.join(

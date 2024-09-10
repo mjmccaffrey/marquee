@@ -58,7 +58,7 @@ def seq_build_rows_4(pattern, from_top):
     yield [opposite_pattern(pattern)] * LIGHT_COUNT
     seq = seq_build_rows(pattern, from_top)
     yield next(seq)  # Row 0
-    _ = next(seq)  # Row 1
+    _ = next(seq)    # Row 1
     yield next(seq)  # Row 2
     yield next(seq)  # Row 3
 

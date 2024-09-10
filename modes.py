@@ -74,6 +74,7 @@ def mode_rhythmic_demo(player):
             pace=0.2,
             stop=4,
         )
+
         player.do_sequence(
             lambda: seq_rotate('1100000000', clockwise=True),
             count=4,
@@ -86,6 +87,7 @@ def mode_rhythmic_demo(player):
             pace=0.1,
             stop=8,
         )
+
         player.do_sequence(
             seq_rotate,
             count=8,

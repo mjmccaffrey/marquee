@@ -26,7 +26,7 @@ def register_modes(player):
     player.add_mode(6, "blink_alternate",
         seq_blink_alternate, simple=True, pace=1
     )
-    player.add_mode(7, "rotate", 
+    player.add_mode(7, "rotate",
         lambda: seq_rotate("1100000000"), simple=True, pace=0.5
     )
     player.add_mode(8, "random_flip",

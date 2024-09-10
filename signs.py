@@ -31,7 +31,6 @@ _LIGHT_TO_RELAY = {
     8:  7,
     9:  8,
 }
-
 LIGHT_COUNT = len(_LIGHT_TO_RELAY)
 
 class Sign:
@@ -57,7 +56,8 @@ class Sign:
     def do_sequence(
             self, sequence, count=1, pace=2, stop=None, post_delay=None):
         """Execute sequence count times, with pace seconds in between.
-           If stop is specified, end the sequence just before the nth pattern.
+           If stop is specified, end the sequence 
+           just before the nth pattern.
            Pause for post_delay seconds before exiting."""
         for _ in range(count):
             for i, lights in enumerate(sequence()):
@@ -92,5 +92,6 @@ class Sign:
 
     @staticmethod
     def is_valid_light_pattern(arg):
-        """ Return True if arg is a valid light pattern, otherwise False. """
+        """ Return True if arg is a valid light pattern, 
+            otherwise False. """
         return len(arg) == LIGHT_COUNT and all(e in {"0", "1"} for e in arg)
