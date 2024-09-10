@@ -40,6 +40,7 @@ class Sign:
         """Prepare devices and initial state."""
         self._relayboard = relayboards.RelayBoard(_LIGHT_TO_RELAY)
         self._button = buttons.Button()
+        self._current_pattern = self._relayboard.get_state_of_devices()
 
     def close(self):
         """Clean up."""
@@ -52,9 +53,32 @@ class Sign:
         except Exception as e:
             logging.exception(e)
 
-    def set_lights(self, lights):
-        """Set all lights per the supplied pattern."""
-        self._relayboard.set_relays_from_pattern(lights)
+    def do_sequence(
+            self, sequence, count=1, pace=2, stop=None, post_delay=None):
+        """Execute sequence count times, with pace seconds in between.
+           If stop is specified, end the sequence 
+           just before the nth pattern.
+           Pause for post_delay seconds before exiting."""
+        for _ in range(count):
+            for i, lights in enumerate(sequence()):
+                if stop is not None and i == stop:
+                    break
+                self.set_lights(lights)
+                self.wait_for_interrupt(pace)
+        if post_delay is not None:
+            self.wait_for_interrupt(post_delay)
+
+    def set_lights(self, pattern):
+        """Set all lights per the supplied pattern.
+           Set _current_pattern, always as a string
+           rather than a list."""
+        self._relayboard.set_state_of_devices(pattern)
+        self._current_pattern = ''.join(str(e) for e in pattern)
+
+    @property
+    def current_pattern(self):
+        """Return the currenly active light pattern."""
+        return self._current_pattern
 
     def wait_for_interrupt(self, seconds):
         """Pause the thread until either the seconds have elapsed
@@ -68,5 +92,6 @@ class Sign:
 
     @staticmethod
     def is_valid_light_pattern(arg):
-        """ Return True if arg is a valid light pattern, otherwise False. """
+        """ Return True if arg is a valid light pattern, 
+            otherwise False. """
         return len(arg) == LIGHT_COUNT and all(e in {"0", "1"} for e in arg)

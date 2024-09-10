@@ -6,6 +6,11 @@ While the relay board and Raspberry Pi are relatively modern, the incandescent b
 
 Shortly after our son's graduation came our 27th wedding anniversary, hence the large gold numerals.
 
+Version 2.2.0 includes the following:
+* Moved most of the main application code into the new class Player.
+* Added the initial fetching and subsequent tracking of the state of the lights.
+* Added random light sequences, along with a new mode random_flip that utilizes the new state tracking feature.
+
 Version 2.1.0 includes the following:
 * Command-line specification of the initial mode.
 * Command-line specification of a light pattern.  If specified, the application will set the lights accordingly and then exit.

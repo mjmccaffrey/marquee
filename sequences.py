@@ -1,5 +1,7 @@
 """Marquee Lighted Sign Project - sequences"""
 
+import random
+
 from signs import (
     LIGHT_COUNT,
     TOP_LIGHTS_LEFT_TO_RIGHT,
@@ -9,7 +11,7 @@ from signs import (
 )
 
 def opposite_pattern(pattern):
-    """Return pattern with the 'bits' flipped."""
+    """Return pattern with the states flipped."""
     return "".join("1" if p == "0" else "0" for p in str(pattern))
 
 def seq_all_on():
@@ -38,10 +40,8 @@ def seq_blink_alternate():
     yield next(seq_even_on())
     yield next(seq_even_off())
 
-def seq_build_rows(pattern=None, from_top=True):
+def seq_build_rows(pattern="1", from_top=True):
     """Successive rows on / off."""
-    if pattern is None:
-        pattern = "1"
     if from_top:
         rows = LIGHTS_BY_ROW
     else:  # from_bottom
@@ -58,7 +58,7 @@ def seq_build_rows_4(pattern, from_top):
     yield [opposite_pattern(pattern)] * LIGHT_COUNT
     seq = seq_build_rows(pattern, from_top)
     yield next(seq)  # Row 0
-    _ = next(seq)  # Row 1
+    _ = next(seq)    # Row 1
     yield next(seq)  # Row 2
     yield next(seq)  # Row 3
 
@@ -88,11 +88,9 @@ def seq_move_halves(from_left=True):
     for t, b in zip(top, bot):
         yield [int(y in {t, b}) for y in range(LIGHT_COUNT)]
 
-def seq_rotate(pattern=None, clockwise=True):
+def seq_rotate(pattern="1"+"0"*(LIGHT_COUNT-1), clockwise=True):
     """Rotate a pattern of lights counter/clockwise.
        Pattern is a string of length LIGHT_COUNT containing 0 and 1."""
-    if pattern is None:
-        pattern = [1] + [0] * (LIGHT_COUNT - 1)
     if clockwise:
         light_range = range(LIGHT_COUNT, 0, -1)
     else:  # counterclockwise
@@ -110,4 +108,47 @@ def seq_rotate_build(clockwise=True):
     lights = [0] * LIGHT_COUNT
     for l in light_range:
         lights[l] = 1
+        yield lights
+
+def seq_center_alternate():
+    """Alternate the top and bottom center lights."""
+    yield "0100000000"
+    yield "0000001000"
+
+@staticmethod
+def _random_light_gen():
+    """Generate random light indexes 
+       that never immediately repeats."""
+    new = -1
+    while True:
+        old = new
+        while new == old:
+            new = random.randrange(LIGHT_COUNT)
+        yield new
+
+def seq_random(pattern="1"):
+    """Random light on / off, never immediately repeating a light.
+       Starts with setting all lights to the opposite of pattern.
+       This sequence does not end on its own."""
+    opposite = [opposite_pattern(pattern)]
+    pattern = [pattern]
+    random_gen = _random_light_gen()
+    while True:
+        index = next(random_gen)
+        yield (
+            opposite * index +
+            pattern +
+            opposite * (LIGHT_COUNT - index - 1)
+        )
+
+def seq_random_flip(current_pattern):
+    """Random light on / off, never immediately repeating a light.
+       Starts with the lights in their current state, and flips
+       each selected light.
+       This sequence does not end on its own."""
+    lights = list(current_pattern)
+    random_gen = _random_light_gen()
+    while True:
+        index = next(random_gen)
+        lights[index] = opposite_pattern(lights[index])
         yield lights

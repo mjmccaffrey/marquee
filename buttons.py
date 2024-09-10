@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - button"""
+"""Marquee Lighted Sign Project - buttons"""
 
 import signal
 import threading
