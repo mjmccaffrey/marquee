@@ -1,0 +1,17 @@
+
+Update dimmer firmware
+
+
+Bugfix
+- Restore command-line examples
+
+Dimmer
+
+_ test switch inputs with analog relays
+_ order solid state relay board
+
+Feature:
+_ specify brightness on command line
+_ fade even & odd lights at opposite phases
+_ Each light hits peak in counter/clockwise order
+

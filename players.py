@@ -66,7 +66,7 @@ class Player:
         """Wrapper for Sign.set_lights."""
         return self._sign.set_lights(*args, **kwargs)
 
-    def execute(self, mode=None, pattern=None):
+    def execute(self, mode_index=None, light_pattern=None):
         """Effects the specified mode or pattern."""
         if pattern is not None:
             self._sign.set_lights(pattern)
