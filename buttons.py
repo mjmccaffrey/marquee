@@ -20,7 +20,8 @@ class Button:
 
     def __init__(self):
         """Create the (only) button instance."""
-        self._button = gpiozero.Button(pin=4, bounce_time=0.10)
+        self._button = gpiozero.Button(pin=4, bounce_time=0.10, 
+                                       hold_time=2.0)
         self.reset()
         signal.signal(
             signal.SIGUSR1,  # pylint: disable=no-member
@@ -33,15 +34,22 @@ class Button:
 
     def _button_pressed_ignore(self):
         """Callback for button press at undesired time."""
+        print("PRESSED IGNORE")
 
     def _button_pressed_act(self):
         """Callback for button press to change desired mode."""
         self.pressed_event.set()
         self._button.when_pressed = self._button_pressed_ignore
+        print("PRESSED ACTIVE")
+
+    def _button_held(self):
+        """ """
+        print("HELD")
 
     def reset(self):
         """Prepare for a valid button press."""
         self._button.when_pressed = self._button_pressed_act
+        self._button.when_held = self._button_held
         self.pressed_event = threading.Event()
 
     def virtual_button_pressed(self):

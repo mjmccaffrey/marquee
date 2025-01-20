@@ -8,6 +8,7 @@ from buttons import (  # pylint: disable=unused-import
     PhysicalButtonPressed,
     VirtualButtonPressed,
 )
+import dimmers
 import relayboards
 
 LIGHTS_BY_ROW = [
@@ -31,13 +32,27 @@ _LIGHT_TO_RELAY = {
     8:  7,
     9:  8,
 }
+
 LIGHT_COUNT = len(_LIGHT_TO_RELAY)
+_DIMMER_ADDRESSES = [
+    '192.168.51.111',
+    '192.168.51.112',
+    '192.168.51.113',
+    '192.168.51.114',
+    '192.168.51.115',
+]
 
 class Sign:
     """Supports the physical devices."""
 
     def __init__(self):
         """Prepare devices and initial state."""
+        self._dimmers = [
+            dimmers.Dimmer(address, id)
+            for address in _DIMMER_ADDRESSES
+            for id in range(2)
+        ]
+        assert len(self._dimmers) == LIGHT_COUNT
         self._relayboard = relayboards.RelayBoard(_LIGHT_TO_RELAY)
         self._button = buttons.Button()
         self._current_pattern = self._relayboard.get_state_of_devices()
@@ -54,7 +69,9 @@ class Sign:
             logging.exception(e)
 
     def do_sequence(
-            self, sequence, count=1, pace=2, stop=None, post_delay=None):
+            self, sequence, count=1, pace=2, stop=None, post_delay=None,
+            use_dimmers=False):
+
         """Execute sequence count times, with pace seconds in between.
            If stop is specified, end the sequence 
            just before the nth pattern.
@@ -62,17 +79,25 @@ class Sign:
         for _ in range(count):
             for i, lights in enumerate(sequence()):
                 if stop is not None and i == stop:
+                    print("BREAK")
                     break
-                self.set_lights(lights)
+                self.set_lights(lights, use_dimmers)
                 self.wait_for_interrupt(pace)
         if post_delay is not None:
             self.wait_for_interrupt(post_delay)
 
-    def set_lights(self, pattern):
+    def set_lights(self, pattern, use_dimmers=False):
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
-        self._relayboard.set_state_of_devices(pattern)
+        if use_dimmers:
+            for d, l in zip(dimmers.Dimmer.all_dimmers, pattern):  # !!!
+                if bool(int(l)):
+                    d.set_brightness(level=100, transition=0.5)
+                else:
+                    d.set_brightness(level=0, transition=2.0)
+        else:
+            self._relayboard.set_state_of_devices(pattern)
         self._current_pattern = ''.join(str(e) for e in pattern)
 
     @property
@@ -83,7 +108,7 @@ class Sign:
     def wait_for_interrupt(self, seconds):
         """Pause the thread until either the seconds have elapsed
            or the button has been pressed."""
-        if self._button.pressed_event.wait(seconds):
+        if self._button.pressed_event.wait(seconds):  # !!!!!!!!
             raise PhysicalButtonPressed
 
     def interrupt_reset(self):

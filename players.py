@@ -22,7 +22,8 @@ class Player:
         """Close devices."""
         self._sign.close()
 
-    def add_mode(self, index, name, function, simple=False, pace=2):
+    def add_mode(self, index, name, function, simple=False, pace=2, 
+                 use_dimmers=False):
         """Register the mode function, identified by index and name."""
         assert all(
             str(k) not in self.mode_id_to_index for k in (index, name)
@@ -31,7 +32,7 @@ class Player:
             k in self.modes for k in range(index)
             ), "Non-sequential mode index"
         if simple:
-            function = self._simple_mode(function, pace)
+            function = self._simple_mode(function, pace, use_dimmers)
         self.modes[index] = types.SimpleNamespace(
             name=name,
             function=function,
@@ -39,14 +40,14 @@ class Player:
         self.mode_id_to_index[str(index)] = index
         self.mode_id_to_index[name] = index
 
-    def _simple_mode(self, sequence, pace):
+    def _simple_mode(self, sequence, pace, use_dimmers):
         """Return closure to execute sequence indefinitely, 
            with pace seconds in between.
            Pace=None is an infinite pace, so in this case
            the sequence should have only 1 step."""
         def template():
             while True:
-                self.do_sequence(sequence, 1, pace)
+                self.do_sequence(sequence, 1, pace, use_dimmers=use_dimmers)
         return template
 
     @property
@@ -68,11 +69,11 @@ class Player:
 
     def execute(self, mode_index=None, light_pattern=None):
         """Effects the specified mode or pattern."""
-        if pattern is not None:
-            self._sign.set_lights(pattern)
+        if light_pattern is not None:
+            self._sign.set_lights(light_pattern)
             return
-        if mode is not None:
-            self.mode_current = mode
+        if mode_index is not None:
+            self.mode_current = mode_index
             while True:
                 try:
                     self.modes[self.mode_current].function()
@@ -85,7 +86,7 @@ class Player:
     def _indicate_mode_desired(self):
         """Show user what desired mode number is currently selected."""
         assert len(self.modes) <= signs.LIGHT_COUNT, \
-               "Cannot indicate this many modes"
+               "Cannot indicate this many modes"  # !!!!!!
         self._sign.do_sequence(
             seq_all_off, pace=0
         )

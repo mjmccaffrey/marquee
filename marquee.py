@@ -27,7 +27,8 @@ def register_modes(player):
         seq_blink_alternate, simple=True, pace=1
     )
     player.add_mode(7, "rotate",
-        lambda: seq_rotate("1100000000"), simple=True, pace=0.5
+        lambda: seq_rotate("1000000000"), simple=True, pace=0.75,  # !!!
+        use_dimmers=True,
     )
     player.add_mode(8, "random_flip",
         lambda: seq_random_flip(player.current_pattern),
@@ -43,9 +44,9 @@ def process_runtime_argument(player):
         return False
     arg = sys.argv[1]
     if player.is_valid_light_pattern(arg):
-        player_args = {"pattern": arg}
+        player_args = {"light_pattern": arg}
     elif arg in player.mode_id_to_index:
-        player_args = {"mode": player.mode_id_to_index[arg]}
+        player_args = {"mode_index": player.mode_id_to_index[arg]}
     else:
         return False
     return player_args
