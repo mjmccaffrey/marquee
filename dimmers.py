@@ -29,6 +29,7 @@ class Dimmer:
             additional=None,  # !!!
     ):
         """ """
+        print(locals())
         # !!!! Set and respond to timeout
         assert level is not None or offset is not None
         self.brightness = (
