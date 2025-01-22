@@ -40,7 +40,7 @@ class Dimmer:
             'id': self.id, 
             'brightness': self.brightness, 
             'transition_duration': transition or self.transition_default,
-        } | additional
+        } | (additional or {})
         requests.get(f'http://{self.ip_address}/rpc/Light.Set', params=params)
         if wait:
             print("WAIT")
