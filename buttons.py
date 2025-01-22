@@ -21,7 +21,7 @@ class Button:
     def __init__(self):
         """Create the (only) button instance."""
         self._button = gpiozero.Button(pin=4, bounce_time=0.10, 
-                                       hold_time=2.0)
+                                       hold_time=5.0)
         self.reset()
         signal.signal(
             signal.SIGUSR1,  # pylint: disable=no-member

@@ -63,6 +63,10 @@ class Player:
         """Wrapper for Sign.is_valid_light_pattern."""
         return self._sign.is_valid_light_pattern(*args, **kwargs)
 
+    def is_valid_brightness_pattern(self, *args, **kwargs):
+        """Wrapper for Sign.is_valid_brightness_pattern."""
+        return self._sign.is_valid_brightness_pattern(*args, **kwargs)
+
     def set_lights(self, *args, **kwargs):
         """Wrapper for Sign.set_lights."""
         return self._sign.set_lights(*args, **kwargs)

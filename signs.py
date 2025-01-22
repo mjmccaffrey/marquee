@@ -71,7 +71,6 @@ class Sign:
     def do_sequence(
             self, sequence, count=1, pace=2, stop=None, post_delay=None,
             use_dimmers=False):
-
         """Execute sequence count times, with pace seconds in between.
            If stop is specified, end the sequence 
            just before the nth pattern.
@@ -91,7 +90,7 @@ class Sign:
            Set _current_pattern, always as a string
            rather than a list."""
         if use_dimmers:
-            for d, l in zip(dimmers.Dimmer.all_dimmers, pattern):  # !!!
+            for d, l in zip(dimmers.Dimmer.all_dimmers, pattern):  # !!!  USE set_dimmers
                 if bool(int(l)):
                     d.set_brightness(level=100, transition=0.5)
                 else:
@@ -99,6 +98,14 @@ class Sign:
         else:
             self._relayboard.set_state_of_devices(pattern)
         self._current_pattern = ''.join(str(e) for e in pattern)
+
+    def set_dimmers(self, pattern):
+        """ """
+        for d, b in zip(
+            dimmers.Dimmer.all_dimmers, 
+            [int(p, 16) for p in pattern]
+            ):
+                d.set_brightness(level=b)
 
     @property
     def current_pattern(self):
@@ -119,4 +126,16 @@ class Sign:
     def is_valid_light_pattern(arg):
         """ Return True if arg is a valid light pattern, 
             otherwise False. """
-        return len(arg) == LIGHT_COUNT and all(e in {"0", "1"} for e in arg)
+        return (
+            len(arg) == LIGHT_COUNT and 
+            all(e in {"0", "1"} for e in arg)
+        )
+
+    @staticmethod
+    def is_valid_brightness_pattern(arg):
+        """ Return True if arg is a valid brightness pattern, 
+            otherwise False. """
+        return (
+            len(arg) == LIGHT_COUNT and 
+            all(e.upper() in "0123456789A" for e in arg)
+        )

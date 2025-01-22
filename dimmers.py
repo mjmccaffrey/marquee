@@ -15,7 +15,7 @@ class Dimmer:
         self.id = id
         self.all_dimmers.append(self)
         # self._get_state()
-        self.set_brightness(level=100)
+        self.set_brightness(level=100, additional={'output': 'true'}) # !!!
 
     def close(self):
         """Clean up."""
@@ -26,6 +26,7 @@ class Dimmer:
             offset=None,
             transition=None, 
             wait=False,
+            additional=None,  # !!!
     ):
         """ """
         # !!!! Set and respond to timeout
@@ -39,7 +40,7 @@ class Dimmer:
             'id': self.id, 
             'brightness': self.brightness, 
             'transition_duration': transition or self.transition_default,
-        }
+        } | additional
         requests.get(f'http://{self.ip_address}/rpc/Light.Set', params=params)
         if wait:
             print("WAIT")

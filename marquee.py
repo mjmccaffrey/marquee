@@ -40,13 +40,21 @@ def process_runtime_argument(player):
     """Validate the runtime argument.
        If a light pattern is specified, set the lights accordingly.
        Return False if the application should terminate, otherwise True."""
-    if len(sys.argv) != 2:
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
         return False
-    arg = sys.argv[1]
-    if player.is_valid_light_pattern(arg):
-        player_args = {"light_pattern": arg}
-    elif arg in player.mode_id_to_index:
-        player_args = {"mode_index": player.mode_id_to_index[arg]}
+    arg1 = sys.argv[1]
+    if player.is_valid_light_pattern(arg1):
+        player_args = {"light_pattern": arg1}
+        if len(sys.argv) == 3:
+            arg2 = sys.argv[2]
+            if player.is_valid_brightness_pattern(arg1):
+                player_args |=  {"brightness_pattern": arg2}
+            else:
+                return False
+        else:
+            player_args |= {"brightness_pattern": "AAAAAAAAAA"}
+    elif arg1 in player.mode_id_to_index:
+        player_args = {"mode_index": player.mode_id_to_index[arg1]}
     else:
         return False
     return player_args
