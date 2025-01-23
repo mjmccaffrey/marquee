@@ -4,17 +4,16 @@ import requests
 import time
 
 class Dimmer:
-    """Supports the Shelly ... ."""
+    """Supports the Shelly Pro Dimmer 2PM."""
 
-    all_dimmers = []
     transition_default = 0.5
 
     def __init__(self, ip_address, id):
         """Create the dimmer instance."""
         self.ip_address = ip_address
         self.id = id
-        self.all_dimmers.append(self)
-        # self._get_state()
+        # self._get_state() !!!
+        self.session = requests.Session()
         self.set_brightness(level=100, additional={'output': 'true'}) # !!!
 
     def close(self):
@@ -42,22 +41,11 @@ class Dimmer:
             'brightness': self.brightness, 
             'transition_duration': transition or self.transition_default,
         } | (additional or {})
-        requests.get(f'http://{self.ip_address}/rpc/Light.Set', params=params)
+        self.session.get(
+            f'http://{self.ip_address}/rpc/Light.Set', 
+            params=params,
+        )
         if wait:
             print("WAIT")
             time.sleep(transition_default)
 
-    @classmethod
-    def set_brightness_all(
-            cls, 
-            level=None, 
-            offset=None, 
-            transition=None, 
-            wait=False,
-    ):
-        """ """
-        return
-        for dimmer in [all_dimmers[0]]:
-            dimmer.set_brightness(level, offset, wait=False)
-        if wait:
-            time.sleep(transition_default)

@@ -6,7 +6,6 @@ from sequences import *
 def mode_rhythmic_demo(player):
     """Perform a rhythmic demonstration."""
     while True:
-        print("!!!!!")
         # !!!!!!!!! BREAK THIS UP INTO SUB-FUNCTIONS
 
         Dimmer.set_brightness_all(level=30, wait=True)

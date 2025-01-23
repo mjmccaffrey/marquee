@@ -37,9 +37,9 @@ def register_modes(player):
     player.add_mode(9, "demo", lambda: mode_rhythmic_demo(player))
 
 def process_runtime_argument(player):
-    """Validate the runtime argument.
-       If a light pattern is specified, set the lights accordingly.
-       Return False if the application should terminate, otherwise True."""
+    """Validate and interpret the runtime arguments.
+       Return dict of parameters if the arguments are valid, 
+       otherwise False."""
     if len(sys.argv) < 2 or len(sys.argv) > 3:
         return False
     arg1 = sys.argv[1]

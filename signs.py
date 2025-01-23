@@ -90,7 +90,7 @@ class Sign:
            Set _current_pattern, always as a string
            rather than a list."""
         if use_dimmers:
-            for d, l in zip(dimmers.Dimmer.all_dimmers, pattern):  # !!!  USE set_dimmers
+            for d, l in zip(self._dimmers, pattern):  # !!!  USE set_dimmers
                 if bool(int(l)):
                     d.set_brightness(level=100, transition=0.5)
                 else:
@@ -101,11 +101,8 @@ class Sign:
 
     def set_dimmers(self, pattern):
         """ """
-        for d, b in zip(
-            dimmers.Dimmer.all_dimmers, 
-            [int(p, 16) for p in pattern]
-            ):
-                d.set_brightness(level=b)
+        for d, b in zip(self._dimmers, [int(p, 16) * 10 for p in pattern]):
+            d.set_brightness(level=b)
 
     @property
     def current_pattern(self):

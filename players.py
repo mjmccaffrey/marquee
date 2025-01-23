@@ -72,7 +72,7 @@ class Player:
         return self._sign.set_lights(*args, **kwargs)
 
     def execute(self, mode_index=None, light_pattern=None, brightness_pattern=None):
-        """Effects the specified mode or pattern."""
+        """Effects the specified mode or pattern(s)."""
         if light_pattern is not None:
             self._sign.set_lights(light_pattern)
             self._sign.set_dimmers(brightness_pattern)

@@ -1,5 +1,5 @@
 
-. Update dimmer firmware
+Create CALIBRATE method
 
 Create requirements.txt
 
@@ -7,27 +7,8 @@ Bugfix
 - Restore command-line examples
 
 Feature:
-_ specify brightness on command line: 0123456789A
+_ specify brightness on command line: 0123456789A - without light pattern???
 _ fade even & odd lights at opposite phases
 _ Each light hits peak in counter/clockwise order
 _ Indicate more than 10 modes
-
-
-
-
-    def _brightness_pattern_to_percentages(pattern):
-        """ """
-
-        try:
-            return [int(p, 16) for p in pattern]
-        
-
-        result = ""
-        for b in pattern.upcase():
-            if b in "0123456789":
-                result += int(b) * 10
-            elif b == "A":
-                result += "100"
-            else:
-                raise ValueError(b)
-                
+_ Long press button for use_dimmers mode
