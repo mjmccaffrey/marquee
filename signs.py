@@ -68,16 +68,16 @@ class Sign:
         except Exception as e:
             logging.exception(e)
 
-    def set_lights(self, pattern):
+    def set_lights(self, pattern, use_dimmers, transition_on, transition_off):
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
         if self.use_dimmers:
             for d, l in zip(self._dimmers, pattern):  # !!!  USE set_dimmers
                 if bool(int(l)):
-                    d.set_brightness(level=100, transition=0.5)
+                    d.set_brightness(level=100, transition=transition_on)
                 else:
-                    d.set_brightness(level=0, transition=2.0)
+                    d.set_brightness(level=0, transition=transition_off)
         else:
             self._relayboard.set_state_of_devices(pattern)
         self._current_pattern = ''.join(str(e) for e in pattern)
