@@ -60,7 +60,7 @@ class Player:
             self, 
             sequence, count=1, pace=2, 
             stop=None, post_delay=None,
-            dimmers_not_relays=False,
+            use_dimmers=False,
             transition_on=None, transition_off=None,
         ):
         """Execute sequence count times, with pace seconds in between.
@@ -71,7 +71,9 @@ class Player:
             for i, lights in enumerate(sequence()):
                 if stop is not None and i == stop:
                     break
-                self._sign.set_lights(lights)
+                self._sign.set_lights(
+                    lights, use_dimmers, transition_on, transition_off,
+                )
                 self._sign.wait_for_interrupt(pace)
         if post_delay is not None:
             self.sign.wait_for_interrupt(post_delay)
