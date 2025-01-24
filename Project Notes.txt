@@ -1,4 +1,10 @@
 
+Roll Back buttons.py
+roll back do_simple kwargs
+soilidify requests / session
+add logging to show how / when failure occurs
+
+Split Relayboard and Dimmers into ABCs and model-specific classes
 Create CALIBRATE method
 
 Create requirements.txt

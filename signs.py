@@ -68,28 +68,11 @@ class Sign:
         except Exception as e:
             logging.exception(e)
 
-    def do_sequence(
-            self, sequence, count=1, pace=2, stop=None, post_delay=None,
-            use_dimmers=False):
-        """Execute sequence count times, with pace seconds in between.
-           If stop is specified, end the sequence 
-           just before the nth pattern.
-           Pause for post_delay seconds before exiting."""
-        for _ in range(count):
-            for i, lights in enumerate(sequence()):
-                if stop is not None and i == stop:
-                    print("BREAK")
-                    break
-                self.set_lights(lights, use_dimmers)
-                self.wait_for_interrupt(pace)
-        if post_delay is not None:
-            self.wait_for_interrupt(post_delay)
-
-    def set_lights(self, pattern, use_dimmers=False):
+    def set_lights(self, pattern):
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
-        if use_dimmers:
+        if self.use_dimmers:
             for d, l in zip(self._dimmers, pattern):  # !!!  USE set_dimmers
                 if bool(int(l)):
                     d.set_brightness(level=100, transition=0.5)
@@ -106,33 +89,15 @@ class Sign:
 
     @property
     def current_pattern(self):
-        """Return the currenly active light pattern."""
+        """Return the active light pattern."""
         return self._current_pattern
 
     def wait_for_interrupt(self, seconds):
         """Pause the thread until either the seconds have elapsed
            or the button has been pressed."""
-        if self._button.pressed_event.wait(seconds):  # !!!!!!!!
+        if self._button.pressed_event.wait(seconds):
             raise PhysicalButtonPressed
 
     def interrupt_reset(self):
         """Prepare for a button press."""
         self._button.reset()
-
-    @staticmethod
-    def is_valid_light_pattern(arg):
-        """ Return True if arg is a valid light pattern, 
-            otherwise False. """
-        return (
-            len(arg) == LIGHT_COUNT and 
-            all(e in {"0", "1"} for e in arg)
-        )
-
-    @staticmethod
-    def is_valid_brightness_pattern(arg):
-        """ Return True if arg is a valid brightness pattern, 
-            otherwise False. """
-        return (
-            len(arg) == LIGHT_COUNT and 
-            all(e.upper() in "0123456789A" for e in arg)
-        )

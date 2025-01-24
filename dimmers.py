@@ -25,11 +25,8 @@ class Dimmer:
             offset=None,
             transition=None, 
             wait=False,
-            additional=None,  # !!!
     ):
         """ """
-        print(locals())
-        # !!!! Set and respond to timeout
         assert level is not None or offset is not None
         self.brightness = (
             level 
@@ -40,12 +37,12 @@ class Dimmer:
             'id': self.id, 
             'brightness': self.brightness, 
             'transition_duration': transition or self.transition_default,
-        } | (additional or {})
+        }
         self.session.get(
             f'http://{self.ip_address}/rpc/Light.Set', 
             params=params,
+            timeout=1.0,
         )
         if wait:
             print("WAIT")
-            time.sleep(transition_default)
-
+            time.sleep(self.transition_default)

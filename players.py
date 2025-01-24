@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - players"""
 
+import contextlib
 import time
 import types
 
@@ -22,9 +23,11 @@ class Player:
         """Close devices."""
         self._sign.close()
 
-    def add_mode(self, index, name, function, simple=False, pace=2, 
-                 use_dimmers=False):
-        """Register the mode function, identified by index and name."""
+    def add_mode(
+            self, index, name, function, 
+            simple=False, pace=2, context=contextlib.nullcontext,
+        ):
+        """Register the mode, identified by index and name."""
         assert all(
             str(k) not in self.mode_id_to_index for k in (index, name)
             ), "Duplicate mode index or name"
@@ -32,7 +35,9 @@ class Player:
             k in self.modes for k in range(index)
             ), "Non-sequential mode index"
         if simple:
-            function = self._simple_mode(function, pace, use_dimmers)
+            function = self._simple_mode(
+                function=function, pace=pace,
+            )
         self.modes[index] = types.SimpleNamespace(
             name=name,
             function=function,
@@ -40,36 +45,35 @@ class Player:
         self.mode_id_to_index[str(index)] = index
         self.mode_id_to_index[name] = index
 
-    def _simple_mode(self, sequence, pace, use_dimmers):
-        """Return closure to execute sequence indefinitely, 
+    def _simple_mode(self, sequence, **kwargs):
+        """Return closure to execute sequence indefinitely.
            with pace seconds in between.
-           Pace=None is an infinite pace, so in this case
+           !!! Pace=None is an infinite pace, so in this case
            the sequence should have only 1 step."""
         def template():
             while True:
-                self.do_sequence(sequence, 1, pace, use_dimmers=use_dimmers)
+                self.do_sequence(sequence, **kwargs)
         return template
 
-    @property
-    def current_pattern(self):
-        """Wrapper for Sign.current_pattern."""
-        return self._sign.current_pattern
-
-    def do_sequence(self, *args, **kwargs):
-        """Wrapper for Sign.do_sequence."""
-        return self._sign.do_sequence(*args, **kwargs)
-
-    def is_valid_light_pattern(self, *args, **kwargs):
-        """Wrapper for Sign.is_valid_light_pattern."""
-        return self._sign.is_valid_light_pattern(*args, **kwargs)
-
-    def is_valid_brightness_pattern(self, *args, **kwargs):
-        """Wrapper for Sign.is_valid_brightness_pattern."""
-        return self._sign.is_valid_brightness_pattern(*args, **kwargs)
-
-    def set_lights(self, *args, **kwargs):
-        """Wrapper for Sign.set_lights."""
-        return self._sign.set_lights(*args, **kwargs)
+    def do_sequence(
+            self, 
+            sequence, count=1, pace=2, 
+            stop=None, post_delay=None,
+            dimmers_not_relays=False,
+            transition_on=None, transition_off=None,
+        ):
+        """Execute sequence count times, with pace seconds in between.
+           If stop is specified, end the sequence 
+           just before the nth pattern.
+           Pause for post_delay seconds before exiting."""
+        for _ in range(count):
+            for i, lights in enumerate(sequence()):
+                if stop is not None and i == stop:
+                    break
+                self.sign.set_lights(lights)
+                self.sign.wait_for_interrupt(pace)
+        if post_delay is not None:
+            self.sign.wait_for_interrupt(post_delay)
 
     def execute(self, mode_index=None, light_pattern=None, brightness_pattern=None):
         """Effects the specified mode or pattern(s)."""
