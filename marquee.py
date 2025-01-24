@@ -3,7 +3,6 @@
 import sys
 
 from modes import *
-from dimmers import DimmersNotRelays  # !?!?!?!?!?
 import players
 from sequences import *
 
@@ -30,7 +29,6 @@ def register_modes(player):
     )
     player.add_mode(7, "rotate",
         lambda: seq_rotate("1000000000"), simple=True, pace=0.75,
-        context=DimmersNotRelays()
     )
     player.add_mode(8, "random_flip",
         lambda: seq_random_flip(player.sign.current_pattern),
