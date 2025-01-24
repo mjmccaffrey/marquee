@@ -71,8 +71,8 @@ class Player:
             for i, lights in enumerate(sequence()):
                 if stop is not None and i == stop:
                     break
-                self.sign.set_lights(lights)
-                self.sign.wait_for_interrupt(pace)
+                self._sign.set_lights(lights)
+                self._sign.wait_for_interrupt(pace)
         if post_delay is not None:
             self.sign.wait_for_interrupt(post_delay)
 
