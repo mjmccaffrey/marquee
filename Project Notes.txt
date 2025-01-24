@@ -7,6 +7,8 @@ add logging to show how / when failure occurs
 Split Relayboard and Dimmers into ABCs and model-specific classes
 Create CALIBRATE method
 
+Quicker command-line fail by doing less before checking sys.args
+
 Create requirements.txt
 
 Bugfix

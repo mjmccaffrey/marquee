@@ -25,7 +25,8 @@ class Player:
 
     def add_mode(
             self, index, name, function, 
-            simple=False, pace=2, context=contextlib.nullcontext,
+            simple=False, pace=2,
+            use_dimmers=False, transition_on=None, transition_off=None,
         ):
         """Register the mode, identified by index and name."""
         assert all(
