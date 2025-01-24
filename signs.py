@@ -72,7 +72,7 @@ class Sign:
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
-        if self.use_dimmers:
+        if use_dimmers:
             for d, l in zip(self._dimmers, pattern):  # !!!  USE set_dimmers
                 if bool(int(l)):
                     d.set_brightness(level=100, transition=transition_on)
