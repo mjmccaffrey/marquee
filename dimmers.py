@@ -25,6 +25,7 @@ class Dimmer:
             offset=None,
             transition=None, 
             wait=False,
+            additional=None,
     ):
         """ """
         assert level is not None or offset is not None
@@ -37,7 +38,7 @@ class Dimmer:
             'id': self.id, 
             'brightness': self.brightness, 
             'transition_duration': transition or self.transition_default,
-        }
+        } | (additional or {})
         self.session.get(
             f'http://{self.ip_address}/rpc/Light.Set', 
             params=params,
