@@ -48,8 +48,8 @@ def register_modes(player):
         simple=True, pace=2.0,
         dimmer=DimmerParams(
             override_relays=True,
-            transition_on=1.0,
-            transition_off=3.0,
+            # transition_on=1.0,
+            # transition_off=3.0,
         )
     )
 
