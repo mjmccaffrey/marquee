@@ -72,6 +72,7 @@ class Player:
             self.do_sequence(
                 seq_all_on, pace=0
             )
+        print("AFTER")
         for _ in range(count):
             for i, lights in enumerate(sequence()):
                 if stop is not None and i == stop:
