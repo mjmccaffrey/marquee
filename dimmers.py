@@ -10,6 +10,7 @@ class Dimmer:
 
     def __init__(self, ip_address, id):
         """Create the dimmer instance."""
+        print(time.time())
         self.ip_address = ip_address
         self.id = id
         # self._get_state() !!!
@@ -39,12 +40,14 @@ class Dimmer:
             'brightness': self.brightness, 
             'transition_duration': transition or self.transition_default,
         } | (additional or {})
-        print(params)
-        self.session.get(
-            f'http://{self.ip_address}/rpc/Light.Set', 
-            params=params,
-            timeout=1.0,
-        )
+        try:
+            self.session.get(
+                f'http://{self.ip_address}/rpc/Light.Set', 
+                params=params,
+                timeout=1.0,
+            )
+        except requests.exceptions.ConnectTimeout:
+            print(time.time(), self.ip_address, self.id)
         if wait:
             print("WAIT")
             time.sleep(self.transition_default)
