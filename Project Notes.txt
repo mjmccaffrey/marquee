@@ -9,6 +9,8 @@ Create CALIBRATE method
 
 Quicker command-line fail by doing less before checking sys.args
 
+Maybe timeouts are occurring when the previous command hasn't finished executing
+
 Create requirements.txt
 
 rythmic_demo:

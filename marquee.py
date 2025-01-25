@@ -2,6 +2,7 @@
 
 import sys
 
+from dimmers import DimmerParams
 from modes import *
 import players
 from sequences import *
@@ -36,12 +37,20 @@ def register_modes(player):
     player.add_mode(9, "demo", lambda: mode_rhythmic_demo(player))
     player.add_mode(10, "blink_alternate_fade",
         seq_blink_alternate, simple=True, pace=4, 
-        use_dimmers=True, transition_on=1.0, transition_off=3.0,
+        dimmers=DimmerParams(
+            override_relays=True,
+            transition_on=1.0,
+            transition_off=3.0,
+        )
     )
     player.add_mode(11, "random_flip_fade",
         lambda: seq_random_flip(player._sign.current_pattern),
         simple=True, pace=2.0,
-        use_dimmers=True, transition_on=1.0, transition_off=3.0,
+        dimmers=DimmerParams(
+            override_relays=True,
+            transition_on=1.0,
+            transition_off=3.0,
+        )
     )
 
 def is_valid_light_pattern(arg):

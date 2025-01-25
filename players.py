@@ -26,7 +26,7 @@ class Player:
     def add_mode(
             self, index, name, function, 
             simple=False, pace=2,
-            use_dimmers=False, transition_on=None, transition_off=None,
+            dimmer=None,
         ):
         """Register the mode, identified by index and name."""
         assert all(
@@ -39,9 +39,7 @@ class Player:
             function = self._simple_mode(
                 sequence=function, 
                 pace=pace,
-                use_dimmers=use_dimmers, 
-                transition_on=transition_on,
-                transition_off=transition_off,
+                dimmer=dimmer, 
             )
         self.modes[index] = types.SimpleNamespace(
             name=name,
@@ -64,14 +62,13 @@ class Player:
             self, 
             sequence, count=1, pace=2, 
             stop=None, post_delay=None,
-            use_dimmers=False,
-            transition_on=None, transition_off=None,
+            dimmer=None,
         ):
         """Execute sequence count times, with pace seconds in between.
            If stop is specified, end the sequence 
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
-        if use_dimmers:
+        if dimmer is not None and dimmer.override_relays:
             self.do_sequence(
                 seq_all_on, pace=0
             )
@@ -80,7 +77,7 @@ class Player:
                 if stop is not None and i == stop:
                     break
                 self._sign.set_lights(
-                    lights, use_dimmers, transition_on, transition_off,
+                    lights, dimmer,
                 )
                 self._sign.wait_for_interrupt(pace)
         if post_delay is not None:

@@ -1,7 +1,19 @@
 """Marquee Lighted Sign Project - dimmers"""
 
+from dataclasses import dataclass
 import requests
 import time
+
+TRANSITION_MINIMUM = 0.5
+
+@dataclass
+class DimmerParams:
+    """"""
+    override_relays: bool = False
+    level_on: float = 100.0
+    level_off: float = 0.0
+    transition_on: float = TRANSITION_MINIMUM
+    transition_off: float = TRANSITION_MINIMUM
 
 class Dimmer:
     """Supports the Shelly Pro Dimmer 2PM."""

@@ -3,7 +3,7 @@
 import signal
 import threading
 
-import gpiozero
+import gpiozero # type: ignore
 
 class ButtonPressed(Exception):
     """Button pressed exception; not an error."""
