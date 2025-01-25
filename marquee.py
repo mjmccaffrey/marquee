@@ -30,7 +30,7 @@ def register_modes(player):
         lambda: seq_rotate("1100000000"), simple=True, pace=0.5
     )
     player.add_mode(8, "random_flip",
-        lambda: seq_random_flip(player.sign.current_pattern),
+        lambda: seq_random_flip(player._sign.current_pattern),
         simple=True, pace=0.5
     )
     player.add_mode(9, "demo", lambda: mode_rhythmic_demo(player))
@@ -39,7 +39,7 @@ def register_modes(player):
         use_dimmers=True, transition_on=1.0, transition_off=3.0,
     )
     player.add_mode(11, "random_flip_fade",
-        lambda: seq_random_flip(player.sign.current_pattern),
+        lambda: seq_random_flip(player._sign.current_pattern),
         simple=True, pace=2.0,
         use_dimmers=True, transition_on=1.0, transition_off=3.0,
     )

@@ -109,9 +109,10 @@ class Player:
             seq_all_off, pace=0
         )
         time.sleep(0.6)
-        self.do_sequence(
-            seq_rotate_build, pace=0.2, stop=self.mode_desired  # !!!
-        )
+        for _ in range(self.mode_desired // 10):
+            self.do_sequence(
+                seq_rotate_build, pace=0.2, stop=self.mode_desired % 10,
+            )
 
     def _mode_selection(self):
         """User presses the button to select 
