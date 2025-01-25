@@ -50,6 +50,8 @@ def register_modes(player):
             override_relays=True,
             # transition_on=1.0,
             # transition_off=3.0,
+            level_on=80,
+            level_off=10,
         )
     )
 
