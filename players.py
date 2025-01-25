@@ -81,7 +81,9 @@ class Player:
                 self._sign.set_lights(
                     lights, dimmer,
                 )
+                print(pace)
                 self._sign.wait_for_interrupt(pace)
+                print("...")
         if post_delay is not None:
             self.sign.wait_for_interrupt(post_delay)
 
