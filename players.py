@@ -37,7 +37,11 @@ class Player:
             ), "Non-sequential mode index"
         if simple:
             function = self._simple_mode(
-                sequence=function, pace=pace,
+                sequence=function, 
+                pace=pace,
+                use_dimmers=use_dimmers, 
+                transition_on=transition_on,
+                transition_off=transition_off,
             )
         self.modes[index] = types.SimpleNamespace(
             name=name,
