@@ -10,8 +10,8 @@ TRANSITION_MINIMUM = 0.5
 class DimmerParams:
     """"""
     override_relays: bool = False
-    level_on: float = 100.0
-    level_off: float = 0.0
+    level_on: int = 100
+    level_off: int = 0
     transition_on: float = TRANSITION_MINIMUM
     transition_off: float = TRANSITION_MINIMUM
 

@@ -1,6 +1,5 @@
 """Marquee Lighted Sign Project - players"""
 
-import contextlib
 import time
 import types
 
