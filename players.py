@@ -4,7 +4,7 @@ import contextlib
 import time
 import types
 
-from sequences import seq_all_off, seq_rotate_build
+from sequences import seq_all_off, seq_all_on, seq_rotate_build
 import signs
 
 class Player:
