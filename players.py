@@ -68,6 +68,7 @@ class Player:
            If stop is specified, end the sequence 
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
+        print(locals())
         if dimmer is not None and dimmer.override_relays:
             self.do_sequence(
                 seq_all_on, pace=0
