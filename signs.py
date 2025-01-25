@@ -74,7 +74,6 @@ class Sign:
            Set _current_pattern, always as a string
            rather than a list."""
         if dimmer is not None and dimmer.override_relays:
-            print(dimmer)
             for d, l in zip(self._dimmers, pattern):  # !!!  USE set_dimmers
                 if bool(int(l)):
                     d.set_brightness(
