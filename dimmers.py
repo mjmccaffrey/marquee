@@ -54,11 +54,12 @@ class Dimmer:
         } | (additional or {})
         print(params)
         try:
-            self.session.get(
+            r = self.session.get(
                 f'http://{self.ip_address}/rpc/Light.Set', 
                 params=params,
                 timeout=1.0,
             )
+            print(r)
         except requests.exceptions.ConnectTimeout:
             print(time.time(), self.ip_address, self.id)
         if wait:
