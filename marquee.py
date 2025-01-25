@@ -37,7 +37,7 @@ def register_modes(player):
     player.add_mode(9, "demo", lambda: mode_rhythmic_demo(player))
     player.add_mode(10, "blink_alternate_fade",
         seq_blink_alternate, simple=True, pace=4, 
-        dimmers=DimmerParams(
+        dimmer=DimmerParams(
             override_relays=True,
             transition_on=1.0,
             transition_off=3.0,
@@ -46,7 +46,7 @@ def register_modes(player):
     player.add_mode(11, "random_flip_fade",
         lambda: seq_random_flip(player._sign.current_pattern),
         simple=True, pace=2.0,
-        dimmers=DimmerParams(
+        dimmer=DimmerParams(
             override_relays=True,
             transition_on=1.0,
             transition_off=3.0,
