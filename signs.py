@@ -68,7 +68,8 @@ class Sign:
         except Exception as e:
             logging.exception(e)
 
-    def set_lights(self, pattern, use_dimmers, transition_on, transition_off):
+    def set_lights(self, pattern, 
+                   use_dimmers=False, transition_on=None, transition_off=None):
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
