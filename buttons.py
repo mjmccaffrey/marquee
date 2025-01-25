@@ -36,6 +36,7 @@ class Button:
 
     def _button_pressed_act(self):
         """Callback for button press to change desired mode."""
+        print("PRESSED")
         self.pressed_event.set()
         self._button.when_pressed = self._button_pressed_ignore
 
