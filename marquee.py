@@ -24,17 +24,25 @@ def register_modes(player):
     player.add_mode(4, "all_off", seq_all_off, simple=True)
     player.add_mode(5, "blink_all", seq_blink_all, simple=True, pace=1)
     player.add_mode(6, "blink_alternate",
-        seq_blink_alternate, simple=True, pace=4, 
-        use_dimmers=True, transition_on=1.0, transition_off=3.0,
+        seq_blink_alternate, simple=True, pace=1, 
     )
     player.add_mode(7, "rotate",
-        lambda: seq_rotate("1000000000"), simple=True, pace=0.75,
+        lambda: seq_rotate("1100000000"), simple=True, pace=0.5
     )
     player.add_mode(8, "random_flip",
         lambda: seq_random_flip(player.sign.current_pattern),
         simple=True, pace=0.5
     )
     player.add_mode(9, "demo", lambda: mode_rhythmic_demo(player))
+    player.add_mode(10, "blink_alternate_fade",
+        seq_blink_alternate, simple=True, pace=4, 
+        use_dimmers=True, transition_on=1.0, transition_off=3.0,
+    )
+    player.add_mode(11, "random_flip_fade",
+        lambda: seq_random_flip(player.sign.current_pattern),
+        simple=True, pace=2.0,
+        use_dimmers=True, transition_on=1.0, transition_off=3.0,
+    )
 
 def is_valid_light_pattern(arg):
     """ Return True if arg is a valid light pattern, 

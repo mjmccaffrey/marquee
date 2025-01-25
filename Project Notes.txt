@@ -11,6 +11,10 @@ Quicker command-line fail by doing less before checking sys.args
 
 Create requirements.txt
 
+rythmic_demo:
+add extra 6 relays
+replace blah section with fading w/ basic beat
+
 Bugfix
 - Restore command-line examples
 

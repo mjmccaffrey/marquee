@@ -71,6 +71,10 @@ class Player:
            If stop is specified, end the sequence 
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
+        if use_dimmers:
+            self.do_sequence(
+                seq_all_on, pace=0
+            )
         for _ in range(count):
             for i, lights in enumerate(sequence()):
                 if stop is not None and i == stop:
@@ -101,14 +105,12 @@ class Player:
 
     def _indicate_mode_desired(self):
         """Show user what desired mode number is currently selected."""
-        assert len(self.modes) <= signs.LIGHT_COUNT, \
-               "Cannot indicate this many modes"  # !!!!!!
-        self._sign.do_sequence(
+        self.do_sequence(
             seq_all_off, pace=0
         )
         time.sleep(0.6)
-        self._sign.do_sequence(
-            seq_rotate_build, pace=0.2, stop=self.mode_desired
+        self.do_sequence(
+            seq_rotate_build, pace=0.2, stop=self.mode_desired  # !!!
         )
 
     def _mode_selection(self):
