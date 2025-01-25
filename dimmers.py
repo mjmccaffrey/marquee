@@ -52,6 +52,7 @@ class Dimmer:
             'brightness': self.brightness, 
             'transition_duration': transition or self.transition_default,
         } | (additional or {})
+        print(params)
         try:
             self.session.get(
                 f'http://{self.ip_address}/rpc/Light.Set', 
