@@ -1,8 +1,11 @@
 """Marquee Lighted Sign Project - dimmers"""
 
+import asyncio
 from dataclasses import dataclass
 import requests
 import time
+
+import aiohttp
 
 TRANSITION_MINIMUM = 0.5
 
@@ -32,7 +35,7 @@ class Dimmer:
     def close(self):
         """Clean up."""
 
-    def set_brightness(
+    async def set_brightness(
             self, 
             level=None, 
             offset=None,
@@ -52,14 +55,15 @@ class Dimmer:
             'brightness': self.brightness, 
             'transition_duration': transition or self.transition_default,
         } | (additional or {})
-        try:
-            r = self.session.get(
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
                 f'http://{self.ip_address}/rpc/Light.Set', 
                 params=params,
                 timeout=1.0,
-            )
-        except requests.exceptions.ConnectTimeout:
-            print(time.time(), self.ip_address, self.id)
+            ) as response:
+                print(response.status)
+                html = await response.text()
+                print(html)
         if wait:
             print("WAIT")
             time.sleep(self.transition_default)

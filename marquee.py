@@ -63,7 +63,7 @@ def register_modes(player):
             level_off=0,
         )
     )
-
+    
 def is_valid_light_pattern(arg):
     """ Return True if arg is a valid light pattern, 
         otherwise False. """
