@@ -54,6 +54,15 @@ def register_modes(player):
             level_off=10,
         )
     )
+    player.add_mode(5, "blink_all", seq_blink_all, simple=True, pace=1,
+        dimmer=DimmerParams(
+            override_relays=True,
+            transition_on=0.5,
+            transition_off=0.5,
+            level_on=100,
+            level_off=0,
+        )
+    )
 
 def is_valid_light_pattern(arg):
     """ Return True if arg is a valid light pattern, 

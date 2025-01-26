@@ -1,6 +1,11 @@
 
-Roll Back buttons.py
-roll back do_simple kwargs
+
+"Transition time (in seconds) - time to change from 0% to 100% of brightness."
+ - can it be shorter than 0.5 if transition is 30% - 80% ?
+ - what is max time?
+
+"'transition_duration': should be greater/equal than 0.500000 and less/equal than 10800.000000"
+
 soilidify requests / session
 add logging to show how / when failure occurs
 
