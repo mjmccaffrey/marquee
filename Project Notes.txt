@@ -1,4 +1,6 @@
 
+why long pause before dimmers are init'ed?
+
 ASYNC the set commands
 
 "Transition time (in seconds) - time to change from 0% to 100% of brightness."
