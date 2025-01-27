@@ -60,7 +60,6 @@ def register_modes(player):
             transition_on=0.5,
             transition_off=0.5,
             level_on=100,
-            level_off=0,
         )
     )
 

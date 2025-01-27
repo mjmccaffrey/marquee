@@ -4,10 +4,12 @@ import asyncio
 from dataclasses import dataclass
 import requests
 import time
+import types
 
 import aiohttp
 
 TRANSITION_MINIMUM = 0.5
+TRANSITION_MAXIMUM = 10800.0
 
 @dataclass
 class DimmerParams:
@@ -35,7 +37,7 @@ class Dimmer:
     def close(self):
         """Clean up."""
 
-    async def set_brightness(
+    def set_brightness(
             self, 
             level=None, 
             offset=None,
@@ -55,15 +57,46 @@ class Dimmer:
             'brightness': self.brightness, 
             'transition_duration': transition or self.transition_default,
         } | (additional or {})
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
+        try:
+            r = self.session.get(
                 f'http://{self.ip_address}/rpc/Light.Set', 
                 params=params,
                 timeout=1.0,
-            ) as response:
-                print(response.status)
-                html = await response.text()
-                print(html)
+            )
+        except requests.exceptions.ConnectTimeout:
+            print(time.time(), self.ip_address, self.id)
         if wait:
             print("WAIT")
             time.sleep(self.transition_default)
+
+    def stage_set_command(
+        self, 
+        level=None, 
+        offset=None,
+        transition=None, 
+        on=None,
+    ):
+        """ RETURNS COLLECTION THAT CALLER WILL ADD TO ITERABLE """
+        if level:
+            brightness = level 
+        elif offset:
+            brightness = self.brightness + offset
+        else:
+            brightness = None
+        params = (
+            ({'id': self.id}) |
+            ({'brightness': brightness} if brightness else {})
+            ({'transition_duration': transition or self.transition_default})
+        )
+        return types.SimpleNamespace(
+            dimmer=self,
+            url=f'http://{self.ip_address}/rpc/Light.Set',
+            params=params,
+        )
+
+    @classmethod
+    def execute_multiple_commands(cls, commands):
+        """"""
+        # async etc.
+        # set each dimmer's brightness if needed'
+

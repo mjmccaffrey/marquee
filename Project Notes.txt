@@ -35,11 +35,13 @@ _ Each light hits peak in counter/clockwise order
 _ Indicate more than 10 modes
 _ Long press button for use_dimmers mode
 
-        try:
-            r = self.session.get(
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
                 f'http://{self.ip_address}/rpc/Light.Set', 
                 params=params,
                 timeout=1.0,
-            )
-        except requests.exceptions.ConnectTimeout:
-            print(time.time(), self.ip_address, self.id)
+            ) as response:
+                print(response.status)
+                html = await response.text()
+                print(html)
