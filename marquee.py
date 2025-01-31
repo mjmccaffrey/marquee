@@ -2,7 +2,7 @@
 
 import sys
 
-from dimmers import DimmerParams
+from dimmers import RelayOverride
 from modes import *
 import players
 from sequences import *
@@ -37,8 +37,7 @@ def register_modes(player):
     player.add_mode(9, "demo", lambda: mode_rhythmic_demo(player))
     player.add_mode(10, "blink_alternate_fade",
         seq_blink_alternate, simple=True, pace=4, 
-        dimmer=DimmerParams(
-            override_relays=True,
+        dimmer=RelayOverride(
             transition_on=1.0,
             transition_off=3.0,
         )
@@ -46,8 +45,7 @@ def register_modes(player):
     player.add_mode(11, "random_flip_fade",
         lambda: seq_random_flip(player._sign.current_pattern),
         simple=True, pace=2.0,
-        dimmer=DimmerParams(
-            override_relays=True,
+        dimmer=RelayOverride(
             # transition_on=1.0,
             # transition_off=3.0,
             level_on=80,
@@ -55,16 +53,14 @@ def register_modes(player):
         )
     )
     player.add_mode(12, "blink_all_fade", seq_blink_all, simple=True, pace=1,
-        dimmer=DimmerParams(
-            override_relays=True,
+        dimmer=RelayOverride(
             transition_on=0.5,
             transition_off=0.5,
             level_on=100,
         )
     )
     player.add_mode(13, "blink_all_fade_fast", seq_blink_all, simple=True, pace=0.5,
-        dimmer=DimmerParams(
-            override_relays=True,
+        dimmer=RelayOverride(
             transition_on=0.5,
             transition_off=0.5,
         )

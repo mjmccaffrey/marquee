@@ -69,19 +69,19 @@ class Sign:
             logging.exception(e)
 
     def set_lights(self, pattern, 
-                   dimmer=None):
+                   relay_override=None):
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
-        if dimmer is not None and dimmer.override_relays:
+        if dimmer is not None:
             for d, l in zip(self._dimmers, pattern):  # !!!  USE set_dimmers
                 if bool(int(l)):
-                    d.set_brightness(
+                    d.set(
                         level=dimmer.level_on, 
                         transition=dimmer.transition_on,
                     )
                 else:
-                    d.set_brightness(
+                    d.set(
                         level=dimmer.level_off, 
                         transition=dimmer.transition_off, 
                     )
@@ -92,7 +92,7 @@ class Sign:
     def set_dimmers(self, pattern):
         """ """
         for d, b in zip(self._dimmers, [int(p, 16) * 10 for p in pattern]):
-            d.set_brightness(level=b)
+            d.set(level=b)
 
     @property
     def current_pattern(self):
