@@ -32,7 +32,7 @@ class Dimmer:
         self.id = id
         # self._get_state() !!!
         self.session = requests.Session()
-        self.set(level=100, additional={'output': 'true'}) # !!!
+        self.set(level=100, output=True)
 
     def close(self):
         """Clean up."""
