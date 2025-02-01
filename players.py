@@ -67,7 +67,7 @@ class Player:
            If stop is specified, end the sequence 
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
-        if relay_override.relay_override:
+        if relay_override is not None:
             self.do_sequence(
                 seq_all_on, pace=0
             )
