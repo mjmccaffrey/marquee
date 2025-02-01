@@ -101,7 +101,7 @@ class Sign:
         """Return the active light pattern."""
         return self._current_pattern
 
-    def wait_for_button_button_interrupt(self, seconds):
+    def wait_for_button_interrupt(self, seconds):
         """Pause the thread until either the seconds have elapsed
            or the button has been pressed."""
         if self._button.pressed_event.wait(seconds):
