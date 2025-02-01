@@ -14,6 +14,7 @@ TRANSITION_MAXIMUM = 10800.0
 @dataclass
 class RelayOverride:
     """"""
+    concurrent: bool = False
     level_on: int = 100
     level_off: int = 0
     transition_on: float = TRANSITION_MINIMUM
@@ -36,7 +37,12 @@ class Dimmer:
     def close(self):
         """Clean up."""
 
-    def _interpret_parameters(self, **kargs):
+    def _interpret_parameters(self, 
+        level: float = None, 
+        offset: float = None,
+        transition: float = None, 
+        output: bool = None,
+    ):
         """ """
         if level:
             brightness = level 
@@ -47,7 +53,7 @@ class Dimmer:
         params = (
             ({'id': self.id}) |
             ({'brightness': brightness} 
-                if brightness is not None else {}) }
+                if brightness is not None else {}) |
             ({'transition_duration': 
                 transition or self.transition_default}) |
             ({'on': output} if output is not None else {})
@@ -62,11 +68,16 @@ class Dimmer:
             level: float = None, 
             offset: float = None,
             transition: float = None, 
-            output: bool = None
+            output: bool = None,
             wait: bool = False,
     ):
         """ """
-        command = self._interpret_parameters()
+        command = self._interpret_parameters(
+            level=level,
+            offset=offset,
+            transition=transition,
+            output=output,
+        )
         try:
             self.session.get(
                 url=command.url,
@@ -96,4 +107,4 @@ class Dimmer:
         """"""
         async with asyncio.TaskGroup() as tg:
             for command in commands:
-                tg.create_task(cls._execute_single_command(command)
+                tg.create_task(cls._execute_single_command(command))

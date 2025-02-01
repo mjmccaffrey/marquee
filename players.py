@@ -78,9 +78,9 @@ class Player:
                 self._sign.set_lights(
                     lights, override_relays,
                 )
-                self._sign.wait_for_interrupt(pace)
+                self._sign.wait_for_button_interrupt(pace)
         if post_delay is not None:
-            self.sign.wait_for_interrupt(post_delay)
+            self.sign.wait_for_button_interrupt(post_delay)
 
     def execute(self, mode_index=None, light_pattern=None, brightness_pattern=None):
         """Effects the specified mode or pattern(s)."""
@@ -115,7 +115,7 @@ class Player:
            the next mode to execute."""
         while True:
             # Button was pressed
-            self._sign.interrupt_reset()
+            self._sign.button_interrupt_reset()
             if self.mode_desired is None:
                 # Just now entering selection mode
                 self.mode_desired = self.mode_previous
@@ -126,7 +126,7 @@ class Player:
                     self.mode_desired += 1
             self._indicate_mode_desired()
             try:
-                self._sign.wait_for_interrupt(5)
+                self._sign.wait_for_button_interrupt(5)
             except signs.ButtonPressed:
                 pass
             else:
@@ -134,5 +134,5 @@ class Player:
                 # without the button being pressed.
                 self.mode_current = self.mode_desired
                 self.mode_desired = None
-                self._sign.interrupt_reset()
+                self._sign.button_interrupt_reset()
                 break

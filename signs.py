@@ -8,7 +8,7 @@ from buttons import (  # pylint: disable=unused-import
     PhysicalButtonPressed,
     VirtualButtonPressed,
 )
-import dimmers
+from dimmers import Dimmer, RelayOverride
 import relayboards
 
 LIGHTS_BY_ROW = [
@@ -21,17 +21,12 @@ TOP_LIGHTS_LEFT_TO_RIGHT = [9, 0, 1, 2, 3]
 BOTTOM_LIGHTS_LEFT_TO_RIGHT = [8, 7, 6, 5, 4]
 LIGHTS_CLOCKWISE = [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
 _LIGHT_TO_RELAY = {
-    0:  9,
-    1: 13,
-    2: 14,
-    3: 15,
-    4:  2,
-    5:  1,
-    6:  0,
-    7:  6,
-    8:  7,
-    9:  8,
+            0:  9,  1: 13,  2: 14,
+    9:  8,                          3: 15,
+    8:  7,                          4:  2,
+            7:  6,  6:  0,  5:  1,
 }
+
 
 LIGHT_COUNT = len(_LIGHT_TO_RELAY)
 _DIMMER_ADDRESSES = [
@@ -48,7 +43,7 @@ class Sign:
     def __init__(self):
         """Prepare devices and initial state."""
         self._dimmers = [
-            dimmers.Dimmer(address, id)
+            Dimmer(address, id)
             for address in _DIMMER_ADDRESSES
             for id in range(2)
         ]
@@ -69,21 +64,28 @@ class Sign:
             logging.exception(e)
 
     def set_lights(self, pattern, 
-                   relay_override=None):
+                   relay_override: RelayOverride = None):
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
-        if dimmer is not None:
-            for d, l in zip(self._dimmers, pattern):  # !!!  USE set_dimmers
-                if bool(int(l)):
-                    d.set(
-                        level=dimmer.level_on, 
-                        transition=dimmer.transition_on,
+        if relay_override is not None:
+            levels = {0: relay_override.level_off, 1: relay_override.level_on}
+            transitions = {0: relay_override.transition_off, 1: relay_override.transition_on}
+            pattern = [int(p) for p in pattern]
+            if relay_override.concurrent:
+                commands = [
+                    d._interpret_parameters(
+                        level=levels[p],
+                        transition=transitions[p],
+                        # output=
                     )
-                else:
+                    for d, p in zip(self._dimmers, pattern)
+                ]
+            else:
+                for d, p in zip(self._dimmers, pattern):
                     d.set(
-                        level=dimmer.level_off, 
-                        transition=dimmer.transition_off, 
+                        level=levels[p],
+                        transition=transitions[p],
                     )
         else:
             self._relayboard.set_state_of_devices(pattern)
@@ -99,12 +101,12 @@ class Sign:
         """Return the active light pattern."""
         return self._current_pattern
 
-    def wait_for_interrupt(self, seconds):
+    def wait_for_button_button_interrupt(self, seconds):
         """Pause the thread until either the seconds have elapsed
            or the button has been pressed."""
         if self._button.pressed_event.wait(seconds):
             raise PhysicalButtonPressed
 
-    def interrupt_reset(self):
+    def button_interrupt_reset(self):
         """Prepare for a button press."""
         self._button.reset()
