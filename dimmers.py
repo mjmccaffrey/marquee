@@ -78,6 +78,7 @@ class Dimmer:
             transition=transition,
             output=output,
         )
+        print(command)
         try:
             self.session.get(
                 url=command.url,
