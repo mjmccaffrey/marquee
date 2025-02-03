@@ -32,7 +32,7 @@ class Dimmer:
         self.id = id
         # self._get_state() !!!
         self.session = requests.Session()
-        self.set(level=100, output=True)
+        self.set(level=0, output=True)
 
     def close(self):
         """Clean up."""
@@ -80,7 +80,6 @@ class Dimmer:
             transition=transition,
             output=output,
         )
-        # print(command)
         try:
             self.session.get(
                 url=command.url,
