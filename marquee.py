@@ -60,6 +60,7 @@ def register_modes(player):
     )
     player.add_mode(13, "blink_all_fade_con", seq_blink_all, simple=True, pace=1,
         relay_override=RelayOverride(
+            concurrent=True,
             transition_on=0.5,
             transition_off=0.5,
         )
