@@ -73,9 +73,9 @@ class Player:
                 seq_all_on, pace=0
             )
         if isinstance(pace, (float, int)):
-            pace_iter = itertools.repeat(pace)
+            pace = itertools.repeat(pace)
         else:
-            pace_iter = itertools.cycle(pace)
+            pace = itertools.cycle(pace)
         for _ in range(count):
             for i, lights in enumerate(sequence()):
                 if stop is not None and i == stop:
