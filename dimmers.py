@@ -30,9 +30,9 @@ class Dimmer:
         print(time.time())
         self.ip_address = ip_address
         self.id = id
-        # self._get_state() !!!
         self.session = requests.Session()
-        self.set(level=0, output=True)
+        # self._get_state() !!!
+        self.set(level=0, output=True)  # !!! trans=0.5, wait=True?
 
     def close(self):
         """Clean up."""
@@ -59,7 +59,6 @@ class Dimmer:
                 transition or self.transition_default}) |
             ({'on': str(output).lower()} if output is not None else {})
         )
-        print(params)
         return types.SimpleNamespace(
             dimmer=self,
             url=f'http://{self.ip_address}/rpc/Light.Set',

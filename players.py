@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - players"""
 
+import itertools
 import time
 import types
 
@@ -71,6 +72,10 @@ class Player:
             self.do_sequence(
                 seq_all_on, pace=0
             )
+        if isinstance(pace, (float, int)):
+            pace_iter = itertools.repeat(pace)
+        else:
+            pace_iter = itertools.cycle(pace)
         for _ in range(count):
             for i, lights in enumerate(sequence()):
                 if stop is not None and i == stop:
@@ -78,7 +83,7 @@ class Player:
                 self._sign.set_lights(
                     lights, relay_override,
                 )
-                self._sign.wait_for_button_interrupt(pace)
+                self._sign.wait_for_button_interrupt(next(pace))
         if post_delay is not None:
             self.sign.wait_for_button_interrupt(post_delay)
 

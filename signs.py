@@ -28,7 +28,6 @@ _LIGHT_TO_RELAY = {
             7:  6,  6:  0,  5:  1,
 }
 
-
 LIGHT_COUNT = len(_LIGHT_TO_RELAY)
 _DIMMER_ADDRESSES = [
     '192.168.51.111',
