@@ -44,12 +44,4 @@ _ Indicate more than 10 modes
 _ Long press button for use_dimmers mode
 
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f'http://{self.ip_address}/rpc/Light.Set', 
-                params=params,
-                timeout=1.0,
-            ) as response:
-                print(response.status)
-                html = await response.text()
-                print(html)
+
