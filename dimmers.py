@@ -56,7 +56,7 @@ class Dimmer:
                 if brightness is not None else {}) |
             ({'transition_duration': 
                 transition or self.transition_default}) |
-            ({'on': output} if output is not None else {})
+            ({'on': str(output).lower()} if output is not None else {})
         )
         print(params)
         return types.SimpleNamespace(
