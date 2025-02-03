@@ -44,9 +44,9 @@ class Dimmer:
         output: bool = None,
     ):
         """ """
-        if level:
+        if level is not None:
             brightness = level 
-        elif offset:
+        elif offset is not None:
             brightness = self.brightness + offset
         else:
             brightness = None
