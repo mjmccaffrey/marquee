@@ -58,6 +58,7 @@ class Dimmer:
                 transition or self.transition_default}) |
             ({'on': output} if output is not None else {})
         )
+        print(params)
         return types.SimpleNamespace(
             dimmer=self,
             url=f'http://{self.ip_address}/rpc/Light.Set',
