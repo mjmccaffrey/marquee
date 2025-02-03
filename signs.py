@@ -73,16 +73,16 @@ class Sign:
             levels = {0: relay_override.level_off, 1: relay_override.level_on}
             transitions = {0: relay_override.transition_off, 1: relay_override.transition_on}
             pattern = [int(p) for p in pattern]
-            print(f'({pattern})')
             if relay_override.concurrent:
                 commands = [
-                    d._interpret_parameters(
+                    d.interpret_parameters(
                         level=levels[p],
                         transition=transitions[p],
                         # output=
                     )
                     for d, p in zip(self._dimmers, pattern)
                 ]
+                Dimmer.execute_multiple_commands(commands)
             else:
                 for d, p in zip(self._dimmers, pattern):
                     d.set(

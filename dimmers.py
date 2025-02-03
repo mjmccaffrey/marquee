@@ -37,7 +37,7 @@ class Dimmer:
     def close(self):
         """Clean up."""
 
-    def _interpret_parameters(self, 
+    def interpret_parameters(self, 
         level: float = None, 
         offset: float = None,
         transition: float = None, 
@@ -74,7 +74,7 @@ class Dimmer:
             wait: bool = False,
     ):
         """ """
-        command = self._interpret_parameters(
+        command = self.interpret_parameters(
             level=level,
             offset=offset,
             transition=transition,
