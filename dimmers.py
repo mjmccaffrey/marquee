@@ -50,6 +50,7 @@ class Dimmer:
             brightness = self.brightness + offset
         else:
             brightness = None
+        print(brightness)
         params = (
             ({'id': self.id}) |
             ({'brightness': brightness} 
