@@ -68,10 +68,12 @@ class Sign:
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
+        print(pattern)
         if relay_override is not None:
             levels = {0: relay_override.level_off, 1: relay_override.level_on}
             transitions = {0: relay_override.transition_off, 1: relay_override.transition_on}
             pattern = [int(p) for p in pattern]
+            print(f'({pattern})')
             if relay_override.concurrent:
                 commands = [
                     d._interpret_parameters(
