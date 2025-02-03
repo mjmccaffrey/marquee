@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - signs"""
 
+import asyncio
 import logging
 
 import buttons
@@ -82,7 +83,7 @@ class Sign:
                     )
                     for d, p in zip(self._dimmers, pattern)
                 ]
-                Dimmer.execute_multiple_commands(commands)
+                asyncio.run(Dimmer.execute_multiple_commands(commands))
             else:
                 for d, p in zip(self._dimmers, pattern):
                     d.set(
