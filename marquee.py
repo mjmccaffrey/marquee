@@ -52,13 +52,19 @@ def register_modes(player):
             level_off=10,
         )
     )
-    player.add_mode(12, "blink_all_fade", seq_blink_all, simple=True, pace=1,
+    player.add_mode(12, "blink_all_fade_seq", seq_blink_all, simple=True, pace=1,
         relay_override=RelayOverride(
             transition_on=0.5,
             transition_off=0.5,
         )
     )
-    player.add_mode(13, "blink_all_fade_fast", seq_blink_all, simple=True, pace=0.5,
+    player.add_mode(13, "blink_all_fade_con", seq_blink_all, simple=True, pace=1,
+        relay_override=RelayOverride(
+            transition_on=0.5,
+            transition_off=0.5,
+        )
+    )
+    player.add_mode(14, "blink_all_fade_fast", seq_blink_all, simple=True, pace=0.5,
         relay_override=RelayOverride(
             transition_on=0.5,
             transition_off=0.5,
