@@ -71,6 +71,14 @@ def register_modes(player):
             transition_off=0.5,
         )
     )
+    player.add_mode(15, "blink_all_fade_slowwww", seq_blink_all, simple=True, pace=10,
+        relay_override=RelayOverride(
+            level_on=90,
+            transition_on=10,
+            level_off=10,
+            transition_off=10,
+        )
+    )
 
     ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
     # Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
