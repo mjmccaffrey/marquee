@@ -80,15 +80,13 @@ class Dimmer:
             transition=transition,
             output=output,
         )
-        print(command)
         try:
-            print(
-                self.session.get(
+            self.session.get(
                 url=command.url,
                 params=command.params,
                 timeout=1.0,
             )
-            )
+            # !!! Check for result != 200
         except requests.exceptions.ConnectTimeout:
             print(time.time(), self.ip_address, self.id)
         if wait:
