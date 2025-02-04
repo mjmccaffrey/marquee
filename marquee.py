@@ -3,7 +3,7 @@
 import sys
 import time
 
-from dimmers import RelayOverride
+from dimmers import Dimmer, RelayOverride
 from modes import *
 import players
 from sequences import *
@@ -88,6 +88,7 @@ def register_modes(player: players.Player):
     )
     player.add_mode(17, "build_NEQ", function=lambda: build1(player, False))
     player.add_mode(18, "build_EQ", function=lambda: build1(player, True))
+    player.add_mode(19, "calibrate", function=lambda: calibrate(player))
 
     ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
     # Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
@@ -99,18 +100,25 @@ def register_modes(player: players.Player):
     # Rotate 50% to 100% every 0.5 seconds
     # Build and fade random corner
 
-    def build1(player, equal):
-        player.do_sequence(seq_all_on)
-        player.do_sequence(seq_all_off, relay_override=RelayOverride(concurrent=True))
-        levels = [(i + 1) * 10 for i in range(10)]
-        transitions = (
-            [20] * 10 
-                if equal else
-            [(i + 1) * 2 for i in range(10)]
-        )
-        for dimmer, level, transition in zip(player._sign._dimmers, levels, transitions):
-            dimmer.set(level=level, transition=transition)
-        time.sleep(40)
+def build1(player, equal):
+    player.do_sequence(seq_all_on)
+    player.do_sequence(seq_all_off, relay_override=RelayOverride(concurrent=True))
+    levels = [(i + 1) * 10 for i in range(10)]
+    transitions = (
+        [20] * 10 
+            if equal else
+        [(i + 1) * 2 for i in range(10)]
+    )
+    for dimmer, level, transition in zip(player._sign._dimmers, levels, transitions):
+        dimmer.set(level=level, transition=transition)
+    time.sleep(40)
+
+def calibrate(player):
+    """"""
+    player.do_sequence(
+        seq_all_on, pace=0
+    )
+    Dimmer.calibrate()
 
 def is_valid_light_pattern(arg):
     """ Return True if arg is a valid light pattern, 

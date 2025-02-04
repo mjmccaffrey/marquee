@@ -124,4 +124,5 @@ class Dimmer:
                 for dimmer in cls._dimmers
             ]
             asyncio.run(cls.execute_multiple_commands(commands))
+            print(f"Calibrate running for id: {id}")
             time.sleep(120)
