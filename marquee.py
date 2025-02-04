@@ -118,6 +118,7 @@ def calibrate(player):
     player.do_sequence(
         seq_all_on, pace=0
     )
+    time.sleep(5)
     Dimmer.calibrate()
 
 def is_valid_light_pattern(arg):
