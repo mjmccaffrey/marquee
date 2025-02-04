@@ -3,6 +3,8 @@ http://192.168.51.115/light/0?turn=off
 
 http://192.168.51.112/rpc/Light.Set?id=0&brightness=75&transition_duration=5&on=false
 
+log and retry upon dimmer comm timeouts
+
 enable pi remote access
 
 why long pause before dimmers are init'ed?

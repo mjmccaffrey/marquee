@@ -4,7 +4,7 @@ import asyncio
 from dataclasses import dataclass
 import requests
 import time
-import types
+from types import SimpleNamespace
 
 import aiohttp
 
@@ -24,10 +24,12 @@ class Dimmer:
     """Supports the Shelly Pro Dimmer 2PM."""
 
     transition_default = 0.5
+    _dimmers = []
 
     def __init__(self, ip_address, id):
         """Create the dimmer instance."""
         print(time.time())
+        self._dimmers.append(self)
         self.ip_address = ip_address
         self.id = id
         self.session = requests.Session()
@@ -37,7 +39,7 @@ class Dimmer:
     def close(self):
         """Clean up."""
 
-    def interpret_parameters(self, 
+    def interpret_set_parameters(self, 
         level: float = None, 
         offset: float = None,
         transition: float = None, 
@@ -58,7 +60,7 @@ class Dimmer:
                 transition or self.transition_default}) |
             ({'on': str(output).lower()} if output is not None else {})
         )
-        return types.SimpleNamespace(
+        return SimpleNamespace(
             dimmer=self,
             url=f'http://{self.ip_address}/rpc/Light.Set',
             params=params,
@@ -72,7 +74,7 @@ class Dimmer:
             wait: bool = False,
     ):
         """ """
-        command = self.interpret_parameters(
+        command = self.interpret_set_parameters(
             level=level,
             offset=offset,
             transition=transition,
@@ -108,3 +110,18 @@ class Dimmer:
         async with asyncio.TaskGroup() as tg:
             for command in commands:
                 tg.create_task(cls._execute_single_command(command))
+
+    @classmethod
+    def calibrate(cls):
+        """"""
+        for id in range(2):
+            commands = [
+                SimpleNamespace(
+                    dimmer=dimmer,
+                    url=f'http://{dimmer.ip_address}/rpc/Light.Set',
+                    params={'id':id},
+                )
+                for dimmer in cls._dimmers
+            ]
+            cls.execute_multiple_commands(commands)
+            time.sleep(120)
