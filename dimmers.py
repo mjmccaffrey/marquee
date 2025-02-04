@@ -101,7 +101,7 @@ class Dimmer:
                 params=command.params,
             ) as response:
                 response = await response.text()
-            if b := command.params['brightness'] is not None:
+            if b := command.params.get('brightness') is not None:
                 command.dimmer.brightness = b
     
     @classmethod
