@@ -126,5 +126,5 @@ class Dimmer:
             asyncio.run(cls.execute_multiple_commands(commands))
             print(f"Calibrate running for id: {id}")
             time.sleep(150)
-        import sys
-        sys.exit()
+        import sys  # !!! HACK
+        sys.exit()  # !!! HACK

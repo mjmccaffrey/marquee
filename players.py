@@ -51,7 +51,7 @@ class Player:
     def _simple_mode(self, sequence, **kwargs):
         """Return closure to execute sequence indefinitely.
            with pace seconds in between.
-           !!! Pace=None is an infinite pace, so in this case
+           Pace=None produces an infinite wait, so in this case
            the sequence should have only 1 step."""
         def template():
             while True:
@@ -72,7 +72,7 @@ class Player:
             self.do_sequence(
                 seq_all_on, pace=0
             )
-        if isinstance(pace, (float, int)):
+        if isinstance(pace, (float, int)) or pace is None:
             pace = itertools.repeat(pace)
         else:
             pace = itertools.cycle(pace)
@@ -80,6 +80,7 @@ class Player:
             for i, lights in enumerate(sequence()):
                 if stop is not None and i == stop:
                     break
+                print("setting lights")
                 self._sign.set_lights(
                     lights, relay_override,
                 )
