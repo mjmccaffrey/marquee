@@ -98,12 +98,17 @@ def register_modes(player: players.Player):
     # Rotate 50% to 100% every 0.5 seconds
     # Build and fade random corner
 
-    def build1(player):
+    def build1(player, equal):
         player.do_sequence(seq_all_on)
         player.do_sequence(seq_all_off, relay_override=RelayOverride(concurrent=True))
-        for i, dimmer in enumerate(player._sign._dimmers):
-            print(i)
-            dimmer.set(level=(i+1)*10, transition=20)
+        levels = [(i + 1) * 10 for i in range(10)]
+        transitions = (
+            [20] * 10 
+                if equal else
+            [(i + 1) * 2 for i in range(10)]
+        )
+        for dimmer, level, transition in zip(player._sign._dimmers, levels, transitions):
+            dimmer.set(level=level, transition=transition)
         time.sleep(40)
 
 def is_valid_light_pattern(arg):
