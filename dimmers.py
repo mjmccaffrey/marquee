@@ -80,6 +80,7 @@ class Dimmer:
             transition=transition,
             output=output,
         )
+        print(command)
         try:
             print(
                 self.session.get(
