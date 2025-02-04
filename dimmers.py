@@ -88,7 +88,7 @@ class Dimmer:
             print(time.time(), self.ip_address, self.id)
         if wait:
             print("WAIT")
-            time.sleep(self.transition_default)
+            time.sleep(transition)
 
     @classmethod
     async def _execute_single_command(cls, command):
