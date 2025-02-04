@@ -81,10 +81,12 @@ class Dimmer:
             output=output,
         )
         try:
-            self.session.get(
+            print(
+                self.session.get(
                 url=command.url,
                 params=command.params,
                 timeout=1.0,
+            )
             )
         except requests.exceptions.ConnectTimeout:
             print(time.time(), self.ip_address, self.id)
