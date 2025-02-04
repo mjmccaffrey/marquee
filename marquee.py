@@ -98,8 +98,10 @@ def register_modes(player: players.Player):
     # Build and fade random corner
 
     def build1(player):
+
+        player.do_sequence(seq_all_on)
+        player.do_sequence(seq_all_off, relay_override=RelayOverride(concurrent=True))
         for i, dimmer in enumerate(player._sign._dimmers):
-            player.do_sequence(seq_all_off, relay_override=RelayOverride(concurrent=True))
             dimmer.set(level=(i+1)*10, transition=1.5)
 
 def is_valid_light_pattern(arg):
