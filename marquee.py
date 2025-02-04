@@ -86,7 +86,8 @@ def register_modes(player: players.Player):
             transition_off=2,
         )
     )
-    player.add_mode(17, "build_1", function=lambda: build1(player))
+    player.add_mode(17, "build_NEQ", function=lambda: build1(player, False))
+    player.add_mode(18, "build_EQ", function=lambda: build1(player, True))
 
     ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
     # Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
