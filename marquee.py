@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - main"""
 
 import sys
+import time
 
 from dimmers import RelayOverride
 from modes import *
@@ -98,12 +99,12 @@ def register_modes(player: players.Player):
     # Build and fade random corner
 
     def build1(player):
-
         player.do_sequence(seq_all_on)
         player.do_sequence(seq_all_off, relay_override=RelayOverride(concurrent=True))
         for i, dimmer in enumerate(player._sign._dimmers):
             print(i)
             dimmer.set(level=(i+1)*10, transition=10)
+        time.sleep(30)
 
 def is_valid_light_pattern(arg):
     """ Return True if arg is a valid light pattern, 
