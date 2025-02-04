@@ -118,7 +118,7 @@ class Dimmer:
             commands = [
                 SimpleNamespace(
                     dimmer=dimmer,
-                    url=f'http://{dimmer.ip_address}/rpc/Light.Set',
+                    url=f'http://{dimmer.ip_address}/rpc/Light.Calibrate',
                     params={'id':id},
                 )
                 for dimmer in cls._dimmers
