@@ -17,7 +17,7 @@ def display_help(player):
             print(f'{index}\t{entry.name}')
     print()
 
-def register_modes(player):
+def register_modes(player: players.Player):
     """Register the operating modes."""
     player.add_mode(1, "all_on", seq_all_on, simple=True)
     player.add_mode(2, "even_on", seq_even_on, simple=True)
@@ -85,6 +85,7 @@ def register_modes(player):
             transition_off=2,
         )
     )
+    player.add_mode(17, "build_1", function=lambda: build1(player))
 
     ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
     # Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
@@ -95,6 +96,11 @@ def register_modes(player):
     # Spin, or other action, as all bulbs slowly build
     # Rotate 50% to 100% every 0.5 seconds
     # Build and fade random corner
+
+    def build1(player):
+        for i, dimmer in enumerate(player._sign._dimmers):
+            player.do_sequence(seq_all_off, relay_override=RelayOverride(concurrent=True))
+            dimmer.set(level=(i+1)*10, transition=1.5)
 
 def is_valid_light_pattern(arg):
     """ Return True if arg is a valid light pattern, 
