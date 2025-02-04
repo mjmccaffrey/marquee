@@ -20,7 +20,7 @@ def display_help(player):
 
 def register_modes(player: players.Player):
     """Register the operating modes."""
-    player.add_mode(1, "all_on", seq_all_on, simple=True)
+    player.add_mode(1, "all_on", seq_all_on, simple=True, pace=5)
     player.add_mode(2, "even_on", seq_even_on, simple=True)
     player.add_mode(3, "even_off", seq_even_off, simple=True)
     player.add_mode(4, "all_off", seq_all_off, simple=True)
