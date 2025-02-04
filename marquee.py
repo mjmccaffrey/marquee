@@ -103,8 +103,8 @@ def register_modes(player: players.Player):
         player.do_sequence(seq_all_off, relay_override=RelayOverride(concurrent=True))
         for i, dimmer in enumerate(player._sign._dimmers):
             print(i)
-            dimmer.set(level=(i+1)*10, transition=10)
-        time.sleep(30)
+            dimmer.set(level=(i+1)*10, transition=20)
+        time.sleep(40)
 
 def is_valid_light_pattern(arg):
     """ Return True if arg is a valid light pattern, 
