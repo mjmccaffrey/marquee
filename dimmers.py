@@ -123,5 +123,5 @@ class Dimmer:
                 )
                 for dimmer in cls._dimmers
             ]
-            cls.execute_multiple_commands(commands)
+            asyncio.run(cls.execute_multiple_commands(commands))
             time.sleep(120)
