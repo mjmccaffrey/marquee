@@ -115,9 +115,7 @@ def build1(player, equal):
 
 def calibrate(player):
     """"""
-    player.do_sequence(
-        seq_all_on, pace=0
-    )
+    player.do_sequence(seq_all_on)
     time.sleep(5)
     Dimmer.calibrate()
 

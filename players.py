@@ -25,7 +25,7 @@ class Player:
 
     def add_mode(
             self, index, name, function, 
-            simple=False, pace=2,
+            simple=False, pace=None,
             relay_override=None,
         ):
         """Register the mode, identified by index and name."""
@@ -60,7 +60,7 @@ class Player:
 
     def do_sequence(
             self, 
-            sequence, count=1, pace=2, 
+            sequence, count=1, pace=None, 
             stop=None, post_delay=None,
             relay_override=None,
         ):
@@ -69,9 +69,7 @@ class Player:
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
         if relay_override is not None:
-            self.do_sequence(
-                seq_all_on, pace=0
-            )
+            self.do_sequence(seq_all_on)
         if isinstance(pace, (float, int)) or pace is None:
             pace = itertools.repeat(pace)
         else:
