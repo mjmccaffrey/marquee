@@ -101,8 +101,8 @@ def register_modes(player: players.Player):
     # Build and fade random corner
 
 def build1(player, equal):
-    player.do_sequence(seq_all_on)
-    player.do_sequence(seq_all_off, relay_override=RelayOverride(concurrent=True))
+    player.do_sequence(seq_all_on, pace=0)
+    player.do_sequence(seq_all_off, pace=0, relay_override=RelayOverride(concurrent=True))
     levels = [(i + 1) * 10 for i in range(10)]
     transitions = (
         [20] * 10 
@@ -115,7 +115,7 @@ def build1(player, equal):
 
 def calibrate(player):
     """"""
-    player.do_sequence(seq_all_on)
+    player.do_sequence(seq_all_on, pace=0)
     time.sleep(5)
     Dimmer.calibrate()
 
