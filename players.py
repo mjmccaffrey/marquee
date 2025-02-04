@@ -70,6 +70,7 @@ class Player:
            Pause for post_delay seconds before exiting."""
         if relay_override is not None:
             self.do_sequence(seq_all_on)
+        print(pace)
         if isinstance(pace, (float, int)) or pace is None:
             pace = itertools.repeat(pace)
         else:
