@@ -11,7 +11,7 @@ from sequences import *
 def display_help(player):
     """"Display the command-line syntax."""
     print()
-    print("Usage: marquee.py {command | mode_index | mode_name | light_pattern}\n")
+    print("Usage: marquee.py {mode_index | mode_name | light_pattern | command}\n")
     print("Commands:")
     for command in player.commands:
         print(command)
