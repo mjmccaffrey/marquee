@@ -3,7 +3,7 @@
 import sys
 import time
 
-from dimmers import Dimmer, RelayOverride
+from dimmers import RelayOverride
 from modes import *
 import players
 from sequences import *
@@ -11,8 +11,11 @@ from sequences import *
 def display_help(player):
     """"Display the command-line syntax."""
     print()
-    print("Usage: marquee.py {mode_index | mode_name | light_pattern}\n")
-    print("Valid modes:")
+    print("Usage: marquee.py {command | mode_index | mode_name | light_pattern}\n")
+    print("Commands:")
+    for command in player.commands:
+        print(command)
+    print("Modes:")
     for index, entry in player.modes.items():
         if index != 0:
             print(f'{index}\t{entry.name}')
@@ -88,7 +91,6 @@ def register_modes(player: players.Player):
     )
     player.add_mode(17, "build_NEQ", function=lambda: build1(player, False))
     player.add_mode(18, "build_EQ", function=lambda: build1(player, True))
-    player.add_mode(19, "calibrate", function=lambda: calibrate(player))
 
     ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
     # Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
@@ -112,12 +114,6 @@ def build1(player, equal):
     for dimmer, level, transition in zip(player._sign._dimmers, levels, transitions):
         dimmer.set(level=level, transition=transition)
     time.sleep(40)
-
-def calibrate(player):
-    """"""
-    player.do_sequence(seq_all_on, pace=0)
-    time.sleep(5)
-    Dimmer.calibrate()
 
 def is_valid_light_pattern(arg):
     """ Return True if arg is a valid light pattern, 
@@ -143,20 +139,22 @@ def process_runtime_argument(player):
         return False
     arg1 = sys.argv[1]
     if is_valid_light_pattern(arg1):
-        player_args = {"light_pattern": arg1}
+        args = {"light_pattern": arg1}
         if len(sys.argv) == 3:
             arg2 = sys.argv[2]
             if is_valid_brightness_pattern(arg1):
-                player_args |=  {"brightness_pattern": arg2}
+                args |=  {"brightness_pattern": arg2}
             else:
                 return False
         else:
-            player_args |= {"brightness_pattern": "AAAAAAAAAA"}
+            args |= {"brightness_pattern": "AAAAAAAAAA"}
     elif arg1 in player.mode_id_to_index:
-        player_args = {"mode_index": player.mode_id_to_index[arg1]}
+        args = {"mode_index": player.mode_id_to_index[arg1]}
+    elif arg1 in player.commands:
+        args = {"command": arg1}
     else:
         return False
-    return player_args
+    return args
 
 def main():
     """Execute Marquee application."""

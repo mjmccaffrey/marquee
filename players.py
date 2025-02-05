@@ -4,6 +4,7 @@ import itertools
 import time
 import types
 
+from dimmers import Dimmer
 from sequences import seq_all_off, seq_all_on, seq_rotate_build
 import signs
 
@@ -15,6 +16,7 @@ class Player:
         self.mode_desired = None
         self.mode_previous = None
         self.mode_id_to_index = {}
+        self.commands = {'calibrate': self.calibrate}
         self.modes = {}
         self.add_mode(0, "selection", self._mode_selection)
         self._sign = signs.Sign()
@@ -22,6 +24,12 @@ class Player:
     def close(self):
         """Close devices."""
         self._sign.close()
+
+    def calibrate(self):
+        """"""
+        self.do_sequence(seq_all_on, pace=0)
+        time.sleep(5)
+        Dimmer.calibrate_all()
 
     def add_mode(
             self, index, name, function, 
@@ -87,8 +95,10 @@ class Player:
         if post_delay is not None:
             self.sign.wait_for_button_interrupt(post_delay)
 
-    def execute(self, mode_index=None, light_pattern=None, brightness_pattern=None):
-        """Effects the specified mode or pattern(s)."""
+    def execute(self, command=None, mode_index=None, light_pattern=None, brightness_pattern=None):
+        """Effects the specified command, mode or pattern(s)."""
+        if command is not None:
+            self.commands[command]()
         if light_pattern is not None:
             self._sign.set_lights(light_pattern)
             self._sign.set_dimmers(brightness_pattern)
