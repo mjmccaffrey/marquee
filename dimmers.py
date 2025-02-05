@@ -113,7 +113,7 @@ class Dimmer:
                 tg.create_task(cls._execute_single_command(command))
 
     @classmethod
-    def calibrate(cls):
+    def calibrate_all(cls):
         """"""
         for id in range(2):
             commands = [
