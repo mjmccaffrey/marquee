@@ -52,8 +52,8 @@ def register_modes(player: players.Player):
         relay_override=RelayOverride(
             # transition_on=1.0,
             # transition_off=3.0,
-            level_on=80,
-            level_off=10,
+            # level_on=80,
+            # level_off=10,
         )
     )
     player.add_mode(12, "blink_all_fade_seq", seq_blink_all, simple=True, pace=0.15,  # ,
