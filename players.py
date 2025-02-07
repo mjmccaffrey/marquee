@@ -99,6 +99,7 @@ class Player:
         """Effects the specified command, mode or pattern(s)."""
         if command is not None:
             self.commands[command]()
+            return
         if light_pattern is not None:
             self._sign.set_lights(light_pattern)
             self._sign.set_dimmers(brightness_pattern)

@@ -56,7 +56,7 @@ def register_modes(player: players.Player):
             level_off=10,
         )
     )
-    player.add_mode(12, "blink_all_fade_seq", seq_blink_all, simple=True, pace=1,
+    player.add_mode(12, "blink_all_fade_seq", seq_blink_all, simple=True, pace=0.5,  # ,
         relay_override=RelayOverride(
             transition_on=0.5,
             transition_off=0.5,
@@ -95,12 +95,11 @@ def register_modes(player: players.Player):
     ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
     # Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
     # Rows of bulbs progressively fade, and then build back from the bottom
-    # Snake growing counter/clockwise
-    # 2 snakes of length 3 bouncing off each other
     # Sides fade and build, and then top & bottom do the same
     # Spin, or other action, as all bulbs slowly build
     # Rotate 50% to 100% every 0.5 seconds
-    # Build and fade random corner
+    # Build and fade random corner pair
+    # blink_all_fade_seq with rotating order - build+0, fade+1, build+2, fade+3, etc.
 
 def build1(player, equal):
     player.do_sequence(seq_all_on, pace=0)
