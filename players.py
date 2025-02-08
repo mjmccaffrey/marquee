@@ -102,6 +102,8 @@ class Player:
             return
         if light_pattern is not None:
             self._sign.set_lights(light_pattern)
+            return
+        if brightness_pattern is not None:
             self._sign.set_dimmers(brightness_pattern)
             return
         if mode_index is not None:

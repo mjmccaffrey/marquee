@@ -115,21 +115,24 @@ def build1(player, equal):
         dimmer.set(level=level, transition=transition)
     time.sleep(40)
 
-def is_valid_light_pattern(arg):
-    """ Return True if arg is a valid light pattern, 
-        otherwise False. """
-    return (
+def validate_light_pattern(arg):
+    """ Return arg if it is a valid light pattern, 
+        otherwise raise exception. """
+    if not (
         len(arg) == LIGHT_COUNT and 
         all(e in {"0", "1"} for e in arg)
-    )
+    ): raise ValueError("Invalid light pattern")
+    return arg
 
-def is_valid_brightness_pattern(arg):
-    """ Return True if arg is a valid brightness pattern, 
-        otherwise False. """
-    return (
+def validate_brightness_pattern(arg):
+    """ Return normalized arg if it is a valid brightness pattern, 
+        otherwise raise exception. """
+    arg = arg.upper()
+    if not (
         len(arg) == LIGHT_COUNT and 
-        all(e.upper() in "0123456789A" for e in arg)
-    )
+        all(e in "0123456789A" for e in arg)
+    ): raise ValueError("Invalid brightness pattern")
+    return arg
 
 def process_runtime_arguments(player):
     """Validate and interpret the runtime arguments.
@@ -142,28 +145,34 @@ def process_runtime_arguments(player):
     mode_parser = subparsers.add_parser('mode')
     mode_parser.add_argument('mode_id', choices=['1', '2', 'ab', 'cd'])
     pattern_parser = subparsers.add_parser('pattern')
-    pattern_parser.add_argument('-relay', nargs=1)
-    pattern_parser.add_argument('-dimmer', nargs=1)
-    args = parser.parse_args()
-    print(args)
-    sys.exit()
-
-    if is_valid_light_pattern(arg1):
-        args = {"light_pattern": arg1}
-        if len(sys.argv) == 3:
-            arg2 = sys.argv[2]
-            if is_valid_brightness_pattern(arg1):
-                args |=  {"brightness_pattern": arg2}
-            else:
-                return False
+    pattern_parser.add_argument('-relay', nargs=1, type=validate_light_pattern)
+    pattern_parser.add_argument('-dimmer', nargs=1, type=validate_brightness_pattern)
+    pattern_parser.add_argument('-derive_missing', nargs=1, action='store_true')
+    parsed = parser.parse_args()
+    print(parsed)
+    # sys.exit()
+    if parsed.operation == 'command':
+        args = {"command": parsed.command_name}
+    elif parsed.operation == 'mode':
+        args = {"mode_index": player.mode_id_to_index[parsed.mode_id]}
+    elif parsed.operation == 'pattern':
+        args = {}
+        if p:= parsed.relay:
+            args |= {"light_pattern": p}
+        if p := parsed.dimmer:
+            args |= {"brightness_pattern": p}
+        if parsed.relay:
+            if not parsed.dimmer and parsed.derive_missing:
+                pattern = ['A' if e == '1' else '0' for e in parsed.light]
+                args |= {"brightness_pattern": pattern}
+        elif parsed.dimmer:
+            if parsed.derive_missing:
+                pattern = ['0' if e == '0' else "1" for e in parsed.brightness]
+                args |= {"light_pattern": pattern}
         else:
-            args |= {"brightness_pattern": "AAAAAAAAAA"}
-    elif arg1 in player.mode_id_to_index:
-        args = {"mode_index": player.mode_id_to_index[arg1]}
-    elif arg1 in player.commands:
-        args = {"command": arg1}
+             return False
     else:
-        return False
+        raise Exception("Command line parsing error")       
     return args
 
 def main():
