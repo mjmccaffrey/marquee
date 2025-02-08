@@ -163,11 +163,11 @@ def process_runtime_arguments(player):
             args |= {"brightness_pattern": p}
         if parsed.relay:
             if not parsed.dimmer and parsed.derive_missing:
-                pattern = ['A' if e == '1' else '0' for e in parsed.light]
+                pattern = ['A' if e == '1' else '0' for e in parsed.relay]
                 args |= {"brightness_pattern": pattern}
         elif parsed.dimmer:
             if parsed.derive_missing:
-                pattern = ['0' if e == '0' else "1" for e in parsed.brightness]
+                pattern = ['0' if e == '0' else "1" for e in parsed.dimmer]
                 args |= {"light_pattern": pattern}
         else:
              return False
