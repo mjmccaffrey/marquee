@@ -171,7 +171,7 @@ def main():
     try:
         player = players.Player()
         register_modes(player)
-        arg = process_runtime_argument(player)
+        arg = process_runtime_arguments(player)
         if arg:
             player.execute(**arg)
         else:
