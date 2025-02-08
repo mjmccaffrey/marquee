@@ -24,7 +24,7 @@ class Dimmer:
         self.id = id
         self.session = requests.Session()
         self.output, self.brightness = self.get_status()
-        print(f'{ip_address}:{id}:{output}:{brightness}')
+        print(f'{self.ip_address}:{self.id}:{self.output}:{self.brightness}')
         # self.set(level=100, transition=0.5, output=True) !!!
 
     def close(self):
