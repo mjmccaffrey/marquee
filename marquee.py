@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - main"""
 
+import argparse
 import sys
 import time
 
@@ -130,13 +131,23 @@ def is_valid_brightness_pattern(arg):
         all(e.upper() in "0123456789A" for e in arg)
     )
 
-def process_runtime_argument(player):
+def process_runtime_arguments(player):
     """Validate and interpret the runtime arguments.
        Return dict of parameters if the arguments are valid, 
        otherwise False."""
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        return False
-    arg1 = sys.argv[1]
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest='operation')
+    command_parser = subparsers.add_parser('command')
+    command_parser.add_argument('command_name', choices=['calibrate_all_dimmers'])
+    mode_parser = subparsers.add_parser('mode')
+    mode_parser.add_argument('mode_id', choices=['1', '2', 'ab', 'cd'])
+    pattern_parser = subparsers.add_parser('pattern')
+    pattern_parser.add_argument('-relay', nargs=1)
+    pattern_parser.add_argument('-dimmer', nargs=1)
+    args = parser.parse_args()
+    print(args)
+    sys.exit()
+
     if is_valid_light_pattern(arg1):
         args = {"light_pattern": arg1}
         if len(sys.argv) == 3:

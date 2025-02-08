@@ -1,7 +1,6 @@
 
-update python on pi_zero
-
-provide some way for modes to not repeat?
+Auto... Derive 1 pattern from the other
+Manual... Do not change unspecified device on startup
 
 replace seq_all_xxx, pace=0 with something better
 
@@ -17,23 +16,14 @@ why long pause before dimmers are init'ed?
 
 ASYNC the set commands
 
-"Transition time (in seconds) - time to change from 0% to 100% of brightness."
- - can it be shorter than 0.5 if transition is 30% - 80% ?
- - what is max time?
-
-"'transition_duration': should be greater/equal than 0.500000 and less/equal than 10800.000000"
-
 soilidify requests / session
 add logging to show how / when failure occurs
 
 Split Relayboard and Dimmers into ABCs and model-specific classes
-Create CALIBRATE method
 
 Quicker command-line fail by doing less before checking sys.args
 
 Maybe timeouts are occurring when the previous command hasn't finished executing
-
-dimmer_params --> fade ???
 
 Create requirements.txt
 

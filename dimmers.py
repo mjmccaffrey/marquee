@@ -4,21 +4,11 @@ import asyncio
 from dataclasses import dataclass
 import requests
 import time
-from types import SimpleNamespace
 
 import aiohttp
 
 TRANSITION_MINIMUM = 0.5
 TRANSITION_MAXIMUM = 10800.0
-
-@dataclass
-class RelayOverride:
-    """"""
-    concurrent: bool = False
-    level_on: int = 100
-    level_off: int = 0
-    transition_on: float = TRANSITION_MINIMUM
-    transition_off: float = TRANSITION_MINIMUM
 
 class Dimmer:
     """Supports the Shelly Pro Dimmer 2PM."""
@@ -60,7 +50,7 @@ class Dimmer:
                 transition or self.transition_default}) |
             ({'on': str(output).lower()} if output is not None else {})
         )
-        return SimpleNamespace(
+        return DimmerCommand(
             dimmer=self,
             url=f'http://{self.ip_address}/rpc/Light.Set',
             params=params,
@@ -117,7 +107,7 @@ class Dimmer:
         """"""
         for id in range(2):
             commands = [
-                SimpleNamespace(
+                DimmerCommand(
                     dimmer=dimmer,
                     url=f'http://{dimmer.ip_address}/rpc/Light.Calibrate',
                     params={'id':id},
@@ -127,3 +117,19 @@ class Dimmer:
             asyncio.run(cls.execute_multiple_commands(commands))
             print(f"Calibrate running for id: {id}")
             time.sleep(150)
+
+@dataclass
+class DimmerCommand:
+    """"""
+    dimmer: Dimmer
+    url: str
+    params: dict
+    
+@dataclass
+class RelayOverride:
+    """"""
+    concurrent: bool = False
+    level_on: int = 100
+    level_off: int = 0
+    transition_on: float = TRANSITION_MINIMUM
+    transition_off: float = TRANSITION_MINIMUM
