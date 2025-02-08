@@ -172,7 +172,8 @@ def process_runtime_arguments(player):
         else:
              return False
     else:
-        raise Exception("Command line parsing error")       
+        raise Exception("Command line parsing error")
+    print(args)
     return args
 
 def main():
