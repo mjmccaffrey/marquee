@@ -147,7 +147,7 @@ def process_runtime_arguments(player):
     pattern_parser = subparsers.add_parser('pattern')
     pattern_parser.add_argument('-relay', nargs=1, type=validate_light_pattern)
     pattern_parser.add_argument('-dimmer', nargs=1, type=validate_brightness_pattern)
-    pattern_parser.add_argument('-derive_missing', nargs=1, action='store_true')
+    pattern_parser.add_argument('-do_not_derive_missing', , name='derive_missing', action='store_false')
     parsed = parser.parse_args()
     print(parsed)
     # sys.exit()
