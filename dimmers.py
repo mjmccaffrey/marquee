@@ -40,7 +40,7 @@ class Dimmer:
         # except requests.exceptions.ConnectTimeout:
         #     print(time.time(), self.ip_address, self.id)
         light = result.json()[f'light:{self.id}']
-        return light.output, light.brightness
+        return light['output'], light['brightness']
             
     def interpret_set_parameters(self, 
         level: float = None, 
