@@ -100,12 +100,6 @@ class Player:
         if command is not None:
             self.commands[command]()
             return
-        if light_pattern is not None:
-            self._sign.set_lights(light_pattern)
-            return
-        if brightness_pattern is not None:
-            self._sign.set_dimmers(brightness_pattern)
-            return
         if mode_index is not None:
             self.mode_current = mode_index
             while True:
@@ -115,7 +109,10 @@ class Player:
                     # Enter selection mode
                     self.mode_previous = self.mode_current
                     self.mode_current = 0
-        raise ValueError("Nothing to do.")
+        if light_pattern is not None:
+            self._sign.set_lights(light_pattern)
+        if brightness_pattern is not None:
+            self._sign.set_dimmers(brightness_pattern)
 
     def _indicate_mode_desired(self):
         """Show user what desired mode number is currently selected."""
