@@ -39,8 +39,8 @@ class Dimmer:
         # !!! Check for result != 200
         # except requests.exceptions.ConnectTimeout:
         #     print(time.time(), self.ip_address, self.id)
-        json = result.json()
-        return json.output, json.brightness
+        light = result.json()[f'light:{self.id}']
+        return light.output, light.brightness
             
     def interpret_set_parameters(self, 
         level: float = None, 
