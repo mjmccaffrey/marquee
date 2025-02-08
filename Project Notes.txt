@@ -2,6 +2,8 @@
 Auto... Derive 1 pattern from the other
 Manual... Do not change unspecified device on startup
 
+type hints for all object parameters
+
 replace seq_all_xxx, pace=0 with something better
 
 http://192.168.51.115/light/0?turn=off
