@@ -23,12 +23,23 @@ class Dimmer:
         self.ip_address = ip_address
         self.id = id
         self.session = requests.Session()
-        # self._get_state() !!!
-        self.set(level=100, transition=0.5, output=True)
+        self.output, self.brightness = self.get_status()
+        # self.set(level=100, transition=0.5, output=True) !!!
 
     def close(self):
         """Clean up."""
 
+    def get_status(self):
+        """"""
+        result = self.session.get(
+            url=f'http://{self.ip_address}/rpc/Shelly.GetStatus',
+            timeout=1.0,
+        )
+        # !!! Check for result != 200
+        # except requests.exceptions.ConnectTimeout:
+        #     print(time.time(), self.ip_address, self.id)
+        return result.output, result.brightness
+            
     def interpret_set_parameters(self, 
         level: float = None, 
         offset: float = None,
