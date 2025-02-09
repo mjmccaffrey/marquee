@@ -1,4 +1,27 @@
 
+WHY DID THIS NOT PRODUCE AN ERROR?
+python marquee.py mode 0000000000
+
+
+
+  File "/home/mjmccaffrey/marquee/dimmers.py", line 87, in set
+    self.session.get(
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 600, in get
+    return self.request("GET", url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 587, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 701, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 578, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: HTTPConnectionPool(host='192.168.51.111', port=80): Read timed out. (read timeout=1.0)
+mjmccaffrey@raspberrypi:~/marquee$
+
+
+
     ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
     # Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
     # Rows of bulbs progressively fade, and then build back from the bottom

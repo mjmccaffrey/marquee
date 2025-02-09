@@ -37,7 +37,7 @@ class Dimmer:
             timeout=1.0,
         )
         # !!! Check for result != 200
-        # except requests.exceptions.ConnectTimeout:
+        # except requests.exceptions.Timeout:
         #     print(time.time(), self.ip_address, self.id)
         light = result.json()[f'light:{self.id}']
         return light['output'], light['brightness']
@@ -90,8 +90,8 @@ class Dimmer:
                 timeout=1.0,
             )
             # !!! Check for result != 200
-        except requests.exceptions.ConnectTimeout:
-            print(time.time(), self.ip_address, self.id)
+        except requests.exceptions.Timeout as e:
+            print(time.time(), self.ip_address, self.id, e)
         if wait:
             print("WAIT")
             time.sleep(transition)
@@ -105,6 +105,7 @@ class Dimmer:
                 params=command.params,
             ) as response:
                 response = await response.text()
+                # !!! catch timeout, check for != 200
             if b := command.params.get('brightness') is not None:
                 command.dimmer.brightness = b
     
