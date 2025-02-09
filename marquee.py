@@ -1,6 +1,8 @@
 """Marquee Lighted Sign Project - main"""
 
 import argparse
+import contextlib
+import os
 import sys
 import time
 
@@ -138,7 +140,8 @@ def process_runtime_arguments(player):
     """Validate and interpret the runtime arguments.
        Return dict of parameters if the arguments are valid, 
        otherwise False."""
-    parser = argparse.ArgumentParser()
+    # def parse_runtime_arguments
+    parser = argparse.ArgumentParser(exit_on_error=False)
     subparsers = parser.add_subparsers(dest='operation')
     command_parser = subparsers.add_parser('command')
     command_parser.add_argument('command_name', choices=player.commands.keys())
@@ -148,9 +151,15 @@ def process_runtime_arguments(player):
     pattern_parser.add_argument('-relay', type=validate_light_pattern)
     pattern_parser.add_argument('-dimmer', type=validate_brightness_pattern)
     pattern_parser.add_argument('-do_not_derive_missing', dest='derive_missing', action='store_false')
-    parsed = parser.parse_args()
-    print(parsed)
-    # sys.exit()
+    with (
+        open(os.devnull, 'w') as null,
+        contextlib.redirect_stderr(null)
+    ):
+        try:
+            parsed = parser.parse_args()
+        except argparse.ArgumentError:
+            return False
+        
     if parsed.operation == 'command':
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':
