@@ -61,7 +61,7 @@ def parse_runtime_arguments(player):
         contextlib.redirect_stderr(null)
     ):
         try:
-            parsed = parser.parse_args()
+            return parser.parse_args()
         except argparse.ArgumentError:
             return False
 
