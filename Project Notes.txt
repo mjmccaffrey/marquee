@@ -1,6 +1,12 @@
 
-Auto... Derive 1 pattern from the other
-Manual... Do not change unspecified device on startup
+    ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
+    # Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
+    # Rows of bulbs progressively fade, and then build back from the bottom
+    # Sides fade and build, and then top & bottom do the same
+    # Spin, or other action, as all bulbs slowly build
+    # Rotate 50% to 100% every 0.5 seconds
+    # Build and fade random corner pair
+    # blink_all_fade_seq with rotating order - build+0, fade+1, build+2, fade+3, etc.
 
 type hints for all object parameters
 

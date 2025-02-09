@@ -2,6 +2,94 @@
 
 from dimmers import Dimmer
 from sequences import *
+import time
+
+from dimmers import RelayOverride
+from players import Player
+
+def register_modes(player: Player):
+    """Register the operating modes."""
+    player.add_mode(1, "all_on", seq_all_on, simple=True)
+    player.add_mode(2, "even_on", seq_even_on, simple=True)
+    player.add_mode(3, "even_off", seq_even_off, simple=True)
+    player.add_mode(4, "all_off", seq_all_off, simple=True)
+    player.add_mode(5, "blink_all", seq_blink_all, simple=True, pace=1)
+    player.add_mode(6, "blink_alternate",
+        seq_blink_alternate, simple=True, pace=1, 
+    )
+    player.add_mode(7, "rotate",
+        lambda: seq_rotate("1100000000"), simple=True, pace=0.5
+    )
+    player.add_mode(8, "random_flip",
+        lambda: seq_random_flip(player._sign.current_pattern),
+        simple=True, pace=0.5
+    )
+    player.add_mode(9, "demo", lambda: mode_rhythmic_demo(player))
+    player.add_mode(10, "blink_alternate_fade",
+        seq_blink_alternate, simple=True, pace=4, 
+        relay_override=RelayOverride(
+            transition_on=1.0,
+            transition_off=3.0,
+        )
+    )
+    player.add_mode(11, "random_flip_fade",
+        lambda: seq_random_flip(player._sign.current_pattern),
+        simple=True, pace=2.0,
+        relay_override=RelayOverride(
+            # transition_on=1.0,
+            # transition_off=3.0,
+            # level_on=80,
+            # level_off=10,
+        )
+    )
+    player.add_mode(12, "blink_all_fade_seq", seq_blink_all, simple=True, pace=0.15,  # ,
+        relay_override=RelayOverride(
+            transition_on=0.5,
+            transition_off=0.5,
+        )
+    )
+    player.add_mode(13, "blink_all_fade_con", seq_blink_all, simple=True, pace=1,
+        relay_override=RelayOverride(
+            concurrent=True,
+            transition_on=0.5,
+            transition_off=0.5,
+        )
+    )
+    player.add_mode(14, "blink_all_fade_fast", seq_blink_all, simple=True, pace=0.5,
+        relay_override=RelayOverride(
+            transition_on=0.5,
+            transition_off=0.5,
+        )
+    )
+    player.add_mode(15, "blink_all_fade_slowwww", seq_blink_all, simple=True, pace=10,
+        relay_override=RelayOverride(
+            level_on=90,
+            transition_on=10,
+            level_off=10,
+            transition_off=10,
+        )
+    )
+    player.add_mode(16, "blink_all_fade_stealth", seq_blink_all, simple=True, pace=(1, 60),
+        relay_override=RelayOverride(
+            transition_on=2,
+            transition_off=2,
+        )
+    )
+    player.add_mode(17, "build_NEQ", function=lambda: build1(player, False))
+    player.add_mode(18, "build_EQ", function=lambda: build1(player, True))
+
+def build1(player, equal):
+    player.do_sequence(seq_all_on, pace=0)
+    player.do_sequence(seq_all_off, pace=0, relay_override=RelayOverride(concurrent=True))
+    levels = [(i + 1) * 10 for i in range(10)]
+    transitions = (
+        [20] * 10 
+            if equal else
+        [(i + 1) * 2 for i in range(10)]
+    )
+    for dimmer, level, transition in zip(player._sign._dimmers, levels, transitions):
+        dimmer.set(level=level, transition=transition)
+    time.sleep(40)
 
 def mode_rhythmic_demo(player):
     """Perform a rhythmic demonstration."""
