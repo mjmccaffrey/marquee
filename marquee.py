@@ -13,6 +13,7 @@ class ArgumentParserBugFix(argparse.ArgumentParser):
     """"""
     def error(self, message):
         print(f'????? {message}')
+        return False
 
     def exit(self, status=0, message=None):
         print(f'!!!!! {status}:{message}')
