@@ -1,4 +1,6 @@
 
+Put some basic tests in place / integrate with github?
+
 WHY DID THIS NOT PRODUCE AN ERROR?
 python marquee.py mode 0000000000
 

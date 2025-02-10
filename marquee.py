@@ -9,6 +9,17 @@ import time
 from modes import *
 from players import Player
 
+class ErrorCatchingArgumentParser(argparse.ArgumentParser):
+    def exit(self, status=0, message=None):
+        if status:
+            raise Exception(f'Exiting because of an error: {message}')
+        exit(status)
+
+class ArgumentParserBugFix(argparse.ArgumentParser):
+    def exit(self, status=0, message=None):
+        print(f'!!!!! {status}:{message}')
+        exit(status)
+
 def display_help(player):
     """"Display the command-line syntax."""
     print()
