@@ -62,7 +62,8 @@ def parse_runtime_arguments(player):
     ):
         try:
             return parser.parse_args()
-        except (argparse.ArgumentError, argparse.ArgumentTypeError) as e:
+        # except (argparse.ArgumentError, argparse.ArgumentTypeError) as e:
+        except Exception as e:
             print(e)
             return False
 
