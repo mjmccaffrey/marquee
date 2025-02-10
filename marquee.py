@@ -13,7 +13,7 @@ class ArgumentParserBugFix(argparse.ArgumentParser):
     """"""
     def error(self, message):
         print(f'????? {message}')
-        raise argparse.ArgumentError
+        raise ValueError("Generic argparse error")
 
     def exit(self, status=0, message=None):
         print(f'!!!!! {status}:{message}')
@@ -68,7 +68,7 @@ def parse_runtime_arguments(player):
     pattern_parser.add_argument('-do_not_derive_missing', dest='derive_missing', action='store_false')
     try:
         return parser.parse_args()
-    except (argparse.ArgumentError, argparse.ArgumentTypeError) as e:
+    except (argparse.ArgumentError, argparse.ArgumentTypeError, ValueError) as e:
         print(e)
         return False
 
