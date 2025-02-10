@@ -16,6 +16,10 @@ class ErrorCatchingArgumentParser(argparse.ArgumentParser):
         exit(status)
 
 class ArgumentParserBugFix(argparse.ArgumentParser):
+    """"""
+    def error(self, message):
+        print(f'????? {message}')
+        
     def exit(self, status=0, message=None):
         print(f'!!!!! {status}:{message}')
         exit(status)
