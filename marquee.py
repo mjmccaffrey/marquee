@@ -61,7 +61,10 @@ def parse_runtime_arguments(player):
     command_parser = subparsers.add_parser('command')
     command_parser.add_argument('command_name', choices=player.commands.keys())
     mode_parser = subparsers.add_parser('mode')
-    mode_parser.add_argument('mode_id', choices=player.mode_id_to_index.keys())
+    mode_parser.add_argument(
+        'mode_id', 
+        choices=player.mode_id_to_index.keys() - {'0', 'selection'} # !!!
+    )
     pattern_parser = subparsers.add_parser('pattern')
     pattern_parser.add_argument('-relay', type=validate_light_pattern)
     pattern_parser.add_argument('-dimmer', type=validate_brightness_pattern)
@@ -69,7 +72,7 @@ def parse_runtime_arguments(player):
     try:
         return parser.parse_args()
     except (argparse.ArgumentError, argparse.ArgumentTypeError, ValueError) as e:
-        print(e)
+        print(f"ERROR:{e}")
         return False
 
 def process_runtime_arguments(player):
