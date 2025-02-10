@@ -13,7 +13,7 @@ class ArgumentParserBugFix(argparse.ArgumentParser):
     """"""
     def error(self, message):
         print(f'????? {message}')
-        return False
+        raise argparse.ArgumentError
 
     def exit(self, status=0, message=None):
         print(f'!!!!! {status}:{message}')
@@ -66,16 +66,11 @@ def parse_runtime_arguments(player):
     pattern_parser.add_argument('-relay', type=validate_light_pattern)
     pattern_parser.add_argument('-dimmer', type=validate_brightness_pattern)
     pattern_parser.add_argument('-do_not_derive_missing', dest='derive_missing', action='store_false')
-    with (
-        open(os.devnull, 'w') as null,
-        # contextlib.redirect_stderr(null)
-    ):
-        try:
-            return parser.parse_args()
-        # except (argparse.ArgumentError, argparse.ArgumentTypeError) as e:
-        except Exception as e:
-            print(e)
-            return False
+    try:
+        return parser.parse_args()
+    except (argparse.ArgumentError, argparse.ArgumentTypeError) as e:
+        print(e)
+        return False
 
 def process_runtime_arguments(player):
     """Validate and interpret the runtime arguments.
