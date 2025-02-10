@@ -16,7 +16,7 @@ class Player:
         self.mode_desired = None
         self.mode_previous = None
         self.mode_id_to_index = {}
-        self.commands = {'calibrate_all_dimmers': self.calibrate}
+        self.commands = {'calibrate_dimmers': self.calibrate}
         self.modes = {}
         self.add_mode(0, "selection", self._mode_selection)
         self._sign = signs.Sign()

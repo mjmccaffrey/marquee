@@ -70,6 +70,7 @@ def process_runtime_arguments(player):
        Return dict of parameters if the arguments are valid, 
        otherwise False."""
     parsed = parse_runtime_arguments(player)
+    print(parsed)
     if not parsed:
         return False
     if parsed.operation == 'command':

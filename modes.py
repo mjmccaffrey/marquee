@@ -87,7 +87,7 @@ def build1(player, equal):
             if equal else
         [(i + 1) * 2 for i in range(10)]
     )
-    for dimmer, level, transition in zip(player._sign._dimmers, levels, transitions):
+    for dimmer, level, transition in zip(player._sign._dimmer_channels, levels, transitions):
         dimmer.set(level=level, transition=transition)
     time.sleep(40)
 

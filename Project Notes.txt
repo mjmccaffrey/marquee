@@ -2,7 +2,7 @@
 WHY DID THIS NOT PRODUCE AN ERROR?
 python marquee.py mode 0000000000
 
-
+same level of errors with different switch?  - calculate failure % for new and old
 
   File "/home/mjmccaffrey/marquee/dimmers.py", line 87, in set
     self.session.get(
@@ -70,7 +70,5 @@ _ specify brightness on command line: 0123456789A - without light pattern???
 _ fade even & odd lights at opposite phases
 _ Each light hits peak in counter/clockwise order
 _ Indicate more than 10 modes
-_ Long press button for use_dimmers mode
-
 
 

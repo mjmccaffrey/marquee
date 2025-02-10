@@ -42,12 +42,12 @@ class Sign:
 
     def __init__(self):
         """Prepare devices and initial state."""
-        self._dimmers = [
+        self._dimmer_channels = [
             Dimmer(address, id)
             for address in _DIMMER_ADDRESSES
             for id in range(2)
         ]
-        assert len(self._dimmers) == LIGHT_COUNT
+        assert len(self._dimmer_channels) == LIGHT_COUNT
         self._relayboard = relayboards.RelayBoard(_LIGHT_TO_RELAY)
         self._button = buttons.Button()
         self._current_pattern = self._relayboard.get_state_of_devices()
@@ -79,11 +79,11 @@ class Sign:
                         transition=transitions[p],
                         # output=
                     )
-                    for d, p in zip(self._dimmers, pattern)
+                    for d, p in zip(self._dimmer_channels, pattern)
                 ]
                 asyncio.run(Dimmer.execute_multiple_commands(commands))
             else:
-                for d, p in zip(self._dimmers, pattern):
+                for d, p in zip(self._dimmer_channels, pattern):
                     d.set(
                         level=levels[p],
                         transition=transitions[p],
@@ -92,9 +92,9 @@ class Sign:
             self._relayboard.set_state_of_devices(pattern)
         self._current_pattern = ''.join(str(e) for e in pattern)
 
-    def set_dimmers(self, pattern):
-        """ """
-        for d, b in zip(self._dimmers, [int(p, 16) * 10 for p in pattern]):
+    def set_dimmers(self, dimmer_pattern):
+        """ Set the dimmers per the supplied dimmer pattern. """
+        for d, b in zip(self._dimmer_channels, [int(p, 16) * 10 for p in dimmer_pattern]):
             d.set(level=b)
 
     @property
