@@ -9,17 +9,11 @@ import time
 from modes import *
 from players import Player
 
-class ErrorCatchingArgumentParser(argparse.ArgumentParser):
-    def exit(self, status=0, message=None):
-        if status:
-            raise Exception(f'Exiting because of an error: {message}')
-        exit(status)
-
 class ArgumentParserBugFix(argparse.ArgumentParser):
     """"""
     def error(self, message):
         print(f'????? {message}')
-        
+
     def exit(self, status=0, message=None):
         print(f'!!!!! {status}:{message}')
         exit(status)
@@ -61,7 +55,7 @@ def validate_brightness_pattern(arg):
     return arg
 
 def parse_runtime_arguments(player):
-    parser = argparse.ArgumentParser(exit_on_error=False)
+    parser = argparse.ArgumentParserBugFix(exit_on_error=False)
     subparsers = parser.add_subparsers(dest='operation')
     command_parser = subparsers.add_parser('command')
     command_parser.add_argument('command_name', choices=player.commands.keys())
