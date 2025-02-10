@@ -58,7 +58,7 @@ def parse_runtime_arguments(player):
     pattern_parser.add_argument('-do_not_derive_missing', dest='derive_missing', action='store_false')
     with (
         open(os.devnull, 'w') as null,
-        contextlib.redirect_stderr(null)
+        # contextlib.redirect_stderr(null)
     ):
         try:
             return parser.parse_args()
