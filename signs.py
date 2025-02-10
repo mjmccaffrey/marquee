@@ -42,10 +42,14 @@ class Sign:
 
     def __init__(self):
         """Prepare devices and initial state."""
-        self._dimmer_channels = [
-            Dimmer(address, id)
+        self._dimmers = [
+            Dimmer(address)
             for address in _DIMMER_ADDRESSES
-            for id in range(2)
+        ]
+        self._dimmer_channels = [
+            channel
+            for dimmer in self._dimmers
+            for channel in dimmer.channels
         ]
         assert len(self._dimmer_channels) == LIGHT_COUNT
         self._relayboard = relayboards.RelayBoard(_LIGHT_TO_RELAY)
