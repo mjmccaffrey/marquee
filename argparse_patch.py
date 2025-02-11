@@ -1,5 +1,5 @@
 
-from argparse_patch import ArgumentParser, ArgumentError, ArgumentTypeError
+from argparse import ArgumentParser, ArgumentError, ArgumentTypeError
 
 class ArgumentParserNeverExit(ArgumentParser):
     """
