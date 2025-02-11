@@ -12,47 +12,46 @@ from buttons import (  # pylint: disable=unused-import
 from dimmers import Dimmer, RelayOverride
 import relayboards
 
-LIGHTS_BY_ROW = [
-    [    0, 1, 2,    ],
-    [ 9,          3, ],
-    [ 8,          4, ],
-    [    7, 6, 5,    ],
-]
-TOP_LIGHTS_LEFT_TO_RIGHT = [9, 0, 1, 2, 3]
-BOTTOM_LIGHTS_LEFT_TO_RIGHT = [8, 7, 6, 5, 4]
-LIGHTS_CLOCKWISE = [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
-_LIGHT_TO_RELAY = {
-            0:  9,  1: 13,  2: 14,
-    9:  8,                          3: 15,
-    8:  7,                          4:  2,
-            7:  6,  6:  0,  5:  1,
-}
-
-LIGHT_COUNT = len(_LIGHT_TO_RELAY)
-_DIMMER_ADDRESSES = [
-    '192.168.51.111',
-    '192.168.51.112',
-    '192.168.51.113',
-    '192.168.51.114',
-    '192.168.51.115',
-]
-
 class Sign:
     """Supports the physical devices."""
 
+    LIGHTS_BY_ROW = [
+        [    0, 1, 2,    ],
+        [ 9,          3, ],
+        [ 8,          4, ],
+        [    7, 6, 5,    ],
+    ]
+    TOP_LIGHTS_LEFT_TO_RIGHT = [9, 0, 1, 2, 3]
+    BOTTOM_LIGHTS_LEFT_TO_RIGHT = [8, 7, 6, 5, 4]
+    LIGHTS_CLOCKWISE = [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+    _LIGHT_TO_RELAY = {
+                0:  9,  1: 13,  2: 14,
+        9:  8,                          3: 15,
+        8:  7,                          4:  2,
+                7:  6,  6:  0,  5:  1,
+    }
+    LIGHT_COUNT = len(_LIGHT_TO_RELAY)
+    _DIMMER_ADDRESSES = [
+        '192.168.51.111',
+        '192.168.51.112',
+        '192.168.51.113',
+        '192.168.51.114',
+        '192.168.51.115',
+    ]
+
     def __init__(self):
         """Prepare devices and initial state."""
-        self._dimmers = [
+        self.dimmers = [
             Dimmer(address)
-            for address in _DIMMER_ADDRESSES
+            for address in self._DIMMER_ADDRESSES
         ]
-        self._dimmer_channels = [
+        self.dimmer_channels = [
             channel
-            for dimmer in self._dimmers
+            for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
-        assert len(self._dimmer_channels) == LIGHT_COUNT
-        self._relayboard = relayboards.RelayBoard(_LIGHT_TO_RELAY)
+        assert len(self.dimmer_channels) == self.LIGHT_COUNT
+        self._relayboard = relayboards.RelayBoard(self._LIGHT_TO_RELAY)
         self._button = buttons.Button()
         self._current_pattern = self._relayboard.get_state_of_devices()
 
@@ -86,11 +85,11 @@ class Sign:
                         transition=transitions[p],
                         # output=
                     )
-                    for d, p in zip(self._dimmer_channels, pattern)
+                    for d, p in zip(self.dimmer_channels, pattern)
                 ]
                 asyncio.run(Dimmer.execute_multiple_commands(commands))
             else:
-                for d, p in zip(self._dimmer_channels, pattern):
+                for d, p in zip(self.dimmer_channels, pattern):
                     d.set(
                         level=levels[p],
                         transition=transitions[p],
@@ -104,7 +103,7 @@ class Sign:
             dimmer_pattern: str,
         ):
         """ Set the dimmers per the supplied dimmer pattern. """
-        for d, b in zip(self._dimmer_channels, [int(p, 16) * 10 for p in dimmer_pattern]):
+        for d, b in zip(self.dimmer_channels, [int(p, 16) * 10 for p in dimmer_pattern]):
             d.set(level=b)
 
     @property

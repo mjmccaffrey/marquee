@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - modes"""
 
-from dimmers import Dimmer
+from dimmers import Dimmer, TRANSITION_MINIMUM
+import random
 from sequences import *
 import time
 
@@ -77,7 +78,21 @@ def register_modes(player: Player):
     )
     player.add_mode(17, "build_NEQ", function=lambda: build1(player, False))
     player.add_mode(18, "build_EQ", function=lambda: build1(player, True))
-    # 19: random brightness and transition - maintain table with completed times to restart each light
+    player.add_mode(19, "random_fade", function=lambda: mode_random_fade(player))
+
+def mode_random_fade(player: Player):
+    schedule = [0] * player._sign.LIG
+    while True:
+        for i, t in enumerate(schedule):
+            if t < (now := time.time()):
+                transition = random.uniform(TRANSITION_MINIMUM, 60)
+                level = random.randrange(101)
+                schedule[i] = now + transition + 1
+                player._sign.dimmer_channels[i].set(
+                    level=level,
+                    transition=transition,
+                )
+        time.sleep(1)
 
 def build1(player: Player, equal: bool):
     player.do_sequence(seq_all_on, pace=0)
