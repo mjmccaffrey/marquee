@@ -1,25 +1,15 @@
 """Marquee Lighted Sign Project - main"""
 
-import argparse
 import contextlib
 import os
 import sys
 import time
 
+import argparse_patch
 from modes import *
 from players import Player
 
-class ArgumentParserBugFix(argparse.ArgumentParser):
-    """"""
-    def error(self, message):
-        print(f'????? {message}')
-        raise ValueError("Generic argparse error")
-
-    def exit(self, status=0, message=None):
-        print(f'!!!!! {status}:{message}')
-        exit(status)
-
-def display_help(player):
+def display_help(player: Player):
     """"Display the command-line syntax."""
     print()
     print("Usage:")
@@ -36,7 +26,7 @@ def display_help(player):
         print(f'\t{command}')
     print()
 
-def validate_light_pattern(arg):
+def validate_light_pattern(arg: str):
     """ Return arg if it is a valid light pattern, 
         otherwise raise exception. """
     if not (
@@ -45,7 +35,7 @@ def validate_light_pattern(arg):
     ): raise ValueError("Invalid light pattern")
     return arg
 
-def validate_brightness_pattern(arg):
+def validate_brightness_pattern(arg: str):
     """ Return normalized arg if it is a valid brightness pattern, 
         otherwise raise exception. """
     arg = arg.upper()
@@ -55,15 +45,15 @@ def validate_brightness_pattern(arg):
     ): raise ValueError("Invalid brightness pattern")
     return arg
 
-def parse_runtime_arguments(player):
-    parser = ArgumentParserBugFix(exit_on_error=False)
+def parse_runtime_arguments(player: Player):
+    parser = argparse_patch.ArgumentParserNeverExit(exit_on_error=False)
     subparsers = parser.add_subparsers(dest='operation', required=True)
     command_parser = subparsers.add_parser('command')
     command_parser.add_argument('command_name', choices=player.commands.keys())
     mode_parser = subparsers.add_parser('mode')
     mode_parser.add_argument(
         'mode_id', 
-        choices=player.mode_id_to_index.keys() - {'0', 'selection'} # !!!
+        choices=player.mode_id_to_index.keys()
     )
     pattern_parser = subparsers.add_parser('pattern')
     pattern_parser.add_argument('-relay', type=validate_light_pattern)
@@ -71,11 +61,11 @@ def parse_runtime_arguments(player):
     pattern_parser.add_argument('-do_not_derive_missing', dest='derive_missing', action='store_false')
     try:
         return parser.parse_args()
-    except (argparse.ArgumentError, argparse.ArgumentTypeError, ValueError) as e:
-        print(f"ERROR:{e}")
+    except ValueError as err:
+        print(f"ERROR:{err}")
         return False
 
-def process_runtime_arguments(player):
+def process_runtime_arguments(player: Player):
     """Validate and interpret the runtime arguments.
        Return dict of parameters if the arguments are valid, 
        otherwise False."""
@@ -111,7 +101,9 @@ def process_runtime_arguments(player):
 def main():
     """Execute Marquee application."""
     try:
+        print(time.time())
         player = Player()
+        print(time.time())
         register_modes(player)
         if arg := process_runtime_arguments(player):
             player.execute(**arg)

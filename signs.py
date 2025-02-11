@@ -67,8 +67,11 @@ class Sign:
         except Exception as e:
             logging.exception(e)
 
-    def set_lights(self, pattern, 
-                   relay_override: RelayOverride = None):
+    def set_lights(
+            self, 
+            pattern: str, 
+            relay_override: RelayOverride = None
+        ):
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
@@ -96,7 +99,10 @@ class Sign:
             self._relayboard.set_state_of_devices(pattern)
         self._current_pattern = ''.join(str(e) for e in pattern)
 
-    def set_dimmers(self, dimmer_pattern):
+    def set_dimmers(
+            self, 
+            dimmer_pattern: str,
+        ):
         """ Set the dimmers per the supplied dimmer pattern. """
         for d, b in zip(self._dimmer_channels, [int(p, 16) * 10 for p in dimmer_pattern]):
             d.set(level=b)
@@ -106,7 +112,10 @@ class Sign:
         """Return the active light pattern."""
         return self._current_pattern
 
-    def wait_for_button_interrupt(self, seconds):
+    def wait_for_button_interrupt(
+            self, 
+            seconds: float,
+        ):
         """Pause the thread until either the seconds have elapsed
            or the button has been pressed."""
         if self._button.pressed_event.wait(seconds):

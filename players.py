@@ -1,10 +1,11 @@
 """Marquee Lighted Sign Project - players"""
 
+from collections.abc import Callable
 import itertools
 import time
 import types
 
-from dimmers import Dimmer
+from dimmers import Dimmer, RelayOverride
 from sequences import seq_all_off, seq_all_on, seq_rotate_build
 import signs
 
@@ -32,14 +33,20 @@ class Player:
         Dimmer.calibrate_all()
 
     def add_mode(
-            self, index, name, function, 
-            simple=False, pace=None,
-            relay_override=None,
+            self, 
+            index: int, 
+            name: str, 
+            function: Callable, 
+            simple: bool = False, 
+            pace: float = None,
+            relay_override: RelayOverride = None,
         ):
         """Register the mode, identified by index and name."""
-        assert all(
-            str(k) not in self.mode_id_to_index for k in (index, name)
-            ), "Duplicate mode index or name"
+        assert (
+                index not in self.modes
+            and str(index) not in self.mode_id_to_index 
+            and name not in self.mode_id_to_index 
+        ), "Duplicate mode index or name"
         assert all(
             k in self.modes for k in range(index)
             ), "Non-sequential mode index"
@@ -56,7 +63,11 @@ class Player:
         self.mode_id_to_index[str(index)] = index
         self.mode_id_to_index[name] = index
 
-    def _simple_mode(self, sequence, **kwargs):
+    def _simple_mode(
+            self, 
+            sequence: Callable, 
+            **kwargs
+        ):
         """Return closure to execute sequence indefinitely.
            with pace seconds in between.
            Pace=None produces an infinite wait, so in this case
@@ -68,9 +79,12 @@ class Player:
 
     def do_sequence(
             self, 
-            sequence, count=1, pace=None, 
-            stop=None, post_delay=None,
-            relay_override=None,
+            sequence: Callable, 
+            count: int = 1, 
+            pace: float = None, 
+            stop: int = None, 
+            post_delay: float = None,
+            relay_override: RelayOverride = None,
         ):
         """Execute sequence count times, with pace seconds in between.
            If stop is specified, end the sequence 
@@ -93,7 +107,13 @@ class Player:
         if post_delay is not None:
             self.sign.wait_for_button_interrupt(post_delay)
 
-    def execute(self, command=None, mode_index=None, light_pattern=None, brightness_pattern=None):
+    def execute(
+            self, 
+            command: str = None, 
+            mode_index: int = None, 
+            light_pattern: str = None, 
+            brightness_pattern: str = None
+        ):
         """Effects the specified command, mode or pattern(s)."""
         if command is not None:
             self.commands[command]()

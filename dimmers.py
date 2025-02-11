@@ -16,7 +16,7 @@ class Dimmer:
     transition_default = 0.5
     _dimmers = []
 
-    def __init__(self, ip_address):
+    def __init__(self, ip_address: str):
         """Create the dimmer instance."""
         self._dimmers.append(self)
         self.ip_address = ip_address
@@ -65,7 +65,7 @@ class Dimmer:
                 command.channel.brightness = b
     
     @classmethod
-    async def execute_multiple_commands(cls, commands):
+    async def execute_multiple_commands(cls, commands: list["DimmerCommand"]):
         """ Send multiple commands asynchronously. """
         async with asyncio.TaskGroup() as tg:
             for command in commands:
@@ -89,7 +89,13 @@ class Dimmer:
 
 class DimmerChannel:
     """ Models a single dimmer channel (light). """
-    def __init__(self, dimmer:Dimmer, id, output, brightness):
+    def __init__(
+            self, 
+            dimmer:Dimmer, 
+            id: int, 
+            output: bool, 
+            brightness: int,
+        ):
         """Create the dimmer channel instance."""
         self.dimmer = dimmer
         self.id = id

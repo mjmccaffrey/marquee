@@ -1,39 +1,20 @@
 
 Put some basic tests in place / integrate with github?
 
-WHY DID THIS NOT PRODUCE AN ERROR?
-python marquee.py mode 0000000000
+logging
+
+Quicker command-line fail by doing less before checking sys.args
 
 same level of errors with different switch?  - calculate failure % for new and old
 
-  File "/home/mjmccaffrey/marquee/dimmers.py", line 87, in set
-    self.session.get(
-  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 600, in get
-    return self.request("GET", url, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 587, in request
-    resp = self.send(prep, **send_kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 701, in send
-    r = adapter.send(request, **kwargs)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 578, in send
-    raise ReadTimeout(e, request=request)
-requests.exceptions.ReadTimeout: HTTPConnectionPool(host='192.168.51.111', port=80): Read timed out. (read timeout=1.0)
-mjmccaffrey@raspberrypi:~/marquee$
-
-
-
-    ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
-    # Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
-    # Rows of bulbs progressively fade, and then build back from the bottom
-    # Sides fade and build, and then top & bottom do the same
-    # Spin, or other action, as all bulbs slowly build
-    # Rotate 50% to 100% every 0.5 seconds
-    # Build and fade random corner pair
-    # blink_all_fade_seq with rotating order - build+0, fade+1, build+2, fade+3, etc.
-
-type hints for all object parameters
+## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
+# Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
+# Rows of bulbs progressively fade, and then build back from the bottom
+# Sides fade and build, and then top & bottom do the same
+# Spin, or other action, as all bulbs slowly build
+# Rotate 50% to 100% every 0.5 seconds
+# Build and fade random corner pair
+# blink_all_fade_seq with rotating order - build+0, fade+1, build+2, fade+3, etc.
 
 replace seq_all_xxx, pace=0 with something better
 
@@ -43,18 +24,11 @@ http://192.168.51.112/rpc/Light.Set?id=0&brightness=75&transition_duration=5&on=
 
 log and retry upon dimmer comm timeouts
 
-enable pi remote access
-
 why long pause before dimmers are init'ed?
 
 ASYNC the set commands
 
 soilidify requests / session
-add logging to show how / when failure occurs
-
-Split Relayboard and Dimmers into ABCs and model-specific classes
-
-Quicker command-line fail by doing less before checking sys.args
 
 Maybe timeouts are occurring when the previous command hasn't finished executing
 
@@ -68,7 +42,6 @@ Bugfix
 - Restore command-line examples
 
 Feature:
-_ specify brightness on command line: 0123456789A - without light pattern???
 _ fade even & odd lights at opposite phases
 _ Each light hits peak in counter/clockwise order
 _ Indicate more than 10 modes

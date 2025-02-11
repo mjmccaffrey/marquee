@@ -78,7 +78,7 @@ def register_modes(player: Player):
     player.add_mode(17, "build_NEQ", function=lambda: build1(player, False))
     player.add_mode(18, "build_EQ", function=lambda: build1(player, True))
 
-def build1(player, equal):
+def build1(player: Player, equal: bool):
     player.do_sequence(seq_all_on, pace=0)
     player.do_sequence(seq_all_off, pace=0, relay_override=RelayOverride(concurrent=True))
     levels = [(i + 1) * 10 for i in range(10)]
@@ -91,7 +91,7 @@ def build1(player, equal):
         dimmer.set(level=level, transition=transition)
     time.sleep(40)
 
-def mode_rhythmic_demo(player):
+def mode_rhythmic_demo(player: Player):
     """Perform a rhythmic demonstration."""
     while True:
         # !!!!!!!!! BREAK THIS UP INTO SUB-FUNCTIONS
@@ -195,12 +195,3 @@ def mode_rhythmic_demo(player):
         player.do_sequence(seq_all_on, post_delay=6.4)
         player.do_sequence(seq_all_off, post_delay=900)
 
-# def dimmer_odd_even(player):
-#     """ """
-#     
-#     up = range(0, 101, 5)
-#     down = reversed(up)
-#     pace = 0.5
-#     player.do_sequence(seq_all_off)
-#     while True:
-#         
