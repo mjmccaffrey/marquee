@@ -81,7 +81,7 @@ def register_modes(player: Player):
     player.add_mode(19, "random_fade", function=lambda: mode_random_fade(player))
 
 def mode_random_fade(player: Player):
-    schedule = [0] * player._sign.LIG
+    schedule = [0] * player._sign.LIGHT_COUNT
     while True:
         for i, t in enumerate(schedule):
             if t < (now := time.time()):

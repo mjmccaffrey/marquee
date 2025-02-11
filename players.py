@@ -20,7 +20,7 @@ class Player:
         self.commands = {'calibrate_dimmers': self.calibrate}
         self.modes = {}
         self.add_mode(0, "selection", self._mode_selection)
-        self._sign = signs.Sign()
+        self._sign: signs.Sign = signs.Sign()
 
     def close(self):
         """Close devices."""
