@@ -12,6 +12,30 @@ from buttons import (  # pylint: disable=unused-import
 from dimmers import Dimmer, RelayOverride
 import relayboards
 
+LIGHTS_BY_ROW = [
+    [    0, 1, 2,    ],
+    [ 9,          3, ],
+    [ 8,          4, ],
+    [    7, 6, 5,    ],
+]
+TOP_LIGHTS_LEFT_TO_RIGHT = [9, 0, 1, 2, 3]
+BOTTOM_LIGHTS_LEFT_TO_RIGHT = [8, 7, 6, 5, 4]
+LIGHTS_CLOCKWISE = [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+_LIGHT_TO_RELAY = {
+            0:  9,  1: 13,  2: 14,
+    9:  8,                          3: 15,
+    8:  7,                          4:  2,
+            7:  6,  6:  0,  5:  1,
+}
+LIGHT_COUNT = len(_LIGHT_TO_RELAY)
+_DIMMER_ADDRESSES = [
+    '192.168.51.111',
+    '192.168.51.112',
+    '192.168.51.113',
+    '192.168.51.114',
+    '192.168.51.115',
+]
+
 class Sign:
     """Supports the physical devices."""
 
