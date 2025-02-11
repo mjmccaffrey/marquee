@@ -5,7 +5,7 @@ import os
 import sys
 import time
 
-import argparse_patch
+from argparse_patch import ArgumentParserNeverExit, ArgumentError, ArgumentTypeError
 from modes import *
 from players import Player
 
@@ -46,7 +46,7 @@ def validate_brightness_pattern(arg: str):
     return arg
 
 def parse_runtime_arguments(player: Player):
-    parser = argparse_patch.ArgumentParserNeverExit(exit_on_error=False)
+    parser = ArgumentParserNeverExit(exit_on_error=False)
     subparsers = parser.add_subparsers(dest='operation', required=True)
     command_parser = subparsers.add_parser('command')
     command_parser.add_argument('command_name', choices=player.commands.keys())
@@ -61,7 +61,7 @@ def parse_runtime_arguments(player: Player):
     pattern_parser.add_argument('-do_not_derive_missing', dest='derive_missing', action='store_false')
     try:
         return parser.parse_args()
-    except ValueError as err:
+    except (ArgumentError, ArgumentTypeError, ValueError) as err:
         print(f"ERROR:{err}")
         return False
 

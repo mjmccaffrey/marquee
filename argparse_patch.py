@@ -1,6 +1,7 @@
-import argparse
 
-class ArgumentParserNeverExit(argparse.ArgumentParser):
+from argparse_patch import ArgumentParser, ArgumentError, ArgumentTypeError
+
+class ArgumentParserNeverExit(ArgumentParser):
     """
     !!!!
     https://bugs.python.org/issue41255
