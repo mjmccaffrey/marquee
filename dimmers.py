@@ -19,6 +19,7 @@ class Dimmer:
     @staticmethod
     def finish_setup():
         """"""
+        global aiohttp
         print("before")
         import aiohttp
         print("after")
