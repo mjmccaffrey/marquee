@@ -59,7 +59,7 @@ class Dimmer:
     @classmethod
     async def _execute_single_command(cls, command: "DimmerCommand"):
         """ Send individual command as part of asynchonous batch. """
-        async with "aiohttp".ClientSession() as session:
+        async with aiohttp.ClientSession() as session: # type: ignore
             async with session.get(
                 url=command.url,
                 params=command.params,
