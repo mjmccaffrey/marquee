@@ -19,7 +19,9 @@ class Dimmer:
     @staticmethod
     def finish_setup():
         """"""
+        print("before")
         import aiohttp
+        print("after")
 
     def __init__(self, ip_address: str):
         """Create the dimmer instance."""
