@@ -115,7 +115,7 @@ class Player:
             brightness_pattern: str = None
         ):
         """Effects the specified command, mode or pattern(s)."""
-        Dimmer.import_aiohttp()
+        Dimmer.finish_setup()
         if command is not None:
             self.commands[command]()
             return
