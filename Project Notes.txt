@@ -1,9 +1,8 @@
 
-Put some basic tests in place / integrate with github?
+Quicker command-line fail by doing less before checking sys.args
 
 logging
 
-Quicker command-line fail by doing less before checking sys.args
 
 same level of errors with different switch?  - calculate failure % for new and old
 
@@ -17,6 +16,12 @@ same level of errors with different switch?  - calculate failure % for new and o
 # blink_all_fade_seq with rotating order - build+0, fade+1, build+2, fade+3, etc.
 
 replace seq_all_xxx, pace=0 with something better
+
+Testing and Quality Assurance: Implement unit tests and use code coverage tools to ensure code quality and reliability.
+
+command line adjustment factors for:
+* pace
+* brightness
 
 http://192.168.51.115/light/0?turn=off
 

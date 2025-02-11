@@ -63,7 +63,7 @@ def register_modes(player: Player):
     )
     player.add_mode(15, "blink_all_fade_slowwww", seq_blink_all, simple=True, pace=10,
         relay_override=RelayOverride(
-            level_on=90,
+            level_on=100,
             transition_on=10,
             level_off=10,
             transition_off=10,
@@ -77,6 +77,7 @@ def register_modes(player: Player):
     )
     player.add_mode(17, "build_NEQ", function=lambda: build1(player, False))
     player.add_mode(18, "build_EQ", function=lambda: build1(player, True))
+    19: random brightness and transition - maintain table with completed times to restart each light
 
 def build1(player: Player, equal: bool):
     player.do_sequence(seq_all_on, pace=0)

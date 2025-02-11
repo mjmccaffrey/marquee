@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import requests
 import time
 
-import aiohttp
+# import aiohttp - Delayed
 
 TRANSITION_MINIMUM = 0.5
 TRANSITION_MAXIMUM = 10800.0
@@ -15,6 +15,11 @@ class Dimmer:
     channel_count = 2
     transition_default = 0.5
     _dimmers = []
+
+    @staticmethod
+    def import_aiohttp():
+        """"""
+        import aiohttp
 
     def __init__(self, ip_address: str):
         """Create the dimmer instance."""
