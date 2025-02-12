@@ -1,5 +1,6 @@
 
-Quicker command-line fail by doing less before checking sys.args
+Bugfix
+- Restore command-line examples
 
 logging
 
@@ -23,10 +24,6 @@ command line adjustment factors for:
 * pace
 * brightness
 
-http://192.168.51.115/light/0?turn=off
-
-http://192.168.51.112/rpc/Light.Set?id=0&brightness=75&transition_duration=5&on=false
-
 log and retry upon dimmer comm timeouts
 
 why long pause before dimmers are init'ed?
@@ -43,8 +40,6 @@ rythmic_demo:
 add extra 6 relays
 replace blah section with fading w/ basic beat
 
-Bugfix
-- Restore command-line examples
 
 Feature:
 _ fade even & odd lights at opposite phases
