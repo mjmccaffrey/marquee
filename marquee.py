@@ -5,7 +5,7 @@ import os
 import sys
 import time
 
-from argparse_patch import ArgumentParserNeverExit, ArgumentError, ArgumentTypeError
+from argparse_fix import ArgumentParserNeverExit, ArgumentError, ArgumentTypeError
 from modes import *
 from players import Player
 

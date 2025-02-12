@@ -3,14 +3,9 @@
 import asyncio
 import logging
 
-import buttons
-from buttons import (  # pylint: disable=unused-import
-    ButtonPressed,
-    PhysicalButtonPressed,
-    VirtualButtonPressed,
-)
-from dimmers import Dimmer, RelayOverride
-import relayboards
+from buttons import Button, PhysicalButtonPressed
+from dimmers import Dimmer, DimmerChannel, RelayOverride
+from relayboards import RelayBoard
 
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
@@ -39,44 +34,20 @@ _DIMMER_ADDRESSES = [
 class Sign:
     """Supports the physical devices."""
 
-    LIGHTS_BY_ROW = [
-        [    0, 1, 2,    ],
-        [ 9,          3, ],
-        [ 8,          4, ],
-        [    7, 6, 5,    ],
-    ]
-    TOP_LIGHTS_LEFT_TO_RIGHT = [9, 0, 1, 2, 3]
-    BOTTOM_LIGHTS_LEFT_TO_RIGHT = [8, 7, 6, 5, 4]
-    LIGHTS_CLOCKWISE = [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
-    _LIGHT_TO_RELAY = {
-                0:  9,  1: 13,  2: 14,
-        9:  8,                          3: 15,
-        8:  7,                          4:  2,
-                7:  6,  6:  0,  5:  1,
-    }
-    LIGHT_COUNT = len(_LIGHT_TO_RELAY)
-    _DIMMER_ADDRESSES = [
-        '192.168.51.111',
-        '192.168.51.112',
-        '192.168.51.113',
-        '192.168.51.114',
-        '192.168.51.115',
-    ]
-
     def __init__(self):
         """Prepare devices and initial state."""
-        self.dimmers = [
+        self.dimmers: list[Dimmer] = [
             Dimmer(address)
             for address in self._DIMMER_ADDRESSES
         ]
-        self.dimmer_channels = [
+        self.dimmer_channels: list[DimmerChannel] = [
             channel
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
         assert len(self.dimmer_channels) == self.LIGHT_COUNT
-        self._relayboard = relayboards.RelayBoard(self._LIGHT_TO_RELAY)
-        self._button = buttons.Button()
+        self._relayboard: RelayBoard = RelayBoard(self._LIGHT_TO_RELAY)
+        self._button = Button()
         self._current_pattern = self._relayboard.get_state_of_devices()
 
     def close(self):
