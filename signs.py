@@ -38,15 +38,15 @@ class Sign:
         """Prepare devices and initial state."""
         self.dimmers: list[Dimmer] = [
             Dimmer(address)
-            for address in self._DIMMER_ADDRESSES
+            for address in _DIMMER_ADDRESSES
         ]
         self.dimmer_channels: list[DimmerChannel] = [
             channel
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
-        assert len(self.dimmer_channels) == self.LIGHT_COUNT
-        self._relayboard: RelayBoard = RelayBoard(self._LIGHT_TO_RELAY)
+        assert len(self.dimmer_channels) == LIGHT_COUNT
+        self._relayboard: RelayBoard = RelayBoard(_LIGHT_TO_RELAY)
         self._button = Button()
         self._current_pattern = self._relayboard.get_state_of_devices()
 
