@@ -11,24 +11,15 @@ class ArgumentParserNeverExit(ArgumentParser):
     """ 
 
     def add_argument(self, *args, **kwargs):
-        print(f"add_args in:{args}")
+        print(f"add_args in:{args}:{kwargs}")
 
-        new_args = []
-        for arg in args:
-            new_args.append(arg)
-            if arg.startswith('-') and ('-' + arg) not in args:
-                new_args.append('-' + arg)
-            args = tuple(new_args)
-
-        #new_args = [
-        #    '-' + arg if arg.startswith('-') and ('-' + arg) not in args
-        #]
-        args = tuple(new_args + list(args))
-
-        #if len(args) == 1 and args[0].startswith('-'):
-        #    args = (args[0], ('-' + args[0]))
-        #    print(f"add_args out:{args}")
-
+        if kwargs.pop('optional', False):
+            new_args = [
+                ('-' + arg, '--' + arg)
+                for arg in args
+            ]
+            args = tuple(a for t in new_args for a in t)
+            print(f"add_args out:{args}:{kwargs}")
         return super().add_argument(*args, **kwargs)
     
     def error(self, message):
@@ -39,12 +30,8 @@ class ArgumentParserNeverExit(ArgumentParser):
 
 def str_to_bool(arg):
     values = {
-        'true': True, 
-        'yes': True, 
-        'on': True,
-        'false': False, 
-        'no': False, 
-        'off': False,
+        'true': True, 'yes': True, 'on': True,
+        'false': False, 'no': False, 'off': False,
     }
     try:
         return values[arg.lower()]
@@ -58,8 +45,12 @@ command_parser.add_argument('command_name', choices=['calibrate_all_dimmers'])
 mode_parser = subparsers.add_parser('mode')
 mode_parser.add_argument('mode_id', choices=['1', '2', 'ab', 'cd'])
 pattern_parser = subparsers.add_parser('pattern')
-pattern_parser.add_argument('-relay', nargs=1, type=lambda p: len(p)==10)
-pattern_parser.add_argument('-dimmer', nargs=1, type=lambda p: len(p)==10)
-pattern_parser.add_argument('-derive_missing', dest='derive_missing', type=str_to_bool, default=True)
+pattern_parser.add_argument(
+    'relay', optional=True, nargs=1, type=lambda p: len(p)==10)
+pattern_parser.add_argument(
+    'dimmer', optional=True, nargs=1, type=lambda p: len(p)==10)
+pattern_parser.add_argument(
+    'derive_missing', optional=True, dest='derive_missing', 
+    type=str_to_bool, default=True)
 
 print(parser.parse_args())

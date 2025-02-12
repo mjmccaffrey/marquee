@@ -47,3 +47,23 @@ _ Each light hits peak in counter/clockwise order
 _ Indicate more than 10 modes
 
 
+        #new_args = []
+        #for arg in args:
+        #    new_args.append(arg)
+        #    if arg.startswith('-') and ('-' + arg) not in args:
+        #        new_args.append('-' + arg)
+        #args = tuple(new_args)
+
+        new_args = [ 
+            '-' + arg 
+            if      arg.startswith('-')
+                and not arg.startswith('--')
+                and ('-' + arg) not in args
+            else None
+        ]
+        args = tuple([a for a in new_args if a is not None] + list(args))
+
+        #if len(args) == 1 and args[0].startswith('-'):
+        #    args = (args[0], ('-' + args[0]))
+        #    print(f"add_args out:{args}")
+        
