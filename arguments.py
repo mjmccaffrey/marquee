@@ -42,10 +42,11 @@ def display_help(player: Player):
     """"Display the command-line syntax."""
     print()
     print("Usage:")
-    print("  marquee.py mode <mode_index | mode_name>")
-    print("  marquee.py pattern [<--dimmer=[pattern]> &| <--relay=[pattern]>]")
-    print("                     <--derive_missing=[true|false]>")
+    print("  marquee.py mode [mode_index | mode_name]")
+    print("  marquee.py pattern [--dimmer=[pattern] &| --relay=[pattern]]")
+    print("                     [--derive_missing=[true|false]]")
     print("  marquee.py command [command_name]")
+    print()
     print("Modes:")
     for index, entry in player.modes.items():
         if index != 0:
@@ -56,8 +57,10 @@ def display_help(player: Player):
     print("  derive_missing:")
     print("      If true (default) and only one pattern is specified,")
     print("      the missing pattern will be assumed.")
-    print("      If only 1 pattern is specified, override the default behavior")
-    print("      of calculating the missing pattern from the provided one.")
+    print("      If false, the state of the device set without a pattern")
+    print("      will not be initialized at startup.")
+    print("      ")
+    print()
     print("Commands:")
     for command in player.commands:
         print(f'  {command}')
