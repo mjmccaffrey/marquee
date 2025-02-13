@@ -1,6 +1,15 @@
 
+
+
+Kelly
+Physical in May
+
+except signs.ButtonPressed:
+
 Bugfix
 - Restore command-line examples
+
+
 
 logging
 
@@ -25,8 +34,6 @@ command line adjustment factors for:
 * brightness
 
 log and retry upon dimmer comm timeouts
-
-why long pause before dimmers are init'ed?
 
 ASYNC the set commands
 

@@ -16,6 +16,7 @@ class Player:
         self.mode_current = None
         self.mode_desired = None
         self.mode_previous = None
+        self.pace_factor = 1.0
         self.mode_id_to_index = {}
         self.commands = {'calibrate_dimmers': self.calibrate}
         self.modes = {}
@@ -103,7 +104,8 @@ class Player:
                 self._sign.set_lights(
                     lights, relay_override,
                 )
-                self._sign.wait_for_button_interrupt(next(pace))
+                pace = next(pace) * self.pace_factor
+                self._sign.wait_for_button_interrupt()
         if post_delay is not None:
             self.sign.wait_for_button_interrupt(post_delay)
 

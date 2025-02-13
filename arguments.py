@@ -14,15 +14,12 @@ class ArgumentParserImproved(ArgumentParser):
     """ 
 
     def add_argument(self, *args, **kwargs):
-        print(f"add_args in:{args}:{kwargs}")
-
         if kwargs.pop('optional', False):
             new_args = [
                 ('-' + arg, '--' + arg)
                 for arg in args
             ]
             args = tuple(a for t in new_args for a in t)
-            print(f"add_args out:{args}:{kwargs}")
         return super().add_argument(*args, **kwargs)
     
     def error(self, message):
@@ -45,25 +42,25 @@ def display_help(player: Player):
     """"Display the command-line syntax."""
     print()
     print("Usage:")
-    print("\tmarquee.py mode <mode_index | mode_name>")
-    print("\tmarquee.py pattern [<--dimmer=[pattern]> &| <--relay=[pattern]>] "
-          "<--derive_missing=[true|false]>")
-    print("\tmarquee.py command [command_name]")
-    print("Modes (specify an index or a name):")
+    print("  marquee.py mode <mode_index | mode_name>")
+    print("  marquee.py pattern [<--dimmer=[pattern]> &| <--relay=[pattern]>]")
+    print("                     <--derive_missing=[true|false]>")
+    print("  marquee.py command [command_name]")
+    print("Modes:")
     for index, entry in player.modes.items():
         if index != 0:
             print(f'   {index}   {entry.name}')
-    print("Patterns (specify dimmer, or relay, or both):")
-    print("    dimmer: 10 hex values, each 0..A (0%..100%)")
-    print("    relay: 10 binary values")
-    print("    derive_missing:")
-    print("        If true (default) and only one pattern is specified, "
-          "the missing pattern will be assumed.")
-    print("        If only 1 pattern is specified, override the default behavior "
-          "of calculating the missing pattern from the provided one.")
+    print("Patterns: Specify --dimmer, --relay, or both.")
+    print("  dimmer: 10 hex values, each 0..A (0%..100%)")
+    print("  relay: 10 binary values")
+    print("  derive_missing:")
+    print("      If true (default) and only one pattern is specified,")
+    print("      the missing pattern will be assumed.")
+    print("      If only 1 pattern is specified, override the default behavior")
+    print("      of calculating the missing pattern from the provided one.")
     print("Commands:")
     for command in player.commands:
-        print(f'    {command}')
+        print(f'  {command}')
     print()
 
 def validate_light_pattern(arg: str):
@@ -92,6 +89,8 @@ def parse_runtime_arguments(player: Player):
     command_p.add_argument('command_name', choices=player.commands.keys())
     mode_p = sub_p.add_parser('mode')
     mode_p.add_argument('mode_id', choices=player.mode_id_to_index.keys())
+    mode_p.add_argument('pace_factor', 
+        optional=True, type=float, default=1.0)
     pattern_p = sub_p.add_parser('pattern')
     pattern_p.add_argument('relay', 
         optional=True, type=validate_light_pattern)
@@ -113,6 +112,7 @@ def process_runtime_arguments(player: Player):
     print(f'parsed:{parsed}')
     if not parsed:
         return False
+    player.pace_factor = parsed['pace_factor']
     if parsed.operation == 'command':
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':
