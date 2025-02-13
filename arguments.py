@@ -51,6 +51,7 @@ def display_help(player: Player):
     for index, entry in player.modes.items():
         if index != 0:
             print(f'   {index}   {entry.name}')
+    print()
     print("Patterns: Specify --dimmer, --relay, or both.")
     print("  dimmer: 10 hex values, each 0..A (0%..100%)")
     print("  relay: 10 binary values")
@@ -59,7 +60,6 @@ def display_help(player: Player):
     print("      the missing pattern will be assumed.")
     print("      If false, the state of the device set without a pattern")
     print("      will not be initialized at startup.")
-    print("      ")
     print()
     print("Commands:")
     for command in player.commands:
@@ -115,7 +115,7 @@ def process_runtime_arguments(player: Player):
     print(f'parsed:{parsed}')
     if not parsed:
         return False
-    player.pace_factor = parsed['pace_factor']
+    player.pace_factor = parsed.pace_factor
     if parsed.operation == 'command':
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':
