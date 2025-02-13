@@ -69,7 +69,7 @@ class Sign:
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
-        if ro := relay_override is not None:
+        if (ro := relay_override) is not None:
             levels = {0: ro.level_off, 1: ro.level_on}
             transitions = {
                 0: ro.transition_off * ro.pace, 
