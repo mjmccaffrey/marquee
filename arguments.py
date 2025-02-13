@@ -115,11 +115,11 @@ def process_runtime_arguments(player: Player):
     print(f'parsed:{parsed}')
     if not parsed:
         return False
-    player.pace_factor = parsed.pace_factor
     if parsed.operation == 'command':
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':
         args = {"mode_index": player.mode_id_to_index[parsed.mode_id]}
+        player.pace_factor = parsed.pace_factor
     elif parsed.operation == 'pattern':
         args = {}
         if p:= parsed.relay:

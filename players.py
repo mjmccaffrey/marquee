@@ -106,6 +106,7 @@ class Player:
                     p *= self.pace_factor
                     if relay_override is not None:
                         relay_override.pace_factor = self.pace_factor
+                    print(relay_override)
                 self._sign.set_lights(
                     lights, relay_override,
                 )

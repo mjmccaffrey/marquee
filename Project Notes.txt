@@ -1,8 +1,5 @@
 
-
-
-Kelly
-Physical in May
+WHY: 0: 3.0; 1: 3.0
 
 except signs.ButtonPressed:
 
