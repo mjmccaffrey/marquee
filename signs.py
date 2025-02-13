@@ -72,8 +72,8 @@ class Sign:
         if (ro := relay_override) is not None:
             levels = {0: ro.level_off, 1: ro.level_on}
             transitions = {
-                0: ro.transition_off * ro.pace, 
-                1: ro.transition_on * ro.pace
+                0: ro.transition_off * ro.pace_factor, 
+                1: ro.transition_on * ro.pace_factor,
             }
             print(transitions)
             pattern = [int(p) for p in pattern]

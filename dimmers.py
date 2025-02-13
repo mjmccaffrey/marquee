@@ -176,6 +176,6 @@ class RelayOverride:
     concurrent: bool = False
     level_on: int = 100
     level_off: int = 0
-    pace: float = 1.0
+    pace_factor: float = 1.0
     transition_on: float = TRANSITION_MINIMUM
     transition_off: float = TRANSITION_MINIMUM

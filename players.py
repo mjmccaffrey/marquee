@@ -103,9 +103,9 @@ class Player:
                     break
                 p = next(pace)
                 if p is not None:
-                    p * self.pace_factor
+                    p *= self.pace_factor
                     if relay_override is not None:
-                        relay_override.pace = p
+                        relay_override.pace_factor = self.pace_factor
                 self._sign.set_lights(
                     lights, relay_override,
                 )
