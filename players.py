@@ -7,7 +7,7 @@ import types
 
 from dimmers import Dimmer, RelayOverride
 from sequences import seq_all_off, seq_all_on, seq_rotate_build
-import signs
+from signs import Sign, ButtonPressed
 
 class Player:
     """Manages execution at a high level."""
@@ -21,7 +21,7 @@ class Player:
         self.commands = {'calibrate_dimmers': self.calibrate}
         self.modes = {}
         self.add_mode(0, "selection", self._mode_selection)
-        self._sign: signs.Sign = signs.Sign()
+        self._sign: Sign = Sign()
 
     def close(self):
         """Close devices."""
@@ -126,7 +126,7 @@ class Player:
             while True:
                 try:
                     self.modes[self.mode_current].function()
-                except signs.ButtonPressed:
+                except ButtonPressed:
                     # Enter selection mode
                     self.mode_previous = self.mode_current
                     self.mode_current = 0
@@ -163,7 +163,7 @@ class Player:
             self._indicate_mode_desired()
             try:
                 self._sign.wait_for_button_interrupt(5)
-            except signs.ButtonPressed:
+            except ButtonPressed:
                 pass
             else:
                 # If we get here, the time elapsed
