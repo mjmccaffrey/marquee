@@ -104,11 +104,8 @@ class Player:
                 self._sign.set_lights(
                     lights, relay_override,
                 )
-                pace = (
-                    p := next(pace) 
-                    if pace is None else 
-                    p * self.pace_factor
-                )
+                pace = next(pace)
+                pace = pace if pace is None else pace * self.pace_factor
                 self._sign.wait_for_button_interrupt(pace)
         if post_delay is not None:
             self.sign.wait_for_button_interrupt(post_delay)
