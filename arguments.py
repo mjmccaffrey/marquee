@@ -87,7 +87,7 @@ def validate_brightness_pattern(arg: str):
 
 def parse_runtime_arguments(player: Player):
     top_p = ArgumentParserImproved(exit_on_error=False)
-    sub_p = top_p.add_sub_p(dest='operation', required=True)
+    sub_p = top_p.add_subparsers(dest='operation', required=True)
     command_p = sub_p.add_parser('command')
     command_p.add_argument('command_name', choices=player.commands.keys())
     mode_p = sub_p.add_parser('mode')
