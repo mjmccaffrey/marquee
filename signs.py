@@ -75,6 +75,7 @@ class Sign:
                 0: ro.transition_off * ro.pace, 
                 1: ro.transition_on * ro.pace
             }
+            print(transitions)
             pattern = [int(p) for p in pattern]
             if relay_override.concurrent:
                 commands = [
