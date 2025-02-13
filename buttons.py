@@ -3,7 +3,7 @@
 import signal
 import threading
 
-from gpiozero import Button  # type: ignore
+from gpiozero import Button as _Button  # type: ignore
 
 class ButtonPressed(Exception):
     """Button pressed exception; not an error."""
@@ -20,7 +20,7 @@ class Button:
 
     def __init__(self):
         """Create the (only) button instance."""
-        self._button: Button = Button(pin=4, bounce_time=0.10)
+        self._button: _Button = _Button(pin=4, bounce_time=0.10)
         self.reset()
         signal.signal(
             signal.SIGUSR1,  # pylint: disable=no-member
