@@ -20,9 +20,7 @@ class Dimmer:
     def finish_setup():
         """"""
         global aiohttp
-        print("before")
         import aiohttp
-        print("after")
 
     def __init__(self, ip_address: str):
         """Create the dimmer instance."""
@@ -178,5 +176,6 @@ class RelayOverride:
     concurrent: bool = False
     level_on: int = 100
     level_off: int = 0
+    pace: float = 1.0
     transition_on: float = TRANSITION_MINIMUM
     transition_off: float = TRANSITION_MINIMUM

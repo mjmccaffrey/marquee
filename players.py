@@ -101,11 +101,14 @@ class Player:
             for i, lights in enumerate(sequence()):
                 if stop is not None and i == stop:
                     break
+                p = next(pace)
+                if p is not None:
+                    p * self.pace_factor
+                    if relay_override is not None:
+                        relay_override.pace = p
                 self._sign.set_lights(
                     lights, relay_override,
                 )
-                p = next(pace)
-                p = p if p is None else p * self.pace_factor
                 self._sign.wait_for_button_interrupt(p)
         if post_delay is not None:
             self.sign.wait_for_button_interrupt(post_delay)
