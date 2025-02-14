@@ -7,7 +7,7 @@ import time
 
 from dimmers import RelayOverride
 from players import Player
-from signs import LIGHT_COUNT
+from signs import ALL_ON, ALL_OFF, LIGHT_COUNT
 
 def register_modes(player: Player):
     """Register the operating modes."""
@@ -96,8 +96,9 @@ def mode_random_fade(player: Player):
         time.sleep(1)
 
 def build1(player: Player, equal: bool):
-    player.do_sequence(seq_all_on, pace=0)
-    player.do_sequence(seq_all_off, pace=0, relay_override=RelayOverride(concurrent=True))
+    player.sign.set_lights(ALL_ON)
+    player.sign.set_lights(ALL_OFF, relay_override=RelayOverride(concurrent=True))
+
     levels = [(i + 1) * 10 for i in range(10)]
     transitions = (
         [20] * 10 
@@ -106,7 +107,7 @@ def build1(player: Player, equal: bool):
     )
     for dimmer, level, transition in zip(player.sign.dimmer_channels, levels, transitions):
         dimmer.set(level=level, transition=transition)
-    time.sleep(40)
+    player.pace_wait(40)
 
 def mode_rhythmic_demo(player: Player):
     """Perform a rhythmic demonstration."""
