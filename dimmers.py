@@ -7,13 +7,13 @@ import time
 
 # import aiohttp - Delayed
 
+TRANSITION_DEFAULT = 0.5
 TRANSITION_MINIMUM = 0.5
 TRANSITION_MAXIMUM = 10800.0
 
 class Dimmer:
     """Supports the Shelly Pro Dimmer 2PM."""
     channel_count = 2
-    transition_default = 0.5
     _dimmers = []
 
     @staticmethod
@@ -132,7 +132,7 @@ class DimmerChannel:
             ({'brightness': brightness} 
                 if brightness is not None else {}) |
             ({'transition_duration': 
-                transition or self.dimmer.transition_default}) |
+                transition or TRANSITION_DEFAULT}) |
             ({'on': str(output).lower()} if output is not None else {})
         )
         return DimmerCommand(

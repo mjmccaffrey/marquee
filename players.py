@@ -5,7 +5,7 @@ import itertools
 import time
 import types
 
-from dimmers import Dimmer, RelayOverride
+from dimmers import Dimmer, RelayOverride, TRANSITION_DEFAULT
 from sequences import seq_rotate_build
 from signs import ALL_ON, ALL_OFF, Sign, ButtonPressed
 
@@ -142,7 +142,8 @@ class Player:
                     self.mode_current = 0
         else:
             if brightness_pattern is not None:
-                self.sign.set_dimmers(brightness_pattern, wait=True)
+                self.sign.set_dimmers(brightness_pattern)
+                self.sign.wait_for_button_interrupt(TRANSITION_DEFAULT)
             if light_pattern is not None:
                 self.sign.set_lights(light_pattern)
 
