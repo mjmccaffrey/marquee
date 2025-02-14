@@ -81,7 +81,9 @@ def validate_brightness_pattern(arg: str):
     if not (
         len(arg) == LIGHT_COUNT and 
         all(e in "0123456789AF" for e in arg)
-    ): raise ValueError("Invalid brightness pattern")
+    ): 
+        print("Invalid brightness pattern")
+        raise ValueError("Invalid brightness pattern")
     return arg
 
 def parse_arguments(player: Player):
