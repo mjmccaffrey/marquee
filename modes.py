@@ -100,7 +100,7 @@ def mode_random_fade(player: Player):
                     level = _new_level(channel.brightness)
                 )
                 channel.next_update = now + tran
-        player.pace_wait(1)
+        player.pace_wait(0.1)
 
 def build1(player: Player, equal: bool):
     player.sign.set_lights(ALL_ON)

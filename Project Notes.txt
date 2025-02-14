@@ -1,7 +1,8 @@
 
-transition_time must not be < MINIMUM
 
 resolve brightness vs level
+
+mode_random_fade, but without random transition times
 
 order QR code signs
 
