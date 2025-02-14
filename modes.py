@@ -97,7 +97,8 @@ def mode_random_fade(player: Player):
 
 def build1(player: Player, equal: bool):
     player.sign.set_lights(ALL_ON)
-    player.sign.set_lights(ALL_OFF, relay_override=RelayOverride(concurrent=True))
+    player.sign.set_lights(ALL_OFF, 
+        relay_override=RelayOverride(concurrent=True))
 
     levels = [(i + 1) * 10 for i in range(10)]
     transitions = (

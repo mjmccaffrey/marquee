@@ -112,7 +112,7 @@ def process_arguments(player: Player):
        Return dict of parameters if the arguments are valid, 
        otherwise False."""
     parsed = parse_arguments(player)
-    print(f'parsed:{parsed}')
+    ##print(f'parsed:{parsed}')
     if not parsed:
         return False
     if parsed.operation == 'command':
