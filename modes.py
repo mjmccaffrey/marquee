@@ -86,14 +86,14 @@ def mode_random_fade(player: Player):
     while True:
         for i, t in enumerate(schedule):
             if t < (now := time.time()):
-                transition = random.uniform(TRANSITION_MINIMUM, 3)
+                transition = random.uniform(TRANSITION_MINIMUM, 5)
                 level = random.randrange(101)
                 schedule[i] = now + transition
                 player.sign.dimmer_channels[i].set(
                     level=level,
                     transition=transition,
                 )
-        time.sleep(1)
+        player.pace_wait(1)
 
 def build1(player: Player, equal: bool):
     player.sign.set_lights(ALL_ON)

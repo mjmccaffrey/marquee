@@ -1,4 +1,6 @@
 
+transition_time must not be < MINIMUM
+
 ASYNC the set commands
 
 logging
