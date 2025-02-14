@@ -77,17 +77,29 @@ def register_modes(player: Player):
     player.add_mode(19, "random_fade", function=lambda: mode_random_fade(player))
 
 def mode_random_fade(player: Player):
-    schedule = [0.0] * LIGHT_COUNT
+
+    def _new_transition() -> float:
+        """"""
+        return random.uniform(TRANSITION_MINIMUM, 5 * player.pace_factor)
+    
+    def _new_level(old) -> int:
+        """"""
+        new = old
+        while abs(new - old) < 20:
+            new = random.randrange(101)
+        return new
+
+    for channel in player.sign.dimmer_channels:
+        channel.next_update = 0
+
     while True:
-        for i, t in enumerate(schedule):
-            if t < (now := time.time()):
-                transition = random.uniform(TRANSITION_MINIMUM, 5 * player.pace_factor)
-                level = random.randrange(101)
-                schedule[i] = now + transition
-                player.sign.dimmer_channels[i].set(
-                    level=level,
-                    transition=transition,
+        for channel in player.sign.dimmer_channels:
+            if channel.next_update < (now := time.time()):
+                channel.set(
+                    transition = (tran := _new_transition()),
+                    level = _new_level(channel.level)
                 )
+                channel.next_update = now + tran
         player.pace_wait(1)
 
 def build1(player: Player, equal: bool):

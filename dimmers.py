@@ -109,6 +109,7 @@ class DimmerChannel:
         self.id = id
         self.output = output
         self.brightness = brightness
+        self.next_update = None
         self.set(output=True)  # !!!???
 
     def interpret_set_parameters(
