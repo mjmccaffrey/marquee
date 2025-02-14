@@ -6,8 +6,8 @@ import time
 import types
 
 from dimmers import Dimmer, RelayOverride
-from sequences import seq_all_off, seq_all_on, seq_rotate_build
-from signs import Sign, ButtonPressed
+from sequences import seq_rotate_build
+from signs import ALL_ON, ALL_OFF, Sign, ButtonPressed
 
 class Player:
     """Manages execution at a high level."""
@@ -29,7 +29,7 @@ class Player:
 
     def calibrate(self):
         """"""
-        self.do_sequence(seq_all_on, pace=0)
+        self.sign.set_lights(ALL_ON)
         time.sleep(5)
         Dimmer.calibrate_all()
 
@@ -92,7 +92,7 @@ class Player:
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
         if relay_override is not None:
-            self.do_sequence(seq_all_on, pace=0)
+            self.sign.set_lights(ALL_ON)  # !!!???
         if isinstance(pace, (float, int)) or pace is None:
             pace = itertools.repeat(pace)
         else:
@@ -142,9 +142,7 @@ class Player:
 
     def _indicate_mode_desired(self):
         """Show user what desired mode number is currently selected."""
-        self.do_sequence(
-            seq_all_off, pace=0
-        )
+        self.sign.set_lights(ALL_ON)
         time.sleep(0.6)
         for _ in range(self.mode_desired // 10):
             self.do_sequence(

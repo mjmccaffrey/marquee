@@ -30,6 +30,8 @@ _DIMMER_ADDRESSES = [
     '192.168.51.114',
     '192.168.51.115',
 ]
+ALL_ON = "1" * LIGHT_COUNT
+ALL_OFF = "0" * LIGHT_COUNT
 
 class Sign:
     """Supports the physical devices."""

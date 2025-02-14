@@ -1,10 +1,5 @@
 """Marquee Lighted Sign Project - main"""
 
-import contextlib
-import os
-import sys
-import time
-
 from arguments import display_help, process_arguments
 from modes import register_modes
 from players import Player
@@ -19,7 +14,10 @@ def main():
         else:
             display_help(player)
     finally:
-        player.close()  # !!! ignore errors
+        try:
+            player.close()
+        except Exception:
+            pass
 
 if __name__ == "__main__":
     main()

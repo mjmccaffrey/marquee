@@ -44,7 +44,7 @@ def register_modes(player: Player):
             # level_off=10,
         )
     )
-    player.add_mode(12, "blink_all_fade_seq", seq_blink_all, simple=True, pace=0.15,  # ,
+    player.add_mode(12, "blink_all_fade_seq", seq_blink_all, simple=True, pace=0.15,
         relay_override=RelayOverride(
             transition_on=0.5,
             transition_off=0.5,
@@ -104,7 +104,7 @@ def build1(player: Player, equal: bool):
             if equal else
         [(i + 1) * 2 for i in range(10)]
     )
-    for dimmer, level, transition in zip(player.sign._dimmer_channels, levels, transitions):
+    for dimmer, level, transition in zip(player.sign.dimmer_channels, levels, transitions):
         dimmer.set(level=level, transition=transition)
     time.sleep(40)
 

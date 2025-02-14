@@ -1,4 +1,4 @@
-""""""
+"""Marquee Lighted Sign Project - arguments"""
 
 from argparse import ArgumentParser, ArgumentError, ArgumentTypeError
 from players import Player
