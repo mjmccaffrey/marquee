@@ -85,7 +85,7 @@ def mode_random_fade(player: Player):
     def _new_level(old) -> int:
         """"""
         new = old
-        while abs(new - old) < 20:
+        while abs(new - old) < 10:
             new = random.randrange(101)
         return new
 
