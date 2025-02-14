@@ -78,7 +78,7 @@ class Player:
                 self.do_sequence(sequence, **kwargs)
         return template
 
-    def wait(self, seconds: float):
+    def pace_wait(self, seconds: float):
         """"""
         self.sign.wait_for_button_interrupt(seconds * self.pace_factor)
 
@@ -107,16 +107,15 @@ class Player:
                     break
                 p = next(pace)
                 if p is not None:
-                    p *= self.pace_factor
                     if relay_override is not None:
                         relay_override.pace_factor = self.pace_factor
                     print(relay_override)
                 self.sign.set_lights(
                     lights, relay_override,
                 )
-                self.wait(p)
+                self.pace_wait(p)
         if post_delay is not None:
-            self.wait(post_delay)
+            self.pace_wait(post_delay)
 
     def execute(
             self, 
@@ -169,7 +168,7 @@ class Player:
                     self.mode_desired += 1
             self._indicate_mode_desired()
             try:
-                self.wait(5)
+                self.sign.wait_for_button_interrupt(5)
             except ButtonPressed:
                 pass
             else:
