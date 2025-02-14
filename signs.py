@@ -4,7 +4,7 @@ import asyncio
 import logging
 
 from buttons import Button, ButtonPressed, PhysicalButtonPressed
-from dimmers import Dimmer, DimmerChannel, RelayOverride
+from dimmers import Dimmer, DimmerChannel, RelayOverride, TRANSITION_MINIMUM
 from relayboards import RelayBoard
 
 LIGHTS_BY_ROW = [
@@ -74,8 +74,8 @@ class Sign:
         if (ro := relay_override) is not None:
             levels = {0: ro.level_off, 1: ro.level_on}
             transitions = {
-                0: ro.transition_off * ro.pace_factor, 
-                1: ro.transition_on * ro.pace_factor,
+                0: max(TRANSITION_MINIMUM, ro.transition_off * ro.pace_factor), 
+                1: max(TRANSITION_MINIMUM, ro.transition_on * ro.pace_factor),
             }
             print(transitions)
             pattern = [int(p) for p in pattern]

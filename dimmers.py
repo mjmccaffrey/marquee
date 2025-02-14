@@ -118,6 +118,7 @@ class DimmerChannel:
         output: bool = None,
     ):
         """Produce dimmer API parameters from requested values and state."""
+        assert transition is None or transition >= TRANSITION_MINIMUM
         if level is not None:
             brightness = level 
         elif offset is not None:

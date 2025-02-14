@@ -37,12 +37,7 @@ def register_modes(player: Player):
     player.add_mode(11, "random_flip_fade",
         lambda: seq_random_flip(player.sign.current_pattern),
         simple=True, pace=2.0,
-        relay_override=RelayOverride(
-            # transition_on=1.0,
-            # transition_off=3.0,
-            # level_on=80,
-            # level_off=10,
-        )
+        relay_override=RelayOverride(),
     )
     player.add_mode(12, "blink_all_fade_seq", seq_blink_all, simple=True, pace=0.15,
         relay_override=RelayOverride(
@@ -99,7 +94,6 @@ def build1(player: Player, equal: bool):
     player.sign.set_lights(ALL_ON)
     player.sign.set_lights(ALL_OFF, 
         relay_override=RelayOverride(concurrent=True))
-
     levels = [(i + 1) * 10 for i in range(10)]
     transitions = (
         [20] * 10 

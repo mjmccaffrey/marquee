@@ -61,8 +61,9 @@ class Player:
             name=name,
             function=function,
         )
-        self.mode_id_to_index[str(index)] = index
-        self.mode_id_to_index[name] = index
+        if index > 0:
+            self.mode_id_to_index[str(index)] = index
+            self.mode_id_to_index[name] = index
 
     def _simple_mode(
             self, 

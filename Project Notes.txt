@@ -1,6 +1,8 @@
 
 transition_time must not be < MINIMUM
 
+order QR code signs
+
 ASYNC the set commands
 
 logging

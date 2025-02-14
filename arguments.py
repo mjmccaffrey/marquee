@@ -49,8 +49,7 @@ def display_help(player: Player):
     print()
     print("Modes:")
     for index, entry in player.modes.items():
-        if index != 0:
-            print(f'   {index}   {entry.name}')
+        print(f'   {index}   {entry.name}')
     print()
     print("Patterns: Specify --dimmer, --relay, or both.")
     print("  dimmer: 10 hex values, each 0..A (0%..100%)")
@@ -86,6 +85,7 @@ def validate_brightness_pattern(arg: str):
     return arg
 
 def parse_arguments(player: Player):
+    """"""
     top_p = ArgumentParserImproved(exit_on_error=False)
     sub_p = top_p.add_subparsers(dest='operation', required=True)
     command_p = sub_p.add_parser('command')
