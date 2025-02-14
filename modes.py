@@ -86,7 +86,7 @@ def mode_random_fade(player: Player):
     while True:
         for i, t in enumerate(schedule):
             if t < (now := time.time()):
-                transition = random.uniform(TRANSITION_MINIMUM, 5)
+                transition = random.uniform(TRANSITION_MINIMUM, 5 * player.pace_factor)
                 level = random.randrange(101)
                 schedule[i] = now + transition
                 player.sign.dimmer_channels[i].set(
