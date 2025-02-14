@@ -80,6 +80,7 @@ class Dimmer:
     @classmethod
     def calibrate_all(cls):
         """ Execute calibration on all dimmers on each successive channel. """
+        print("top")
         for id in range(cls.channel_count):
             commands = [
                 DimmerCommand(
@@ -89,6 +90,7 @@ class Dimmer:
                 )
                 for dimmer in cls._dimmers
             ]
+            print(commands)
             asyncio.run(cls.execute_multiple_commands(commands))
             print(f"Calibrate running for channels: {id}")
             time.sleep(150)
