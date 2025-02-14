@@ -7,6 +7,8 @@ mode_random_fade, but without random transition times
 order QR code signs
 vinyl sign?
 
+only import aiohttp for certain operations?
+
 ASYNC the set commands
 
 logging

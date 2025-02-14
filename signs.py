@@ -72,6 +72,7 @@ class Sign:
            Set _current_pattern, always as a string
            rather than a list."""
         if (ro := relay_override) is not None:
+            # !!! break this out
             levels = {0: ro.level_off, 1: ro.level_on}
             transitions = {
                 0: max(TRANSITION_MINIMUM, ro.transition_off * ro.pace_factor), 
@@ -104,7 +105,11 @@ class Sign:
             dimmer_pattern: str,
         ):
         """ Set the dimmers per the supplied dimmer pattern. """
-        for d, b in zip(self.dimmer_channels, [int(p, 16) * 10 for p in dimmer_pattern]):
+        pattern = [  # !!! adjust for frosted 40 watt
+            15 if p == '1' else int(p, 16) * 10 
+            for p in dimmer_pattern
+        ]
+        for d, b in zip(self.dimmer_channels, pattern):
             d.set(level=b)
 
     @property

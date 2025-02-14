@@ -140,7 +140,7 @@ class Player:
                     # Enter selection mode
                     self.mode_previous = self.mode_current
                     self.mode_current = 0
-        else:
+        else:  # ??? flip order and remove wait?
             if brightness_pattern is not None:
                 self.sign.set_dimmers(brightness_pattern)
                 self.sign.wait_for_button_interrupt(TRANSITION_DEFAULT)
