@@ -5,6 +5,7 @@ resolve brightness vs level
 mode_random_fade, but without random transition times
 
 order QR code signs
+vinyl sign?
 
 ASYNC the set commands
 

@@ -122,16 +122,17 @@ class Player:
             self, 
             command: str = None, 
             mode_index: int = None, 
+            pace_factor: float = None,
             light_pattern: str = None, 
-            brightness_pattern: str = None
+            brightness_pattern: str = None,
         ):
         """Effects the specified command, mode or pattern(s)."""
         Dimmer.finish_setup()
         if command is not None:
             self.commands[command]()
-            return
-        if mode_index is not None:
+        elif mode_index is not None:
             self.mode_current = mode_index
+            self.pace_factor = pace_factor
             while True:
                 try:
                     self.modes[self.mode_current].function()
@@ -139,10 +140,11 @@ class Player:
                     # Enter selection mode
                     self.mode_previous = self.mode_current
                     self.mode_current = 0
-        if light_pattern is not None:
-            self.sign.set_lights(light_pattern)
-        if brightness_pattern is not None:
-            self.sign.set_dimmers(brightness_pattern)
+        else:
+            if brightness_pattern is not None:
+                self.sign.set_dimmers(brightness_pattern, wait=True)
+            if light_pattern is not None:
+                self.sign.set_lights(light_pattern)
 
     def _indicate_mode_desired(self):
         """Show user what desired mode number is currently selected."""
