@@ -21,11 +21,11 @@ class Player:
         self.commands = {'calibrate_dimmers': self.calibrate}
         self.modes = {}
         self.add_mode(0, "selection", self._mode_selection)
-        self._sign: Sign = Sign()
+        self.sign: Sign = Sign()
 
     def close(self):
         """Close devices."""
-        self._sign.close()
+        self.sign.close()
 
     def calibrate(self):
         """"""
@@ -107,10 +107,10 @@ class Player:
                     if relay_override is not None:
                         relay_override.pace_factor = self.pace_factor
                     print(relay_override)
-                self._sign.set_lights(
+                self.sign.set_lights(
                     lights, relay_override,
                 )
-                self._sign.wait_for_button_interrupt(p)
+                self.sign.wait_for_button_interrupt(p)
         if post_delay is not None:
             self.sign.wait_for_button_interrupt(post_delay)
 
@@ -136,9 +136,9 @@ class Player:
                     self.mode_previous = self.mode_current
                     self.mode_current = 0
         if light_pattern is not None:
-            self._sign.set_lights(light_pattern)
+            self.sign.set_lights(light_pattern)
         if brightness_pattern is not None:
-            self._sign.set_dimmers(brightness_pattern)
+            self.sign.set_dimmers(brightness_pattern)
 
     def _indicate_mode_desired(self):
         """Show user what desired mode number is currently selected."""
@@ -156,7 +156,7 @@ class Player:
            the next mode to execute."""
         while True:
             # Button was pressed
-            self._sign.button_interrupt_reset()
+            self.sign.button_interrupt_reset()
             if self.mode_desired is None:
                 # Just now entering selection mode
                 self.mode_desired = self.mode_previous
@@ -167,7 +167,7 @@ class Player:
                     self.mode_desired += 1
             self._indicate_mode_desired()
             try:
-                self._sign.wait_for_button_interrupt(5)
+                self.sign.wait_for_button_interrupt(5)
             except ButtonPressed:
                 pass
             else:
@@ -175,5 +175,5 @@ class Player:
                 # without the button being pressed.
                 self.mode_current = self.mode_desired
                 self.mode_desired = None
-                self._sign.button_interrupt_reset()
+                self.sign.button_interrupt_reset()
                 break

@@ -85,7 +85,7 @@ def validate_brightness_pattern(arg: str):
     ): raise ValueError("Invalid brightness pattern")
     return arg
 
-def parse_runtime_arguments(player: Player):
+def parse_arguments(player: Player):
     top_p = ArgumentParserImproved(exit_on_error=False)
     sub_p = top_p.add_subparsers(dest='operation', required=True)
     command_p = sub_p.add_parser('command')
@@ -107,11 +107,11 @@ def parse_runtime_arguments(player: Player):
         print(f"ERROR:{err}")
         return False
 
-def process_runtime_arguments(player: Player):
+def process_arguments(player: Player):
     """Validate and interpret the runtime arguments.
        Return dict of parameters if the arguments are valid, 
        otherwise False."""
-    parsed = parse_runtime_arguments(player)
+    parsed = parse_arguments(player)
     print(f'parsed:{parsed}')
     if not parsed:
         return False

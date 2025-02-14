@@ -23,7 +23,7 @@ def register_modes(player: Player):
         lambda: seq_rotate("1100000000"), simple=True, pace=0.5
     )
     player.add_mode(8, "random_flip",
-        lambda: seq_random_flip(player._sign.current_pattern),
+        lambda: seq_random_flip(player.sign.current_pattern),
         simple=True, pace=0.5
     )
     player.add_mode(9, "demo", lambda: mode_rhythmic_demo(player))
@@ -35,7 +35,7 @@ def register_modes(player: Player):
         )
     )
     player.add_mode(11, "random_flip_fade",
-        lambda: seq_random_flip(player._sign.current_pattern),
+        lambda: seq_random_flip(player.sign.current_pattern),
         simple=True, pace=2.0,
         relay_override=RelayOverride(
             # transition_on=1.0,
@@ -82,14 +82,14 @@ def register_modes(player: Player):
     player.add_mode(19, "random_fade", function=lambda: mode_random_fade(player))
 
 def mode_random_fade(player: Player):
-    schedule = [0] * LIGHT_COUNT
+    schedule = [0.0] * LIGHT_COUNT
     while True:
         for i, t in enumerate(schedule):
             if t < (now := time.time()):
                 transition = random.uniform(TRANSITION_MINIMUM, 3)
                 level = random.randrange(101)
                 schedule[i] = now + transition
-                player._sign.dimmer_channels[i].set(
+                player.sign.dimmer_channels[i].set(
                     level=level,
                     transition=transition,
                 )
@@ -104,7 +104,7 @@ def build1(player: Player, equal: bool):
             if equal else
         [(i + 1) * 2 for i in range(10)]
     )
-    for dimmer, level, transition in zip(player._sign._dimmer_channels, levels, transitions):
+    for dimmer, level, transition in zip(player.sign._dimmer_channels, levels, transitions):
         dimmer.set(level=level, transition=transition)
     time.sleep(40)
 
