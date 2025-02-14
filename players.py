@@ -78,6 +78,10 @@ class Player:
                 self.do_sequence(sequence, **kwargs)
         return template
 
+    def wait(self, seconds: float):
+        """"""
+        self.sign.wait_for_button_interrupt(seconds * self.pace_factor)
+
     def do_sequence(
             self, 
             sequence: Callable, 
@@ -110,9 +114,9 @@ class Player:
                 self.sign.set_lights(
                     lights, relay_override,
                 )
-                self.sign.wait_for_button_interrupt(p)
+                self.wait(p)
         if post_delay is not None:
-            self.sign.wait_for_button_interrupt(post_delay)
+            self.wait(post_delay)
 
     def execute(
             self, 
@@ -165,7 +169,7 @@ class Player:
                     self.mode_desired += 1
             self._indicate_mode_desired()
             try:
-                self.sign.wait_for_button_interrupt(5)
+                self.wait(5)
             except ButtonPressed:
                 pass
             else:
