@@ -97,7 +97,7 @@ def mode_random_fade(player: Player):
             if channel.next_update < (now := time.time()):
                 channel.set(
                     transition = (tran := _new_transition()),
-                    level = _new_level(channel.level)
+                    level = _new_level(channel.brightness)
                 )
                 channel.next_update = now + tran
         player.pace_wait(1)

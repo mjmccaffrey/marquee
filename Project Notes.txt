@@ -1,6 +1,8 @@
 
 transition_time must not be < MINIMUM
 
+resolve brightness vs level
+
 order QR code signs
 
 ASYNC the set commands
