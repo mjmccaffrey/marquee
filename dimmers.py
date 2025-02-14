@@ -36,8 +36,8 @@ class Dimmer:
             ) 
             for id, status in self._get_status()
         ]
-        #for channel in self.channels:
-            #print(f'{self.ip_address}:{channel.id}:{channel.output}:{channel.brightness}')
+        for channel in self.channels:
+            print(f'{self.ip_address}:{channel.id}:{channel.output}:{channel.brightness}')
 
     def close(self):
         """Clean up."""
@@ -109,6 +109,7 @@ class DimmerChannel:
         self.id = id
         self.output = output
         self.brightness = brightness
+        self.set(output=True)  # !!!???
 
     def interpret_set_parameters(
         self, 
