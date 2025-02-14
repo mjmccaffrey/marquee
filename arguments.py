@@ -80,7 +80,7 @@ def validate_brightness_pattern(arg: str):
     arg = arg.upper()
     if not (
         len(arg) == LIGHT_COUNT and 
-        all(e in "0123456789A" for e in arg)
+        all(e in "0123456789AF" for e in arg)
     ): raise ValueError("Invalid brightness pattern")
     return arg
 

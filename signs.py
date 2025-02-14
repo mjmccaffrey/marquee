@@ -106,7 +106,7 @@ class Sign:
         ):
         """ Set the dimmers per the supplied dimmer pattern. """
         pattern = [  # !!! adjust for frosted 40 watt
-            15 if p == '1' else int(p, 16) * 10 
+            15 if p == 'F' else int(p, 16) * 10 
             for p in dimmer_pattern
         ]
         for d, b in zip(self.dimmer_channels, pattern):
