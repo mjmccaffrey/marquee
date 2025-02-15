@@ -6,7 +6,7 @@ import random
 from sequences import *
 import time
 
-from dimmers import DimmerChannel, RelayOverride
+from dimmers import RelayOverride
 from players import Player
 from signs import ALL_ON, ALL_OFF, LIGHT_COUNT
 
@@ -130,7 +130,8 @@ def mode_even_odd_fade(player: Player):
             pattern, 
             relay_override=RelayOverride(
                 concurrent=True,
-                transition=5.0,
+                transition_on=5.0,
+                transition_off=5.0,
             )
         )
 
