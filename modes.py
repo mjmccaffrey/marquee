@@ -1,11 +1,12 @@
 """Marquee Lighted Sign Project - modes"""
 
 from dimmers import Dimmer, TRANSITION_MINIMUM
+import itertools
 import random
 from sequences import *
 import time
 
-from dimmers import RelayOverride
+from dimmers import DimmerChannel, RelayOverride
 from players import Player
 from signs import ALL_ON, ALL_OFF, LIGHT_COUNT
 
@@ -75,9 +76,10 @@ def register_modes(player: Player):
     player.add_mode(17, "build_NEQ", function=lambda: build1(player, False))
     player.add_mode(18, "build_EQ", function=lambda: build1(player, True))
     player.add_mode(19, "random_fade", function=lambda: mode_random_fade(player))
+    player.add_mode(20, "even_odd_fade", function=lambda: mode_even_odd_fade(player))
 
 def mode_random_fade(player: Player):
-
+    """"""
     def _new_transition() -> float:
         """"""
         return random.uniform(TRANSITION_MINIMUM, 5 * player.pace_factor)
@@ -91,7 +93,6 @@ def mode_random_fade(player: Player):
 
     for channel in player.sign.dimmer_channels:
         channel.next_update = 0
-
     while True:
         for channel in player.sign.dimmer_channels:
             if channel.next_update < (now := time.time()):
@@ -116,11 +117,28 @@ def build1(player: Player, equal: bool):
         dimmer.set(level=level, transition=transition)
     player.pace_wait(40)
 
+def mode_even_odd_fade(player: Player):
+    """"""
+    player.sign.set_lights(
+        ALL_OFF, relay_override=RelayOverride(concurrent=True),
+    )
+    player.sign.set_lights(ALL_ON)
+    odd_on = str('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
+    even_on = str('0' if e == '1' else '1' for e in odd_on)
+    for pattern in itertools.cycle((even_on, odd_on)):
+        player.sign.set_lights(
+            pattern, 
+            relay_override=RelayOverride(
+                concurrent=True,
+                transition=5.0,
+            )
+        )
+
 def mode_rhythmic_demo(player: Player):
     """Perform a rhythmic demonstration."""
-    while True:
         # !!!!!!!!! BREAK THIS UP INTO SUB-FUNCTIONS
 
+    while True:
         Dimmer.set_brightness_all(level=30, wait=True)
         player.do_sequence(
             seq_center_alternate,

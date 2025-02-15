@@ -112,7 +112,7 @@ class DimmerChannel:
         self.next_update = None
         self.set(output=True)  # !!!???
 
-    def interpret_set_parameters(
+    def interpret_set_parameters(  # !!!! rename
         self, 
         level: float = None, 
         offset: float = None,
