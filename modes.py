@@ -131,6 +131,8 @@ def mode_even_odd_fade(player: Player):
             pattern, 
             relay_override=RelayOverride(
                 concurrent=True,
+                level_on = 90,
+                level_off = 10,
                 transition_on=delay,
                 transition_off=delay,
             )
