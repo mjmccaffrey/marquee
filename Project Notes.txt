@@ -57,3 +57,4 @@ _ Indicate more than 10 modes
         for i, dimmer in enumerate(player.sign.dimmers)
         if (i % 2)
     ]
+

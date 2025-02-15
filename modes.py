@@ -123,10 +123,9 @@ def mode_even_odd_fade(player: Player):
         ALL_OFF, relay_override=RelayOverride(concurrent=True),
     )
     player.sign.set_lights(ALL_ON)
-    odd_on = str('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
-    even_on = str('0' if e == '1' else '1' for e in odd_on)
+    odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
+    even_on = ''.join('0' if e == '1' else '1' for e in odd_on)
     for pattern in itertools.cycle((even_on, odd_on)):
-        print(pattern)
         player.sign.set_lights(
             pattern, 
             relay_override=RelayOverride(
