@@ -123,6 +123,7 @@ def mode_even_odd_fade(player: Player):
         ALL_OFF, relay_override=RelayOverride(concurrent=True),
     )
     player.sign.set_lights(ALL_ON)
+    delay = 5.0
     odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
     even_on = ''.join('0' if e == '1' else '1' for e in odd_on)
     for pattern in itertools.cycle((even_on, odd_on)):
@@ -130,10 +131,11 @@ def mode_even_odd_fade(player: Player):
             pattern, 
             relay_override=RelayOverride(
                 concurrent=True,
-                transition_on=5.0,
-                transition_off=5.0,
+                transition_on=delay,
+                transition_off=delay,
             )
         )
+        player.pace_wait(delay)
 
 def mode_rhythmic_demo(player: Player):
     """Perform a rhythmic demonstration."""
