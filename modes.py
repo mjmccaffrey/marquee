@@ -144,19 +144,16 @@ def mode_rhythmic_demo(player: Player):
         # !!!!!!!!! BREAK THIS UP INTO SUB-FUNCTIONS
 
     while True:
-        Dimmer.set_brightness_all(brightness=30, wait=True)
         player.do_sequence(
             seq_center_alternate,
             count=2,
             pace=0.8,
         )
-        Dimmer.set_brightness_all(offset=10)
         player.do_sequence(
             seq_blink_alternate,
             count=2,
             pace=0.8,
         )
-        Dimmer.set_brightness_all(offset=10)
         player.do_sequence(
             lambda: seq_move_halves(from_left=True),
             count=1,
@@ -169,7 +166,6 @@ def mode_rhythmic_demo(player: Player):
             pace=0.4,
             stop=4,
         )
-        Dimmer.set_brightness_all(offset=10)
         player.do_sequence(
             lambda: seq_build_halves(from_left=True),
             count=1,
@@ -182,7 +178,6 @@ def mode_rhythmic_demo(player: Player):
             pace=0.4,
             stop=4,
         )
-        Dimmer.set_brightness_all(offset=10)
         player.do_sequence(
            lambda: seq_build_rows_4("1", from_top=True),
            count=4,
@@ -193,7 +188,6 @@ def mode_rhythmic_demo(player: Player):
            count=4,
            pace=0.2,
         )
-        Dimmer.set_brightness_all(offset=10)
         player.do_sequence(
             lambda: seq_rotate('1000000000', clockwise=True),
             count=1,
@@ -206,7 +200,6 @@ def mode_rhythmic_demo(player: Player):
             pace=0.2,
             stop=8,
         )
-        Dimmer.set_brightness_all(offset=10)
         player.do_sequence(
             lambda: seq_rotate('0111111111', clockwise=True),
             count=2,
@@ -219,7 +212,6 @@ def mode_rhythmic_demo(player: Player):
             pace=0.2,
             stop=4,
         )
-        Dimmer.set_brightness_all(brightness=100)
         player.do_sequence(
             lambda: seq_rotate('1100000000', clockwise=True),
             count=4,
@@ -233,8 +225,6 @@ def mode_rhythmic_demo(player: Player):
             stop=8,
         )
 
-        Dimmer.set_brightness_all(brightness=0, transition=0.5, wait=True)
-        Dimmer.set_brightness_all(brightness=100, transition=3.0)
         player.do_sequence(
             seq_rotate,
             count=8,
@@ -242,4 +232,3 @@ def mode_rhythmic_demo(player: Player):
         )
         player.do_sequence(seq_all_on, post_delay=6.4)
         player.do_sequence(seq_all_off, post_delay=900)
-
