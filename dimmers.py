@@ -112,25 +112,25 @@ class DimmerChannel:
         self.next_update = None
         self.set(output=True)  # !!!???
 
-    def interpret_set_parameters(  # !!!! rename
+    def make_set_command(
         self, 
-        level: float = None, 
+        brightness: float = None, 
         offset: float = None,
         transition: float = None, 
         output: bool = None,
     ):
         """Produce dimmer API parameters from requested values and state."""
         assert transition is None or transition >= TRANSITION_MINIMUM
-        if level is not None:
-            brightness = level 
+        if brightness is not None:
+            new_brightness = brightness 
         elif offset is not None:
-            brightness = self.brightness + offset
+            new_brightness = self.brightness + offset
         else:
-            brightness = None
+            new_brightness = None
         params = (
             ({'id': self.id}) |
-            ({'brightness': brightness} 
-                if brightness is not None else {}) |
+            ({'brightness': new_brightness} 
+                if new_brightness is not None else {}) |
             ({'transition_duration': 
                 transition or TRANSITION_DEFAULT}) |
             ({'on': str(output).lower()} if output is not None else {})
@@ -142,15 +142,15 @@ class DimmerChannel:
         )
 
     def set(self, 
-            level: float = None, 
+            brightness: float = None, 
             offset: float = None,
             transition: float = None, 
             output: bool = None,
             wait: bool = False,
     ):
         """Set the dimmer channel per requested values and state."""
-        command = self.interpret_set_parameters(
-            level=level,
+        command = self.make_set_command(
+            brightness=brightness,
             offset=offset,
             transition=transition,
             output=output,
@@ -179,8 +179,8 @@ class DimmerCommand:
 class RelayOverride:
     """ Parameters for using dimmers rather than relays. """
     concurrent: bool = False
-    level_on: int = 100
-    level_off: int = 0
+    brightness_on: int = 100
+    brightness_off: int = 0
     pace_factor: float = 1.0
     transition_on: float = TRANSITION_MINIMUM
     transition_off: float = TRANSITION_MINIMUM

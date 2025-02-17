@@ -22,6 +22,10 @@ _LIGHT_TO_RELAY = {
     8:  7,                          4:  2,
             7:  6,  6:  0,  5:  1,
 }
+_EXTRA_RELAYS = {
+    10:10, 11:11, 12:12, 13: 3, 14: 4, 15: 5,
+}
+_ALL_RELAYS = _LIGHT_TO_RELAY | _EXTRA_RELAYS
 LIGHT_COUNT = len(_LIGHT_TO_RELAY)
 _DIMMER_ADDRESSES = [
     '192.168.51.111',
@@ -48,9 +52,11 @@ class Sign:
             for channel in dimmer.channels
         ]
         assert len(self.dimmer_channels) == LIGHT_COUNT
-        self._relayboard: RelayBoard = RelayBoard(_LIGHT_TO_RELAY)
+        self._relayboard: RelayBoard = RelayBoard(_ALL_RELAYS)
         self._button = Button()
-        self._current_pattern = self._relayboard.get_state_of_devices()
+        full_pattern = self._relayboard.get_state_of_devices()
+        self._current_pattern = full_pattern[LIGHT_COUNT]
+        self._extra_pattern = full_pattern[LIGHT_COUNT + 1:]
 
     def close(self):
         """Clean up."""
@@ -63,42 +69,52 @@ class Sign:
         except Exception as e:
             logging.exception(e)
 
+    def _set_lights_relay_override(
+            self,
+            pattern: str, 
+            ro: RelayOverride = None
+    ):
+        """"""
+        brightnessses = {0: ro.brightness_off, 1: ro.brightness_on}
+        transitions = {
+            0: max(TRANSITION_MINIMUM, ro.transition_off * ro.pace_factor), 
+            1: max(TRANSITION_MINIMUM, ro.transition_on * ro.pace_factor),
+        }
+        print(transitions)
+        pattern = [int(p) for p in pattern]
+        if ro.concurrent:
+            commands = [
+                d.make_set_command(
+                    brightness=brightnessses[p],
+                    transition=transitions[p],
+                )
+                for d, p in zip(self.dimmer_channels, pattern)
+            ]
+            asyncio.run(Dimmer.execute_multiple_commands(commands))
+        else:
+            for d, p in zip(self.dimmer_channels, pattern):
+                d.set(
+                    brightness=brightnessses[p],
+                    transition=transitions[p],
+                )
+
     def set_lights(
             self, 
-            pattern: str, 
-            relay_override: RelayOverride = None
+            pattern: str,
+            extra_pattern: str = None,
+            relay_override: RelayOverride = None,
         ):
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
-        if (ro := relay_override) is not None:
-            # !!! break this out
-            levels = {0: ro.level_off, 1: ro.level_on}
-            transitions = {
-                0: max(TRANSITION_MINIMUM, ro.transition_off * ro.pace_factor), 
-                1: max(TRANSITION_MINIMUM, ro.transition_on * ro.pace_factor),
-            }
-            print(transitions)
-            pattern = [int(p) for p in pattern]
-            if relay_override.concurrent:
-                commands = [
-                    d.interpret_set_parameters(
-                        level=levels[p],
-                        transition=transitions[p],
-                        # output=
-                    )
-                    for d, p in zip(self.dimmer_channels, pattern)
-                ]
-                asyncio.run(Dimmer.execute_multiple_commands(commands))
-            else:
-                for d, p in zip(self.dimmer_channels, pattern):
-                    d.set(
-                        level=levels[p],
-                        transition=transitions[p],
-                    )
+        if relay_override is not None:
+            self._set_lights_relay_override(pattern, relay_override)
         else:
-            self._relayboard.set_state_of_devices(pattern)
+            extra_pattern = extra_pattern or self._extra_pattern
+            full_pattern = pattern + extra_pattern
+            self._relayboard.set_state_of_devices(full_pattern)
         self._current_pattern = ''.join(str(e) for e in pattern)
+        self._extra_pattern = ''.join(str(e) for e in extra_pattern)
 
     def set_dimmers(
             self, 
@@ -115,7 +131,7 @@ class Sign:
             for p in dimmer_pattern
         ]
         for d, b in zip(self.dimmer_channels, pattern):
-            d.set(level=b)
+            d.set(brightness=b)
 
     @property
     def current_pattern(self):

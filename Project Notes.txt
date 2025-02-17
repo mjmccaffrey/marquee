@@ -1,22 +1,19 @@
 
-in add_mode, if fn specified, make lambda
+fix _indicate_mode_desired
 
 tcp/ip setup working off home network
 
-resolve brightness vs level
+completely replace requests with aiohttp?
+-- https://docs.aiohttp.org/en/stable/http_request_lifecycle.html
 
 mode_random_fade, but without random transition times
 
 order QR code signs
 vinyl sign?
 
-only import aiohttp for certain operations?
-
 ASYNC the set commands
 
 logging
-
-same level of errors with different switch?  - calculate failure % for new and old
 
 ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
 # Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
@@ -39,6 +36,8 @@ Create requirements.txt
 
 rythmic_demo:
 add extra 6 relays
+-- create new Sign methods that sit above RelayBoard get and set
+---- optional aux pattern for extra 6 relays
 replace blah section with fading w/ basic beat
 
 
@@ -46,15 +45,4 @@ Feature:
 _ fade even & odd lights at opposite phases
 _ Each light hits peak in counter/clockwise order
 _ Indicate more than 10 modes
-
-    even = [
-        dimmer.channels[i] 
-        for i, dimmer in enumerate(player.sign.dimmers)
-        if not (i % 2)
-    ]
-    odd = [
-        dimmer.channels[i] 
-        for i, dimmer in enumerate(player.sign.dimmers)
-        if (i % 2)
-    ]
 

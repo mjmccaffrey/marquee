@@ -61,9 +61,9 @@ def register_modes(player: Player):
     )
     player.add_mode(15, "blink_all_fade_slowwww", seq_blink_all, simple=True, pace=10,
         relay_override=RelayOverride(
-            level_on=100,
+            brightness_on=100,
             transition_on=10,
-            level_off=10,
+            brightness_off=10,
             transition_off=10,
         )
     )
@@ -84,7 +84,7 @@ def mode_random_fade(player: Player):
         """"""
         return random.uniform(TRANSITION_MINIMUM, 5 * player.pace_factor)
     
-    def _new_level(old) -> int:
+    def _new_brightness(old) -> int:
         """"""
         new = old
         while abs(new - old) < 10:
@@ -98,7 +98,7 @@ def mode_random_fade(player: Player):
             if channel.next_update < (now := time.time()):
                 channel.set(
                     transition = (tran := _new_transition()),
-                    level = _new_level(channel.brightness)
+                    brightness = _new_brightness(channel.brightness)
                 )
                 channel.next_update = now + tran
         player.pace_wait(0.1)
@@ -107,14 +107,14 @@ def build1(player: Player, equal: bool):
     player.sign.set_lights(ALL_ON)
     player.sign.set_lights(ALL_OFF, 
         relay_override=RelayOverride(concurrent=True))
-    levels = [(i + 1) * 10 for i in range(10)]
+    brightnesss = [(i + 1) * 10 for i in range(10)]
     transitions = (
         [20] * 10 
             if equal else
         [(i + 1) * 2 for i in range(10)]
     )
-    for dimmer, level, transition in zip(player.sign.dimmer_channels, levels, transitions):
-        dimmer.set(level=level, transition=transition)
+    for dimmer, brightness, transition in zip(player.sign.dimmer_channels, brightnesss, transitions):
+        dimmer.set(brightness=brightness, transition=transition)
     player.pace_wait(40)
 
 def mode_even_odd_fade(player: Player):
@@ -131,8 +131,8 @@ def mode_even_odd_fade(player: Player):
             pattern, 
             relay_override=RelayOverride(
                 concurrent=True,
-                level_on = 90,
-                level_off = 10,
+                brightness_on = 90,
+                brightness_off = 10,
                 transition_on=delay,
                 transition_off=delay,
             )
@@ -144,7 +144,7 @@ def mode_rhythmic_demo(player: Player):
         # !!!!!!!!! BREAK THIS UP INTO SUB-FUNCTIONS
 
     while True:
-        Dimmer.set_brightness_all(level=30, wait=True)
+        Dimmer.set_brightness_all(brightness=30, wait=True)
         player.do_sequence(
             seq_center_alternate,
             count=2,
@@ -219,7 +219,7 @@ def mode_rhythmic_demo(player: Player):
             pace=0.2,
             stop=4,
         )
-        Dimmer.set_brightness_all(level=100)
+        Dimmer.set_brightness_all(brightness=100)
         player.do_sequence(
             lambda: seq_rotate('1100000000', clockwise=True),
             count=4,
@@ -233,8 +233,8 @@ def mode_rhythmic_demo(player: Player):
             stop=8,
         )
 
-        Dimmer.set_brightness_all(level=0, transition=0.5, wait=True)
-        Dimmer.set_brightness_all(level=100, transition=3.0)
+        Dimmer.set_brightness_all(brightness=0, transition=0.5, wait=True)
+        Dimmer.set_brightness_all(brightness=100, transition=3.0)
         player.do_sequence(
             seq_rotate,
             count=8,
