@@ -56,7 +56,7 @@ class Sign:
         self._button = Button()
         full_pattern = self._relayboard.get_state_of_devices()
         self._current_pattern = full_pattern[LIGHT_COUNT]
-        self._extra_pattern = full_pattern[LIGHT_COUNT + 1:]
+        self._extra_pattern = full_pattern[LIGHT_COUNT:]
 
     def close(self):
         """Clean up."""

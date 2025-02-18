@@ -44,3 +44,4 @@ _ fade even & odd lights at opposite phases
 _ Each light hits peak in counter/clockwise order
 _ Indicate more than 10 modes
 
+111111111100000 15
