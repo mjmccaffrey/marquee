@@ -107,15 +107,19 @@ class Sign:
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
-        extra_pattern = extra_pattern or self._extra_pattern
+        pattern = ''.join(str(e) for e in pattern)
+        if extra_pattern is None:
+            extra_pattern = self._extra_pattern
+        else:
+            extra_pattern = ''.join(str(e) for e in extra_pattern)
         full_pattern = pattern + extra_pattern
         print(full_pattern, len(full_pattern))
         if relay_override is not None:
-            self._set_lights_relay_override(full_pattern, relay_override)
+            self._set_lights_relay_override(pattern, relay_override)
         else:
             self._relayboard.set_state_of_devices(full_pattern)
-        self._current_pattern = ''.join(str(e) for e in pattern)
-        self._extra_pattern = ''.join(str(e) for e in extra_pattern)
+        self._current_pattern = pattern
+        self._extra_pattern = extra_pattern
 
     def set_dimmers(
             self, 
