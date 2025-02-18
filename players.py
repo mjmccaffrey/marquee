@@ -112,7 +112,8 @@ class Player:
                         relay_override.pace_factor = self.pace_factor
                     print(relay_override)
                 self.sign.set_lights(
-                    lights, relay_override,
+                    lights, 
+                    relay_override=relay_override,
                 )
                 self.pace_wait(p)
         if post_delay is not None:
