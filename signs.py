@@ -109,6 +109,7 @@ class Sign:
            rather than a list."""
         extra_pattern = extra_pattern or self._extra_pattern
         full_pattern = pattern + extra_pattern
+        print(full_pattern, len(full_pattern))
         if relay_override is not None:
             self._set_lights_relay_override(full_pattern, relay_override)
         else:
