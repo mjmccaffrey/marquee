@@ -77,12 +77,21 @@ def register_modes(player: Player):
     player.add_mode(18, "build_EQ", function=lambda: build1(player, True))
     player.add_mode(19, "random_fade", function=lambda: mode_random_fade(player))
     player.add_mode(20, "even_odd_fade", function=lambda: mode_even_odd_fade(player))
+    player.add_mode(21, "corner_rotate_fade", seq_corner_rotate, simple=True, pace=5,
+        relay_override=RelayOverride(
+            concurrent=True,
+            brightness_on = 90,
+            brightness_off = 10,
+            transition_on=5,
+            transition_off=5,
+        )
+    )
 
 def mode_random_fade(player: Player):
     """"""
     def _new_transition() -> float:
         """"""
-        return random.uniform(TRANSITION_MINIMUM, 5 * player.pace_factor)
+        return random.uniform(TRANSITION_MINIMUM, 5.0 * player.pace_factor)
     
     def _new_brightness(old) -> int:
         """"""

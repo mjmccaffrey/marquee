@@ -99,6 +99,15 @@ def seq_rotate(pattern="1"+"0"*(LIGHT_COUNT-1), clockwise=True):
         rotated_pattern = pattern[i:] + pattern[:i]
         yield rotated_pattern
 
+def seq_corner_rotate():
+    corners = [(9, 0), (2, 3), (4, 5), (7, 8)]
+    for corner in corners:
+        pattern = ["1"] * LIGHT_COUNT
+        for c in corner:
+            pattern[c] = "0"
+        yield pattern
+        yield opposite_pattern(pattern)
+
 def seq_rotate_build(clockwise=True):
     """Successive lights on, rotating around."""
     if clockwise:

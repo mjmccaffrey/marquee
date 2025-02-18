@@ -36,8 +36,6 @@ Create requirements.txt
 
 rythmic_demo:
 add extra 6 relays
--- create new Sign methods that sit above RelayBoard get and set
----- optional aux pattern for extra 6 relays
 replace blah section with fading w/ basic beat
 
 
