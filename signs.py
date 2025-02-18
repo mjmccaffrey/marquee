@@ -107,11 +107,11 @@ class Sign:
         """Set all lights per the supplied pattern.
            Set _current_pattern, always as a string
            rather than a list."""
+        extra_pattern = extra_pattern or self._extra_pattern
+        full_pattern = pattern + extra_pattern
         if relay_override is not None:
-            self._set_lights_relay_override(pattern, relay_override)
+            self._set_lights_relay_override(full_pattern, relay_override)
         else:
-            extra_pattern = extra_pattern or self._extra_pattern
-            full_pattern = pattern + extra_pattern
             self._relayboard.set_state_of_devices(full_pattern)
         self._current_pattern = ''.join(str(e) for e in pattern)
         self._extra_pattern = ''.join(str(e) for e in extra_pattern)
