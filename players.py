@@ -79,9 +79,11 @@ class Player:
                 self.do_sequence(sequence, **kwargs)
         return template
 
-    def pace_wait(self, seconds: float):
+    def wait(self, seconds: float):
         """"""
-        self.sign.wait_for_button_interrupt(seconds * self.pace_factor)
+        if seconds is not None:
+            seconds *= self.pace_factor
+        self.sign.wait_for_button_interrupt(seconds)
 
     def do_sequence(
             self, 
@@ -115,9 +117,9 @@ class Player:
                     lights, 
                     relay_override=relay_override,
                 )
-                self.pace_wait(p)
+                self.wait(p)
         if post_delay is not None:
-            self.pace_wait(post_delay)
+            self.wait(post_delay)
 
     def execute(
             self, 

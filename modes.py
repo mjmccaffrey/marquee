@@ -110,7 +110,7 @@ def mode_random_fade(player: Player):
                     brightness = _new_brightness(channel.brightness)
                 )
                 channel.next_update = now + tran
-        player.pace_wait(0.1)
+        player.wait(0.1)
 
 def build1(player: Player, equal: bool):
     player.sign.set_lights(ALL_ON)
@@ -124,7 +124,7 @@ def build1(player: Player, equal: bool):
     )
     for dimmer, brightness, transition in zip(player.sign.dimmer_channels, brightnesss, transitions):
         dimmer.set(brightness=brightness, transition=transition)
-    player.pace_wait(40)
+    player.wait(40)
 
 def mode_even_odd_fade(player: Player):
     """"""
@@ -146,7 +146,7 @@ def mode_even_odd_fade(player: Player):
                 transition_off=delay,
             )
         )
-        player.pace_wait(delay)
+        player.wait(delay)
 
 def mode_rhythmic_demo(player: Player):
     """Perform a rhythmic demonstration."""

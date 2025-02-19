@@ -15,6 +15,7 @@ LIGHTS_BY_ROW = [
 ]
 TOP_LIGHTS_LEFT_TO_RIGHT = [9, 0, 1, 2, 3]
 BOTTOM_LIGHTS_LEFT_TO_RIGHT = [8, 7, 6, 5, 4]
+CORNER_LIGHTS_CLOCKWISE = [(9, 0), (2, 3), (4, 5), (7, 8)]
 LIGHTS_CLOCKWISE = [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
 _LIGHT_TO_RELAY = {
             0:  9,  1: 13,  2: 14,
@@ -55,8 +56,8 @@ class Sign:
         self._relayboard: RelayBoard = RelayBoard(_ALL_RELAYS)
         self._button = Button()
         full_pattern = self._relayboard.get_state_of_devices()
-        self._current_pattern = full_pattern[LIGHT_COUNT]
-        self._extra_pattern = full_pattern[LIGHT_COUNT:]
+        self.current_pattern = full_pattern[LIGHT_COUNT]
+        self.extra_pattern = full_pattern[LIGHT_COUNT:]
 
     def close(self):
         """Clean up."""
@@ -71,28 +72,29 @@ class Sign:
 
     def _set_lights_relay_override(
             self,
-            pattern: str, 
-            ro: RelayOverride = None
+            light_pattern: str, 
+            relay_override: RelayOverride,
     ):
         """"""
+        ro = relay_override
         brightnessses = {0: ro.brightness_off, 1: ro.brightness_on}
         transitions = {
             0: max(TRANSITION_MINIMUM, ro.transition_off * ro.pace_factor), 
             1: max(TRANSITION_MINIMUM, ro.transition_on * ro.pace_factor),
         }
         print(transitions)
-        pattern = [int(p) for p in pattern]
+        light_pattern = [int(p) for p in light_pattern]
         if ro.concurrent:
             commands = [
                 d.make_set_command(
                     brightness=brightnessses[p],
                     transition=transitions[p],
                 )
-                for d, p in zip(self.dimmer_channels, pattern)
+                for d, p in zip(self.dimmer_channels, light_pattern)
             ]
             asyncio.run(Dimmer.execute_multiple_commands(commands))
         else:
-            for d, p in zip(self.dimmer_channels, pattern):
+            for d, p in zip(self.dimmer_channels, light_pattern):
                 d.set(
                     brightness=brightnessses[p],
                     transition=transitions[p],
@@ -100,26 +102,27 @@ class Sign:
 
     def set_lights(
             self, 
-            pattern: str,
+            light_pattern: str,
             extra_pattern: str = None,
             relay_override: RelayOverride = None,
         ):
-        """Set all lights per the supplied pattern.
+        """Set all lights per the supplied light_pattern.
            Set _current_pattern, always as a string
            rather than a list."""
-        pattern = ''.join(str(e) for e in pattern)
-        if extra_pattern is None:
-            extra_pattern = self._extra_pattern
-        else:
-            extra_pattern = ''.join(str(e) for e in extra_pattern)
-        full_pattern = pattern + extra_pattern
-        print(full_pattern, len(full_pattern))
+        
+        light_pattern = ''.join(str(e) for e in light_pattern)
         if relay_override is not None:
-            self._set_lights_relay_override(pattern, relay_override)
+            self._set_lights_relay_override(light_pattern, relay_override)
         else:
+            if extra_pattern is None:
+                extra_pattern = self.extra_pattern
+            else:
+                extra_pattern = ''.join(str(e) for e in extra_pattern)
+            full_pattern = light_pattern + extra_pattern
+            print(full_pattern, len(full_pattern))
             self._relayboard.set_state_of_devices(full_pattern)
-        self._current_pattern = pattern
-        self._extra_pattern = extra_pattern
+            self_pattern = extra_pattern
+        self.current_pattern = light_pattern
 
     def set_dimmers(
             self, 
@@ -141,7 +144,7 @@ class Sign:
     @property
     def current_pattern(self):
         """Return the active light pattern."""
-        return self._current_pattern
+        return self.current_pattern
 
     def wait_for_button_interrupt(
             self, 
