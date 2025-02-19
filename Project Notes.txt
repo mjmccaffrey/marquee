@@ -4,7 +4,23 @@ Timeline
 21 Feb - release to github
 28 Feb - video to github
 
+
+concurrent should default to True (for cmd line pattern etc)
+
+Future:
+    new build mode:
+        row 4 = 100
+        row 3 = 50, 4 = 80
+        row 2 = 50, 4 = 70
+        row 1 = 50, 4 = 50
+    basic testing
+    https://realpython.com/python-pyproject-toml/
+
+slow down relays while dimming, speed up while building
+
 fix _indicate_mode_desired
+
+command: cycle_modes
 
 tcp/ip setup working off home network
 

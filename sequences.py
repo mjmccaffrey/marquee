@@ -100,11 +100,20 @@ def seq_rotate(pattern="1"+"0"*(LIGHT_COUNT-1), clockwise=True):
         rotated_pattern = pattern[i:] + pattern[:i]
         yield rotated_pattern
 
-def seq_corner_rotate():
+def seq_opposite_corner_pairs():
     """"""
-    for corner in CORNER_LIGHTS_CLOCKWISE:
+    lights_in_opposite_corners = [
+        {
+            l
+            for c in CORNER_LIGHTS_CLOCKWISE
+            for l in c
+            if (c % 2) == i
+        }
+        for i in range(2)
+    ]
+    for lights in lights_in_opposite_corners:
         pattern = [
-            "0" if i in corner else "1"
+            "0" if i in lights else "1"
             for i in range(LIGHT_COUNT)
         ]
         yield pattern

@@ -37,12 +37,13 @@ class Player:
             self, 
             index: int, 
             name: str, 
-            function: Callable, 
-            simple: bool = False, 
+            mode: Callable = None,
+            sequence: Callable = None,
             pace: float = None,
             relay_override: RelayOverride = None,
         ):
         """Register the mode, identified by index and name."""
+        assert not (mode and sequence), "Specify either mode or sequence."
         assert (
                 index not in self.modes
             and str(index) not in self.mode_id_to_index 
@@ -51,12 +52,14 @@ class Player:
         assert all(
             k in self.modes for k in range(index)
             ), "Non-sequential mode index"
-        if simple:
-            function = self._simple_mode(
-                sequence=function, 
+        if sequence:
+            function = self._sequence_mode(
+                sequence=sequence, 
                 pace=pace,
                 relay_override=relay_override, 
             )
+        else:
+            function = mode
         self.modes[index] = types.SimpleNamespace(
             name=name,
             function=function,
@@ -65,7 +68,7 @@ class Player:
             self.mode_id_to_index[str(index)] = index
             self.mode_id_to_index[name] = index
 
-    def _simple_mode(
+    def _sequence_mode(
             self, 
             sequence: Callable, 
             **kwargs
@@ -157,6 +160,7 @@ class Player:
         for _ in range(self.mode_desired // 10):
             self.do_sequence(
                 seq_rotate_build, pace=0.2, stop=self.mode_desired % 10,
+                post_delay=0.3,
             )
 
     def _mode_selection(self):

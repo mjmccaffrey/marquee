@@ -138,8 +138,11 @@ class Sign:
             adjustments[p]
             for p in dimmer_pattern
         ]
-        for d, b in zip(self.dimmer_channels, pattern):
-            d.set(brightness=b)
+        commands = [
+            d.make_set_command(brightness=p)
+            for d, p in zip(self.dimmer_channels, pattern)
+        ]
+        asyncio.run(Dimmer.execute_multiple_commands(commands))
 
     @property
     def current_pattern(self):
