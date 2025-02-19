@@ -1,13 +1,18 @@
 """Marquee Lighted Sign Project - players"""
 
 from collections.abc import Callable
+from dataclasses import dataclass
 import itertools
 import time
-import types
 
 from dimmers import Dimmer, RelayOverride, TRANSITION_DEFAULT
 from sequences import seq_rotate_build
 from signs import ALL_ON, ALL_OFF, Sign, ButtonPressed
+
+@dataclass
+class Mode:
+    name: str
+    function: Callable
 
 class Player:
     """Manages execution at a high level."""
@@ -60,7 +65,7 @@ class Player:
             )
         else:
             function = mode
-        self.modes[index] = types.SimpleNamespace(
+        self.modes[index] = Mode(
             name=name,
             function=function,
         )

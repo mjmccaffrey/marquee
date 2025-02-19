@@ -26,8 +26,7 @@ def register_modes(player: Player):
         sequence=lambda: seq_rotate("1100000000"), pace=0.5,
     )
     player.add_mode(8, "random_flip",
-        sequence=lambda: seq_random_flip(player.sign.current_pattern),
-        simple=True, pace=0.5,
+        sequence=lambda: seq_random_flip(player.sign.current_pattern), pace=0.5,
     )
     player.add_mode(9, "demo", mode=lambda: mode_rhythmic_demo(player))
     player.add_mode(10, "blink_alternate_fade",
