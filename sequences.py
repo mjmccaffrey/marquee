@@ -13,7 +13,7 @@ from signs import (
 
 def opposite_pattern(pattern):
     """Return pattern with the states flipped."""
-    return "".join("1" if p == "0" else "0" for p in str(pattern))
+    return "".join("1" if str(p) == "0" else "0" for p in pattern)
 
 def seq_all_on():
     """All lights on."""
