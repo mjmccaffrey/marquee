@@ -107,11 +107,8 @@ def seq_corner_rotate():
             "0" if i in corner else "1"
             for i in range(LIGHT_COUNT)
         ]
-        print(f"yield1:{pattern}")
         yield pattern
-        pattern = opposite_pattern(pattern)
-        print(f"yield2:{pattern}")
-        yield pattern
+        yield [1] * LIGHT_COUNT
 
 def seq_rotate_build(clockwise=True):
     """Successive lights on, rotating around."""
