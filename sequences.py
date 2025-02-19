@@ -107,9 +107,9 @@ def seq_corner_rotate():
             "0" if i in corner else "1"
             for i in range(LIGHT_COUNT)
         ]
-        print(pattern)
+        print(f"yield:{pattern}")
         yield pattern
-        print(opposite_pattern(pattern))
+        print(f"yield:{opposite_pattern(pattern)}")
         yield opposite_pattern(pattern)
 
 def seq_rotate_build(clockwise=True):
