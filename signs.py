@@ -56,7 +56,7 @@ class Sign:
         self._relayboard: RelayBoard = RelayBoard(_ALL_RELAYS)
         self._button = Button()
         full_pattern = self._relayboard.get_state_of_devices()
-        self.current_pattern = full_pattern[LIGHT_COUNT]
+        self._current_pattern = full_pattern[LIGHT_COUNT]
         self.extra_pattern = full_pattern[LIGHT_COUNT:]
 
     def close(self):
@@ -121,8 +121,8 @@ class Sign:
             full_pattern = light_pattern + extra_pattern
             print(full_pattern, len(full_pattern))
             self._relayboard.set_state_of_devices(full_pattern)
-            self_pattern = extra_pattern
-        self.current_pattern = light_pattern
+            self.extra_pattern = extra_pattern
+        self._current_pattern = light_pattern
 
     def set_dimmers(
             self, 
@@ -144,7 +144,7 @@ class Sign:
     @property
     def current_pattern(self):
         """Return the active light pattern."""
-        return self.current_pattern
+        return self._current_pattern
 
     def wait_for_button_interrupt(
             self, 

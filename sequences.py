@@ -4,6 +4,7 @@ import random
 
 from signs import (
     LIGHT_COUNT,
+    CORNER_LIGHTS_CLOCKWISE,
     TOP_LIGHTS_LEFT_TO_RIGHT,
     BOTTOM_LIGHTS_LEFT_TO_RIGHT,
     LIGHTS_CLOCKWISE,
@@ -100,11 +101,12 @@ def seq_rotate(pattern="1"+"0"*(LIGHT_COUNT-1), clockwise=True):
         yield rotated_pattern
 
 def seq_corner_rotate():
-    corners = [(9, 0), (2, 3), (4, 5), (7, 8)]
-    for corner in corners:
-        pattern = ["1"] * LIGHT_COUNT
-        for c in corner:
-            pattern[c] = "0"
+    """"""
+    for corner in CORNER_LIGHTS_CLOCKWISE:
+        pattern = [
+            "0" if i in corner else "1"
+            for i in range(LIGHT_COUNT)
+        ]
         yield pattern
         yield opposite_pattern(pattern)
 
