@@ -169,6 +169,7 @@ def seq_random_flip(current_pattern):
        Starts with the lights in their current state, and flips
        each selected light.
        This sequence does not end on its own."""
+    print(current_pattern)
     lights = list(current_pattern)
     random_gen = _random_light_gen()
     while True:
