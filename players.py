@@ -7,7 +7,7 @@ import time
 
 from dimmers import Dimmer, RelayOverride, TRANSITION_DEFAULT
 from sequences import seq_rotate_build
-from signs import ALL_ON, ALL_OFF, Sign, ButtonPressed
+from signs import ALL_ON, ALL_OFF, LIGHT_COUNT, Sign, ButtonPressed
 
 @dataclass
 class Mode:
@@ -18,13 +18,14 @@ class Player:
     """Manages execution at a high level."""
     def __init__(self):
         """Set up devices and initial state."""
+        print("Initializing player")
         self.mode_current = None
         self.mode_desired = None
         self.mode_previous = None
         self.pace_factor = 1.0
         self.mode_id_to_index = {}
         self.commands = {'calibrate_dimmers': self.calibrate}
-        self.modes = {}
+        self.modes: dict[int, Mode] = {}
         self.add_mode(0, "selection", self._mode_selection)
         self.sign: Sign = Sign()
 
@@ -34,8 +35,6 @@ class Player:
 
     def calibrate(self):
         """"""
-        self.sign.set_lights(ALL_ON)
-        time.sleep(5)
         Dimmer.calibrate_all()
 
     def add_mode(
@@ -107,7 +106,9 @@ class Player:
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
         if relay_override is not None:
-            self.sign.set_lights(ALL_ON)  # !!!???
+            # Ensure light relays are on before we 
+            # use dimmers instead of relays.
+            self.sign.set_lights(ALL_ON)
         if isinstance(pace, (float, int)) or pace is None:
             pace = itertools.repeat(pace)
         else:
@@ -142,13 +143,15 @@ class Player:
         if command is not None:
             self.commands[command]()
         elif mode_index is not None:
+            self.sign.set_dimmers("A" * LIGHT_COUNT)
             self.mode_current = mode_index
             self.pace_factor = pace_factor
             while True:
+                print(f"Executing {self.modes[self.mode_current].name}")
                 try:
                     self.modes[self.mode_current].function()
                 except ButtonPressed:
-                    # Enter selection mode
+                    print(f"Entering selection mode")
                     self.mode_previous = self.mode_current
                     self.mode_current = 0
         else:  # ??? flip order and remove wait?

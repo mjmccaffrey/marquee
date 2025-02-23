@@ -3,6 +3,7 @@
 import random
 
 from signs import (
+    ALL_OFF, ALL_ON, 
     LIGHT_COUNT,
     CORNER_LIGHTS_CLOCKWISE,
     TOP_LIGHTS_LEFT_TO_RIGHT,
@@ -17,11 +18,11 @@ def opposite_pattern(pattern):
 
 def seq_all_on():
     """All lights on."""
-    yield [1] * LIGHT_COUNT
+    yield ALL_ON
 
 def seq_all_off():
     """All lights off."""
-    yield [0] * LIGHT_COUNT
+    yield ALL_OFF
 
 def seq_blink_all():
     """All lights on and then off."""
@@ -43,6 +44,7 @@ def seq_blink_alternate():
 
 def seq_build_rows(pattern="1", from_top=True):
     """Successive rows on / off."""
+    assert len(pattern) == 1
     if from_top:
         rows = LIGHTS_BY_ROW
     else:  # from_bottom
@@ -56,6 +58,7 @@ def seq_build_rows(pattern="1", from_top=True):
 def seq_build_rows_4(pattern, from_top):
     """Successive rows on / off, grouping the middle rows together, 
        and starting with no rows."""
+    assert len(pattern) == 1
     yield [opposite_pattern(pattern)] * LIGHT_COUNT
     seq = seq_build_rows(pattern, from_top)
     yield next(seq)  # Row 0
@@ -72,7 +75,7 @@ def seq_build_halves(from_left=True):
     else:  # from right
         top = reversed(TOP_LIGHTS_LEFT_TO_RIGHT)
         bot = reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)
-    lights = [0] * LIGHT_COUNT
+    lights = ALL_OFF
     for t, b in zip(top, bot):
         lights[t], lights[b] = 1, 1
         yield lights
@@ -117,7 +120,7 @@ def seq_opposite_corner_pairs():
             for i in range(LIGHT_COUNT)
         ]
         yield pattern
-        yield [1] * LIGHT_COUNT
+        yield ALL_ON
 
 def seq_rotate_build(clockwise=True):
     """Successive lights on, rotating around."""
@@ -125,7 +128,7 @@ def seq_rotate_build(clockwise=True):
         light_range = LIGHTS_CLOCKWISE
     else:  # counterclockwise
         light_range = reversed(LIGHTS_CLOCKWISE)
-    lights = [0] * LIGHT_COUNT
+    lights = ALL_OFF
     for l in light_range:
         lights[l] = 1
         yield lights

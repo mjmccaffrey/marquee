@@ -4,10 +4,27 @@ Timeline
 21 Feb - release to github
 28 Feb - video to github
 
+Fix now:
+    fix button
+    fix _indicate_mode_desired
 
-concurrent should default to True (for cmd line pattern etc)
+    for most / all modes, dimmers must default to 100%, ON, etc.
+
+    logging to stdout
+
+    concurrent should default to True (for cmd line pattern etc)
+    mode_random_fade, but without random transition times
+    modes:
+        fade even & odd lights at opposite phases
+        Each light hits peak in counter/clockwise order
+        rapid random light relay on/off
+            regular pace
+            random pace
 
 Future:
+    tcp/ip setup working off home network
+    operation=pattern: --transition_rate/speed/etc.
+    reboot_dimmers command
     new build mode:
         row 4 = 100
         row 3 = 50, 4 = 80
@@ -15,26 +32,20 @@ Future:
         row 1 = 50, 4 = 50
     basic testing
     https://realpython.com/python-pyproject-toml/
+    completely replace requests with aiohttp?
+        https://docs.aiohttp.org/en/stable/http_request_lifecycle.html
 
 slow down relays while dimming, speed up while building
 
-fix _indicate_mode_desired
-
-command: cycle_modes
-
-tcp/ip setup working off home network
 
 completely replace requests with aiohttp?
 -- https://docs.aiohttp.org/en/stable/http_request_lifecycle.html
 
-mode_random_fade, but without random transition times
 
 order QR code signs
 vinyl sign?
 
 ASYNC the set commands
-
-logging
 
 ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
 # Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
@@ -60,7 +71,3 @@ add extra 6 relays
 replace blah section with fading w/ basic beat
 
 
-Feature:
-_ fade even & odd lights at opposite phases
-_ Each light hits peak in counter/clockwise order
-_ Indicate more than 10 modes

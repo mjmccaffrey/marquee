@@ -14,7 +14,7 @@ TRANSITION_MAXIMUM = 10800.0
 class Dimmer:
     """Supports the Shelly Pro Dimmer 2PM."""
     channel_count = 2
-    _dimmers = []
+    _dimmers: list["Dimmer"] = []
 
     @staticmethod
     def finish_setup():
@@ -24,15 +24,16 @@ class Dimmer:
 
     def __init__(self, ip_address: str):
         """Create the dimmer instance."""
+        print("Initializing dimmer {ip_address}")
         self._dimmers.append(self)
         self.ip_address = ip_address
         self.session = requests.Session()
-        self.channels = [
+        self.channels: list[DimmerChannel] = [
             DimmerChannel(
                 dimmer=self,
                 id=id, 
                 output=status['output'], 
-                brightness=status['brightness']
+                brightness=status['brightness'],
             ) 
             for id, status in self._get_status()
         ]
@@ -80,7 +81,16 @@ class Dimmer:
     @classmethod
     def calibrate_all(cls):
         """ Execute calibration on all dimmers on each successive channel. """
-        print("top")
+
+        commands = [
+            channel.make_set_command(output=True, brightness=100)
+            for dimmer in cls._dimmers
+            for channel in dimmer.channels
+        ]
+        asyncio.run(cls.execute_multiple_commands(commands))
+
+        time.sleep(5)
+
         for id in range(cls.channel_count):
             commands = [
                 DimmerCommand(
@@ -178,7 +188,7 @@ class DimmerCommand:
 @dataclass
 class RelayOverride:
     """ Parameters for using dimmers rather than relays. """
-    concurrent: bool = False
+    concurrent: bool = True
     brightness_on: int = 100
     brightness_off: int = 0
     pace_factor: float = 1.0

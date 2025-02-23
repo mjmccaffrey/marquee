@@ -43,6 +43,7 @@ class Sign:
 
     def __init__(self):
         """Prepare devices and initial state."""
+        print("Initializing sign")
         self.dimmers: list[Dimmer] = [
             Dimmer(address)
             for address in _DIMMER_ADDRESSES
@@ -109,7 +110,6 @@ class Sign:
         """Set all lights per the supplied light_pattern.
            Set _current_pattern, always as a string
            rather than a list."""
-        
         light_pattern = ''.join(str(e) for e in light_pattern)
         if relay_override is not None:
             self._set_lights_relay_override(light_pattern, relay_override)
@@ -129,17 +129,17 @@ class Sign:
             dimmer_pattern: str,
         ):
         """ Set the dimmers per the supplied dimmer pattern. """
-        adjustments = {
+        adjustments = {  # !!! adjust for frosted 40 watt
             '0': 0, '1': 15, '2': 20, '3': 30, '4': 40,
             '5': 50, '6': 60, '7': 70, '8':80, '9': 90,
             'A': 100, 'F': 23,
         }
-        pattern = [  # !!! adjust for frosted 40 watt
+        pattern = [
             adjustments[p]
             for p in dimmer_pattern
         ]
         commands = [
-            d.make_set_command(brightness=p)
+            d.make_set_command(output=True, brightness=p)
             for d, p in zip(self.dimmer_channels, pattern)
         ]
         asyncio.run(Dimmer.execute_multiple_commands(commands))

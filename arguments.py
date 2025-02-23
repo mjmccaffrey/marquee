@@ -1,5 +1,7 @@
 """Marquee Lighted Sign Project - arguments"""
 
+import sys
+
 from argparse import ArgumentParser, ArgumentError, ArgumentTypeError
 from players import Player
 from signs import LIGHT_COUNT
@@ -71,23 +73,26 @@ def validate_light_pattern(arg: str):
     if not (
         len(arg) == LIGHT_COUNT and 
         all(e in {"0", "1"} for e in arg)
-    ): raise ValueError("Invalid light pattern")
+    ): 
+        print(f"Invalid light pattern:{arg}")
+        raise ValueError()
     return arg
 
 def validate_brightness_pattern(arg: str):
     """ Return normalized arg if it is a valid brightness pattern, 
         otherwise raise exception. """
-    arg = arg.upper()
+    arg_normalized = arg.upper()
     if not (
-        len(arg) == LIGHT_COUNT and 
-        all(e in "0123456789AF" for e in arg)
+        len(arg_normalized) == LIGHT_COUNT and 
+        all(e in "0123456789AF" for e in arg_normalized)
     ): 
-        print("Invalid brightness pattern")
-        raise ValueError("Invalid brightness pattern")
-    return arg
+        print(f"Invalid brightness pattern:{arg}")
+        raise ValueError()
+    return arg_normalized
 
 def parse_arguments(player: Player):
     """"""
+    print(f"Parsing arguments:{sys.argv}")
     top_p = ArgumentParserImproved(exit_on_error=False)
     sub_p = top_p.add_subparsers(dest='operation', required=True)
     command_p = sub_p.add_parser('command')
@@ -106,7 +111,7 @@ def parse_arguments(player: Player):
     try:
         return top_p.parse_args()
     except (ArgumentError, ArgumentTypeError, ValueError) as err:
-        print(f"ERROR:{err}")
+        print(f"Error parsing arguments:{err}")
         return False
 
 def process_arguments(player: Player):
@@ -114,7 +119,7 @@ def process_arguments(player: Player):
        Return dict of parameters if the arguments are valid, 
        otherwise False."""
     parsed = parse_arguments(player)
-    ##print(f'parsed:{parsed}')
+    print(f"Processing arguments:{parsed}")
     if not parsed:
         return False
     if parsed.operation == 'command':
@@ -142,5 +147,4 @@ def process_arguments(player: Player):
              return False
     else:
         raise Exception("Command line parsing error")
-    print(f'args:{args}')
     return args

@@ -1,12 +1,11 @@
 """Marquee Lighted Sign Project - modes"""
 
-from dimmers import Dimmer, TRANSITION_MINIMUM
 import itertools
 import random
 from sequences import *
 import time
 
-from dimmers import RelayOverride
+from dimmers import RelayOverride, TRANSITION_MINIMUM
 from players import Player
 from signs import ALL_ON, ALL_OFF, LIGHT_COUNT
 

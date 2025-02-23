@@ -20,6 +20,7 @@ class Button:
 
     def __init__(self):
         """Create the (only) button instance."""
+        print("Initializing button")
         self._button: _Button = _Button(pin=4, bounce_time=0.10)
         self.reset()
         signal.signal(
@@ -33,10 +34,11 @@ class Button:
 
     def _button_pressed_ignore(self):
         """Callback for button press at undesired time."""
+        print("Button pressed - ignoring")
 
     def _button_pressed_act(self):
         """Callback for button press to change desired mode."""
-        print("PRESSED")
+        print("Button pressed - acting")
         self.pressed_event.set()
         self._button.when_pressed = self._button_pressed_ignore
 
