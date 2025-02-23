@@ -193,6 +193,6 @@ class RelayOverride:
     concurrent: bool = True
     brightness_on: int = 100
     brightness_off: int = 0
-    pace_factor: float = 1.0
+    speed_factor: float = 1.0
     transition_on: float = TRANSITION_MINIMUM
     transition_off: float = TRANSITION_MINIMUM

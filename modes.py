@@ -96,7 +96,7 @@ def mode_random_fade(player: Player):
     """"""
     def _new_transition() -> float:
         """"""
-        return random.uniform(TRANSITION_MINIMUM, 5.0 * player.pace_factor)
+        return random.uniform(TRANSITION_MINIMUM, 5.0 * player.speed_factor)
     
     def _new_brightness(old) -> int:
         """"""

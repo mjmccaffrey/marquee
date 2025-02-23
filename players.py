@@ -22,7 +22,7 @@ class Player:
         self.mode_current = None
         self.mode_desired = None
         self.mode_previous = None
-        self.pace_factor = 1.0
+        self.speed_factor = 1.0
         self.mode_id_to_index = {}
         self.commands = {'calibrate_dimmers': self.calibrate}
         self.modes: dict[int, Mode] = {}
@@ -89,7 +89,7 @@ class Player:
     def wait(self, seconds: float):
         """"""
         if seconds is not None:
-            seconds *= self.pace_factor
+            seconds *= self.speed_factor
         self.sign.wait_for_button_interrupt(seconds)
 
     def do_sequence(
@@ -120,7 +120,7 @@ class Player:
                 p = next(pace)
                 if p is not None:
                     if relay_override is not None:
-                        relay_override.pace_factor = self.pace_factor
+                        relay_override.speed_factor = self.speed_factor
                     print(relay_override)
                 self.sign.set_lights(
                     lights, 
@@ -134,7 +134,7 @@ class Player:
             self, 
             command: str = None, 
             mode_index: int = None, 
-            pace_factor: float = None,
+            speed_factor: float = None,
             light_pattern: str = None, 
             brightness_pattern: str = None,
         ):
@@ -145,7 +145,7 @@ class Player:
         elif mode_index is not None:
             self.sign.set_dimmers("A" * LIGHT_COUNT)
             self.mode_current = mode_index
-            self.pace_factor = pace_factor
+            self.speed_factor = speed_factor
             while True:
                 print(f"Executing {self.modes[self.mode_current].name}")
                 try:

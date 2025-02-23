@@ -99,8 +99,9 @@ def parse_arguments(player: Player):
     command_p.add_argument('command_name', choices=player.commands.keys())
     mode_p = sub_p.add_parser('mode')
     mode_p.add_argument('mode_id', choices=player.mode_id_to_index.keys())
-    mode_p.add_argument('pace_factor', 
-        optional=True, type=float, default=1.0)
+    mode_p.add_argument('speed_factor', 
+        optional=True, 
+        type=float, default=1.0)
     pattern_p = sub_p.add_parser('pattern')
     pattern_p.add_argument('relay', 
         optional=True, type=validate_light_pattern)
@@ -127,7 +128,7 @@ def process_arguments(player: Player):
     elif parsed.operation == 'mode':
         args = {
             "mode_index": player.mode_id_to_index[parsed.mode_id],
-            "pace_factor": parsed.pace_factor,
+            "speed_factor": parsed.speed_factor,
         }
     elif parsed.operation == 'pattern':
         args = {}

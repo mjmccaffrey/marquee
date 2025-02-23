@@ -80,8 +80,8 @@ class Sign:
         ro = relay_override
         brightnessses = {0: ro.brightness_off, 1: ro.brightness_on}
         transitions = {
-            0: max(TRANSITION_MINIMUM, ro.transition_off * ro.pace_factor), 
-            1: max(TRANSITION_MINIMUM, ro.transition_on * ro.pace_factor),
+            0: max(TRANSITION_MINIMUM, ro.transition_off * ro.speed_factor), 
+            1: max(TRANSITION_MINIMUM, ro.transition_on * ro.speed_factor),
         }
         print(transitions)
         light_pattern = [int(p) for p in light_pattern]
