@@ -108,11 +108,11 @@ def seq_opposite_corner_pairs():
     lights_in_opposite_corners = [
         {
             l
-            for c in CORNER_LIGHTS_CLOCKWISE
+            for i, c in enumerate(CORNER_LIGHTS_CLOCKWISE)
             for l in c
-            if (c % 2) == i
+            if (i % 2) == eo
         }
-        for i in range(2)
+        for eo in range(2)
     ]
     for lights in lights_in_opposite_corners:
         pattern = [
