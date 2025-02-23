@@ -27,8 +27,9 @@ class Dimmer:
         print("Initializing dimmer {ip_address}")
         self._dimmers.append(self)
         self.ip_address = ip_address
-        try:  # !!!!!!
-            self.session = requests.Session()
+        # try:  # !!!!!!
+        self.session = requests.Session()
+        
         self.channels: list[DimmerChannel] = [
             DimmerChannel(
                 dimmer=self,
