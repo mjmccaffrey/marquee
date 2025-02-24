@@ -57,7 +57,7 @@ class Sign:
         self._relayboard: RelayBoard = RelayBoard(_ALL_RELAYS)
         self._button = Button()
         full_pattern = self._relayboard.get_state_of_devices()
-        self.current_pattern = full_pattern[LIGHT_COUNT]
+        self.current_pattern = full_pattern[:LIGHT_COUNT]
         self.extra_pattern = full_pattern[LIGHT_COUNT:]
 
     def close(self):
