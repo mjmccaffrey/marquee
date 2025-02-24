@@ -5,6 +5,21 @@ Timeline
 28 Feb - video to github
 
 Fix now:
+    current_pattern bug / use setter
+
+        Parsing arguments: ['marquee.py', 'mode', '8']
+
+        Processing arguments:Namespace (operation='mode', mode_id='8', speed_fam
+
+        Executing random_flip
+
+        0
+
+        ['0'] 0
+
+        None
+
+File "/home/mjmccaffrey/marquee/marquee.py", line 25, in <module>
     fix button
     fix _indicate_mode_desired
 
