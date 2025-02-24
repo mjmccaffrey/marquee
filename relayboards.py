@@ -55,6 +55,7 @@ class RelayBoard:
         print(f"RESPONSE:{response}")
         val = response[-7:-3].decode('utf-8')
         val = bin(int(val, base=16))[2:]
+        print(f"gr:{val:>0{RELAY_COUNT}}")
         return f"{val:>0{RELAY_COUNT}}"
 
     def _devices_to_relays(self, device_pattern):
@@ -76,4 +77,5 @@ class RelayBoard:
             relay_pattern[self._device_to_bit[d]]
             for d in range(self.device_count)
         )
+        print(f"r2d device_pattern:{device_pattern}")
         return device_pattern
