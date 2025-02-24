@@ -153,7 +153,7 @@ class Sign:
     def current_pattern(self, value):
         """"""
         self._current_pattern = value
-        print("Current_pattern is now:{self._current_pattern}")
+        print(f"Current_pattern is now:{self._current_pattern}")
 
     def wait_for_button_interrupt(
             self, 
