@@ -51,7 +51,8 @@ def display_help(player: Player):
     print()
     print("Modes:")
     for index, entry in player.modes.items():
-        print(f'   {index}   {entry.name}')
+        if index != 0:
+            print(f'   {index}   {entry.name}')
     print()
     print("Patterns: Specify --dimmer, --relay, or both.")
     print("  dimmer: 10 hex values, each 0..A (0%..100%)")

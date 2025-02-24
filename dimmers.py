@@ -39,8 +39,8 @@ class Dimmer:
             ) 
             for id, status in self._get_status()
         ]
-        for channel in self.channels:
-            print(f'{self.ip_address}:{channel.id}:{channel.output}:{channel.brightness}')
+        #for channel in self.channels:
+        #    print(f'{self.ip_address}:{channel.id}:{channel.output}:{channel.brightness}')
 
     def close(self):
         """Clean up."""
@@ -61,7 +61,7 @@ class Dimmer:
         ]      
     
     @classmethod
-    async def _execute_single_command(cls, command: "DimmerCommand"):
+    async def _execute_single_command(cls, command: "_DimmerCommand"):
         """ Send individual command as part of asynchonous batch. """
         async with aiohttp.ClientSession() as session: # type: ignore
             async with session.get(
@@ -74,7 +74,7 @@ class Dimmer:
                 command.channel.brightness = b
     
     @classmethod
-    async def execute_multiple_commands(cls, commands: list["DimmerCommand"]):
+    async def execute_multiple_commands(cls, commands: list["_DimmerCommand"]):
         """ Send multiple commands asynchronously. """
         async with asyncio.TaskGroup() as tg:
             for command in commands:
@@ -95,7 +95,7 @@ class Dimmer:
 
         for id in range(cls.channel_count):
             commands = [
-                DimmerCommand(
+                _DimmerCommand(
                     channel=dimmer.channels[id], 
                     url=f'http://{dimmer.ip_address}/rpc/Light.Calibrate',
                     params={'id':id},
@@ -117,12 +117,13 @@ class DimmerChannel:
             brightness: int,
         ):
         """Create the dimmer channel instance."""
+        print(f"Initializing DimmerChannel {ip_address}") .........
         self.dimmer = dimmer
         self.id = id
         self.output = output
         self.brightness = brightness
         self.next_update = None
-        self.set(output=True)  # !!!???
+        self.set(output=True)  # !!! ???
 
     def make_set_command(
         self, 
@@ -147,7 +148,7 @@ class DimmerChannel:
                 transition or TRANSITION_DEFAULT}) |
             ({'on': str(output).lower()} if output is not None else {})
         )
-        return DimmerCommand(
+        return _DimmerCommand(
             channel = self,
             url=f'http://{self.dimmer.ip_address}/rpc/Light.Set',
             params=params,
@@ -181,7 +182,7 @@ class DimmerChannel:
             time.sleep(transition)
 
 @dataclass
-class DimmerCommand:
+class _DimmerCommand:
     """ Parameters for giving command to dimmer. """
     channel: DimmerChannel
     url: str

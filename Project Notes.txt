@@ -1,33 +1,18 @@
 
 Timeline
 ========
-21 Feb - release to github
-28 Feb - video to github
+28 Feb - release to github
+15 Mar - video to github
 
 Fix now:
-    current_pattern bug / use setter
+    for most / all modes, dimmers must default to 100%, ON, etc.
+        * but some shouldn't ??????
 
-        Parsing arguments: ['marquee.py', 'mode', '8']
-
-        Processing arguments:Namespace (operation='mode', mode_id='8', speed_fam
-
-        Executing random_flip
-
-        0
-
-        ['0'] 0
-
-        None
-
-File "/home/mjmccaffrey/marquee/marquee.py", line 25, in <module>
     fix button
     fix _indicate_mode_desired
 
-    for most / all modes, dimmers must default to 100%, ON, etc.
+    error handling for I/O
 
-    logging to stdout
-
-    concurrent should default to True (for cmd line pattern etc)
     mode_random_fade, but without random transition times
     modes:
         fade even & odd lights at opposite phases
@@ -36,16 +21,26 @@ File "/home/mjmccaffrey/marquee/marquee.py", line 25, in <module>
             regular pace
             random pace
 
+Physical:
+    Caps for top holes
+    New front face
+    procure QR code signs
+
 Future:
     tcp/ip setup working off home network
-    operation=pattern: --transition_rate/speed/etc.
+    logging
+    use type_enforced
+    public and private modes
     reboot_dimmers command
+    operation=pattern: --transition_rate/speed/etc.
     new build mode:
         row 4 = 100
         row 3 = 50, 4 = 80
         row 2 = 50, 4 = 70
         row 1 = 50, 4 = 50
     basic testing
+    completely replace requests with aiohttp?
+        https://docs.aiohttp.org/en/stable/http_request_lifecycle.html
     https://realpython.com/python-pyproject-toml/
     completely replace requests with aiohttp?
         https://docs.aiohttp.org/en/stable/http_request_lifecycle.html
@@ -53,14 +48,7 @@ Future:
 slow down relays while dimming, speed up while building
 
 
-completely replace requests with aiohttp?
--- https://docs.aiohttp.org/en/stable/http_request_lifecycle.html
 
-
-order QR code signs
-vinyl sign?
-
-ASYNC the set commands
 
 ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
 # Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %

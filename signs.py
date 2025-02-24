@@ -83,7 +83,7 @@ class Sign:
             0: max(TRANSITION_MINIMUM, ro.transition_off * ro.speed_factor), 
             1: max(TRANSITION_MINIMUM, ro.transition_on * ro.speed_factor),
         }
-        print(transitions)
+        # print(transitions)
         light_pattern = [int(p) for p in light_pattern]
         if ro.concurrent:
             commands = [
