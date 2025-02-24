@@ -173,6 +173,5 @@ def seq_random_flip(current_pattern):
     random_gen = _random_light_gen()
     while True:
         index = next(random_gen)
-        print(lights, index)
         lights[index] = opposite_pattern(lights[index])
         yield lights
