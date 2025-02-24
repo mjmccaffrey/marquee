@@ -41,9 +41,10 @@ def register_modes(player: Player):
         sequence=seq_random_flip(player.sign.current_pattern), pace=2.0,
         relay_override=RelayOverride(),
     )
-    player.add_mode(12, "blink_all_fade_seq", # !!! BROKEN ???
+    player.add_mode(12, "blink_all_fade_seq",
         sequence=seq_blink_all, pace=1,
         relay_override=RelayOverride(
+            concurrent=False,
             transition_on=0.5,
             transition_off=0.5,
         )
