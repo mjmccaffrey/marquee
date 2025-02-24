@@ -24,7 +24,7 @@ class Dimmer:
 
     def __init__(self, ip_address: str):
         """Create the dimmer instance."""
-        print("Initializing dimmer {ip_address}")
+        print(f"Initializing dimmer {ip_address}")
         self._dimmers.append(self)
         self.ip_address = ip_address
         # try:  # !!!!!!

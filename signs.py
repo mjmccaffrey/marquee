@@ -119,7 +119,6 @@ class Sign:
             else:
                 extra_pattern = ''.join(str(e) for e in extra_pattern)
             full_pattern = light_pattern + extra_pattern
-            print(full_pattern, len(full_pattern))
             self._relayboard.set_state_of_devices(full_pattern)
             self.extra_pattern = extra_pattern
         self.current_pattern = light_pattern
@@ -153,7 +152,7 @@ class Sign:
     def current_pattern(self, value):
         """"""
         self._current_pattern = value
-        print(f"Current_pattern is now:{self._current_pattern}")
+        # print(f"Current_pattern is now:{self._current_pattern}")
 
     def wait_for_button_interrupt(
             self, 
