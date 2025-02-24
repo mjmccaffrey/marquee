@@ -168,7 +168,6 @@ class DimmerChannel:
             transition=transition,
             output=output,
         )
-        print(command)
         try:
             self.dimmer.session.get(
                 url=command.url,
