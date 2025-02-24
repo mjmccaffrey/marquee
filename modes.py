@@ -108,7 +108,7 @@ def mode_random_fade(player: Player, transition=None):
     def _new_brightness(old) -> int:
         """"""
         new = old
-        while abs(new - old) < 10:
+        while abs(new - old) < 20:
             new = random.randrange(101)
         return new
 
