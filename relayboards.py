@@ -52,6 +52,7 @@ class RelayBoard:
         self._serial_port.write(bytes(command, 'utf-8'))
         # Response example: b'relay readall\n\n\r0000\n\r>'
         response = self._serial_port.read(23)
+        print(f"RESPONSE:{response}")
         val = response[-7:-3].decode('utf-8')
         val = bin(int(val, base=16))[2:]
         return f"{val:>0{RELAY_COUNT}}"
