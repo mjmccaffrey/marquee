@@ -89,7 +89,10 @@ class Player:
             else:
                 self.sign.set_dimmers(ALL_HIGH)
             while True:
-                self.do_sequence(sequence, **kwargs)
+                self.do_sequence(sequence,
+                    pace=pace,
+                    relay_override=relay_override,
+                )
                 print("after")
         return template
 
@@ -105,7 +108,7 @@ class Player:
             count: int = 1, 
             pace: float = None, 
             stop: int = None, 
-            post_delay: float = None,
+            post_delay: float = None,  
             relay_override: RelayOverride = None,
         ):
         """Execute sequence count times, with pace seconds in between.
