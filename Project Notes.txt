@@ -6,7 +6,6 @@ Timeline
 
 Fix now:
     mode  7 unexpected delay
-    mode 11 crashes
     
     for most / all modes, dimmers must default to 100%, ON, etc.
         * but some shouldn't ??????

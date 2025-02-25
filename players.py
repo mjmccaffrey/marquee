@@ -84,6 +84,7 @@ class Player:
         def template():
             while True:
                 self.do_sequence(sequence, **kwargs)
+                print("after")
         return template
 
     def wait(self, seconds: float):
