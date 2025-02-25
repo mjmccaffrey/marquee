@@ -124,6 +124,7 @@ class Player:
                 if p is not None:
                     if relay_override is not None:
                         relay_override.speed_factor = self.speed_factor
+                print(lights)
                 self.sign.set_lights(
                     lights, 
                     relay_override=relay_override,
