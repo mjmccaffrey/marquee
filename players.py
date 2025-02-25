@@ -83,7 +83,7 @@ class Player:
            the sequence should have only 1 step."""
         def template():
             while True:
-                self.do_sequence(sequence, **kwargs)
+                self.do_sequence(sequence, count=3, **kwargs)
                 print("after")
         return template
 
