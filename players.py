@@ -122,7 +122,6 @@ class Player:
                 if p is not None:
                     if relay_override is not None:
                         relay_override.speed_factor = self.speed_factor
-                    print(relay_override)
                 self.sign.set_lights(
                     lights, 
                     relay_override=relay_override,
@@ -157,7 +156,7 @@ class Player:
         self.mode_current = mode_index
         self.speed_factor = speed_factor
         while True:
-            print(f"Executing {self.modes[self.mode_current].name}")
+            print(f"Executing mode {self.modes[self.mode_current].name}")
             try:
                 self.modes[self.mode_current].function()
             except ButtonPressed:
