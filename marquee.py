@@ -8,7 +8,6 @@ def main():
     """Execute Marquee application."""
     print("Executing Marquee")
     try:
-        # !!! set up logging
         player = Player()
         register_modes(player)
         if arg := process_arguments(player):

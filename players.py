@@ -7,7 +7,7 @@ import time
 
 from dimmers import Dimmer, RelayOverride, TRANSITION_DEFAULT
 from sequences import seq_rotate_build
-from signs import ALL_ON, ALL_OFF, LIGHT_COUNT, Sign, ButtonPressed
+from signs import ALL_HIGH, ALL_ON, ButtonPressed, Sign
 
 @dataclass
 class Mode:
@@ -105,10 +105,11 @@ class Player:
            If stop is specified, end the sequence 
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
+        # If using only dimmers, turn relays on, and vice versa
         if relay_override is not None:
-            # Ensure light relays are on before we 
-            # use dimmers instead of relays.
             self.sign.set_lights(ALL_ON)
+        else:
+            self.sign.set_dimmers(ALL_HIGH)
         if isinstance(pace, (float, int)) or pace is None:
             pace = itertools.repeat(pace)
         else:
@@ -141,29 +142,43 @@ class Player:
         """Effects the specified command, mode or pattern(s)."""
         Dimmer.finish_setup()
         if command is not None:
-            self.commands[command]()
+            self._execute_command(command)
         elif mode_index is not None:
-            self.sign.set_dimmers("A" * LIGHT_COUNT)
-            self.mode_current = mode_index
-            self.speed_factor = speed_factor
-            while True:
-                print(f"Executing {self.modes[self.mode_current].name}")
-                try:
-                    self.modes[self.mode_current].function()
-                except ButtonPressed:
-                    print(f"Entering selection mode")
-                    self.mode_previous = self.mode_current
-                    self.mode_current = 0
-        else:  # ??? flip order and remove wait?
-            if brightness_pattern is not None:
-                self.sign.set_dimmers(brightness_pattern)
-                self.sign.wait_for_button_interrupt(TRANSITION_DEFAULT)
-            if light_pattern is not None:
-                self.sign.set_lights(light_pattern)
+            self._execute_mode(mode_index, speed_factor)
+        else:
+            self._execute_pattern(light_pattern, brightness_pattern)
+
+    def _execute_command(self, command):
+        """"""
+        self.commands[command]()
+
+    def _execute_mode(self, mode_index, speed_factor):
+        """"""
+        self.mode_current = mode_index
+        self.speed_factor = speed_factor
+        while True:
+            print(f"Executing {self.modes[self.mode_current].name}")
+            try:
+                self.modes[self.mode_current].function()
+            except ButtonPressed:
+                print(f"Entering selection mode")
+                self.mode_previous = self.mode_current
+                self.mode_current = 0
+
+    def _execute_pattern(self, light_pattern, brightness_pattern):
+        """"""
+        # ??? flip order and remove wait?
+        if brightness_pattern is not None:
+            print(f"Setting dimmers {brightness_pattern}")
+            self.sign.set_dimmers(brightness_pattern)
+            self.sign.wait_for_button_interrupt(TRANSITION_DEFAULT)
+        if light_pattern is not None:
+            print(f"Setting lights {light_pattern}")
+            self.sign.set_lights(light_pattern)
 
     def _indicate_mode_desired(self):
         """Show user what desired mode number is currently selected."""
-        self.sign.set_lights(ALL_ON)
+        # self.sign.set_lights(ALL_ON)
         time.sleep(0.6)
         for _ in range(self.mode_desired // 10):
             self.do_sequence(

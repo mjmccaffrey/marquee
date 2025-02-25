@@ -7,19 +7,17 @@ Timeline
 Fix now:
     for most / all modes, dimmers must default to 100%, ON, etc.
         * but some shouldn't ??????
+        * add_mode initial light and dimmer patterns ??? !!!
 
     fix button
     fix _indicate_mode_desired
 
     error handling for I/O
 
-    mode_random_fade, but without random transition times
     modes:
+        relay version of mode_random_fade(player: Player, transition=None)
         fade even & odd lights at opposite phases
         Each light hits peak in counter/clockwise order
-        rapid random light relay on/off
-            regular pace
-            random pace
 
 Physical:
     Caps for top holes
@@ -28,7 +26,7 @@ Physical:
 
 Future:
     tcp/ip setup working off home network
-    logging
+    logging module
     use type_enforced
     public and private modes
     reboot_dimmers command
@@ -42,35 +40,24 @@ Future:
     completely replace requests with aiohttp?
         https://docs.aiohttp.org/en/stable/http_request_lifecycle.html
     https://realpython.com/python-pyproject-toml/
-    completely replace requests with aiohttp?
-        https://docs.aiohttp.org/en/stable/http_request_lifecycle.html
 
-slow down relays while dimming, speed up while building
+?????? slow down relays while dimming, speed up while building
 
 
-
+# Spin, or other action, as all bulbs slowly build
 
 ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
-# Bulbs fade and build at long random rates.  At start, each builds from 0% to a random %
 # Rows of bulbs progressively fade, and then build back from the bottom
 # Sides fade and build, and then top & bottom do the same
-# Spin, or other action, as all bulbs slowly build
 # Rotate 50% to 100% every 0.5 seconds
-# Build and fade random corner pair
 # blink_all_fade_seq with rotating order - build+0, fade+1, build+2, fade+3, etc.
 
 Testing and Quality Assurance: Implement unit tests and use code coverage tools to ensure code quality and reliability.
 
 log and retry upon dimmer comm timeouts
 
-soilidify requests / session
-
-Maybe timeouts are occurring when the previous command hasn't finished executing
-
 Create requirements.txt
 
-rythmic_demo:
-add extra 6 relays
-replace blah section with fading w/ basic beat
+rythmic demo overhaul
 
 

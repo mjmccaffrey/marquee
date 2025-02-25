@@ -112,7 +112,6 @@ def mode_random_fade(player: Player, transition=None):
             new = random.randrange(101)
         return new
 
-    player.sign.set_lights(ALL_ON)  # !!!!
     for channel in player.sign.dimmer_channels:
         channel.next_update = 0
     while True:

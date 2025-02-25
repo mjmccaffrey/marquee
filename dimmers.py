@@ -39,8 +39,6 @@ class Dimmer:
             ) 
             for id, status in self._get_status()
         ]
-        #for channel in self.channels:
-        #    print(f'{self.ip_address}:{channel.id}:{channel.output}:{channel.brightness}')
 
     def close(self):
         """Clean up."""
@@ -53,7 +51,6 @@ class Dimmer:
         )
         # !!! Check for result != 200
         # except requests.exceptions.Timeout:
-        #     print(time.time(), self.ip_address, self.id)
         json = result.json()
         return [
             (id, json[f'light:{id}'])
@@ -83,7 +80,7 @@ class Dimmer:
     @classmethod
     def calibrate_all(cls):
         """ Execute calibration on all dimmers on each successive channel. """
-
+        print("Calibrating all dimmers")
         commands = [
             channel.make_set_command(output=True, brightness=100)
             for dimmer in cls._dimmers
@@ -102,9 +99,8 @@ class Dimmer:
                 )
                 for dimmer in cls._dimmers
             ]
-            print(commands)
             asyncio.run(cls.execute_multiple_commands(commands))
-            print(f"Calibrate running for channels: {id}")
+            print(f"Calibrating channel {id}")
             time.sleep(150)
 
 class DimmerChannel:
@@ -117,7 +113,7 @@ class DimmerChannel:
             brightness: int,
         ):
         """Create the dimmer channel instance."""
-        print(f"Initializing DimmerChannel {dimmer.ip_address} : {id}")
+        print(f"Initializing dimmer channel {dimmer.ip_address}:{id}")
         self.dimmer = dimmer
         self.id = id
         self.output = output
