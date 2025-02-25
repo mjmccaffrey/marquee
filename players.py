@@ -116,6 +116,7 @@ class Player:
         else:
             pace = itertools.cycle(pace)
         for _ in range(count):
+            print("top outer")
             for i, lights in enumerate(sequence()):
                 if stop is not None and i == stop:
                     break
