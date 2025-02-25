@@ -7,7 +7,7 @@ import time
 
 from dimmers import RelayOverride, TRANSITION_MINIMUM
 from players import Player
-from signs import ALL_ON, ALL_OFF, LIGHT_COUNT
+from signs import ALL_LOW, ALL_ON, ALL_OFF, LIGHT_COUNT
 
 def register_modes(player: Player):
     """Register the operating modes."""
@@ -141,9 +141,7 @@ def build1(player: Player, equal: bool):
 
 def mode_even_odd_fade(player: Player):
     """"""
-    player.sign.set_lights(
-        ALL_OFF, relay_override=RelayOverride(concurrent=True),
-    )
+    player.sign.set_dimmers(ALL_LOW) 
     player.sign.set_lights(ALL_ON)
     delay = 5.0
     odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
