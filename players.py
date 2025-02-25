@@ -83,7 +83,7 @@ class Player:
            the sequence should have only 1 step."""
         def template():
             while True:
-                self.do_sequence(sequence, count=3, **kwargs)
+                self.do_sequence(sequence, **kwargs)
                 print("after")
         return template
 
@@ -107,10 +107,10 @@ class Player:
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
         # If using only dimmers, turn relays on, and vice versa
-        if relay_override is not None:
-            self.sign.set_lights(ALL_ON)
-        else:
-            self.sign.set_dimmers(ALL_HIGH)
+        #if relay_override is not None:
+        #    self.sign.set_lights(ALL_ON)
+        #else:
+        #    self.sign.set_dimmers(ALL_HIGH)
         if isinstance(pace, (float, int)) or pace is None:
             pace = itertools.repeat(pace)
         else:
