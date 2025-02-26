@@ -57,10 +57,11 @@ class Player:
             k in self.modes for k in range(index)
             ), "Non-sequential mode index"
         if sequence:
-            if relay_override.transition_off is None:
-                relay_override.transition_off = pace
-            if relay_override.transition_on is None:
-                relay_override.transition_on = pace
+            if relay_override is not None:
+                if relay_override.transition_off is None:
+                    relay_override.transition_off = pace
+                if relay_override.transition_on is None:
+                    relay_override.transition_on = pace
             function = self._sequence_mode(
                 sequence=sequence, 
                 pace=pace,
