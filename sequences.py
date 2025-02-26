@@ -164,12 +164,12 @@ def seq_random(pattern="1"):
             opposite * (LIGHT_COUNT - index - 1)
         )
 
-def seq_random_flip(current_pattern):
+def seq_random_flip(light_pattern):
     """Random light on / off, never immediately repeating a light.
        Starts with the lights in their current state, and flips
        each selected light.
        This sequence does not end on its own."""
-    lights = list(current_pattern)
+    lights = list(light_pattern)
     random_gen = _random_light_gen()
     while True:
         index = next(random_gen)

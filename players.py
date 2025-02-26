@@ -57,6 +57,10 @@ class Player:
             k in self.modes for k in range(index)
             ), "Non-sequential mode index"
         if sequence:
+            if relay_override.transition_off is None:
+                relay_override.transition_off = pace
+            if relay_override.transition_on is None:
+                relay_override.transition_on = pace
             function = self._sequence_mode(
                 sequence=sequence, 
                 pace=pace,
@@ -93,7 +97,6 @@ class Player:
                     pace=pace,
                     relay_override=relay_override,
                 )
-                print("after")
         return template
 
     def wait(self, seconds: float):
@@ -120,7 +123,6 @@ class Player:
         else:
             pace = itertools.cycle(pace)
         for _ in range(count):
-            print("top outer")
             for i, lights in enumerate(sequence()):
                 if stop is not None and i == stop:
                     break
@@ -128,7 +130,6 @@ class Player:
                 if p is not None:
                     if relay_override is not None:
                         relay_override.speed_factor = self.speed_factor
-                print(lights)
                 self.sign.set_lights(
                     lights, 
                     relay_override=relay_override,

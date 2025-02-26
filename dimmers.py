@@ -87,9 +87,7 @@ class Dimmer:
             for channel in dimmer.channels
         ]
         asyncio.run(cls.execute_multiple_commands(commands))
-
         time.sleep(5)
-
         for id in range(cls.channel_count):
             commands = [
                 _DimmerCommand(
@@ -119,7 +117,7 @@ class DimmerChannel:
         self.output = output
         self.brightness = brightness
         self.next_update = None
-        self.set(output=True)  # !!! ???
+        self.set(output=True)  # !!! make part of a larger init?
 
     def make_set_command(
         self, 
@@ -191,5 +189,5 @@ class RelayOverride:
     brightness_on: int = 100
     brightness_off: int = 0
     speed_factor: float = 1.0
-    transition_on: float = TRANSITION_MINIMUM
-    transition_off: float = TRANSITION_MINIMUM
+    transition_on: float = None
+    transition_off: float = None

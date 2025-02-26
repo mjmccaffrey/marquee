@@ -25,10 +25,10 @@ def register_modes(player: Player):
         sequence=lambda: seq_rotate("1100000000"), pace=0.5,
     )
     player.add_mode(8, "random_flip",
-        sequence=lambda: seq_random_flip(player.sign.current_pattern), pace=0.5,
+        sequence=lambda: seq_random_flip(player.sign.light_pattern), pace=0.5,
     )
     player.add_mode(9, "demo",
-        sequence=lambda: seq_random_flip(player.sign.current_pattern), pace=0.5,
+        sequence=lambda: seq_random_flip(player.sign.light_pattern), pace=0.5,
     )
     player.add_mode(10, "blink_alternate_fade",
         sequence=seq_blink_alternate, pace=4, 
@@ -38,7 +38,7 @@ def register_modes(player: Player):
         )
     )
     player.add_mode(11, "random_flip_fade",
-        sequence=lambda: seq_random_flip(player.sign.current_pattern), pace=2.0,
+        sequence=lambda: seq_random_flip(player.sign.light_pattern), pace=2.0,
         relay_override=RelayOverride(),
     )
     player.add_mode(12, "blink_all_fade_seq",
@@ -59,18 +59,13 @@ def register_modes(player: Player):
     )
     player.add_mode(14, "blink_all_fade_fast", 
         sequence=seq_blink_all, pace=0.5,
-        relay_override=RelayOverride(
-            transition_on=0.5,
-            transition_off=0.5,
-        )
+        relay_override=RelayOverride()
     )
     player.add_mode(15, "blink_all_fade_slowwww", 
         sequence=seq_blink_all, pace=10,
         relay_override=RelayOverride(
             brightness_on=100,
-            transition_on=10,
             brightness_off=10,
-            transition_off=10,
         )
     )
     player.add_mode(16, "blink_all_fade_stealth", 
@@ -91,8 +86,14 @@ def register_modes(player: Player):
             concurrent=True,
             brightness_on = 90,
             brightness_off = 10,
-            transition_on=5,
-            transition_off=5,
+        )
+    )
+    player.add_mode(23, "rotate_slight_fade",
+        sequence=lambda: seq_rotate("1100000000"), pace=0.5,
+        relay_override=RelayOverride(
+            concurrent=True,
+            brightness_on = 100,
+            brightness_off = 80,
         )
     )
 
@@ -127,8 +128,7 @@ def mode_random_fade(player: Player, transition=None):
 
 def build1(player: Player, equal: bool):
     player.sign.set_lights(ALL_ON)
-    player.sign.set_lights(ALL_OFF, 
-        relay_override=RelayOverride(concurrent=True))
+    player.sign.set_dimmers(ALL_LOW)
     brightnesss = [(i + 1) * 10 for i in range(10)]
     transitions = (
         [20] * 10 

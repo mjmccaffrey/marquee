@@ -3,7 +3,7 @@
 import asyncio
 import logging
 
-from buttons import Button, ButtonPressed, PhysicalButtonPressed
+from buttons import Button, PhysicalButtonPressed
 from dimmers import Dimmer, DimmerChannel, RelayOverride, TRANSITION_MINIMUM
 from relayboards import RelayBoard
 
@@ -59,7 +59,7 @@ class Sign:
         self._relayboard: RelayBoard = RelayBoard(_ALL_RELAYS)
         self._button = Button()
         full_pattern = self._relayboard.get_state_of_devices()
-        self.current_pattern = full_pattern[:LIGHT_COUNT]
+        self.light_pattern = full_pattern[:LIGHT_COUNT]
         self.extra_pattern = full_pattern[LIGHT_COUNT:]
 
     def close(self):
@@ -110,7 +110,7 @@ class Sign:
             relay_override: RelayOverride = None,
         ):
         """Set all lights per the supplied light_pattern.
-           Set current_pattern, always as a string
+           Set light_pattern, always as a string
            rather than a list."""
         light_pattern = ''.join(str(e) for e in light_pattern)
         if relay_override is not None:
@@ -123,38 +123,49 @@ class Sign:
             full_pattern = light_pattern + extra_pattern
             self._relayboard.set_state_of_devices(full_pattern)
             self.extra_pattern = extra_pattern
-        self.current_pattern = light_pattern
+        self.light_pattern = light_pattern
 
     def set_dimmers(
             self, 
-            dimmer_pattern: str,
+            pattern: str = None,
+            brightnesses: list[int] = None,
         ):
-        """ Set the dimmers per the supplied dimmer pattern. """
-        adjustments = {  # !!! adjust for frosted 40 watt
-            '0': 0, '1': 15, '2': 20, '3': 30, '4': 40,
-            '5': 50, '6': 60, '7': 70, '8':80, '9': 90,
-            'A': 100, 'F': 23,
-        }
-        pattern = [
-            adjustments[p]
-            for p in dimmer_pattern
-        ]
+        """ Set the dimmers per the supplied pattern or brightnesses. """
+        assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
+        if pattern is not None:
+            adjustments = {  # !!! adjust for frosted 40 watt
+                '0': 0, '1': 15, '2': 20, '3': 30, '4': 40,
+                '5': 50, '6': 60, '7': 70, '8':80, '9': 90,
+                'A': 100, 'F': 23,
+            }
+            brightnesses = [
+                adjustments[p]
+                for p in pattern
+            ]
         commands = [
-            d.make_set_command(output=True, brightness=p)
-            for d, p in zip(self.dimmer_channels, pattern)
+            c.make_set_command(output=True, brightness=b)
+            for c, b in zip(self.dimmer_channels, brightnesses)
         ]
         asyncio.run(Dimmer.execute_multiple_commands(commands))
 
     @property
-    def current_pattern(self):
+    def light_pattern(self):
         """Return the active light pattern."""
-        return self._current_pattern
+        return self._light_pattern
     
-    @current_pattern.setter
-    def current_pattern(self, value):
+    @light_pattern.setter
+    def light_pattern(self, value):
+        """Update the active light pattern."""
+        self._light_pattern = value
+        # print(f"Current_pattern is now:{self._light_pattern}")
+
+    def dimmer_brightnesses(self):
         """"""
-        self._current_pattern = value
-        # print(f"Current_pattern is now:{self._current_pattern}")
+        return [
+            channel.brightness
+            for dimmer in self.dimmers
+            for channel in dimmer.channels
+        ]
 
     def wait_for_button_interrupt(
             self, 

@@ -5,11 +5,8 @@ Timeline
 15 Mar - video to github
 
 Fix now:
-    mode  7 unexpected delay
-    
-    for most / all modes, dimmers must default to 100%, ON, etc.
-        * but some shouldn't ??????
-        * add_mode initial light and dimmer patterns ??? !!!
+
+    (tested modes 1-16)
 
     fix button
     fix _indicate_mode_desired
