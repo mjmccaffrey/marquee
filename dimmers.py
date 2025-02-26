@@ -16,20 +16,16 @@ class Dimmer:
     channel_count = 2
     _dimmers: list["Dimmer"] = []
 
-    @staticmethod
-    def finish_setup():
-        """"""
-        global aiohttp
-        import aiohttp
-
     def __init__(self, ip_address: str):
         """Create the dimmer instance."""
-        print(f"Initializing dimmer {ip_address}")
         self._dimmers.append(self)
         self.ip_address = ip_address
-        # try:  # !!!!!!
-        self.session = requests.Session()
-        
+        print(f"Initializing {self}")
+        try:
+            self.session = requests.Session()
+        except requests.Timeout as err:
+            print(err)
+            raise
         self.channels: list[DimmerChannel] = [
             DimmerChannel(
                 dimmer=self,
@@ -40,17 +36,29 @@ class Dimmer:
             for id, status in self._get_status()
         ]
 
+    def __str__(self):
+        return f"dimmer @ {self.dimmer.ip_address}"
+    
+    @staticmethod
+    def finish_setup():
+        """"""
+        global aiohttp
+        import aiohttp
+
     def close(self):
         """Clean up."""
 
     def _get_status(self):
         """ Fetch status parameters for all channels. """
-        result = self.session.get(
-            url=f'http://{self.ip_address}/rpc/Shelly.GetStatus',
-            timeout=1.0,
-        )
+        try:
+            result = self.session.get(
+                url=f'http://{self.ip_address}/rpc/Shelly.GetStatus',
+                timeout=1.0,
+            )
         # !!! Check for result != 200
-        # except requests.exceptions.Timeout:
+        except requests.Timeout as err:
+            print(err)
+            raise
         json = result.json()
         return [
             (id, json[f'light:{id}'])
@@ -60,13 +68,18 @@ class Dimmer:
     @classmethod
     async def _execute_single_command(cls, command: "_DimmerCommand"):
         """ Send individual command as part of asynchonous batch. """
-        async with aiohttp.ClientSession() as session: # type: ignore
-            async with session.get(
-                url=command.url,
-                params=command.params,
-            ) as response:
-                response = await response.text()
-                # !!! catch timeout, check for != 200
+        try:
+            async with aiohttp.ClientSession() as session: # type: ignore
+                async with session.get(
+                    url=command.url,
+                    params=command.params,
+                ) as response:
+                    response = await response.text()
+        except TimeoutError as err:
+            # !!! catch timeout, check for != 200
+            print(err)
+            raise
+        else:
             if b := command.params.get('brightness') is not None:
                 command.channel.brightness = b
     
@@ -113,14 +126,14 @@ class DimmerChannel:
         """Create the dimmer channel instance."""
         self.dimmer = dimmer
         self.id = id
-        print(f"Initializing dimmer channel {self}")
+        print(f"Initializing {self}") # !!!
         self.output = output
         self.brightness = brightness
         self.next_update = None
         self.set(output=True)  # !!! make part of a larger init?
 
     def __str__(self):
-        return f"{self.dimmer.ip_address}:{self.id}"
+        return f"dimmer channel @ {self.dimmer.ip_address}:{self.id}"
     
     def make_set_command(
         self, 

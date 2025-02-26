@@ -20,14 +20,18 @@ class Button:
 
     def __init__(self):
         """Create the (only) button instance."""
-        print("Initializing button")
-        self._button: _Button = _Button(pin=4, bounce_time=0.10)
+        self.pin = 4
+        print("Initializing {self}")
+        self._button: _Button = _Button(pin=self.pin, bounce_time=0.10)
         self.reset()
         signal.signal(
             signal.SIGUSR1,  # pylint: disable=no-member
             lambda _, __: self.virtual_button_pressed(),
         )
 
+    def __str__(self):
+        return f"button @ {self.pin}"
+    
     def close(self):
         """Clean up."""
         self._button.close()

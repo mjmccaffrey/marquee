@@ -129,6 +129,7 @@ class Sign:
             self, 
             pattern: str = None,
             brightnesses: list[int] = None,
+            transitions: list[float] = None,
         ):
         """ Set the dimmers per the supplied pattern or brightnesses. """
         assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
@@ -151,7 +152,7 @@ class Sign:
                 )
                 if c.brightness != b
             ]
-            print(len(updates))
+            print(updates)
         commands = [
             c.make_set_command(output=True, brightness=b)
             for c, b in updates

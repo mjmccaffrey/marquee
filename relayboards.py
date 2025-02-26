@@ -11,11 +11,12 @@ class RelayBoard:
         """Create the RelayBoard object, where device_mapping
            is a dict mapping device indices to relay indices.
            Establish connection to relay board via serial port."""
-        print("Initializing relayboard")
+        self.port_address = "/dev/ttyACM0"
         self._serial_port = serial.Serial(
-            "/dev/ttyACM0", 
+            self.port_address, 
             timeout=1,
         )
+        print("Initializing {self}")
         self.device_mapping = device_mapping
         self.device_count = max(device_mapping.keys()) + 1
         self._device_to_bit = {
@@ -26,6 +27,9 @@ class RelayBoard:
             v: k for k, v in self._device_to_bit.items()
         }
 
+    def __str__(self):
+        return f"relay board @ {self.port_address}"
+    
     def close(self):
         """Clean up."""
         self._serial_port.close()

@@ -4,16 +4,22 @@ Timeline
 28 Feb - release to github
 15 Mar - video to github
 
-Fix now:
+To Do Now:
 
+    Install dimmer #6
+    Install remote w/ 1 button to start
     (tested modes 1-16)
-
+    ? mode 0=all_off; mode -1=select ?
     fix button
     fix _indicate_mode_desired
+
+    reduce # of session.get calls?
+    reduce # of routines that directly set dimmers?
 
     error handling for I/O
 
     modes:
+        Spin, or other action, as all bulbs slowly build
         relay version of mode_random_fade(player: Player, transition=None)
         fade even & odd lights at opposite phases
         Each light hits peak in counter/clockwise order
@@ -25,6 +31,8 @@ Physical:
 
 Future:
     tcp/ip setup working off home network
+    Install lights 11 and 12
+    12 lights: Sides fade and build, and then top & bottom do the same
     logging module
     use type_enforced
     public and private modes
@@ -42,13 +50,8 @@ Future:
 
 ?????? slow down relays while dimming, speed up while building
 
-
-# Spin, or other action, as all bulbs slowly build
-
 ## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
 # Rows of bulbs progressively fade, and then build back from the bottom
-# Sides fade and build, and then top & bottom do the same
-# Rotate 50% to 100% every 0.5 seconds
 # blink_all_fade_seq with rotating order - build+0, fade+1, build+2, fade+3, etc.
 
 Testing and Quality Assurance: Implement unit tests and use code coverage tools to ensure code quality and reliability.
