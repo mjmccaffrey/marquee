@@ -111,7 +111,7 @@ class DimmerChannel:
             brightness: int,
         ):
         """Create the dimmer channel instance."""
-        print(f"Initializing dimmer channel {dimmer.ip_address}:{id}")
+        print(f"Initializing dimmer channel {self}")
         self.dimmer = dimmer
         self.id = id
         self.output = output
@@ -119,6 +119,9 @@ class DimmerChannel:
         self.next_update = None
         self.set(output=True)  # !!! make part of a larger init?
 
+    def __str__(self):
+        return f"{self.dimmer.ip_address}:{self.id}"
+    
     def make_set_command(
         self, 
         brightness: float = None, 
