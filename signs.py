@@ -3,7 +3,7 @@
 import asyncio
 import logging
 
-from buttons import Button, PhysicalButtonPressed
+from buttons import Button, ButtonPressed, PhysicalButtonPressed
 from dimmers import Dimmer, DimmerChannel, RelayOverride, TRANSITION_MINIMUM
 from relayboards import RelayBoard
 
