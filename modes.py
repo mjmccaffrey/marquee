@@ -89,7 +89,7 @@ def register_modes(player: Player):
         )
     )
     player.add_mode(23, "rotate_slight_fade",
-        sequence=lambda: seq_rotate(), pace=0.5,
+        sequence=lambda: seq_rotate(), pace=0.35,
         relay_override=RelayOverride(
             concurrent=True,
             brightness_on = 100,
