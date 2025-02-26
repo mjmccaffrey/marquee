@@ -37,7 +37,7 @@ class Dimmer:
         ]
 
     def __str__(self):
-        return f"dimmer @ {self.dimmer.ip_address}"
+        return f"dimmer @ {self.ip_address}"
     
     @staticmethod
     def finish_setup():
