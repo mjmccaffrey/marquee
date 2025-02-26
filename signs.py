@@ -151,7 +151,7 @@ class Sign:
                 )
                 if c.brightness != b
             ]
-            print(updates)
+            print(len(updates))
         commands = [
             c.make_set_command(output=True, brightness=b)
             for c, b in updates

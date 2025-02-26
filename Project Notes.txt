@@ -68,3 +68,6 @@ rythmic demo overhaul
             brightness_off = 50,
         )
     )
+def rotate_slight_fade(player: Player):
+    player.sign.set_lights(ALL_ON)
+    player.sign.set_dimmers(ALL_LOW)

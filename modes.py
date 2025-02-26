@@ -88,12 +88,14 @@ def register_modes(player: Player):
             brightness_off = 10,
         )
     )
-    player.add_mode(23, "rotate_slight_fade", mode=lambda: rotate_slight_fade(player))
-
-def rotate_slight_fade(player: Player):
-    player.sign.set_lights(ALL_ON)
-    player.sign.set_dimmers(ALL_LOW)
-
+    player.add_mode(23, "rotate_slight_fade",
+        sequence=lambda: seq_rotate(), pace=1,
+        relay_override=RelayOverride(
+            concurrent=True,
+            brightness_on = 100,
+            brightness_off = 50,
+        )
+    )
 
 def mode_random_fade(player: Player, transition=None):
     """"""
