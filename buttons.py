@@ -21,7 +21,7 @@ class Button:
     def __init__(self):
         """Create the (only) button instance."""
         self.pin = 4
-        print("Initializing {self}")
+        print(f"Initializing {self}")
         self._button: _Button = _Button(pin=self.pin, bounce_time=0.10)
         self.reset()
         signal.signal(

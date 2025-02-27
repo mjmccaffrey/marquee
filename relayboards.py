@@ -16,7 +16,7 @@ class RelayBoard:
             self.port_address, 
             timeout=1,
         )
-        print("Initializing {self}")
+        print(f"Initializing {self}")
         self.device_mapping = device_mapping
         self.device_count = max(device_mapping.keys()) + 1
         self._device_to_bit = {

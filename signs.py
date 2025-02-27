@@ -80,22 +80,26 @@ class Sign:
     ):
         """"""
         ro = relay_override
-        brightnessses = {0: ro.brightness_off, 1: ro.brightness_on}
+        brightnessses = {
+            0: ro.brightness_off, 
+            1: ro.brightness_on
+        }
         transitions = {
             0: max(TRANSITION_MINIMUM, ro.transition_off * ro.speed_factor), 
             1: max(TRANSITION_MINIMUM, ro.transition_on * ro.speed_factor),
         }
-        # print(transitions)
         light_pattern = [int(p) for p in light_pattern]
         if ro.concurrent:
-            commands = [
-                d.make_set_command(
-                    brightness=brightnessses[p],
-                    transition=transitions[p],
-                )
-                for d, p in zip(self.dimmer_channels, light_pattern)
-            ]
-            asyncio.run(Dimmer.execute_multiple_commands(commands))
+            self.set_dimmers(
+                brightnesses=[
+                    brightnessses[p]
+                    for p in light_pattern
+                ], 
+                transitions=[
+                    transitions[p]
+                    for p in light_pattern
+                ]
+            )
         else:
             for d, p in zip(self.dimmer_channels, light_pattern):
                 d.set(
@@ -143,20 +147,27 @@ class Sign:
                 adjustments[p]
                 for p in pattern
             ]
-            # current = self.dimmer_brightnesses()
-            updates = [
-                (c, b)
-                for c, b in zip(
-                    self.dimmer_channels,
-                    brightnesses,
-                )
-                if c.brightness != b
-            ]
-            print(updates)
-        commands = [
-            c.make_set_command(output=True, brightness=b)
-            for c, b in updates
+        if transitions is None:
+            transitions = [None] * LIGHT_COUNT
+        updates = [
+            (c, b, t)
+            for c, b, t in zip(
+                self.dimmer_channels,
+                brightnesses,
+                transitions,
+            )
+            if c.brightness != b
         ]
+        print(updates)
+        commands = [
+            c.make_set_command(
+                output=True, # ???
+                brightness=b,
+                transition=t,
+            )
+            for c, b, t in updates
+        ]
+        print(commands)
         asyncio.run(Dimmer.execute_multiple_commands(commands))
 
     @property
