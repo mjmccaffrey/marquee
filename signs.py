@@ -115,6 +115,8 @@ class Sign:
             transitions[p]
             for p in light_pattern
         ]
+        print(brightnesses)
+        print(transitions)
         if ro.concurrent:
             self.set_dimmers(brightnesses, transitions)
         else:
