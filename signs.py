@@ -112,7 +112,7 @@ class Sign:
         brightnesses=[
             bright_values[p]
             for p in light_pattern
-        ], 
+        ]
         transitions=[
             trans_values[p]
             for p in light_pattern
