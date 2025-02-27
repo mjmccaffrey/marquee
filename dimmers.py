@@ -83,7 +83,7 @@ class Dimmer:
             print(err)
             raise
         else:
-            if b := command.params.get('brightness') is not None:
+            if (b := command.params.get('brightness')) is not None:
                 command.channel.brightness = b
     
     @classmethod
@@ -195,7 +195,7 @@ class DimmerChannel:
         except requests.exceptions.Timeout as e:
             print(time.time(), self.dimmer.ip_address, id, e)
         else:
-            if b := command.params.get('brightness') is not None:
+            if (b := command.params.get('brightness')) is not None:
                 self.brightness = b
         if wait:
             print("WAIT")
