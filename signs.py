@@ -75,6 +75,22 @@ class Sign:
         except Exception as e:
             logging.exception(e)
 
+    def _updates_needed(self, brightnesses, transitions):
+        """"""
+        return [
+            (c, b, t)
+            for c, b, t in zip(
+                self.dimmer_channels,
+                brightnesses,
+                transitions,
+            )
+            if c.brightness != b
+        ]
+
+    def _update_brightnesses(self, channels, brightnesses):
+        for c, b in zip(channels, brightnesses):
+            c.brightness = b
+
     def _set_lights_relay_override(
             self,
             light_pattern: str, 
@@ -91,24 +107,24 @@ class Sign:
             1: max(TRANSITION_MINIMUM, ro.transition_on * ro.speed_factor),
         }
         light_pattern = [int(p) for p in light_pattern]
+        brightnesses=[
+            brightnessses[p]
+            for p in light_pattern
+        ], 
+        transitions=[
+            transitions[p]
+            for p in light_pattern
+        ]
         if ro.concurrent:
-            self.set_dimmers(
-                brightnesses=[
-                    brightnessses[p]
-                    for p in light_pattern
-                ], 
-                transitions=[
-                    transitions[p]
-                    for p in light_pattern
-                ]
-            )
+            self.set_dimmers(brightnesses, transitions)
         else:
-            for d, p in zip(self.dimmer_channels, light_pattern):
-                d.set(
-                    brightness=brightnessses[p],
-                    transition=transitions[p],
+            updates = self._updates_needed(brightnesses, transitions)
+            for c, b, t in updates:
+                c.set(
+                    brightness=b,
+                    transition=t,
                 )
-
+            
     def set_lights(
             self, 
             light_pattern: str,
@@ -151,15 +167,8 @@ class Sign:
             ]
         if transitions is None:
             transitions = [None] * LIGHT_COUNT
-        updates = [
-            (c, b, t)
-            for c, b, t in zip(
-                self.dimmer_channels,
-                brightnesses,
-                transitions,
-            )
-            if c.brightness != b
-        ]
+
+        updates = self._updates_needed(brightnesses, transitions)
         print(len(updates))
         print(updates)
         print()

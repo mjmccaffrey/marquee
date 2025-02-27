@@ -193,6 +193,9 @@ class DimmerChannel:
             # !!! Check for result != 200
         except requests.exceptions.Timeout as e:
             print(time.time(), self.dimmer.ip_address, id, e)
+        else:
+            if b := command.params.get('brightness') is not None:
+                self.brightness = b
         if wait:
             print("WAIT")
             time.sleep(transition)
