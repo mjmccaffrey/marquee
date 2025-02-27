@@ -119,6 +119,9 @@ class Sign:
             self.set_dimmers(brightnesses, transitions)
         else:
             updates = self._updates_needed(brightnesses, transitions)
+            for u in updates:
+                print(u)
+            print()
             for c, b, t in updates:
                 c.set(
                     brightness=b,
