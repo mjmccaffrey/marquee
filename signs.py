@@ -97,6 +97,7 @@ class Sign:
             relay_override: RelayOverride,
     ):
         """"""
+        print(f"light_pattern:{light_pattern}")
         ro = relay_override
         brightnessses = {
             0: ro.brightness_off, 
@@ -107,6 +108,7 @@ class Sign:
             1: max(TRANSITION_MINIMUM, ro.transition_on * ro.speed_factor),
         }
         light_pattern = [int(p) for p in light_pattern]
+        print(f"light_pattern:{light_pattern}")
         brightnesses=[
             brightnessses[p]
             for p in light_pattern
