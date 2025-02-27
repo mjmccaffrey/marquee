@@ -178,6 +178,7 @@ class DimmerChannel:
             wait: bool = False,
     ):
         """Set the dimmer channel per requested values and state."""
+        print("start:", time.time())
         command = self.make_set_command(
             brightness=brightness,
             offset=offset,
@@ -199,6 +200,7 @@ class DimmerChannel:
         if wait:
             print("WAIT")
             time.sleep(transition)
+        print("end:", time.time())
 
 @dataclass
 class _DimmerCommand:
