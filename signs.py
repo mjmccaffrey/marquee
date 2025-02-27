@@ -171,6 +171,8 @@ class Sign:
         ]
         # print(commands)
         asyncio.run(Dimmer.execute_multiple_commands(commands))
+        for command in commands:
+            command.channel.brightness = command.params['brightness']
 
     @property
     def light_pattern(self):
