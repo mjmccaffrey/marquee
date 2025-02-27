@@ -39,6 +39,9 @@ class Dimmer:
     def __str__(self):
         return f"dimmer @ {self.ip_address}"
     
+    def __repr__(self):
+        return f"<{self}>"
+    
     @staticmethod
     def finish_setup():
         """"""
@@ -134,6 +137,9 @@ class DimmerChannel:
 
     def __str__(self):
         return f"dimmer channel @ {self.dimmer.ip_address}:{self.id}"
+    
+    def __repr__(self):
+        return f"<{self}>"
     
     def make_set_command(
         self, 
