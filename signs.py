@@ -78,6 +78,7 @@ class Sign:
 
     def _updates_needed(self, brightnesses, transitions):
         """"""
+        print([c.brightness for c in self.dimmer_channels])
         return [
             (c, b, t)
             for c, b, t in zip(
