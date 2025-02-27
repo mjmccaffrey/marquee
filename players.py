@@ -131,10 +131,16 @@ class Player:
                 if p is not None:
                     if relay_override is not None:
                         relay_override.speed_factor = self.speed_factor
+                before = time.time()
                 self.sign.set_lights(
                     lights, 
                     relay_override=relay_override,
                 )
+                after = time.time()
+                if p is not None:
+                    print(p)
+                    p = max(0, p - (after - before))
+                    print(p)
                 self.wait(p)
         if post_delay is not None:
             self.wait(post_delay)
