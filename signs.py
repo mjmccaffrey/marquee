@@ -56,8 +56,8 @@ class Sign:
             for channel in dimmer.channels
         ]
         # Note: channel[i] maps to light[i], 0 <= i < LIGHT_COUNT
-        for channel in self.dimmer_channels:
-            print(channel)
+        #for channel in self.dimmer_channels:
+        #    print(channel)
         assert len(self.dimmer_channels) == LIGHT_COUNT
         self._relayboard: RelayBoard = RelayBoard(_ALL_RELAYS)
         self._button = Button()
@@ -78,7 +78,6 @@ class Sign:
 
     def _updates_needed(self, brightnesses, transitions):
         """"""
-        print([c.brightness for c in self.dimmer_channels])
         return [
             (c, b, t)
             for c, b, t in zip(
@@ -95,7 +94,7 @@ class Sign:
             relay_override: RelayOverride,
     ):
         """"""
-        print(f"light_pattern:{light_pattern}")
+        #print(f"light_pattern:{light_pattern}")
         ro = relay_override
         bright_values = {
             0: ro.brightness_off, 
@@ -106,7 +105,7 @@ class Sign:
             1: max(TRANSITION_MINIMUM, ro.transition_on * ro.speed_factor),
         }
         light_pattern = [int(p) for p in light_pattern]
-        print(f"light_pattern:{light_pattern}")
+        #print(f"light_pattern:{light_pattern}")
         brightnesses=[
             bright_values[p]
             for p in light_pattern
@@ -115,10 +114,11 @@ class Sign:
             trans_values[p]
             for p in light_pattern
         ]
-        print(brightnesses)
-        print(transitions)
         if ro.concurrent:
-            self.set_dimmers(brightnesses, transitions)
+            self.set_dimmers(
+                brightnesses=brightnesses, 
+                transitions=transitions,
+            )
         else:
             updates = self._updates_needed(brightnesses, transitions)
             print("UPDATES:")
@@ -175,8 +175,9 @@ class Sign:
             transitions = [None] * LIGHT_COUNT
 
         updates = self._updates_needed(brightnesses, transitions)
-        print(len(updates))
-        print(updates)
+        print("UPDATES:")
+        for u in updates:
+            print(u)
         print()
         commands = [
             c.make_set_command(

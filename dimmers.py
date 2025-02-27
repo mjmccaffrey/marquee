@@ -129,7 +129,7 @@ class DimmerChannel:
         """Create the dimmer channel instance."""
         self.dimmer = dimmer
         self.id = id
-        print(f"Initializing {self}") # !!!
+        print(f"Initializing {self}")
         self.output = output
         self.brightness = brightness
         self.next_update = None

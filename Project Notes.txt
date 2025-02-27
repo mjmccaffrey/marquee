@@ -6,6 +6,7 @@ Timeline
 
 To Do Now:
 
+    pace must measure between the same 2 points, not blindly wait
     Install dimmer #6
     Install remote w/ 1 button to start
     (tested modes 1-16)
