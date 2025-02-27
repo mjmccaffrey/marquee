@@ -55,6 +55,8 @@ class Sign:
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
+        for channel in self.dimmer_channels:
+            print(channel)
         assert len(self.dimmer_channels) == LIGHT_COUNT
         self._relayboard: RelayBoard = RelayBoard(_ALL_RELAYS)
         self._button = Button()
