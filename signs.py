@@ -158,7 +158,9 @@ class Sign:
             )
             if c.brightness != b
         ]
+        print(len(updates))
         print(updates)
+        print()
         commands = [
             c.make_set_command(
                 output=True, # ???
@@ -167,7 +169,7 @@ class Sign:
             )
             for c, b, t in updates
         ]
-        print(commands)
+        # print(commands)
         asyncio.run(Dimmer.execute_multiple_commands(commands))
 
     @property
