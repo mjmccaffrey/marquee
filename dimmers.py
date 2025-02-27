@@ -121,7 +121,7 @@ class DimmerChannel:
     """ Models a single dimmer channel (light). """
     def __init__(
             self, 
-            dimmer:Dimmer, 
+            dimmer: Dimmer, 
             id: int, 
             output: bool, 
             brightness: int,
@@ -143,8 +143,8 @@ class DimmerChannel:
     
     def make_set_command(
         self, 
-        brightness: float = None, 
-        offset: float = None,
+        brightness: int = None, 
+        offset: int = None,
         transition: float = None, 
         output: bool = None,
     ):
@@ -171,8 +171,8 @@ class DimmerChannel:
         )
 
     def set(self, 
-            brightness: float = None, 
-            offset: float = None,
+            brightness: int = None, 
+            offset: int = None,
             transition: float = None, 
             output: bool = None,
             wait: bool = False,

@@ -55,6 +55,7 @@ class Sign:
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
+        # Note: channel[i] maps to light[i], 0 <= i < LIGHT_COUNT
         for channel in self.dimmer_channels:
             print(channel)
         assert len(self.dimmer_channels) == LIGHT_COUNT
@@ -86,10 +87,6 @@ class Sign:
             )
             if c.brightness != b
         ]
-
-    def _update_brightnesses(self, channels, brightnesses):
-        for c, b in zip(channels, brightnesses):
-            c.brightness = b
 
     def _set_lights_relay_override(
             self,
@@ -123,6 +120,7 @@ class Sign:
             self.set_dimmers(brightnesses, transitions)
         else:
             updates = self._updates_needed(brightnesses, transitions)
+            print("UPDATES:")
             for u in updates:
                 print(u)
             print()
