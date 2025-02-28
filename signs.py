@@ -126,10 +126,10 @@ class Sign:
             )
         else:
             updates = self._updates_needed(brightnesses, transitions)
-            print("UPDATES:")
-            for u in updates:
-                print(u)
-            print()
+            #print("UPDATES:")
+            #for u in updates:
+            #    print(u)
+            #print()
             for c, b, t in updates:
                 c.set(
                     brightness=b,
@@ -181,10 +181,10 @@ class Sign:
 
         assert brightnesses is not None
         updates = self._updates_needed(brightnesses, transitions)
-        print("UPDATES:")
-        for u in updates:
-            print(u)
-        print()
+        #print("UPDATES:")
+        #for u in updates:
+        #    print(u)
+        #print()
         commands = [
             c.make_set_command(
                 output=True, # ???
