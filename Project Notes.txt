@@ -8,8 +8,9 @@ functools singledispatch
 
 To Do Now:
     pace must measure between the same 2 points, not blindly wait
+        AND TAKE SPEED_FACTOR PROPERLY INTO ACCOUNT
         is this needed on RPi CM3 ???
-    ? mode 0=all_off; mode -1=select ?
+    add name to Button
     fix all basic type checking problems
     fix button
     fix _indicate_mode_desired

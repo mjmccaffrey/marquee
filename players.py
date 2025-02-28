@@ -110,10 +110,12 @@ class Player:
                 )
         return template
 
-    def wait(self, seconds: float):
+    def wait(self, seconds: float | None, adjustment: float = 0):
         """"""
         if seconds is not None:
-            seconds *= self.speed_factor
+            seconds = max(
+                0, seconds * self.speed_factor - adjustment,
+            )
         self.sign.wait_for_button_interrupt(seconds)
 
     def do_sequence(
@@ -148,10 +150,7 @@ class Player:
                 )
                 after = time.time()
                 if p is not None:
-                    print(p)
-                    p = max(0, p - (after - before))
-                    print(p)
-                self.wait(p)
+                    self.wait(p, after - before)
         if post_delay is not None:
             self.wait(post_delay)
 
