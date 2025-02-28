@@ -144,7 +144,7 @@ class DimmerChannel:
 
     def __str__(self):
         return (f"dimmer channel {self.index} @ "
-                 "{self.ip_address}:{self.id}")
+                f"{self.ip_address}:{self.id}")
     
     def __repr__(self):
         return f"<{self}>"
