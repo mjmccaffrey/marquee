@@ -75,7 +75,7 @@ def seq_build_halves(from_left=True):
     else:  # from right
         top = reversed(TOP_LIGHTS_LEFT_TO_RIGHT)
         bot = reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)
-    lights = ALL_OFF
+    lights = [0] * LIGHT_COUNT # ???
     for t, b in zip(top, bot):
         lights[t], lights[b] = 1, 1
         yield lights
@@ -128,7 +128,7 @@ def seq_rotate_build(clockwise=True):
         light_range = LIGHTS_CLOCKWISE
     else:  # counterclockwise
         light_range = reversed(LIGHTS_CLOCKWISE)
-    lights = ALL_OFF
+    lights = [0] * LIGHT_COUNT
     for l in light_range:
         lights[l] = 1
         yield lights

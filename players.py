@@ -7,7 +7,7 @@ import time
 
 from dimmers import Dimmer, RelayOverride, TRANSITION_DEFAULT
 from sequences import seq_rotate_build
-from signs import ALL_HIGH, ALL_ON, ButtonPressed, Sign
+from signs import ALL_HIGH, ALL_OFF, ALL_ON, ButtonPressed, EXTRA_COUNT, Sign
 
 @dataclass
 class Mode:
@@ -24,7 +24,10 @@ class Player:
         self.mode_previous = None
         self.speed_factor = 1.0
         self.mode_id_to_index = {}
-        self.commands = {'calibrate_dimmers': self.calibrate}
+        self.commands = {
+            'calibrate_dimmers': self.calibrate,
+            'off': self.off,
+        }
         self.modes: dict[int, Mode] = {}
         self.add_mode(0, "selection", self._mode_selection)
         self.sign: Sign = Sign()
@@ -37,14 +40,18 @@ class Player:
         """"""
         Dimmer.calibrate_all()
 
+    def off(self):
+        """"""
+        self.sign.set_lights(ALL_OFF, '0' * EXTRA_COUNT)
+
     def add_mode(
             self, 
             index: int, 
             name: str, 
-            mode: Callable = None,
-            sequence: Callable = None,
-            pace: float = None,
-            relay_override: RelayOverride = None,
+            mode: Callable | None = None,
+            sequence: Callable | None = None,
+            pace: tuple[float, ...] | float | None = None,
+            relay_override: RelayOverride | None = None,
         ):
         """Register the mode, identified by index and name."""
         assert not (mode and sequence), "Specify either mode or sequence."
@@ -69,6 +76,7 @@ class Player:
             )
         else:
             function = mode
+        assert function is not None
         self.modes[index] = Mode(
             name=name,
             function=function,
@@ -80,8 +88,8 @@ class Player:
     def _sequence_mode(
             self, 
             sequence: Callable, 
-            pace: float,
-            relay_override: RelayOverride,
+            pace: tuple[float, ...] | float,
+            relay_override: RelayOverride | None,
         ):
         """Return closure to execute sequence indefinitely.
            with pace seconds in between.
@@ -110,16 +118,16 @@ class Player:
             self, 
             sequence: Callable, 
             count: int = 1, 
-            pace: float = None, 
-            stop: int = None, 
-            post_delay: float = None,  
-            relay_override: RelayOverride = None,
+            pace: float | None = None, 
+            stop: int | None = None, 
+            post_delay: float | None = None,  
+            relay_override: RelayOverride | None = None,
         ):
         """Execute sequence count times, with pace seconds in between.
            If stop is specified, end the sequence 
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
-        if isinstance(pace, (float, int)) or pace is None:
+        if isinstance(pace, float) or pace is None:
             pace = itertools.repeat(pace)
         else:
             pace = itertools.cycle(pace)
@@ -147,11 +155,11 @@ class Player:
 
     def execute(
             self, 
-            command: str = None, 
-            mode_index: int = None, 
-            speed_factor: float = None,
-            light_pattern: str = None, 
-            brightness_pattern: str = None,
+            command: str | None = None, 
+            mode_index: int | None = None, 
+            speed_factor: float | None = None,
+            light_pattern: str | None = None, 
+            brightness_pattern: str | None = None,
         ):
         """Effects the specified command, mode or pattern(s)."""
         Dimmer.finish_setup()
@@ -194,6 +202,7 @@ class Player:
         """Show user what desired mode number is currently selected."""
         # self.sign.set_lights(ALL_ON)
         time.sleep(0.6)
+        assert self.mode_desired is not None
         for _ in range(self.mode_desired // 10):
             self.do_sequence(
                 seq_rotate_build, pace=0.2, stop=self.mode_desired % 10,

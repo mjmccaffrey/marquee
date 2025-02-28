@@ -23,11 +23,12 @@ _LIGHT_TO_RELAY = {
     8:  7,                          4:  2,
             7:  6,  6:  0,  5:  1,
 }
-_EXTRA_RELAYS = {
-    10:10, 11:11, 12:12, 13: 3, 14: 4, 15: 5,
+_EXTRA_TO_RELAY = {
+    10:10, 11:11, 12:12, 13:3, 14:4, 15:5,
 }
-_ALL_RELAYS = _LIGHT_TO_RELAY | _EXTRA_RELAYS
+_ALL_RELAYS = _LIGHT_TO_RELAY | _EXTRA_TO_RELAY
 LIGHT_COUNT = len(_LIGHT_TO_RELAY)
+EXTRA_COUNT = len(_EXTRA_TO_RELAY)
 _DIMMER_ADDRESSES = [
     '192.168.51.111',
     '192.168.51.112',
@@ -76,7 +77,11 @@ class Sign:
         except Exception as e:
             logging.exception(e)
 
-    def _updates_needed(self, brightnesses, transitions):
+    def _updates_needed(
+        self, 
+        brightnesses: list[int], 
+        transitions: list[float] | list[None],
+    ):
         """"""
         return [
             (c, b, t)
@@ -90,7 +95,7 @@ class Sign:
 
     def _set_lights_relay_override(
             self,
-            light_pattern: str, 
+            light_pattern: list | str, 
             relay_override: RelayOverride,
     ):
         """"""
@@ -134,8 +139,8 @@ class Sign:
     def set_lights(
             self, 
             light_pattern: str,
-            extra_pattern: str = None,
-            relay_override: RelayOverride = None,
+            extra_pattern: str | None = None,
+            relay_override: RelayOverride | None = None,
         ):
         """Set all lights per the supplied light_pattern.
            Set light_pattern, always as a string
@@ -155,9 +160,9 @@ class Sign:
 
     def set_dimmers(
             self, 
-            pattern: str = None,
-            brightnesses: list[int] = None,
-            transitions: list[float] = None,
+            pattern: str | None = None,
+            brightnesses: list[int] | None = None,
+            transitions: list[float] | list[None] | None = None,
         ):
         """ Set the dimmers per the supplied pattern or brightnesses. """
         assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
@@ -174,6 +179,7 @@ class Sign:
         if transitions is None:
             transitions = [None] * LIGHT_COUNT
 
+        assert brightnesses is not None
         updates = self._updates_needed(brightnesses, transitions)
         print("UPDATES:")
         for u in updates:

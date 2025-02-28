@@ -96,15 +96,17 @@ class Dimmer:
     @classmethod
     def calibrate_all(cls):
         """ Execute calibration on all dimmers on each successive channel. """
-        print("Calibrating all dimmers")
-        commands = [
-            channel.make_set_command(output=True, brightness=100)
-            for dimmer in cls._dimmers
-            for channel in dimmer.channels
-        ]
-        asyncio.run(cls.execute_multiple_commands(commands))
+        print("Calibrating dimmers")
+        # Set all lights all the way on.
+        for dimmer in cls._dimmers:
+            for channel in dimmer.channels:
+                channel.set(
+                    brightness=100,
+                    output=True,
+                )
         time.sleep(5)
         for id in range(cls.channel_count):
+            print(f"Calibrating channel {id}")
             commands = [
                 _DimmerCommand(
                     channel=dimmer.channels[id], 
@@ -114,8 +116,8 @@ class Dimmer:
                 for dimmer in cls._dimmers
             ]
             asyncio.run(cls.execute_multiple_commands(commands))
-            print(f"Calibrating channel {id}")
             time.sleep(150)
+        print("Calibration complete")
 
 class DimmerChannel:
     """ Models a single dimmer channel (light). """
@@ -132,7 +134,7 @@ class DimmerChannel:
         print(f"Initializing {self}")
         self.output = output
         self.brightness = brightness
-        self.next_update = None
+        self.next_update: float = 0
         self.set(output=True)  # !!! make part of a larger init?
 
     def __str__(self):
@@ -143,10 +145,10 @@ class DimmerChannel:
     
     def make_set_command(
         self, 
-        brightness: int = None, 
-        offset: int = None,
-        transition: float = None, 
-        output: bool = None,
+        brightness: int | None = None, 
+        offset: int | None = None,
+        transition: float | None = None, 
+        output: bool | None = None,
     ):
         """Produce dimmer API parameters from requested values and state."""
         assert transition is None or transition >= TRANSITION_MINIMUM
@@ -171,10 +173,10 @@ class DimmerChannel:
         )
 
     def set(self, 
-            brightness: int = None, 
-            offset: int = None,
-            transition: float = None, 
-            output: bool = None,
+            brightness: int | None = None, 
+            offset: int | None = None,
+            transition: float | None = None, 
+            output: bool | None = None,
             wait: bool = False,
     ):
         """Set the dimmer channel per requested values and state."""
@@ -198,6 +200,7 @@ class DimmerChannel:
             if (b := command.params.get('brightness')) is not None:
                 self.brightness = b
         if wait:
+            assert transition is not None
             print("WAIT")
             time.sleep(transition)
         print("end:", time.time())
@@ -216,5 +219,5 @@ class RelayOverride:
     brightness_on: int = 100
     brightness_off: int = 0
     speed_factor: float = 1.0
-    transition_on: float = None
-    transition_off: float = None
+    transition_on: float | None = None
+    transition_off: float | None = None
