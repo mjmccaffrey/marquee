@@ -44,6 +44,7 @@ class Player:
         """"""
         self.sign.set_lights(ALL_OFF, '0' * EXTRA_COUNT)
         print("Marquee is partially shut down.")
+        print()
 
     def add_mode(
             self, 

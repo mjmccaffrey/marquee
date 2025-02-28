@@ -48,17 +48,15 @@ class Sign:
         """Prepare devices and initial state."""
         print("Initializing sign")
         self.dimmers: list[Dimmer] = [
-            Dimmer(address)
-            for address in _DIMMER_ADDRESSES
+            Dimmer(index, address)
+            for index, address in enumerate(_DIMMER_ADDRESSES)
         ]
+        # channel[i] maps to light[i], 0 <= i < LIGHT_COUNT
         self.dimmer_channels: list[DimmerChannel] = [
             channel
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
-        # Note: channel[i] maps to light[i], 0 <= i < LIGHT_COUNT
-        #for channel in self.dimmer_channels:
-        #    print(channel)
         assert len(self.dimmer_channels) == LIGHT_COUNT
         self._relayboard: RelayBoard = RelayBoard(_ALL_RELAYS)
         self._button = Button()

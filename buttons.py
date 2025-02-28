@@ -25,7 +25,7 @@ class Button:
         self._button: _Button = _Button(pin=self.pin, bounce_time=0.10)
         self.reset()
         signal.signal(
-            signal.SIGUSR1,  # pylint: disable=no-member
+            signal.SIGUSR1,  # type: ignore
             lambda _, __: self.virtual_button_pressed(),
         )
 

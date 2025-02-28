@@ -16,9 +16,10 @@ class Dimmer:
     channel_count = 2
     _dimmers: list["Dimmer"] = []
 
-    def __init__(self, ip_address: str):
+    def __init__(self, index: int, ip_address: str):
         """Create the dimmer instance."""
         self._dimmers.append(self)
+        self.index = index
         self.ip_address = ip_address
         print(f"Initializing {self}")
         try:
@@ -29,6 +30,7 @@ class Dimmer:
         self.channels: list[DimmerChannel] = [
             DimmerChannel(
                 dimmer=self,
+                index=self.index * 2 + id,
                 id=id, 
                 output=status['output'], 
                 brightness=status['brightness'],
@@ -37,7 +39,7 @@ class Dimmer:
         ]
 
     def __str__(self):
-        return f"dimmer @ {self.ip_address}"
+        return f"dimmer {self.index} @ {self.ip_address}"
     
     def __repr__(self):
         return f"<{self}>"
@@ -124,12 +126,15 @@ class DimmerChannel:
     def __init__(
             self, 
             dimmer: Dimmer, 
+            index: int,
             id: int, 
             output: bool, 
             brightness: int,
         ):
         """Create the dimmer channel instance."""
         self.dimmer = dimmer
+        self.index = index
+        self.ip_address = self.dimmer.ip_address
         self.id = id
         print(f"Initializing {self}")
         self.output = output
@@ -138,7 +143,8 @@ class DimmerChannel:
         self.set(output=True)  # !!! make part of a larger init?
 
     def __str__(self):
-        return f"dimmer channel @ {self.dimmer.ip_address}:{self.id}"
+        return (f"dimmer channel {self.index} @ "
+                 "{self.ip_address}:{self.id}")
     
     def __repr__(self):
         return f"<{self}>"
@@ -168,7 +174,7 @@ class DimmerChannel:
         )
         return _DimmerCommand(
             channel = self,
-            url=f'http://{self.dimmer.ip_address}/rpc/Light.Set',
+            url=f'http://{self.ip_address}/rpc/Light.Set',
             params=params,
         )
 
@@ -180,7 +186,7 @@ class DimmerChannel:
             wait: bool = False,
     ):
         """Set the dimmer channel per requested values and state."""
-        print("start:", time.time())
+        #print("start:", time.time())
         command = self.make_set_command(
             brightness=brightness,
             offset=offset,
@@ -195,7 +201,7 @@ class DimmerChannel:
             )
             # !!! Check for result != 200
         except requests.exceptions.Timeout as e:
-            print(time.time(), self.dimmer.ip_address, id, e)
+            print(time.time(), self.ip_address, id, e)
         else:
             if (b := command.params.get('brightness')) is not None:
                 self.brightness = b
@@ -203,7 +209,7 @@ class DimmerChannel:
             assert transition is not None
             print("WAIT")
             time.sleep(transition)
-        print("end:", time.time())
+        #print("end:", time.time())
 
 @dataclass
 class _DimmerCommand:

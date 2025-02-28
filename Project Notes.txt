@@ -4,23 +4,20 @@ Timeline
 28 Feb - release to github
 15 Mar - video to github
 
+functools singledispatch
+
 To Do Now:
-    add channel . light index attribute and in __str__
-        for dimmers as well
     pace must measure between the same 2 points, not blindly wait
         is this needed on RPi CM3 ???
-
-    command OFF
-    
-    Install dimmer #6
-    Install remote w/ 1 button to start
-    (tested modes 1-16)
     ? mode 0=all_off; mode -1=select ?
+    fix all basic type checking problems
     fix button
     fix _indicate_mode_desired
 
-    reduce # of session.get calls?
-    reduce # of routines that directly set dimmers?
+After checking in as fully functional release:
+    Install lights 11 and 12
+    Install remote w/ 1 button to start
+    Install dimmer #6
 
     error handling for I/O
 
@@ -37,30 +34,26 @@ Physical:
 
 Future:
     tcp/ip setup working off home network
-    Install lights 11 and 12
     12 lights: Sides fade and build, and then top & bottom do the same
     logging module
     use type_enforced
     public and private modes
     reboot_dimmers command
-    operation=pattern: --transition_rate/speed/etc.
-    new build mode:
-        row 4 = 100
-        row 3 = 50, 4 = 80
-        row 2 = 50, 4 = 70
-        row 1 = 50, 4 = 50
-    basic testing
+    New modes:
+        During a mode, slow down relays (pace) while dimming, speed up while building
+        Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
+        Rows of bulbs progressively fade, and then build back from the bottom
+        Blink_all_fade_seq with rotating order - build+0, fade+1, build+2, fade+3, etc.
+        New build mode:
+            row 4 = 100
+            row 3 = 50, 4 = 80
+            row 2 = 50, 4 = 70
+            row 1 = 50, 4 = 50
+    basic testing and code coverage
     completely replace requests with aiohttp?
         https://docs.aiohttp.org/en/stable/http_request_lifecycle.html
     https://realpython.com/python-pyproject-toml/
 
-?????? slow down relays while dimming, speed up while building
-
-## Rather than a fixed transition rate, calculate so that effective rate is 10%-20% per second
-# Rows of bulbs progressively fade, and then build back from the bottom
-# blink_all_fade_seq with rotating order - build+0, fade+1, build+2, fade+3, etc.
-
-Testing and Quality Assurance: Implement unit tests and use code coverage tools to ensure code quality and reliability.
 
 log and retry upon dimmer comm timeouts
 

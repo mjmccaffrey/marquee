@@ -12,9 +12,9 @@ from signs import ALL_LOW, ALL_ON, ALL_OFF, LIGHT_COUNT
 def register_modes(player: Player):
     """Register the operating modes."""
     player.add_mode(1, "all_on", sequence=seq_all_on)
-    player.add_mode(2, "even_on", sequence=seq_even_on)
-    player.add_mode(3, "even_off", sequence=seq_even_off)
-    player.add_mode(4, "all_off", sequence=seq_all_off)
+    player.add_mode(2, "all_off", sequence=seq_all_off)
+    player.add_mode(3, "even_on", sequence=seq_even_on)
+    player.add_mode(4, "even_off", sequence=seq_even_off)
     player.add_mode(5, "blink_all", 
         sequence=seq_blink_all, pace=1,
     )
