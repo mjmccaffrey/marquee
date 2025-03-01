@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - relayboards"""
 
-import serial
+import serial  # type: ignore
 
 RELAY_COUNT = 16
 

@@ -59,7 +59,7 @@ class Sign:
         ]
         assert len(self.dimmer_channels) == LIGHT_COUNT
         self._relayboard: RelayBoard = RelayBoard(_ALL_RELAYS)
-        self._button = Button()
+        self._button = Button('mode_select', 4)
         full_pattern = self._relayboard.get_state_of_devices()
         self.light_pattern = full_pattern[:LIGHT_COUNT]
         self.extra_pattern = full_pattern[LIGHT_COUNT:]
@@ -94,18 +94,21 @@ class Sign:
     def _set_lights_relay_override(
             self,
             light_pattern: list | str, 
-            relay_override: RelayOverride,
+            override: RelayOverride,
     ):
         """"""
         #print(f"light_pattern:{light_pattern}")
-        ro = relay_override
         bright_values = {
-            0: ro.brightness_off, 
-            1: ro.brightness_on
+            0: override.brightness_off, 
+            1: override.brightness_on
         }
+        assert override.transition_off is not None
+        assert override.transition_on is not None
         trans_values = {
-            0: max(TRANSITION_MINIMUM, ro.transition_off * ro.speed_factor), 
-            1: max(TRANSITION_MINIMUM, ro.transition_on * ro.speed_factor),
+            0: max(TRANSITION_MINIMUM, 
+                   override.transition_off * override.speed_factor), 
+            1: max(TRANSITION_MINIMUM, 
+                   override.transition_on * override.speed_factor),
         }
         light_pattern = [int(p) for p in light_pattern]
         #print(f"light_pattern:{light_pattern}")
@@ -117,7 +120,7 @@ class Sign:
             trans_values[p]
             for p in light_pattern
         ]
-        if ro.concurrent:
+        if override.concurrent:
             self.set_dimmers(
                 brightnesses=brightnesses, 
                 transitions=transitions,
@@ -129,23 +132,20 @@ class Sign:
             #    print(u)
             #print()
             for c, b, t in updates:
-                c.set(
-                    brightness=b,
-                    transition=t,
-                )
+                c.set(brightness=b, transition=t)
             
     def set_lights(
             self, 
             light_pattern: str,
             extra_pattern: str | None = None,
-            relay_override: RelayOverride | None = None,
+            override: RelayOverride | None = None,
         ):
         """Set all lights per the supplied light_pattern.
            Set light_pattern, always as a string
            rather than a list."""
         light_pattern = ''.join(str(e) for e in light_pattern)
-        if relay_override is not None:
-            self._set_lights_relay_override(light_pattern, relay_override)
+        if override is not None:
+            self._set_lights_relay_override(light_pattern, override)
         else:
             if extra_pattern is None:
                 extra_pattern = self.extra_pattern

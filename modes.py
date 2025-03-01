@@ -32,18 +32,18 @@ def register_modes(player: Player):
     )
     player.add_mode(10, "blink_alternate_fade",
         sequence=seq_blink_alternate, pace=4, 
-        relay_override=RelayOverride(
+        override=RelayOverride(
             transition_on=1.0,
             transition_off=3.0,
         )
     )
     player.add_mode(11, "random_flip_fade",
         sequence=lambda: seq_random_flip(player.sign.light_pattern), pace=2.0,
-        relay_override=RelayOverride(),
+        override=RelayOverride(),
     )
     player.add_mode(12, "blink_all_fade_seq",
         sequence=seq_blink_all, pace=1,
-        relay_override=RelayOverride(
+        override=RelayOverride(
             concurrent=False,
             transition_on=0.5,
             transition_off=0.5,
@@ -51,7 +51,7 @@ def register_modes(player: Player):
     )
     player.add_mode(13, "blink_all_fade_con", 
         sequence=seq_blink_all, pace=1,
-        relay_override=RelayOverride(
+        override=RelayOverride(
             concurrent=True,
             transition_on=0.5,
             transition_off=0.5,
@@ -59,18 +59,18 @@ def register_modes(player: Player):
     )
     player.add_mode(14, "blink_all_fade_fast", 
         sequence=seq_blink_all, pace=0.5,
-        relay_override=RelayOverride()
+        override=RelayOverride()
     )
     player.add_mode(15, "blink_all_fade_slowwww", 
         sequence=seq_blink_all, pace=10,
-        relay_override=RelayOverride(
+        override=RelayOverride(
             brightness_on=100,
             brightness_off=10,
         )
     )
     player.add_mode(16, "blink_all_fade_stealth", 
         sequence=seq_blink_all, pace=(1, 60),
-        relay_override=RelayOverride(
+        override=RelayOverride(
             transition_on=2,
             transition_off=2,
         )
@@ -82,7 +82,7 @@ def register_modes(player: Player):
     player.add_mode(21, "even_odd_fade", mode=lambda: mode_even_odd_fade(player))
     player.add_mode(22, "corner_rotate_fade", 
         sequence=seq_opposite_corner_pairs, pace=5,
-        relay_override=RelayOverride(
+        override=RelayOverride(
             concurrent=True,
             brightness_on = 90,
             brightness_off = 10,
@@ -90,7 +90,7 @@ def register_modes(player: Player):
     )
     player.add_mode(23, "rotate_slight_fade",
         sequence=lambda: seq_rotate(), pace=0.5,
-        relay_override=RelayOverride(
+        override=RelayOverride(
             concurrent=False,
             brightness_on = 100,
             brightness_off = 60,
@@ -149,7 +149,7 @@ def mode_even_odd_fade(player: Player):
     for pattern in itertools.cycle((even_on, odd_on)):
         player.sign.set_lights(
             pattern, 
-            relay_override=RelayOverride(
+            override=RelayOverride(
                 concurrent=True,
                 brightness_on = 90,
                 brightness_off = 10,

@@ -1,3 +1,4 @@
+
 """Marquee Lighted Sign Project - players"""
 
 from collections.abc import Callable
@@ -22,7 +23,7 @@ class Player:
         self.mode_current = None
         self.mode_desired = None
         self.mode_previous = None
-        self.speed_factor = 1.0
+        self.speed_factor: float = 1.0
         self.mode_id_to_index = {}
         self.commands = {
             'calibrate_dimmers': self.calibrate,
@@ -53,7 +54,7 @@ class Player:
             mode: Callable | None = None,
             sequence: Callable | None = None,
             pace: tuple[float, ...] | float | None = None,
-            relay_override: RelayOverride | None = None,
+            override: RelayOverride | None = None,
         ):
         """Register the mode, identified by index and name."""
         assert not (mode and sequence), "Specify either mode or sequence."
@@ -66,15 +67,19 @@ class Player:
             k in self.modes for k in range(index)
             ), "Non-sequential mode index"
         if sequence:
-            if relay_override is not None:
-                if relay_override.transition_off is None:
-                    relay_override.transition_off = pace
-                if relay_override.transition_on is None:
-                    relay_override.transition_on = pace
+            if override is not None:
+                default_trans = (
+                    pace if isinstance(pace, float) else
+                    TRANSITION_DEFAULT
+                )
+                if override.transition_off is None:
+                    override.transition_off = default_trans
+                if override.transition_on is None:
+                    override.transition_on = default_trans
             function = self._sequence_mode(
                 sequence=sequence, 
                 pace=pace,
-                relay_override=relay_override, 
+                override=override, 
             )
         else:
             function = mode
@@ -90,69 +95,67 @@ class Player:
     def _sequence_mode(
             self, 
             sequence: Callable, 
-            pace: tuple[float, ...] | float,
-            relay_override: RelayOverride | None,
+            pace: tuple[float, ...] | float | None,
+            override: RelayOverride | None,
         ):
         """Return closure to execute sequence indefinitely.
            with pace seconds in between.
            Pace=None produces an infinite wait, so in this case
            the sequence should have only 1 step."""
-        def template():
+        def sequence_doer():
             # If using only dimmers, turn relays on, and vice versa
-            if relay_override is not None:
+            if override is not None:
                 self.sign.set_lights(ALL_ON)
             else:
                 self.sign.set_dimmers(ALL_HIGH)
             while True:
                 self.do_sequence(sequence,
                     pace=pace,
-                    relay_override=relay_override,
+                    override=override,
                 )
-        return template
+        return sequence_doer
 
-    def wait(self, seconds: float | None, adjustment: float = 0):
+    def wait(self, seconds: float, adjustment: float = 0):
         """"""
-        if seconds is not None:
-            seconds = max(
-                0, seconds * self.speed_factor - adjustment,
-            )
-        self.sign.wait_for_button_interrupt(seconds)
+        seconds = seconds * self.speed_factor - adjustment
+        if seconds > 0:
+            self.sign.wait_for_button_interrupt(seconds)
 
     def do_sequence(
             self, 
             sequence: Callable, 
             count: int = 1, 
-            pace: float | None = None, 
+            pace: tuple[float, ...] | float | None = None,
             stop: int | None = None, 
-            post_delay: float | None = None,  
-            relay_override: RelayOverride | None = None,
+            post_delay: float = 0, 
+            override: RelayOverride | None = None,
         ):
         """Execute sequence count times, with pace seconds in between.
            If stop is specified, end the sequence 
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
         if isinstance(pace, float) or pace is None:
-            pace = itertools.repeat(pace)
+            pace_iter = itertools.repeat(pace)
         else:
-            pace = itertools.cycle(pace)
+            assert isinstance(pace, tuple)
+            pace_iter = itertools.cycle(pace)
         for _ in range(count):
             for i, lights in enumerate(sequence()):
                 if stop is not None and i == stop:
                     break
-                p = next(pace)
+                p = next(pace_iter)
                 if p is not None:
-                    if relay_override is not None:
-                        relay_override.speed_factor = self.speed_factor
+                    if override is not None:
+                        override.speed_factor = self.speed_factor
                 before = time.time()
                 self.sign.set_lights(
                     lights, 
-                    relay_override=relay_override,
+                    override=override,
                 )
                 after = time.time()
                 if p is not None:
                     self.wait(p, after - before)
-        if post_delay is not None:
-            self.wait(post_delay)
+        self.wait(post_delay)
 
     def execute(
             self, 
@@ -167,6 +170,7 @@ class Player:
         if command is not None:
             self._execute_command(command)
         elif mode_index is not None:
+            assert speed_factor is not None
             self._execute_mode(mode_index, speed_factor)
         else:
             self._execute_pattern(light_pattern, brightness_pattern)
@@ -175,7 +179,7 @@ class Player:
         """"""
         self.commands[command]()
 
-    def _execute_mode(self, mode_index, speed_factor):
+    def _execute_mode(self, mode_index, speed_factor: float):
         """"""
         self.mode_current = mode_index
         self.speed_factor = speed_factor

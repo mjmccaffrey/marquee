@@ -18,9 +18,10 @@ class Button:
     """Supports the physical mode selection button
        connected to the RPi GPIO controller."""
 
-    def __init__(self):
+    def __init__(self, name:str, pin:int):
         """Create the (only) button instance."""
-        self.pin = 4
+        self.name = name
+        self.pin = pin
         print(f"Initializing {self}")
         self._button: _Button = _Button(pin=self.pin, bounce_time=0.10)
         self.reset()
@@ -30,7 +31,7 @@ class Button:
         )
 
     def __str__(self):
-        return f"button @ {self.pin}"
+        return f"button '{self.name}' @ {self.pin}"
     
     def close(self):
         """Clean up."""
