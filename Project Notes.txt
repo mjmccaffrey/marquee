@@ -4,6 +4,10 @@ Timeline
 28 Feb - release to github
 15 Mar - video to github
 
+Pi zero 2?
+
+dim 100 - 0 w/ trans=0.5, but interrupt at 0.25
+
 functools singledispatch
 
 To Do Now:
@@ -23,6 +27,7 @@ After checking in as fully functional release:
     error handling for I/O
 
     modes:
+        dimmer pattern sequences
         Spin, or other action, as all bulbs slowly build
         relay version of mode_random_fade(player: Player, transition=None)
         fade even & odd lights at opposite phases

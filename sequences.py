@@ -104,7 +104,8 @@ def seq_rotate(pattern="1"+"0"*(LIGHT_COUNT-1), clockwise=True):
         yield rotated_pattern
 
 def seq_opposite_corner_pairs():
-    """"""
+    """Alternate the lights in 2 diagonally-opposite corners
+       with the other 2 diagonally-opposite corners."""
     lights_in_opposite_corners = [
         {
             l

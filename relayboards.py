@@ -28,6 +28,7 @@ class RelayBoard:
         }
 
     def __str__(self):
+        """"""
         return f"relay board @ {self.port_address}"
     
     def close(self):

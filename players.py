@@ -1,4 +1,3 @@
-
 """Marquee Lighted Sign Project - players"""
 
 from collections.abc import Callable
@@ -38,11 +37,11 @@ class Player:
         self.sign.close()
 
     def calibrate(self):
-        """"""
+        """Calibrate dimmers."""
         Dimmer.calibrate_all()
 
     def off(self):
-        """"""
+        """Turn off all relays and potentially other devices."""
         self.sign.set_lights(ALL_OFF, '0' * EXTRA_COUNT)
         print("Marquee is partially shut down.")
         print()
@@ -65,7 +64,7 @@ class Player:
         ), "Duplicate mode index or name"
         assert all(
             k in self.modes for k in range(index)
-            ), "Non-sequential mode index"
+        ), "Non-sequential mode index"
         if sequence:
             if override is not None:
                 default_trans = (
@@ -115,9 +114,10 @@ class Player:
                 )
         return sequence_doer
 
-    def wait(self, seconds: float, adjustment: float = 0):
-        """"""
-        seconds = seconds * self.speed_factor - adjustment
+    def wait(self, seconds: float, elapsed: float=0):
+        """Wait the specified seconds after adjusting for
+           speed_factor and time already elapsed."""
+        seconds = seconds * self.speed_factor - elapsed
         if seconds > 0:
             self.sign.wait_for_button_interrupt(seconds)
 

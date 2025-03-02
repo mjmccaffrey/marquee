@@ -93,26 +93,22 @@ def register_modes(player: Player):
         override=RelayOverride(
             concurrent=False,
             brightness_on = 100,
-            brightness_off = 60,
+            brightness_off = 0,
         )
     )
 
 def mode_random_fade(player: Player, transition=None):
     """"""
     def _new_transition() -> float:
-        """"""
         if transition is None:
             return random.uniform(TRANSITION_MINIMUM, 5.0 * player.speed_factor)
         else:
             return transition
-    
     def _new_brightness(old) -> int:
-        """"""
         new = old
         while abs(new - old) < 20:
             new = random.randrange(101)
         return new
-
     player.sign.set_lights(ALL_ON)
     for channel in player.sign.dimmer_channels:
         channel.next_update = 0
@@ -127,6 +123,7 @@ def mode_random_fade(player: Player, transition=None):
         player.wait(0.1)
 
 def build1(player: Player, equal: bool):
+    """"""
     player.sign.set_lights(ALL_ON)
     player.sign.set_dimmers(ALL_LOW)
     brightnesss = [(i + 1) * 10 for i in range(10)]

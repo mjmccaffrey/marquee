@@ -8,14 +8,18 @@ from signs import LIGHT_COUNT
 
 class ArgumentParserImproved(ArgumentParser):
     """
-    !!!!
-    https://bugs.python.org/issue41255
-    https://github.com/python/cpython/issues/103498
-    https://stackoverflow.com/questions/67890157/python-3-9-1-argparse-exit-on-error-not-working-in-certain-situations
-    https://stackoverflow.com/questions/69108632/unable-to-catch-exception-error-for-argparse
+    Causes parse_args to not exit, regardless of the error.
+    References:
+        https://bugs.python.org/issue41255
+        https://github.com/python/cpython/issues/103498
+        https://stackoverflow.com/questions/67890157/python-3-9-1-argparse-exit-on-error-not-working-in-certain-situations
+        https://stackoverflow.com/questions/69108632/unable-to-catch-exception-error-for-argparse
+    Also some small enhancements.
     """ 
 
     def add_argument(self, *args, **kwargs):
+        """ If new kwarg optional=True, the option is added
+            prefixed by both - and --. """
         if kwargs.pop('optional', False):
             new_args = [
                 ('-' + arg, '--' + arg)
@@ -25,12 +29,15 @@ class ArgumentParserImproved(ArgumentParser):
         return super().add_argument(*args, **kwargs)
     
     def error(self, message):
+        """ Do not exit when certain errors occur. """
         raise ValueError(f"Argparse error:{message}")
 
     def exit(self, status=0, message=None):
+        """ Do not exit when certain other errors occur. """
         raise ValueError(f"Argparse error:{status}:{message}")
 
 def str_to_bool(arg):
+    """ Map English words to booleans. """
     values = {
         'true': True, 'yes': True, 'on': True,
         'false': False, 'no': False, 'off': False,
@@ -92,7 +99,7 @@ def validate_brightness_pattern(arg: str):
     return arg_normalized
 
 def parse_arguments(player: Player):
-    """"""
+    """ Parse the command-line arguments. """
     print(f"Parsing arguments:{sys.argv}")
     top_p = ArgumentParserImproved(exit_on_error=False)
     sub_p = top_p.add_subparsers(dest='operation', required=True)
