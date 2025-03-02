@@ -93,7 +93,7 @@ def register_modes(player: Player):
         override=RelayOverride(
             concurrent=False,
             brightness_on = 100,
-            brightness_off = 0,
+            brightness_off = 30,
         )
     )
 
