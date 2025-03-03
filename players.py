@@ -7,7 +7,10 @@ import time
 
 from dimmers import Dimmer, RelayOverride, TRANSITION_DEFAULT
 from sequences import seq_rotate_build
-from signs import ALL_HIGH, ALL_OFF, ALL_ON, ButtonPressed, EXTRA_COUNT, Sign
+from signs import (
+    ALL_HIGH, ALL_OFF, ALL_ON, ButtonPressed, 
+    LIGHT_COUNT, EXTRA_COUNT, Sign,
+)
 
 @dataclass
 class Mode:
@@ -144,14 +147,16 @@ class Player:
                 if stop is not None and i == stop:
                     break
                 p = next(pace_iter)
+                before = time.time()
+
                 if p is not None:
                     if override is not None:
                         override.speed_factor = self.speed_factor
-                before = time.time()
                 self.sign.set_lights(
                     lights, 
                     override=override,
                 )
+
                 after = time.time()
                 if p is not None:
                     self.wait(p, after - before)
@@ -208,9 +213,9 @@ class Player:
         # self.sign.set_lights(ALL_ON)
         time.sleep(0.6)
         assert self.mode_desired is not None
-        for _ in range(self.mode_desired // 10):
+        for _ in range(self.mode_desired // LIGHT_COUNT):
             self.do_sequence(
-                seq_rotate_build, pace=0.2, stop=self.mode_desired % 10,
+                seq_rotate_build, pace=0.2, stop=self.mode_desired % LIGHT_COUNT,
                 post_delay=0.3,
             )
 

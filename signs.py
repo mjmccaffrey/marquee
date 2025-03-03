@@ -4,7 +4,10 @@ import asyncio
 import logging
 
 from buttons import Button, ButtonPressed, PhysicalButtonPressed
-from dimmers import Dimmer, DimmerChannel, RelayOverride, TRANSITION_MINIMUM
+from dimmers import (
+    Dimmer, DimmerChannel, RelayOverride, 
+    TRANSITION_DEFAULT, TRANSITION_MINIMUM,
+)
 from relayboards import RelayBoard
 
 LIGHTS_BY_ROW = [
@@ -29,6 +32,10 @@ _EXTRA_TO_RELAY = {
 _ALL_RELAYS = _LIGHT_TO_RELAY | _EXTRA_TO_RELAY
 LIGHT_COUNT = len(_LIGHT_TO_RELAY)
 EXTRA_COUNT = len(_EXTRA_TO_RELAY)
+ALL_HIGH = "A" * LIGHT_COUNT
+ALL_LOW = "0" * LIGHT_COUNT
+ALL_ON = "1" * LIGHT_COUNT
+ALL_OFF = "0" * LIGHT_COUNT
 _DIMMER_ADDRESSES = [
     '192.168.51.111',
     '192.168.51.112',
@@ -36,10 +43,6 @@ _DIMMER_ADDRESSES = [
     '192.168.51.114',
     '192.168.51.115',
 ]
-ALL_HIGH = "A" * LIGHT_COUNT
-ALL_LOW = "0" * LIGHT_COUNT
-ALL_ON = "1" * LIGHT_COUNT
-ALL_OFF = "0" * LIGHT_COUNT
 
 class Sign:
     """Supports the physical devices."""
@@ -78,7 +81,7 @@ class Sign:
     def _updates_needed(
         self, 
         brightnesses: list[int], 
-        transitions: list[float] | list[None],
+        transitions: list[float],
     ):
         """"""
         return [
@@ -160,7 +163,7 @@ class Sign:
             self, 
             pattern: str | None = None,
             brightnesses: list[int] | None = None,
-            transitions: list[float] | list[None] | None = None,
+            transitions: list[float] | float = TRANSITION_DEFAULT
         ):
         """ Set the dimmers per the supplied pattern or brightnesses. """
         assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
@@ -174,10 +177,10 @@ class Sign:
                 adjustments[p]
                 for p in pattern
             ]
-        if transitions is None:
-            transitions = [None] * LIGHT_COUNT
-
+        if isinstance(transitions, float):
+            transitions = [transitions] * LIGHT_COUNT
         assert brightnesses is not None
+        assert isinstance(transitions, list)
         updates = self._updates_needed(brightnesses, transitions)
         #print("UPDATES:")
         #for u in updates:

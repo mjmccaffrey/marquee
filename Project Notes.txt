@@ -4,17 +4,12 @@ Timeline
 28 Feb - release to github
 15 Mar - video to github
 
-Pi zero 2?
-
-dim 100 - 0 w/ trans=0.5, but interrupt at 0.25
-
-functools singledispatch
+Pi zero 2
 
 To Do Now:
     pace must measure between the same 2 points, not blindly wait
         AND TAKE SPEED_FACTOR PROPERLY INTO ACCOUNT
-        is this needed on RPi CM3 ???
-    add name to Button
+        is this needed on RPi zero 2?
     fix all basic type checking problems
     fix button
     fix _indicate_mode_desired
@@ -39,6 +34,34 @@ Physical:
     procure QR code signs
 
 Future:
+    A   
+        light_sequence + relay_override + set_lights ==>
+        make_dimmer_sequence(light_sequence) + parameters + set_dimmers
+    B
+        native dimmer sequence + parameters + set_dimmers
+    
+    dim 100 - 0 w/ trans=0.5, but interrupt at 0.25
+        player.add_mode(24, "dimmer_rotate_trick", mode=lambda: dimmer_rotate_trick(player))
+
+        def dimmer_rotate_trick(player: Player):
+
+            player.sign.set_dimmers(WILL THIS TAKE A PATTERN AND A TRANSITION PARM?)
+            trans=0.5
+            pace=0.25
+
+        def seq_dimmer_rotate(
+                pattern="A" + "5" * (LIGHT_COUNT - 2) + "0", 
+                clockwise=True,
+        ):
+            """Rotate a dimmer pattern of lights counter/clockwise."""
+            if clockwise:
+                light_range = range(LIGHT_COUNT, 0, -1)
+            else:  # counterclockwise
+                light_range = range(0, LIGHT_COUNT, 1)
+            for i in light_range:
+                rotated_pattern = pattern[i:] + pattern[:i]
+                yield rotated_pattern
+
     tcp/ip setup working off home network
     12 lights: Sides fade and build, and then top & bottom do the same
     logging module

@@ -126,11 +126,11 @@ def build1(player: Player, equal: bool):
     """"""
     player.sign.set_lights(ALL_ON)
     player.sign.set_dimmers(ALL_LOW)
-    brightnesss = [(i + 1) * 10 for i in range(10)]
+    brightnesss = [(i + 1) * 10 for i in range(LIGHT_COUNT)]
     transitions = (
-        [20] * 10 
+        [20] * LIGHT_COUNT
             if equal else
-        [(i + 1) * 2 for i in range(10)]
+        [(i + 1) * 2 for i in range(LIGHT_COUNT)]
     )
     for dimmer, brightness, transition in zip(player.sign.dimmer_channels, brightnesss, transitions):
         dimmer.set(brightness=brightness, transition=transition)
