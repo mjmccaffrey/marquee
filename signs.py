@@ -27,7 +27,8 @@ _LIGHT_TO_RELAY = {
             7:  6,  6:  0,  5:  1,
 }
 _EXTRA_TO_RELAY = {
-    10:10, 11:11, 12:12, 13:3, 14:4, 15:5,
+    10:10, 11:11, 
+    12:12, 13:3, 14:4, 15:5,
 }
 _ALL_RELAYS = _LIGHT_TO_RELAY | _EXTRA_TO_RELAY
 LIGHT_COUNT = len(_LIGHT_TO_RELAY)
@@ -43,6 +44,7 @@ _DIMMER_ADDRESSES = [
     '192.168.51.114',
     '192.168.51.115',
 ]
+#   '192.168.51.116',
 
 class Sign:
     """Supports the physical devices."""

@@ -28,7 +28,8 @@ class Player:
         self.speed_factor: float = 1.0
         self.mode_id_to_index = {}
         self.commands = {
-            'calibrate_dimmers': self.calibrate,
+            'calibrate_dimmers': self.calibrate_dimmers,
+            'configure_dimmers': self.configure_dimmers,
             'off': self.off,
         }
         self.modes: dict[int, Mode] = {}
@@ -39,9 +40,13 @@ class Player:
         """Close devices."""
         self.sign.close()
 
-    def calibrate(self):
+    def calibrate_dimmers(self):
         """Calibrate dimmers."""
         Dimmer.calibrate_all()
+
+    def configure_dimmers(self):
+        """Configure dimmers."""
+        Dimmer.configure_all()
 
     def off(self):
         """Turn off all relays and potentially other devices."""

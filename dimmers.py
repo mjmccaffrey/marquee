@@ -94,8 +94,11 @@ class Dimmer:
     async def execute_multiple_commands(cls, commands: list["_DimmerCommand"]):
         """ Send multiple commands asynchronously. """
         async with asyncio.TaskGroup() as tg:
-            for command in commands:
+            tasks = [
                 tg.create_task(cls._execute_single_command(command))
+                for command in commands
+            ]
+        return [task.result() for task in tasks]
 
     @classmethod
     def calibrate_all(cls):
@@ -122,6 +125,32 @@ class Dimmer:
             asyncio.run(cls.execute_multiple_commands(commands))
             time.sleep(150)
         print("Calibration complete")
+
+    @classmethod
+    def configure_all(cls):
+        """ """
+        _DIMMER_ADDRESSES = [
+            '192.168.51.111',
+            '192.168.51.112',
+            '192.168.51.113',
+            '192.168.51.114',
+            '192.168.51.115',
+            '192.168.51.116',
+        ]
+        print("Configuring dimmers")
+        commands = [
+            _DimmerCommand(
+                channel=cls._dimmers[0].channels[0], 
+                url=f'http://{ip}/rpc/Shelly.GetConfig',
+                params={},
+            )
+            for ip in _DIMMER_ADDRESSES
+        ]
+        results = asyncio.run(cls.execute_multiple_commands(commands))
+        for result in results:
+            print()
+            print(result)
+            print()
 
 class DimmerChannel:
     """ Models a single dimmer channel (light). """

@@ -1,4 +1,11 @@
 
+LV4: A
+LV3: B
+LV2: C
+LV1: D
+VT: A, B, C, D
+
+
 Timeline
 ========
 28 Feb - release to github
@@ -61,6 +68,8 @@ Future:
             for i in light_range:
                 rotated_pattern = pattern[i:] + pattern[:i]
                 yield rotated_pattern
+
+    create small doc listing power supplies (including tripp lite) capacities and attached loads
 
     tcp/ip setup working off home network
     12 lights: Sides fade and build, and then top & bottom do the same
