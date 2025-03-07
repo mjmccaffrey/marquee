@@ -81,7 +81,7 @@ class Dimmer:
                     url=command.url,
                     params=command.params,
                 ) as response:
-                    response = await response.text()
+                    response = await response.json()
         except TimeoutError as err:
             # !!! catch timeout, check for != 200
             print(err)
@@ -99,7 +99,6 @@ class Dimmer:
                 tg.create_task(cls._execute_single_command(command))
                 for command in commands
             ]
-        time.sleep(10)
         return [task.result() for task in tasks]
 
     @classmethod
