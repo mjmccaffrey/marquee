@@ -89,6 +89,7 @@ class Dimmer:
         else:
             if (b := command.params.get('brightness')) is not None:
                 command.channel.brightness = b
+        return response
     
     @classmethod
     async def execute_multiple_commands(cls, commands: list["_DimmerCommand"]):
