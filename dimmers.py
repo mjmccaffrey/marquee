@@ -98,6 +98,7 @@ class Dimmer:
                 tg.create_task(cls._execute_single_command(command))
                 for command in commands
             ]
+        time.sleep(10)
         return [task.result() for task in tasks]
 
     @classmethod
