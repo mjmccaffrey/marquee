@@ -3,7 +3,7 @@
 import asyncio
 import logging
 
-from buttons import Button, ButtonPressed, PhysicalButtonPressed
+from buttons import Button, ButtonPressed
 from dimmers import (
     Dimmer, DimmerChannel, RelayOverride, 
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,
@@ -220,15 +220,14 @@ class Sign:
             for channel in dimmer.channels
         ]
 
-    def wait_for_button_interrupt(
+    def button_interrupt_wait(
             self, 
             seconds: float,
         ):
         """Pause the thread until either the seconds have elapsed
            or the button has been pressed."""
-        if self._button.pressed_event.wait(seconds):
-            raise PhysicalButtonPressed
+        Button.wait(seconds)
 
     def button_interrupt_reset(self):
         """Prepare for a button press."""
-        self._button.reset()
+        Button.reset()

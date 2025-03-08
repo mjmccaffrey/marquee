@@ -58,13 +58,9 @@ class Player:
             self, 
             index: int, 
             name: str, 
-            mode: Callable | None = None,
-            sequence: Callable | None = None,
-            pace: tuple[float, ...] | float | None = None,
-            override: RelayOverride | None = None,
+            function: Callable,
         ):
         """Register the mode, identified by index and name."""
-        assert not (mode and sequence), "Specify either mode or sequence."
         assert (
                 index not in self.modes
             and str(index) not in self.mode_id_to_index 
@@ -73,24 +69,6 @@ class Player:
         assert all(
             k in self.modes for k in range(index)
         ), "Non-sequential mode index"
-        if sequence:
-            if override is not None:
-                default_trans = (
-                    pace if isinstance(pace, float) else
-                    TRANSITION_DEFAULT
-                )
-                if override.transition_off is None:
-                    override.transition_off = default_trans
-                if override.transition_on is None:
-                    override.transition_on = default_trans
-            function = self._sequence_mode(
-                sequence=sequence, 
-                pace=pace,
-                override=override, 
-            )
-        else:
-            function = mode
-        assert function is not None
         self.modes[index] = Mode(
             name=name,
             function=function,
@@ -98,17 +76,17 @@ class Player:
         if index > 0:
             self.mode_id_to_index[str(index)] = index
             self.mode_id_to_index[name] = index
-
-    def _sequence_mode(
-            self, 
-            sequence: Callable, 
-            pace: tuple[float, ...] | float | None,
-            override: RelayOverride | None,
+            
+    def add_sequence_mode(
+            self,
+            index: int, 
+            name: str, 
+            sequence: Callable,
+            pace: tuple[float, ...] | float | None = None,
+            override: RelayOverride | None = None,
         ):
-        """Return closure to execute sequence indefinitely.
-           with pace seconds in between.
-           Pace=None produces an infinite wait, so in this case
-           the sequence should have only 1 step."""
+        """"""
+
         def sequence_doer():
             # If using only dimmers, turn relays on, and vice versa
             if override is not None:
@@ -120,14 +98,28 @@ class Player:
                     pace=pace,
                     override=override,
                 )
-        return sequence_doer
+
+        if override is not None:
+            default_trans = (
+                pace if isinstance(pace, float) else
+                TRANSITION_DEFAULT
+            )
+            if override.transition_off is None:
+                override.transition_off = default_trans
+            if override.transition_on is None:
+                override.transition_on = default_trans
+        self.add_mode(
+            index=index,
+            name=name,
+            function = sequence_doer
+        )
 
     def wait(self, seconds: float, elapsed: float=0):
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
         seconds = seconds * self.speed_factor - elapsed
         if seconds > 0:
-            self.sign.wait_for_button_interrupt(seconds)
+            self.sign.button_interrupt_wait(seconds)
 
     def do_sequence(
             self, 
@@ -208,7 +200,7 @@ class Player:
         if brightness_pattern is not None:
             print(f"Setting dimmers {brightness_pattern}")
             self.sign.set_dimmers(brightness_pattern)
-            self.sign.wait_for_button_interrupt(TRANSITION_DEFAULT)
+            self.sign.button_interrupt_wait(TRANSITION_DEFAULT)
         if light_pattern is not None:
             print(f"Setting lights {light_pattern}")
             self.sign.set_lights(light_pattern)
@@ -240,7 +232,7 @@ class Player:
                     self.mode_desired += 1
             self._indicate_mode_desired()
             try:
-                self.sign.wait_for_button_interrupt(5)
+                self.sign.button_interrupt_wait(5)
             except ButtonPressed:
                 pass
             else:

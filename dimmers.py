@@ -129,7 +129,7 @@ class Dimmer:
 
     @classmethod
     def configure_all(cls):
-        """ """
+        """ """  # !!!
         _DIMMER_ADDRESSES = [
             '192.168.51.111',
             '192.168.51.112',

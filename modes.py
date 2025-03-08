@@ -11,85 +11,85 @@ from signs import ALL_LOW, ALL_ON, ALL_OFF, LIGHT_COUNT
 
 def register_modes(player: Player):
     """Register the operating modes."""
-    player.add_mode(1, "all_on", sequence=seq_all_on)
-    player.add_mode(2, "all_off", sequence=seq_all_off)
-    player.add_mode(3, "even_on", sequence=seq_even_on)
-    player.add_mode(4, "even_off", sequence=seq_even_off)
-    player.add_mode(5, "blink_all", 
-        sequence=seq_blink_all, pace=1,
+    player.add_sequence_mode(1, "all_on", seq_all_on)
+    player.add_sequence_mode(2, "all_off", seq_all_off)
+    player.add_sequence_mode(3, "even_on", seq_even_on)
+    player.add_sequence_mode(4, "even_off", seq_even_off)
+    player.add_sequence_mode(5, "blink_all", 
+        seq_blink_all, pace=1,
     )
-    player.add_mode(6, "blink_alternate", 
-        sequence=seq_blink_alternate, pace=1, 
+    player.add_sequence_mode(6, "blink_alternate", 
+        seq_blink_alternate, pace=1, 
     )
-    player.add_mode(7, "rotate",
-        sequence=lambda: seq_rotate("1100000000"), pace=0.5,
+    player.add_sequence_mode(7, "rotate",
+        lambda: seq_rotate("1100000000"), pace=0.5,
     )
-    player.add_mode(8, "random_flip",
-        sequence=lambda: seq_random_flip(player.sign.light_pattern), pace=0.5,
+    player.add_sequence_mode(8, "random_flip",
+        lambda: seq_random_flip(player.sign.light_pattern), pace=0.5,
     )
-    player.add_mode(9, "demo",
-        sequence=lambda: seq_random_flip(player.sign.light_pattern), pace=0.5,
+    player.add_sequence_mode(9, "demo",
+        lambda: seq_random_flip(player.sign.light_pattern), pace=0.5,
     )
-    player.add_mode(10, "blink_alternate_fade",
-        sequence=seq_blink_alternate, pace=4, 
+    player.add_sequence_mode(10, "blink_alternate_fade",
+        seq_blink_alternate, pace=4, 
         override=RelayOverride(
             transition_on=1.0,
             transition_off=3.0,
         )
     )
-    player.add_mode(11, "random_flip_fade",
-        sequence=lambda: seq_random_flip(player.sign.light_pattern), pace=2.0,
+    player.add_sequence_mode(11, "random_flip_fade",
+        lambda: seq_random_flip(player.sign.light_pattern), pace=2.0,
         override=RelayOverride(),
     )
-    player.add_mode(12, "blink_all_fade_seq",
-        sequence=seq_blink_all, pace=1,
+    player.add_sequence_mode(12, "blink_all_fade_seq",
+        seq_blink_all, pace=1,
         override=RelayOverride(
             concurrent=False,
             transition_on=0.5,
             transition_off=0.5,
         )
     )
-    player.add_mode(13, "blink_all_fade_con", 
-        sequence=seq_blink_all, pace=1,
+    player.add_sequence_mode(13, "blink_all_fade_con", 
+        seq_blink_all, pace=1,
         override=RelayOverride(
             concurrent=True,
             transition_on=0.5,
             transition_off=0.5,
         )
     )
-    player.add_mode(14, "blink_all_fade_fast", 
-        sequence=seq_blink_all, pace=0.5,
+    player.add_sequence_mode(14, "blink_all_fade_fast", 
+        seq_blink_all, pace=0.5,
         override=RelayOverride()
     )
-    player.add_mode(15, "blink_all_fade_slowwww", 
-        sequence=seq_blink_all, pace=10,
+    player.add_sequence_mode(15, "blink_all_fade_slowwww", 
+        seq_blink_all, pace=10,
         override=RelayOverride(
             brightness_on=100,
             brightness_off=10,
         )
     )
-    player.add_mode(16, "blink_all_fade_stealth", 
-        sequence=seq_blink_all, pace=(1, 60),
+    player.add_sequence_mode(16, "blink_all_fade_stealth", 
+        seq_blink_all, pace=(1, 60),
         override=RelayOverride(
             transition_on=2,
             transition_off=2,
         )
     )
-    player.add_mode(17, "build_NEQ", mode=lambda: build1(player, False))
-    player.add_mode(18, "build_EQ", mode=lambda: build1(player, True))
-    player.add_mode(19, "random_fade", mode=lambda: mode_random_fade(player))
-    player.add_mode(20, "random_fade_steady", mode=lambda: mode_random_fade(player, 2.0))
-    player.add_mode(21, "even_odd_fade", mode=lambda: mode_even_odd_fade(player))
-    player.add_mode(22, "corner_rotate_fade", 
-        sequence=seq_opposite_corner_pairs, pace=5,
+    player.add_mode(17, "build_NEQ", lambda: build1(player, False))
+    player.add_mode(18, "build_EQ", lambda: build1(player, True))
+    player.add_mode(19, "random_fade", lambda: mode_random_fade(player))
+    player.add_mode(20, "random_fade_steady", lambda: mode_random_fade(player, 2.0))
+    player.add_mode(21, "even_odd_fade", lambda: mode_even_odd_fade(player))
+    player.add_sequence_mode(22, "corner_rotate_fade", 
+        seq_opposite_corner_pairs, pace=5,
         override=RelayOverride(
             concurrent=True,
             brightness_on = 90,
             brightness_off = 10,
         )
     )
-    player.add_mode(23, "rotate_slight_fade",
-        sequence=lambda: seq_rotate(), pace=0.5,
+    player.add_sequence_mode(23, "rotate_slight_fade",
+        lambda: seq_rotate(), pace=0.5,
         override=RelayOverride(
             concurrent=False,
             brightness_on = 100,
