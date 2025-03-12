@@ -5,7 +5,7 @@ import itertools
 import time
 
 from dimmers import RelayOverride
-from executors import Mode
+from modes import Mode
 from sequences import seq_rotate_build
 from signs import ButtonPressed, LIGHT_COUNT, Sign
 

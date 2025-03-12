@@ -1,5 +1,7 @@
 """Marquee Lighted Sign Project - modes"""
 
+from collections.abc import Callable
+from dataclasses import dataclass
 import itertools
 import random
 from sequences import *
@@ -9,6 +11,11 @@ from dimmers import RelayOverride, TRANSITION_MINIMUM
 from executors import Executor
 from players import Player
 from signs import ALL_LOW, ALL_ON, LIGHT_COUNT
+
+@dataclass
+class Mode:
+    name: str
+    function: Callable
 
 def register_mode_ids(exec: Executor):
     exec.add_mode_ids(1, "all_on")

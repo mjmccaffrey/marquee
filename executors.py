@@ -1,10 +1,10 @@
 """"""
 
 from collections.abc import Callable
-from dataclasses import dataclass
 
 from buttons import Button
 from dimmers import Dimmer, RelayOverride, TRANSITION_DEFAULT
+from modes import Mode, register_mode_ids, register_mode_functions
 from players import Player
 from relayboards import RelayBoard
 from signs import (
@@ -35,16 +35,10 @@ def create_sign() -> Sign:
         button=button,
     )
 
-@dataclass
-class Mode:
-    name: str
-    function: Callable
-
 class Executor():
     """"""
 
     def __init__(self):
-        from modes import register_mode_ids, register_mode_functions  # !!!!!!!!!!
         self.sign = create_sign()
         self.mode_id_to_index: dict[str, int] = {}
         self.modes: dict[int, Mode] = {}
