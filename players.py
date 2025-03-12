@@ -51,7 +51,7 @@ class Player:
     def off(self):
         """Turn off all relays and potentially other devices."""
         self.sign.set_lights(ALL_OFF, '0' * EXTRA_COUNT)
-        print("Marquee is partially shut down.")
+        print("Marquee is now partially shut down.")
         print()
 
     def add_mode(
@@ -145,7 +145,6 @@ class Player:
                     break
                 p = next(pace_iter)
                 before = time.time()
-
                 if p is not None:
                     if override is not None:
                         override.speed_factor = self.speed_factor
@@ -153,7 +152,6 @@ class Player:
                     lights, 
                     override=override,
                 )
-
                 after = time.time()
                 if p is not None:
                     self.wait(p, after - before)
@@ -189,7 +187,9 @@ class Player:
             print(f"Executing mode {self.modes[self.mode_current].name}")
             try:
                 self.modes[self.mode_current].function()
-            except ButtonPressed:
+            except ButtonPressed as press:
+                button, = press.args
+                print("Button Pressed: {button}")
                 print(f"Entering selection mode")
                 self.mode_previous = self.mode_current
                 self.mode_current = 0
@@ -233,7 +233,9 @@ class Player:
             self._indicate_mode_desired()
             try:
                 self.sign.button_interrupt_wait(5)
-            except ButtonPressed:
+            except ButtonPressed as press:
+                button, = press.args
+                print("Button Pressed: {button}")
                 pass
             else:
                 # If we get here, the time elapsed

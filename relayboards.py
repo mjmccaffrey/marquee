@@ -40,7 +40,7 @@ class RelayBoard:
         relay_pattern = self._devices_to_relays(device_pattern)
         self._set_relays(relay_pattern)
 
-    def get_state_of_devices(self):
+    def get_state_of_devices(self) -> str:
         """Get the state of all devices and output a device pattern."""
         relays = self._get_relays()
         return self._relays_to_devices(relays)
@@ -50,7 +50,7 @@ class RelayBoard:
         command = f"relay writeall {relay_pattern_hex}\n\r"
         self._serial_port.write(bytes(command, 'utf-8'))
 
-    def _get_relays(self):
+    def _get_relays(self) -> str:
         """Get the state of all relays and output a relay pattern."""
         self._serial_port.reset_input_buffer()
         command = "relay readall\n\r"
@@ -63,7 +63,7 @@ class RelayBoard:
         # print(f"gr:{val:>0{RELAY_COUNT}}")
         return f"{val:>0{RELAY_COUNT}}"
 
-    def _devices_to_relays(self, device_pattern):
+    def _devices_to_relays(self, device_pattern) -> str:
         """Convert desired device (light) pattern,
            in which the first light is the string's leftmost 0 or 1,
            to a relay pattern, in which the first relay is the
@@ -76,7 +76,7 @@ class RelayBoard:
         val = hex(int(''.join(str(e) for e in relay_pattern), 2))[2:]
         return f"{val:>04}"
 
-    def _relays_to_devices(self, relay_pattern):
+    def _relays_to_devices(self, relay_pattern) -> str:
         """Convert a relay pattern to a device pattern."""
         device_pattern = ''.join(
             relay_pattern[self._device_to_bit[d]]

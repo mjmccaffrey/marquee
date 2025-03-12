@@ -84,7 +84,7 @@ class Sign:
         self, 
         brightnesses: list[int], 
         transitions: list[float],
-    ):
+    ) -> list[tuple[DimmerChannel, int, float]]:
         """"""
         return [
             (c, b, t)
@@ -202,7 +202,7 @@ class Sign:
             command.channel.brightness = command.params['brightness']
 
     @property
-    def light_pattern(self):
+    def light_pattern(self) -> str:
         """Return the active light pattern."""
         return self._light_pattern
     
@@ -212,7 +212,7 @@ class Sign:
         self._light_pattern = value
         # print(f"Current_pattern is now:{self._light_pattern}")
 
-    def dimmer_brightnesses(self):
+    def dimmer_brightnesses(self) -> list[int]:
         """"""
         return [
             channel.brightness

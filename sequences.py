@@ -12,7 +12,7 @@ from signs import (
     LIGHTS_BY_ROW,
 )
 
-def opposite_pattern(pattern):
+def opposite_pattern(pattern) -> str:
     """Return pattern with the states flipped."""
     return "".join("1" if str(p) == "0" else "0" for p in pattern)
 

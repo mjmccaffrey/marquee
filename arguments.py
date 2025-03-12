@@ -2,9 +2,10 @@
 
 import sys
 
-from argparse import ArgumentParser, ArgumentError, ArgumentTypeError
+from argparse import Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
 from players import Player
 from signs import LIGHT_COUNT
+from typing import Any, NoReturn
 
 class ArgumentParserImproved(ArgumentParser):
     """
@@ -17,7 +18,7 @@ class ArgumentParserImproved(ArgumentParser):
     Also some small enhancements.
     """ 
 
-    def add_argument(self, *args, **kwargs):
+    def add_argument(self, *args, **kwargs) -> Action:
         """ If new kwarg optional=True, the option is added
             prefixed by both - and --. """
         if kwargs.pop('optional', False):
@@ -28,15 +29,15 @@ class ArgumentParserImproved(ArgumentParser):
             args = tuple(a for t in new_args for a in t)
         return super().add_argument(*args, **kwargs)
     
-    def error(self, message):
+    def error(self, message) -> NoReturn:
         """ Do not exit when certain errors occur. """
         raise ValueError(f"Argparse error:{message}")
 
-    def exit(self, status=0, message=None):
+    def exit(self, status=0, message=None) -> NoReturn:
         """ Do not exit when certain other errors occur. """
         raise ValueError(f"Argparse error:{status}:{message}")
 
-def str_to_bool(arg):
+def str_to_bool(arg: str) -> bool:
     """ Map English words to booleans. """
     values = {
         'true': True, 'yes': True, 'on': True,
@@ -75,7 +76,7 @@ def display_help(player: Player):
         print(f'  {command}')
     print()
 
-def validate_light_pattern(arg: str):
+def validate_light_pattern(arg: str) -> str:
     """ Return arg if it is a valid light pattern, 
         otherwise raise exception. """
     if not (
@@ -86,7 +87,7 @@ def validate_light_pattern(arg: str):
         raise ValueError()
     return arg
 
-def validate_brightness_pattern(arg: str):
+def validate_brightness_pattern(arg: str) -> str:
     """ Return normalized arg if it is a valid brightness pattern, 
         otherwise raise exception. """
     arg_normalized = arg.upper()
@@ -98,7 +99,7 @@ def validate_brightness_pattern(arg: str):
         raise ValueError()
     return arg_normalized
 
-def parse_arguments(player: Player):
+def parse_arguments(player: Player) -> Namespace | bool:
     """ Parse the command-line arguments. """
     print(f"Parsing arguments:{sys.argv}")
     top_p = ArgumentParserImproved(exit_on_error=False)
@@ -123,7 +124,7 @@ def parse_arguments(player: Player):
         print(f"Error parsing arguments:{err}")
         return False
 
-def process_arguments(player: Player):
+def process_arguments(player: Player) -> dict[str, Any] | bool:
     """Validate and interpret the runtime arguments.
        Return dict of parameters if the arguments are valid, 
        otherwise False."""
@@ -131,6 +132,7 @@ def process_arguments(player: Player):
     # print(f"Processing arguments:{parsed}")
     if not parsed:
         return False
+    assert isinstance(parsed, dict)
     if parsed.operation == 'command':
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':

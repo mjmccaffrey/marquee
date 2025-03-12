@@ -11,6 +11,7 @@ def main():
         player = Player()
         register_modes(player)
         if arg := process_arguments(player):
+            assert isinstance(arg, dict)
             player.execute(**arg)
         else:
             display_help(player)

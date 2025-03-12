@@ -55,7 +55,7 @@ class Dimmer:
     def close(self):
         """Clean up."""
 
-    def _get_status(self):
+    def _get_status(self) -> list[tuple[int, dict]]:
         """ Fetch status parameters for all channels. """
         try:
             result = self.session.get(
@@ -73,7 +73,7 @@ class Dimmer:
         ]      
     
     @classmethod
-    async def _execute_single_command(cls, command: "_DimmerCommand"):
+    async def _execute_single_command(cls, command: "_DimmerCommand") -> aiohttp.ClientResponse:
         """ Send individual command as part of asynchonous batch. """
         try:
             async with aiohttp.ClientSession() as session: # type: ignore
@@ -92,7 +92,7 @@ class Dimmer:
         return response
     
     @classmethod
-    async def execute_multiple_commands(cls, commands: list["_DimmerCommand"]):
+    async def execute_multiple_commands(cls, commands: list["_DimmerCommand"]) -> list[aiohttp.ClientResponse]:
         """ Send multiple commands asynchronously. """
         async with asyncio.TaskGroup() as tg:
             tasks = [
@@ -175,8 +175,7 @@ class DimmerChannel:
         self.set(output=True)  # !!! make part of a larger init?
 
     def __str__(self):
-        return (f"dimmer channel {self.index} @ "
-                f"{self.ip_address}:{self.id}")
+        return (f"dimmer {self.dimmer.index} channel {self.index}")
     
     def __repr__(self):
         return f"<{self}>"
@@ -187,7 +186,7 @@ class DimmerChannel:
         offset: int | None = None,
         transition: float | None = None, 
         output: bool | None = None,
-    ):
+    ) -> "_DimmerCommand":
         """Produce dimmer API parameters from requested values and state."""
         assert transition is None or transition >= TRANSITION_MINIMUM
         if brightness is not None:
