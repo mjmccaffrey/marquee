@@ -9,7 +9,7 @@ import time
 
 from dimmers import RelayOverride, TRANSITION_MINIMUM
 # from executors import Executor
-from players import Player
+# from players import Player
 from signs import ALL_LOW, ALL_ON, LIGHT_COUNT
 
 @dataclass
@@ -132,7 +132,7 @@ def register_mode_functions(exec):
         )
     )
 
-def mode_random_fade(player: Player, transition=None):
+def mode_random_fade(player, transition=None):
     """"""
     def _new_transition() -> float:
         if transition is None:
@@ -157,7 +157,7 @@ def mode_random_fade(player: Player, transition=None):
                 channel.next_update = now + tran
         player.wait(0.1)
 
-def build1(player: Player, equal: bool):
+def build1(player, equal: bool):
     """"""
     player.sign.set_lights(ALL_ON)
     player.sign.set_dimmers(ALL_LOW)
@@ -171,7 +171,7 @@ def build1(player: Player, equal: bool):
         dimmer.set(brightness=brightness, transition=transition)
     player.wait(40)
 
-def mode_even_odd_fade(player: Player):
+def mode_even_odd_fade(player):
     """"""
     player.sign.set_dimmers(ALL_LOW) 
     player.sign.set_lights(ALL_ON)
