@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import requests
 import time
 
-# import aiohttp - Delayed
+import aiohttp
 
 TRANSITION_DEFAULT = 0.5
 TRANSITION_MINIMUM = 0.5
@@ -46,12 +46,6 @@ class Dimmer:
         """"""
         return f"<{self}>"
     
-    @staticmethod
-    def finish_setup():
-        """Import aiohttp, which takes a full 3 seconds on an RPi0."""
-        global aiohttp
-        import aiohttp
-
     def close(self):
         """Clean up."""
 
@@ -130,7 +124,7 @@ class Dimmer:
     @classmethod
     def configure_all(cls):
         """ """  # !!!
-        _DIMMER_ADDRESSES = [
+        DIMMER_ADDRESSES = [
             '192.168.51.111',
             '192.168.51.112',
             '192.168.51.113',
@@ -145,7 +139,7 @@ class Dimmer:
                 url=f'http://{ip}/rpc/Shelly.GetConfig',
                 params={},
             )
-            for ip in _DIMMER_ADDRESSES
+            for ip in DIMMER_ADDRESSES
         ]
         results = asyncio.run(cls.execute_multiple_commands(commands))
         for result in results:

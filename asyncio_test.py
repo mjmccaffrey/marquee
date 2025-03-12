@@ -3,7 +3,7 @@ import asyncio
 import requests
 import time
 
-_DIMMER_ADDRESSES = [
+DIMMER_ADDRESSES = [
     '192.168.51.111',
     '192.168.51.112',
     '192.168.51.113',
@@ -12,7 +12,7 @@ _DIMMER_ADDRESSES = [
 ]
 
 def reboot_all():
-    for ip in _DIMMER_ADDRESSES:
+    for ip in DIMMER_ADDRESSES:
         requests.get(f"http://{ip}/rpc/Shelly.Reboot")
 
 async def fetch(ip, id, brightness):
@@ -31,7 +31,7 @@ async def fetch(ip, id, brightness):
 async def main():
     async with asyncio.TaskGroup() as tg:
         for i in range(1000):
-            for ip in _DIMMER_ADDRESSES:
+            for ip in DIMMER_ADDRESSES:
                 for id in range(2):
                     tg.create_task(fetch(ip, id, i % 2))
             await asyncio.sleep(2)

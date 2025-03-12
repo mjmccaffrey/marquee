@@ -1,3 +1,13 @@
+marquee
+    arguments
+    sign
+    executor
+        player.go
+            or
+        self.command
+        self.pattern
+
+
 
     "location": {
       "tz": "America/Detroit",
@@ -16,16 +26,19 @@ LV2: C
 LV1: D
 VT: A, B, C, D
 
-global, nonlocal, accessing class var via self, "shadowing"
+global, nonlocal, ClassVar, accessing class var via self, "shadowing"
 
 Timeline
 ========
 28 Feb - release to github
 15 Mar - video to github
 
-Pi zero 2
 
 To Do Now:
+    GPIO terminal block
+    Pi zero 2
+    Install remote; 2 buttons functional
+
     check and respond to .get result codes
     pace must measure between the same 2 points, not blindly wait
         AND TAKE SPEED_FACTOR PROPERLY INTO ACCOUNT
@@ -36,8 +49,6 @@ To Do Now:
 
 After checking in as fully functional release:
     Install lights 11 and 12
-    Install remote w/ 1 button to start
-    Install dimmer #6
 
     error handling for I/O
 
@@ -61,7 +72,7 @@ Future:
         native dimmer sequence + parameters + set_dimmers
     
     dim 100 - 0 w/ trans=0.5, but interrupt at 0.25
-        player.add_mode(24, "dimmer_rotate_trick", mode=lambda: dimmer_rotate_trick(player))
+        player.add_mode_func(24, "dimmer_rotate_trick", mode=lambda: dimmer_rotate_trick(player))
 
         def dimmer_rotate_trick(player: Player):
 

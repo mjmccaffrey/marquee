@@ -6,42 +6,70 @@ from sequences import *
 import time
 
 from dimmers import RelayOverride, TRANSITION_MINIMUM
+from executors import Executor
 from players import Player
 from signs import ALL_LOW, ALL_ON, ALL_OFF, LIGHT_COUNT
 
-def register_modes(player: Player):
+def register_mode_ids(exec: Executor):
+    exec.add_mode_ids(1, "all_on")
+    exec.add_mode_ids(2, "all_off")
+    exec.add_mode_ids(3, "even_on")
+    exec.add_mode_ids(4, "even_off")
+    exec.add_mode_ids(5, "blink_all")
+    exec.add_mode_ids(6, "blink_alternate")
+    exec.add_mode_ids(7, "rotate")
+    exec.add_mode_ids(8, "random_flip")
+    exec.add_mode_ids(9, "demo")
+    exec.add_mode_ids(10, "blink_alternate_fade")
+    exec.add_mode_ids(11, "random_flip_fade")
+    exec.add_mode_ids(12, "blink_all_fade_seq")
+    exec.add_mode_ids(13, "blink_all_fade_con")
+    exec.add_mode_ids(14, "blink_all_fade_fast")
+    exec.add_mode_ids(15, "blink_all_fade_slowwww")
+    exec.add_mode_ids(16, "blink_all_fade_stealth")
+    exec.add_mode_ids(17, "build_NEQ")
+    exec.add_mode_ids(18, "build_EQ")
+    exec.add_mode_ids(19, "random_fade")
+    exec.add_mode_ids(20, "random_fade_steady")
+    exec.add_mode_ids(21, "even_odd_fade")
+    exec.add_mode_ids(22, "corner_rotate_fade")
+    exec.add_mode_ids(23, "rotate_slight_fade")
+
+def register_mode_functions(exec: Executor):
     """Register the operating modes."""
-    player.add_sequence_mode(1, "all_on", seq_all_on)
-    player.add_sequence_mode(2, "all_off", seq_all_off)
-    player.add_sequence_mode(3, "even_on", seq_even_on)
-    player.add_sequence_mode(4, "even_off", seq_even_off)
-    player.add_sequence_mode(5, "blink_all", 
+    player = exec.player
+    sign = exec.player.sign
+    exec.add_sequence_mode_func(1, "all_on", seq_all_on)
+    exec.add_sequence_mode_func(2, "all_off", seq_all_off)
+    exec.add_sequence_mode_func(3, "even_on", seq_even_on)
+    exec.add_sequence_mode_func(4, "even_off", seq_even_off)
+    exec.add_sequence_mode_func(5, "blink_all", 
         seq_blink_all, pace=1,
     )
-    player.add_sequence_mode(6, "blink_alternate", 
+    exec.add_sequence_mode_func(6, "blink_alternate", 
         seq_blink_alternate, pace=1, 
     )
-    player.add_sequence_mode(7, "rotate",
+    exec.add_sequence_mode_func(7, "rotate",
         lambda: seq_rotate("1100000000"), pace=0.5,
     )
-    player.add_sequence_mode(8, "random_flip",
-        lambda: seq_random_flip(player.sign.light_pattern), pace=0.5,
+    exec.add_sequence_mode_func(8, "random_flip",
+        lambda: seq_random_flip(sign.light_pattern), pace=0.5,
     )
-    player.add_sequence_mode(9, "demo",
-        lambda: seq_random_flip(player.sign.light_pattern), pace=0.5,
+    exec.add_sequence_mode_func(9, "demo",
+        lambda: seq_random_flip(sign.light_pattern), pace=0.5,
     )
-    player.add_sequence_mode(10, "blink_alternate_fade",
+    exec.add_sequence_mode_func(10, "blink_alternate_fade",
         seq_blink_alternate, pace=4, 
         override=RelayOverride(
             transition_on=1.0,
             transition_off=3.0,
         )
     )
-    player.add_sequence_mode(11, "random_flip_fade",
-        lambda: seq_random_flip(player.sign.light_pattern), pace=2.0,
+    exec.add_sequence_mode_func(11, "random_flip_fade",
+        lambda: seq_random_flip(sign.light_pattern), pace=2.0,
         override=RelayOverride(),
     )
-    player.add_sequence_mode(12, "blink_all_fade_seq",
+    exec.add_sequence_mode_func(12, "blink_all_fade_seq",
         seq_blink_all, pace=1,
         override=RelayOverride(
             concurrent=False,
@@ -49,7 +77,7 @@ def register_modes(player: Player):
             transition_off=0.5,
         )
     )
-    player.add_sequence_mode(13, "blink_all_fade_con", 
+    exec.add_sequence_mode_func(13, "blink_all_fade_con", 
         seq_blink_all, pace=1,
         override=RelayOverride(
             concurrent=True,
@@ -57,30 +85,30 @@ def register_modes(player: Player):
             transition_off=0.5,
         )
     )
-    player.add_sequence_mode(14, "blink_all_fade_fast", 
+    exec.add_sequence_mode_func(14, "blink_all_fade_fast", 
         seq_blink_all, pace=0.5,
         override=RelayOverride()
     )
-    player.add_sequence_mode(15, "blink_all_fade_slowwww", 
+    exec.add_sequence_mode_func(15, "blink_all_fade_slowwww", 
         seq_blink_all, pace=10,
         override=RelayOverride(
             brightness_on=100,
             brightness_off=10,
         )
     )
-    player.add_sequence_mode(16, "blink_all_fade_stealth", 
+    exec.add_sequence_mode_func(16, "blink_all_fade_stealth", 
         seq_blink_all, pace=(1, 60),
         override=RelayOverride(
             transition_on=2,
             transition_off=2,
         )
     )
-    player.add_mode(17, "build_NEQ", lambda: build1(player, False))
-    player.add_mode(18, "build_EQ", lambda: build1(player, True))
-    player.add_mode(19, "random_fade", lambda: mode_random_fade(player))
-    player.add_mode(20, "random_fade_steady", lambda: mode_random_fade(player, 2.0))
-    player.add_mode(21, "even_odd_fade", lambda: mode_even_odd_fade(player))
-    player.add_sequence_mode(22, "corner_rotate_fade", 
+    exec.add_mode_func(17, "build_NEQ", lambda: build1(player, False))
+    exec.add_mode_func(18, "build_EQ", lambda: build1(player, True))
+    exec.add_mode_func(19, "random_fade", lambda: mode_random_fade(player))
+    exec.add_mode_func(20, "random_fade_steady", lambda: mode_random_fade(player, 2.0))
+    exec.add_mode_func(21, "even_odd_fade", lambda: mode_even_odd_fade(player))
+    exec.add_sequence_mode_func(22, "corner_rotate_fade", 
         seq_opposite_corner_pairs, pace=5,
         override=RelayOverride(
             concurrent=True,
@@ -88,8 +116,8 @@ def register_modes(player: Player):
             brightness_off = 10,
         )
     )
-    player.add_sequence_mode(23, "rotate_slight_fade",
-        lambda: seq_rotate(), pace=0.5,
+    exec.add_sequence_mode_func(23, "rotate_slight_fade",
+        seq_rotate, pace=0.5,
         override=RelayOverride(
             concurrent=False,
             brightness_on = 100,

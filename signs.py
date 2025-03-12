@@ -20,42 +20,39 @@ TOP_LIGHTS_LEFT_TO_RIGHT = [9, 0, 1, 2, 3]
 BOTTOM_LIGHTS_LEFT_TO_RIGHT = [8, 7, 6, 5, 4]
 CORNER_LIGHTS_CLOCKWISE = [(9, 0), (2, 3), (4, 5), (7, 8)]
 LIGHTS_CLOCKWISE = [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
-_LIGHT_TO_RELAY = {
+LIGHT_TO_RELAY = {
             0:  9,  1: 13,  2: 14,
     9:  8,                          3: 15,
     8:  7,                          4:  2,
             7:  6,  6:  0,  5:  1,
 }
-_EXTRA_TO_RELAY = {
+EXTRA_TO_RELAY = {
     10:10, 11:11, 
     12:12, 13:3, 14:4, 15:5,
 }
-_ALL_RELAYS = _LIGHT_TO_RELAY | _EXTRA_TO_RELAY
-LIGHT_COUNT = len(_LIGHT_TO_RELAY)
-EXTRA_COUNT = len(_EXTRA_TO_RELAY)
+ALL_RELAYS = LIGHT_TO_RELAY | EXTRA_TO_RELAY
+LIGHT_COUNT = len(LIGHT_TO_RELAY)
+EXTRA_COUNT = len(EXTRA_TO_RELAY)
 ALL_HIGH = "A" * LIGHT_COUNT
 ALL_LOW = "0" * LIGHT_COUNT
 ALL_ON = "1" * LIGHT_COUNT
 ALL_OFF = "0" * LIGHT_COUNT
-_DIMMER_ADDRESSES = [
-    '192.168.51.111',
-    '192.168.51.112',
-    '192.168.51.113',
-    '192.168.51.114',
-    '192.168.51.115',
-]
-#   '192.168.51.116',
 
 class Sign:
     """Supports the physical devices."""
 
-    def __init__(self):
+    def __init__(
+        self,
+        dimmers: list[Dimmer],
+        relayboard: RelayBoard,
+        button: Button,
+    ):
         """Prepare devices and initial state."""
         print("Initializing sign")
-        self.dimmers: list[Dimmer] = [
-            Dimmer(index, address)
-            for index, address in enumerate(_DIMMER_ADDRESSES)
-        ]
+        self.dimmers = dimmers
+        self._relayboard = relayboard
+        self._button = button
+
         # channel[i] maps to light[i], 0 <= i < LIGHT_COUNT
         self.dimmer_channels: list[DimmerChannel] = [
             channel
@@ -63,8 +60,9 @@ class Sign:
             for channel in dimmer.channels
         ]
         assert len(self.dimmer_channels) == LIGHT_COUNT
-        self._relayboard: RelayBoard = RelayBoard(_ALL_RELAYS)
-        self._button = Button('mode_select', 4)
+
+
+
         full_pattern = self._relayboard.get_state_of_devices()
         self.light_pattern = full_pattern[:LIGHT_COUNT]
         self.extra_pattern = full_pattern[LIGHT_COUNT:]
