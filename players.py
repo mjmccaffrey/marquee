@@ -1,125 +1,48 @@
 """Marquee Lighted Sign Project - players"""
 
 from collections.abc import Callable
-from dataclasses import dataclass
 import itertools
 import time
 
-from dimmers import Dimmer, RelayOverride, TRANSITION_DEFAULT
+from dimmers import RelayOverride
+from executors import Mode
 from sequences import seq_rotate_build
-from signs import (
-    ALL_HIGH, ALL_OFF, ALL_ON, ButtonPressed, 
-    LIGHT_COUNT, EXTRA_COUNT, Sign,
-)
-
-@dataclass
-class Mode:
-    name: str
-    function: Callable
+from signs import ButtonPressed, LIGHT_COUNT, Sign
 
 class Player:
-    """Manages execution at a high level."""
-    def __init__(self):
+    """Executes one mode at a time."""
+    def __init__(
+            self, 
+            modes: dict[int, Mode],
+            sign: Sign, 
+            speed_factor: float,
+        ):
         """Set up devices and initial state."""
         print("Initializing player")
+        self.modes = modes
+        self.sign = sign
+        self.speed_factor = speed_factor
         self.mode_current = None
         self.mode_desired = None
         self.mode_previous = None
-        self.speed_factor: float = 1.0
-        self.mode_id_to_index = {}
-        self.commands = {
-            'calibrate_dimmers': self.calibrate_dimmers,
-            'configure_dimmers': self.configure_dimmers,
-            'off': self.off,
-        }
-        self.modes: dict[int, Mode] = {}
-        self.add_mode(0, "selection", self._mode_selection)
-        self.sign: Sign = Sign()
+        self.modes[0] = Mode("selection", self._mode_selection)  # ????????
 
     def close(self):
-        """Close devices."""
-        self.sign.close()
+        """Close."""
 
-    def calibrate_dimmers(self):
-        """Calibrate dimmers."""
-        Dimmer.calibrate_all()
-
-    def configure_dimmers(self):
-        """Configure dimmers."""
-        Dimmer.configure_all()
-
-    def off(self):
-        """Turn off all relays and potentially other devices."""
-        self.sign.set_lights(ALL_OFF, '0' * EXTRA_COUNT)
-        print("Marquee is now partially shut down.")
-        print()
-
-    def add_mode(
-            self, 
-            index: int, 
-            name: str, 
-            function: Callable,
-        ):
-        """Register the mode, identified by index and name."""
-        assert (
-                index not in self.modes
-            and str(index) not in self.mode_id_to_index 
-            and name not in self.mode_id_to_index 
-        ), "Duplicate mode index or name"
-        assert all(
-            k in self.modes for k in range(index)
-        ), "Non-sequential mode index"
-        self.modes[index] = Mode(
-            name=name,
-            function=function,
-        )
-        if index > 0:
-            self.mode_id_to_index[str(index)] = index
-            self.mode_id_to_index[name] = index
-            
-    def add_sequence_mode(
-            self,
-            index: int, 
-            name: str, 
-            sequence: Callable,
-            pace: tuple[float, ...] | float | None = None,
-            override: RelayOverride | None = None,
-        ):
+    def start(self, mode_index):
         """"""
-
-        def sequence_doer():
-            # If using only dimmers, turn relays on, and vice versa
-            if override is not None:
-                self.sign.set_lights(ALL_ON)
-            else:
-                self.sign.set_dimmers(ALL_HIGH)
-            while True:
-                self.do_sequence(sequence,
-                    pace=pace,
-                    override=override,
-                )
-
-        if override is not None:
-            default_trans = (
-                pace if isinstance(pace, float) else
-                TRANSITION_DEFAULT
-            )
-            if override.transition_off is None:
-                override.transition_off = default_trans
-            if override.transition_on is None:
-                override.transition_on = default_trans
-        self.add_mode(
-            index=index,
-            name=name,
-            function = sequence_doer
-        )
-
-    def wait(self, seconds: float, elapsed: float=0):
-        """Wait the specified seconds after adjusting for
-           speed_factor and time already elapsed."""
-        seconds = seconds * self.speed_factor - elapsed
-        if seconds > 0:
-            self.sign.button_interrupt_wait(seconds)
+        self.mode_current = mode_index
+        while True:
+            print(f"Executing mode {self.modes[self.mode_current].name}")
+            try:
+                self.modes[self.mode_current].function()
+            except ButtonPressed as press:
+                button, = press.args
+                print("Button Pressed: {button}")
+                print(f"Entering selection mode")
+                self.mode_previous = self.mode_current
+                self.mode_current = 0
 
     def do_sequence(
             self, 
@@ -157,53 +80,12 @@ class Player:
                     self.wait(p, after - before)
         self.wait(post_delay)
 
-    def execute(
-            self, 
-            command: str | None = None, 
-            mode_index: int | None = None, 
-            speed_factor: float | None = None,
-            light_pattern: str | None = None, 
-            brightness_pattern: str | None = None,
-        ):
-        """Effects the specified command, mode or pattern(s)."""
-        Dimmer.finish_setup()
-        if command is not None:
-            self._execute_command(command)
-        elif mode_index is not None:
-            assert speed_factor is not None
-            self._execute_mode(mode_index, speed_factor)
-        else:
-            self._execute_pattern(light_pattern, brightness_pattern)
-
-    def _execute_command(self, command):
-        """"""
-        self.commands[command]()
-
-    def _execute_mode(self, mode_index, speed_factor: float):
-        """"""
-        self.mode_current = mode_index
-        self.speed_factor = speed_factor
-        while True:
-            print(f"Executing mode {self.modes[self.mode_current].name}")
-            try:
-                self.modes[self.mode_current].function()
-            except ButtonPressed as press:
-                button, = press.args
-                print("Button Pressed: {button}")
-                print(f"Entering selection mode")
-                self.mode_previous = self.mode_current
-                self.mode_current = 0
-
-    def _execute_pattern(self, light_pattern, brightness_pattern):
-        """"""
-        # ??? flip order and remove wait?
-        if brightness_pattern is not None:
-            print(f"Setting dimmers {brightness_pattern}")
-            self.sign.set_dimmers(brightness_pattern)
-            self.sign.button_interrupt_wait(TRANSITION_DEFAULT)
-        if light_pattern is not None:
-            print(f"Setting lights {light_pattern}")
-            self.sign.set_lights(light_pattern)
+    def wait(self, seconds: float, elapsed: float=0):
+        """Wait the specified seconds after adjusting for
+           speed_factor and time already elapsed."""
+        seconds = seconds * self.speed_factor - elapsed
+        if seconds > 0:
+            self.sign.button_interrupt_wait(seconds)
 
     def _indicate_mode_desired(self):
         """Show user what desired mode number is currently selected."""

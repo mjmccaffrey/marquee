@@ -1,23 +1,22 @@
 """Marquee Lighted Sign Project - main"""
 
 from arguments import display_help, process_arguments
-from modes import register_modes
-from players import Player
+from executors import Executor
 
 def main():
     """Execute Marquee application."""
     print("Executing Marquee")
     try:
-        player = Player()
-        register_modes(player)
-        if arg := process_arguments(player):
-            assert isinstance(arg, dict)
-            player.execute(**arg)
+        exec = Executor()
+        try:
+            arg = process_arguments(exec.modes, exec.commands)
+        except ValueError:
+            display_help(exec.modes, exec.commands)
         else:
-            display_help(player)
+            exec.execute(**arg)
     finally:
         try:
-            player.close()
+            exec.close()
         except Exception:
             pass
 

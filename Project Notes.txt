@@ -1,13 +1,3 @@
-marquee
-    arguments
-    sign
-    executor
-        player.go
-            or
-        self.command
-        self.pattern
-
-
 
     "location": {
       "tz": "America/Detroit",

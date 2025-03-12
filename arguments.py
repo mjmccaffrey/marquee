@@ -3,7 +3,6 @@
 import sys
 
 from argparse import Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
-from players import Player
 from signs import LIGHT_COUNT
 from typing import Any, NoReturn
 
@@ -46,9 +45,9 @@ def str_to_bool(arg: str) -> bool:
     try:
         return values[arg.lower()]
     except KeyError:
-        raise ValueError
+        raise ValueError()
 
-def display_help(player: Player):
+def display_help(modes, commands):
     """"Display the command-line syntax."""
     print()
     print("Usage:")
@@ -58,7 +57,7 @@ def display_help(player: Player):
     print("  marquee.py command [command_name]")
     print()
     print("Modes:")
-    for index, entry in player.modes.items():
+    for index, entry in modes.items():
         if index != 0:
             print(f'   {index}   {entry.name}')
     print()
@@ -72,7 +71,7 @@ def display_help(player: Player):
     print("      will not be initialized at startup.")
     print()
     print("Commands:")
-    for command in player.commands:
+    for command in commands:
         print(f'  {command}')
     print()
 
@@ -99,15 +98,15 @@ def validate_brightness_pattern(arg: str) -> str:
         raise ValueError()
     return arg_normalized
 
-def parse_arguments(player: Player) -> Namespace | bool:
+def parse_arguments(modes, commands) -> Namespace:
     """ Parse the command-line arguments. """
     print(f"Parsing arguments:{sys.argv}")
     top_p = ArgumentParserImproved(exit_on_error=False)
     sub_p = top_p.add_subparsers(dest='operation', required=True)
     command_p = sub_p.add_parser('command')
-    command_p.add_argument('command_name', choices=player.commands.keys())
+    command_p.add_argument('command_name', choices=commands.keys())
     mode_p = sub_p.add_parser('mode')
-    mode_p.add_argument('mode_id', choices=player.mode_id_to_index.keys())
+    mode_p.add_argument('mode_id', choices=modes.mode_id_to_index.keys())
     mode_p.add_argument('speed_factor', 
         optional=True, 
         type=float, default=1.0)
@@ -122,22 +121,22 @@ def parse_arguments(player: Player) -> Namespace | bool:
         return top_p.parse_args()
     except (ArgumentError, ArgumentTypeError, ValueError) as err:
         print(f"Error parsing arguments:{err}")
-        return False
+        raise ValueError()
 
-def process_arguments(player: Player) -> dict[str, Any] | bool:
+def process_arguments(modes, commands) -> dict[str, Any]:
     """Validate and interpret the runtime arguments.
        Return dict of parameters if the arguments are valid, 
-       otherwise False."""
-    parsed = parse_arguments(player)
+       otherwise an empty dict."""
     # print(f"Processing arguments:{parsed}")
-    if not parsed:
-        return False
-    assert isinstance(parsed, dict)
+    try:
+        parsed = parse_arguments(modes, commands)
+    except ValueError:
+        raise
     if parsed.operation == 'command':
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':
         args = {
-            "mode_index": player.mode_id_to_index[parsed.mode_id],
+            "mode_index": modes.mode_id_to_index[parsed.mode_id],
             "speed_factor": parsed.speed_factor,
         }
     elif parsed.operation == 'pattern':
@@ -155,7 +154,7 @@ def process_arguments(player: Player) -> dict[str, Any] | bool:
                 pattern = ['0' if e == '0' else "1" for e in parsed.dimmer]
                 args |= {"light_pattern": pattern}
         else:
-             return False
+            raise ValueError()
     else:
-        raise Exception("Command line parsing error")
+        raise Exception("Unexpected error processing command line")
     return args

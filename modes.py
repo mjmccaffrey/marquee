@@ -8,7 +8,7 @@ import time
 from dimmers import RelayOverride, TRANSITION_MINIMUM
 from executors import Executor
 from players import Player
-from signs import ALL_LOW, ALL_ON, ALL_OFF, LIGHT_COUNT
+from signs import ALL_LOW, ALL_ON, LIGHT_COUNT
 
 def register_mode_ids(exec: Executor):
     exec.add_mode_ids(1, "all_on")
