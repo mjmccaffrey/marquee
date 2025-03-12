@@ -8,7 +8,7 @@ from sequences import *
 import time
 
 from dimmers import RelayOverride, TRANSITION_MINIMUM
-from executors import Executor
+# from executors import Executor
 from players import Player
 from signs import ALL_LOW, ALL_ON, LIGHT_COUNT
 
@@ -17,7 +17,7 @@ class Mode:
     name: str
     function: Callable
 
-def register_mode_ids(exec: Executor):
+def register_mode_ids(exec):
     exec.add_mode_ids(1, "all_on")
     exec.add_mode_ids(2, "all_off")
     exec.add_mode_ids(3, "even_on")
@@ -42,7 +42,7 @@ def register_mode_ids(exec: Executor):
     exec.add_mode_ids(22, "corner_rotate_fade")
     exec.add_mode_ids(23, "rotate_slight_fade")
 
-def register_mode_functions(exec: Executor):
+def register_mode_functions(exec):
     """Register the operating modes."""
     player = exec.player
     sign = exec.player.sign
