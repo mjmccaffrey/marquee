@@ -79,6 +79,7 @@ class Executor():
             index: int, 
             name: str, 
         ):
+        print(index)
         """Register the mode, identified by index and name."""
         assert (
                 index not in self.modes
