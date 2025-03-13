@@ -94,6 +94,7 @@ class NumatorUSBRelayModule(ABC):
 class NumatoRL160001(NumatorUSBRelayModule):
     """Supports the Numato 16 Channel USB Relay Module (RL160001)."""
 
+    @property
     def relay_count(self) -> int:
         """"""
         return 16
