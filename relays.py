@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 import serial  # type: ignore
 
-class NumatorUSBRelayModule:
+class NumatorUSBRelayModule(ABC):
     """Supports the Numato 16 Channel USB Relay Module (RL160001)."""
 
     def __init__(self, port_address, device_mapping):
