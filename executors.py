@@ -46,7 +46,6 @@ class Executor():
     """"""
 
     def __init__(self):
-        self.sign = create_sign()
         self.mode_id_to_index: dict[str, int] = {}
         self.modes: dict[int, Mode] = {}
         self.register_mode_ids()
@@ -149,6 +148,7 @@ class Executor():
             brightness_pattern: str | None = None,
         ):
         """Effects the specified command, mode or pattern(s)."""
+        self.sign = create_sign()
         if command is not None:
             self.execute_command(command)
         elif mode_index is not None:
