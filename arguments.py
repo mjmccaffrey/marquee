@@ -1,8 +1,10 @@
 """Marquee Lighted Sign Project - arguments"""
 
+from collections.abc import Callable
 import sys
 
 from argparse import Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
+from modes import Mode
 from signs import LIGHT_COUNT
 from typing import Any, NoReturn
 
@@ -47,7 +49,7 @@ def str_to_bool(arg: str) -> bool:
     except KeyError:
         raise ValueError()
 
-def display_help(modes, commands):
+def display_help(modes: dict[int, Mode], commands: dict[str, Callable]):
     """"Display the command-line syntax."""
     print()
     print("Usage:")
@@ -97,7 +99,7 @@ def validate_brightness_pattern(arg: str) -> str:
         raise ValueError()
     return arg_normalized
 
-def parse_arguments(modes, commands) -> Namespace:
+def parse_arguments(modes: dict[int, Mode], commands: dict[str, Callable]) -> Namespace:
     """ Parse the command-line arguments. """
     print(f"Parsing arguments:{sys.argv}")
     top_p = ArgumentParserImproved(exit_on_error=False)
@@ -129,6 +131,7 @@ def process_arguments(modes, commands) -> dict[str, Any]:
     # print(f"Processing arguments:{parsed}")
     try:
         parsed = parse_arguments(modes, commands)
+        print(parsed)
     except ValueError:
         raise
     if parsed.operation == 'command':

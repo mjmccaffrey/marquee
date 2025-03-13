@@ -50,7 +50,7 @@ class Executor():
         self.mode_id_to_index: dict[str, int] = {}
         self.modes: dict[int, Mode] = {}
         self.register_mode_ids()
-        self.commands = {
+        self.commands: dict[str, Callable] = {
             'calibrate_dimmers': self.command_calibrate_dimmers,
             'configure_dimmers': self.command_configure_dimmers,
             'off': self.command_off,
@@ -87,7 +87,7 @@ class Executor():
             and name not in self.mode_id_to_index 
         ), "Duplicate mode index or name"
         assert all(
-            k in self.modes for k in range(index)
+            k in self.modes for k in range(1, index)
         ), "Non-sequential mode index"
         self.mode_id_to_index[str(index)] = index
         self.mode_id_to_index[name] = index
