@@ -58,8 +58,7 @@ def display_help(modes, commands):
     print()
     print("Modes:")
     for index, entry in modes.items():
-        if index != 0:
-            print(f'   {index}   {entry.name}')
+        print(f'   {index}   {entry.name}')
     print()
     print("Patterns: Specify --dimmer, --relay, or both.")
     print(f"  dimmer: {LIGHT_COUNT} hex values, each 0..A (0%..100%)")

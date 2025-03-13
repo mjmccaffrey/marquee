@@ -8,7 +8,7 @@ from dimmers import (
     Dimmer, DimmerChannel, RelayOverride, 
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,
 )
-from relayboards import RelayBoard
+from relays import NumatoRL160001
 
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
@@ -44,14 +44,14 @@ class Sign:
     def __init__(
         self,
         dimmers: list[Dimmer],
-        relayboard: RelayBoard,
-        button: Button,
+        relaymodule: NumatoRL160001,
+        buttons: list[Button],
     ):
         """Prepare devices and initial state."""
         print("Initializing sign")
         self.dimmers = dimmers
-        self._relayboard = relayboard
-        self._button = button
+        self._relaymodule = relaymodule
+        self._buttons = buttons
 
         # channel[i] maps to light[i], 0 <= i < LIGHT_COUNT
         self.dimmer_channels: list[DimmerChannel] = [
@@ -60,18 +60,19 @@ class Sign:
             for channel in dimmer.channels
         ]
         assert len(self.dimmer_channels) == LIGHT_COUNT
-        full_pattern = self._relayboard.get_state_of_devices()
+        full_pattern = self._relaymodule.get_state_of_devices()
         self.light_pattern = full_pattern[:LIGHT_COUNT]
         self.extra_pattern = full_pattern[LIGHT_COUNT:]
 
     def close(self):
         """Clean up."""
         try:
-            self._button.close()
+            for button in self._buttons:
+                button.close()
         except Exception as e:
             logging.exception(e)
         try:
-            self._relayboard.close()
+            self._relaymodule.close()
         except Exception as e:
             logging.exception(e)
 
@@ -152,7 +153,7 @@ class Sign:
             else:
                 extra_pattern = ''.join(str(e) for e in extra_pattern)
             full_pattern = light_pattern + extra_pattern
-            self._relayboard.set_state_of_devices(full_pattern)
+            self._relaymodule.set_state_of_devices(full_pattern)
             self.extra_pattern = extra_pattern
         self.light_pattern = light_pattern
 

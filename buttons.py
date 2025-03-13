@@ -67,10 +67,11 @@ class Button:
         """Callback for button press."""
         print("Button <{self}> pressed - acting")
         Button._button_pressed = self
-
         self.pressed_event.set()
         self._button.when_pressed = self._button_pressed_ignore
 
     def virtual_button_pressed(self):
         """Callback for virtual button press."""
+        print("Virtual button <{self}> pressed")
+        # ??? should this raise, or use _button_pressed = ???
         raise VirtualButtonPressed(self)

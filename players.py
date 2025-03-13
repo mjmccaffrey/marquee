@@ -25,7 +25,6 @@ class Player:
         self.mode_current = None
         self.mode_desired = None
         self.mode_previous = None
-        self.modes[0] = Mode("selection", self._mode_selection)  # ????????
 
     def close(self):
         """Close."""
