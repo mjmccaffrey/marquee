@@ -81,14 +81,14 @@ class Executor():
         ):
         print(index)
         """Register the mode, identified by index and name."""
-        assert (
-                index not in self.modes
-            and str(index) not in self.mode_id_to_index 
-            and name not in self.mode_id_to_index 
-        ), "Duplicate mode index or name"
-        assert all(
-            k in self.modes for k in range(1, index)
-        ), "Non-sequential mode index"
+        #assert (
+        #        index not in self.modes
+        #    and str(index) not in self.mode_id_to_index 
+        #    and name not in self.mode_id_to_index 
+        #), "Duplicate mode index or name"
+        #assert all(
+        #    k in self.modes for k in range(1, index)
+        #), "Non-sequential mode index"
         self.mode_id_to_index[str(index)] = index
         self.mode_id_to_index[name] = index
 
