@@ -213,7 +213,7 @@ class Executor():
         """Register the operating modes."""
         player = self.player
         sign = self.player.sign
-        self.add_sequence_mode_func(0, "selection", player._mode_selection)
+        self.add_mode_func(0, "selection", player._mode_selection)
         self.add_sequence_mode_func(1, "all_on", seq_all_on)
         self.add_sequence_mode_func(2, "all_off", seq_all_off)
         self.add_sequence_mode_func(3, "even_on", seq_even_on)
