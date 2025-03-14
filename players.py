@@ -35,7 +35,9 @@ class Player:
         while True:
             print(f"Executing mode {self.modes[self.mode_current].name}")
             try:
-                self.modes[self.mode_current].function()
+                function = self.modes[self.mode_current].function
+                assert function is not None
+                function()
             except ButtonPressed as press:
                 button, = press.args
                 print("Button Pressed: {button}")

@@ -13,7 +13,7 @@ from signs import ALL_LOW, ALL_ON, LIGHT_COUNT
 @dataclass
 class Mode:
     name: str
-    function: Callable
+    function: Callable | None
 
 def mode_random_fade(player, transition=None):
     """"""

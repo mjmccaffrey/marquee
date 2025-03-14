@@ -49,7 +49,10 @@ def str_to_bool(arg: str) -> bool:
     except KeyError:
         raise ValueError()
 
-def display_help(modes: dict[int, Mode], commands: dict[str, Callable]):
+def display_help(
+    modes: dict[int, Mode], 
+    commands: dict[str, Callable],
+):
     """"Display the command-line syntax."""
     print()
     print("Usage:")
@@ -99,7 +102,10 @@ def validate_brightness_pattern(arg: str) -> str:
         raise ValueError()
     return arg_normalized
 
-def parse_arguments(modes: dict[int, Mode], commands: dict[str, Callable]) -> Namespace:
+def parse_arguments(
+    mode_ids: dict[str, int], 
+    commands: dict[str, Callable],
+) -> Namespace:
     """ Parse the command-line arguments. """
     print(f"Parsing arguments:{sys.argv}")
     top_p = ArgumentParserImproved(exit_on_error=False)
@@ -107,7 +113,7 @@ def parse_arguments(modes: dict[int, Mode], commands: dict[str, Callable]) -> Na
     command_p = sub_p.add_parser('command')
     command_p.add_argument('command_name', choices=commands.keys())
     mode_p = sub_p.add_parser('mode')
-    mode_p.add_argument('mode_id', choices=modes.mode_id_to_index.keys())
+    mode_p.add_argument('mode_id', choices=mode_ids.keys())
     mode_p.add_argument('speed_factor', 
         optional=True, 
         type=float, default=1.0)
@@ -124,13 +130,16 @@ def parse_arguments(modes: dict[int, Mode], commands: dict[str, Callable]) -> Na
         print(f"Error parsing arguments:{err}")
         raise ValueError()
 
-def process_arguments(modes, commands) -> dict[str, Any]:
+def process_arguments(
+    mode_ids: dict[str, int], 
+    commands: dict[str, Callable],
+) -> dict[str, Any]:
     """Validate and interpret the runtime arguments.
        Return dict of parameters if the arguments are valid, 
        otherwise an empty dict."""
     # print(f"Processing arguments:{parsed}")
     try:
-        parsed = parse_arguments(modes, commands)
+        parsed = parse_arguments(mode_ids, commands)
         print(parsed)
     except ValueError:
         raise
@@ -138,7 +147,7 @@ def process_arguments(modes, commands) -> dict[str, Any]:
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':
         args = {
-            "mode_index": modes.mode_id_to_index[parsed.mode_id],
+            "mode_index": mode_ids[parsed.mode_id],
             "speed_factor": parsed.speed_factor,
         }
     elif parsed.operation == 'pattern':

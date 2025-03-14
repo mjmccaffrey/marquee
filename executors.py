@@ -3,7 +3,7 @@
 from collections.abc import Callable
 from signal import SIGUSR1  # type: ignore
 from buttons import Button
-from dimmers import Dimmer, RelayOverride, TRANSITION_DEFAULT
+from dimmers import ShellyDimmer, ShellyProDimmer2PM, RelayOverride, TRANSITION_DEFAULT
 from modes import *
 from players import Player
 from relays import NumatoRL160001
@@ -24,8 +24,8 @@ DIMMER_ADDRESSES = [
 
 def create_sign() -> Sign:
     """"""
-    dimmers: list[Dimmer] = [
-        Dimmer(index, address)
+    dimmers: list[ShellyDimmer] = [
+        ShellyProDimmer2PM(index, address)
         for index, address in enumerate(DIMMER_ADDRESSES)
     ]
     relaymodule: NumatoRL160001 = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
@@ -46,7 +46,8 @@ class Executor():
     """"""
 
     def __init__(self):
-        self.mode_id_to_index: dict[str, int] = {}
+        """"""
+        self.mode_ids: dict[str, int] = {}
         self.modes: dict[int, Mode] = {}
         self.register_mode_ids()
         self.commands: dict[str, Callable] = {
@@ -62,11 +63,11 @@ class Executor():
 
     def command_calibrate_dimmers(self):
         """Calibrate dimmers."""
-        Dimmer.calibrate_all()
+        ShellyDimmer.calibrate_all()
 
     def command_configure_dimmers(self):
         """Configure dimmers."""
-        Dimmer.configure_all()
+        ShellyDimmer.configure_all()
 
     def command_off(self):
         """Turn off all relays and potentially other devices."""
@@ -83,14 +84,15 @@ class Executor():
         """Register the mode, identified by index and name."""
         #assert (
         #        index not in self.modes
-        #    and str(index) not in self.mode_id_to_index 
-        #    and name not in self.mode_id_to_index 
+        #    and str(index) not in self.mode_ids 
+        #    and name not in self.mode_ids 
         #), "Duplicate mode index or name"
         #assert all(
         #    k in self.modes for k in range(1, index)
         #), "Non-sequential mode index"
-        self.mode_id_to_index[str(index)] = index
-        self.mode_id_to_index[name] = index
+        self.mode_ids[str(index)] = index
+        self.mode_ids[name] = index
+        self.modes[index] = Mode(name, None)
 
     def add_mode_func(
             self, 
@@ -98,10 +100,7 @@ class Executor():
             name: str, 
             function: Callable,
         ):
-        self.modes[index] = Mode(
-            name=name,
-            function=function,
-        )
+        self.modes[index] = Mode(name, function)
             
     def add_sequence_mode_func(
             self,

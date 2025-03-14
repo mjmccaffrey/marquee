@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - dimmers"""
 
+from abc import ABC, abstractmethod
 import asyncio
 from dataclasses import dataclass
 import requests
@@ -11,10 +12,9 @@ TRANSITION_DEFAULT = 0.5
 TRANSITION_MINIMUM = 0.5
 TRANSITION_MAXIMUM = 10800.0
 
-class Dimmer:
-    """Supports the Shelly Pro Dimmer 2PM."""
-    channel_count = 2
-    _dimmers: list["Dimmer"] = []
+class ShellyDimmer(ABC):
+    """Supports Shelly Dimmers."""
+    _dimmers: list["ShellyDimmer"] = []
 
     def __init__(self, index: int, ip_address: str):
         """Create the dimmer instance."""
@@ -48,6 +48,11 @@ class Dimmer:
     
     def close(self):
         """Clean up."""
+
+    @property
+    @abstractmethod
+    def channel_count(self) -> int:
+        """"""
 
     def _get_status(self) -> list[tuple[int, dict]]:
         """ Fetch status parameters for all channels. """
@@ -107,7 +112,7 @@ class Dimmer:
                     output=True,
                 )
         time.sleep(5)
-        for id in range(cls.channel_count):
+        for id in range(max(d.channel_count for d in cls._dimmers)):
             print(f"Calibrating channel {id}")
             commands = [
                 _DimmerCommand(
@@ -116,7 +121,9 @@ class Dimmer:
                     params={'id':id},
                 )
                 for dimmer in cls._dimmers
+                if id < dimmer.channel_count
             ]
+            print(commands)
             asyncio.run(cls.execute_multiple_commands(commands))
             time.sleep(150)
         print("Calibration complete")
@@ -151,7 +158,7 @@ class DimmerChannel:
     """ Models a single dimmer channel (light). """
     def __init__(
             self, 
-            dimmer: Dimmer, 
+            dimmer: ShellyDimmer, 
             index: int,
             id: int, 
             output: bool, 
@@ -252,3 +259,11 @@ class RelayOverride:
     speed_factor: float = 1.0
     transition_on: float | None = None
     transition_off: float | None = None
+
+class ShellyProDimmer2PM(ShellyDimmer):
+    """Supports the Shelly Pro Dimmer 2PM."""
+
+    @property
+    def channel_count(self) -> int:
+        """"""
+        return 2

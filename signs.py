@@ -5,10 +5,10 @@ import logging
 
 from buttons import Button, ButtonPressed
 from dimmers import (
-    Dimmer, DimmerChannel, RelayOverride, 
+    ShellyDimmer, DimmerChannel, RelayOverride, 
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,
 )
-from relays import NumatoRL160001
+from relays import NumatoUSBRelayModule
 
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
@@ -43,8 +43,8 @@ class Sign:
 
     def __init__(
         self,
-        dimmers: list[Dimmer],
-        relaymodule: NumatoRL160001,
+        dimmers: list[ShellyDimmer],
+        relaymodule: NumatoUSBRelayModule,
         buttons: list[Button],
     ):
         """Prepare devices and initial state."""
@@ -193,7 +193,7 @@ class Sign:
             for c, b, t in updates
         ]
         # print(commands)
-        asyncio.run(Dimmer.execute_multiple_commands(commands))
+        asyncio.run(ShellyDimmer.execute_multiple_commands(commands))
         for command in commands:
             command.channel.brightness = command.params['brightness']
 
