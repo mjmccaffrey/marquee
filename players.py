@@ -33,6 +33,7 @@ class Player:
     def start(self, mode_index):
         """"""
         self.mode_current = mode_index
+        print(f"Start Top - The current mode is now {self.mode_current}")
         while True:
             print(f"Executing mode {self.modes[self.mode_current].name}")
             try:
@@ -41,10 +42,11 @@ class Player:
                 function()
             except ButtonPressed as press:
                 button, = press.args
-                print("Button Pressed: {button}")
-                print(f"Entering selection mode")
+                print(f"Button Pressed: {button}")
+                print("Entering selection mode")
                 self.mode_previous = self.mode_current
                 self.mode_current = 0
+                print(f"Start Button Pressed - The current mode is now {self.mode_current}")
 
     def do_sequence(
             self, 
@@ -125,6 +127,7 @@ class Player:
                 # If we get here, the time elapsed
                 # without the button being pressed.
                 self.mode_current = self.mode_desired
+                print(f"Mode Selection - The current mode is now {self.mode_current}")
                 self.mode_desired = None
                 self.sign.button_interrupt_reset()
                 break

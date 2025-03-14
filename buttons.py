@@ -65,17 +65,17 @@ class Button:
 
     def _button_pressed_ignore(self):
         """Callback for button press at undesired time."""
-        print("Button <{self}> pressed - ignoring")
+        print(f"Button <{self}> pressed - ignoring")
 
     def _button_pressed_act(self):
         """Callback for button press."""
-        print("Button <{self}> pressed - acting")
+        print(f"Button <{self}> pressed - acting")
         Button._button_pressed = self
         self.pressed_event.set()
         self._button.when_pressed = self._button_pressed_ignore
 
     def virtual_button_pressed(self):
         """Callback for virtual button press."""
-        print("Virtual button <{self}> pressed")
+        print(f"Virtual button <{self}> pressed")
         # ??? should this raise, or use _button_pressed = ???
         raise VirtualButtonPressed(self)
