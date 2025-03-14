@@ -3,7 +3,7 @@
 import asyncio
 import logging
 
-from buttons import Button, ButtonPressed
+from buttons import Button
 from dimmers import (
     ShellyDimmer, DimmerChannel, RelayOverride, 
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,

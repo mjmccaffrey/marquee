@@ -1,4 +1,6 @@
 
+GPIO 4 blown on Pi zero ?
+
     "location": {
       "tz": "America/Detroit",
       "lat": 42.4933,

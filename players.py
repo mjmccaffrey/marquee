@@ -4,10 +4,11 @@ from collections.abc import Callable
 import itertools
 import time
 
+from buttons import ButtonPressed
 from dimmers import RelayOverride
 from modes import Mode
 from sequences import seq_rotate_build
-from signs import ButtonPressed, LIGHT_COUNT, Sign
+from signs import LIGHT_COUNT, Sign
 
 class Player:
     """Executes one mode at a time."""

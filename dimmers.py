@@ -169,7 +169,7 @@ class DimmerChannel:
         self.index = index
         self.ip_address = self.dimmer.ip_address
         self.id = id
-        print(f"Initializing {self}")
+        # print(f"Initializing {self}")
         self.output = output
         self.brightness = brightness
         self.next_update: float = 0

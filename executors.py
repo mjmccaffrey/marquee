@@ -2,15 +2,17 @@
 
 from collections.abc import Callable
 from signal import SIGUSR1  # type: ignore
+
 from buttons import Button
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, RelayOverride, TRANSITION_DEFAULT
+from gpiozero import Button as _Button  # type: ignore
 from modes import *
 from players import Player
 from relays import NumatoRL160001
 from sequences import *
 from signs import (
     ALL_RELAYS,
-    ALL_HIGH, ALL_OFF, ALL_ON, ButtonPressed, 
+    ALL_HIGH, ALL_OFF, ALL_ON,
     EXTRA_COUNT, Sign,
 )
 DIMMER_ADDRESSES = [
@@ -30,10 +32,10 @@ def create_sign() -> Sign:
     ]
     relaymodule: NumatoRL160001 = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
     buttons = [
-        Button('body_mode_select', 4, SIGUSR1),
+        Button('body_mode_select', _Button(pin=4, bounce_time=0.10), SIGUSR1)
         # Button('remote_mode_select', ),
-        # Button('remote_relay_modes', ),
-        # Button('remote_dimmer_modes', ),
+        # Button('remote_mode_up', ),
+        # Button('remote_mode_down', ),
         # Button('remote_demo_mode', ),
     ]
     return Sign(
