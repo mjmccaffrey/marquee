@@ -32,7 +32,7 @@ def create_sign() -> Sign:
     ]
     relaymodule: NumatoRL160001 = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
     buttons = [
-        Button('body_mode_select', _Button(pin=4, bounce_time=0.10), SIGUSR1)
+        Button('body_mode_select', _Button(pin=17, bounce_time=0.10), SIGUSR1)
         # Button('remote_mode_select', ),
         # Button('remote_mode_up', ),
         # Button('remote_mode_down', ),
