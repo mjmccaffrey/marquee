@@ -72,7 +72,7 @@ class Button:
         print(f"Button <{self}> pressed - acting")
         Button._button_pressed = self
         self.pressed_event.set()
-        self._button.when_pressed = self._button_pressed_ignore
+        # self._button.when_pressed = self._button_pressed_ignore
 
     def virtual_button_pressed(self):
         """Callback for virtual button press."""

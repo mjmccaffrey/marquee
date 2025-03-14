@@ -133,6 +133,6 @@ class Player:
                 print(f"Mode Selection - The current mode is now {self.mode_current}")
                 self.mode_desired = None
                 print(3)
-                self.sign.button_interrupt_reset()
+                # self.sign.button_interrupt_reset()
                 print(4)
                 break
