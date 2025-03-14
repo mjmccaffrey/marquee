@@ -80,7 +80,6 @@ class Executor():
             index: int, 
             name: str, 
         ):
-        print(index)
         """Register the mode, identified by index and name."""
         #assert (
         #        index not in self.modes
@@ -148,6 +147,7 @@ class Executor():
             brightness_pattern: str | None = None,
         ):
         """Effects the specified command, mode or pattern(s)."""
+        ShellyDimmer.finish_setup()
         self.sign = create_sign()
         if command is not None:
             self.execute_command(command)

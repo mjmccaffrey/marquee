@@ -5,12 +5,11 @@ from executors import Executor
 
 def main():
     """Execute Marquee application."""
-    print("Executing Marquee")
+    # print("Executing Marquee")
     try:
         exec = Executor()
         try:
             arg = process_arguments(exec.mode_ids, exec.commands)
-            print(arg)
         except ValueError:
             display_help(exec.modes, exec.commands)
         else:

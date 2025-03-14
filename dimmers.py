@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import requests
 import time
 
-import aiohttp
+# import aiohttp - Delayed
 
 TRANSITION_DEFAULT = 0.5
 TRANSITION_MINIMUM = 0.5
@@ -54,6 +54,12 @@ class ShellyDimmer(ABC):
     def channel_count(self) -> int:
         """"""
 
+    @staticmethod
+    def finish_setup():
+        """"""
+        global aiohttp
+        import aiohttp
+        
     def _get_status(self) -> list[tuple[int, dict]]:
         """ Fetch status parameters for all channels. """
         try:
