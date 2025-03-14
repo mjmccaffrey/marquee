@@ -120,6 +120,7 @@ class Executor():
             else:
                 self.sign.set_dimmers(ALL_HIGH)
             while True:
+                print("!!", sequence.__name__)
                 self.player.do_sequence(sequence,
                     pace=pace,
                     override=override,
