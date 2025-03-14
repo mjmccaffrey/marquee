@@ -97,6 +97,7 @@ class Player:
         time.sleep(0.6)
         assert self.mode_desired is not None
         for _ in range(self.mode_desired // LIGHT_COUNT):
+            print("?? ", _)
             self.do_sequence(
                 seq_rotate_build, pace=0.2, stop=self.mode_desired % LIGHT_COUNT,
                 post_delay=0.3,
