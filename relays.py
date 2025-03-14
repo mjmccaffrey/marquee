@@ -30,7 +30,7 @@ class NumatoUSBRelayModule(ABC):
 
     def __str__(self):
         """"""
-        return f"relay module @ {self.port_address}"
+        return f"{type(self).__name__} @ {self.port_address}"
     
     def close(self):
         """Clean up."""
