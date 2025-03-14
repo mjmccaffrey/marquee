@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - buttons"""
 
 from gpiozero import Button as _Button  # type: ignore
-from signal import signal, _SIGNUM
+from signal import signal
 
 import threading
 
@@ -37,7 +37,7 @@ class Button:
             self, 
             name: str, 
             button: _Button,
-            signum: _SIGNUM | None = None,
+            signal_number: int | None = None,
     ):
         """Create a button instance."""
         self.name = name
@@ -47,9 +47,9 @@ class Button:
         Button.buttons.append(self)
         self._button = button
         self._button.when_pressed = self._button_pressed_act
-        if signum is not None:
+        if signal_number is not None:
             signal(
-                signum,
+                signal_number,
                 lambda _, __: self.virtual_button_pressed(),
             )
 
