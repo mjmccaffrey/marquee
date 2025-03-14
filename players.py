@@ -107,7 +107,9 @@ class Player:
            the next mode to execute."""
         while True:
             # Button was pressed
+            print(1)
             self.sign.button_interrupt_reset()
+            print(2)
             if self.mode_desired is None:
                 # Just now entering selection mode
                 self.mode_desired = self.mode_previous
@@ -129,5 +131,7 @@ class Player:
                 self.mode_current = self.mode_desired
                 print(f"Mode Selection - The current mode is now {self.mode_current}")
                 self.mode_desired = None
+                print(3)
                 self.sign.button_interrupt_reset()
+                print(4)
                 break
