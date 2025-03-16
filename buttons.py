@@ -31,6 +31,7 @@ class Button:
     def wait(cls, seconds: float):
         """"""
         if cls.pressed_event.wait(seconds):
+            print(f"Button.wait: {cls._button_pressed} pressed")
             raise PhysicalButtonPressed(cls._button_pressed)
 
     def __init__(
@@ -63,19 +64,13 @@ class Button:
         """Clean up."""
         self._button.close()
 
-    def _button_pressed_ignore(self):
-        """Callback for button press at undesired time."""
-        print(f"Button <{self}> pressed - ignoring")
-
     def _button_pressed_act(self):
         """Callback for button press."""
         print(f"Button <{self}> pressed - acting")
         Button._button_pressed = self
         self.pressed_event.set()
-        # self._button.when_pressed = self._button_pressed_ignore
 
     def virtual_button_pressed(self):
         """Callback for virtual button press."""
         print(f"Virtual button <{self}> pressed")
-        # ??? should this raise, or use _button_pressed = ???
         raise VirtualButtonPressed(self)
