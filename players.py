@@ -84,10 +84,9 @@ class Player:
         print(self.mode_current)
         print(sequence.__name__)
         print(pace)
-        if isinstance(pace, float) or pace is None:
+        if isinstance(pace, (int, float)) or pace is None:
             pace_iter = itertools.repeat(pace)
         else:
-            assert isinstance(pace, tuple)
             pace_iter = itertools.cycle(pace)
         for _ in range(count):
             for i, lights in enumerate(sequence()):
