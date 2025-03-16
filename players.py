@@ -30,6 +30,17 @@ class Player:
     def close(self):
         """Close."""
 
+    def change_mode(self, current: int, delta: int) -> int:
+        """"""
+        lower, upper = 1, len(self.modes)
+        value = current + delta % (upper - lower + 1)
+        if (dif := value - upper) > 0:
+            value = lower + dif - 1
+        elif (dif := value - lower) < 0:
+            value = upper + dif + 1
+        return value
+
+
     def start(self, mode_index):
         """"""
         self.mode_current = mode_index
@@ -43,10 +54,19 @@ class Player:
             except ButtonPressed as press:
                 button, = press.args
                 print(f"Button Pressed: {button}")
-                print("Entering selection mode")
-                self.mode_previous = self.mode_current
-                self.mode_current = 0
-                print(f"Start Button Pressed - The current mode is now {self.mode_current}")
+                match button.name:
+                    case 'body_mode_select' | 'remote_mode_select':
+                        print("Entering selection mode")
+                        self.mode_previous = self.mode_current
+                        self.mode_current = 0
+                    case 'remote_mode_up':
+                        self.mode_current = self.change_mode(self.mode_current, +1)
+                    case 'remote_mode_down':
+                        self.mode_current = self.change_mode(self.mode_current, -1)
+                    case 'remote_demo_mode':
+                        self.mode_current = len(self.modes) - 1
+                    case _:
+                        raise Exception
 
     def do_sequence(
             self, 
@@ -96,8 +116,11 @@ class Player:
         # self.sign.set_lights(ALL_ON)
         time.sleep(0.6)
         assert self.mode_desired is not None
-        for _ in range(self.mode_desired // LIGHT_COUNT):
-            print("?? ", _)
+
+rotate to mode_desired, toggling lights off in 20s etc.
+rotate faster
+
+        for _ in range(self.mode_desired // LIGHT_COUNT):  GARBAGE
             self.do_sequence(
                 seq_rotate_build, pace=0.2, stop=self.mode_desired % LIGHT_COUNT,
                 post_delay=0.3,
@@ -115,10 +138,8 @@ class Player:
                 # Just now entering selection mode
                 self.mode_desired = self.mode_previous
             else:
-                if self.mode_desired == len(self.modes) - 1:
-                    self.mode_desired = 1
-                else:
-                    self.mode_desired += 1
+                # Was already in selection mode
+                self.mode_desired = self.change_mode(self.mode_desired, +1)
             self._indicate_mode_desired()
             try:
                 self.sign.button_interrupt_wait(5)

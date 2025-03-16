@@ -134,6 +134,17 @@ def seq_rotate_build(clockwise=True):
         lights[l] = 1
         yield lights
 
+def seq_rotate_build_flip(clockwise=True, count: int):
+    """Successive lights on / off, rotating around."""
+    if clockwise:
+        light_range = LIGHTS_CLOCKWISE
+    else:  # counterclockwise
+        light_range = reversed(LIGHTS_CLOCKWISE)
+    lights = [0] * LIGHT_COUNT
+    for l in light_range:
+        lights[l] = 1
+        yield lights
+
 def seq_center_alternate():
     """Alternate the top and bottom center lights."""
     yield "0100000000"
