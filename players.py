@@ -61,10 +61,13 @@ class Player:
                         self.mode_current = 0
                     case 'remote_mode_up':
                         self.mode_current = self.change_mode(self.mode_current, -1)
+                        time.sleep(1)  # !!!!!
                     case 'remote_mode_down':
                         self.mode_current = self.change_mode(self.mode_current, +1)
+                        time.sleep(1)  # !!!!!
                     case 'remote_demo_mode':
                         self.mode_current = len(self.modes) - 1
+                        time.sleep(1)  # !!!!!
                     case _:
                         raise Exception
 
