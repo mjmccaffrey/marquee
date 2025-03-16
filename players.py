@@ -81,6 +81,9 @@ class Player:
            If stop is specified, end the sequence 
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
+        print(self.mode_current)
+        print(sequence.__name__)
+        print(pace)
         if isinstance(pace, float) or pace is None:
             pace_iter = itertools.repeat(pace)
         else:
