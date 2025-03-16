@@ -33,10 +33,10 @@ def create_sign() -> Sign:
     relaymodule: NumatoRL160001 = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
     buttons = [
         Button('body_mode_select', _Button(pin=17, bounce_time=0.10), SIGUSR1),
-        Button('remote_mode_select', _Button(pin=18, pull_up=False, bounce_time=0.10)),
-        Button('remote_mode_up', _Button(pin=23, pull_up=False, bounce_time=0.10)),
-        Button('remote_mode_down', _Button(pin=24, pull_up=False, bounce_time=0.10)),
-        Button('remote_demo_mode', _Button(pin=25, pull_up=False, bounce_time=0.10)),
+        Button('remote_mode_select', _Button(pin=18, pull_up=False, bounce_time=0.10)),  # A
+        Button('remote_mode_up', _Button(pin=23, pull_up=False, bounce_time=0.10)),  # B
+        Button('remote_mode_down', _Button(pin=24, pull_up=False, bounce_time=0.10)),  # C
+        Button('remote_demo_mode', _Button(pin=25, pull_up=False, bounce_time=0.10)),  # D
     ]
     return Sign(
         dimmers=dimmers,

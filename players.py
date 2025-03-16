@@ -7,7 +7,7 @@ import time
 from buttons import ButtonPressed
 from dimmers import RelayOverride
 from modes import Mode
-from sequences import seq_rotate_build
+from sequences import seq_rotate_build_flip
 from signs import LIGHT_COUNT, Sign
 
 class Player:
@@ -115,16 +115,14 @@ class Player:
         """Show user what desired mode number is currently selected."""
         # self.sign.set_lights(ALL_ON)
         time.sleep(0.6)
-        assert self.mode_desired is not None
 
-#rotate to mode_desired, toggling lights off in 20s etc.
-#rotate faster
+        #rotate to mode_desired, toggling lights off in 20s etc.
+        #rotate faster
 
-        for _ in range(self.mode_desired // LIGHT_COUNT):
-            self.do_sequence(
-                seq_rotate_build, pace=0.2, stop=self.mode_desired % LIGHT_COUNT,
-                post_delay=0.3,
-            )
+        self.do_sequence(
+            lambda: seq_rotate_build_flip(self.mode_desired), # type: ignore ???
+            pace=0.15, post_delay=0.3,
+        )
 
     def _mode_selection(self):
         """User presses the button to select 
@@ -145,7 +143,7 @@ class Player:
                 self.sign.button_interrupt_wait(5)
             except ButtonPressed as press:
                 button, = press.args
-                print("Button Pressed: {button}")
+                print(f"Button Pressed: {button}")
                 pass
             else:
                 # If we get here, the time elapsed
