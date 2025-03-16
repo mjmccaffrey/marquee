@@ -134,7 +134,7 @@ def seq_rotate_build(clockwise=True):
         lights[l] = 1
         yield lights
 
-def seq_rotate_build_flip(clockwise=True, count: int):
+def seq_rotate_build_flip(clockwise=True):
     """Successive lights on / off, rotating around."""
     if clockwise:
         light_range = LIGHTS_CLOCKWISE
