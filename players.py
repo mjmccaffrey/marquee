@@ -32,7 +32,7 @@ class Player:
 
     def change_mode(self, current: int, delta: int) -> int:
         """"""
-        lower, upper = 1, len(self.modes)
+        lower, upper = 1, len(self.modes) - 1
         value = current + delta % (upper - lower + 1)
         if (dif := value - upper) > 0:
             value = lower + dif - 1
