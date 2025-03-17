@@ -25,13 +25,11 @@ class Button:
         """Prepare for a valid button press."""
         cls.which_button_pressed: Button | None = None
         cls.pressed_event = threading.Event()
-        print("THREADING EVENT CREATED")
 
     @classmethod
     def wait(cls, seconds: float):
         """"""
         if cls.pressed_event.wait(seconds):
-            print(f"Button.wait: {cls.which_button_pressed} pressed")
             raise PhysicalButtonPressed(cls.which_button_pressed)
 
     def __init__(

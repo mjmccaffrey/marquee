@@ -93,7 +93,7 @@ class Executor():
         #), "Non-sequential mode index"
         self.mode_ids[str(index)] = index
         self.mode_ids[name] = index
-        self.modes[index] = Mode(name, None)
+        self.modes[index] = Mode(index, name, None)
 
     def add_mode_func(
             self, 
@@ -101,7 +101,7 @@ class Executor():
             name: str, 
             function: Callable,
         ):
-        self.modes[index] = Mode(name, function)
+        self.modes[index] = Mode(index, name, function)
             
     def add_sequence_mode_func(
             self,

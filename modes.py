@@ -12,6 +12,7 @@ from signs import ALL_LOW, ALL_ON, LIGHT_COUNT
 
 @dataclass
 class Mode:
+    index: int
     name: str
     function: Callable | None
 

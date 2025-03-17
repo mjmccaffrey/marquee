@@ -46,7 +46,7 @@ class Player:
         self.mode_current = mode_index
         while True:
             mode = self.modes[self.mode_current]
-            print(f"Executing mode {self.mode_current} {mode.name}")
+            print(f"Executing mode {mode.index} {mode.name}")
             try:
                 assert mode.function is not None
                 mode.function()
