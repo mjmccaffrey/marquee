@@ -31,6 +31,7 @@ class Button:
     def wait(cls, seconds: float | None):
         """"""
         if cls.pressed_event.wait(seconds):
+            print("RAISING")
             raise PhysicalButtonPressed(cls.which_button_pressed)
 
     def __init__(
