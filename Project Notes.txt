@@ -1,4 +1,6 @@
 
+Must set dimmers to 100 upon mode switch -- "baseline"
+
 GPIO 4 blown on Pi zero ?
 
     "location": {

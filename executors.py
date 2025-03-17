@@ -116,14 +116,13 @@ class Executor():
         # !!!! THIS SHOULD BE IN PLAYERS
         def sequence_doer():
             # If using only dimmers, turn relays on, and vice versa
-            print("ENTERING DOER")
+            #print("ENTERING DOER")
             if override is not None:
                 self.sign.set_lights(ALL_ON)
             else:
                 self.sign.set_dimmers(ALL_HIGH)
-            # DOES THIS INIFITE QUICK LOOP WHEN PACE=NONE????
             while True:
-                print(f"???{pace}")
+                #print(f"???{pace}")
                 self.player.do_sequence(sequence,
                     pace=pace,
                     override=override,

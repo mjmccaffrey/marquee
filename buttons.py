@@ -30,13 +30,13 @@ class Button:
     @classmethod
     def wait(cls, seconds: float | None):
         """"""
-        print("ENTERING BUTTON.WAIT {seconds}")
+        #print("ENTERING BUTTON.WAIT {seconds}")
         if r := cls.pressed_event.wait(seconds):
-            print("RAISING")
+            #print("RAISING")
             raise PhysicalButtonPressed(cls.which_button_pressed)
         else:
-            print(f"??{r}??")
-        print("EXITING WAIT")
+            #print(f"??{r}??")
+        #print("EXITING WAIT")
 
     def __init__(
             self, 
@@ -46,8 +46,9 @@ class Button:
     ):
         """Create a button instance."""
         self.name = name
-        print(f"Initializing {self}")
+        #print(f"Initializing {self}")
         if not Button.buttons:
+            print(f"Initializing buttons")
             Button.reset()
         Button.buttons.append(self)
         self._button = button

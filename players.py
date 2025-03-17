@@ -133,9 +133,9 @@ class Player:
         # !!!! Set dimmers all high - maybe remember and restore current state
         while True:
             # Button was pressed
-            print(1)
+            #print(1)
             Button.reset()
-            print(2)
+            #print(2)
             if self.mode_desired is None:
                 # Just now entering selection mode
                 self.mode_desired = self.mode_previous
