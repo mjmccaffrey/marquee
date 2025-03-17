@@ -44,19 +44,18 @@ class Player:
     def start(self, mode_index):
         """"""
         self.mode_current = mode_index
-        print(f"Start Top - The current mode is now {self.mode_current}")
         while True:
-            print(f"Executing mode {self.modes[self.mode_current].name}")
+            mode = self.modes[self.mode_current]
+            print(f"Executing mode {self.mode_current} {mode.name}")
             try:
-                function = self.modes[self.mode_current].function
-                assert function is not None
-                function()
+                assert mode.function is not None
+                mode.function()
             except ButtonPressed as press:
                 button, = press.args
                 print(f"Button Pressed: {button}")
-                print(5)
+                #print(5)
                 self.sign.button_interrupt_reset()
-                print(6)
+                #print(6)
                 match button.name:
                     case 'body_mode_select' | 'remote_mode_select':
                         print("Entering selection mode")
@@ -84,9 +83,6 @@ class Player:
            If stop is specified, end the sequence 
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
-        print(self.mode_current)
-        print(sequence.__name__)
-        print(pace)
         if isinstance(pace, (int, float)) or pace is None:
             pace_iter = itertools.repeat(pace)
         else:
@@ -162,11 +158,7 @@ class Player:
                 pass
             else:
                 # If we get here, the time elapsed
-                # without the button being pressed.
+                # without a button being pressed.
                 self.mode_current = self.mode_desired
-                print(f"Mode Selection - The current mode is now {self.mode_current}")
                 self.mode_desired = None
-                print(3)
-                # self.sign.button_interrupt_reset()
-                print(4)
                 break

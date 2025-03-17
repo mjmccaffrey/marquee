@@ -23,7 +23,7 @@ class Button:
     @classmethod
     def reset(cls):
         """Prepare for a valid button press."""
-        cls._button_pressed: Button | None = None
+        cls.which_button_pressed: Button | None = None
         cls.pressed_event = threading.Event()
         print("THREADING EVENT CREATED")
 
@@ -31,8 +31,8 @@ class Button:
     def wait(cls, seconds: float):
         """"""
         if cls.pressed_event.wait(seconds):
-            print(f"Button.wait: {cls._button_pressed} pressed")
-            raise PhysicalButtonPressed(cls._button_pressed)
+            print(f"Button.wait: {cls.which_button_pressed} pressed")
+            raise PhysicalButtonPressed(cls.which_button_pressed)
 
     def __init__(
             self, 
@@ -47,7 +47,7 @@ class Button:
             Button.reset()
         Button.buttons.append(self)
         self._button = button
-        self._button.when_pressed = self._button_pressed_act
+        self._button.when_pressed = self.button_pressed
         if signal_number is not None:
             signal(
                 signal_number,
@@ -64,10 +64,10 @@ class Button:
         """Clean up."""
         self._button.close()
 
-    def _button_pressed_act(self):
+    def button_pressed(self):
         """Callback for button press."""
-        print(f"Button <{self}> pressed - acting")
-        Button._button_pressed = self
+        print(f"Button <{self}> pressed")
+        Button.which_button_pressed = self
         self.pressed_event.set()
 
     def virtual_button_pressed(self):
