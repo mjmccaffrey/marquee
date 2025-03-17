@@ -23,6 +23,7 @@ class Button:
     @classmethod
     def reset(cls):
         """Prepare for a valid button press."""
+        print("Button reset")
         cls.which_button_pressed: Button | None = None
         cls.pressed_event = threading.Event()
 
