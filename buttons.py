@@ -35,7 +35,7 @@ class Button:
             print("RAISING")
             raise PhysicalButtonPressed(cls.which_button_pressed)
         else:
-            print("??{r}??")
+            print(f"??{r}??")
         print("EXITING WAIT")
 
     def __init__(

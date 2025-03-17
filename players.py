@@ -102,8 +102,7 @@ class Player:
                     override=override,
                 )
                 after = time.time()
-                if p is not None:
-                    self.wait(p, after - before)
+                self.wait(p, after - before)
         self.wait(post_delay)
 
     def wait(self, seconds: float | None, elapsed: float = 0):
