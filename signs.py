@@ -215,15 +215,3 @@ class Sign:
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
-
-    def button_interrupt_wait(
-            self, 
-            seconds: float,
-        ):
-        """Pause the thread until either the seconds have elapsed
-           or the button has been pressed."""
-        Button.wait(seconds)
-
-    def button_interrupt_reset(self):
-        """Prepare for a button press."""
-        Button.reset()

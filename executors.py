@@ -113,12 +113,14 @@ class Executor():
         ):
         """"""
 
+        # !!!! THIS SHOULD BE IN PLAYERS
         def sequence_doer():
             # If using only dimmers, turn relays on, and vice versa
             if override is not None:
                 self.sign.set_lights(ALL_ON)
             else:
                 self.sign.set_dimmers(ALL_HIGH)
+            # DOES THIS INIFITE QUICK LOOP WHEN PACE=NONE????
             while True:
                 self.player.do_sequence(sequence,
                     pace=pace,
@@ -178,7 +180,7 @@ class Executor():
         if brightness_pattern is not None:
             print(f"Setting dimmers {brightness_pattern}")
             self.sign.set_dimmers(brightness_pattern)
-            self.sign.button_interrupt_wait(TRANSITION_DEFAULT)
+            Button.wait(TRANSITION_DEFAULT)
         if light_pattern is not None:
             print(f"Setting lights {light_pattern}")
             self.sign.set_lights(light_pattern)

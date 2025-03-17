@@ -27,7 +27,7 @@ class Button:
         cls.pressed_event = threading.Event()
 
     @classmethod
-    def wait(cls, seconds: float):
+    def wait(cls, seconds: float | None):
         """"""
         if cls.pressed_event.wait(seconds):
             raise PhysicalButtonPressed(cls.which_button_pressed)

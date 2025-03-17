@@ -4,7 +4,7 @@ from collections.abc import Callable
 import itertools
 import time
 
-from buttons import ButtonPressed
+from buttons import Button, ButtonPressed
 from dimmers import RelayOverride
 from modes import Mode
 from sequences import seq_rotate_build_flip
@@ -54,7 +54,7 @@ class Player:
                 button, = press.args
                 print(f"Button Pressed: {button}")
                 #print(5)
-                self.sign.button_interrupt_reset()
+                Button.reset()
                 #print(6)
                 match button.name:
                     case 'body_mode_select' | 'remote_mode_select':
@@ -105,12 +105,14 @@ class Player:
                     self.wait(p, after - before)
         self.wait(post_delay)
 
-    def wait(self, seconds: float, elapsed: float=0):
+    def wait(self, seconds: float | None, elapsed: float = 0):
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
-        seconds = seconds * self.speed_factor - elapsed
-        if seconds > 0:
-            self.sign.button_interrupt_wait(seconds)
+        if seconds is not None:
+            seconds = seconds * self.speed_factor - elapsed
+            if seconds <= 0:
+                return
+        Button.wait(seconds)
 
     def _indicate_mode_desired(self):
         """Show user what desired mode number is currently selected."""
@@ -132,7 +134,7 @@ class Player:
         while True:
             # Button was pressed
             print(1)
-            self.sign.button_interrupt_reset()
+            Button.reset()
             print(2)
             if self.mode_desired is None:
                 # Just now entering selection mode
@@ -151,7 +153,7 @@ class Player:
                         raise Exception
             self._indicate_mode_desired()
             try:
-                self.sign.button_interrupt_wait(5)
+                Button.wait(5)
             except ButtonPressed as press:
                 button, = press.args
                 print(f"Button Pressed: {button}")
