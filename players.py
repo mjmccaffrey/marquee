@@ -49,6 +49,7 @@ class Player:
             print(f"Executing mode {mode.index} {mode.name}")
             try:
                 assert mode.function is not None
+                print("mode.function()")
                 mode.function()
             except ButtonPressed as press:
                 button, = press.args
