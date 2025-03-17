@@ -34,7 +34,7 @@ class Button:
         if r := cls.pressed_event.wait(seconds):
             #print("RAISING")
             raise PhysicalButtonPressed(cls.which_button_pressed)
-        else:
+        #else:
             #print(f"??{r}??")
         #print("EXITING WAIT")
 
