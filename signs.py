@@ -144,6 +144,8 @@ class Sign:
         """Set all lights per the supplied light_pattern.
            Set light_pattern, always as a string
            rather than a list."""
+        print(light_pattern)
+        print(extra_pattern)
         light_pattern = ''.join(str(e) for e in light_pattern)
         if override is not None:
             self._set_lights_relay_override(light_pattern, override)
