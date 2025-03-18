@@ -46,10 +46,12 @@ class Player:
            the next mode to execute."""
 
         if self.mode_desired is None:
+            print("A")
             # Just now entering selection mode
             # !!!! Set dimmers all high - maybe remember and restore current state
             self.mode_desired = self.mode_previous
         elif self.mode_desired == self.mode_desired_previous:
+            print("B")
             # Time elapsed without a button being pressed.
             self.mode_current = self.mode_desired
             self.mode_desired = None
