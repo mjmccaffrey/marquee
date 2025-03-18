@@ -50,12 +50,15 @@ class Player:
             # Just now entering selection mode
             # !!!! Set dimmers all high - maybe remember and restore current state
             self.mode_desired = self.mode_previous
+            self.button_press_handler = self.mode_select_button_handler
         elif self.mode_desired == self.mode_desired_previous:
             print("B")
             # Time elapsed without a button being pressed.
+            # Play the selected mode.
             self.mode_current = self.mode_desired
             self.mode_desired = None
             self.mode_desired_previous = None
+            self.button_press_handler = self.play_mode_button_handler
             return
         # Show user what desired mode number is currently selected.
         time.sleep(0.6)
