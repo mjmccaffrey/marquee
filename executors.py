@@ -8,11 +8,10 @@ from dimmers import ShellyDimmer, ShellyProDimmer2PM, RelayOverride, TRANSITION_
 from gpiozero import Button as _Button  # type: ignore
 from modes import *
 from players import Player
-from relays import NumatoRL160001
+from relays import NumatoUSBRelayModule, NumatoRelayModuleRL160001 as NumatoRL160001
 from sequences import *
 from signs import (
-    ALL_RELAYS,
-    ALL_HIGH, ALL_OFF, ALL_ON,
+    ALL_RELAYS, ALL_OFF,
     EXTRA_COUNT, Sign,
 )
 DIMMER_ADDRESSES = [
@@ -30,9 +29,9 @@ def create_sign() -> Sign:
         ShellyProDimmer2PM(index, address)
         for index, address in enumerate(DIMMER_ADDRESSES)
     ]
-    relaymodule: NumatoRL160001 = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
+    relaymodule: NumatoUSBRelayModule = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
     buttons = [
-        Button('body_mode_select', _Button(pin=17, bounce_time=0.10), SIGUSR1),
+        Button('body_mode_select', _Button(pin=17, bounce_time=0.10), SIGUSR1),  # Back
         Button('remote_mode_select', _Button(pin=18, pull_up=False, bounce_time=0.10)),  # A
         Button('remote_mode_up', _Button(pin=23, pull_up=False, bounce_time=0.10)),  # B
         Button('remote_demo_mode', _Button(pin=24, pull_up=False, bounce_time=0.10)),  # C
@@ -93,15 +92,19 @@ class Executor():
         #), "Non-sequential mode index"
         self.mode_ids[str(index)] = index
         self.mode_ids[name] = index
-        self.modes[index] = Mode(index, name, None)
+        self.modes[index] = Mode(index, name)
 
     def add_mode_func(
             self, 
             index: int, 
             name: str, 
             function: Callable,
+            preset_dimmers: bool = False,
+            preset_relays: bool = False,
         ):
-        self.modes[index] = Mode(index, name, function)
+        self.modes[index] = Mode(
+            index, name, function, preset_dimmers, preset_relays,
+        )
             
     def add_sequence_mode_func(
             self,
@@ -111,23 +114,7 @@ class Executor():
             pace: tuple[float, ...] | float | None = None,
             override: RelayOverride | None = None,
         ):
-        """"""
-
-        # !!!! THIS SHOULD BE IN PLAYERS
-        def sequence_doer():
-            # If using only dimmers, turn relays on, and vice versa
-            #print("ENTERING DOER")
-            if override is not None:
-                self.sign.set_lights(ALL_ON)
-            else:
-                self.sign.set_dimmers(ALL_HIGH)
-            while True:
-                #print(f"???{pace}")
-                self.player.do_sequence(sequence,
-                    pace=pace,
-                    override=override,
-                )
-
+        """        # If using only dimmers, turn relays on, and vice versa"""
         if override is not None:
             default_trans = (
                 pace if isinstance(pace, float) else
@@ -137,10 +124,15 @@ class Executor():
                 override.transition_off = default_trans
             if override.transition_on is None:
                 override.transition_on = default_trans
+        function = self.player.sequence_player_func(
+            sequence, pace, override
+        )
         self.add_mode_func(
             index=index,
             name=name,
-            function=sequence_doer
+            function=function,
+            preset_dimmers=override is None,
+            preset_relays=override is not None,
         )
 
     def execute(
@@ -173,7 +165,7 @@ class Executor():
             speed_factor=speed_factor,
         )
         self.register_mode_functions()
-        self.player.start(mode_index)
+        self.player.play_mode(mode_index)
 
     def execute_pattern(self, light_pattern: str | None, brightness_pattern: str | None):
         """"""
@@ -215,7 +207,7 @@ class Executor():
         """Register the operating modes."""
         player = self.player
         sign = self.player.sign
-        self.add_mode_func(0, "selection", player._mode_selection)
+        self.add_mode_func(0, "selection", player._mode_selection, preset_dimmers=True)
         self.add_sequence_mode_func(1, "all_on", seq_all_on)
         self.add_sequence_mode_func(2, "all_off", seq_all_off)
         self.add_sequence_mode_func(3, "even_on", seq_even_on)
@@ -280,11 +272,13 @@ class Executor():
                 transition_off=2,
             )
         )
+        
         self.add_mode_func(17, "build_NEQ", lambda: build1(player, False))
         self.add_mode_func(18, "build_EQ", lambda: build1(player, True))
         self.add_mode_func(19, "random_fade", lambda: mode_random_fade(player))
         self.add_mode_func(20, "random_fade_steady", lambda: mode_random_fade(player, 2.0))
         self.add_mode_func(21, "even_odd_fade", lambda: mode_even_odd_fade(player))
+
         self.add_sequence_mode_func(22, "corner_rotate_fade", 
             seq_opposite_corner_pairs, pace=5,
             override=RelayOverride(

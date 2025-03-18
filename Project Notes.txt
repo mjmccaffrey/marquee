@@ -1,5 +1,7 @@
 
-Must set dimmers to 100 upon mode switch -- "baseline"
+* Must set dimmers to 100 upon mode switch -- "baseline"
+* . Move closure to players
+* . Relay module name in init output
 
 GPIO 4 blown on Pi zero ?
 
@@ -14,13 +16,6 @@ GPIO 4 blown on Pi zero ?
     "undervoltage_limit": 200,
     "voltage_limit": 280
 
-LV4: A
-LV3: B
-LV2: C
-LV1: D
-VT: A, B, C, D
-
-global, nonlocal, ClassVar, accessing class var via self, "shadowing"
 
 Timeline
 ========

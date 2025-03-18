@@ -8,7 +8,7 @@ from buttons import Button, ButtonPressed
 from dimmers import RelayOverride
 from modes import Mode
 from sequences import seq_rotate_build_flip
-from signs import LIGHT_COUNT, Sign
+from signs import ALL_ON, ALL_HIGH, Sign
 
 class Player:
     """Executes one mode at a time."""
@@ -40,23 +40,23 @@ class Player:
             value = upper + dif + 1
         return value
 
-
-    def start(self, mode_index):
+    def play_mode(self, mode_index):
         """"""
         self.mode_current = mode_index
         while True:
             mode = self.modes[self.mode_current]
             print(f"Executing mode {mode.index} {mode.name}")
             try:
+                if mode.preset_dimmers:
+                    self.sign.set_dimmers(ALL_HIGH)
+                if mode.preset_relays:
+                    self.sign.set_lights(ALL_ON)
                 assert mode.function is not None
-                print("mode.function()")
                 mode.function()
             except ButtonPressed as press:
                 button, = press.args
                 print(f"Button Pressed: {button}")
-                #print(5)
                 Button.reset()
-                #print(6)
                 match button.name:
                     case 'body_mode_select' | 'remote_mode_select':
                         print("Entering selection mode")
@@ -71,7 +71,7 @@ class Player:
                     case _:
                         raise Exception
 
-    def do_sequence(
+    def play_sequence(
             self, 
             sequence: Callable, 
             count: int = 1, 
@@ -105,6 +105,21 @@ class Player:
                 self.wait(p, after - before)
         self.wait(post_delay)
 
+    def sequence_player_func(
+        self,
+        sequence: Callable,
+        pace: tuple[float, ...] | float | None = None,
+        override: RelayOverride | None = None,
+    ) -> Callable:
+        """"""
+        def sequence_player():
+            while True:
+                self.play_sequence(sequence,
+                    pace=pace,
+                    override=override,
+                )
+        return sequence_player
+
     def wait(self, seconds: float | None, elapsed: float = 0):
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
@@ -114,28 +129,13 @@ class Player:
                 return
         Button.wait(seconds)
 
-    def _indicate_mode_desired(self):
-        """Show user what desired mode number is currently selected."""
-        # self.sign.set_lights(ALL_ON)
-        time.sleep(0.6)
-
-        #rotate to mode_desired, toggling lights off in 20s etc.
-        #rotate faster
-
-        self.do_sequence(
-            lambda: seq_rotate_build_flip(self.mode_desired), # type: ignore ???
-            pace=0.15, post_delay=0.3,
-        )
-
     def _mode_selection(self):
         """User presses the button to select 
            the next mode to execute."""
         # !!!! Set dimmers all high - maybe remember and restore current state
         while True:
             # Button was pressed
-            #print(1)
             Button.reset()
-            #print(2)
             if self.mode_desired is None:
                 # Just now entering selection mode
                 self.mode_desired = self.mode_previous
@@ -151,7 +151,13 @@ class Player:
                         self.mode_desired = self.change_mode(self.mode_desired, -1)
                     case _:
                         raise Exception
-            self._indicate_mode_desired()
+            # Show user what desired mode number is currently selected.
+            time.sleep(0.6)
+            self.play_sequence(
+                lambda: seq_rotate_build_flip(self.mode_desired),  # type: ignore
+                pace=0.15, post_delay=0.3,
+            )
+            # Wait for user to press button again, or not.
             try:
                 Button.wait(5)
             except ButtonPressed as press:

@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 import serial  # type: ignore
 
 class NumatoUSBRelayModule(ABC):
-    """Supports the Numato 16 Channel USB Relay Module (RL160001)."""
+    """Supports Numato USB Relay Modules."""
 
     def __init__(self, port_address, device_mapping):
         """Create the RelayBoard object, where device_mapping
@@ -89,7 +89,7 @@ class NumatoUSBRelayModule(ABC):
         # print(f"r2d device_pattern:{device_pattern}")
         return device_pattern
 
-class NumatoRL160001(NumatoUSBRelayModule):
+class NumatoRelayModuleRL160001(NumatoUSBRelayModule):
     """Supports the Numato 16 Channel USB Relay Module (RL160001)."""
 
     @property

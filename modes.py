@@ -14,7 +14,9 @@ from signs import ALL_LOW, ALL_ON, LIGHT_COUNT
 class Mode:
     index: int
     name: str
-    function: Callable | None
+    function: Callable = lambda: None
+    preset_dimmers: bool = False
+    preset_relays: bool = False
 
 def mode_random_fade(player, transition=None):
     """"""
