@@ -66,6 +66,7 @@ class Player:
             lambda: seq_rotate_build_flip(self.mode_desired),  # type: ignore
             pace=0.2, post_delay=5.0,
         )
+        self.mode_desired_previous = self.mode_desired
 
     def play_mode_button_handler(self, button: Button):
         """"""
