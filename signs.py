@@ -197,6 +197,11 @@ class Sign:
         for command in commands:
             command.channel.brightness = command.params['brightness']
 
+    def make_click(self):
+        """"""
+        extra = ''.join('0' if int(e) else '1' for e in self.extra_pattern)
+        self.set_lights(self.light_pattern, extra)
+
     @property
     def light_pattern(self) -> str:
         """Return the active light pattern."""

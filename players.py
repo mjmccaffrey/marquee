@@ -63,10 +63,13 @@ class Player:
                         self.mode_previous = self.mode_current
                         self.mode_current = 0
                     case 'remote_mode_up':
+                        self.sign.make_click()
                         self.mode_current = self.change_mode(self.mode_current, -1)
                     case 'remote_mode_down':
+                        self.sign.make_click()
                         self.mode_current = self.change_mode(self.mode_current, +1)
                     case 'remote_demo_mode':
+                        self.sign.make_click()
                         self.mode_current = len(self.modes) - 1
                     case _:
                         raise Exception
@@ -163,7 +166,7 @@ class Player:
             except ButtonPressed as press:
                 button, = press.args
                 print(f"Button Pressed: {button}")
-                pass
+                #pass
             else:
                 # If we get here, the time elapsed
                 # without a button being pressed.

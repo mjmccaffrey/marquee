@@ -1,7 +1,8 @@
 
 * Must set dimmers to 100 upon mode switch -- "baseline"
-* . Move closure to players
-* . Relay module name in init output
+* clean up Build N/EQ
+* finalize preset stuff
+* click relay upon button press
 
 GPIO 4 blown on Pi zero ?
 
