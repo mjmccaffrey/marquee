@@ -199,7 +199,8 @@ class Sign:
 
     def make_click(self):
         """"""
-        extra = ''.join('0' if int(e) else '1' for e in self.extra_pattern)
+        extra = self.extra_pattern
+        extra = extra[:-1] + "0" if extra[-1] == "1" else "1"
         self.set_lights(self.light_pattern, extra)
 
     @property
