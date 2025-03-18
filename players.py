@@ -25,12 +25,13 @@ class Player:
         self.speed_factor = speed_factor
         self.mode_current = None
         self.mode_desired = None
+        self.mode_desired_previous = None
         self.mode_previous = None
 
     def close(self):
         """Close."""
 
-    def change_mode(self, current: int, delta: int) -> int:
+    def change_mode_var(self, current: int, delta: int) -> int:
         """"""
         lower, upper = 1, len(self.modes) - 1
         value = current + delta % (upper - lower + 1)
@@ -40,9 +41,66 @@ class Player:
             value = upper + dif + 1
         return value
 
-    def play_mode(self, mode_index):
+    def mode_selection_mode(self):
+        """User presses the button to select 
+           the next mode to execute."""
+
+        if self.mode_desired is None:
+            # Just now entering selection mode
+            # !!!! Set dimmers all high - maybe remember and restore current state
+            self.mode_desired = self.mode_previous
+        elif self.mode_desired == self.mode_desired_previous:
+            # Time elapsed without a button being pressed.
+            self.mode_current = self.mode_desired
+            self.mode_desired = None
+            self.mode_desired_previous = None
+            return
+        # Show user what desired mode number is currently selected.
+        time.sleep(0.6)
+        self.play_sequence(
+            lambda: seq_rotate_build_flip(self.mode_desired),  # type: ignore
+            pace=0.2, post_delay=5.0,
+        )
+
+    def play_mode_button_handler(self, button: Button):
         """"""
-        self.mode_current = mode_index
+        assert self.mode_current is not None
+        match button.name:
+            case 'body_mode_select' | 'remote_mode_select':
+                print("Entering selection mode")
+                self.mode_previous = self.mode_current
+                self.mode_current = 0
+            case 'remote_mode_up':
+                self.sign.make_click()
+                self.mode_current = self.change_mode_var(self.mode_current, -1)
+            case 'remote_mode_down':
+                self.sign.make_click()
+                self.mode_current = self.change_mode_var(self.mode_current, +1)
+            case 'remote_demo_mode':
+                self.sign.make_click()
+                self.mode_current = len(self.modes) - 1
+            case _:
+                raise Exception
+
+    def mode_select_button_handler(self, button: Button):
+        """"""
+        # Was already in selection mode
+        assert self.mode_desired is not None
+        match button.name:
+            case (
+                    'body_mode_select' | 'remote_mode_select'
+                | 'remote_mode_down' | 'remote_demo_mode'
+            ):
+                self.mode_desired = self.change_mode_var(self.mode_desired, +1)
+            case 'remote_mode_up':
+                self.mode_desired = self.change_mode_var(self.mode_desired, -1)
+            case _:
+                raise Exception
+
+    def play_mode(self, starting_mode_index: int):
+        """"""
+        self.mode_current = starting_mode_index
+        self.button_press_handler = self.play_mode_button_handler
         while True:
             mode = self.modes[self.mode_current]
             print(f"Executing mode {mode.index} {mode.name}")
@@ -55,24 +113,9 @@ class Player:
                 mode.function()
             except ButtonPressed as press:
                 button, = press.args
-                print(f"Button Pressed: {button}")
+                #print(f"Button Pressed: {button}")
                 Button.reset()
-                match button.name:
-                    case 'body_mode_select' | 'remote_mode_select':
-                        print("Entering selection mode")
-                        self.mode_previous = self.mode_current
-                        self.mode_current = 0
-                    case 'remote_mode_up':
-                        self.sign.make_click()
-                        self.mode_current = self.change_mode(self.mode_current, -1)
-                    case 'remote_mode_down':
-                        self.sign.make_click()
-                        self.mode_current = self.change_mode(self.mode_current, +1)
-                    case 'remote_demo_mode':
-                        self.sign.make_click()
-                        self.mode_current = len(self.modes) - 1
-                    case _:
-                        raise Exception
+                self.button_press_handler(button)
 
     def play_sequence(
             self, 
@@ -131,45 +174,3 @@ class Player:
             if seconds <= 0:
                 return
         Button.wait(seconds)
-
-    def _mode_selection(self):
-        """User presses the button to select 
-           the next mode to execute."""
-        # !!!! Set dimmers all high - maybe remember and restore current state
-        while True:
-            # Button was pressed
-            Button.reset()
-            if self.mode_desired is None:
-                # Just now entering selection mode
-                self.mode_desired = self.mode_previous
-            else:
-                # Was already in selection mode
-                match button.name:
-                    case (
-                          'body_mode_select' | 'remote_mode_select'
-                        | 'remote_mode_down' | 'remote_demo_mode'
-                    ):
-                        self.mode_desired = self.change_mode(self.mode_desired, +1)
-                    case 'remote_mode_up':
-                        self.mode_desired = self.change_mode(self.mode_desired, -1)
-                    case _:
-                        raise Exception
-            # Show user what desired mode number is currently selected.
-            time.sleep(0.6)
-            self.play_sequence(
-                lambda: seq_rotate_build_flip(self.mode_desired),  # type: ignore
-                pace=0.15, post_delay=0.3,
-            )
-            # Wait for user to press button again, or not.
-            try:
-                Button.wait(5)
-            except ButtonPressed as press:
-                button, = press.args
-                print(f"Button Pressed: {button}")
-                #pass
-            else:
-                # If we get here, the time elapsed
-                # without a button being pressed.
-                self.mode_current = self.mode_desired
-                self.mode_desired = None
-                break
