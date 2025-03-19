@@ -74,7 +74,7 @@ class PlayMode(Mode):
                 new_mode = len(Mode._modes) - 1
             case _:
                 raise Exception
-        print(f"PlayMode: new_mode: {new_mode}")
+        #print(f"PlayMode: new_mode: {new_mode}")
         return new_mode
     
 class SelectMode(Mode):

@@ -96,8 +96,9 @@ class Player:
     ) -> Callable:
         """"""
         def sequence_player(pass_count: int):
+            assert pass_count == 1
+            # print(pass_count)
             while True:
-                print(pass_count)
                 self.play_sequence(sequence,
                     pace=pace,
                     override=override,
