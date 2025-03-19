@@ -52,7 +52,7 @@ class Player:
                 button, = press.args
                 #print(f"Button Pressed: {button}")
                 Button.reset()
-                mode.button_action(button)
+                new_mode = mode.button_action(button)
         return new_mode
 
     def play_sequence(

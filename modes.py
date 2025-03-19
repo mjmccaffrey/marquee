@@ -62,7 +62,7 @@ class PlayMode(Mode):
         new_mode = None
         match button.name:
             case 'body_mode_select' | 'remote_mode_select':
-                print("Entering selection mode")
+                # print("Entering selection mode")
                 new_mode = 0
             case 'remote_mode_up':
                 self.player.sign.click()
@@ -75,6 +75,7 @@ class PlayMode(Mode):
                 new_mode = len(Mode._modes) - 1
             case _:
                 raise Exception
+        print(f"PlayMode: new_mode: {new_mode}")
         return new_mode
     
 class SelectMode(Mode):
@@ -96,6 +97,7 @@ class SelectMode(Mode):
                 self.desired_mode = 2  # ALL_OFF
             case _:
                 raise Exception
+        return None
 
     def execute(self, pass_count):
         """User presses the button to select 
