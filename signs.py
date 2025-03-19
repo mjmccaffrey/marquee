@@ -197,7 +197,7 @@ class Sign:
         for command in commands:
             command.channel.brightness = command.params['brightness']
 
-    def make_click(self):
+    def click(self):
         """"""
         extra = self.extra_pattern
         extra = extra[:-1] + ("0" if extra[-1] == "1" else "1")

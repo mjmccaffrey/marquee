@@ -7,9 +7,10 @@ from buttons import Button
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, RelayOverride, TRANSITION_DEFAULT
 from gpiozero import Button as _Button  # type: ignore
 from modes import *
+from mode_defs import *
 from players import Player
 from relays import NumatoUSBRelayModule, NumatoRelayModuleRL160001 as NumatoRL160001
-from sequences import *
+from sequence_defs import *
 from signs import (
     ALL_RELAYS, ALL_OFF,
     EXTRA_COUNT, Sign,
@@ -48,7 +49,7 @@ class Executor():
 
     def __init__(self):
         """"""
-        self.mode_ids: dict[str, int] = {}
+        self.mode_ids: dict[int, str] = {}
         self.modes: dict[int, Mode] = {}
         self.register_mode_ids()
         self.commands: dict[str, Callable] = {
@@ -90,9 +91,7 @@ class Executor():
         #assert all(
         #    k in self.modes for k in range(1, index)
         #), "Non-sequential mode index"
-        self.mode_ids[str(index)] = index
-        self.mode_ids[name] = index
-        self.modes[index] = Mode(index, name)
+        self.mode_ids[index] = name
 
     def add_mode_func(
             self, 
@@ -102,9 +101,7 @@ class Executor():
             preset_dimmers: bool = False,
             preset_relays: bool = False,
         ):
-        self.modes[index] = Mode(
-            index, name, function, preset_dimmers, preset_relays,
-        )
+        self.modes[index] = PlayMode(self.player, index, name, function, preset_dimmers, preset_relays)
             
     def add_sequence_mode_func(
             self,
@@ -207,7 +204,7 @@ class Executor():
         """Register the operating modes."""
         player = self.player
         sign = self.player.sign
-        self.add_mode_func(0, "selection", player.mode_selection_mode, preset_dimmers=True)
+        select = SelectMode(player, 0, "selection")
         self.add_sequence_mode_func(1, "all_on", seq_all_on)
         self.add_sequence_mode_func(2, "all_off", seq_all_off)
         self.add_sequence_mode_func(3, "even_on", seq_even_on)

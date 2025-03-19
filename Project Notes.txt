@@ -1,27 +1,17 @@
 
+Is mode.index required?
+
 * Must set dimmers to 100 upon mode switch -- "baseline"
-* clean up Build N/EQ
 * finalize preset stuff
-* click relay upon button press
+* clean up Build N/EQ
+* self.mode_desired = 2
 
 GPIO 4 blown on Pi zero ?
 
-    "location": {
-      "tz": "America/Detroit",
-      "lat": 42.4933,
-      "lon": -83.135
-    },
-
-    "current_limit": 1.22,
-    "power_limit": 230,
-    "undervoltage_limit": 200,
-    "voltage_limit": 280
-
-
 Timeline
 ========
-28 Feb - release to github
-15 Mar - video to github
+21 Mar - release to github
+31 Mar - video to github
 
 
 To Do Now:
@@ -33,9 +23,6 @@ To Do Now:
     pace must measure between the same 2 points, not blindly wait
         AND TAKE SPEED_FACTOR PROPERLY INTO ACCOUNT
         is this needed on RPi zero 2?
-    fix all basic type checking problems
-    fix button
-    fix _indicate_mode_desired
 
 After checking in as fully functional release:
     Install lights 11 and 12
@@ -84,6 +71,8 @@ Future:
                 yield rotated_pattern
 
     create small doc listing power supplies (including tripp lite) capacities and attached loads
+
+    command to configure dimmers
 
     tcp/ip setup working off home network
     12 lights: Sides fade and build, and then top & bottom do the same

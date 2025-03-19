@@ -11,7 +11,7 @@ def main():
         try:
             arg = process_arguments(exec.mode_ids, exec.commands)
         except ValueError:
-            display_help(exec.modes, exec.commands)
+            display_help(exec.mode_ids, exec.commands)
         else:
             exec.execute(**arg)
     finally:

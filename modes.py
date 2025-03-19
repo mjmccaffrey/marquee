@@ -1,79 +1,134 @@
 """Marquee Lighted Sign Project - modes"""
 
+from abc import ABC, abstractmethod
 from collections.abc import Callable
-from dataclasses import dataclass
-import itertools
-import random
-from sequences import *
+from sequence_defs import *
+from signs import ALL_HIGH, ALL_ON
 import time
 
-from dimmers import RelayOverride, TRANSITION_MINIMUM
-from signs import ALL_LOW, ALL_ON, LIGHT_COUNT
+from buttons import Button
+from players import Player
 
-@dataclass
-class Mode:
-    index: int
-    name: str
-    function: Callable = lambda: None
-    preset_dimmers: bool = False
-    preset_relays: bool = False
-
-def mode_random_fade(player, transition=None):
+class Mode(ABC):
     """"""
-    def _new_transition() -> float:
-        if transition is None:
-            return random.uniform(TRANSITION_MINIMUM, 5.0 * player.speed_factor)
-        else:
-            return transition
-    def _new_brightness(old) -> int:
-        new = old
-        while abs(new - old) < 20:
-            new = random.randrange(101)
-        return new
-    player.sign.set_lights(ALL_ON)
-    for channel in player.sign.dimmer_channels:
-        channel.next_update = 0
-    while True:
-        for channel in player.sign.dimmer_channels:
-            if channel.next_update < (now := time.time()):
-                channel.set(
-                    transition = (tran := _new_transition()),
-                    brightness = _new_brightness(channel.brightness)
-                )
-                channel.next_update = now + tran
-        player.wait(0.1)
 
-def build1(player, equal: bool):
-    """"""
-    player.sign.set_lights(ALL_ON)
-    player.sign.set_dimmers(ALL_LOW)
-    brightnesss = [(i + 1) * 10 for i in range(LIGHT_COUNT)]
-    transitions = (
-        [20] * LIGHT_COUNT
-            if equal else
-        [(i + 1) * 2 for i in range(LIGHT_COUNT)]
-    )
-    for dimmer, brightness, transition in zip(player.sign.dimmer_channels, brightnesss, transitions):
-        dimmer.set(brightness=brightness, transition=transition)
-    player.wait(40)
+    _modes: list["Mode"] = []
+    
+    def __init__(
+        self,
+        player: Player,
+        index: int,
+        name: str,
+        execute: Callable | None = None,
+        preset_dimmers: bool = False,
+        preset_relays: bool = False,
+    ):
+        Mode._modes.append(self)
+        self.player = player
+        self.index = index
+        self.name = name
+        if execute is not None:
+            self.execute = execute
+        self.preset_dimmers = preset_dimmers
+        self.preset_relays = preset_relays
+        self.pass_count: int = 0
 
-def mode_even_odd_fade(player):
+    @classmethod
+    def mode_index(cls, current: int, delta: int) -> int:
+        """"""
+        lower, upper = 1, len(cls._modes) - 1
+        value = current + delta % (upper - lower + 1)
+        if (dif := value - upper) > 0:
+            value = lower + dif - 1
+        elif (dif := value - lower) < 0:
+            value = upper + dif + 1
+        return value
+
+    @abstractmethod
+    def button_action(self, button: Button):
+        """"""
+
+    def execute(self, pass_count):
+        """"""
+        if pass_count == 1:
+            if self.preset_dimmers:
+                self.player.sign.set_dimmers(ALL_HIGH)
+            if self.preset_relays:
+                self.player.sign.set_lights(ALL_ON)
+ 
+class PlayMode(Mode):
     """"""
-    player.sign.set_dimmers(ALL_LOW) 
-    player.sign.set_lights(ALL_ON)
-    delay = 5.0
-    odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
-    even_on = opposite_pattern(odd_on)
-    for pattern in itertools.cycle((even_on, odd_on)):
-        player.sign.set_lights(
-            pattern, 
-            override=RelayOverride(
-                concurrent=True,
-                brightness_on = 90,
-                brightness_off = 10,
-                transition_on=delay,
-                transition_off=delay,
+
+    def button_action(self, button: Button):
+        """"""
+        # assert self.current_mode is not None
+        new_mode: int | None = None
+        match button.name:
+            case 'body_mode_select' | 'remote_mode_select':
+                print("Entering selection mode")
+                self.previous_mode = self.index
+                self.current_mode = 0
+            case 'remote_mode_up':
+                self.player.sign.click()
+                new_mode = self.mode_index(self.index, -1)
+            case 'remote_mode_down':
+                self.player.sign.click()
+                new_mode = self.mode_index(self.index, +1)
+            case 'remote_demo_mode':
+                self.player.sign.click()
+                new_mode = len(Mode._modes) - 1
+            case _:
+                raise Exception
+        return new_mode
+    
+class SelectMode(Mode):
+    """"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.desired_mode = None
+
+    def button_action(self, button: Button):
+        """"""
+        assert self.desired_mode is not None
+        match button.name:
+            case 'body_mode_select' | 'remote_mode_select' | 'remote_mode_down':
+                self.desired_mode = self.mode_index(self.desired_mode, +1)
+            case 'remote_mode_up':
+                self.desired_mode = self.mode_index(self.desired_mode, -1)
+            case 'remote_demo_mode':
+                self.desired_mode = 2  # ALL_OFF
+            case _:
+                raise Exception
+
+    def execute(self, pass_count):
+        """User presses the button to select 
+           the next mode to execute."""
+        super().execute(pass_count)
+        new_mode = self.index
+        if self.pass_count == 1:
+            print("A")
+            # Just now entering selection mode
+            # !!!! Set dimmers all high - maybe remember and restore current state
+
+
+            self.desired_mode = self.player.previous_mode  # ??? or pass this in ???
+            self.previous_desired_mode = None
+        if self.desired_mode != self.previous_desired_mode:
+            print("B")
+            # Not last pass.
+            # Show user what desired mode number is currently selected.
+            self.player.sign.set_lights(ALL_OFF)
+            time.sleep(0.5)
+            self.player.play_sequence(
+                lambda: seq_rotate_build_flip(self.desired_mode),  # type: ignore
+                pace=0.2, post_delay=5.0,
             )
-        )
-        player.wait(delay)
-        
+            self.previous_desired_mode = self.desired_mode
+        else:
+            print("C")
+            # Last pass.
+            # Time elapsed without a button being pressed.
+            # Play the selected mode.
+            new_mode = self.desired_mode
+        return new_mode

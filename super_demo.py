@@ -1,6 +1,6 @@
 """"""
 
-from sequences import *
+from sequence_defs import *
 
 from dimmers import RelayOverride, TRANSITION_MINIMUM
 from players import Player

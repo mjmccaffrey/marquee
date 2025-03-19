@@ -4,7 +4,6 @@ from collections.abc import Callable
 import sys
 
 from argparse import Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
-from modes import Mode
 from signs import LIGHT_COUNT
 from typing import Any, NoReturn
 
@@ -50,7 +49,7 @@ def str_to_bool(arg: str) -> bool:
         raise ValueError()
 
 def display_help(
-    modes: dict[int, Mode], 
+    mode_ids: dict[int, str], 
     commands: dict[str, Callable],
 ):
     """"Display the command-line syntax."""
@@ -62,8 +61,8 @@ def display_help(
     print("  marquee.py command [command_name]")
     print()
     print("Modes:")
-    for index, entry in modes.items():
-        print(f'   {index}   {entry.name}')
+    for index, name in mode_ids.items():  # ??? sort ?
+        print(f'   {index}   {name}')
     print()
     print("Patterns: Specify --dimmer, --relay, or both.")
     print(f"  dimmer: {LIGHT_COUNT} hex values, each 0..A (0%..100%)")
@@ -103,7 +102,7 @@ def validate_brightness_pattern(arg: str) -> str:
     return arg_normalized
 
 def parse_arguments(
-    mode_ids: dict[str, int], 
+    mode_ids: dict[int, str], 
     commands: dict[str, Callable],
 ) -> Namespace:
     """ Parse the command-line arguments. """
@@ -113,7 +112,8 @@ def parse_arguments(
     command_p = sub_p.add_parser('command')
     command_p.add_argument('command_name', choices=commands.keys())
     mode_p = sub_p.add_parser('mode')
-    mode_p.add_argument('mode_id', choices=mode_ids.keys())
+    mode_choices = {str(i) for i in mode_ids.keys()} | {v for v in mode_ids.values()}
+    mode_p.add_argument('mode_id', choices=mode_choices)
     mode_p.add_argument('speed_factor', 
         optional=True, 
         type=float, default=1.0)
@@ -131,7 +131,7 @@ def parse_arguments(
         raise ValueError()
 
 def process_arguments(
-    mode_ids: dict[str, int], 
+    mode_ids: dict[int, str], 
     commands: dict[str, Callable],
 ) -> dict[str, Any]:
     """Validate and interpret the runtime arguments.
