@@ -57,7 +57,7 @@ class PlayMode(Mode):
         self,
         player: Any,  # Player
         name: str,
-        function: Callable | None = None,
+        function: Callable,
         preset_dimmers: bool = False,
         preset_relays: bool = False,
     ):
@@ -88,8 +88,8 @@ class PlayMode(Mode):
     def execute(self, pass_count):
         """"""
         super().execute(pass_count)
-        assert self.function is not None
-        self.function()
+        # assert self.function is not None
+        self.function(pass_count)
 
 class SelectMode(Mode):
     """"""

@@ -1,5 +1,5 @@
 
-
+* am I overriding 'function' ??
 * current_mode -> -1 instead of None
 * Must set dimmers to 100 upon mode switch -- "baseline"
 * finalize preset stuff
