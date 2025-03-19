@@ -96,8 +96,9 @@ class Player:
         override: RelayOverride | None = None,
     ) -> Callable:
         """"""
-        def sequence_player():
+        def sequence_player(pass_count: int):
             while True:
+                print(pass_count)
                 self.play_sequence(sequence,
                     pace=pace,
                     override=override,
