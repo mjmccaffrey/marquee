@@ -207,7 +207,9 @@ class Executor():
         """Register the operating modes."""
         player = self.player
         sign = self.player.sign
-        select = SelectMode(player, 0, "selection")
+        self.modes[0] = SelectMode(
+            player, "selection", preset_dimmers=True
+        )
         self.add_sequence_mode_func(1, "all_on", seq_all_on)
         self.add_sequence_mode_func(2, "all_off", seq_all_off)
         self.add_sequence_mode_func(3, "even_on", seq_even_on)

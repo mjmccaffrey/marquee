@@ -43,7 +43,6 @@ class Player:
         new_mode = None
         while new_mode is None:
             mode = self.modes[mode_index]
-            print(f"Executing mode {mode_index} {mode.name}")
             try:
                 pass_count += 1
                 print(f"Executing mode {mode_index} {mode.name} pass {pass_count}")
