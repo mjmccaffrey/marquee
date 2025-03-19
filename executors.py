@@ -195,13 +195,13 @@ class Executor():
         self.add_mode_ids(14, "blink_all_fade_fast")
         self.add_mode_ids(15, "blink_all_fade_slowwww")
         self.add_mode_ids(16, "blink_all_fade_stealth")
-        self.add_mode_ids(17, "build_NEQ")
-        self.add_mode_ids(18, "build_EQ")
-        self.add_mode_ids(19, "random_fade")
-        self.add_mode_ids(20, "random_fade_steady")
-        self.add_mode_ids(21, "even_odd_fade")
-        self.add_mode_ids(22, "corner_rotate_fade")
-        self.add_mode_ids(23, "rotate_slight_fade")
+        #self.add_mode_ids(17, "build_NEQ")
+        #self.add_mode_ids(18, "build_EQ")
+        #self.add_mode_ids(19, "random_fade")
+        #self.add_mode_ids(20, "random_fade_steady")
+        #self.add_mode_ids(21, "even_odd_fade")
+        self.add_mode_ids(17, "corner_rotate_fade")
+        self.add_mode_ids(18, "rotate_slight_fade")
 
     def register_mode_functions(self):
         """Register the operating modes."""
@@ -275,13 +275,13 @@ class Executor():
             )
         )
         
-        self.add_mode_func(17, "build_NEQ", lambda: build1(player, False))
-        self.add_mode_func(18, "build_EQ", lambda: build1(player, True))
-        self.add_mode_func(19, "random_fade", lambda: mode_random_fade(player))
-        self.add_mode_func(20, "random_fade_steady", lambda: mode_random_fade(player, 2.0))
-        self.add_mode_func(21, "even_odd_fade", lambda: mode_even_odd_fade(player))
+        #self.add_mode_func(17, "build_NEQ", lambda: build1(player, False))
+        #self.add_mode_func(18, "build_EQ", lambda: build1(player, True))
+        #self.add_mode_func(19, "random_fade", lambda: mode_random_fade(player))
+        #self.add_mode_func(20, "random_fade_steady", lambda: mode_random_fade(player, 2.0))
+        #self.add_mode_func(21, "even_odd_fade", lambda: mode_even_odd_fade(player))
 
-        self.add_sequence_mode_func(22, "corner_rotate_fade", 
+        self.add_sequence_mode_func(17, "corner_rotate_fade", 
             seq_opposite_corner_pairs, pace=5,
             override=RelayOverride(
                 concurrent=True,
@@ -289,7 +289,7 @@ class Executor():
                 brightness_off = 10,
             )
         )
-        self.add_sequence_mode_func(23, "rotate_slight_fade",
+        self.add_sequence_mode_func(18, "rotate_slight_fade",
             seq_rotate, pace=0.5,
             override=RelayOverride(
                 concurrent=False,
