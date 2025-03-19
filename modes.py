@@ -5,9 +5,9 @@ from collections.abc import Callable
 from sequence_defs import *
 from signs import ALL_HIGH, ALL_ON
 import time
-
+from typing import Any
 from buttons import Button
-from players import Player
+# from players import Player
 
 class Mode(ABC):
     """"""
@@ -16,8 +16,7 @@ class Mode(ABC):
     
     def __init__(
         self,
-        player: Player,
-        index: int,
+        player: Any,  # Player
         name: str,
         execute: Callable | None = None,
         preset_dimmers: bool = False,

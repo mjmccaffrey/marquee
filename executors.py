@@ -101,7 +101,7 @@ class Executor():
             preset_dimmers: bool = False,
             preset_relays: bool = False,
         ):
-        self.modes[index] = PlayMode(self.player, index, name, function, preset_dimmers, preset_relays)
+        self.modes[index] = PlayMode(self.player, name, function, preset_dimmers, preset_relays)
             
     def add_sequence_mode_func(
             self,
