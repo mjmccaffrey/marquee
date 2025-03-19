@@ -49,7 +49,8 @@ class Executor():
 
     def __init__(self):
         """"""
-        self.mode_ids: dict[int, str] = {}
+        self.mode_ids: dict[str, int] = {}
+        self.mode_menu: list[tuple[int, str]] = []
         self.modes: dict[int, Mode] = {}
         self.register_mode_ids()
         self.commands: dict[str, Callable] = {
@@ -91,7 +92,9 @@ class Executor():
         #assert all(
         #    k in self.modes for k in range(1, index)
         #), "Non-sequential mode index"
-        self.mode_ids[index] = name
+        self.mode_menu.append((index, name))
+        self.mode_ids[str(index)] = index
+        self.mode_ids[name] = index
 
     def add_mode_func(
             self, 

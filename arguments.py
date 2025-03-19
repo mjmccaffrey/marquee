@@ -49,7 +49,7 @@ def str_to_bool(arg: str) -> bool:
         raise ValueError()
 
 def display_help(
-    mode_ids: dict[int, str], 
+    mode_menu: list[tuple[int, str]], 
     commands: dict[str, Callable],
 ):
     """"Display the command-line syntax."""
@@ -61,7 +61,7 @@ def display_help(
     print("  marquee.py command [command_name]")
     print()
     print("Modes:")
-    for index, name in mode_ids.items():  # ??? sort ?
+    for index, name in mode_menu:
         print(f'   {index}   {name}')
     print()
     print("Patterns: Specify --dimmer, --relay, or both.")
@@ -102,7 +102,7 @@ def validate_brightness_pattern(arg: str) -> str:
     return arg_normalized
 
 def parse_arguments(
-    mode_ids: dict[int, str], 
+    mode_ids: dict[str, int], 
     commands: dict[str, Callable],
 ) -> Namespace:
     """ Parse the command-line arguments. """
@@ -112,7 +112,7 @@ def parse_arguments(
     command_p = sub_p.add_parser('command')
     command_p.add_argument('command_name', choices=commands.keys())
     mode_p = sub_p.add_parser('mode')
-    mode_choices = {str(i) for i in mode_ids.keys()} | {v for v in mode_ids.values()}
+    mode_choices = mode_ids.keys()
     mode_p.add_argument('mode_id', choices=mode_choices)
     mode_p.add_argument('speed_factor', 
         optional=True, 
@@ -131,7 +131,7 @@ def parse_arguments(
         raise ValueError()
 
 def process_arguments(
-    mode_ids: dict[int, str], 
+    mode_ids: dict[str, int], 
     commands: dict[str, Callable],
 ) -> dict[str, Any]:
     """Validate and interpret the runtime arguments.
