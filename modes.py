@@ -18,15 +18,12 @@ class Mode(ABC):
         self,
         player: Any,  # Player
         name: str,
-        execute: Callable | None = None,
         preset_dimmers: bool = False,
         preset_relays: bool = False,
     ):
         Mode._modes.append(self)
         self.player = player
         self.name = name
-        if execute is not None:
-            self.execute = execute
         self.preset_dimmers = preset_dimmers
         self.preset_relays = preset_relays
 
@@ -56,6 +53,17 @@ class Mode(ABC):
 class PlayMode(Mode):
     """"""
 
+    def __init__(
+        self,
+        player: Any,  # Player
+        name: str,
+        function: Callable | None = None,
+        preset_dimmers: bool = False,
+        preset_relays: bool = False,
+    ):
+        super().__init__(player, name, preset_dimmers, preset_relays)
+        self.function = function
+
     def button_action(self, button: Button):
         """"""
         new_mode = None
@@ -76,12 +84,24 @@ class PlayMode(Mode):
                 raise Exception
         #print(f"PlayMode: new_mode: {new_mode}")
         return new_mode
-    
+
+    def execute(self, pass_count):
+        """"""
+        super().execute(pass_count)
+        assert self.function is not None
+        self.function()
+
 class SelectMode(Mode):
     """"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(
+        self,
+        player: Any,  # Player
+        name: str,
+        preset_dimmers: bool = False,
+        preset_relays: bool = False,
+    ):
+        super().__init__(player, name, preset_dimmers, preset_relays)
         self.desired_mode = None
 
     def button_action(self, button: Button):
