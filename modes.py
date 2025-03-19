@@ -29,7 +29,6 @@ class Mode(ABC):
             self.execute = execute
         self.preset_dimmers = preset_dimmers
         self.preset_relays = preset_relays
-        self.pass_count: int = 0
 
     @classmethod
     def mode_index(cls, current: int, delta: int) -> int:
@@ -104,7 +103,7 @@ class SelectMode(Mode):
            the next mode to execute."""
         super().execute(pass_count)
         new_mode = None
-        if self.pass_count == 1:
+        if pass_count == 1:
             print("A")
             # Just now entering selection mode
             # !!!! Set dimmers all high - maybe remember and restore current state
