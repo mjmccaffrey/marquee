@@ -131,8 +131,8 @@ class Executor():
             index=index,
             name=name,
             function=function,
-            preset_dimmers=(override is not None),
-            preset_relays=(override is None),
+            preset_dimmers=(override is None),
+            preset_relays=(override is not None),
         )
 
     def execute(
