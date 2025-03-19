@@ -137,7 +137,7 @@ class SelectMode(Mode):
             time.sleep(0.5)
             self.player.play_sequence(
                 lambda: seq_rotate_build_flip(self.desired_mode),  # type: ignore
-                pace=0.2, post_delay=5.0,
+                pace=0.15, post_delay=4.0,
             )
             self.previous_desired_mode = self.desired_mode
         else:
