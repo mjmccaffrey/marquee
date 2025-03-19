@@ -162,7 +162,7 @@ class Executor():
             speed_factor=speed_factor,
         )
         self.register_mode_functions()
-        self.player.play_mode(mode_index)
+        self.player.execute(mode_index)
 
     def execute_pattern(self, light_pattern: str | None, brightness_pattern: str | None):
         """"""

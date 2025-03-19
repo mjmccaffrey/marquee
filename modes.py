@@ -25,7 +25,6 @@ class Mode(ABC):
     ):
         Mode._modes.append(self)
         self.player = player
-        self.index = index
         self.name = name
         if execute is not None:
             self.execute = execute
@@ -61,19 +60,17 @@ class PlayMode(Mode):
 
     def button_action(self, button: Button):
         """"""
-        # assert self.current_mode is not None
-        new_mode: int | None = None
+        new_mode = None
         match button.name:
             case 'body_mode_select' | 'remote_mode_select':
                 print("Entering selection mode")
-                self.previous_mode = self.index
-                self.current_mode = 0
+                new_mode = 0
             case 'remote_mode_up':
                 self.player.sign.click()
-                new_mode = self.mode_index(self.index, -1)
+                new_mode = self.mode_index(self.player.current_mode, -1)
             case 'remote_mode_down':
                 self.player.sign.click()
-                new_mode = self.mode_index(self.index, +1)
+                new_mode = self.mode_index(self.player.current_mode, +1)
             case 'remote_demo_mode':
                 self.player.sign.click()
                 new_mode = len(Mode._modes) - 1
@@ -105,14 +102,12 @@ class SelectMode(Mode):
         """User presses the button to select 
            the next mode to execute."""
         super().execute(pass_count)
-        new_mode = self.index
+        new_mode = None
         if self.pass_count == 1:
             print("A")
             # Just now entering selection mode
             # !!!! Set dimmers all high - maybe remember and restore current state
-
-
-            self.desired_mode = self.player.previous_mode  # ??? or pass this in ???
+            self.desired_mode = self.player.previous_mode
             self.previous_desired_mode = None
         if self.desired_mode != self.previous_desired_mode:
             print("B")

@@ -22,28 +22,38 @@ class Player:
         self.modes = modes
         self.sign = sign
         self.speed_factor = speed_factor
-        self.current_mode = None
+        self.current_mode = -1
         self.previous_mode = None
 
     def close(self):
         """Close."""
 
-    def play_mode(self, starting_mode_index: int):
+    def execute(self, starting_mode_index: int):
         """"""
         self.current_mode = starting_mode_index
-        for pass_count in itertools.count(start = 1):
-            mode = self.modes[self.current_mode]
-            print(f"Executing mode {mode.index} {mode.name}")
+        while True:
+            new_mode = self.play_mode_until_changed(self.current_mode)
+            assert new_mode is not None
+            self.previous_mode = self.current_mode
+            self.current_mode = new_mode
+
+    def play_mode_until_changed(self, mode_index: int):
+        """"""
+        pass_count = 0
+        new_mode = None
+        while new_mode is None:
+            mode = self.modes[mode_index]
+            print(f"Executing mode {mode_index} {mode.name}")
             try:
+                pass_count += 1
+                print(f"Executing mode {mode_index} {mode.name} pass {pass_count}")
                 new_mode = mode.execute(pass_count)
-                if new_mode is not None:
-                    self.previous_mode = self.current_mode
-                    self.current_mode = new_mode
             except ButtonPressed as press:
                 button, = press.args
                 #print(f"Button Pressed: {button}")
                 Button.reset()
                 mode.button_action(button)
+        return new_mode
 
     def play_sequence(
             self, 

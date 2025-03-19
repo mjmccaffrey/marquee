@@ -1,6 +1,6 @@
 
-Is mode.index required?
 
+* current_mode -> -1 instead of None
 * Must set dimmers to 100 upon mode switch -- "baseline"
 * finalize preset stuff
 * clean up Build N/EQ
