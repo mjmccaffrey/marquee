@@ -32,7 +32,7 @@ class ShellyDimmer(ABC):
                 dimmer=self,
                 index=self.index * 2 + id,
                 id=id, 
-                output=status['output'], 
+                # output=status['output'], 
                 brightness=status['brightness'],
             ) 
             for id, status in self._get_status()
@@ -109,7 +109,7 @@ class ShellyDimmer(ABC):
             for channel in dimmer.channels:
                 channel.set(
                     brightness=100,
-                    output=True,
+                    # output=True,
                 )
         time.sleep(5)
         for id in range(max(d.channel_count for d in cls._dimmers)):
@@ -161,7 +161,7 @@ class DimmerChannel:
             dimmer: ShellyDimmer, 
             index: int,
             id: int, 
-            output: bool, 
+            # output: bool, 
             brightness: int,
         ):
         """Create the dimmer channel instance."""
@@ -170,10 +170,10 @@ class DimmerChannel:
         self.ip_address = self.dimmer.ip_address
         self.id = id
         # print(f"Initializing {self}")
-        self.output = output
+        # self.output = output
         self.brightness = brightness
         self.next_update: float = 0
-        self.set(output=True)  # !!! make part of a larger init?
+        # self.set(output=True)  # !!! make part of a larger init?
 
     def __str__(self):
         return (f"dimmer {self.dimmer.index} channel {self.index}")
@@ -186,7 +186,7 @@ class DimmerChannel:
         brightness: int | None = None, 
         offset: int | None = None,
         transition: float | None = None, 
-        output: bool | None = None,
+        # output: bool | None = None,
     ) -> "_DimmerCommand":
         """Produce dimmer API parameters from requested values and state."""
         assert transition is None or transition >= TRANSITION_MINIMUM
@@ -202,7 +202,8 @@ class DimmerChannel:
                 if new_brightness is not None else {}) |
             ({'transition_duration': 
                 transition or TRANSITION_DEFAULT}) |
-            ({'on': str(output).lower()} if output is not None else {})
+            # ({'on': str(output).lower()} if output is not None else {})
+            ({'on': 'true'})
         )
         return _DimmerCommand(
             channel = self,
@@ -214,7 +215,7 @@ class DimmerChannel:
             brightness: int | None = None, 
             offset: int | None = None,
             transition: float | None = None, 
-            output: bool | None = None,
+            # output: bool | None = None,
             wait: bool = False,
     ):
         """Set the dimmer channel per requested values and state."""
@@ -223,7 +224,7 @@ class DimmerChannel:
             brightness=brightness,
             offset=offset,
             transition=transition,
-            output=output,
+            # output=output,
         )
         try:
             self.dimmer.session.get(

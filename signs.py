@@ -186,7 +186,7 @@ class Sign:
         #print()
         commands = [
             c.make_set_command(
-                output=True, # ???
+                # output=True, # ???
                 brightness=b,
                 transition=t,
             )

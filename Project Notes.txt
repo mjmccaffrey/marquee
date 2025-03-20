@@ -1,5 +1,7 @@
 
-make back button longpress? => reboot
+respond to button presses during seq_rotate_build_flip(self.desired_mode) ???
+
+make back or remote C button longpress => reboot ???
 
 change print to logging; include timestamps
 
@@ -25,7 +27,6 @@ Timeline
 To Do Now:
     GPIO terminal block
     Pi zero 2
-    Install remote; 2 buttons functional
 
     check and respond to .get result codes
     pace must measure between the same 2 points, not blindly wait
@@ -38,6 +39,7 @@ After checking in as fully functional release:
     error handling for I/O
 
     modes:
+        Achieve 0.25 second rythm by fade 1/2 lights, 0.25 seconds apart
         dimmer pattern sequences
         Spin, or other action, as all bulbs slowly build
         relay version of mode_random_fade(player: Player, transition=None)
