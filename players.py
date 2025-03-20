@@ -6,14 +6,14 @@ import time
 
 from buttons import Button, ButtonPressed
 from dimmers import RelayOverride
-import modes
+from modes import Mode
 from signs import Sign
 
 class Player:
     """Executes one mode at a time."""
     def __init__(
             self, 
-            modes: dict[int, modes.Mode],
+            modes: dict[int, Mode],
             sign: Sign, 
             speed_factor: float,
         ):

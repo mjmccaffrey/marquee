@@ -6,7 +6,6 @@ import time
 from typing import Any
 
 from buttons import Button
-import players
 from sequence_defs import *
 from signs import ALL_HIGH, ALL_ON
 
@@ -17,7 +16,7 @@ class Mode(ABC):
     
     def __init__(
         self,
-        player: players.Player,
+        player: Any,  # Player
         name: str,
         preset_dimmers: bool = False,
         preset_relays: bool = False,
@@ -56,7 +55,7 @@ class PlayMode(Mode):
 
     def __init__(
         self,
-        player: players.Player,
+        player: Any,  # Player
         name: str,
         execute_func: Callable,
         preset_dimmers: bool = False,
@@ -97,7 +96,7 @@ class SelectMode(Mode):
 
     def __init__(
         self,
-        player: players.Player,
+        player: Any,  # Player
         name: str,
         preset_dimmers: bool = False,
         preset_relays: bool = False,
