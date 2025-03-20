@@ -295,8 +295,13 @@ class Executor():
                 brightness_off = 30,
             )
         )
-        self.add_mode_func(19, "even_odd_fade", lambda p: mode_even_odd_fade(player, p))
-        self.add_mode_func(20, "random_fade", lambda p: mode_random_fade(player, p))
-        self.add_mode_func(21, "random_fade_steady", lambda p: mode_random_fade(player, p, 2))
-        self.add_mode_func(22, "build_brightness_equal", lambda p: build_brightness(player, True, p))
-        self.add_mode_func(23, "build_brightness_unequal", lambda p: build_brightness(player, False, p))
+        self.add_mode_func(19, "even_odd_fade", 
+            lambda p: mode_even_odd_fade(player, p))
+        self.add_mode_func(20, "random_fade", 
+            lambda p: mode_random_fade(player, p))
+        self.add_mode_func(21, "random_fade_steady", 
+            lambda p: mode_random_fade(player, p, 2))
+        self.add_mode_func(22, "build_brightness_equal", 
+            lambda p: build_brightness(player, True, p))
+        self.add_mode_func(23, "build_brightness_unequal", 
+            lambda p: build_brightness(player, False, p))

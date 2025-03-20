@@ -60,7 +60,7 @@ def build_brightness(player, equal_trans: bool, _):
     brightnesss = [(i + 1) * 10 for i in range(LIGHT_COUNT)]
     transitions = (
         [20] * LIGHT_COUNT
-            if equal else
+            if equal_trans else
         [(i + 1) * 2 for i in range(LIGHT_COUNT)]
     )
     for dimmer, brightness, transition in zip(player.sign.dimmer_channels, brightnesss, transitions):
