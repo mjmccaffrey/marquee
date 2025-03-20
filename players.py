@@ -34,6 +34,8 @@ class Player:
         while True:
             new_mode = self.play_mode_until_changed(self.current_mode)
             assert new_mode is not None
+            if new_mode == 222:
+                new_mode = 2
             self.previous_mode = self.current_mode
             self.current_mode = new_mode
 

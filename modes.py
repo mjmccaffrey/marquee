@@ -112,7 +112,8 @@ class SelectMode(Mode):
             case 'remote_mode_up':
                 self.desired_mode = self.mode_index(self.desired_mode, -1)
             case 'remote_demo_mode':
-                self.desired_mode = 2  # ALL_OFF
+                # self.desired_mode = 2  # ALL_OFF
+                return 222  # Quick change to mode ALL_OFF
             case _:
                 raise Exception
         return None
