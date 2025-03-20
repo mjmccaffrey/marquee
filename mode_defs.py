@@ -8,7 +8,7 @@ import time
 from dimmers import RelayOverride, TRANSITION_MINIMUM
 from signs import ALL_LOW, ALL_ON, LIGHT_COUNT
 
-def mode_random_fade(player, transition=None):
+def mode_random_fade(player, _, transition=None):
     """"""
     def _new_transition() -> float:
         if transition is None:
@@ -33,20 +33,6 @@ def mode_random_fade(player, transition=None):
                 channel.next_update = now + tran
         player.wait(0.1)
 
-def build1(player, equal: bool):
-    """"""
-    player.sign.set_lights(ALL_ON)
-    player.sign.set_dimmers(ALL_LOW)
-    brightnesss = [(i + 1) * 10 for i in range(LIGHT_COUNT)]
-    transitions = (
-        [20] * LIGHT_COUNT
-            if equal else
-        [(i + 1) * 2 for i in range(LIGHT_COUNT)]
-    )
-    for dimmer, brightness, transition in zip(player.sign.dimmer_channels, brightnesss, transitions):
-        dimmer.set(brightness=brightness, transition=transition)
-    player.wait(40)
-
 def mode_even_odd_fade(player, _):
     """"""
     player.sign.set_dimmers(ALL_LOW) 
@@ -66,3 +52,18 @@ def mode_even_odd_fade(player, _):
             )
         )
         player.wait(delay)
+
+def build1(player, equal: bool):
+    """"""
+    player.sign.set_lights(ALL_ON)
+    player.sign.set_dimmers(ALL_LOW)
+    brightnesss = [(i + 1) * 10 for i in range(LIGHT_COUNT)]
+    transitions = (
+        [20] * LIGHT_COUNT
+            if equal else
+        [(i + 1) * 2 for i in range(LIGHT_COUNT)]
+    )
+    for dimmer, brightness, transition in zip(player.sign.dimmer_channels, brightnesss, transitions):
+        dimmer.set(brightness=brightness, transition=transition)
+    player.wait(40)
+

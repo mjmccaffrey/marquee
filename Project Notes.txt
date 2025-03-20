@@ -3,6 +3,8 @@ respond to button presses during seq_rotate_build_flip(self.desired_mode) ???
 
 make back or remote C button longpress => reboot ???
 
+add descriptions to add_mode_ids ?  or elsewhere ?
+
 change print to logging; include timestamps
 
 * problem on 3/19 with Output turning off on 3.1 and 5.1.
