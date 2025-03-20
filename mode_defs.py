@@ -5,9 +5,7 @@ import random
 from sequence_defs import *
 import time
 
-from buttons import Button
 from dimmers import RelayOverride, TRANSITION_MINIMUM
-from players import Player
 from signs import ALL_LOW, ALL_ON, LIGHT_COUNT
 
 def mode_random_fade(player, transition=None):
@@ -49,7 +47,7 @@ def build1(player, equal: bool):
         dimmer.set(brightness=brightness, transition=transition)
     player.wait(40)
 
-def mode_even_odd_fade(player):
+def mode_even_odd_fade(player, _):
     """"""
     player.sign.set_dimmers(ALL_LOW) 
     player.sign.set_lights(ALL_ON)

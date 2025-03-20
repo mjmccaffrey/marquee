@@ -202,6 +202,8 @@ class Executor():
         #self.add_mode_ids(21, "even_odd_fade")
         self.add_mode_ids(17, "corner_rotate_fade")
         self.add_mode_ids(18, "rotate_slight_fade")
+        self.add_mode_ids(19, "even_odd_fade")
+        self.add_mode_ids(20, "blink_alternate_fade_2")
 
     def register_mode_functions(self):
         """Register the operating modes."""
@@ -279,7 +281,6 @@ class Executor():
         #self.add_mode_func(18, "build_EQ", lambda: build1(player, True))
         #self.add_mode_func(19, "random_fade", lambda: mode_random_fade(player))
         #self.add_mode_func(20, "random_fade_steady", lambda: mode_random_fade(player, 2.0))
-        #self.add_mode_func(21, "even_odd_fade", lambda: mode_even_odd_fade(player))
 
         self.add_sequence_mode_func(17, "corner_rotate_fade", 
             seq_opposite_corner_pairs, pace=5,
@@ -295,5 +296,13 @@ class Executor():
                 concurrent=False,
                 brightness_on = 100,
                 brightness_off = 30,
+            )
+        )
+        self.add_mode_func(19, "even_odd_fade", lambda p: mode_even_odd_fade(player, p))
+        self.add_sequence_mode_func(20, "blink_alternate_fade_2",
+            seq_blink_alternate, pace=4, 
+            override=RelayOverride(
+                transition_on=1.0,
+                transition_off=3.0,
             )
         )
