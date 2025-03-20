@@ -205,6 +205,8 @@ class Executor():
         self.add_mode_ids(19, "even_odd_fade")
         self.add_mode_ids(20, "random_fade")
         self.add_mode_ids(21, "random_fade_steady")
+        self.add_mode_ids(22, "build_brightness_equal")
+        self.add_mode_ids(23, "build_brightness_unequal")
 
     def register_mode_functions(self):
         """Register the operating modes."""
@@ -277,12 +279,6 @@ class Executor():
                 transition_off=2,
             )
         )
-        
-        #self.add_mode_func(17, "build_NEQ", lambda: build1(player, False))
-        #self.add_mode_func(18, "build_EQ", lambda: build1(player, True))
-        #self.add_mode_func(19, "random_fade", lambda: mode_random_fade(player))
-        #self.add_mode_func(20, "random_fade_steady", lambda: mode_random_fade(player, 2.0))
-
         self.add_sequence_mode_func(17, "corner_rotate_fade", 
             seq_opposite_corner_pairs, pace=5,
             override=RelayOverride(
@@ -302,3 +298,5 @@ class Executor():
         self.add_mode_func(19, "even_odd_fade", lambda p: mode_even_odd_fade(player, p))
         self.add_mode_func(20, "random_fade", lambda p: mode_random_fade(player, p))
         self.add_mode_func(21, "random_fade_steady", lambda p: mode_random_fade(player, p, 2))
+        self.add_mode_func(22, "build_brightness_equal", lambda p: build_brightness(player, True, p))
+        self.add_mode_func(23, "build_brightness_unequal", lambda p: build_brightness(player, False, p))

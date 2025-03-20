@@ -53,7 +53,7 @@ def mode_even_odd_fade(player, _):
         )
         player.wait(delay)
 
-def build1(player, equal: bool):
+def build_brightness(player, equal_trans: bool, _):
     """"""
     player.sign.set_lights(ALL_ON)
     player.sign.set_dimmers(ALL_LOW)
