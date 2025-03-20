@@ -1,10 +1,18 @@
 
+make back button longpress? => reboot
+
+change print to logging; include timestamps
+
+* problem on 3/19 with Output turning off on 3.1 and 5.1.
+* * * add output=on to all commands?
+
+* dimmer.restart
+* ? special in mode 2, restart the dimmers, and re-init the objects?
+
 * am I overriding 'function' ??
-* current_mode -> -1 instead of None
 * Must set dimmers to 100 upon mode switch -- "baseline"
 * finalize preset stuff
 * clean up Build N/EQ
-* self.mode_desired = 2
 
 GPIO 4 blown on Pi zero ?
 

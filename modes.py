@@ -102,11 +102,10 @@ class SelectMode(Mode):
         preset_relays: bool = False,
     ):
         super().__init__(player, name, preset_dimmers, preset_relays)
-        self.desired_mode = None
+        self.desired_mode = -1
 
     def button_action(self, button: Button):
         """"""
-        assert self.desired_mode is not None
         match button.name:
             case 'body_mode_select' | 'remote_mode_select' | 'remote_mode_down':
                 self.desired_mode = self.mode_index(self.desired_mode, +1)
@@ -124,24 +123,24 @@ class SelectMode(Mode):
         super().execute(pass_count)
         new_mode = None
         if pass_count == 1:
-            print("A")
+            #print("A")
             # Just now entering selection mode
             # !!!! Set dimmers all high - maybe remember and restore current state
             self.desired_mode = self.player.previous_mode
-            self.previous_desired_mode = None
+            self.previous_desired_mode = -1
         if self.desired_mode != self.previous_desired_mode:
-            print("B")
+            #print("B")
             # Not last pass.
             # Show user what desired mode number is currently selected.
             self.player.sign.set_lights(ALL_OFF)
             time.sleep(0.5)
             self.player.play_sequence(
-                lambda: seq_rotate_build_flip(self.desired_mode),  # type: ignore
-                pace=0.15, post_delay=4.0,
+                lambda: seq_rotate_build_flip(self.desired_mode),
+                pace=0.20, post_delay=4.0,
             )
             self.previous_desired_mode = self.desired_mode
         else:
-            print("C")
+            #print("C")
             # Last pass.
             # Time elapsed without a button being pressed.
             # Play the selected mode.
