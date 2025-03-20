@@ -2,12 +2,13 @@
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-from sequence_defs import *
-from signs import ALL_HIGH, ALL_ON
 import time
 from typing import Any
+
 from buttons import Button
-# from players import Player
+import players
+from sequence_defs import *
+from signs import ALL_HIGH, ALL_ON
 
 class Mode(ABC):
     """"""
@@ -16,7 +17,7 @@ class Mode(ABC):
     
     def __init__(
         self,
-        player: Any,  # Player
+        player: players.Player,
         name: str,
         preset_dimmers: bool = False,
         preset_relays: bool = False,
@@ -55,14 +56,14 @@ class PlayMode(Mode):
 
     def __init__(
         self,
-        player: Any,  # Player
+        player: players.Player,
         name: str,
-        function: Callable,
+        execute_func: Callable,
         preset_dimmers: bool = False,
         preset_relays: bool = False,
     ):
         super().__init__(player, name, preset_dimmers, preset_relays)
-        self.function = function
+        self.execute_func = execute_func
 
     def button_action(self, button: Button):
         """"""
@@ -88,15 +89,15 @@ class PlayMode(Mode):
     def execute(self, pass_count):
         """"""
         super().execute(pass_count)
-        # assert self.function is not None
-        self.function(pass_count)
+        # assert self.execute_func is not None
+        self.execute_func(pass_count)
 
 class SelectMode(Mode):
     """"""
 
     def __init__(
         self,
-        player: Any,  # Player
+        player: players.Player,
         name: str,
         preset_dimmers: bool = False,
         preset_relays: bool = False,
@@ -106,6 +107,7 @@ class SelectMode(Mode):
 
     def button_action(self, button: Button):
         """"""
+        assert self.desired_mode is not None
         match button.name:
             case 'body_mode_select' | 'remote_mode_select' | 'remote_mode_down':
                 self.desired_mode = self.mode_index(self.desired_mode, +1)
@@ -136,7 +138,7 @@ class SelectMode(Mode):
             self.player.sign.set_lights(ALL_OFF)
             time.sleep(0.5)
             self.player.play_sequence(
-                lambda: seq_rotate_build_flip(self.desired_mode),
+                lambda: seq_rotate_build_flip(self.desired_mode), # type: ignore
                 pace=0.20, post_delay=4.0,
             )
             self.previous_desired_mode = self.desired_mode

@@ -1,4 +1,4 @@
-""""""
+"""Marquee Lighted Sign Project - executors"""
 
 from collections.abc import Callable
 from signal import SIGUSR1  # type: ignore
@@ -25,7 +25,7 @@ DIMMER_ADDRESSES = [
 #   '192.168.51.116',
 
 def create_sign() -> Sign:
-    """"""
+    """Creates and returns a sign object, and all associated device objects."""
     dimmers: list[ShellyDimmer] = [
         ShellyProDimmer2PM(index, address)
         for index, address in enumerate(DIMMER_ADDRESSES)
@@ -45,10 +45,18 @@ def create_sign() -> Sign:
     )
 
 class Executor():
-    """"""
+    """Executes patterns and commands specified on the command line.
+       Registers all of the play modes, and if specified on the command line,
+       creates and turns control over to the Player object."""
 
-    def __init__(self):
+    def __init__(
+            self, 
+            create_sign: Callable[[], Sign],
+            create_player: Callable[[dict[int, Mode], Sign, float], Player],
+        ):
         """"""
+        self.create_sign = create_sign
+        self.create_player = create_player
         self.mode_ids: dict[str, int] = {}
         self.mode_menu: list[tuple[int, str]] = []
         self.modes: dict[int, Mode] = {}
@@ -83,20 +91,18 @@ class Executor():
             index: int, 
             name: str, 
         ):
-        """Register the mode, identified by index and name."""
-        #assert (
-        #        index not in self.modes
-        #    and str(index) not in self.mode_ids 
-        #    and name not in self.mode_ids 
-        #), "Duplicate mode index or name"
-        #assert all(
-        #    k in self.modes for k in range(1, index)
-        #), "Non-sequential mode index"
+        """Register the mode index and name."""
+        assert (str(index) not in self.mode_ids
+            and name not in self.mode_ids
+        ), "Duplicate mode index or name"
+        assert all(
+            str(k) in self.mode_ids for k in range(1, index)
+        ), "Non-sequential mode index"
         self.mode_menu.append((index, name))
         self.mode_ids[str(index)] = index
         self.mode_ids[name] = index
 
-    def add_mode_func(
+    def add_mode_def(
             self, 
             index: int, 
             name: str, 
@@ -104,9 +110,13 @@ class Executor():
             preset_dimmers: bool = False,
             preset_relays: bool = False,
         ):
+        """Register the mode function and options."""
+        assert (self.mode_ids.get(str(index)) == index
+            and self.mode_ids.get(name) == index
+        ), "Mode index and / or name do not match registered IDs"
         self.modes[index] = PlayMode(self.player, name, function, preset_dimmers, preset_relays)
-            
-    def add_sequence_mode_func(
+
+    def add_sequence_mode_def(
             self,
             index: int, 
             name: str, 
@@ -127,7 +137,7 @@ class Executor():
         function = self.player.sequence_player_func(
             sequence, pace, override
         )
-        self.add_mode_func(
+        self.add_mode_def(
             index=index,
             name=name,
             function=function,
@@ -144,7 +154,7 @@ class Executor():
             brightness_pattern: str | None = None,
         ):
         """Effects the specified command, mode or pattern(s)."""
-        self.sign = create_sign()
+        self.sign = self.create_sign()
         if command is not None:
             self.execute_command(command)
         elif mode_index is not None:
@@ -159,11 +169,7 @@ class Executor():
 
     def execute_mode(self, mode_index: int, speed_factor: float):
         """"""
-        self.player = Player(
-            modes=self.modes,
-            sign=self.sign, 
-            speed_factor=speed_factor,
-        )
+        self.player = self.create_player(self.modes, self.sign, speed_factor)
         self.register_mode_functions()
         self.player.execute(mode_index)
 
@@ -195,11 +201,6 @@ class Executor():
         self.add_mode_ids(14, "blink_all_fade_fast")
         self.add_mode_ids(15, "blink_all_fade_slowwww")
         self.add_mode_ids(16, "blink_all_fade_stealth")
-        #self.add_mode_ids(17, "build_NEQ")
-        #self.add_mode_ids(18, "build_EQ")
-        #self.add_mode_ids(19, "random_fade")
-        #self.add_mode_ids(20, "random_fade_steady")
-        #self.add_mode_ids(21, "even_odd_fade")
         self.add_mode_ids(17, "corner_rotate_fade")
         self.add_mode_ids(18, "rotate_slight_fade")
         self.add_mode_ids(19, "even_odd_fade")
@@ -215,37 +216,37 @@ class Executor():
         self.modes[0] = SelectMode(
             player, "selection", preset_dimmers=True
         )
-        self.add_sequence_mode_func(1, "all_on", seq_all_on)
-        self.add_sequence_mode_func(2, "all_off", seq_all_off)
-        self.add_sequence_mode_func(3, "even_on", seq_even_on)
-        self.add_sequence_mode_func(4, "even_off", seq_even_off)
-        self.add_sequence_mode_func(5, "blink_all", 
+        self.add_sequence_mode_def(1, "all_on", seq_all_on)
+        self.add_sequence_mode_def(2, "all_off", seq_all_off)
+        self.add_sequence_mode_def(3, "even_on", seq_even_on)
+        self.add_sequence_mode_def(4, "even_off", seq_even_off)
+        self.add_sequence_mode_def(5, "blink_all", 
             seq_blink_all, pace=1,
         )
-        self.add_sequence_mode_func(6, "blink_alternate", 
+        self.add_sequence_mode_def(6, "blink_alternate", 
             seq_blink_alternate, pace=1, 
         )
-        self.add_sequence_mode_func(7, "rotate",
+        self.add_sequence_mode_def(7, "rotate",
             lambda: seq_rotate("1100000000"), pace=0.5,
         )
-        self.add_sequence_mode_func(8, "random_flip",
+        self.add_sequence_mode_def(8, "random_flip",
             lambda: seq_random_flip(sign.light_pattern), pace=0.5,
         )
-        self.add_sequence_mode_func(9, "demo",
+        self.add_sequence_mode_def(9, "demo",
             lambda: seq_random_flip(sign.light_pattern), pace=0.5,
         )
-        self.add_sequence_mode_func(10, "blink_alternate_fade",
+        self.add_sequence_mode_def(10, "blink_alternate_fade",
             seq_blink_alternate, pace=4, 
             override=RelayOverride(
                 transition_on=1.0,
                 transition_off=3.0,
             )
         )
-        self.add_sequence_mode_func(11, "random_flip_fade",
+        self.add_sequence_mode_def(11, "random_flip_fade",
             lambda: seq_random_flip(sign.light_pattern), pace=2.0,
             override=RelayOverride(),
         )
-        self.add_sequence_mode_func(12, "blink_all_fade_seq",
+        self.add_sequence_mode_def(12, "blink_all_fade_seq",
             seq_blink_all, pace=1,
             override=RelayOverride(
                 concurrent=False,
@@ -253,7 +254,7 @@ class Executor():
                 transition_off=0.5,
             )
         )
-        self.add_sequence_mode_func(13, "blink_all_fade_con", 
+        self.add_sequence_mode_def(13, "blink_all_fade_con", 
             seq_blink_all, pace=1,
             override=RelayOverride(
                 concurrent=True,
@@ -261,25 +262,25 @@ class Executor():
                 transition_off=0.5,
             )
         )
-        self.add_sequence_mode_func(14, "blink_all_fade_fast", 
+        self.add_sequence_mode_def(14, "blink_all_fade_fast", 
             seq_blink_all, pace=0.5,
             override=RelayOverride()
         )
-        self.add_sequence_mode_func(15, "blink_all_fade_slowwww", 
+        self.add_sequence_mode_def(15, "blink_all_fade_slowwww", 
             seq_blink_all, pace=10,
             override=RelayOverride(
                 brightness_on=100,
                 brightness_off=10,
             )
         )
-        self.add_sequence_mode_func(16, "blink_all_fade_stealth", 
+        self.add_sequence_mode_def(16, "blink_all_fade_stealth", 
             seq_blink_all, pace=(1, 60),
             override=RelayOverride(
                 transition_on=2,
                 transition_off=2,
             )
         )
-        self.add_sequence_mode_func(17, "corner_rotate_fade", 
+        self.add_sequence_mode_def(17, "corner_rotate_fade", 
             seq_opposite_corner_pairs, pace=5,
             override=RelayOverride(
                 concurrent=True,
@@ -287,7 +288,7 @@ class Executor():
                 brightness_off = 10,
             )
         )
-        self.add_sequence_mode_func(18, "rotate_slight_fade",
+        self.add_sequence_mode_def(18, "rotate_slight_fade",
             seq_rotate, pace=0.5,
             override=RelayOverride(
                 concurrent=False,
@@ -295,13 +296,13 @@ class Executor():
                 brightness_off = 30,
             )
         )
-        self.add_mode_func(19, "even_odd_fade", 
+        self.add_mode_def(19, "even_odd_fade", 
             lambda p: mode_even_odd_fade(player, p))
-        self.add_mode_func(20, "random_fade", 
+        self.add_mode_def(20, "random_fade", 
             lambda p: mode_random_fade(player, p))
-        self.add_mode_func(21, "random_fade_steady", 
+        self.add_mode_def(21, "random_fade_steady", 
             lambda p: mode_random_fade(player, p, 2))
-        self.add_mode_func(22, "build_brightness_equal", 
+        self.add_mode_def(22, "build_brightness_equal", 
             lambda p: build_brightness(player, True, p))
-        self.add_mode_func(23, "build_brightness_unequal", 
+        self.add_mode_def(23, "build_brightness_unequal", 
             lambda p: build_brightness(player, False, p))

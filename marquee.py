@@ -1,13 +1,14 @@
 """Marquee Lighted Sign Project - main"""
 
 from arguments import display_help, process_arguments
-from executors import Executor
+from executors import Executor, create_sign
+from players import Player
 
 def main():
     """Execute Marquee application."""
     # print("Executing Marquee")
     try:
-        exec = Executor()
+        exec = Executor(create_sign, Player)
         try:
             arg = process_arguments(exec.mode_ids, exec.commands)
         except ValueError:

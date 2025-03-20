@@ -1,44 +1,41 @@
-
-respond to button presses during seq_rotate_build_flip(self.desired_mode) ???
-
-make back or remote C button longpress => reboot ???
-
-add descriptions to add_mode_ids ?  or elsewhere ?
-
-change print to logging; include timestamps
-
-* problem on 3/19 with Output turning off on 3.1 and 5.1.
-* * * add output=on to all commands?
-
-* dimmer.restart
-* ? special in mode 2, restart the dimmers, and re-init the objects?
-
-* am I overriding 'function' ??
-* Must set dimmers to 100 upon mode switch -- "baseline"
-* finalize preset stuff
-* clean up Build N/EQ
-
-GPIO 4 blown on Pi zero ?
-
 Timeline
 ========
 21 Mar - release to github
 31 Mar - video to github
+
+* all docstrings
+* add descriptions to add_mode_ids ?  or elsewhere ?
+* change print to logging; include timestamps
+* finalize preset stuff
+* try black or pep8 formatter
+
+marquee
+    arguments
+    Executor
+        Player
+            Modes
+                sequence_defs
+                mode_defs
+        Sign
+            Buttons
+            Dimmers
+            Relays
 
 
 To Do Now:
     GPIO terminal block
     Pi zero 2
 
-    check and respond to .get result codes
-    pace must measure between the same 2 points, not blindly wait
-        AND TAKE SPEED_FACTOR PROPERLY INTO ACCOUNT
-        is this needed on RPi zero 2?
+    v3.1 check and respond to .get result codes (retry or fail during init)
+    v3.1 new fully demo
+    v3.1 AdvancedPlayerMode with button direction and speed changes etc.
+    v3.2 improve pace calculations
 
 After checking in as fully functional release:
     Install lights 11 and 12
 
-    error handling for I/O
+* dimmer.restart
+* ? special in mode 2, restart the dimmers, and re-init the objects?
 
     modes:
         Achieve 0.25 second rythm by fade 1/2 lights, 0.25 seconds apart
@@ -54,6 +51,8 @@ Physical:
     procure QR code signs
 
 Future:
+    respond to button presses during seq_rotate_build_flip(self.desired_mode) ???
+    make back or remote C button longpress => reboot ???
     A   
         light_sequence + relay_override + set_lights ==>
         make_dimmer_sequence(light_sequence) + parameters + set_dimmers

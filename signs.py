@@ -180,10 +180,6 @@ class Sign:
         assert brightnesses is not None
         assert isinstance(transitions, list)
         updates = self._updates_needed(brightnesses, transitions)
-        #print("UPDATES:")
-        #for u in updates:
-        #    print(u)
-        #print()
         commands = [
             c.make_set_command(
                 # output=True, # ???
@@ -212,7 +208,6 @@ class Sign:
     def light_pattern(self, value):
         """Update the active light pattern."""
         self._light_pattern = value
-        # print(f"Current_pattern is now:{self._light_pattern}")
 
     def dimmer_brightnesses(self) -> list[int]:
         """"""

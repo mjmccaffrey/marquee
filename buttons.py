@@ -1,9 +1,9 @@
 """Marquee Lighted Sign Project - buttons"""
 
+import threading
+
 from gpiozero import Button as _Button  # type: ignore
 from signal import signal
-
-import threading
 
 class ButtonPressed(Exception):
     """Button pressed exception; not an error."""

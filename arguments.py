@@ -19,8 +19,8 @@ class ArgumentParserImproved(ArgumentParser):
     """ 
 
     def add_argument(self, *args, **kwargs) -> Action:
-        """ If new kwarg optional=True, the option is added
-            prefixed by both - and --. """
+        """If new kwarg optional==True, the option is added
+           prefixed by both - and --."""
         if kwargs.pop('optional', False):
             new_args = [
                 ('-' + arg, '--' + arg)
@@ -136,7 +136,7 @@ def process_arguments(
 ) -> dict[str, Any]:
     """Validate and interpret the runtime arguments.
        Return dict of parameters if the arguments are valid, 
-       otherwise an empty dict."""
+       otherwise raise an error."""
     # print(f"Processing arguments:{parsed}")
     try:
         parsed = parse_arguments(mode_ids, commands)

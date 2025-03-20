@@ -66,4 +66,3 @@ def build_brightness(player, equal_trans: bool, _):
     for dimmer, brightness, transition in zip(player.sign.dimmer_channels, brightnesss, transitions):
         dimmer.set(brightness=brightness, transition=transition)
     player.wait(40)
-
