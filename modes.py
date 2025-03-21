@@ -47,8 +47,10 @@ class Mode(ABC):
         """Play the mode."""
         if self.player.pass_count == 1:
             if self.preset_dimmers:
+                print("presetting dimmers")
                 self.player.sign.set_dimmers(ALL_HIGH)
             if self.preset_relays:
+                print("presetting relays")
                 self.player.sign.set_lights(ALL_ON)
  
 class PlayMode(Mode):
