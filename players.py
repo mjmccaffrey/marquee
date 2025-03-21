@@ -41,13 +41,14 @@ class Player:
 
     def play_mode_until_changed(self, mode_index: int):
         """"""
+        mode = self.modes[mode_index]
         self.pass_count = 0
         new_mode = None
+        print(f"Executing mode {mode_index} {mode.name}")
         while new_mode is None:
-            mode = self.modes[mode_index]
             try:
                 self.pass_count += 1
-                print(f"Executing mode {mode_index} {mode.name} pass {self.pass_count}")
+                # print(f"Executing mode {mode_index} {mode.name} pass {self.pass_count}")
                 new_mode = mode.execute()
             except ButtonPressed as press:
                 button, = press.args

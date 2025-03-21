@@ -3,7 +3,6 @@
 
 
 * Finish RotateReversible
-* add_mode should take a partial, and pass in player and pace to partial
 
 Timeline
 ========

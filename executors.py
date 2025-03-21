@@ -313,22 +313,22 @@ class Executor():
             )
         )
         self.add_mode_def(19, "even_odd_fade", 
-            lambda p: mode_even_odd_fade(player))
+            lambda: mode_even_odd_fade(player))
         self.add_mode_def(20, "random_fade", 
-            lambda p: mode_random_fade(player))
+            lambda: mode_random_fade(player))
         self.add_mode_def(21, "random_fade_steady", 
-            lambda p: mode_random_fade(player, p))
+            lambda: mode_random_fade(player))
         self.add_mode_def(22, "build_brightness_equal", 
-            lambda p: build_brightness(player, True))
+            lambda: build_brightness(player, True))
         self.add_mode_def(23, "build_brightness_unequal", 
-            lambda p: build_brightness(player, False))
+            lambda: build_brightness(player, False))
         self.add_mode(24,
             RotateReversible(self.player, "rotate_reversible_1", 
-                "1" + "0" * (LIGHT_COUNT - 1), 1.0,
+                "1" + "0" * (LIGHT_COUNT - 1), 0.5,
             )
         )
         self.add_mode(25,
             RotateReversible(self.player, "rotate_reversible_2", 
-                "0" + "1" * (LIGHT_COUNT - 1), 1.0,
+                "0" + "1" * (LIGHT_COUNT - 1), 0.5,
             )
         )
