@@ -6,7 +6,6 @@ from players import Player
 
 def main():
     """Execute Marquee application."""
-    # print("Executing Marquee")
     try:
         exec = Executor(create_sign, Player)
         try:

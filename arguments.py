@@ -106,7 +106,6 @@ def parse_arguments(
     commands: dict[str, Callable],
 ) -> Namespace:
     """ Parse the command-line arguments. """
-    print(f"Parsing arguments:{sys.argv}")
     top_p = ArgumentParserImproved(exit_on_error=False)
     sub_p = top_p.add_subparsers(dest='operation', required=True)
     command_p = sub_p.add_parser('command')
