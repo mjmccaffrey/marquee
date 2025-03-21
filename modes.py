@@ -166,6 +166,7 @@ class RotateReversible(PlayMode):
             preset_dimmers=True, 
         )
         self.pattern = pattern
+        print(pace)
         self.player.wait(pace)
 
     def execute(self):
