@@ -9,7 +9,8 @@ from dimmers import RelayOverride, TRANSITION_MINIMUM
 from signs import ALL_LOW, ALL_ON, LIGHT_COUNT
 
 def mode_random_fade(player, transition=None):
-    """"""
+    """Change brightness of random bulb to a random level,
+       with either a random or specified transition time."""
     def _new_transition() -> float:
         if transition is None:
             return random.uniform(TRANSITION_MINIMUM, 5.0 * player.speed_factor)
@@ -34,7 +35,7 @@ def mode_random_fade(player, transition=None):
         player.wait(0.1)
 
 def mode_even_odd_fade(player):
-    """"""
+    """Fade every-other bulb."""
     player.sign.set_dimmers(ALL_LOW) 
     player.sign.set_lights(ALL_ON)
     delay = 5.0
@@ -54,7 +55,7 @@ def mode_even_odd_fade(player):
         player.wait(delay)
 
 def build_brightness(player, equal_trans: bool):
-    """"""
+    """Brightness change rate test."""
     player.sign.set_lights(ALL_ON)
     player.sign.set_dimmers(ALL_LOW)
     brightnesss = [(i + 1) * 10 for i in range(LIGHT_COUNT)]

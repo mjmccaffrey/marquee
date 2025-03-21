@@ -127,7 +127,6 @@ def parse_arguments(
     try:
         return top_p.parse_args()
     except (ArgumentError, ArgumentTypeError, ValueError) as err:
-        # print(f"Error parsing arguments:{err}")
         raise ValueError()
 
 def process_arguments(
@@ -137,7 +136,6 @@ def process_arguments(
     """Validate and interpret the runtime arguments.
        Return dict of parameters if the arguments are valid, 
        otherwise raise an error."""
-    # print(f"Processing arguments:{parsed}")
     try:
         parsed = parse_arguments(mode_ids, commands)
     except ValueError:

@@ -47,7 +47,7 @@ class Sign:
         relaymodule: NumatoUSBRelayModule,
         buttons: list[Button],
     ):
-        """Prepare devices and initial state."""
+        """Set up the initial state."""
         print("Initializing sign")
         self.dimmers = dimmers
         self._relaymodule = relaymodule
@@ -81,7 +81,7 @@ class Sign:
         brightnesses: list[int], 
         transitions: list[float],
     ) -> list[tuple[DimmerChannel, int, float]]:
-        """"""
+        """Return delta between current state and desired state."""
         return [
             (c, b, t)
             for c, b, t in zip(
@@ -97,8 +97,7 @@ class Sign:
             light_pattern: list | str, 
             override: RelayOverride,
     ):
-        """"""
-        #print(f"light_pattern:{light_pattern}")
+        """Set dimmers per the specified pattern and override."""
         bright_values = {
             0: override.brightness_off, 
             1: override.brightness_on
@@ -128,10 +127,6 @@ class Sign:
             )
         else:
             updates = self._updates_needed(brightnesses, transitions)
-            #print("UPDATES:")
-            #for u in updates:
-            #    print(u)
-            #print()
             for c, b, t in updates:
                 c.set(brightness=b, transition=t)
             
@@ -141,9 +136,9 @@ class Sign:
             extra_pattern: str | None = None,
             override: RelayOverride | None = None,
         ):
-        """Set all lights per the supplied light_pattern.
-           Set light_pattern, always as a string
-           rather than a list."""
+        """Set all lights and extra relays per supplied patterns and override.
+           Set light_pattern property, always as string
+           rather than list."""
         light_pattern = ''.join(str(e) for e in light_pattern)
         if override is not None:
             self._set_lights_relay_override(light_pattern, override)
@@ -163,7 +158,8 @@ class Sign:
             brightnesses: list[int] | None = None,
             transitions: list[float] | float = TRANSITION_DEFAULT
         ):
-        """ Set the dimmers per the supplied pattern or brightnesses. """
+        """ Set the dimmers per the supplied pattern or brightnesses,
+            and transition times. """
         assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
         if pattern is not None:
             adjustments = {  # !!! adjust for frosted 40 watt
@@ -182,19 +178,18 @@ class Sign:
         updates = self._updates_needed(brightnesses, transitions)
         commands = [
             c.make_set_command(
-                # output=True, # ???
                 brightness=b,
                 transition=t,
             )
             for c, b, t in updates
         ]
-        # print(commands)
         asyncio.run(ShellyDimmer.execute_multiple_commands(commands))
         for command in commands:
             command.channel.brightness = command.params['brightness']
 
     def click(self):
-        """"""
+        """Generate a small click sound by flipping
+           an otherwise unused relay."""
         extra = self.extra_pattern
         extra = extra[:-1] + ("0" if extra[-1] == "1" else "1")
         self.set_lights(self.light_pattern, extra)
@@ -210,7 +205,7 @@ class Sign:
         self._light_pattern = value
 
     def dimmer_brightnesses(self) -> list[int]:
-        """"""
+        """Return the active dimmer pattern."""
         return [
             channel.brightness
             for dimmer in self.dimmers

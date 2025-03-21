@@ -17,7 +17,7 @@ class Player:
             sign: Sign, 
             speed_factor: float,
         ):
-        """Set up devices and initial state."""
+        """Set up initial state."""
         print("Initializing player")
         self.modes = modes
         self.sign = sign
@@ -29,7 +29,7 @@ class Player:
         """Close."""
 
     def execute(self, starting_mode_index: int):
-        """"""
+        """Play the specified mode and all subsequently selected modes."""
         self.current_mode = starting_mode_index
         while True:
             new_mode = self.play_mode_until_changed(self.current_mode)
@@ -40,7 +40,7 @@ class Player:
             self.current_mode = new_mode
 
     def play_mode_until_changed(self, mode_index: int):
-        """"""
+        """Play the specified mode until another mode is selected."""
         mode = self.modes[mode_index]
         self.pass_count = 0
         new_mode = None
@@ -48,11 +48,9 @@ class Player:
         while new_mode is None:
             try:
                 self.pass_count += 1
-                # print(f"Executing mode {mode_index} {mode.name} pass {self.pass_count}")
                 new_mode = mode.execute()
             except ButtonPressed as press:
                 button, = press.args
-                #print(f"Button Pressed: {button}")
                 Button.reset()
                 new_mode = mode.button_action(button)
         return new_mode
@@ -97,7 +95,7 @@ class Player:
         pace: tuple[float, ...] | float | None = None,
         override: RelayOverride | None = None,
     ) -> Callable:
-        """"""
+        """Returns a function with the supplied parameters via closure."""
         def sequence_player():
             while True:
                 self.play_sequence(sequence,

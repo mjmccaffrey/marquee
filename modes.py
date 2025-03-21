@@ -10,7 +10,7 @@ from sequence_defs import *
 from signs import ALL_HIGH, ALL_ON
 
 class Mode(ABC):
-    """"""
+    """Base for all playing modes and the select mode."""
 
     _modes: list["Mode"] = []
     
@@ -21,6 +21,7 @@ class Mode(ABC):
         preset_dimmers: bool = False,
         preset_relays: bool = False,
     ):
+        """"""
         Mode._modes.append(self)
         self.player = player
         self.name = name
@@ -29,7 +30,7 @@ class Mode(ABC):
 
     @classmethod
     def mode_index(cls, current: int, delta: int) -> int:
-        """"""
+        """Return a new mode index, wrapping in both directions."""
         lower, upper = 1, len(cls._modes) - 1
         value = current + delta % (upper - lower + 1)
         if (dif := value - upper) > 0:
@@ -40,10 +41,10 @@ class Mode(ABC):
 
     @abstractmethod
     def button_action(self, button: Button):
-        """"""
+        """Respond to the button press."""
 
     def execute(self):
-        """"""
+        """Play the mode."""
         if self.player.pass_count == 1:
             if self.preset_dimmers:
                 self.player.sign.set_dimmers(ALL_HIGH)
@@ -51,7 +52,8 @@ class Mode(ABC):
                 self.player.sign.set_lights(ALL_ON)
  
 class PlayMode(Mode):
-    """"""
+    """Supports all sequence- and function-based modes.
+       Base for custom modes."""
 
     def __init__(
         self,
@@ -61,12 +63,13 @@ class PlayMode(Mode):
         preset_dimmers: bool = False,
         preset_relays: bool = False,
     ):
+        """"""
         super().__init__(player, name, preset_dimmers, preset_relays)
         self.execute_func = execute_func
         self.direction = +1
 
     def button_action(self, button: Button):
-        """"""
+        """Respond to the button press."""
         new_mode = None
         match button.name:
             case 'remote_a' | 'body_back':
@@ -85,13 +88,13 @@ class PlayMode(Mode):
         return new_mode
 
     def execute(self):
-        """"""
+        """Play the mode."""
         super().execute()
         # assert self.execute_func is not None
         self.execute_func()
 
 class SelectMode(Mode):
-    """"""
+    """Supports the select mode."""
 
     def __init__(
         self,
@@ -102,7 +105,7 @@ class SelectMode(Mode):
         self.desired_mode = -1
 
     def button_action(self, button: Button):
-        """"""
+        """Respond to the button press."""
         assert self.desired_mode is not None
         match button.name:
             case 'body_back' | 'remote_a' | 'remote_d':
@@ -147,7 +150,7 @@ class SelectMode(Mode):
         return new_mode
 
 class RotateReversible(PlayMode):
-    """"""
+    """Rotate a pattern, reversing direction in response to a button press."""
     def __init__(
         self,
         player: Any,  # Player
@@ -165,6 +168,8 @@ class RotateReversible(PlayMode):
         self.pace = pace
 
     def execute(self):
+        """Display a single pattern.
+           Called repeatedly until the mode is changed."""
         self.player.sign.set_lights(self.pattern)
         self.player.wait(self.pace)
         self.pattern = (

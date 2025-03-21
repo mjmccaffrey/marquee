@@ -6,7 +6,7 @@ from gpiozero import Button as _Button  # type: ignore
 from signal import signal
 
 class ButtonPressed(Exception):
-    """Button pressed exception; not an error."""
+    """Button pressed base exception."""
 
 class PhysicalButtonPressed(ButtonPressed):
     """Physical button pressed exception."""
@@ -15,28 +15,21 @@ class VirtualButtonPressed(ButtonPressed):
     """Virtual button pressed (IPC signal received) exception."""
 
 class Button:
-    """Supports the physical mode selection button
-       connected to the RPi GPIO controller."""
+    """Supports physical buttons on remote and sign."""
 
     buttons: list["Button"] = []
 
     @classmethod
     def reset(cls):
-        """Prepare for a valid button press."""
-        #print("Button reset")
+        """Prepare for a button press."""
         cls.which_button_pressed: Button | None = None
         cls.pressed_event = threading.Event()
 
     @classmethod
     def wait(cls, seconds: float | None):
-        """"""
-        #print("ENTERING BUTTON.WAIT {seconds}")
+        """Wait until seconds have elapsed or any button is pressed."""
         if cls.pressed_event.wait(seconds):
-            #print("RAISING")
             raise PhysicalButtonPressed(cls.which_button_pressed)
-        #else:
-            #print(f"??{r}??")
-        #print("EXITING WAIT")
 
     def __init__(
             self, 
@@ -60,9 +53,11 @@ class Button:
             )
 
     def __str__(self):
+        """"""
         return f"button '{self.name}'"
     
     def __repr__(self):
+        """"""
         return f"<{self}>"
     
     def close(self):
@@ -71,7 +66,7 @@ class Button:
 
     def button_pressed(self):
         """Callback for button press."""
-        print(f"Button <{self}> pressed")
+        # print(f"Button <{self}> pressed")
         Button.which_button_pressed = self
         Button.pressed_event.set()
 

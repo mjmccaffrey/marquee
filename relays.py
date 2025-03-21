@@ -10,7 +10,7 @@ class NumatoUSBRelayModule(ABC):
     def __init__(self, port_address, device_mapping):
         """Create the RelayBoard object, where device_mapping
            is a dict mapping device indices to relay indices.
-           Establish connection to relay board via serial port."""
+           Establish connection to relay module via serial port."""
         self.port_address = port_address
         self._serial_port = serial.Serial(
             self.port_address, 
@@ -39,7 +39,7 @@ class NumatoUSBRelayModule(ABC):
     @property
     @abstractmethod
     def relay_count(self) -> int:
-        """"""
+        """Return a specific model's number of relays."""
 
     def set_state_of_devices(self, device_pattern):
         """Set the physical relays per device_pattern."""
@@ -94,5 +94,5 @@ class NumatoRelayModuleRL160001(NumatoUSBRelayModule):
 
     @property
     def relay_count(self) -> int:
-        """"""
+        """Return the specific model's number of relays."""
         return 16

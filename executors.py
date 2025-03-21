@@ -25,7 +25,7 @@ DIMMER_ADDRESSES = [
 #   '192.168.51.116',
 
 def create_sign() -> Sign:
-    """Creates and returns a sign object, and all associated device objects."""
+    """Creates and returns a Sign object and all associated device objects."""
     dimmers: list[ShellyDimmer] = [
         ShellyProDimmer2PM(index, address)
         for index, address in enumerate(DIMMER_ADDRESSES)
@@ -47,7 +47,7 @@ def create_sign() -> Sign:
 class Executor():
     """Executes patterns and commands specified on the command line.
        Registers all of the play modes, and if specified on the command line,
-       creates and turns control over to the Player object."""
+       creates and turns control over to a Player object."""
 
     def __init__(
             self, 
@@ -68,7 +68,7 @@ class Executor():
         }
 
     def close(self):
-        """Close."""
+        """Close dependencies."""
         self.player.close()
         self.sign.close()
 
@@ -83,7 +83,7 @@ class Executor():
     def command_off(self):
         """Turn off all relays and potentially other devices."""
         self.sign.set_lights(ALL_OFF, '0' * EXTRA_COUNT)
-        print("Marquee is now partially shut down.")
+        print("Marquee hardware is now partially shut down.")
         print()
 
     def add_mode_ids(
@@ -108,6 +108,7 @@ class Executor():
             mode: Mode,
             hidden: bool = False,
     ):
+        """Register the Mode object."""
         assert hidden or (
                 self.mode_ids.get(str(index)) == index
             and self.mode_ids.get(mode.name) == index
@@ -122,7 +123,7 @@ class Executor():
             preset_dimmers: bool = False,
             preset_relays: bool = False,
         ):
-        """Register the mode function and options."""
+        """Create a Mode object from a function and parameters, and register it."""
         self.add_mode(
             index, 
             PlayMode(self.player, name, function, preset_dimmers, preset_relays),
@@ -136,7 +137,7 @@ class Executor():
             pace: tuple[float, ...] | float | None = None,
             override: RelayOverride | None = None,
         ):
-        """        # If using only dimmers, turn relays on, and vice versa"""
+        """Create a Mode object from a sequence and parameters, and register it."""
         if override is not None:
             default_trans = (
                 pace if isinstance(pace, float) else
@@ -165,7 +166,7 @@ class Executor():
             light_pattern: str | None = None, 
             brightness_pattern: str | None = None,
         ):
-        """Effects the specified command, mode or pattern(s)."""
+        """Effects the command-line specified command, mode or pattern(s)."""
         self.sign = self.create_sign()
         if command is not None:
             self.execute_command(command)
@@ -176,18 +177,17 @@ class Executor():
             self.execute_pattern(light_pattern, brightness_pattern)
 
     def execute_command(self, command: str):
-        """"""
+        """Effects the command-line specified command."""
         self.commands[command]()
 
     def execute_mode(self, mode_index: int, speed_factor: float):
-        """"""
+        """Effects the command-line specified mode."""
         self.player = self.create_player(self.modes, self.sign, speed_factor)
         self.register_mode_functions()
         self.player.execute(mode_index)
 
     def execute_pattern(self, light_pattern: str | None, brightness_pattern: str | None):
-        """"""
-        # ??? flip order and remove wait?
+        """Effects the command-line specified pattern(s)."""
         if brightness_pattern is not None:
             print(f"Setting dimmers {brightness_pattern}")
             self.sign.set_dimmers(brightness_pattern)
@@ -197,6 +197,7 @@ class Executor():
             self.sign.set_lights(light_pattern)
 
     def register_mode_ids(self):
+        """Register all mode indexes and names, for command-line processing."""
         self.add_mode_ids(1, "all_on")
         self.add_mode_ids(2, "all_off")
         self.add_mode_ids(3, "even_on")
@@ -224,7 +225,7 @@ class Executor():
         self.add_mode_ids(25, "rotate_reversible_2")
 
     def register_mode_functions(self):
-        """Register the operating modes."""
+        """Register all operating modes."""
         player = self.player
         sign = self.player.sign
         self.add_mode(0,
