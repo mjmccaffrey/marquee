@@ -32,12 +32,11 @@ def create_sign() -> Sign:
     ]
     relaymodule: NumatoUSBRelayModule = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
     buttons = [
-        Button('body_mode_select', _Button(pin=17, bounce_time=0.10), SIGUSR1),  # Back
-        Button('remote_mode_select', _Button(pin=18, pull_up=False, bounce_time=0.10)),  # A
-        Button('remote_mode_up', _Button(pin=23, pull_up=False, bounce_time=0.10)),  # B
-        # Button('remote_demo_mode', _Button(pin=24, pull_up=False, bounce_time=0.10)),  # C
-        Button('remote_reverse', _Button(pin=24, pull_up=False, bounce_time=0.10)),  # C
-        Button('remote_mode_down', _Button(pin=25, pull_up=False, bounce_time=0.10)),  # D
+        Button('sign_back', _Button(pin=17, bounce_time=0.10), SIGUSR1),
+        Button('remote_a', _Button(pin=18, pull_up=False, bounce_time=0.10)),
+        Button('remote_b', _Button(pin=23, pull_up=False, bounce_time=0.10)),
+        Button('remote_c', _Button(pin=24, pull_up=False, bounce_time=0.10)),
+        Button('remote_d', _Button(pin=25, pull_up=False, bounce_time=0.10)),
     ]
     return Sign(
         dimmers=dimmers,
@@ -229,7 +228,7 @@ class Executor():
         player = self.player
         sign = self.player.sign
         self.add_mode(0,
-            SelectMode(player, "selection", preset_dimmers=True),
+            SelectMode(player, "selection"),
             hidden=True,
         )
         self.add_sequence_mode_def(1, "all_on", seq_all_on)

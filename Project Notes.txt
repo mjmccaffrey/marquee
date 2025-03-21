@@ -1,8 +1,15 @@
 
+using SelectMode:
+    new_mode = self.play_mode_until_changed(self.current_mode)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mjmccaffrey/marquee/players.py", line 57, in play_mode_until_changed
+    new_mode = mode.button_action(button)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mjmccaffrey/marquee/modes.py", line 121, in button_action
+    raise Exception
+Exception
 
-
-
-* Finish RotateReversible
+SelectMode needs to initialize the dimmers
 
 Timeline
 ========

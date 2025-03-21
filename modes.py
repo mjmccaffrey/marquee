@@ -69,20 +69,17 @@ class PlayMode(Mode):
         """"""
         new_mode = None
         match button.name:
-            case 'body_mode_select' | 'remote_mode_select':
+            case 'remote_a' | 'body_back':
                 new_mode = 0
-            case 'remote_mode_up':
-                self.player.sign.click()
-                new_mode = self.mode_index(self.player.current_mode, -1)
-            case 'remote_mode_down':
-                self.player.sign.click()
-                new_mode = self.mode_index(self.player.current_mode, +1)
-            # case 'remote_demo_mode':
-            #     self.player.sign.click()
-            #     new_mode = len(Mode._modes) - 1
-            case 'remote_reverse':
+            case 'remote_c':
                 self.player.sign.click()
                 self.direction *= -1
+            case 'remote_b':
+                self.player.sign.click()
+                new_mode = self.mode_index(self.player.current_mode, -1)
+            case 'remote_d':
+                self.player.sign.click()
+                new_mode = self.mode_index(self.player.current_mode, +1)
             case _:
                 raise Exception
         return new_mode
@@ -100,21 +97,19 @@ class SelectMode(Mode):
         self,
         player: Any,  # Player
         name: str,
-        preset_dimmers: bool = False,
-        preset_relays: bool = False,
     ):
-        super().__init__(player, name, preset_dimmers, preset_relays)
+        super().__init__(player, name, preset_dimmers=True)
         self.desired_mode = -1
 
     def button_action(self, button: Button):
         """"""
         assert self.desired_mode is not None
         match button.name:
-            case 'body_mode_select' | 'remote_mode_select' | 'remote_mode_down':
+            case 'body_back' | 'remote_a' | 'remote_d':
                 self.desired_mode = self.mode_index(self.desired_mode, +1)
-            case 'remote_mode_up':
+            case 'remote_b':
                 self.desired_mode = self.mode_index(self.desired_mode, -1)
-            case 'remote_demo_mode':
+            case 'remote_c':
                 # self.desired_mode = 2  # ALL_OFF
                 return 222  # Quick change to mode ALL_OFF
             case _:
