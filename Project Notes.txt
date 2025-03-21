@@ -1,8 +1,21 @@
+
+
+
+
+* Finish RotateReversible
+* ? Quit passing in pass_count anywhere, and access it instead from player.pass_count ?
+* Pass in mode, rather than player?
+* * Otherwise, make player.direction, next to player.speed_factor
+* Do this?  https://stackoverflow.com/questions/972/adding-a-method-to-an-existing-object-instance-in-python
+
 Timeline
 ========
 21 Mar - release to github
 31 Mar - video to github
 
+* TRY ADDING MORE ON = True
+
+* test mount new fixture
 * all docstrings
 * add descriptions to add_mode_ids ?  or elsewhere ?
 * change print to logging; include timestamps
@@ -36,6 +49,9 @@ After checking in as fully functional release:
 
 * dimmer.restart
 * ? special in mode 2, restart the dimmers, and re-init the objects?
+* rotate_slight_fade
+    * slow
+    * 2 opposite-side lights at a time
 
     modes:
         Achieve 0.25 second rythm by fade 1/2 lights, 0.25 seconds apart

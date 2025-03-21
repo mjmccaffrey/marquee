@@ -35,7 +35,8 @@ def create_sign() -> Sign:
         Button('body_mode_select', _Button(pin=17, bounce_time=0.10), SIGUSR1),  # Back
         Button('remote_mode_select', _Button(pin=18, pull_up=False, bounce_time=0.10)),  # A
         Button('remote_mode_up', _Button(pin=23, pull_up=False, bounce_time=0.10)),  # B
-        Button('remote_demo_mode', _Button(pin=24, pull_up=False, bounce_time=0.10)),  # C
+        # Button('remote_demo_mode', _Button(pin=24, pull_up=False, bounce_time=0.10)),  # C
+        Button('remote_reverse', _Button(pin=24, pull_up=False, bounce_time=0.10)),  # C
         Button('remote_mode_down', _Button(pin=25, pull_up=False, bounce_time=0.10)),  # D
     ]
     return Sign(
@@ -102,6 +103,16 @@ class Executor():
         self.mode_ids[str(index)] = index
         self.mode_ids[name] = index
 
+    def add_mode(
+            self, 
+            index: int, 
+            mode: Mode,
+    ):
+        assert (self.mode_ids.get(str(index)) == index
+            and self.mode_ids.get(mode.name) == index
+        ), "Mode index and / or name do not match registered IDs"
+        self.modes[index] = mode
+
     def add_mode_def(
             self, 
             index: int, 
@@ -111,10 +122,10 @@ class Executor():
             preset_relays: bool = False,
         ):
         """Register the mode function and options."""
-        assert (self.mode_ids.get(str(index)) == index
-            and self.mode_ids.get(name) == index
-        ), "Mode index and / or name do not match registered IDs"
-        self.modes[index] = PlayMode(self.player, name, function, preset_dimmers, preset_relays)
+        self.add_mode(
+            index, 
+            PlayMode(self.player, name, function, preset_dimmers, preset_relays),
+        )
 
     def add_sequence_mode_def(
             self,
@@ -208,13 +219,15 @@ class Executor():
         self.add_mode_ids(21, "random_fade_steady")
         self.add_mode_ids(22, "build_brightness_equal")
         self.add_mode_ids(23, "build_brightness_unequal")
+        self.add_mode_ids(24, "rotate_reversible_1")
+        self.add_mode_ids(25, "rotate_reversible_2")
 
     def register_mode_functions(self):
         """Register the operating modes."""
         player = self.player
         sign = self.player.sign
-        self.modes[0] = SelectMode(
-            player, "selection", preset_dimmers=True
+        self.add_mode(0,
+            SelectMode(player, "selection", preset_dimmers=True),
         )
         self.add_sequence_mode_def(1, "all_on", seq_all_on)
         self.add_sequence_mode_def(2, "all_off", seq_all_off)
@@ -297,12 +310,22 @@ class Executor():
             )
         )
         self.add_mode_def(19, "even_odd_fade", 
-            lambda p: mode_even_odd_fade(player, p))
+            lambda p: mode_even_odd_fade(player))
         self.add_mode_def(20, "random_fade", 
-            lambda p: mode_random_fade(player, p))
+            lambda p: mode_random_fade(player))
         self.add_mode_def(21, "random_fade_steady", 
-            lambda p: mode_random_fade(player, p, 2))
+            lambda p: mode_random_fade(player, p))
         self.add_mode_def(22, "build_brightness_equal", 
-            lambda p: build_brightness(player, True, p))
+            lambda p: build_brightness(player, True))
         self.add_mode_def(23, "build_brightness_unequal", 
-            lambda p: build_brightness(player, False, p))
+            lambda p: build_brightness(player, False))
+        self.add_mode(24,
+            RotateReversible(self.player, "rotate_reversible_1", 
+                "1" + "0" * (LIGHT_COUNT - 1)
+            )
+        )
+        self.add_mode(25,
+            RotateReversible(self.player, "rotate_reversible_2", 
+                "0" + "1" * (LIGHT_COUNT - 1)
+            )
+        )

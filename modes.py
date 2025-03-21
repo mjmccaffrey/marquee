@@ -42,9 +42,9 @@ class Mode(ABC):
     def button_action(self, button: Button):
         """"""
 
-    def execute(self, pass_count):
+    def execute(self):
         """"""
-        if pass_count == 1:
+        if self.player.pass_count == 1:
             if self.preset_dimmers:
                 self.player.sign.set_dimmers(ALL_HIGH)
             if self.preset_relays:
@@ -63,13 +63,13 @@ class PlayMode(Mode):
     ):
         super().__init__(player, name, preset_dimmers, preset_relays)
         self.execute_func = execute_func
+        self.direction = +1
 
     def button_action(self, button: Button):
         """"""
         new_mode = None
         match button.name:
             case 'body_mode_select' | 'remote_mode_select':
-                # print("Entering selection mode")
                 new_mode = 0
             case 'remote_mode_up':
                 self.player.sign.click()
@@ -77,19 +77,20 @@ class PlayMode(Mode):
             case 'remote_mode_down':
                 self.player.sign.click()
                 new_mode = self.mode_index(self.player.current_mode, +1)
-            case 'remote_demo_mode':
-                self.player.sign.click()
-                new_mode = len(Mode._modes) - 1
+            # case 'remote_demo_mode':
+            #     self.player.sign.click()
+            #     new_mode = len(Mode._modes) - 1
+            case 'remote_reverse':
+                self.direction *= -1
             case _:
                 raise Exception
-        #print(f"PlayMode: new_mode: {new_mode}")
         return new_mode
 
-    def execute(self, pass_count):
+    def execute(self):
         """"""
-        super().execute(pass_count)
+        super().execute()
         # assert self.execute_func is not None
-        self.execute_func(pass_count)
+        self.execute_func()
 
 class SelectMode(Mode):
     """"""
@@ -119,12 +120,12 @@ class SelectMode(Mode):
                 raise Exception
         return None
 
-    def execute(self, pass_count):
+    def execute(self):
         """User presses the button to select 
            the next mode to execute."""
-        super().execute(pass_count)
+        super().execute()
         new_mode = None
-        if pass_count == 1:
+        if self.player.pass_count == 1:
             #print("A")
             # Just now entering selection mode
             # !!!! Set dimmers all high - maybe remember and restore current state
@@ -148,3 +149,25 @@ class SelectMode(Mode):
             # Play the selected mode.
             new_mode = self.desired_mode
         return new_mode
+
+class RotateReversible(PlayMode):
+    """"""
+    def __init__(
+        self,
+        player: Any,  # Player
+        name: str,
+        pattern: str,
+    ):
+        super().__init__(
+            player=player, 
+            name=name, 
+            execute_func=lambda: None, 
+            preset_dimmers=True, 
+        )
+        self.pattern = pattern
+
+    def execute(self):
+        self.player.sign.set_lights(self.pattern)
+        self.pattern = (
+            self.pattern[self.direction:] + self.pattern[:self.direction]
+        )

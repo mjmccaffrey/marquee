@@ -41,14 +41,14 @@ class Player:
 
     def play_mode_until_changed(self, mode_index: int):
         """"""
-        pass_count = 0
+        self.pass_count = 0
         new_mode = None
         while new_mode is None:
             mode = self.modes[mode_index]
             try:
-                pass_count += 1
-                print(f"Executing mode {mode_index} {mode.name} pass {pass_count}")
-                new_mode = mode.execute(pass_count)
+                self.pass_count += 1
+                print(f"Executing mode {mode_index} {mode.name} pass {self.pass_count}")
+                new_mode = mode.execute()
             except ButtonPressed as press:
                 button, = press.args
                 #print(f"Button Pressed: {button}")
@@ -97,9 +97,7 @@ class Player:
         override: RelayOverride | None = None,
     ) -> Callable:
         """"""
-        def sequence_player(pass_count: int):
-            assert pass_count == 1
-            # print(pass_count)
+        def sequence_player():
             while True:
                 self.play_sequence(sequence,
                     pace=pace,
