@@ -1,122 +1,114 @@
 """Marquee Lighted Sign Project - players"""
 
+from collections.abc import Callable
+import itertools
 import time
-import types
 
-from sequences import seq_all_off, seq_rotate_build
-import signs
+from buttons import Button, ButtonPressed
+from dimmers import RelayOverride
+from modes import Mode
+from signs import Sign
 
 class Player:
-    """Manages execution at a high level."""
-    def __init__(self):
-        """Set up devices and initial state."""
-        self.mode_current = None
-        self.mode_desired = None
-        self.mode_previous = None
-        self.mode_id_to_index = {}
-        self.modes = {}
-        self.add_mode(0, "selection", self._mode_selection)
-        self._sign = signs.Sign()
+    """Executes one mode at a time."""
+    def __init__(
+            self, 
+            modes: dict[int, Mode],
+            sign: Sign, 
+            speed_factor: float,
+        ):
+        """Set up initial state."""
+        print("Initializing player")
+        self.modes = modes
+        self.sign = sign
+        self.speed_factor = speed_factor
+        self.current_mode = -1
+        self.previous_mode = None
 
     def close(self):
-        """Close devices."""
-        self._sign.close()
+        """Close."""
 
-    def add_mode(self, index, name, function, simple=False, pace=2):
-        """Register the mode function, identified by index and name."""
-        assert all(
-            str(k) not in self.mode_id_to_index for k in (index, name)
-            ), "Duplicate mode index or name"
-        assert all(
-            k in self.modes for k in range(index)
-            ), "Non-sequential mode index"
-        if simple:
-            function = self._simple_mode(function, pace)
-        self.modes[index] = types.SimpleNamespace(
-            name=name,
-            function=function,
-        )
-        self.mode_id_to_index[str(index)] = index
-        self.mode_id_to_index[name] = index
-
-    def _simple_mode(self, sequence, pace):
-        """Return closure to execute sequence indefinitely, 
-           with pace seconds in between.
-           Pace=None is an infinite pace, so in this case
-           the sequence should have only 1 step."""
-        def template():
-            while True:
-                self.do_sequence(sequence, 1, pace)
-        return template
-
-    @property
-    def current_pattern(self):
-        """Wrapper for Sign.current_pattern."""
-        return self._sign.current_pattern
-
-    def do_sequence(self, *args, **kwargs):
-        """Wrapper for Sign.do_sequence."""
-        return self._sign.do_sequence(*args, **kwargs)
-
-    def is_valid_light_pattern(self, *args, **kwargs):
-        """Wrapper for Sign.is_valid_light_pattern."""
-        return self._sign.is_valid_light_pattern(*args, **kwargs)
-
-    def set_lights(self, *args, **kwargs):
-        """Wrapper for Sign.set_lights."""
-        return self._sign.set_lights(*args, **kwargs)
-
-    def execute(self, mode=None, pattern=None):
-        """Effects the specified mode or pattern."""
-        if pattern is not None:
-            self._sign.set_lights(pattern)
-            return
-        if mode is not None:
-            self.mode_current = mode
-            while True:
-                try:
-                    self.modes[self.mode_current].function()
-                except signs.ButtonPressed:
-                    # Enter selection mode
-                    self.mode_previous = self.mode_current
-                    self.mode_current = 0
-        raise ValueError("Nothing to do.")
-
-    def _indicate_mode_desired(self):
-        """Show user what desired mode number is currently selected."""
-        assert len(self.modes) <= signs.LIGHT_COUNT, \
-               "Cannot indicate this many modes"
-        self._sign.do_sequence(
-            seq_all_off, pace=0
-        )
-        time.sleep(0.6)
-        self._sign.do_sequence(
-            seq_rotate_build, pace=0.2, stop=self.mode_desired
-        )
-
-    def _mode_selection(self):
-        """User presses the button to select 
-           the next mode to execute."""
+    def execute(self, starting_mode_index: int):
+        """Play the specified mode and all subsequently selected modes."""
+        self.current_mode = starting_mode_index
         while True:
-            # Button was pressed
-            self._sign.interrupt_reset()
-            if self.mode_desired is None:
-                # Just now entering selection mode
-                self.mode_desired = self.mode_previous
-            else:
-                if self.mode_desired == len(self.modes) - 1:
-                    self.mode_desired = 1
-                else:
-                    self.mode_desired += 1
-            self._indicate_mode_desired()
+            new_mode = self.play_mode_until_changed(self.current_mode)
+            assert new_mode is not None
+            if new_mode == 222:
+                new_mode = 2
+            self.previous_mode = self.current_mode
+            self.current_mode = new_mode
+
+    def play_mode_until_changed(self, mode_index: int):
+        """Play the specified mode until another mode is selected."""
+        mode = self.modes[mode_index]
+        self.pass_count = 0
+        new_mode = None
+        print(f"Executing mode {mode_index} {mode.name}")
+        while new_mode is None:
             try:
-                self._sign.wait_for_interrupt(5)
-            except signs.ButtonPressed:
-                pass
-            else:
-                # If we get here, the time elapsed
-                # without the button being pressed.
-                self.mode_current = self.mode_desired
-                self.mode_desired = None
-                self._sign.interrupt_reset()
-                break
+                self.pass_count += 1
+                new_mode = mode.execute()
+            except ButtonPressed as press:
+                button, = press.args
+                Button.reset()
+                new_mode = mode.button_action(button)
+        return new_mode
+
+    def play_sequence(
+            self, 
+            sequence: Callable, 
+            count: int = 1, 
+            pace: tuple[float, ...] | float | None = None,
+            stop: int | None = None, 
+            post_delay: float = 0, 
+            override: RelayOverride | None = None,
+        ):
+        """Execute sequence count times, with pace seconds in between.
+           If stop is specified, end the sequence 
+           just before the nth pattern.
+           Pause for post_delay seconds before exiting."""
+        if isinstance(pace, (int, float)) or pace is None:
+            pace_iter = itertools.repeat(pace)
+        else:
+            pace_iter = itertools.cycle(pace)
+        for _ in range(count):
+            for i, lights in enumerate(sequence()):
+                if stop is not None and i == stop:
+                    break
+                p = next(pace_iter)
+                before = time.time()
+                if p is not None:
+                    if override is not None:
+                        override.speed_factor = self.speed_factor
+                self.sign.set_lights(
+                    lights, 
+                    override=override,
+                )
+                after = time.time()
+                self.wait(p, after - before)
+        self.wait(post_delay)
+
+    def sequence_player_func(
+        self,
+        sequence: Callable,
+        pace: tuple[float, ...] | float | None = None,
+        override: RelayOverride | None = None,
+    ) -> Callable:
+        """Returns a function with the supplied parameters via closure."""
+        def sequence_player():
+            while True:
+                self.play_sequence(sequence,
+                    pace=pace,
+                    override=override,
+                )
+        return sequence_player
+
+    def wait(self, seconds: float | None, elapsed: float = 0):
+        """Wait the specified seconds after adjusting for
+           speed_factor and time already elapsed."""
+        if seconds is not None:
+            seconds = seconds * self.speed_factor - elapsed
+            if seconds <= 0:
+                return
+        Button.wait(seconds)
