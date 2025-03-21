@@ -6,6 +6,12 @@ While the relay board and Raspberry Pi are relatively modern, the incandescent b
 
 Shortly after our son's graduation came our 27th wedding anniversary, hence the large gold numerals.
 
+<b>Version 3.0.0 represents a substantial amount of hardware and software work, including the following:
+* Added dimmers, allowing independent control of each bulb's brightness.
+* Added new Dimmer, Executor and Mode classes.
+* Added a 4-button remote control and receiver.
+* Revamped the wiring and electrical components.</b>
+
 Version 2.2.0 includes the following:
 * Moved most of the main application code into the new class Player.
 * Added the initial fetching and subsequent tracking of the state of the lights.
