@@ -107,8 +107,10 @@ class Executor():
             self, 
             index: int, 
             mode: Mode,
+            hidden: bool = False,
     ):
-        assert (self.mode_ids.get(str(index)) == index
+        assert hidden or (
+                self.mode_ids.get(str(index)) == index
             and self.mode_ids.get(mode.name) == index
         ), "Mode index and / or name do not match registered IDs"
         self.modes[index] = mode
@@ -228,6 +230,7 @@ class Executor():
         sign = self.player.sign
         self.add_mode(0,
             SelectMode(player, "selection", preset_dimmers=True),
+            hidden=True,
         )
         self.add_sequence_mode_def(1, "all_on", seq_all_on)
         self.add_sequence_mode_def(2, "all_off", seq_all_off)
