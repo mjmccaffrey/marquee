@@ -324,11 +324,11 @@ class Executor():
             lambda p: build_brightness(player, False))
         self.add_mode(24,
             RotateReversible(self.player, "rotate_reversible_1", 
-                "1" + "0" * (LIGHT_COUNT - 1)
+                "1" + "0" * (LIGHT_COUNT - 1), 1.0,
             )
         )
         self.add_mode(25,
             RotateReversible(self.player, "rotate_reversible_2", 
-                "0" + "1" * (LIGHT_COUNT - 1)
+                "0" + "1" * (LIGHT_COUNT - 1), 1.0,
             )
         )

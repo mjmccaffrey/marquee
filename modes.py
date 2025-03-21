@@ -157,6 +157,7 @@ class RotateReversible(PlayMode):
         player: Any,  # Player
         name: str,
         pattern: str,
+        pace: float,
     ):
         super().__init__(
             player=player, 
@@ -165,6 +166,7 @@ class RotateReversible(PlayMode):
             preset_dimmers=True, 
         )
         self.pattern = pattern
+        self.player.wait(pace)
 
     def execute(self):
         self.player.sign.set_lights(self.pattern)
