@@ -166,11 +166,11 @@ class RotateReversible(PlayMode):
             preset_dimmers=True, 
         )
         self.pattern = pattern
-        print(pace)
-        self.player.wait(pace)
+        self.pace = pace
 
     def execute(self):
         self.player.sign.set_lights(self.pattern)
+        self.player.wait(self.pace)
         self.pattern = (
             self.pattern[self.direction:] + self.pattern[:self.direction]
         )

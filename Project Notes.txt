@@ -3,10 +3,7 @@
 
 
 * Finish RotateReversible
-* ? Quit passing in pass_count anywhere, and access it instead from player.pass_count ?
-* Pass in mode, rather than player?
-* * Otherwise, make player.direction, next to player.speed_factor
-* Do this?  https://stackoverflow.com/questions/972/adding-a-method-to-an-existing-object-instance-in-python
+* add_mode should take a partial, and pass in player and pace to partial
 
 Timeline
 ========
