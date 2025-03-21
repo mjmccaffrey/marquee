@@ -112,6 +112,4 @@ class Player:
             seconds = seconds * self.speed_factor - elapsed
             if seconds <= 0:
                 return
-        print("1")
         Button.wait(seconds)
-        print("2")

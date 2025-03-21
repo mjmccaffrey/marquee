@@ -81,6 +81,7 @@ class PlayMode(Mode):
             #     self.player.sign.click()
             #     new_mode = len(Mode._modes) - 1
             case 'remote_reverse':
+                self.player.sign.click()
                 self.direction *= -1
             case _:
                 raise Exception
