@@ -188,7 +188,7 @@ class Executor():
         self.add_sequence_mode(7, "rotate", seq_rotate, 
             pace=0.5, pattern="1100000000",
         )
-        self.add_sequence_mode(8, "random_flip", lambda: seq_random_flip, 
+        self.add_sequence_mode(8, "random_flip", seq_random_flip, 
             pace=0.5, light_pattern='LIGHT_PATTERN',
         )
         self.add_sequence_mode(9, "demo", seq_random_flip, # !!!!!!!!!
@@ -265,4 +265,4 @@ class Executor():
             pattern = "1" + "0" * (LIGHT_COUNT - 1))
         self.add_mode(25, "rotate_reversible_2", 
             RotateReversible, pace=0.5, 
-            pattern = "1" + "0" * (LIGHT_COUNT - 1))
+            pattern = "0" + "1" * (LIGHT_COUNT - 1))
