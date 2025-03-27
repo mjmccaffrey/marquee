@@ -39,8 +39,6 @@ class Player:
                     new[k] = self.current_mode
                 case _:
                     new[k] = v
-        print(kwargs)
-        print(new)
         return new        
 
     def execute(self, starting_mode_index: int):

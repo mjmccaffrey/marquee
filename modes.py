@@ -35,8 +35,10 @@ class Mode(ABC):
         self.player = player
         self.name = name
         if preset_dimmers:
+            print("presetting DIMMERS")
             self.player.sign.set_dimmers(ALL_HIGH)
         if preset_relays:
+            print("presetting RELAYS")
             self.player.sign.set_lights(ALL_ON)
 
     def mode_index(self, current: int, delta: int) -> int:
