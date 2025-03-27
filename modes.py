@@ -129,7 +129,7 @@ class PlaySequenceMode(PlayMode):
         """Play the mode."""
         super().execute()
         while True:
-            self.player.substitute_kwarg_values(self.kwargs)
+            self.player.replace_kwarg_values(self.kwargs)
             self.player.play_sequence(
                 sequence=self.sequence(**self.kwargs),
                 pace=self.pace,
