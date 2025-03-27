@@ -42,6 +42,7 @@ class Mode(ABC):
     def mode_index(cls, current: int, delta: int) -> int:
         """Return a new mode index, wrapping in both directions."""
         lower, upper = 1, len(cls._modes) - 1
+        print(lower, upper)
         value = current + delta % (upper - lower + 1)
         if (dif := value - upper) > 0:
             value = lower + dif - 1
