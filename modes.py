@@ -39,10 +39,9 @@ class Mode(ABC):
         if preset_relays:
             self.player.sign.set_lights(ALL_ON)
 
-    @classmethod
-    def mode_index(cls, current: int, delta: int) -> int:
+    def mode_index(self, current: int, delta: int) -> int:
         """Return a new mode index, wrapping in both directions."""
-        lower, upper = 1, len(cls._modes) - 1
+        lower, upper = 1, len(self.player.modes) - 1
         print(lower, upper)
         value = current + delta % (upper - lower + 1)
         if (dif := value - upper) > 0:
@@ -84,10 +83,10 @@ class PlayMode(Mode):
                 self.direction *= -1
             case 'remote_b':
                 self.player.sign.click()
-                new_mode = Mode.mode_index(self.player.current_mode, -1)
+                new_mode = self.mode_index(self.player.current_mode, -1)
             case 'remote_d':
                 self.player.sign.click()
-                new_mode = Mode.mode_index(self.player.current_mode, +1)
+                new_mode = self.mode_index(self.player.current_mode, +1)
             case _:
                 raise Exception
         return new_mode
@@ -156,9 +155,9 @@ class SelectMode(Mode):
         assert self.desired_mode is not None
         match button.name:
             case 'body_back' | 'remote_a' | 'remote_d':
-                self.desired_mode = Mode.mode_index(self.desired_mode, +1)
+                self.desired_mode = self.mode_index(self.desired_mode, +1)
             case 'remote_b':
-                self.desired_mode = Mode.mode_index(self.desired_mode, -1)
+                self.desired_mode = self.mode_index(self.desired_mode, -1)
             case 'remote_c':
                 # self.desired_mode = 2  # ALL_OFF
                 return 222  # Quick change to mode ALL_OFF
