@@ -36,7 +36,7 @@ class Player:
                 case 'LIGHT_PATTERN':
                     new[k] = self.sign.light_pattern
                 case 'PREVIOUS_MODE':
-                    new[k] = self.sign.light_pattern
+                    new[k] = self.current_mode
                 case _:
                     new[k] = v
         print(kwargs)
