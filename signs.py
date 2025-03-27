@@ -156,7 +156,8 @@ class Sign:
             self, 
             pattern: str | None = None,
             brightnesses: list[int] | None = None,
-            transitions: list[float] | float = TRANSITION_DEFAULT
+            transitions: list[float] | float = TRANSITION_DEFAULT,
+            force_update: bool = False,
         ):
         """ Set the dimmers per the supplied pattern or brightnesses,
             and transition times. """
@@ -175,7 +176,10 @@ class Sign:
             transitions = [transitions] * LIGHT_COUNT
         assert brightnesses is not None
         assert isinstance(transitions, list)
-        updates = self._updates_needed(brightnesses, transitions)
+        if force_update:
+            updates = zip(self.dimmer_channels, brightnesses, transitions)
+        else:
+            updates = self._updates_needed(brightnesses, transitions)
         commands = [
             c.make_set_command(
                 brightness=b,
