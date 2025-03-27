@@ -1,5 +1,17 @@
 """Marquee Lighted Sign Project - main"""
-
+"""
+    marquee
+        arguments
+        Executor
+            Player
+                Modes
+                    mode_defs
+                    sequence_defs
+            Sign
+                Buttons
+                Dimmers
+                Relays
+"""
 from arguments import display_help, process_arguments
 from executors import Executor, create_sign
 from players import Player
