@@ -20,8 +20,6 @@ class ModeConstructor:
 class Mode(ABC):
     """Base for all playing modes and the select mode."""
 
-    _modes: list["Mode"] = []
-    
     def __init__(
         self,
         player: Any,  # Player
@@ -30,8 +28,6 @@ class Mode(ABC):
         preset_relays: bool = False,
     ):
         """"""
-        Mode._modes.append(self)
-        print(len(Mode._modes))
         self.player = player
         self.name = name
         if preset_dimmers:
@@ -44,7 +40,6 @@ class Mode(ABC):
     def mode_index(self, current: int, delta: int) -> int:
         """Return a new mode index, wrapping in both directions."""
         lower, upper = 1, len(self.player.modes) - 1
-        print(lower, upper)
         value = current + delta % (upper - lower + 1)
         if (dif := value - upper) > 0:
             value = lower + dif - 1
@@ -173,7 +168,6 @@ class SelectMode(Mode):
         super().execute()
         new_mode = None
         if self.desired_mode != self.previous_desired_mode:
-            #print("B")
             # Not last pass.
             # Show user what desired mode number is currently selected.
             self.player.sign.set_lights(ALL_OFF)
@@ -184,7 +178,6 @@ class SelectMode(Mode):
             )
             self.previous_desired_mode = self.desired_mode
         else:
-            #print("C")
             # Last pass.
             # Time elapsed without a button being pressed.
             # Play the selected mode.

@@ -32,7 +32,6 @@ class ShellyDimmer(ABC):
                 dimmer=self,
                 index=self.index * 2 + id,
                 id=id, 
-                # output=status['output'], 
                 brightness=status['brightness'],
             ) 
             for id, status in self._get_status()
@@ -74,6 +73,7 @@ class ShellyDimmer(ABC):
     @classmethod
     async def _execute_single_command(cls, command: "_DimmerCommand") -> aiohttp.ClientResponse:
         """ Send individual command as part of asynchonous batch. """
+        print(command.params)
         try:
             async with aiohttp.ClientSession() as session: # type: ignore
                 async with session.get(
@@ -109,7 +109,6 @@ class ShellyDimmer(ABC):
             for channel in dimmer.channels:
                 channel.set(
                     brightness=100,
-                    # output=True,
                 )
         time.sleep(5)
         for id in range(max(d.channel_count for d in cls._dimmers)):
@@ -161,7 +160,6 @@ class DimmerChannel:
             dimmer: ShellyDimmer, 
             index: int,
             id: int, 
-            # output: bool, 
             brightness: int,
         ):
         """Create the dimmer channel instance."""
@@ -170,7 +168,6 @@ class DimmerChannel:
         self.ip_address = self.dimmer.ip_address
         self.id = id
         # print(f"Initializing {self}")
-        # self.output = output
         self.brightness = brightness
         self.next_update: float = 0
         # self.set(output=True)  # !!! make part of a larger init?
@@ -186,7 +183,6 @@ class DimmerChannel:
         brightness: int | None = None, 
         offset: int | None = None,
         transition: float | None = None, 
-        # output: bool | None = None,
     ) -> "_DimmerCommand":
         """Produce dimmer API parameters from requested values and state."""
         assert transition is None or transition >= TRANSITION_MINIMUM
@@ -202,7 +198,6 @@ class DimmerChannel:
                 if new_brightness is not None else {}) |
             ({'transition_duration': 
                 transition or TRANSITION_DEFAULT}) |
-            # ({'on': str(output).lower()} if output is not None else {})
             ({'on': 'true'})
         )
         return _DimmerCommand(
