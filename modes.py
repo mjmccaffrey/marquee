@@ -31,6 +31,7 @@ class Mode(ABC):
     ):
         """"""
         Mode._modes.append(self)
+        print(len(Mode._modes))
         self.player = player
         self.name = name
         if preset_dimmers:
