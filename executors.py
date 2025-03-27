@@ -133,6 +133,7 @@ class Executor():
             sequence=sequence,
             pace=pace,
             override=override,
+            **kwargs,
         )
 
     def execute(
