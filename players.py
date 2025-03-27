@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - players"""
 
-from collections.abc import Callable
+from collections.abc import Iterable
 import itertools
 import time
 from typing import Any
@@ -73,7 +73,7 @@ class Player:
 
     def play_sequence(
             self, 
-            sequence: Callable, 
+            sequence: Iterable, 
             count: int = 1, 
             pace: tuple[float, ...] | float | None = None,
             stop: int | None = None, 
