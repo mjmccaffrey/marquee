@@ -142,9 +142,11 @@ class RapidFade(PlayMode):
                 start = time.time()
                 channel.set(brightness=0, transition=TRANSITION_MINIMUM)
                 if previous:
-                    previous.set(brightness=50, transition=TRANSITION_MINIMUM)
+                    previous.set(brightness=40, transition=TRANSITION_MINIMUM)
                 previous = channel
                 self.player.wait(0.25, elapsed = time.time() - start)
+            assert previous is not None
+            previous.set(brightness=40, transition=TRANSITION_MINIMUM)
             self.player.wait(10)
 
 class BuildBrightness(PlayMode):
