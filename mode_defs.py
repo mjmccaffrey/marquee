@@ -171,7 +171,7 @@ class BuildBrightness(PlayMode):
         self.player.sign.set_dimmers(ALL_LOW)
         brightnesss = [(i + 1) * 10 for i in range(LIGHT_COUNT)]
         transitions = (
-            [20] * LIGHT_COUNT
+            [0.5] * LIGHT_COUNT
                 if self.equal_trans else
             [(i + 1) * 2 for i in range(LIGHT_COUNT)]
         )
