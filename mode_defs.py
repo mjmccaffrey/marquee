@@ -177,4 +177,4 @@ class BuildBrightness(PlayMode):
         )
         for dimmer, brightness, transition in zip(self.player.sign.dimmer_channels, brightnesss, transitions):
             dimmer.set(brightness=brightness, transition=transition)
-        self.player.wait(40)
+        self.player.wait(4)
