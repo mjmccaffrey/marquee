@@ -153,7 +153,7 @@ class Sign:
             print(light_pattern, extra_pattern)
             self._relaymodule.set_state_of_devices(full_pattern)
             self.extra_pattern = extra_pattern
-        self.light_pattern = light_pattern
+            self.light_pattern = light_pattern
 
     def set_dimmers(
             self, 
