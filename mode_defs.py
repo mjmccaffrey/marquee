@@ -134,9 +134,9 @@ class RapidFade(PlayMode):
  
     def execute(self):
         """"""
+        self.player.sign.set_lights(ALL_ON)
         while True:
             self.player.sign.set_dimmers(ALL_HIGH, force_update=True)
-            self.player.sign.set_lights(ALL_ON)
             previous = None
             for channel in self.player.sign.dimmer_channels:
                 start = time.time()
@@ -147,7 +147,7 @@ class RapidFade(PlayMode):
                 self.player.wait(0.25, elapsed = time.time() - start)
             assert previous is not None
             previous.set(brightness=40, transition=TRANSITION_MINIMUM)
-            self.player.wait(10)
+            # self.player.wait(10)
 
 class BuildBrightness(PlayMode):
     """Brightness change rate test."""
