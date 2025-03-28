@@ -8,7 +8,7 @@ from typing import Any
 
 from dimmers import RelayOverride, TRANSITION_MINIMUM
 from modes import PlayMode
-from signs import ALL_LOW, ALL_ON, LIGHT_COUNT
+from signs import ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
 
 class RotateReversible(PlayMode):
     """Rotate a pattern, reversing direction in response to a button press."""
@@ -134,7 +134,7 @@ class RapidFade(PlayMode):
  
     def execute(self):
         """"""
-        self.player.sign.set_dimmers(ALL_LOW, force_update=True)
+        self.player.sign.set_dimmers(ALL_HIGH, force_update=True)
         self.player.sign.set_lights(ALL_ON)
         for channel in self.player.sign.dimmer_channels:
             start = time.time()
