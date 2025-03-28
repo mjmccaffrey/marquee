@@ -16,6 +16,7 @@ class RotateReversible(PlayMode):
         self,
         player: Any,  # Player
         name: str,
+        #
         pace: float,
         pattern: str,
     ):
@@ -44,6 +45,7 @@ class RandomFade(PlayMode):
         self,
         player: Any,  # Player
         name: str,
+        #
         transition: float = -1,
     ):
         super().__init__(
@@ -87,6 +89,7 @@ class EvenOddFade(PlayMode):
         self,
         player: Any,  # Player
         name: str,
+        #
         pace: float,
     ):
         super().__init__(
@@ -116,6 +119,28 @@ class EvenOddFade(PlayMode):
             )
             self.player.wait(delay)
 
+class RapidFade(PlayMode):
+    """"""
+    def __init__(
+        self,
+        player: Any,  # Player
+        name: str,
+        #
+    ):
+        super().__init__(
+            player=player, 
+            name=name, 
+        )
+ 
+    def execute(self):
+        """"""
+        self.player.sign.set_dimmers(ALL_LOW, force_update=True)
+        self.player.sign.set_lights(ALL_ON)
+        for channel in self.player.sign.dimmer_channels:
+            start = time.time()
+            channel.set(brightness=0, transition=TRANSITION_MINIMUM)
+            self.player.wait(0.25, elapsed = time.time() - start)
+
 class BuildBrightness(PlayMode):
     """Brightness change rate test."""
 
@@ -123,6 +148,7 @@ class BuildBrightness(PlayMode):
         self,
         player: Any,  # Player
         name: str,
+        #
         equal_trans: bool,
     ):
         super().__init__(

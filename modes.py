@@ -95,6 +95,7 @@ class PlaySequenceMode(PlayMode):
         self,
         player: Any,  # Player
         name: str,
+        #
         sequence: Callable,
         pace: tuple[float, ...] | float | None = None,
         override: RelayOverride | None = None,
@@ -141,6 +142,7 @@ class SelectMode(Mode):
         self,
         player: Any,  # Player
         name: str,
+        #
         previous_mode: int,
     ):
         super().__init__(player, name, preset_dimmers=True)

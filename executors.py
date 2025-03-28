@@ -192,9 +192,7 @@ class Executor():
         self.add_sequence_mode(8, "random_flip", seq_random_flip, 
             pace=0.5, light_pattern='LIGHT_PATTERN',
         )
-        self.add_sequence_mode(9, "demo", seq_random_flip, # !!!!!!!!!
-            pace=0.5, light_pattern='LIGHT_PATTERN',
-        )
+        self.add_mode(9, "rapid_fade", RapidFade)  # !!!!!!!!!
         self.add_sequence_mode(10, "blink_alternate_fade",
             seq_blink_alternate, pace=4, 
             override=RelayOverride(
