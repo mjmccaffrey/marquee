@@ -140,7 +140,7 @@ class RapidFade(PlayMode):
             previous = None
             for channel in self.player.sign.dimmer_channels:
                 start = time.time()
-                channel.set(brightness=0, transition=TRANSITION_MINIMUM)
+                channel.set(brightness=40, transition=TRANSITION_MINIMUM)
                 if previous: pass
                     #previous.set(brightness=40, transition=TRANSITION_MINIMUM)
                 previous = channel
