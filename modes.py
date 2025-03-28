@@ -84,6 +84,7 @@ class PlayMode(Mode):
             case 'remote_d':
                 self.player.sign.click()
                 new_mode = self.mode_index(self.player.current_mode, +1)
+                print("Button Action: ", new_mode)
             case _:
                 raise Exception
         return new_mode
