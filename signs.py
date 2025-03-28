@@ -26,6 +26,8 @@ LIGHT_TO_RELAY = {
     8:  7,                          4:  2,
             7:  6,  6:  0,  5:  1,
 }
+CLICK_RELAY = 12
+GRACE_RELAYS = [13, 14, 15]
 EXTRA_TO_RELAY = {
     10:10, 11:11, 
     12:12, 13:3, 14:4, 15:5,
@@ -148,6 +150,7 @@ class Sign:
             else:
                 extra_pattern = ''.join(str(e) for e in extra_pattern)
             full_pattern = light_pattern + extra_pattern
+            print(light_pattern, extra_pattern)
             self._relaymodule.set_state_of_devices(full_pattern)
             self.extra_pattern = extra_pattern
         self.light_pattern = light_pattern
