@@ -111,7 +111,6 @@ class Sign:
                    override.transition_on * override.speed_factor),
         }
         light_pattern = [int(p) for p in light_pattern]
-        #print(f"light_pattern:{light_pattern}")
         brightnesses=[
             bright_values[p]
             for p in light_pattern
@@ -150,13 +149,14 @@ class Sign:
             full_pattern = light_pattern + extra_pattern
             self._relaymodule.set_state_of_devices(full_pattern)
             self.extra_pattern = extra_pattern
-        self.light_pattern = light_pattern
+            self.light_pattern = light_pattern
 
     def set_dimmers(
             self, 
             pattern: str | None = None,
             brightnesses: list[int] | None = None,
-            transitions: list[float] | float = TRANSITION_DEFAULT
+            transitions: list[float] | float = TRANSITION_DEFAULT,
+            force_update: bool = False,
         ):
         """ Set the dimmers per the supplied pattern or brightnesses,
             and transition times. """
@@ -175,7 +175,10 @@ class Sign:
             transitions = [transitions] * LIGHT_COUNT
         assert brightnesses is not None
         assert isinstance(transitions, list)
-        updates = self._updates_needed(brightnesses, transitions)
+        if force_update:
+            updates = zip(self.dimmer_channels, brightnesses, transitions)
+        else:
+            updates = self._updates_needed(brightnesses, transitions)
         commands = [
             c.make_set_command(
                 brightness=b,

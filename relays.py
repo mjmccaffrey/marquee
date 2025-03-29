@@ -86,11 +86,10 @@ class NumatoUSBRelayModule(ABC):
             relay_pattern[self._device_to_bit[d]]
             for d in range(self.device_count)
         )
-        # print(f"r2d device_pattern:{device_pattern}")
         return device_pattern
 
-class NumatoRelayModuleRL160001(NumatoUSBRelayModule):
-    """Supports the Numato 16 Channel USB Relay Module (RL160001)."""
+class NumatoRL160001(NumatoUSBRelayModule):
+    """Supports the Numato RL160001 16 Channel USB Relay Module."""
 
     @property
     def relay_count(self) -> int:

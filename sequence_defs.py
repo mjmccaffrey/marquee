@@ -55,7 +55,7 @@ def seq_build_rows(pattern="1", from_top=True):
             lights[light] = pattern
         yield lights
 
-def seq_build_rows_4(pattern, from_top):
+def seq_build_rows_4(*, pattern, from_top):
     """Successive rows on / off, grouping the middle rows together, 
        and starting with no rows."""
     assert len(pattern) == 1
@@ -134,7 +134,7 @@ def seq_rotate_build(clockwise=True):
         lights[l] = 1
         yield lights
 
-def seq_rotate_build_flip(count: int, clockwise=True):
+def seq_rotate_build_flip(*, count: int, clockwise=True):
     """Successive lights on / off, rotating around."""
     if clockwise:
         light_range = LIGHTS_CLOCKWISE
@@ -162,7 +162,7 @@ def _random_light_gen():
             new = random.randrange(LIGHT_COUNT)
         yield new
 
-def seq_random(pattern="1"):
+def seq_random(*, pattern="1"):
     """Random light on / off, never immediately repeating a light.
        Starts with setting all lights to the opposite of pattern.
        This sequence does not end on its own."""
@@ -177,7 +177,7 @@ def seq_random(pattern="1"):
             opposite * (LIGHT_COUNT - index - 1)
         )
 
-def seq_random_flip(light_pattern):
+def seq_random_flip(*, light_pattern):
     """Random light on / off, never immediately repeating a light.
        Starts with the lights in their current state, and flips
        each selected light.
