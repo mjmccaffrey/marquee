@@ -73,7 +73,6 @@ class ShellyDimmer(ABC):
     @classmethod
     async def _execute_single_command(cls, command: "_DimmerCommand") -> aiohttp.ClientResponse:
         """ Send individual command as part of asynchonous batch. """
-        print(command.params)
         try:
             async with aiohttp.ClientSession() as session: # type: ignore
                 async with session.get(

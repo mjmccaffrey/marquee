@@ -111,7 +111,6 @@ class Sign:
                    override.transition_on * override.speed_factor),
         }
         light_pattern = [int(p) for p in light_pattern]
-        #print(f"light_pattern:{light_pattern}")
         brightnesses=[
             bright_values[p]
             for p in light_pattern
@@ -148,7 +147,6 @@ class Sign:
             else:
                 extra_pattern = ''.join(str(e) for e in extra_pattern)
             full_pattern = light_pattern + extra_pattern
-            print(light_pattern, extra_pattern)
             self._relaymodule.set_state_of_devices(full_pattern)
             self.extra_pattern = extra_pattern
             self.light_pattern = light_pattern
