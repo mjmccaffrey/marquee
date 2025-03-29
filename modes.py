@@ -8,8 +8,9 @@ from typing import Any
 
 from buttons import Button
 from dimmers import RelayOverride, TRANSITION_DEFAULT
-from sequence_defs import *
-from signs import ALL_HIGH, ALL_ON
+import players
+from sequence_defs import seq_rotate_build_flip
+from signs import ALL_HIGH, ALL_OFF, ALL_ON
 
 @dataclass
 class ModeConstructor:
@@ -22,7 +23,7 @@ class Mode(ABC):
 
     def __init__(
         self,
-        player: Any,  # Player
+        player: players.Player,  # Any,  # Player
         name: str,
         preset_dimmers: bool = False,
         preset_relays: bool = False,

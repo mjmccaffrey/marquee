@@ -51,7 +51,7 @@ class RandomFade(PlayMode):
         super().__init__(
             player=player, 
             name=name, 
-            preset_dimmers=True, 
+            preset_relays=True, 
         )
         self.transition = transition
 
@@ -69,7 +69,6 @@ class RandomFade(PlayMode):
     
     def execute(self):
         """"""
-        self.player.sign.set_lights(ALL_ON)
         for channel in self.player.sign.dimmer_channels:
             channel.next_update = 0
         while True:
@@ -95,14 +94,13 @@ class EvenOddFade(PlayMode):
         super().__init__(
             player=player, 
             name=name, 
-            preset_dimmers=True, 
+            preset_relays=True, 
         )
         self.pace = pace
 
     def execute(self):
         """"""
         self.player.sign.set_dimmers(ALL_LOW) 
-        self.player.sign.set_lights(ALL_ON)
         delay = 5.0
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
         even_on = opposite_pattern(odd_on)
@@ -130,6 +128,7 @@ class RapidFade(PlayMode):
         super().__init__(
             player=player, 
             name=name, 
+            preset_relays=True, 
         )
  
     def execute(self):
@@ -162,12 +161,11 @@ class BuildBrightness(PlayMode):
         super().__init__(
             player=player, 
             name=name, 
-            preset_dimmers=True, 
+            preset_relays=True, 
         )
         self.equal_trans = equal_trans
 
     def execute(self):
-        self.player.sign.set_lights(ALL_ON)
         self.player.sign.set_dimmers(ALL_LOW)
         brightnesss = [(i + 1) * 10 for i in range(LIGHT_COUNT)]
         transitions = (

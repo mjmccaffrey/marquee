@@ -26,8 +26,6 @@ LIGHT_TO_RELAY = {
     8:  7,                          4:  2,
             7:  6,  6:  0,  5:  1,
 }
-CLICK_RELAY = 12
-GRACE_RELAYS = [13, 14, 15]
 EXTRA_TO_RELAY = {
     10:10, 11:11, 
     12:12, 13:3, 14:4, 15:5,

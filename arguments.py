@@ -1,7 +1,6 @@
 """Marquee Lighted Sign Project - arguments"""
 
 from collections.abc import Callable
-import sys
 
 from argparse import Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
 from signs import LIGHT_COUNT
