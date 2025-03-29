@@ -24,7 +24,7 @@ DIMMER_ADDRESSES = [
 ]
 #   '192.168.51.116',
 
-def create_sign() -> Sign:
+def create_sign(brightness_factor: float) -> Sign:
     """Creates and returns a Sign object and all associated device objects."""
     dimmers: list[ShellyDimmer] = [
         ShellyProDimmer2PM(index, address)
@@ -42,6 +42,7 @@ def create_sign() -> Sign:
         dimmers=dimmers,
         relaymodule=relaymodule,
         buttons=buttons,
+        brightness_factor=brightness_factor,
     )
 
 class Executor():
@@ -51,7 +52,7 @@ class Executor():
 
     def __init__(
             self, 
-            create_sign: Callable[[], Sign],
+            create_sign: Callable,
             create_player: Callable[[dict[int, Mode], Sign, float], Player],
         ):
         """"""
@@ -162,17 +163,17 @@ class Executor():
             self, 
             command: str | None = None, 
             mode_index: int | None = None, 
-            speed_factor: float | None = None,
+            brightness_factor: float = 1.0,
+            speed_factor: float = 1.0,
             light_pattern: str | None = None, 
             brightness_pattern: str | None = None,
         ):
         """Effects the command-line specified command, mode or pattern(s)."""
-        self.sign = self.create_sign()
+        self.sign: Sign = self.create_sign(brightness_factor)
         if command is not None:
             self.execute_command(command)
         elif mode_index is not None:
-            assert speed_factor is not None
-            self.execute_mode(mode_index, speed_factor)
+            self.execute_mode(mode_index, brightness_factor, speed_factor)
         else:
             self.execute_pattern(light_pattern, brightness_pattern)
 
@@ -180,7 +181,7 @@ class Executor():
         """Effects the command-line specified command."""
         self.commands[command]()
 
-    def execute_mode(self, mode_index: int, speed_factor: float):
+    def execute_mode(self, mode_index: int, brightness_factor: float, speed_factor: float):
         """Effects the command-line specified mode."""
         self.player = self.create_player(self.modes, self.sign, speed_factor)
         self.register_mode_functions()
