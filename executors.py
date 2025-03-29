@@ -6,15 +6,13 @@ from signal import SIGUSR1  # type: ignore
 from buttons import Button
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, RelayOverride, TRANSITION_DEFAULT
 from gpiozero import Button as _Button  # type: ignore
-from modes import *
+import modes
 from mode_defs import *
-from players import Player
-from relays import NumatoUSBRelayModule, NumatoRelayModuleRL160001 as NumatoRL160001
+import players
+from relays import NumatoUSBRelayModule, NumatoRL160001
 from sequence_defs import *
-from signs import (
-    ALL_RELAYS, ALL_OFF,
-    EXTRA_COUNT, Sign,
-)
+from signs import ALL_RELAYS, ALL_OFF, EXTRA_COUNT, Sign
+
 DIMMER_ADDRESSES = [
     '192.168.51.111',
     '192.168.51.112',
@@ -52,16 +50,22 @@ class Executor():
 
     def __init__(
             self, 
-            create_sign: Callable,
-            create_player: Callable[[dict[int, Mode], Sign, float], Player],
+            create_sign: Callable[[], Sign],
+            create_player: Callable[[
+                    dict[int, modes.ModeConstructor], 
+                    Sign, 
+                    float
+                ], 
+                players.Player
+            ],
         ):
         """"""
         self.create_sign = create_sign
         self.create_player = create_player
         self.mode_ids: dict[str, int] = {}
         self.mode_menu: list[tuple[int, str]] = []
-        self.modes: dict[int, Mode] = {}
-        self.register_mode_ids()
+        self.modes: dict[int, modes.ModeConstructor] = {}
+        self.register_modes()
         self.commands: dict[str, Callable] = {
             'calibrate_dimmers': self.command_calibrate_dimmers,
             'configure_dimmers': self.command_configure_dimmers,
@@ -87,12 +91,15 @@ class Executor():
         print("Marquee hardware is now partially shut down.")
         print()
 
-    def add_mode_ids(
+    def add_mode(
             self, 
             index: int, 
-            name: str, 
-        ):
-        """Register the mode index and name."""
+            name: str,
+            mode_class: type[modes.Mode],
+            hidden: bool = False,
+            **kwargs,
+    ):
+        """Register the mode IDs and everything needed to create an instance."""
         assert (str(index) not in self.mode_ids
             and name not in self.mode_ids
         ), "Duplicate mode index or name"
@@ -102,61 +109,30 @@ class Executor():
         self.mode_menu.append((index, name))
         self.mode_ids[str(index)] = index
         self.mode_ids[name] = index
-
-    def add_mode(
-            self, 
-            index: int, 
-            mode: Mode,
-            hidden: bool = False,
-    ):
-        """Register the Mode object."""
-        assert hidden or (
+        assert hidden or ( # !!!!!!!!!!!!!!!!!!!!!!!!!!
                 self.mode_ids.get(str(index)) == index
-            and self.mode_ids.get(mode.name) == index
+            and self.mode_ids.get(name) == index
         ), "Mode index and / or name do not match registered IDs"
-        self.modes[index] = mode
+        self.modes[index] = modes.ModeConstructor(name, mode_class, kwargs)
 
-    def add_mode_def(
-            self, 
-            index: int, 
-            name: str, 
-            function: Callable,
-            preset_dimmers: bool = False,
-            preset_relays: bool = False,
-        ):
-        """Create a Mode object from a function and parameters, and register it."""
-        self.add_mode(
-            index, 
-            PlayMode(self.player, name, function, preset_dimmers, preset_relays),
-        )
-
-    def add_sequence_mode_def(
+    def add_sequence_mode(
             self,
             index: int, 
             name: str, 
             sequence: Callable,
             pace: tuple[float, ...] | float | None = None,
             override: RelayOverride | None = None,
+            **kwargs,
         ):
         """Create a Mode object from a sequence and parameters, and register it."""
-        if override is not None:
-            default_trans = (
-                pace if isinstance(pace, float) else
-                TRANSITION_DEFAULT
-            )
-            if override.transition_off is None:
-                override.transition_off = default_trans
-            if override.transition_on is None:
-                override.transition_on = default_trans
-        function = self.player.sequence_player_func(
-            sequence, pace, override
-        )
-        self.add_mode_def(
-            index=index,
-            name=name,
-            function=function,
-            preset_dimmers=(override is None),
-            preset_relays=(override is not None),
+        self.add_mode(
+            index, 
+            name, 
+            modes.PlaySequenceMode,
+            sequence=sequence,
+            pace=pace,
+            override=override,
+            **kwargs,
         )
 
     def execute(
@@ -184,7 +160,6 @@ class Executor():
     def execute_mode(self, mode_index: int, brightness_factor: float, speed_factor: float):
         """Effects the command-line specified mode."""
         self.player = self.create_player(self.modes, self.sign, speed_factor)
-        self.register_mode_functions()
         self.player.execute(mode_index)
 
     def execute_pattern(self, light_pattern: str | None, brightness_pattern: str | None):
@@ -197,73 +172,38 @@ class Executor():
             print(f"Setting lights {light_pattern}")
             self.sign.set_lights(light_pattern)
 
-    def register_mode_ids(self):
-        """Register all mode indexes and names, for command-line processing."""
-        self.add_mode_ids(1, "all_on")
-        self.add_mode_ids(2, "all_off")
-        self.add_mode_ids(3, "even_on")
-        self.add_mode_ids(4, "even_off")
-        self.add_mode_ids(5, "blink_all")
-        self.add_mode_ids(6, "blink_alternate")
-        self.add_mode_ids(7, "rotate")
-        self.add_mode_ids(8, "random_flip")
-        self.add_mode_ids(9, "demo")
-        self.add_mode_ids(10, "blink_alternate_fade")
-        self.add_mode_ids(11, "random_flip_fade")
-        self.add_mode_ids(12, "blink_all_fade_seq")
-        self.add_mode_ids(13, "blink_all_fade_con")
-        self.add_mode_ids(14, "blink_all_fade_fast")
-        self.add_mode_ids(15, "blink_all_fade_slowwww")
-        self.add_mode_ids(16, "blink_all_fade_stealth")
-        self.add_mode_ids(17, "corner_rotate_fade")
-        self.add_mode_ids(18, "rotate_slight_fade")
-        self.add_mode_ids(19, "even_odd_fade")
-        self.add_mode_ids(20, "random_fade")
-        self.add_mode_ids(21, "random_fade_steady")
-        self.add_mode_ids(22, "build_brightness_equal")
-        self.add_mode_ids(23, "build_brightness_unequal")
-        self.add_mode_ids(24, "rotate_reversible_1")
-        self.add_mode_ids(25, "rotate_reversible_2")
-
-    def register_mode_functions(self):
+    def register_modes(self):
         """Register all operating modes."""
-        player = self.player
-        sign = self.player.sign
-        self.add_mode(0,
-            SelectMode(player, "selection"),
-            hidden=True,
+        self.add_mode(0, "selection", modes.SelectMode, hidden=True, previous_mode="PREVIOUS_MODE")
+        self.add_sequence_mode(1, "all_on", seq_all_on)
+        self.add_sequence_mode(2, "all_off", seq_all_off)
+        self.add_sequence_mode(3, "even_on", seq_even_on)
+        self.add_sequence_mode(4, "even_off", seq_even_off)
+        self.add_sequence_mode(5, "blink_all", seq_blink_all, 
+            pace=1,
         )
-        self.add_sequence_mode_def(1, "all_on", seq_all_on)
-        self.add_sequence_mode_def(2, "all_off", seq_all_off)
-        self.add_sequence_mode_def(3, "even_on", seq_even_on)
-        self.add_sequence_mode_def(4, "even_off", seq_even_off)
-        self.add_sequence_mode_def(5, "blink_all", 
-            seq_blink_all, pace=1,
+        self.add_sequence_mode(6, "blink_alternate", seq_blink_alternate, 
+            pace=1, 
         )
-        self.add_sequence_mode_def(6, "blink_alternate", 
-            seq_blink_alternate, pace=1, 
+        self.add_sequence_mode(7, "rotate", seq_rotate, 
+            pace=0.5, pattern="1100000000",
         )
-        self.add_sequence_mode_def(7, "rotate",
-            lambda: seq_rotate("1100000000"), pace=0.5,
+        self.add_sequence_mode(8, "random_flip", seq_random_flip, 
+            pace=0.5, light_pattern='LIGHT_PATTERN',
         )
-        self.add_sequence_mode_def(8, "random_flip",
-            lambda: seq_random_flip(sign.light_pattern), pace=0.5,
-        )
-        self.add_sequence_mode_def(9, "demo",
-            lambda: seq_random_flip(sign.light_pattern), pace=0.5,
-        )
-        self.add_sequence_mode_def(10, "blink_alternate_fade",
+        self.add_mode(9, "rapid_fade", RapidFade)  # !!!!!!!!!
+        self.add_sequence_mode(10, "blink_alternate_fade",
             seq_blink_alternate, pace=4, 
             override=RelayOverride(
                 transition_on=1.0,
                 transition_off=3.0,
             )
         )
-        self.add_sequence_mode_def(11, "random_flip_fade",
-            lambda: seq_random_flip(sign.light_pattern), pace=2.0,
+        self.add_sequence_mode(11, "random_flip_fade", seq_random_flip, pace=2.0,
             override=RelayOverride(),
+            light_pattern='LIGHT_PATTERN',
         )
-        self.add_sequence_mode_def(12, "blink_all_fade_seq",
+        self.add_sequence_mode(12, "blink_all_fade_seq",
             seq_blink_all, pace=1,
             override=RelayOverride(
                 concurrent=False,
@@ -271,7 +211,7 @@ class Executor():
                 transition_off=0.5,
             )
         )
-        self.add_sequence_mode_def(13, "blink_all_fade_con", 
+        self.add_sequence_mode(13, "blink_all_fade_con", 
             seq_blink_all, pace=1,
             override=RelayOverride(
                 concurrent=True,
@@ -279,25 +219,25 @@ class Executor():
                 transition_off=0.5,
             )
         )
-        self.add_sequence_mode_def(14, "blink_all_fade_fast", 
+        self.add_sequence_mode(14, "blink_all_fade_fast", 
             seq_blink_all, pace=0.5,
             override=RelayOverride()
         )
-        self.add_sequence_mode_def(15, "blink_all_fade_slowwww", 
+        self.add_sequence_mode(15, "blink_all_fade_slowwww", 
             seq_blink_all, pace=10,
             override=RelayOverride(
                 brightness_on=100,
                 brightness_off=10,
             )
         )
-        self.add_sequence_mode_def(16, "blink_all_fade_stealth", 
+        self.add_sequence_mode(16, "blink_all_fade_stealth", 
             seq_blink_all, pace=(1, 60),
             override=RelayOverride(
                 transition_on=2,
                 transition_off=2,
             )
         )
-        self.add_sequence_mode_def(17, "corner_rotate_fade", 
+        self.add_sequence_mode(17, "corner_rotate_fade", 
             seq_opposite_corner_pairs, pace=5,
             override=RelayOverride(
                 concurrent=True,
@@ -305,7 +245,7 @@ class Executor():
                 brightness_off = 10,
             )
         )
-        self.add_sequence_mode_def(18, "rotate_slight_fade",
+        self.add_sequence_mode(18, "rotate_slight_fade",
             seq_rotate, pace=0.5,
             override=RelayOverride(
                 concurrent=False,
@@ -313,23 +253,14 @@ class Executor():
                 brightness_off = 30,
             )
         )
-        self.add_mode_def(19, "even_odd_fade", 
-            lambda: mode_even_odd_fade(player))
-        self.add_mode_def(20, "random_fade", 
-            lambda: mode_random_fade(player))
-        self.add_mode_def(21, "random_fade_steady", 
-            lambda: mode_random_fade(player))
-        self.add_mode_def(22, "build_brightness_equal", 
-            lambda: build_brightness(player, True))
-        self.add_mode_def(23, "build_brightness_unequal", 
-            lambda: build_brightness(player, False))
-        self.add_mode(24,
-            RotateReversible(self.player, "rotate_reversible_1", 
-                "1" + "0" * (LIGHT_COUNT - 1), 0.5,
-            )
-        )
-        self.add_mode(25,
-            RotateReversible(self.player, "rotate_reversible_2", 
-                "0" + "1" * (LIGHT_COUNT - 1), 0.5,
-            )
-        )
+        self.add_mode(19, "even_odd_fade", EvenOddFade, pace=2)
+        self.add_mode(20, "random_fade", RandomFade)
+        self.add_mode(21, "random_fade_steady", RandomFade, transition=2)
+        self.add_mode(22, "build_brightness_equal", BuildBrightness, equal_trans=True)
+        self.add_mode(23, "build_brightness_unequal", BuildBrightness, equal_trans=False)
+        self.add_mode(24, "rotate_reversible_1", 
+            RotateReversible, pace=0.35, 
+            pattern = "1" + "0" * (LIGHT_COUNT - 1))
+        self.add_mode(25, "rotate_reversible_2", 
+            RotateReversible, pace=0.35, 
+            pattern = "0" + "1" * (LIGHT_COUNT - 1))
