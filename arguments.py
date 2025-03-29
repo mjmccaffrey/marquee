@@ -55,6 +55,8 @@ def display_help(
     print()
     print("Usage:")
     print("  marquee.py mode [mode_index | mode_name]")
+    print("                  [--brightness_factor=[0 - 1.0]]")
+    print("                  [--speed_factor=[0 - 1.0]]")
     print("  marquee.py pattern [--dimmer=[pattern] &| --relay=[pattern]]")
     print("                     [--derive_missing=[true|false]]")
     print("  marquee.py command [command_name]")
@@ -112,6 +114,9 @@ def parse_arguments(
     mode_p = sub_p.add_parser('mode')
     mode_choices = mode_ids.keys()
     mode_p.add_argument('mode_id', choices=mode_choices)
+    mode_p.add_argument('brightness_factor', 
+        optional=True, 
+        type=float, default=1.0)
     mode_p.add_argument('speed_factor', 
         optional=True, 
         type=float, default=1.0)
@@ -136,6 +141,7 @@ def process_arguments(
        otherwise raise an error."""
     try:
         parsed = parse_arguments(mode_ids, commands)
+        print("Args: " + ''.join('{k}: {v}, ' for k, v in vars(parsed)))
     except ValueError:
         raise
     if parsed.operation == 'command':
@@ -143,6 +149,7 @@ def process_arguments(
     elif parsed.operation == 'mode':
         args = {
             "mode_index": mode_ids[parsed.mode_id],
+            "brightness_factor": parsed.brightness_factor,
             "speed_factor": parsed.speed_factor,
         }
     elif parsed.operation == 'pattern':

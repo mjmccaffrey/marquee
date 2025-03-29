@@ -46,12 +46,14 @@ class Sign:
         dimmers: list[ShellyDimmer],
         relaymodule: NumatoUSBRelayModule,
         buttons: list[Button],
+        brightness_factor: float,
     ):
         """Set up the initial state."""
         print("Initializing sign")
         self.dimmers = dimmers
         self._relaymodule = relaymodule
         self._buttons = buttons
+        self.brightness_factor = brightness_factor
 
         # channel[i] maps to light[i], 0 <= i < LIGHT_COUNT
         self.dimmer_channels: list[DimmerChannel] = [
@@ -98,13 +100,13 @@ class Sign:
             override: RelayOverride,
     ):
         """Set dimmers per the specified pattern and override."""
-        bright_values = {
-            0: override.brightness_off, 
-            1: override.brightness_on
+        bright_values: dict[int, int] = {
+            0: int(override.brightness_off * self.brightness_factor), 
+            1: int(override.brightness_on * self.brightness_factor),
         }
         assert override.transition_off is not None
         assert override.transition_on is not None
-        trans_values = {
+        trans_values: dict[int, float] = {
             0: max(TRANSITION_MINIMUM, 
                    override.transition_off * override.speed_factor), 
             1: max(TRANSITION_MINIMUM, 
@@ -162,13 +164,13 @@ class Sign:
             and transition times. """
         assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
         if pattern is not None:
-            adjustments = {  # !!! adjust for frosted 40 watt
+            bulb_adjustments = {  # !!! adjust for frosted 40 watt
                 '0': 0, '1': 15, '2': 20, '3': 30, '4': 40,
                 '5': 50, '6': 60, '7': 70, '8':80, '9': 90,
                 'A': 100, 'F': 23,
             }
             brightnesses = [
-                adjustments[p]
+                int(bulb_adjustments[p] * self.brightness_factor)
                 for p in pattern
             ]
         if isinstance(transitions, float):
