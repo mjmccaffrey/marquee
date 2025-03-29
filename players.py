@@ -7,14 +7,14 @@ from typing import Any
 
 from buttons import Button, ButtonPressed
 from dimmers import RelayOverride
-from modes import Mode, ModeConstructor
+import modes
 from signs import Sign
 
 class Player:
     """Executes one mode at a time."""
     def __init__(
             self, 
-            modes: dict[int, ModeConstructor],
+            modes: dict[int, modes.ModeConstructor],
             sign: Sign, 
             speed_factor: float,
         ):
@@ -57,7 +57,7 @@ class Player:
             if new_mode == 222:
                 new_mode = 2
 
-    def play_mode_until_changed(self, mode: Mode):
+    def play_mode_until_changed(self, mode: modes.Mode):
         """Play the specified mode until another mode is selected."""
         new_mode = None
         while new_mode is None:
