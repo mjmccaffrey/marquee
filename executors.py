@@ -6,15 +6,13 @@ from signal import SIGUSR1  # type: ignore
 from buttons import Button
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, RelayOverride, TRANSITION_DEFAULT
 from gpiozero import Button as _Button  # type: ignore
-from modes import Mode, ModeConstructor, PlaySequenceMode, SelectMode
+import modes
 from mode_defs import *
-from players import Player
-from relays import NumatoUSBRelayModule, NumatoRelayModuleRL160001 as NumatoRL160001
+import players
+from relays import NumatoUSBRelayModule, NumatoRL160001
 from sequence_defs import *
-from signs import (
-    ALL_RELAYS, ALL_OFF,
-    EXTRA_COUNT, Sign,
-)
+from signs import ALL_RELAYS, ALL_OFF, EXTRA_COUNT, Sign
+
 DIMMER_ADDRESSES = [
     '192.168.51.111',
     '192.168.51.112',
@@ -53,11 +51,11 @@ class Executor():
             self, 
             create_sign: Callable[[], Sign],
             create_player: Callable[[
-                    dict[int, ModeConstructor], 
+                    dict[int, modes.ModeConstructor], 
                     Sign, 
                     float
                 ], 
-                Player
+                players.Player
             ],
         ):
         """"""
@@ -65,7 +63,7 @@ class Executor():
         self.create_player = create_player
         self.mode_ids: dict[str, int] = {}
         self.mode_menu: list[tuple[int, str]] = []
-        self.modes: dict[int, ModeConstructor] = {}
+        self.modes: dict[int, modes.ModeConstructor] = {}
         self.register_modes()
         self.commands: dict[str, Callable] = {
             'calibrate_dimmers': self.command_calibrate_dimmers,
@@ -96,7 +94,7 @@ class Executor():
             self, 
             index: int, 
             name: str,
-            mode_class: type[Mode],
+            mode_class: type[modes.Mode],
             hidden: bool = False,
             **kwargs,
     ):
@@ -114,7 +112,7 @@ class Executor():
                 self.mode_ids.get(str(index)) == index
             and self.mode_ids.get(name) == index
         ), "Mode index and / or name do not match registered IDs"
-        self.modes[index] = ModeConstructor(name, mode_class, kwargs)
+        self.modes[index] = modes.ModeConstructor(name, mode_class, kwargs)
 
     def add_sequence_mode(
             self,
@@ -129,7 +127,7 @@ class Executor():
         self.add_mode(
             index, 
             name, 
-            PlaySequenceMode,
+            modes.PlaySequenceMode,
             sequence=sequence,
             pace=pace,
             override=override,
@@ -175,7 +173,7 @@ class Executor():
 
     def register_modes(self):
         """Register all operating modes."""
-        self.add_mode(0, "selection", SelectMode, hidden=True, previous_mode="PREVIOUS_MODE")
+        self.add_mode(0, "selection", modes.SelectMode, hidden=True, previous_mode="PREVIOUS_MODE")
         self.add_sequence_mode(1, "all_on", seq_all_on)
         self.add_sequence_mode(2, "all_off", seq_all_off)
         self.add_sequence_mode(3, "even_on", seq_even_on)

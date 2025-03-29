@@ -1,10 +1,10 @@
 """Marquee Lighted Sign Project - arguments"""
 
 from collections.abc import Callable
+from typing import Any, NoReturn
 
 from argparse import Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
 from signs import LIGHT_COUNT
-from typing import Any, NoReturn
 
 class ArgumentParserImproved(ArgumentParser):
     """
