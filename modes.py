@@ -8,7 +8,6 @@ from typing import Any
 
 from buttons import Button
 from dimmers import RelayOverride, TRANSITION_DEFAULT
-import players
 from sequence_defs import seq_rotate_build_flip
 from signs import ALL_HIGH, ALL_OFF, ALL_ON
 
@@ -17,6 +16,8 @@ class ModeConstructor:
     name: str
     mode_class: type["Mode"]
     kwargs: dict[str, Any]
+
+import players
 
 class Mode(ABC):
     """Base for all playing modes and the select mode."""
