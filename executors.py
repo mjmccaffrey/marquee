@@ -258,8 +258,8 @@ class Executor():
         self.add_mode(22, "build_brightness_equal", BuildBrightness, equal_trans=True)
         self.add_mode(23, "build_brightness_unequal", BuildBrightness, equal_trans=False)
         self.add_mode(24, "rotate_reversible_1", 
-            RotateReversible, pace=0.5, 
+            RotateReversible, pace=0.35, 
             pattern = "1" + "0" * (LIGHT_COUNT - 1))
         self.add_mode(25, "rotate_reversible_2", 
-            RotateReversible, pace=0.5, 
+            RotateReversible, pace=0.35, 
             pattern = "0" + "1" * (LIGHT_COUNT - 1))

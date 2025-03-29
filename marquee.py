@@ -13,13 +13,13 @@
                 Relays
 """
 from arguments import display_help, process_arguments
-import executors
-import players
+from executors import Executor, create_sign
+from players import Player
 
 def main():
     """Execute Marquee application."""
     try:
-        exec = executors.Executor(executors.create_sign, players.Player)
+        exec = Executor(create_sign, Player)
         try:
             args = process_arguments(exec.mode_ids, exec.commands)
         except ValueError:
