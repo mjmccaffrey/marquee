@@ -18,7 +18,7 @@ class ModeConstructor:
     kwargs: dict[str, Any]
 
 class Mode(ABC):
-    """Base for all playing modes and the select mode."""
+    """Base for all Playing modes and the Select mode."""
 
     def __init__(
         self,
@@ -146,6 +146,7 @@ class SelectMode(Mode):
         #
         previous_mode: int,
     ):
+        """"""
         super().__init__(player, name, preset_dimmers=True)
         self.desired_mode = previous_mode
         self.previous_desired_mode = -1
