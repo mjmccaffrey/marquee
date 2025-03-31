@@ -32,7 +32,9 @@ class PlayMusicMode(PlayMode):
         #
         tempo: int,
     ):
+        print(1)
         super().__init__(player, name)
+        print(2)
         self.pace = 60 / tempo
         self.beat_unit = 1/4
 
@@ -165,6 +167,7 @@ class PlayMusicMode(PlayMode):
             """"""
             super().__init__(mode, 0)
             self.id = len(PlayMusicMode._Measure.all_measures)
+            print(f"m: {self.id}")
             PlayMusicMode._Measure.all_measures.append(self)
             self.elements = elements
 
