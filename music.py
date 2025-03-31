@@ -38,7 +38,6 @@ class PlayMusicMode(PlayMode):
 
     def dimmer(self, brightness: int, transition: float, *lights: int):
         """Return callable to effect state of specified dimmers."""
-        import signs; s = signs.Sign()  # type:ignore
         return lambda: s.execute_dimmer_commands(
             [
                 (s.dimmer_channels[l], brightness, transition)
