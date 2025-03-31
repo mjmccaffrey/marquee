@@ -51,17 +51,15 @@ class PlayMusicMode(PlayMode):
         """Return callable to effect light pattern."""
         return lambda: self.player.sign.set_lights(pattern)
     
-    def execute(self, *measures: "_Measure"):
+    def play(self, *measures: "_Measure"):
         """"""
         for measure in measures:
             beat = 1.0
             for element in measure.elements:
                 start = time.time()
                 new_beat = element.execute()
-                from players import Player
-                p = Player()  # type:ignore
                 wait = (new_beat - beat) * self.pace
-                p.wait(wait, elapsed = time.time() - start)
+                self.player.wait(wait, elapsed = time.time() - start)
 
     class _Element(ABC):
         """"""
