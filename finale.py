@@ -5,7 +5,7 @@ from sequence_defs import *
 class Finale(PlayMusicMode):
 
     def execute(self):
-        s.intro()
+        self.intro()
 
     def intro(self):
         s = self
