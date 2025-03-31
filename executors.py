@@ -51,7 +51,7 @@ class Executor():
 
     def __init__(
             self, 
-            create_sign: Callable[[], Sign],
+            create_sign: Callable[[float], Sign],
             create_player: Callable[[
                     dict[int, modes.ModeConstructor], 
                     Sign, 
@@ -265,4 +265,4 @@ class Executor():
         self.add_mode(25, "rotate_reversible_2", 
             RotateReversible, pace=0.35, 
             pattern = "0" + "1" * (LIGHT_COUNT - 1))
-        self.add_mode(26, "finale", Finale)
+        self.add_mode(26, "finale", Finale, tempo=90)
