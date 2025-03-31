@@ -55,11 +55,16 @@ class PlayMusicMode(PlayMode):
         """"""
         for measure in measures:
             beat = 1.0
+            print(f"playing measure {measure.id}")
             for element in measure.elements:
                 start = time.time()
-                new_beat = element.execute()
-                wait = (new_beat - beat) * self.pace
+                beats_elapsed = element.execute()
+                wait = (beats_elapsed) * self.pace
                 self.player.wait(wait, elapsed = time.time() - start)
+                beat += beats_elapsed
+                print(f"beat is now {beat}")
+            wait = (4 - beat) * self.pace
+            self.player.wait(wait)
 
     class _Element(ABC):
         """"""
@@ -94,6 +99,7 @@ class PlayMusicMode(PlayMode):
             self.actions = actions
 
         def execute(self) -> float:
+            print(f"executing Note with {len(self.actions)} actions")
             for action in self.actions:
                 action()
             return super().execute()
