@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - modes"""
 
 from abc import ABC, abstractmethod
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 import time
 from typing import Any
@@ -55,6 +55,58 @@ class Mode(ABC):
     def execute(self):
         """Play the mode."""
  
+class SelectMode(Mode):
+    """Supports the select mode."""
+
+    def __init__(
+        self,
+        player: Any,  # Player
+        name: str,
+        #
+        previous_mode: int,
+    ):
+        """"""
+        super().__init__(player, name, preset_dimmers=True)
+        self.desired_mode = previous_mode
+        self.previous_desired_mode = -1
+
+    def button_action(self, button: Button):
+        """Respond to the button press."""
+        assert self.desired_mode is not None
+        match button.name:
+            case 'body_back' | 'remote_a' | 'remote_d':
+                self.desired_mode = self.mode_index(self.desired_mode, +1)
+            case 'remote_b':
+                self.desired_mode = self.mode_index(self.desired_mode, -1)
+            case 'remote_c':
+                # self.desired_mode = 2  # ALL_OFF
+                return 222  # Quick change to mode ALL_OFF
+            case _:
+                raise Exception
+        return None
+
+    def execute(self):
+        """User presses the button to select 
+           the next mode to execute."""
+        super().execute()
+        new_mode = None
+        if self.desired_mode != self.previous_desired_mode:
+            # Not last pass.
+            # Show user what desired mode number is currently selected.
+            self.player.sign.set_lights(ALL_OFF)
+            time.sleep(0.5)
+            self.player.play_sequence(
+                seq_rotate_build_flip(count=self.desired_mode),
+                pace=0.20, post_delay=4.0,
+            )
+            self.previous_desired_mode = self.desired_mode
+        else:
+            # Last pass.
+            # Time elapsed without a button being pressed.
+            # Play the selected mode.
+            new_mode = self.desired_mode
+        return new_mode
+
 class PlayMode(Mode):
     """Base for custom modes."""
 
@@ -125,65 +177,16 @@ class PlaySequenceMode(PlayMode):
             preset_relays=(override is not None),
         )
 
+    def play_sequence(self):
+        self.player.replace_kwarg_values(self.kwargs)
+        self.player.play_sequence(
+            sequence=self.sequence(**self.kwargs),
+            pace=self.pace,
+            override=self.override,
+        )
+
     def execute(self):
         """Play the mode."""
         super().execute()
         while True:
-            self.player.replace_kwarg_values(self.kwargs)
-            self.player.play_sequence(
-                sequence=self.sequence(**self.kwargs),
-                pace=self.pace,
-                override=self.override,
-            )
-
-class SelectMode(Mode):
-    """Supports the select mode."""
-
-    def __init__(
-        self,
-        player: Any,  # Player
-        name: str,
-        #
-        previous_mode: int,
-    ):
-        """"""
-        super().__init__(player, name, preset_dimmers=True)
-        self.desired_mode = previous_mode
-        self.previous_desired_mode = -1
-
-    def button_action(self, button: Button):
-        """Respond to the button press."""
-        assert self.desired_mode is not None
-        match button.name:
-            case 'body_back' | 'remote_a' | 'remote_d':
-                self.desired_mode = self.mode_index(self.desired_mode, +1)
-            case 'remote_b':
-                self.desired_mode = self.mode_index(self.desired_mode, -1)
-            case 'remote_c':
-                # self.desired_mode = 2  # ALL_OFF
-                return 222  # Quick change to mode ALL_OFF
-            case _:
-                raise Exception
-        return None
-
-    def execute(self):
-        """User presses the button to select 
-           the next mode to execute."""
-        super().execute()
-        new_mode = None
-        if self.desired_mode != self.previous_desired_mode:
-            # Not last pass.
-            # Show user what desired mode number is currently selected.
-            self.player.sign.set_lights(ALL_OFF)
-            time.sleep(0.5)
-            self.player.play_sequence(
-                seq_rotate_build_flip(count=self.desired_mode),
-                pace=0.20, post_delay=4.0,
-            )
-            self.previous_desired_mode = self.desired_mode
-        else:
-            # Last pass.
-            # Time elapsed without a button being pressed.
-            # Play the selected mode.
-            new_mode = self.desired_mode
-        return new_mode
+            self.play_sequence()

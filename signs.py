@@ -178,9 +178,15 @@ class Sign:
         assert brightnesses is not None
         assert isinstance(transitions, list)
         if force_update:
-            updates = zip(self.dimmer_channels, brightnesses, transitions)
+            updates = [t for t in zip(self.dimmer_channels, brightnesses, transitions)]
         else:
             updates = self._updates_needed(brightnesses, transitions)
+        self.execute_dimmer_commands(updates)
+
+    def execute_dimmer_commands(
+            self,
+            updates: list[tuple[DimmerChannel, int, float]],
+    ):
         commands = [
             c.make_set_command(
                 brightness=b,

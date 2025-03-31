@@ -130,6 +130,7 @@ def parse_arguments(
     try:
         return top_p.parse_args()
     except (ArgumentError, ArgumentTypeError, ValueError) as err:
+        print(1, err)
         raise ValueError()
 
 def process_arguments(
@@ -141,9 +142,10 @@ def process_arguments(
        otherwise raise an error."""
     try:
         parsed = parse_arguments(mode_ids, commands)
-        print("Args: " + ''.join('{k}: {v}, ' for k, v in vars(parsed)))
-    except ValueError:
+    except ValueError as err:
+        print(2, err)
         raise
+    print("Args: " + ''.join('{k}: {v}, ' for k, v in vars(parsed).items()))
     if parsed.operation == 'command':
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':
