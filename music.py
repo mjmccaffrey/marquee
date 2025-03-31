@@ -38,14 +38,14 @@ class PlayMusicMode(PlayMode):
         self.pace = 60 / tempo
         self.beat_unit = 1/4
 
-    def dimmer(self, brightness: int, transition: float, *lights: int):
-        """Return callable to effect state of specified dimmers."""
-        return lambda: s.execute_dimmer_commands(
-            [
-                (s.dimmer_channels[l], brightness, transition)
-                for l in lights
-            ]
-        )
+#    def dimmer(self, brightness: int, transition: float, *lights: int):
+#        """Return callable to effect state of specified dimmers."""
+#        return lambda: self.mode.sign.execute_dimmer_commands(
+#            [
+#                (s.dimmer_channels[l], brightness, transition)
+#                for l in lights
+#            ]
+#        )
 
     def light(self, pattern: str):
         """Return callable to effect light pattern."""

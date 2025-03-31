@@ -6,7 +6,7 @@ class Finale(PlayMusicMode):
 
     def execute(self):
         self.intro()
-        
+
     def intro(self):
         s = self
         s.player.sign.set_lights(ALL_OFF)
@@ -21,18 +21,6 @@ class Finale(PlayMusicMode):
             s.Note('♩', self.light("11100010000")),
             s.Rest('𝅗𝅥'),
             s.Note('♩', self.light("00000000000")))
-        s.Measure(
-            s.Note('♪', self.dimmer(HIGH, 7)),
-            s.Note('♪', self.dimmer(HIGH, 4)),
-            s.Note('♪', self.dimmer(HIGH, 9)),
-            s.Note('♪', self.dimmer(HIGH, 1)),
-            s.Note('♪', self.dimmer(HIGH, 8)),
-            s.Note('♪', self.dimmer(HIGH, 5)),
-            s.Note('♪', self.dimmer(HIGH, 2)),
-            s.Note('♪', self.dimmer(HIGH, 6)))
-        s.Measure(
-            s.Note('♪', self.dimmer(HIGH, 0)),
-            s.Note('♪', self.dimmer(HIGH, 3)))
         s.Measure()
         s.Measure(
             s.Note('♩', self.light("01000000000")),
