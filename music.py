@@ -63,7 +63,8 @@ class PlayMusicMode(PlayMode):
                 self.player.wait(wait, elapsed = time.time() - start)
                 beat += beats_elapsed
                 print(f"beat is now {beat}")
-            wait = (4 - beat) * self.pace
+            if beat < 5:
+                wait = (4 - beat) * self.pace
             self.player.wait(wait)
 
     class _Element(ABC):
