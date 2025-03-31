@@ -1,10 +1,16 @@
 from music import HIGH, PlayMusicMode
+from signs import ALL_OFF, ALL_LOW
 from sequence_defs import *
 
 class Finale(PlayMusicMode):
 
+    def execute(self):
+        self.intro()
+        
     def intro(self):
         s = self
+        s.player.sign.set_lights(ALL_OFF)
+        s.player.sign.set_dimmers(ALL_LOW)
         s.Measure(
             s.Note('♩', s.light("01000000000")))
         s.Measure(
