@@ -46,7 +46,7 @@ class PlayMusicMode(PlayMode):
         return lambda: self.player.sign.set_lights(pattern)
     def relay(self, *indices):
         """Flip"""
-        return lambda: self.player.sign.flip_relays(indices)
+        return lambda: self.player.sign.flip_relays(*indices)
     
     def play(self, *measures: "_Measure"):
         """"""
