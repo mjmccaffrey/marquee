@@ -195,4 +195,4 @@ def seq_random_once_each():
     indices = [i for i in range(LIGHT_COUNT)]
     random.shuffle(indices)
     while indices:
-        yield indices.pop()
+        yield (indices.pop(),)
