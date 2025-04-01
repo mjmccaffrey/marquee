@@ -25,7 +25,7 @@ class Finale(PlayMusicMode):
             s.Measure(),
             s.Measure(
                 s.Note('♩', s.light("0100000000")),
-                s.Note('♩', s.light("0101000001")),
+                s.Note('♩', s.light("0001000001")),
                 s.Note('♩', s.light("0100000000")),
                 s.Note('♩', s.light("0101000001"))),
             s.Measure(

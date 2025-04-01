@@ -82,9 +82,9 @@ class PlayMusicMode(PlayMode):
             self.mode = mode
             self.duration = duration
 
+        @abstractmethod
         def execute(self) -> float:
             """Perform action(s), and return # of beats transpired."""
-            return self.duration
 
     class _Note(_Element):
         """ """
@@ -102,7 +102,7 @@ class PlayMusicMode(PlayMode):
             print(f"executing Note with {len(self.actions)} actions")
             for action in self.actions:
                 action()
-            return super().execute()
+            return self.duration
 
     def Note(self, note: str, *actions: Callable) -> _Note:
         return PlayMusicMode._Note(self, note, *actions)
@@ -116,6 +116,9 @@ class PlayMusicMode(PlayMode):
         ) -> None:
             assert note in note_duration, "Invalid note."
             super().__init__(mode, note_duration[note])
+
+        def execute(self):
+            return self.duration
 
     def Rest(self, note:str) -> _Rest:
         return PlayMusicMode._Rest(self, note)
@@ -143,10 +146,12 @@ class PlayMusicMode(PlayMode):
                 override,
                 **kwargs,
             )
-        def exeute(self):
+            print("sequence initialized")
+
+        def execute(self):
             print("executing sequence")
             self.mode.play_sequence_once()
-            return super().execute()
+            return self.duration
 
     def Sequence(
         self,
@@ -176,6 +181,9 @@ class PlayMusicMode(PlayMode):
             PlayMusicMode._Measure.all_measures.append(self)
             self.elements = elements
             self.beats = beats
+
+        def execute(self):
+            return self.duration
 
     def Measure(self, *elements: "PlayMusicMode._Element") -> _Measure:
         return PlayMusicMode._Measure(self, *elements)
