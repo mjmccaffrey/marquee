@@ -24,9 +24,9 @@ class Finale(PlayMusicMode):
                 s.Note('♩', s.light("1110001000")),
                 s.Rest('♩♪'),
                 s.Note('♩', s.light("0000000000"))),
-            s.Measure(),
-            s.player.sign.set_dimmers(ALL_LOW),
-            s.player.sign.set_lights(ALL_ON),
+            s.Measure(
+                s.Note('♩', s.player.sign.set_dimmers(ALL_LOW)),
+                s.Note('♩', s.player.sign.set_lights(ALL_ON))),
             s.Measure(s.Sequence('♩', LIGHT_COUNT, seq_random_once_each, 
                             RelayOverride(action=s.dimmer(HIGH, 2, )))),
             s.Measure(
