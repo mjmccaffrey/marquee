@@ -54,7 +54,7 @@ class PlayMusicMode(PlayMode):
     def play(self, *measures: "_Measure"):
         """"""
         for measure in measures:
-            beat = 1.0
+            beat = 0
             print(f"playing measure {measure.id}")
             for element in measure.elements:
                 start = time.time()
@@ -63,8 +63,7 @@ class PlayMusicMode(PlayMode):
                 self.player.wait(wait, elapsed = time.time() - start)
                 beat += beats_elapsed
                 print(f"beat is now {beat}")
-            if beat < 5:
-                wait = (4 - beat) * self.pace
+            wait = max(0, measure.beats - beat) * self.pace
             self.player.wait(wait)
 
     class _Element(ABC):
@@ -136,17 +135,17 @@ class PlayMusicMode(PlayMode):
             super().__init__(mode, note_duration[note] * count)
             self.count = count
             self.mode = PlaySequenceMode(
-                mode.player, 
+                mode.player,
                 "Music Sequence",
                 sequence,
                 mode.pace,
+                count,
                 override,
                 **kwargs,
             )
-
-        def execute(self) -> float:
-            for i in range(self.count):
-                pass
+        def exeute(self):
+            print("executing sequence")
+            self.mode.play_sequence_once()
             return super().execute()
 
     def Sequence(
@@ -168,6 +167,7 @@ class PlayMusicMode(PlayMode):
             self, 
             mode: "PlayMusicMode", 
             *elements: "PlayMusicMode._Element",
+            beats: int = 4,
         ) -> None:
             """"""
             super().__init__(mode, 0)
@@ -175,6 +175,7 @@ class PlayMusicMode(PlayMode):
             print(f"m: {self.id}")
             PlayMusicMode._Measure.all_measures.append(self)
             self.elements = elements
+            self.beats = beats
 
     def Measure(self, *elements: "PlayMusicMode._Element") -> _Measure:
         return PlayMusicMode._Measure(self, *elements)

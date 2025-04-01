@@ -13,26 +13,26 @@ class Finale(PlayMusicMode):
         print(3)
         s.play(
             s.Measure(
-                s.Note('♩', s.light("01000000000"))),
+                s.Note('♩', s.light("0100000000"))),
             s.Measure(
                 s.Note('♩', s.light("00000000000"))),
             s.Measure(
                 s.Rest('𝅝')),
             s.Measure(
-                s.Note('♩', s.light("11100010000")),
+                s.Note('♩', s.light("1110001000")),
                 s.Rest('𝅗𝅥'),
-                s.Note('♩', s.light("00000000000"))),
+                s.Note('♩', s.light("0000000000"))),
             s.Measure(),
             s.Measure(
-                s.Note('♩', s.light("01000000000")),
-                s.Note('♩', s.light("00010000001")),
-                s.Note('♩', s.light("01000000000")),
-                s.Note('♩', s.light("00010000001"))),
+                s.Note('♩', s.light("0100000000")),
+                s.Note('♩', s.light("0101000001")),
+                s.Note('♩', s.light("0100000000")),
+                s.Note('♩', s.light("0101000001"))),
             s.Measure(
-                s.Note('♩', s.light("01000010000")),
-                s.Note('♩', s.light("00010101001")),
-                s.Note('♩', s.light("01000010000")),
-                s.Note('♩', s.light("00010101001"))),
+                s.Note('♩', s.light("0100001000")),
+                s.Note('♩', s.light("0101100011")),
+                s.Note('♩', s.light("0100001000")),
+                s.Note('♩', s.light("0101100011"))),
             s.Measure(
                 s.Sequence('♩', 4, seq_build_rows, from_top=True)),
             s.Measure(

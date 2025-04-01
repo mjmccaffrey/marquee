@@ -151,12 +151,14 @@ class PlaySequenceMode(PlayMode):
         #
         sequence: Callable,
         pace: tuple[float, ...] | float | None = None,
+        stop: int | None = None,
         override: RelayOverride | None = None,
         **kwargs,
     ):
         """"""
         self.sequence = sequence
         self.pace = pace
+        self.stop = stop
         self.override = override
         self.kwargs = kwargs
 
@@ -177,11 +179,12 @@ class PlaySequenceMode(PlayMode):
             preset_relays=(override is not None),
         )
 
-    def play_sequence(self):
+    def play_sequence_once(self):
         self.player.replace_kwarg_values(self.kwargs)
         self.player.play_sequence(
             sequence=self.sequence(**self.kwargs),
             pace=self.pace,
+            stop=self.stop,
             override=self.override,
         )
 
@@ -189,4 +192,4 @@ class PlaySequenceMode(PlayMode):
         """Play the mode."""
         super().execute()
         while True:
-            self.play_sequence()
+            self.play_sequence_once()
