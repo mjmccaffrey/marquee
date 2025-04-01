@@ -34,9 +34,9 @@ class Finale(PlayMusicMode):
             s.Measure(beats=8),
             s.Measure(
                 s.Rest('𝅗𝅥♩♪𝅘𝅥𝅰'),
-                s.Note('𝅘𝅥𝅰', s.relay(13)),
-                s.Note('𝅘𝅥𝅰', s.relay(14)),
-                s.Note('𝅘𝅥𝅰', s.relay(15)),
+                s.Note('𝅘𝅥𝅰', s.relay(10, 11)),
+                s.Note('𝅘𝅥𝅰', s.relay(12, 13)),
+                s.Note('𝅘𝅥𝅰', s.relay(14, 15)),
             ),
             s.Measure(
                 s.Note('♩', s.light("0100000000")),
