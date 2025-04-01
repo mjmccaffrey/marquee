@@ -145,7 +145,7 @@ def process_arguments(
     except ValueError as err:
         print(2, err)
         raise
-    print("Args: " + ''.join('{k}: {v}, ' for k, v in vars(parsed).items()))
+    print("Args: " + ''.join(f'{k}: {v}, ' for k, v in vars(parsed).items()))
     if parsed.operation == 'command':
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':

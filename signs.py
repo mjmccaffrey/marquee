@@ -61,6 +61,7 @@ class Sign:
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
+        print(f"******** {len(self.dimmer_channels)}")
         for c in self.dimmer_channels:
             print(c)
         assert len(self.dimmer_channels) == LIGHT_COUNT
