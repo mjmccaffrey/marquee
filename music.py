@@ -161,7 +161,8 @@ class PlayMusicMode(PlayMode):
         override: RelayOverride | None = None,
         **kwargs,
     ):
-        return PlayMusicMode._Sequence(self, note, count, sequence)
+        return PlayMusicMode._Sequence(
+            self, note, count, sequence, override, **kwargs)
     
     class _Measure(_Element):
         """"""
