@@ -33,10 +33,12 @@ EXTRA_TO_RELAY = {
 ALL_RELAYS = LIGHT_TO_RELAY | EXTRA_TO_RELAY
 LIGHT_COUNT = len(LIGHT_TO_RELAY)
 EXTRA_COUNT = len(EXTRA_TO_RELAY)
-ALL_HIGH = "A" * LIGHT_COUNT
-ALL_LOW = "0" * LIGHT_COUNT
-ALL_ON = "1" * LIGHT_COUNT
-ALL_OFF = "0" * LIGHT_COUNT
+HIGH, LOW = "A", "0"
+ON, OFF = "1", "0"
+ALL_HIGH = HIGH * LIGHT_COUNT
+ALL_LOW = LOW * LIGHT_COUNT
+ALL_ON = ON * LIGHT_COUNT
+ALL_OFF = OFF * LIGHT_COUNT
 
 class Sign:
     """Supports the physical devices."""
@@ -157,6 +159,14 @@ class Sign:
             self._relaymodule.set_state_of_devices(full_pattern)
             self.extra_pattern = extra_pattern
             self.light_pattern = light_pattern
+
+    def flip_relays(self, *indices: int):
+        """"""
+        extra = [int(e) for e in self.extra_pattern]
+        for i in indices:
+            extra[i] = 0 if extra[i] else 1
+        extra = ''.join(str(e) for e in extra)
+        self.set_lights(self.light_pattern, extra)
 
     def set_dimmers(
             self, 

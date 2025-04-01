@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - finale"""
 
-from music import HIGH, PlayMusicMode
-from signs import ALL_OFF, ALL_LOW, ALL_ON, RelayOverride
+from music import PlayMusicMode
+from signs import ALL_HIGH, ALL_OFF, ALL_ON, ALL_LOW, ALL_ON, HIGH, RelayOverride
 from sequence_defs import *
 
 class Finale(PlayMusicMode):
@@ -12,14 +12,14 @@ class Finale(PlayMusicMode):
 
     def intro(self):
         s = self
-        s.player.sign.set_dimmers("AAAAAAAAAA")
-        print(3)
         s.play(
+            s.Measure(
+                s.Note('♩', s.dimmer(ALL_HIGH)),
+                s.Rest('𝅗𝅥♩')),
             s.Measure(
                 s.Note('♩', s.light("0100000000"))),
             s.Measure(
                 s.Note('♩', s.light("0000000000"))),
-            s.Measure(beats=2),
             s.Measure(
                 s.Note('♩', s.light("1110001000")),
                 s.Rest('♩♪'),
@@ -27,8 +27,17 @@ class Finale(PlayMusicMode):
             s.Measure(
                 s.Note('♩', s.dimmer(ALL_LOW)),
                 s.Note('♩', s.light(ALL_ON))),
-            s.Measure(s.Sequence('♩', LIGHT_COUNT, seq_random_once_each, 
-                            RelayOverride(action=s.dimmer_seq(HIGH, 2)))),
+            s.Measure(
+                s.Sequence('♩', LIGHT_COUNT, seq_random_once_each, 
+                    RelayOverride(action=s.dimmer_seq(100, 2))),
+                beats=8),
+            s.Measure(),
+            s.Measure(
+                s.Rest('𝅗𝅥♩♪𝅘𝅥𝅰'),
+                s.Note('𝅘𝅥𝅰', s.relay(13)),
+                s.Note('𝅘𝅥𝅰', s.relay(14)),
+                s.Note('𝅘𝅥𝅰', s.relay(15)),
+            ),
             s.Measure(
                 s.Note('♩', s.light("0100000000")),
                 s.Note('♩', s.light("0001000001")),
@@ -41,10 +50,8 @@ class Finale(PlayMusicMode):
                 s.Note('♩', s.light("0101100011"))),
             s.Measure(
                 s.Sequence('♩', 4, seq_build_rows, from_top=True)),
-            s.Measure(
-                s.Sequence('♩', 4, seq_build_rows, from_top=True)),
-            s.Measure(
-                s.Sequence('♩', 4, seq_build_rows, from_top=False)),
+            s.Measure(),
             s.Measure(
                 s.Sequence('♩', 4, seq_build_rows, from_top=False)),
+            s.Measure(),
         )

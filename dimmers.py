@@ -122,7 +122,6 @@ class ShellyDimmer(ABC):
                 for dimmer in cls._dimmers
                 if id < dimmer.channel_count
             ]
-            print(commands)
             asyncio.run(cls.execute_multiple_commands(commands))
             time.sleep(150)
         print("Calibration complete")

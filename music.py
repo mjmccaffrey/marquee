@@ -8,14 +8,13 @@ from typing import Any
 from signs import Sign
 from modes import PlayMode, PlaySequenceMode, RelayOverride
 
-HIGH = 100
-
 note_duration: dict[str, float] = {
-    '𝅝': 4,    '𝄻': 4,
-    '𝅗𝅥': 2,    '𝄼': 2,
-    '♩': 1,    '𝄽': 1,
-    '♪': 0.5,  '𝄾': 0.5,
-    '𝅘𝅥𝅯': 0.25, '𝄿': 0.25,
+    '𝅝': 4,     '𝄻': 4,
+    '𝅗𝅥': 2,     '𝄼': 2,
+    '♩': 1,     '𝄽': 1,
+    '♪': 0.5,   '𝄾': 0.5,
+    '𝅘𝅥𝅯': 0.25,  '𝄿': 0.25,
+    '𝅘𝅥𝅰': 0.125, '𝅀': 0.125,
 }
 
 class PlayMusicMode(PlayMode):
@@ -25,11 +24,9 @@ class PlayMusicMode(PlayMode):
         player: Any,  # Player
         name: str,
         #
-        tempo: int,
     ):
-        print(1)
         super().__init__(player, name)
-        print(2)
+        tempo = 90
         self.pace = 60 / tempo
         self.beat_unit = 1/4
 
@@ -47,6 +44,9 @@ class PlayMusicMode(PlayMode):
     def light(self, pattern: str):
         """Return callable to effect light pattern."""
         return lambda: self.player.sign.set_lights(pattern)
+    def relay(self, *indices):
+        """Flip"""
+        return lambda: self.player.sign.flip_relays(indices)
     
     def play(self, *measures: "_Measure"):
         """"""
