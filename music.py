@@ -186,5 +186,5 @@ class PlayMusicMode(PlayMode):
         def execute(self):
             return self.duration
 
-    def Measure(self, *elements: "PlayMusicMode._Element") -> _Measure:
-        return PlayMusicMode._Measure(self, *elements)
+    def Measure(self, *elements: "PlayMusicMode._Element", beats: int = 4) -> _Measure:
+        return PlayMusicMode._Measure(self, *elements, beats=beats)

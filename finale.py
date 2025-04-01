@@ -16,11 +16,11 @@ class Finale(PlayMusicMode):
                 s.Note('♩', s.light("0100000000"))),
             s.Measure(
                 s.Note('♩', s.light("00000000000"))),
-            s.Measure(
-                s.Rest('𝅝')),
+            s.Measure(),
             s.Measure(
                 s.Note('♩', s.light("1110001000")),
-                s.Rest('𝅗𝅥'),
+                s.Rest('♩'),
+                s.Rest('♪'),
                 s.Note('♩', s.light("0000000000"))),
             s.Measure(),
             s.Measure(
