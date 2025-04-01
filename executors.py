@@ -265,4 +265,4 @@ class Executor():
         self.add_mode(25, "rotate_reversible_2", 
             RotateReversible, pace=0.35, 
             pattern = "0" + "1" * (LIGHT_COUNT - 1))
-        self.add_mode(26, "finale", Finale, tempo=100)
+        self.add_mode(26, "finale", Finale)

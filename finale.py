@@ -31,7 +31,7 @@ class Finale(PlayMusicMode):
                 s.Sequence('♩', LIGHT_COUNT, seq_random_once_each, 
                     RelayOverride(action=s.dimmer_seq(100, 2))),
                 beats=8),
-            s.Measure(),
+            s.Measure(beats=8),
             s.Measure(
                 s.Rest('𝅗𝅥♩♪𝅘𝅥𝅰'),
                 s.Note('𝅘𝅥𝅰', s.relay(13)),
