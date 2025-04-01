@@ -96,6 +96,7 @@ class Player:
                     if override is not None:
                         override.speed_factor = self.speed_factor
                 if override is not None and override.action is not None:
+                    print(f"lights: {lights}")
                     override.action(lights)
                 else:
                     self.sign.set_lights(
