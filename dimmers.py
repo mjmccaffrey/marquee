@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 import asyncio
+from collections.abc import Callable
 from dataclasses import dataclass
 import requests
 import time
@@ -248,6 +249,7 @@ class _DimmerCommand:
 @dataclass
 class RelayOverride:
     """ Parameters for using dimmers rather than relays. """
+    action: Callable | None = None
     concurrent: bool = True
     brightness_on: int = 100
     brightness_off: int = 0

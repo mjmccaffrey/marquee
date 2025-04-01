@@ -95,10 +95,13 @@ class Player:
                 if p is not None:
                     if override is not None:
                         override.speed_factor = self.speed_factor
-                self.sign.set_lights(
-                    lights, 
-                    override=override,
-                )
+                if override is not None and override.action is not None:
+                    override.action(lights)
+                else:
+                    self.sign.set_lights(
+                        lights, 
+                        override=override,
+                    )
                 after = time.time()
                 self.wait(p, after - before)
         self.wait(post_delay)
