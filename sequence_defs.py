@@ -188,3 +188,11 @@ def seq_random_flip(*, light_pattern):
         index = next(random_gen)
         lights[index] = opposite_pattern(lights[index])
         yield lights
+
+def seq_random_once_each():
+    """Return random light index until all light indexes 
+       have been returned exactly one."""
+    indices = [i for i in range(LIGHT_COUNT)]
+    random.shuffle(indices)
+    while indices:
+        yield indices.pop()

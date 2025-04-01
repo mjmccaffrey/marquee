@@ -1,3 +1,4 @@
+"""Marquee Lighted Sign Project - music"""
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterator
@@ -9,18 +10,12 @@ from modes import PlayMode, PlaySequenceMode, RelayOverride
 
 HIGH = 100
 
-_1, __1 =   '𝅝', '𝄻'
-_2, __2 =   '𝅗𝅥', '𝄼'
-_4, __4 =   '♩', '𝄽'
-_8, __8 =   '♪', '𝄾'
-_16, __16 = '𝅘𝅥𝅯', '𝄿'
-
 note_duration: dict[str, float] = {
-     _1: 4,    __1: 4,
-     _2: 2,    __2: 2,
-     _4: 1,    __4: 1,
-     _8: 0.5,  __8: 0.5,
-    _16: 0.25, __16: 0.25,
+    '𝅝': 4,    '𝄻': 4,
+    '𝅗𝅥': 2,    '𝄼': 2,
+    '♩': 1,    '𝄽': 1,
+    '♪': 0.5,  '𝄾': 0.5,
+    '𝅘𝅥𝅯': 0.25, '𝄿': 0.25,
 }
 
 class PlayMusicMode(PlayMode):
@@ -74,13 +69,16 @@ class PlayMusicMode(PlayMode):
         def __init__(
             self, 
             mode: "PlayMusicMode", 
-            duration: float,
+            symbols: str,
         ) -> None:
             super().__init__()
             self.id = PlayMusicMode._Element.count
             PlayMusicMode._Element.count += 1
             self.mode = mode
-            self.duration = duration
+            self.duration = sum(
+                note_duration[s]
+                for s in symbols
+            )
 
         @abstractmethod
         def execute(self) -> float:
@@ -91,10 +89,10 @@ class PlayMusicMode(PlayMode):
         def __init__(
             self, 
             mode: "PlayMusicMode", 
-            note: str, *actions: Callable
+            symbols: str,
+            *actions: Callable
         ) -> None:
-            assert note in note_duration, "Invalid note."
-            super().__init__(mode, note_duration[note])
+            super().__init__(mode, symbols)
             assert actions, "Note must have at least 1 action."
             self.actions = actions
 
@@ -104,24 +102,23 @@ class PlayMusicMode(PlayMode):
                 action()
             return self.duration
 
-    def Note(self, note: str, *actions: Callable) -> _Note:
-        return PlayMusicMode._Note(self, note, *actions)
+    def Note(self, symbols: str, *actions: Callable) -> _Note:
+        return PlayMusicMode._Note(self, symbols, *actions)
 
     class _Rest(_Element):
         """ Duration in Beats. """
         def __init__(
             self, 
             mode: "PlayMusicMode", 
-            note: str,
+            symbols: str,
         ) -> None:
-            assert note in note_duration, "Invalid note."
-            super().__init__(mode, note_duration[note])
+            super().__init__(mode, symbols)
 
         def execute(self):
             return self.duration
 
-    def Rest(self, note:str) -> _Rest:
-        return PlayMusicMode._Rest(self, note)
+    def Rest(self, symbols: str) -> _Rest:
+        return PlayMusicMode._Rest(self, symbols)
 
     class _Sequence(_Element):
         """"""
@@ -129,13 +126,14 @@ class PlayMusicMode(PlayMode):
         def __init__(
             self,
             mode: "PlayMusicMode", 
-            note: str,
+            symbols: str,
             count: int,
             sequence: Callable,
             override: RelayOverride | None = None,
             **kwargs,
         ) -> None:
-            super().__init__(mode, note_duration[note] * count)
+            super().__init__(mode, symbols)
+            self.duration *= count
             self.count = count
             self.mode = PlaySequenceMode(
                 mode.player,
@@ -155,14 +153,14 @@ class PlayMusicMode(PlayMode):
 
     def Sequence(
         self,
-        note: str,
+        symbols: str,
         count: int,
         sequence: Callable,
         override: RelayOverride | None = None,
         **kwargs,
     ):
         return PlayMusicMode._Sequence(
-            self, note, count, sequence, override, **kwargs)
+            self, symbols, count, sequence, override, **kwargs)
     
     class _Measure(_Element):
         """"""
@@ -176,7 +174,7 @@ class PlayMusicMode(PlayMode):
             beats: int = 4,
         ) -> None:
             """"""
-            super().__init__(mode, 0)
+            super().__init__(mode, '')
             self.id = len(PlayMusicMode._Measure.all_measures)
             print(f"m: {self.id}")
             PlayMusicMode._Measure.all_measures.append(self)

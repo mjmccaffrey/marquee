@@ -140,6 +140,8 @@ class Sign:
         """Set all lights and extra relays per supplied patterns and override.
            Set light_pattern property, always as string
            rather than list."""
+        assert len(light_pattern) == LIGHT_COUNT
+        assert extra_pattern is None or len(extra_pattern) == EXTRA_COUNT
         light_pattern = ''.join(str(e) for e in light_pattern)
         if override is not None:
             self._set_lights_relay_override(light_pattern, override)
@@ -162,6 +164,7 @@ class Sign:
         ):
         """ Set the dimmers per the supplied pattern or brightnesses,
             and transition times. """
+        assert pattern is None or len(pattern) == LIGHT_COUNT
         assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
         if pattern is not None:
             bulb_adjustments = {  # !!! adjust for frosted 40 watt
