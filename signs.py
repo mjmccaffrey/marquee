@@ -162,6 +162,7 @@ class Sign:
 
     def flip_relays(self, *indices: int):
         """"""
+        print(indices)
         extra = [int(e) for e in self.extra_pattern]
         print(extra)
         for i in indices:
