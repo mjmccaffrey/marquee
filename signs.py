@@ -61,6 +61,8 @@ class Sign:
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
+        for c in self.dimmer_channels:
+            print(c)
         assert len(self.dimmer_channels) == LIGHT_COUNT
         full_pattern = self._relaymodule.get_state_of_devices()
         self.light_pattern = full_pattern[:LIGHT_COUNT]
