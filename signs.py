@@ -162,11 +162,12 @@ class Sign:
 
     def flip_relays(self, *indices: int):
         """"""
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         print(indices)
         extra = [int(e) for e in self.extra_pattern]
         print(extra)
         for i in indices:
-            extra[i] = 0 if extra[i] else 1
+            extra[i - 10] = 0 if extra[i - 10] else 1
         extra = ''.join(str(e) for e in extra)
         print(extra)
         self.set_lights(self.light_pattern, extra)
