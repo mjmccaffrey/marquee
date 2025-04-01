@@ -4,7 +4,7 @@ from collections.abc import Callable
 from signal import SIGUSR1  # type: ignore
 
 from buttons import Button
-from dimmers import ShellyDimmer, ShellyProDimmer2PM, RelayOverride, TRANSITION_DEFAULT
+from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from finale import Finale
 from gpiozero import Button as _Button  # type: ignore
 import modes
@@ -12,7 +12,7 @@ from mode_defs import *
 import players
 from relays import NumatoUSBRelayModule, NumatoRL160001
 from sequence_defs import *
-from signs import ALL_RELAYS, ALL_OFF, EXTRA_COUNT, Sign
+from signs import ALL_RELAYS, ALL_OFF, EXTRA_COUNT, SpecialParams, Sign
 
 DIMMER_ADDRESSES = [
     '192.168.51.111',
@@ -122,7 +122,7 @@ class Executor():
             name: str, 
             sequence: Callable,
             pace: tuple[float, ...] | float | None = None,
-            override: RelayOverride | None = None,
+            specialparams: SpecialParams | None = None,
             **kwargs,
         ):
         """Create a Mode object from a sequence and parameters, and register it."""
@@ -132,7 +132,7 @@ class Executor():
             modes.PlaySequenceMode,
             sequence=sequence,
             pace=pace,
-            override=override,
+            specialparams=specialparams,
             **kwargs,
         )
 
@@ -195,18 +195,18 @@ class Executor():
         self.add_mode(9, "rapid_fade", RapidFade)  # !!!!!!!!!
         self.add_sequence_mode(10, "blink_alternate_fade",
             seq_blink_alternate, pace=4, 
-            override=RelayOverride(
+            specialparams=DimmerParams(
                 transition_on=1.0,
                 transition_off=3.0,
             )
         )
         self.add_sequence_mode(11, "random_flip_fade", seq_random_flip, pace=2.0,
-            override=RelayOverride(),
+            specialparams=DimmerParams(),
             light_pattern='LIGHT_PATTERN',
         )
         self.add_sequence_mode(12, "blink_all_fade_seq",
             seq_blink_all, pace=1,
-            override=RelayOverride(
+            specialparams=DimmerParams(
                 concurrent=False,
                 transition_on=0.5,
                 transition_off=0.5,
@@ -214,7 +214,7 @@ class Executor():
         )
         self.add_sequence_mode(13, "blink_all_fade_con", 
             seq_blink_all, pace=1,
-            override=RelayOverride(
+            specialparams=DimmerParams(
                 concurrent=True,
                 transition_on=0.5,
                 transition_off=0.5,
@@ -222,25 +222,25 @@ class Executor():
         )
         self.add_sequence_mode(14, "blink_all_fade_fast", 
             seq_blink_all, pace=0.5,
-            override=RelayOverride()
+            specialparams=DimmerParams()
         )
         self.add_sequence_mode(15, "blink_all_fade_slowwww", 
             seq_blink_all, pace=10,
-            override=RelayOverride(
+            specialparams=DimmerParams(
                 brightness_on=100,
                 brightness_off=10,
             )
         )
         self.add_sequence_mode(16, "blink_all_fade_stealth", 
             seq_blink_all, pace=(1, 60),
-            override=RelayOverride(
+            specialparams=DimmerParams(
                 transition_on=2,
                 transition_off=2,
             )
         )
         self.add_sequence_mode(17, "corner_rotate_fade", 
             seq_opposite_corner_pairs, pace=5,
-            override=RelayOverride(
+            specialparams=DimmerParams(
                 concurrent=True,
                 brightness_on = 90,
                 brightness_off = 10,
@@ -248,7 +248,7 @@ class Executor():
         )
         self.add_sequence_mode(18, "rotate_slight_fade",
             seq_rotate, pace=0.5,
-            override=RelayOverride(
+            specialparams=DimmerParams(
                 concurrent=False,
                 brightness_on = 100,
                 brightness_off = 30,

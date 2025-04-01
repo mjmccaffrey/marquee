@@ -7,9 +7,9 @@ import time
 from typing import Any
 
 from buttons import Button
-from dimmers import RelayOverride, TRANSITION_DEFAULT
+from dimmers import TRANSITION_DEFAULT
 from sequence_defs import seq_rotate_build_flip
-from signs import ALL_HIGH, ALL_OFF, ALL_ON
+from signs import ALL_HIGH, ALL_OFF, ALL_ON, DimmerParams, SpecialParams
 
 @dataclass
 class ModeConstructor:
@@ -152,31 +152,31 @@ class PlaySequenceMode(PlayMode):
         sequence: Callable,
         pace: tuple[float, ...] | float | None = None,
         stop: int | None = None,
-        override: RelayOverride | None = None,
+        specialparams: SpecialParams | None = None,
         **kwargs,
     ):
         """"""
         self.sequence = sequence
         self.pace = pace
         self.stop = stop
-        self.override = override
+        self.specialparams = specialparams
         self.kwargs = kwargs
 
-        if override is not None:
+        if isinstance(specialparams, DimmerParams):
             default_trans = (
                 pace if isinstance(pace, float) else
                 TRANSITION_DEFAULT
             )
-            if override.transition_off is None:
-                override.transition_off = default_trans
-            if override.transition_on is None:
-                override.transition_on = default_trans
+            if specialparams.transition_off is None:
+                specialparams.transition_off = default_trans
+            if specialparams.transition_on is None:
+                specialparams.transition_on = default_trans
 
         super().__init__(
             player, 
             name, 
-            preset_dimmers=(override is None),
-            preset_relays=(override is not None),
+            preset_dimmers=(specialparams is None),
+            preset_relays=(specialparams is not None),
         )
 
     def play_sequence_once(self):
@@ -185,7 +185,7 @@ class PlaySequenceMode(PlayMode):
             sequence=self.sequence(**self.kwargs),
             pace=self.pace,
             stop=self.stop,
-            override=self.override,
+            specialparams=self.specialparams,
         )
 
     def execute(self):

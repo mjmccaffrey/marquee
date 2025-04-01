@@ -6,9 +6,8 @@ import time
 from typing import Any
 
 from buttons import Button, ButtonPressed
-from dimmers import RelayOverride
 import modes
-from signs import Sign
+from signs import ActionParams, DimmerParams, SpecialParams, Sign
 
 class Player:
     """Executes one mode at a time."""
@@ -76,7 +75,7 @@ class Player:
             pace: tuple[float, ...] | float | None = None,
             stop: int | None = None, 
             post_delay: float = 0, 
-            override: RelayOverride | None = None,
+            specialparams: SpecialParams | None = None,
         ):
         """Execute sequence count times, with pace seconds in between.
            If stop is specified, end the sequence 
@@ -93,15 +92,15 @@ class Player:
                 p = next(pace_iter)
                 before = time.time()
                 if p is not None:
-                    if override is not None:
-                        override.speed_factor = self.speed_factor
-                if override is not None and override.action is not None:
+                    if isinstance(specialparams, DimmerParams):
+                        specialparams.speed_factor = self.speed_factor
+                if isinstance(specialparams, ActionParams):
                     print(f"lights: {lights}")
-                    override.action(lights)
+                    specialparams.action(lights)
                 else:
                     self.sign.set_lights(
                         lights, 
-                        override=override,
+                        specialparams=specialparams,
                     )
                 after = time.time()
                 self.wait(p, after - before)

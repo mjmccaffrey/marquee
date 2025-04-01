@@ -5,8 +5,8 @@ from collections.abc import Callable, Iterator
 import time
 from typing import Any
 
-from signs import Sign
-from modes import PlayMode, PlaySequenceMode, RelayOverride
+from signs import Sign, SpecialParams
+from modes import PlayMode, PlaySequenceMode, DimmerParams
 
 note_duration: dict[str, float] = {
     '𝅝': 4,     '𝄻': 4,
@@ -131,7 +131,7 @@ class PlayMusicMode(PlayMode):
             symbols: str,
             count: int,
             sequence: Callable,
-            override: RelayOverride | None = None,
+            specialparams: SpecialParams | None = None,
             **kwargs,
         ) -> None:
             super().__init__(mode, symbols)
@@ -143,7 +143,7 @@ class PlayMusicMode(PlayMode):
                 sequence,
                 mode.pace,
                 count,
-                override,
+                specialparams,
                 **kwargs,
             )
             print("sequence initialized")
@@ -158,11 +158,11 @@ class PlayMusicMode(PlayMode):
         symbols: str,
         count: int,
         sequence: Callable,
-        override: RelayOverride | None = None,
+        specialparams: SpecialParams | None = None,
         **kwargs,
     ):
         return PlayMusicMode._Sequence(
-            self, symbols, count, sequence, override, **kwargs)
+            self, symbols, count, sequence, specialparams, **kwargs)
     
     class _Measure(_Element):
         """"""

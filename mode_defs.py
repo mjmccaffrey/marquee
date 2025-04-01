@@ -6,7 +6,7 @@ from sequence_defs import *
 import time
 from typing import Any
 
-from dimmers import RelayOverride, TRANSITION_MINIMUM
+from dimmers import DimmerParams, TRANSITION_MINIMUM
 from modes import PlayMode
 from signs import ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
 
@@ -107,7 +107,7 @@ class EvenOddFade(PlayMode):
         for pattern in itertools.cycle((even_on, odd_on)):
             self.player.sign.set_lights(
                 pattern, 
-                override=RelayOverride(
+                specialparams=DimmerParams(
                     concurrent=True,
                     brightness_on = 90,
                     brightness_off = 10,

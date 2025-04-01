@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - finale"""
 
 from music import PlayMusicMode
-from signs import ALL_HIGH, ALL_OFF, ALL_ON, ALL_LOW, ALL_ON, HIGH, RelayOverride
+from signs import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
 from sequence_defs import *
 
 class Finale(PlayMusicMode):
@@ -29,7 +29,7 @@ class Finale(PlayMusicMode):
                 s.Note('♩', s.light(ALL_ON))),
             s.Measure(
                 s.Sequence('♩', LIGHT_COUNT, seq_random_once_each, 
-                    RelayOverride(action=s.dimmer_seq(100, 2))),
+                    ActionParams(action=s.dimmer_seq(100, 2))),
                 beats=8),
             s.Measure(beats=8),
             s.Measure(

@@ -1,11 +1,13 @@
 """Marquee Lighted Sign Project - signs"""
 
 import asyncio
+from collections.abc import Callable
+from dataclasses import dataclass
 import logging
 
 from buttons import Button
 from dimmers import (
-    ShellyDimmer, DimmerChannel, RelayOverride, 
+    ShellyDimmer, DimmerChannel,
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,
 )
 from relays import NumatoUSBRelayModule
@@ -39,6 +41,29 @@ ALL_HIGH = HIGH * LIGHT_COUNT
 ALL_LOW = LOW * LIGHT_COUNT
 ALL_ON = ON * LIGHT_COUNT
 ALL_OFF = OFF * LIGHT_COUNT
+
+@dataclass
+class SpecialParams:
+    """"""
+
+@dataclass
+class ActionParams(SpecialParams):
+    """"""
+    action: Callable
+
+@dataclass
+class ClickParams(SpecialParams):
+    """"""
+
+@dataclass
+class DimmerParams(SpecialParams):
+    """ Parameters for using dimmers rather than relays. """
+    concurrent: bool = True
+    brightness_on: int = 100
+    brightness_off: int = 0
+    speed_factor: float = 1.0
+    transition_on: float | None = None
+    transition_off: float | None = None
 
 class Sign:
     """Supports the physical devices."""
@@ -102,20 +127,20 @@ class Sign:
     def _set_lights_relay_override(
             self,
             light_pattern: list | str, 
-            override: RelayOverride,
+            specialparams: DimmerParams,
     ):
-        """Set dimmers per the specified pattern and override."""
+        """Set dimmers per the specified pattern and specialparams."""
         bright_values: dict[int, int] = {
-            0: int(override.brightness_off * self.brightness_factor), 
-            1: int(override.brightness_on * self.brightness_factor),
+            0: int(specialparams.brightness_off * self.brightness_factor), 
+            1: int(specialparams.brightness_on * self.brightness_factor),
         }
-        assert override.transition_off is not None
-        assert override.transition_on is not None
+        assert specialparams.transition_off is not None
+        assert specialparams.transition_on is not None
         trans_values: dict[int, float] = {
             0: max(TRANSITION_MINIMUM, 
-                   override.transition_off * override.speed_factor), 
+                   specialparams.transition_off * specialparams.speed_factor), 
             1: max(TRANSITION_MINIMUM, 
-                   override.transition_on * override.speed_factor),
+                   specialparams.transition_on * specialparams.speed_factor),
         }
         light_pattern = [int(p) for p in light_pattern]
         brightnesses=[
@@ -126,7 +151,7 @@ class Sign:
             trans_values[p]
             for p in light_pattern
         ]
-        if override.concurrent:
+        if specialparams.concurrent:
             self.set_dimmers(
                 brightnesses=brightnesses, 
                 transitions=transitions,
@@ -140,16 +165,16 @@ class Sign:
             self, 
             light_pattern: str,
             extra_pattern: str | None = None,
-            override: RelayOverride | None = None,
+            specialparams: SpecialParams | None = None,
         ):
-        """Set all lights and extra relays per supplied patterns and override.
+        """Set all lights and extra relays per supplied patterns and specialparams.
            Set light_pattern property, always as string
            rather than list."""
         assert len(light_pattern) == LIGHT_COUNT
         assert extra_pattern is None or len(extra_pattern) == EXTRA_COUNT
         light_pattern = ''.join(str(e) for e in light_pattern)
-        if override is not None:
-            self._set_lights_relay_override(light_pattern, override)
+        if isinstance(specialparams, DimmerParams):
+            self._set_lights_relay_override(light_pattern, specialparams)
         else:
             if extra_pattern is None:
                 extra_pattern = self.extra_pattern
