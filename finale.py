@@ -23,10 +23,10 @@ class Finale(PlayMusicMode):
                 s.Note('♩', s.light("0000000000"))),
             s.Measure(
                 s.Note('♩', s.light("1110001000")),
-                s.Rest('♩♪'),
+                s.Rest('♩𝅘𝅥𝅯'),
                 s.Note('♩', s.light("0000000000"))),
             s.Measure(
-                s.Note('𝅗𝅥', s.dimmer(ALL_LOW)),
+                s.Note('♩', s.dimmer(ALL_LOW)),
                 s.Note('♩', s.light(ALL_ON))),
             s.Measure(
                 s.Sequence('♩', LIGHT_COUNT, seq_random_once_each, 
@@ -44,5 +44,29 @@ class Finale(PlayMusicMode):
             s.Measure(
                 s.Sequence('♪', 8, seq_rotate, 
                     pattern="0100001000", clockwise=False),),
+            s.Measure(
+                s.Note('♪', s.light("1110000000"), s.relay(0, 1)),
+                s.Note('♪', s.light("0001000001"),),
+                s.Note('♪', s.light("0000100010"),),
+                s.Note('♪', s.light("0000011100"),),
+            ),
+            s.Measure(
+                s.Note('♪', s.light("1110000000"), s.relay(0, 1)),
+                s.Note('♪', s.light("0001000001"),),
+                s.Note('♪', s.light("0000100010"),),
+                s.Note('♪', s.light("0000011100"), s.relay(2, 3, 4, 5)),
+            ),
+            s.Measure(
+                s.Note('♪', s.light("1110000000"), s.relay(0, 1, 2, 3)),
+                s.Note('♪', s.light("0001000001"),),
+                s.Note('♪', s.light("0000100010"),),
+                s.Note('♪', s.light("0000011100"),),
+            ),
+            s.Measure(
+                s.Note('♪', s.light("1110000000"), s.relay(0, 1)),
+                s.Note('♪', s.light("0001000001"),),
+                s.Note('♪', s.light("0000100010"),),
+                # s.Note('♪', s.light("0000011100"), s.relay(2, 3)),
+            ),
             s.Measure(),
         )
