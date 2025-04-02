@@ -98,7 +98,6 @@ class PlayMusicMode(PlayMode):
             self.actions = actions
 
         def execute(self) -> float:
-            print(f"executing Note with {len(self.actions)} actions")
             for action in self.actions:
                 action()
             return self.duration
