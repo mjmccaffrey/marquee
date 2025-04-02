@@ -8,7 +8,7 @@ from typing import Any
 from signs import Sign, SpecialParams
 from modes import PlayMode, PlaySequenceMode, DimmerParams
 
-note_duration: dict[str, float] = {
+symbol_duration: dict[str, float] = {
     '𝅝': 4,     '𝄻': 4,
     '𝅗𝅥': 2,     '𝄼': 2,
     '♩': 1,     '𝄽': 1,
@@ -40,10 +40,13 @@ class PlayMusicMode(PlayMode):
         )
 
     def dimmer(self, pattern: str):
+        """"""
         return lambda: self.player.sign.set_dimmers(pattern)
+
     def light(self, pattern: str):
         """Return callable to effect light pattern."""
         return lambda: self.player.sign.set_lights(pattern)
+
     def relay(self, *indices):
         """Flip"""
         return lambda: self.player.sign.flip_extra_relays(*indices)
@@ -52,7 +55,6 @@ class PlayMusicMode(PlayMode):
         """"""
         for measure in measures:
             beat = 0
-            print(f"playing measure {measure.id}")
             for element in measure.elements:
                 start = time.time()
                 beats_elapsed = element.execute()
@@ -65,7 +67,6 @@ class PlayMusicMode(PlayMode):
 
     class _Element(ABC):
         """"""
-        count: int = 0
 
         @abstractmethod
         def __init__(
@@ -74,11 +75,9 @@ class PlayMusicMode(PlayMode):
             symbols: str,
         ) -> None:
             super().__init__()
-            self.id = PlayMusicMode._Element.count
-            PlayMusicMode._Element.count += 1
             self.mode = mode
             self.duration = sum(
-                note_duration[s]
+                symbol_duration[s]
                 for s in symbols
             )
 
@@ -144,6 +143,7 @@ class PlayMusicMode(PlayMode):
                 mode.pace,
                 count,
                 specialparams,
+                is_primary=False,
                 **kwargs,
             )
 
@@ -165,8 +165,6 @@ class PlayMusicMode(PlayMode):
     class _Measure(_Element):
         """"""
 
-        all_measures: list["PlayMusicMode._Measure"] = []
-
         def __init__(
             self, 
             mode: "PlayMusicMode", 
@@ -175,8 +173,6 @@ class PlayMusicMode(PlayMode):
         ) -> None:
             """"""
             super().__init__(mode, '')
-            self.id = len(PlayMusicMode._Measure.all_measures)
-            PlayMusicMode._Measure.all_measures.append(self)
             self.elements = elements
             self.beats = beats
 
