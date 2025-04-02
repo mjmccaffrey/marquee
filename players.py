@@ -95,7 +95,6 @@ class Player:
                     if isinstance(specialparams, DimmerParams):
                         specialparams.speed_factor = self.speed_factor
                 if isinstance(specialparams, ActionParams):
-                    print(f"lights: {lights}")
                     specialparams.action(lights)
                 else:
                     self.sign.set_lights(

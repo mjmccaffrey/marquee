@@ -14,8 +14,9 @@ class Finale(PlayMusicMode):
         s = self
         s.play(
             s.Measure(
+                s.Note('♩', s.light(ALL_OFF)),
                 s.Note('♩', s.dimmer(ALL_HIGH)),
-                s.Rest('𝅗𝅥♩')),
+                s.Rest('𝅗𝅥')),
             s.Measure(
                 s.Note('♩', s.light("0100000000"))),
             s.Measure(
@@ -34,9 +35,9 @@ class Finale(PlayMusicMode):
             s.Measure(beats=8),
             s.Measure(
                 s.Rest('𝅗𝅥♩♪𝅘𝅥𝅰'),
-                s.Note('𝅘𝅥𝅰', s.relay(10, 11)),
-                s.Note('𝅘𝅥𝅰', s.relay(12, 13)),
-                s.Note('𝅘𝅥𝅰', s.relay(14, 15)),
+                s.Note('𝅘𝅥𝅰', s.relay(0, 1)),
+                s.Note('𝅘𝅥𝅰', s.relay(2, 3)),
+                s.Note('𝅘𝅥𝅰', s.relay(4, 5)),
             ),
             s.Measure(
                 s.Note('♩', s.light("0100000000")),

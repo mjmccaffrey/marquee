@@ -88,7 +88,6 @@ class Sign:
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
-        print(f"******** {len(self.dimmer_channels)}")
         for c in self.dimmer_channels:
             print(c)
         assert len(self.dimmer_channels) == LIGHT_COUNT
@@ -185,17 +184,21 @@ class Sign:
             self.extra_pattern = extra_pattern
             self.light_pattern = light_pattern
 
-    def flip_relays(self, *indices: int):
+    def flip_extra_relays(self, *indices: int):
         """"""
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        print(indices)
-        extra = [int(e) for e in self.extra_pattern]
-        print(extra)
-        for i in indices:
-            extra[i - 10] = 0 if extra[i - 10] else 1
-        extra = ''.join(str(e) for e in extra)
-        print(extra)
+        def flip(s):
+            return '0' if s == '1' else '1'
+        assert all(0 <= i < len(self.extra_pattern) for i in indices)
+        extra = ''.join(
+            flip(e) if i in indices else e
+            for i, e in enumerate(self.extra_pattern)
+        )
         self.set_lights(self.light_pattern, extra)
+
+    def click(self):
+        """Generate a small click sound by flipping
+           an otherwise unused relay."""
+        self.flip_extra_relays(6)
 
     def set_dimmers(
             self, 
@@ -243,13 +246,6 @@ class Sign:
         asyncio.run(ShellyDimmer.execute_multiple_commands(commands))
         for command in commands:
             command.channel.brightness = command.params['brightness']
-
-    def click(self):
-        """Generate a small click sound by flipping
-           an otherwise unused relay."""
-        extra = self.extra_pattern
-        extra = extra[:-1] + ("0" if extra[-1] == "1" else "1")
-        self.set_lights(self.light_pattern, extra)
 
     @property
     def light_pattern(self) -> str:

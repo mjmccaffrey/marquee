@@ -46,7 +46,7 @@ class PlayMusicMode(PlayMode):
         return lambda: self.player.sign.set_lights(pattern)
     def relay(self, *indices):
         """Flip"""
-        return lambda: self.player.sign.flip_relays(*indices)
+        return lambda: self.player.sign.flip_extra_relays(*indices)
     
     def play(self, *measures: "_Measure"):
         """"""
@@ -59,7 +59,7 @@ class PlayMusicMode(PlayMode):
                 wait = (beats_elapsed) * self.pace
                 self.player.wait(wait, elapsed = time.time() - start)
                 beat += beats_elapsed
-                print(f"beat is now {beat}")
+                # print(f"beat is now {beat}")
             wait = max(0, measure.beats - beat) * self.pace
             self.player.wait(wait)
 
@@ -146,10 +146,8 @@ class PlayMusicMode(PlayMode):
                 specialparams,
                 **kwargs,
             )
-            print("sequence initialized")
 
         def execute(self):
-            print("executing sequence")
             self.mode.play_sequence_once()
             return self.duration
 
@@ -178,7 +176,6 @@ class PlayMusicMode(PlayMode):
             """"""
             super().__init__(mode, '')
             self.id = len(PlayMusicMode._Measure.all_measures)
-            print(f"m: {self.id}")
             PlayMusicMode._Measure.all_measures.append(self)
             self.elements = elements
             self.beats = beats
