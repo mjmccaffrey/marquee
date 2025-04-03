@@ -9,11 +9,12 @@ class Finale(PlayMusicMode):
 
     def execute(self):
         self.intro()
-        self.body()
+        self.body1()
+        self.body2()
 
     def intro(self):
         s = self
-        s.play(
+        s.play_measures(
             s.Measure(
                 s.Note('♩', s.light(ALL_OFF)),
                 s.Note('♩', s.dimmer(ALL_HIGH)),
@@ -42,9 +43,9 @@ class Finale(PlayMusicMode):
             s.Measure(beats=8),
         )
     
-    def body(self):
+    def body1(self):
         s = self
-        s.play(
+        s.play_measures(
             s.Measure(
                 s.Rest('𝅗𝅥♩♪𝅘𝅥𝅰'),
                 s.Note('𝅘𝅥𝅰', s.relay(0, 1)),
@@ -59,34 +60,59 @@ class Finale(PlayMusicMode):
                 s.Sequence('♪', 8, seq_rotate, 
                     pattern="0100001000", clockwise=False),
             ),
-            s.Measure(
-                s.Note('♪', s.light_seq(seq_rows), s.relay(0, 1)),
-                s.Note('♪', s.light_seq(),),
-                s.Note('♪', s.light_seq(),),
-                s.Note('♪', s.light_seq(),),
-                beats=2,
+        )
+
+    def body2(self):
+        s = self
+        s.play_parts(
+            s.Part(
+                s.Measure(
+                    s.Note('♪', s.light_seq(seq_rows)),
+                    s.Note('♪', s.light_seq(),),
+                    s.Note('♪', s.light_seq(),),
+                    s.Note('♪', s.light_seq(),),
+                    beats=2,
+                ),
+                s.Measure(
+                    s.Note('♪', s.light_seq()),
+                    s.Note('♪', s.light_seq()),
+                    s.Note('♪', s.light_seq()),
+                    s.Note('♪', s.light_seq()),
+                    beats=2,
+                ),
+                s.Measure(
+                    s.Note('♪', s.light_seq()),
+                    s.Note('♪', s.light_seq()),
+                    s.Note('♪', s.light_seq()),
+                    s.Note('♪', s.light_seq()),
+                    beats=2,
+                ),
+                s.Measure(
+                    s.Note('♪', s.light_seq()),
+                    s.Note('♪', s.light_seq()),
+                    s.Note('♪', s.light_seq()),
+                    # s.Note('♪', s.light("0000011100"), s.relay(2, 3)),
+                    beats=2,
+                ),
             ),
-            s.Measure(
-                s.Note('♪', s.light_seq(seq_rows), s.relay(0, 1)),
-                s.Note('♪', s.light_seq()),
-                s.Note('♪', s.light_seq()),
-                s.Note('♪', s.light_seq(), s.relay(0, 1, 2, 3, 4, 5)),
-                beats=2,
+            s.Part(
+                s.Measure(
+                    s.Note('♪', s.relay(0, 1)),
+                    beats=2,
+                ),
+                s.Measure(
+                    s.Note('♪', s.relay(0, 1)),
+                    s.Rest('♪'),
+                    s.Note('♪', s.relay(0, 1, 2, 3, 4, 5)),
+                    beats=2,
+                ),
+                s.Measure(
+                    s.Note('♪', s.relay(0, 1, 2, 3, 4, 5)),
+                    beats=2,
+                ),
+                s.Measure(
+                    s.Note('♪', s.relay(0, 1)),
+                    beats=2,
+                ),
             ),
-            s.Measure(
-                s.Note('♪', s.light_seq(seq_rows), s.relay(0, 1, 2, 3, 4, 5)),
-                s.Note('♪', s.light_seq()),
-                s.Note('♪', s.light_seq()),
-                s.Note('♪', s.light_seq()),
-                beats=2,
-            ),
-            s.Measure(
-                s.Note('♪', s.light_seq(seq_rows), s.relay(0, 1)),
-                s.Note('♪', s.light_seq()),
-                s.Note('♪', s.light_seq()),
-                # s.Note('♪', s.light("0000011100"), s.relay(2, 3)),
-                beats=2,
-            ),
-            s.Measure(),
-            s.Measure(),
         )

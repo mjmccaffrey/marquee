@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterator
+import itertools
 import time
 from typing import Any
 
@@ -50,14 +51,14 @@ class PlayMusicMode(PlayMode):
     def light_seq(self, sequence=None):
         """"""
         if sequence is not None:
-            self.sequence = sequence()
+            self.sequence = itertools.cycle(sequence())
         return self.light(next(self.sequence))
     
     def relay(self, *indices):
         """Flip"""
         return lambda: self.player.sign.flip_extra_relays(*indices)
     
-    def play(self, *measures: "_Measure"):
+    def play_measures(self, *measures: "_Measure"):
         """"""
         for measure in measures:
             beat = 0
@@ -70,6 +71,34 @@ class PlayMusicMode(PlayMode):
                 # print(f"beat is now {beat}")
             wait = max(0, measure.beats - beat) * self.pace
             self.player.wait(wait)
+
+    def play_parts(self, *parts: "_Part"):
+        """"""
+        assert parts
+        measure_count = [len(p.measures) for p in parts]
+        assert all(c == measure_count[0] for c in measure_count)
+
+        measure_groups = zip(p.measures for p in parts)
+        print()
+        print(measure_groups)
+        measure_index = 0
+        for measure_group in measure_groups:
+            print()
+            print(measure_group)
+            measure = {
+                p: measure_group[i]
+                for i, p in enumerate(parts)
+            }
+            print()
+            print(measure)
+            elements = []
+            next_index = {p: 0 for p in parts}
+            next_beat = {p: 0 for p in parts}
+            beat = 0
+            #for p in parts:
+            #    if next_beat[p] == beat:
+            #        elements.append(measure[p].elements[next_index[p]])
+
 
     class _Element(ABC):
         """"""
@@ -186,3 +215,21 @@ class PlayMusicMode(PlayMode):
 
     def Measure(self, *elements: "PlayMusicMode._Element", beats: int = 4) -> _Measure:
         return PlayMusicMode._Measure(self, *elements, beats=beats)
+
+    class _Part(_Element):
+        """"""
+
+        def __init__(
+            self, 
+            mode: "PlayMusicMode", 
+            *measures: "PlayMusicMode._Measure",
+        ) -> None:
+            """"""
+            super().__init__(mode, '')
+            self.measures = measures
+
+        def execute(self):
+            return self.duration
+
+    def Part(self, *measures: "PlayMusicMode._Measure") -> _Part:
+        return PlayMusicMode._Part(self, *measures)
