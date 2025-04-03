@@ -86,7 +86,11 @@ class PlayMusicMode(PlayMode):
         print(new_measures)
         self.play_measures(*new_measures)
 
-    def process_measure_group(self, parts, measure_group) -> "PlayMusicMode._Measure":
+    def process_measure_group(
+        self, 
+        parts: tuple["_Part", ...], 
+        measure_group: tuple["_Measure", ...]
+    ) -> "PlayMusicMode._Measure":
         print("PMG")
         beats = measure_group[0].beats
         assert all(m.beats == beats for m in measure_group)
@@ -94,10 +98,10 @@ class PlayMusicMode(PlayMode):
             p: measure_group[i]
             for i, p in enumerate(parts)
         }
-        elements_in = {p: iter(p.measures) for p in parts}
+        elements_in = {p: iter(measure[p].elements) for p in parts}
         elements_out: list[PlayMusicMode._Element] = []
-        beat_next: dict[PlayMusicMode._Part, int | None] = {p: 0 for p in parts}
-        beat, next_beat = 0, 0
+        beat_next: dict[PlayMusicMode._Part, float | None] = {p: 0 for p in parts}
+        beat, next_beat = 0.0, 0.0
         while any(beat_next[p] is not None for p in parts):
             beat = next_beat
             for p in parts:
@@ -124,7 +128,7 @@ class PlayMusicMode(PlayMode):
             print(out)
             elements_out.extend(out)
         print(elements_out)
-        return PlayMusicMode._Measure(self, *elements_out, beats)
+        return PlayMusicMode._Measure(self, *elements_out, beats=beats)
 
     class _Element(ABC):
         """"""
