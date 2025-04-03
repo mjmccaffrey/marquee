@@ -74,6 +74,8 @@ class PlayMusicMode(PlayMode):
 
     def play_parts(self, *parts: "_Part"):
         """"""
+        print()
+        print(parts)
         assert parts
         measure_count = [len(p.measures) for p in parts]
         assert all(c == measure_count[0] for c in measure_count)
