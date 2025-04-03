@@ -47,6 +47,12 @@ class PlayMusicMode(PlayMode):
         """Return callable to effect light pattern."""
         return lambda: self.player.sign.set_lights(pattern)
 
+    def light_seq(self, sequence=None):
+        """"""
+        if sequence is not None:
+            self.sequence = sequence()
+        return self.light(next(self.sequence))
+    
     def relay(self, *indices):
         """Flip"""
         return lambda: self.player.sign.flip_extra_relays(*indices)

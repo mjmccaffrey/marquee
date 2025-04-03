@@ -42,6 +42,14 @@ def seq_blink_alternate():
     yield next(seq_even_on())
     yield next(seq_even_off())
 
+def seq_rows():
+    """"""
+    for row in LIGHTS_BY_ROW:
+        yield ''.join(
+            '1' if i in row else '0'
+            for i in range(LIGHT_COUNT)
+        )
+
 def seq_build_rows(pattern="1", from_top=True):
     """Successive rows on / off."""
     assert len(pattern) == 1
