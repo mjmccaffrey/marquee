@@ -74,34 +74,52 @@ class PlayMusicMode(PlayMode):
 
     def play_parts(self, *parts: "_Part"):
         """"""
-        for part in parts:
-            print(1)
-            print(part.measures)
         assert parts
         measure_count = [len(p.measures) for p in parts]
         assert all(c == measure_count[0] for c in measure_count)
 
         measure_groups = zip(*(p.measures for p in parts))
-        print(2)
-        print(measure_groups)
         measure_index = 0
-        for measure_group in measure_groups:
-            print(3)
-            print(measure_group)
-            measure = {
-                p: measure_group[i]
-                for i, p in enumerate(parts)
-            }
-            print(4)
-            print(measure)
-            elements = []
-            next_index = {p: 0 for p in parts}
-            next_beat = {p: 0 for p in parts}
-            beat = 0
-            #for p in parts:
-            #    if next_beat[p] == beat:
-            #        elements.append(measure[p].elements[next_index[p]])
+        new_measures = [
+            self.process_measure_group(parts, measure_group)
+            for measure_group in measure_groups
+        ]
+        self.play_measures(*new_measures)
 
+    def process_measure_group(self, parts, measure_group) -> "PlayMusicMode._Measure":
+        beats = measure_group[0].beats
+        assert all(m.beats == beats for m in measure_group)
+        measure = {
+            p: measure_group[i]
+            for i, p in enumerate(parts)
+        }
+        elements_in = {p: iter(p.measures) for p in parts}
+        elements_out: list[PlayMusicMode._Element] = []
+        beat_next: dict[PlayMusicMode._Part, int | None] = {p: 0 for p in parts}
+        beat, next_beat = 0, 0
+        while any(beat_next[p] is not None for p in parts):
+            beat = next_beat
+            for p in parts:
+                out = []
+                if beat_next[p] == beat:
+                    element = next(elements_in[p], None)
+                    if element is None:
+                        beat_next[p] = None
+                    else:
+                        beat_next[p] = beat + element.duration
+                        if isinstance(element, PlayMusicMode._Note):
+                            out.append(element)
+            if not all(beat_next[p] is None for p in parts):
+                next_beat = min(
+                    beat_next[p] for p in parts  # type: ignore
+                    if beat_next[p] is not None
+                )
+                if not out:
+                    out.append(
+                        PlayMusicMode._Rest(self, next_beat - beat)
+                    )
+            elements_out.extend(out)
+        return PlayMusicMode._Measure(self, *elements_out, beats)
 
     class _Element(ABC):
         """"""
@@ -110,15 +128,20 @@ class PlayMusicMode(PlayMode):
         def __init__(
             self, 
             mode: "PlayMusicMode", 
-            symbols: str,
+            duration: float,
         ) -> None:
             super().__init__()
             self.mode = mode
-            self.duration = sum(
-                symbol_duration[s]
-                for s in symbols
-            )
+            self.duration = duration
 
+        def __str__(self):
+            """"""
+            return f"{type(self).__name__} {self.duration}"
+        
+        def __repr__(self):
+            """"""
+            return f"<{self}>"
+        
         @abstractmethod
         def execute(self) -> float:
             """Perform action(s), and return # of beats transpired."""
@@ -128,10 +151,10 @@ class PlayMusicMode(PlayMode):
         def __init__(
             self, 
             mode: "PlayMusicMode", 
-            symbols: str,
+            duration: float,
             *actions: Callable
         ) -> None:
-            super().__init__(mode, symbols)
+            super().__init__(mode, duration)
             assert actions, "Note must have at least 1 action."
             self.actions = actions
 
@@ -141,22 +164,30 @@ class PlayMusicMode(PlayMode):
             return self.duration
 
     def Note(self, symbols: str, *actions: Callable) -> _Note:
-        return PlayMusicMode._Note(self, symbols, *actions)
+        duration = sum(
+            symbol_duration[s]
+            for s in symbols
+        )
+        return PlayMusicMode._Note(self, duration, *actions)
 
     class _Rest(_Element):
         """ Duration in Beats. """
         def __init__(
             self, 
             mode: "PlayMusicMode", 
-            symbols: str,
+            duration: float,
         ) -> None:
-            super().__init__(mode, symbols)
+            super().__init__(mode, duration)
 
         def execute(self):
             return self.duration
 
     def Rest(self, symbols: str) -> _Rest:
-        return PlayMusicMode._Rest(self, symbols)
+        duration = sum(
+            symbol_duration[s]
+            for s in symbols
+        )
+        return PlayMusicMode._Rest(self, duration)
 
     class _Sequence(_Element):
         """"""
@@ -164,13 +195,13 @@ class PlayMusicMode(PlayMode):
         def __init__(
             self,
             mode: "PlayMusicMode", 
-            symbols: str,
+            duration: float, 
             count: int,
             sequence: Callable,
             specialparams: SpecialParams | None = None,
             **kwargs,
         ) -> None:
-            super().__init__(mode, symbols)
+            super().__init__(mode, duration)
             self.duration *= count
             self.count = count
             self.mode = PlaySequenceMode(
@@ -196,8 +227,12 @@ class PlayMusicMode(PlayMode):
         specialparams: SpecialParams | None = None,
         **kwargs,
     ):
+        duration = sum(
+            symbol_duration[s]
+            for s in symbols
+        )
         return PlayMusicMode._Sequence(
-            self, symbols, count, sequence, specialparams, **kwargs)
+            self, duration, count, sequence, specialparams, **kwargs)
     
     class _Measure(_Element):
         """"""
@@ -209,7 +244,7 @@ class PlayMusicMode(PlayMode):
             beats: int = 4,
         ) -> None:
             """"""
-            super().__init__(mode, '')
+            super().__init__(mode, 0)
             self.elements = elements
             self.beats = beats
 
@@ -228,7 +263,7 @@ class PlayMusicMode(PlayMode):
             *measures: "PlayMusicMode._Measure",
         ) -> None:
             """"""
-            super().__init__(mode, '')
+            super().__init__(mode, 0)
             self.measures = measures
 
         def execute(self):
