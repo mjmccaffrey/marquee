@@ -48,21 +48,23 @@ class Finale(PlayMusicMode):
     
     def body1(self):
         s = self
-        s.play_measures(
-            s.Measure(
-                s.Rest('𝅗𝅥♩♪𝅘𝅥𝅰'),
-                s.Note('𝅘𝅥𝅰', s.relay(0, 1)),
-                s.Note('𝅘𝅥𝅰', s.relay(2, 3)),
-                s.Note('𝅘𝅥𝅰', s.relay(4, 5)),
-            ),
-            s.Measure(
-                s.Sequence('♪', 8, seq_rotate, 
-                    pattern="0100001000", clockwise=True),
-            ),
-            s.Measure(
-                s.Sequence('♪', 8, seq_rotate, 
-                    pattern="0100001000", clockwise=False),
-            ),
+        s.play_parts(
+            s.Part(
+                s.Measure(
+                    s.Rest('𝅗𝅥♩♪𝅘𝅥𝅰'),
+                    s.Note('𝅘𝅥𝅰', s.relay(0, 1)),
+                    s.Note('𝅘𝅥𝅰', s.relay(2, 3)),
+                    s.Note('𝅘𝅥𝅰', s.relay(4, 5)),
+                ),
+                s.Measure(
+                    s.Sequence('♪', 8, seq_rotate, 
+                        pattern="0100001000", clockwise=True),
+                ),
+                s.Measure(
+                    s.Sequence('♪', 8, seq_rotate, 
+                        pattern="0100001000", clockwise=False),
+                ),
+            )
         )
 
     def body2(self):
