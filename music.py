@@ -104,8 +104,8 @@ class PlayMusicMode(PlayMode):
         beat, next_beat = 0.0, 0.0
         while any(beat_next[p] is not None for p in parts):
             beat = next_beat
+            out = []
             for i, p in enumerate(parts):
-                out = []
                 print(f"part: {i}, beat: {beat}, beat_next: {beat_next[p]}")
                 if beat_next[p] == beat:
                     element = next(elements_in[p], None)
