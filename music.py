@@ -87,6 +87,7 @@ class PlayMusicMode(PlayMode):
         self.play_measures(*new_measures)
 
     def process_measure_group(self, parts, measure_group) -> "PlayMusicMode._Measure":
+        print("PMG")
         beats = measure_group[0].beats
         assert all(m.beats == beats for m in measure_group)
         measure = {
@@ -101,12 +102,14 @@ class PlayMusicMode(PlayMode):
             beat = next_beat
             for p in parts:
                 out = []
+                print(f"beat: {beat}, beat_next: {beat_next[p]}")
                 if beat_next[p] == beat:
                     element = next(elements_in[p], None)
                     if element is None:
                         beat_next[p] = None
                     else:
                         beat_next[p] = beat + element.duration
+                        print(element)
                         if isinstance(element, PlayMusicMode._Note):
                             out.append(element)
             if not all(beat_next[p] is None for p in parts):
