@@ -75,24 +75,24 @@ class PlayMusicMode(PlayMode):
     def play_parts(self, *parts: "_Part"):
         """"""
         for part in parts:
-            print()
+            print(1)
             print(part.measures)
         assert parts
         measure_count = [len(p.measures) for p in parts]
         assert all(c == measure_count[0] for c in measure_count)
 
-        measure_groups = zip(p.measures for p in parts)
-        print()
+        measure_groups = zip(*(p.measures for p in parts))
+        print(2)
         print(measure_groups)
         measure_index = 0
         for measure_group in measure_groups:
-            print()
+            print(3)
             print(measure_group)
             measure = {
                 p: measure_group[i]
                 for i, p in enumerate(parts)
             }
-            print()
+            print(4)
             print(measure)
             elements = []
             next_index = {p: 0 for p in parts}
