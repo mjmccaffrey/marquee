@@ -79,11 +79,11 @@ class PlayMusicMode(PlayMode):
         assert all(c == measure_count[0] for c in measure_count)
 
         measure_groups = zip(*(p.measures for p in parts))
-        measure_index = 0
         new_measures = [
             self.process_measure_group(parts, measure_group)
             for measure_group in measure_groups
         ]
+        print(new_measures)
         self.play_measures(*new_measures)
 
     def process_measure_group(self, parts, measure_group) -> "PlayMusicMode._Measure":
@@ -118,7 +118,9 @@ class PlayMusicMode(PlayMode):
                     out.append(
                         PlayMusicMode._Rest(self, next_beat - beat)
                     )
+            print(out)
             elements_out.extend(out)
+        print(elements_out)
         return PlayMusicMode._Measure(self, *elements_out, beats)
 
     class _Element(ABC):
