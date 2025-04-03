@@ -104,18 +104,21 @@ class PlayMusicMode(PlayMode):
         beat, next_beat = 0.0, 0.0
         while any(beat_next[p] is not None for p in parts):
             beat = next_beat
-            for p in parts:
+            for i, p in enumerate(parts):
                 out = []
-                print(f"beat: {beat}, beat_next: {beat_next[p]}")
+                print(f"part: {i}, beat: {beat}, beat_next: {beat_next[p]}")
                 if beat_next[p] == beat:
                     element = next(elements_in[p], None)
                     if element is None:
+                        print(f"part: {i} OUT OF ELEMENTS")
                         beat_next[p] = None
                     else:
                         beat_next[p] = beat + element.duration
                         print(element)
                         if isinstance(element, PlayMusicMode._Note):
+                            print("is a note")
                             out.append(element)
+                        print(out)
             if not all(beat_next[p] is None for p in parts):
                 next_beat = min(
                     beat_next[p] for p in parts  # type: ignore
