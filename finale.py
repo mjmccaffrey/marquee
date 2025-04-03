@@ -8,7 +8,7 @@ class Finale(PlayMusicMode):
     """"""
 
     def execute(self):
-        self.intro()
+        # self.intro()
         self.body1()
         self.body2()
 
