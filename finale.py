@@ -18,6 +18,7 @@ class Finale(PlayMusicMode):
             s.Measure(
                 s.Note('♩', s.light(ALL_OFF)),
                 s.Note('♩', s.dimmer(ALL_HIGH)),
+                s.Note('♩', s.dimmer(ALL_HIGH)),
                 s.Rest('𝅗𝅥'),
             ),
             s.Measure(

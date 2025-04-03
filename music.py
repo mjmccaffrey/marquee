@@ -26,7 +26,7 @@ class PlayMusicMode(PlayMode):
         name: str,
         #
     ):
-        super().__init__(player, name)
+        super().__init__(player, name, preset_dimmers=True)  # !!!!!!!!!!
         tempo = 100
         self.pace = 60 / tempo
         self.beat_unit = 1/4
