@@ -106,9 +106,11 @@ class PlayMusicMode(PlayMode):
     def play_measures(self, *measures: "_Measure"):
         """"""
         for measure in measures:
+            print("PLAYING MEASURE")
             beat = 0
             for element in measure.elements:
                 start = time.time()
+                print("playing element")
                 beats_elapsed = element.execute()
                 wait = (beats_elapsed) * self.pace
                 self.player.wait(wait, elapsed = time.time() - start)
