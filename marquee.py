@@ -1,16 +1,24 @@
 """Marquee Lighted Sign Project - main"""
 """
-    marquee
-        arguments
-        Executor
-            Player
-                Modes
-                    mode_defs
-                    sequence_defs
-            Sign
-                Buttons
-                Dimmers
-                Relays
+marquee
+    arguments
+    Executor
+        Player
+            SelectMode
+            PlayMode
+            PlaySequenceMode
+            PlayMusicMode
+                Part
+                    Measure
+                        Sequence
+                            Note
+                            Rest
+            mode_defs
+            sequence_defs
+        Sign
+            Buttons
+            Dimmers
+            Relays
 """
 from arguments import display_help, process_arguments
 from executors import Executor, create_sign

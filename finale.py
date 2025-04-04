@@ -14,35 +14,33 @@ class Finale(PlayMusicMode):
 
     def intro(self):
         s = self
-        s.play_parts(
-            s.Part(
-                s.Measure(
-                    s.Note('♩', s.light(ALL_OFF)),
-                    s.Note('♩', s.dimmer(ALL_HIGH)),
-                    s.Rest('𝅗𝅥'),
-                ),
-                s.Measure(
-                    s.Note('♩', s.light("0100000000")),
-                ),
-                s.Measure(
-                    s.Note('♩', s.light("0000000000")),
-                ),
-                s.Measure(
-                    s.Note('♩', s.light("1110001000")),
-                    s.Rest('♩𝅘𝅥𝅯'),
-                    s.Note('♩', s.light("0000000000")),
-                    s.Note('♩', s.dimmer(ALL_LOW)),
-                ),
-                s.Measure(
-                    s.Rest('♩'),
-                    s.Note('♩', s.light(ALL_ON)),
-                ),
-                s.Measure(
-                    s.Sequence('♩', LIGHT_COUNT, seq_random_once_each, 
-                        ActionParams(action=s.dimmer_seq(100, 2))),
-                    beats=16),
-                #s.Measure(beats=32),
-            )
+        s.play_measures(
+            s.Measure(
+                s.Note('♩', s.light(ALL_OFF)),
+                s.Note('♩', s.dimmer(ALL_HIGH)),
+                s.Rest('𝅗𝅥'),
+            ),
+            s.Measure(
+                s.Note('♩', s.light("0100000000")),
+            ),
+            s.Measure(
+                s.Note('♩', s.light("0000000000")),
+            ),
+            s.Measure(
+                s.Note('♩', s.light("1110001000")),
+                s.Rest('♩𝅘𝅥𝅯'),
+                s.Note('♩', s.light("0000000000")),
+                s.Note('♩', s.dimmer(ALL_LOW)),
+            ),
+            s.Measure(
+                s.Rest('♩'),
+                s.Note('♩', s.light(ALL_ON)),
+            ),
+            s.Measure(
+                s.Sequence('♩', LIGHT_COUNT, seq_random_once_each, 
+                    ActionParams(action=s.dimmer_seq(100, 2))),
+                beats=16),
+            #s.Measure(beats=32),
         )
     
     def body1(self):
@@ -71,52 +69,26 @@ class Finale(PlayMusicMode):
         s.play_parts(
             s.Part(
                 s.Measure(
-                    s.Note('♪', s.light_seq(seq_rows)),
-                    s.Note('♪', s.light_seq(),),
-                    s.Note('♪', s.light_seq(),),
-                    s.Note('♪', s.light_seq(),),
-                    beats=2,
+                    s.Sequence('♪', 8, seq_rows),
                 ),
                 s.Measure(
-                    s.Note('♪', s.light_seq()),
-                    s.Note('♪', s.light_seq()),
-                    s.Note('♪', s.light_seq()),
-                    s.Note('♪', s.light_seq()),
-                    beats=2,
-                ),
-                s.Measure(
-                    s.Note('♪', s.light_seq()),
-                    s.Note('♪', s.light_seq()),
-                    s.Note('♪', s.light_seq()),
-                    s.Note('♪', s.light_seq()),
-                    beats=2,
-                ),
-                s.Measure(
-                    s.Note('♪', s.light_seq()),
-                    s.Note('♪', s.light_seq()),
-                    s.Note('♪', s.light_seq()),
-                    # s.Note('♪', s.light("0000011100"), s.relay(2, 3)),
-                    beats=2,
+                    s.Sequence('♪', 8, seq_rows),
                 ),
             ),
             s.Part(
                 s.Measure(
                     s.Note('♪', s.relay(0, 1)),
-                    beats=2,
                 ),
                 s.Measure(
                     s.Note('♪', s.relay(0, 1)),
                     s.Rest('♪'),
                     s.Note('♪', s.relay(0, 1, 2, 3, 4, 5)),
-                    beats=2,
                 ),
                 s.Measure(
                     s.Note('♪', s.relay(0, 1, 2, 3, 4, 5)),
-                    beats=2,
                 ),
                 s.Measure(
                     s.Note('♪', s.relay(0, 1)),
-                    beats=2,
                 ),
             ),
         )
