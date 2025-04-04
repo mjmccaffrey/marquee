@@ -75,7 +75,7 @@ class Player:
             pace: tuple[float, ...] | float | None = None,
             stop: int | None = None, 
             post_delay: float = 0, 
-            specialparams: SpecialParams | None = None,
+            special: SpecialParams | None = None,
         ):
         """Execute sequence count times, with pace seconds in between.
            If stop is specified, end the sequence 
@@ -92,14 +92,14 @@ class Player:
                 p = next(pace_iter)
                 before = time.time()
                 if p is not None:
-                    if isinstance(specialparams, DimmerParams):
-                        specialparams.speed_factor = self.speed_factor
-                if isinstance(specialparams, ActionParams):
-                    specialparams.action(lights)
+                    if isinstance(special, DimmerParams):
+                        special.speed_factor = self.speed_factor
+                if isinstance(special, ActionParams):
+                    special.action(lights)
                 else:
                     self.sign.set_lights(
                         lights, 
-                        specialparams=specialparams,
+                        special=special,
                     )
                 after = time.time()
                 self.wait(p, after - before)

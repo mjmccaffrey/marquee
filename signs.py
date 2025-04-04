@@ -126,20 +126,20 @@ class Sign:
     def _set_lights_relay_override(
             self,
             light_pattern: list | str, 
-            specialparams: DimmerParams,
+            special: DimmerParams,
     ):
-        """Set dimmers per the specified pattern and specialparams."""
+        """Set dimmers per the specified pattern and special."""
         bright_values: dict[int, int] = {
-            0: int(specialparams.brightness_off * self.brightness_factor), 
-            1: int(specialparams.brightness_on * self.brightness_factor),
+            0: int(special.brightness_off * self.brightness_factor), 
+            1: int(special.brightness_on * self.brightness_factor),
         }
-        assert specialparams.transition_off is not None
-        assert specialparams.transition_on is not None
+        assert special.transition_off is not None
+        assert special.transition_on is not None
         trans_values: dict[int, float] = {
             0: max(TRANSITION_MINIMUM, 
-                   specialparams.transition_off * specialparams.speed_factor), 
+                   special.transition_off * special.speed_factor), 
             1: max(TRANSITION_MINIMUM, 
-                   specialparams.transition_on * specialparams.speed_factor),
+                   special.transition_on * special.speed_factor),
         }
         light_pattern = [int(p) for p in light_pattern]
         brightnesses=[
@@ -150,7 +150,7 @@ class Sign:
             trans_values[p]
             for p in light_pattern
         ]
-        if specialparams.concurrent:
+        if special.concurrent:
             self.set_dimmers(
                 brightnesses=brightnesses, 
                 transitions=transitions,
@@ -164,16 +164,16 @@ class Sign:
             self, 
             light_pattern: str,
             extra_pattern: str | None = None,
-            specialparams: SpecialParams | None = None,
+            special: SpecialParams | None = None,
         ):
-        """Set all lights and extra relays per supplied patterns and specialparams.
+        """Set all lights and extra relays per supplied patterns and special.
            Set light_pattern property, always as string
            rather than list."""
         assert len(light_pattern) == LIGHT_COUNT
         assert extra_pattern is None or len(extra_pattern) == EXTRA_COUNT
         light_pattern = ''.join(str(e) for e in light_pattern)
-        if isinstance(specialparams, DimmerParams):
-            self._set_lights_relay_override(light_pattern, specialparams)
+        if isinstance(special, DimmerParams):
+            self._set_lights_relay_override(light_pattern, special)
         else:
             if extra_pattern is None:
                 extra_pattern = self.extra_pattern

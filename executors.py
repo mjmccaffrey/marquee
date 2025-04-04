@@ -122,7 +122,7 @@ class Executor():
             name: str, 
             sequence: Callable,
             pace: tuple[float, ...] | float | None = None,
-            specialparams: SpecialParams | None = None,
+            special: SpecialParams | None = None,
             **kwargs,
         ):
         """Create a Mode object from a sequence and parameters, and register it."""
@@ -132,7 +132,7 @@ class Executor():
             modes.PlaySequenceMode,
             sequence=sequence,
             pace=pace,
-            specialparams=specialparams,
+            special=special,
             **kwargs,
         )
 
@@ -195,18 +195,18 @@ class Executor():
         self.add_mode(9, "rapid_fade", RapidFade)  # !!!!!!!!!
         self.add_sequence_mode(10, "blink_alternate_fade",
             seq_blink_alternate, pace=4, 
-            specialparams=DimmerParams(
+            special=DimmerParams(
                 transition_on=1.0,
                 transition_off=3.0,
             )
         )
         self.add_sequence_mode(11, "random_flip_fade", seq_random_flip, pace=2.0,
-            specialparams=DimmerParams(),
+            special=DimmerParams(),
             light_pattern='LIGHT_PATTERN',
         )
         self.add_sequence_mode(12, "blink_all_fade_seq",
             seq_blink_all, pace=1,
-            specialparams=DimmerParams(
+            special=DimmerParams(
                 concurrent=False,
                 transition_on=0.5,
                 transition_off=0.5,
@@ -214,7 +214,7 @@ class Executor():
         )
         self.add_sequence_mode(13, "blink_all_fade_con", 
             seq_blink_all, pace=1,
-            specialparams=DimmerParams(
+            special=DimmerParams(
                 concurrent=True,
                 transition_on=0.5,
                 transition_off=0.5,
@@ -222,25 +222,25 @@ class Executor():
         )
         self.add_sequence_mode(14, "blink_all_fade_fast", 
             seq_blink_all, pace=0.5,
-            specialparams=DimmerParams()
+            special=DimmerParams()
         )
         self.add_sequence_mode(15, "blink_all_fade_slowwww", 
             seq_blink_all, pace=10,
-            specialparams=DimmerParams(
+            special=DimmerParams(
                 brightness_on=100,
                 brightness_off=10,
             )
         )
         self.add_sequence_mode(16, "blink_all_fade_stealth", 
             seq_blink_all, pace=(1, 60),
-            specialparams=DimmerParams(
+            special=DimmerParams(
                 transition_on=2,
                 transition_off=2,
             )
         )
         self.add_sequence_mode(17, "corner_rotate_fade", 
             seq_opposite_corner_pairs, pace=5,
-            specialparams=DimmerParams(
+            special=DimmerParams(
                 concurrent=True,
                 brightness_on = 90,
                 brightness_off = 10,
@@ -248,7 +248,7 @@ class Executor():
         )
         self.add_sequence_mode(18, "rotate_slight_fade",
             seq_rotate, pace=0.5,
-            specialparams=DimmerParams(
+            special=DimmerParams(
                 concurrent=False,
                 brightness_on = 100,
                 brightness_off = 30,

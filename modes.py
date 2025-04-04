@@ -152,31 +152,31 @@ class PlaySequenceMode(PlayMode):
         sequence: Callable,
         pace: tuple[float, ...] | float | None = None,
         stop: int | None = None,
-        specialparams: SpecialParams | None = None,
+        special: SpecialParams | None = None,
         **kwargs,
     ):
         """"""
         self.sequence = sequence
         self.pace = pace
         self.stop = stop
-        self.specialparams = specialparams
+        self.special = special
         self.kwargs = kwargs
 
-        if isinstance(specialparams, DimmerParams):
+        if isinstance(special, DimmerParams):
             default_trans = (
                 pace if isinstance(pace, float) else
                 TRANSITION_DEFAULT
             )
-            if specialparams.transition_off is None:
-                specialparams.transition_off = default_trans
-            if specialparams.transition_on is None:
-                specialparams.transition_on = default_trans
+            if special.transition_off is None:
+                special.transition_off = default_trans
+            if special.transition_on is None:
+                special.transition_on = default_trans
 
         super().__init__(
             player, 
             name, 
-            preset_dimmers=(specialparams is None),
-            preset_relays=(specialparams is not None),
+            preset_dimmers=(special is None),
+            preset_relays=(special is not None),
         )
 
     def play_sequence_once(self):
@@ -185,7 +185,7 @@ class PlaySequenceMode(PlayMode):
             sequence=self.sequence(**self.kwargs),
             pace=self.pace,
             stop=self.stop,
-            specialparams=self.specialparams,
+            special=self.special,
         )
 
     def execute(self):

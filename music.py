@@ -44,11 +44,23 @@ class PlayMusicMode(PlayMode):
         """"""
         return lambda: self.player.sign.set_dimmers(pattern)
 
-    def light(self, pattern: str):
+    def light(
+        self, 
+        pattern: str,
+        special: SpecialParams | None = None,
+    ):
         """Return callable to effect light pattern."""
-        return lambda: self.player.sign.set_lights(pattern)
+        return lambda: self.player.sign.set_lights(
+            light_pattern=pattern,
+            special=special,
+        )
 
-    def light_seq(self, sequence=None, **kwargs):
+    def light_seq(
+        self, 
+        sequence=None, 
+        special: SpecialParams | None = None,
+        **kwargs,
+    ):
         """"""
         if sequence is not None:
             self.sequence = itertools.cycle(sequence(**kwargs))
@@ -232,14 +244,14 @@ class PlayMusicMode(PlayMode):
             duration: float, 
             count: int,
             sequence: Callable,
-            specialparams: SpecialParams | None = None,
+            special: SpecialParams | None = None,
             **kwargs,
         ) -> None:
             super().__init__(mode, duration)
             self.duration *= count
             self.count = count
             self.sequence = sequence
-            self.specialparams = specialparams
+            self.special = special
             self.kwargs = kwargs
 
         def execute(self):
@@ -250,7 +262,7 @@ class PlayMusicMode(PlayMode):
         symbols: str,
         count: int,
         sequence: Callable,
-        specialparams: SpecialParams | None = None,
+        special: SpecialParams | None = None,
         **kwargs,
     ):
         duration = sum(
@@ -258,7 +270,7 @@ class PlayMusicMode(PlayMode):
             for s in symbols
         )
         return PlayMusicMode._Sequence(
-            self, duration, count, sequence, specialparams, **kwargs)
+            self, duration, count, sequence, special, **kwargs)
     
     class _Measure(_Element):
         """"""

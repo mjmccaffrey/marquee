@@ -107,7 +107,7 @@ class EvenOddFade(PlayMode):
         for pattern in itertools.cycle((even_on, odd_on)):
             self.player.sign.set_lights(
                 pattern, 
-                specialparams=DimmerParams(
+                special=DimmerParams(
                     concurrent=True,
                     brightness_on = 90,
                     brightness_off = 10,
