@@ -51,7 +51,7 @@ class PlayMusicMode(PlayMode):
     def light_seq(self, sequence=None):
         """"""
         if sequence is not None:
-            self.sequence = itertools.cycle(sequence)
+            self.sequence = itertools.cycle(sequence())
         return self.light(next(self.sequence))
     
     def relay(self, *indices):
