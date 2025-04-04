@@ -86,22 +86,22 @@ class PlayMusicMode(PlayMode):
                 continue
             if isinstance(measure.elements[0], PlayMusicMode._Sequence):
                 seq = measure.elements[0]
-                for c in range(seq.count):
-                    measure.elements = (
-                        PlayMusicMode._Note(
-                            mode=self,
-                            duration=seq.duration,
-                            actions=(
-                                self.light_seq(
-                                    sequence=seq.sequence, 
-                                    special=seq.special,
-                                    **seq.kwargs,
-                                )
-                                    if c == 0 else 
-                                self.light_seq(),
-                            ),
+                measure.elements = tuple(
+                    PlayMusicMode._Note(
+                        mode=self,
+                        duration=seq.duration,
+                        actions=(
+                            self.light_seq(
+                                sequence=seq.sequence, 
+                                special=seq.special,
+                                **seq.kwargs,
+                            )
+                                if c == 0 else 
+                            self.light_seq(),
                         ),
                     )
+                    for c in range(seq.count)
+                )
 
     def play_measures(self, *measures: "_Measure"):
         """"""
