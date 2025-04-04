@@ -81,9 +81,11 @@ class PlayMusicMode(PlayMode):
     
     def convert_sequences(self, part: "_Part"):
         """Sequence must be the only element in the measure."""
+        print("CONVERTING")
         for measure in part.measures:
             if not measure.elements:
                 continue
+            print(measure.elements[0])
             if isinstance(measure.elements[0], PlayMusicMode._Sequence):
                 print("Sequence found.")
                 seq = measure.elements[0]
@@ -115,7 +117,6 @@ class PlayMusicMode(PlayMode):
             for element in measure.elements:
                 print("playing", element)
                 start = time.time()
-                print("playing element")
                 beats_elapsed = element.execute()
                 wait = (beats_elapsed) * self.pace
                 self.player.wait(wait, elapsed = time.time() - start)
