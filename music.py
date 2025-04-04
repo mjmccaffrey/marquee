@@ -85,6 +85,7 @@ class PlayMusicMode(PlayMode):
             if not measure.elements:
                 continue
             if isinstance(measure.elements[0], PlayMusicMode._Sequence):
+                print("Sequence found.")
                 seq = measure.elements[0]
                 measure.elements = tuple(
                     PlayMusicMode._Note(
@@ -102,6 +103,9 @@ class PlayMusicMode(PlayMode):
                     )
                     for c in range(seq.count)
                 )
+                for e in measure.elements:
+                    print(e)
+                    print()
 
     def play_measures(self, *measures: "_Measure"):
         """"""
