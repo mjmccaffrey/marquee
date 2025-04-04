@@ -41,8 +41,8 @@ class Finale(PlayMusicMode):
                 s.Measure(
                     s.Sequence('♩', LIGHT_COUNT, seq_random_once_each, 
                         ActionParams(action=s.dimmer_seq(100, 2))),
-                    beats=8),
-                s.Measure(beats=64),
+                    beats=16),
+                s.Measure(beats=32),
             )
         )
     

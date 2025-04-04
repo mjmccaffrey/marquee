@@ -87,7 +87,6 @@ class PlayMusicMode(PlayMode):
             if isinstance(measure.elements[0], PlayMusicMode._Sequence):
                 seq = measure.elements[0]
                 for c in range(seq.count):
-                    print(c)
                     measure.elements = (
                         PlayMusicMode._Note(
                             mode=self,
@@ -130,7 +129,7 @@ class PlayMusicMode(PlayMode):
             self.process_measure_group(parts, measure_group)
             for measure_group in measure_groups
         ]
-        print(new_measures)
+        #print(new_measures)
         self.play_measures(*new_measures)
 
     def process_measure_group(
