@@ -28,7 +28,7 @@ def interpret_symbols(symbols: str) -> float:
         result = sum(
             symbol_duration[s]
             for s in symbols
-        ) * 2 / 3
+        )
     return result
 
 class PlayMusicMode(PlayMode):
@@ -40,7 +40,7 @@ class PlayMusicMode(PlayMode):
         #
     ):
         super().__init__(player, name, preset_dimmers=True)  # !!!!!!!!!!
-        tempo = 100
+        tempo = 60
         self.pace = 60 / tempo
         self.beat_unit = 1/4
 
