@@ -27,7 +27,7 @@ def interpret_symbols(symbols: str) -> float:
     else:
         result = sum(
             symbol_duration[s]
-            for s in symbols[1:]
+            for s in symbols
         ) * 2 / 3
     return result
 
