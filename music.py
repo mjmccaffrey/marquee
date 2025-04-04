@@ -50,7 +50,7 @@ class PlayMusicMode(PlayMode):
         special: SpecialParams | None = None,
     ):
         """Return callable to effect light pattern."""
-        print(pattern)
+        print("*********", pattern)
         if isinstance(special, ActionParams):
             result = lambda: special.action(pattern)
         else:
