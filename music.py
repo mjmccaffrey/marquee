@@ -91,7 +91,11 @@ class PlayMusicMode(PlayMode):
                             mode=self,
                             duration=seq.duration,
                             actions=(
-                                self.light_seq(seq.sequence, **seq.kwargs)
+                                self.light_seq(
+                                    sequence=seq.sequence, 
+                                    special=seq.special,
+                                    **seq.kwargs,
+                                )
                                     if c == 0 else 
                                 self.light_seq(),
                             ),
