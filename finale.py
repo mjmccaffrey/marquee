@@ -76,14 +76,14 @@ class Finale(PlayMusicMode):
                 s.Measure(
                     s.Sequence('♪', 8, seq_rows),
                 ),
+                s.Measure(
+                    s.Sequence('♪', 3, seq_rows),
+                ),
             ),
             s.Part(
                 s.Measure(
                     s.Note('♪', s.relay(0, 1)),
-                ),
-                s.Measure(
-                    s.Note('♪', s.relay(0, 1)),
-                    s.Rest('♪'),
+                    s.Rest('♪♪'),
                     s.Note('♪', s.relay(0, 1, 2, 3, 4, 5)),
                 ),
                 s.Measure(
