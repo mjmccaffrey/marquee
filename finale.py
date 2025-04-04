@@ -9,8 +9,8 @@ class Finale(PlayMusicMode):
 
     def execute(self):
         self.intro()
-        #self.body1()
-        #self.body2()
+        self.body1()
+        self.body2()
 
     def intro(self):
         s = self
@@ -41,7 +41,7 @@ class Finale(PlayMusicMode):
                     s.Sequence('♩', LIGHT_COUNT, seq_random_once_each, 
                         ActionParams(action=s.dimmer_seq(100, 2))),
                     beats=16),
-                s.Measure(beats=32),
+                #s.Measure(beats=32),
             )
         )
     
