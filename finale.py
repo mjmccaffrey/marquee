@@ -11,7 +11,6 @@ class Finale(PlayMusicMode):
 
     def execute(self):
         self.intro()
-        sys.exit()
         self.body1()
         self.body2()
 
