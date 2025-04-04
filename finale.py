@@ -18,6 +18,11 @@ class Finale(PlayMusicMode):
 
     def test(self):
         s = self
+        assert s.interpret_symbols('♩') == 1, 0
+        assert s.interpret_symbols('♩𝅘𝅥𝅯') == 1.25, 0
+        assert s.interpret_symbols('3♪') == 0.75, 0
+        assert s.interpret_symbols('♪^') == 0.5, 8
+        assert s.interpret_symbols('3♩>') == 1.5, 6
         s.play_measures(
             s.Measure(
                 s.Note('♩', s.relay(0, 1)),

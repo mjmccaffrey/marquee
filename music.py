@@ -17,32 +17,50 @@ symbol_duration: dict[str, float] = {
     '𝅘𝅥𝅯': 0.25,  '𝄿': 0.25,
     '𝅘𝅥𝅰': 0.125, '𝅀': 0.125,
 }
-
-def interpret_symbols(symbols: str) -> float:
-    """"""
-    if not symbols:
-        result = 0
-    elif symbols[0] == '3':
-        result = interpret_symbols(symbols[1:]) * 2 / 3
-    else:
-        result = sum(
-            symbol_duration[s]
-            for s in symbols
-        )
-    return result
+symbol_accent_level: dict[str, int] = {
+    '-': 4, '>': 6, '^': 8,
+}
 
 class PlayMusicMode(PlayMode):
-    """"""
+    """4 beats per measure by default.
+       Every quarter note gets a beat."""
     def __init__(
         self,
         player: Any,  # Player
         name: str,
         #
     ):
-        super().__init__(player, name, preset_dimmers=True)  # !!!!!!!!!!
-        tempo = 60
-        self.pace = 60 / tempo
-        self.beat_unit = 1/4
+        super().__init__(player, name, preset_dimmers=True)
+        # self.beat_unit = 1/4
+        self.tempo = 60
+
+    @property
+    def tempo(self):
+        return self._tempo
+    
+    @tempo.setter
+    def tempo(self, value: float):
+        self._tempo = value
+        self.pace = 60 / self._tempo
+
+    @staticmethod
+    def interpret_symbols(symbols: str) -> tuple[float, int]:
+        """"""
+        if not symbols:
+            duration, accent = 0, 0
+        elif symbols.startswith('3'):
+            duration, accent = PlayMusicMode.interpret_symbols(symbols[1:])
+            duration *= 2/3
+        elif symbols[-1] in "->^":
+            duration, _ = PlayMusicMode.interpret_symbols(symbols[:-1])
+            accent = symbol_accent_level[symbols[-1]]
+        else:
+            duration = sum(
+                symbol_duration[s]
+                for s in symbols
+            )
+            accent = 0
+        return duration, accent
 
     def dimmer_seq(self, brightness: int, transition: float):
         """Return callable to effect state of specified dimmers."""
@@ -247,7 +265,7 @@ class PlayMusicMode(PlayMode):
             return self.duration
 
     def Note(self, symbols: str, *actions: Callable) -> _Note:
-        duration = interpret_symbols(symbols)
+        duration, _ = PlayMusicMode.interpret_symbols(symbols)
         return PlayMusicMode._Note(self, duration, actions)
 
     class _Rest(_Element):
@@ -263,7 +281,7 @@ class PlayMusicMode(PlayMode):
             return self.duration
 
     def Rest(self, symbols: str) -> _Rest:
-        duration = interpret_symbols(symbols)
+        duration, _ = PlayMusicMode.interpret_symbols(symbols)
         return PlayMusicMode._Rest(self, duration)
 
     class _Sequence(_Element):
@@ -296,7 +314,7 @@ class PlayMusicMode(PlayMode):
         special: SpecialParams | None = None,
         **kwargs,
     ):
-        step_duration = interpret_symbols(symbols)
+        step_duration, _ = PlayMusicMode.interpret_symbols(symbols)
         return PlayMusicMode._Sequence(
             self, step_duration, count, sequence, special, **kwargs)
     
