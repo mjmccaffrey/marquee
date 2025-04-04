@@ -68,9 +68,10 @@ class PlayMusicMode(PlayMode):
         """"""
         if sequence is not None:
             self.sequence = itertools.cycle(sequence(**kwargs))
+            self.special = special
         return self.light(
             pattern=next(self.sequence),
-            special=special,
+            special=self.special,
         )
     
     def relay(self, *indices):
