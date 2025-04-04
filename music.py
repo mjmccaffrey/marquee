@@ -6,8 +6,8 @@ import itertools
 import time
 from typing import Any
 
-from signs import Sign, ActionParams, SpecialParams
-from modes import PlayMode, PlaySequenceMode, DimmerParams
+from signs import ActionParams, SpecialParams
+from modes import PlayMode
 
 symbol_duration: dict[str, float] = {
     '𝅝': 4,     '𝄻': 4,
@@ -17,6 +17,19 @@ symbol_duration: dict[str, float] = {
     '𝅘𝅥𝅯': 0.25,  '𝄿': 0.25,
     '𝅘𝅥𝅰': 0.125, '𝅀': 0.125,
 }
+
+def interpret_symbols(symbols: str) -> float:
+    """"""
+    if not symbols:
+        result = 0
+    elif symbols[0] == '3':
+        result = interpret_symbols(symbols[1:]) * 2 / 3
+    else:
+        result = sum(
+            symbol_duration[s]
+            for s in symbols[1:]
+        ) * 2 / 3
+    return result
 
 class PlayMusicMode(PlayMode):
     """"""
@@ -92,7 +105,7 @@ class PlayMusicMode(PlayMode):
                 measure.elements = tuple(
                     PlayMusicMode._Note(
                         mode=self,
-                        duration=seq.duration,
+                        duration=seq.step_duration,
                         actions=(
                             self.light_seq(
                                 sequence=seq.sequence, 
@@ -234,10 +247,7 @@ class PlayMusicMode(PlayMode):
             return self.duration
 
     def Note(self, symbols: str, *actions: Callable) -> _Note:
-        duration = sum(
-            symbol_duration[s]
-            for s in symbols
-        )
+        duration = interpret_symbols(symbols)
         return PlayMusicMode._Note(self, duration, actions)
 
     class _Rest(_Element):
@@ -253,10 +263,7 @@ class PlayMusicMode(PlayMode):
             return self.duration
 
     def Rest(self, symbols: str) -> _Rest:
-        duration = sum(
-            symbol_duration[s]
-            for s in symbols
-        )
+        duration = interpret_symbols(symbols)
         return PlayMusicMode._Rest(self, duration)
 
     class _Sequence(_Element):
@@ -265,20 +272,21 @@ class PlayMusicMode(PlayMode):
         def __init__(
             self,
             mode: "PlayMusicMode", 
-            duration: float, 
+            step_duration: float, 
             count: int,
             sequence: Callable,
             special: SpecialParams | None = None,
             **kwargs,
         ) -> None:
-            super().__init__(mode, duration)
+            super().__init__(mode, 0)
+            self.step_duration = step_duration
             self.count = count
             self.sequence = sequence
             self.special = special
             self.kwargs = kwargs
 
         def execute(self):
-            return self.duration
+            return 0
 
     def Sequence(
         self,
@@ -288,12 +296,9 @@ class PlayMusicMode(PlayMode):
         special: SpecialParams | None = None,
         **kwargs,
     ):
-        duration = sum(
-            symbol_duration[s]
-            for s in symbols
-        )
+        step_duration = interpret_symbols(symbols)
         return PlayMusicMode._Sequence(
-            self, duration, count, sequence, special, **kwargs)
+            self, step_duration, count, sequence, special, **kwargs)
     
     class _Measure(_Element):
         """"""

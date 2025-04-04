@@ -10,9 +10,30 @@ class Finale(PlayMusicMode):
     """"""
 
     def execute(self):
+        self.test()
+        self.test()
+        sys.exit()
         self.intro()
         self.body1()
         self.body2()
+
+    def test(self):
+        s = self
+        s.play_measures(
+            s.Measure(
+                # s.Rest('𝅗𝅥♩♪𝅘𝅥𝅰'),
+                s.Note('♩', s.relay(0, 1)),
+                s.Note('♩', s.relay(0, 1)),
+                s.Note('♩', s.relay(0, 1)),
+                s.Note('♩', s.relay(0, 1)),
+                s.Note('3♪', s.relay(0, 1)),
+                s.Note('3♪', s.relay(0, 1)),
+                s.Note('3♪', s.relay(0, 1)),
+                s.Note('♩', s.relay(0, 1)),
+                s.Note('♩', s.relay(0, 1)),
+                beats=8,
+            )
+        )
 
     def intro(self):
         s = self
