@@ -48,10 +48,10 @@ class PlayMusicMode(PlayMode):
         """Return callable to effect light pattern."""
         return lambda: self.player.sign.set_lights(pattern)
 
-    def light_seq(self, sequence=None):
+    def light_seq(self, sequence=None, **kwargs):
         """"""
         if sequence is not None:
-            self.sequence = itertools.cycle(sequence())
+            self.sequence = itertools.cycle(sequence(**kwargs))
         return self.light(next(self.sequence))
     
     def relay(self, *indices):
@@ -66,12 +66,13 @@ class PlayMusicMode(PlayMode):
             if isinstance(measure.elements[0], PlayMusicMode._Sequence):
                 seq = measure.elements[0]
                 for c in range(seq.count):
+                    print(c)
                     measure.elements = (
                         PlayMusicMode._Note(
                             mode=self,
                             duration=seq.duration,
                             actions=(
-                                self.light_seq(seq.sequence(**seq.kwargs))
+                                self.light_seq(seq.sequence, **seq.kwargs)
                                     if c == 0 else 
                                 self.light_seq(),
                             ),
