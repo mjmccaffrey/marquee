@@ -29,6 +29,7 @@ class Finale(PlayMusicMode):
                 s.Note('3♪', s.relay(0, 1)),
                 s.Note('♩', s.relay(0, 1)),
                 s.Note('♩', s.relay(0, 1, 2, 3, 4, 5)),
+                s.Note('♩', s.relay(0, 1, 2, 3, 4, 5)),
                 beats=8,
             ),
             s.Measure(
@@ -39,6 +40,7 @@ class Finale(PlayMusicMode):
                 s.Note('3𝅘𝅥𝅯', s.relay(0, 1)),
                 s.Note('3𝅘𝅥𝅯', s.relay(0, 1)),
                 s.Note('3𝅘𝅥𝅯', s.relay(0, 1)),
+                s.Note('♪', s.relay(0, 1)),
                 s.Note('♪', s.relay(0, 1)),
                 s.Note('♪', s.relay(0, 1)),
             )
