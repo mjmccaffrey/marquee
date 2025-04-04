@@ -58,6 +58,26 @@ class PlayMusicMode(PlayMode):
         """Flip"""
         return lambda: self.player.sign.flip_extra_relays(*indices)
     
+    def convert_sequences(self, part: "_Part"):
+        """Sequence must be the only element in the measure."""
+        for measure in part.measures:
+            if not measure.elements:
+                continue
+            if isinstance(measure.elements[0], PlayMusicMode._Sequence):
+                seq = measure.elements[0]
+                for c in range(seq.count):
+                    measure.elements = (
+                        PlayMusicMode._Note(
+                            mode=self,
+                            duration=seq.duration,
+                            actions=(
+                                self.light_seq(seq.sequence(**seq.kwargs))
+                                    if c == 0 else 
+                                self.light_seq(),
+                            ),
+                        ),
+                    )
+
     def play_measures(self, *measures: "_Measure"):
         """"""
         for measure in measures:
@@ -77,7 +97,8 @@ class PlayMusicMode(PlayMode):
         assert parts
         measure_count = [len(p.measures) for p in parts]
         assert all(c == measure_count[0] for c in measure_count)
-
+        for part in parts:
+            self.convert_sequences(part)
         measure_groups = zip(*(p.measures for p in parts))
         new_measures = [
             self.process_measure_group(parts, measure_group)
@@ -131,7 +152,7 @@ class PlayMusicMode(PlayMode):
             print(out)
             elements_out.extend(out)
         print(elements_out)
-        return PlayMusicMode._Measure(self, *elements_out, beats=beats)
+        return PlayMusicMode._Measure(self, tuple(elements_out), beats=beats)
 
     class _Element(ABC):
         """"""
@@ -164,7 +185,7 @@ class PlayMusicMode(PlayMode):
             self, 
             mode: "PlayMusicMode", 
             duration: float,
-            *actions: Callable
+            actions: tuple[Callable, ...],
         ) -> None:
             super().__init__(mode, duration)
             assert actions, "Note must have at least 1 action."
@@ -180,7 +201,7 @@ class PlayMusicMode(PlayMode):
             symbol_duration[s]
             for s in symbols
         )
-        return PlayMusicMode._Note(self, duration, *actions)
+        return PlayMusicMode._Note(self, duration, actions)
 
     class _Rest(_Element):
         """ Duration in Beats. """
@@ -216,19 +237,11 @@ class PlayMusicMode(PlayMode):
             super().__init__(mode, duration)
             self.duration *= count
             self.count = count
-            self.mode = PlaySequenceMode(
-                mode.player,
-                "Music Sequence",
-                sequence,
-                mode.pace,
-                count,
-                specialparams,
-                is_primary=False,
-                **kwargs,
-            )
+            self.sequence = sequence
+            self.specialparams = specialparams
+            self.kwargs = kwargs
 
         def execute(self):
-            self.mode.play_sequence_once()
             return self.duration
 
     def Sequence(
@@ -252,7 +265,7 @@ class PlayMusicMode(PlayMode):
         def __init__(
             self, 
             mode: "PlayMusicMode", 
-            *elements: "PlayMusicMode._Element",
+            elements: tuple["PlayMusicMode._Element", ...],
             beats: int = 4,
         ) -> None:
             """"""
@@ -264,7 +277,7 @@ class PlayMusicMode(PlayMode):
             return self.duration
 
     def Measure(self, *elements: "PlayMusicMode._Element", beats: int = 4) -> _Measure:
-        return PlayMusicMode._Measure(self, *elements, beats=beats)
+        return PlayMusicMode._Measure(self, elements, beats=beats)
 
     class _Part(_Element):
         """"""
@@ -272,7 +285,7 @@ class PlayMusicMode(PlayMode):
         def __init__(
             self, 
             mode: "PlayMusicMode", 
-            *measures: "PlayMusicMode._Measure",
+            measures: tuple["PlayMusicMode._Measure", ...],
         ) -> None:
             """"""
             super().__init__(mode, 0)
@@ -282,4 +295,4 @@ class PlayMusicMode(PlayMode):
             return self.duration
 
     def Part(self, *measures: "PlayMusicMode._Measure") -> _Part:
-        return PlayMusicMode._Part(self, *measures)
+        return PlayMusicMode._Part(self, measures)

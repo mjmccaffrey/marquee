@@ -153,7 +153,6 @@ class PlaySequenceMode(PlayMode):
         pace: tuple[float, ...] | float | None = None,
         stop: int | None = None,
         specialparams: SpecialParams | None = None,
-        is_primary: bool = True,
         **kwargs,
     ):
         """"""
@@ -176,8 +175,8 @@ class PlaySequenceMode(PlayMode):
         super().__init__(
             player, 
             name, 
-            preset_dimmers= is_primary and (specialparams is None),
-            preset_relays= is_primary and (specialparams is not None),
+            preset_dimmers=(specialparams is None),
+            preset_relays=(specialparams is not None),
         )
 
     def play_sequence_once(self):
