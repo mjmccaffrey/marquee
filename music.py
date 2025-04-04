@@ -46,7 +46,7 @@ class PlayMusicMode(PlayMode):
 
     def light(
         self, 
-        pattern: str,
+        pattern: Any,
         special: SpecialParams | None = None,
     ):
         """Return callable to effect light pattern."""
