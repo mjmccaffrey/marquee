@@ -113,6 +113,7 @@ class PlayMusicMode(PlayMode):
             print("PLAYING MEASURE")
             beat = 0
             for element in measure.elements:
+                print("playing", element)
                 start = time.time()
                 print("playing element")
                 beats_elapsed = element.execute()
