@@ -262,7 +262,6 @@ class PlayMusicMode(PlayMode):
             **kwargs,
         ) -> None:
             super().__init__(mode, duration)
-            self.duration *= count
             self.count = count
             self.sequence = sequence
             self.special = special
