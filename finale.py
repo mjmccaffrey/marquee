@@ -1,5 +1,7 @@
 """Marquee Lighted Sign Project - finale"""
 
+import sys
+
 from music import PlayMusicMode
 from signs import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
 from sequence_defs import *
@@ -9,6 +11,7 @@ class Finale(PlayMusicMode):
 
     def execute(self):
         self.intro()
+        sys.exit()
         self.body1()
         self.body2()
 
