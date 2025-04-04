@@ -79,10 +79,10 @@ class PlayMusicMode(PlayMode):
         """Flip"""
         return lambda: self.player.sign.flip_extra_relays(*indices)
     
-    def convert_sequences(self, part: "_Part"):
+    def expand_sequences(self, measures: tuple["_Measure", ...]):
         """Sequence must be the only element in the measure."""
         print("CONVERTING")
-        for measure in part.measures:
+        for measure in measures:
             if not measure.elements:
                 continue
             print(measure.elements[0])
@@ -114,8 +114,12 @@ class PlayMusicMode(PlayMode):
         for measure in measures:
             print("PLAYING MEASURE")
             beat = 0
+            self.expand_sequences(measures)
             for element in measure.elements:
                 print("playing", element)
+                assert isinstance(element, 
+                    (PlayMusicMode._Note, PlayMusicMode._Rest)
+                )
                 start = time.time()
                 beats_elapsed = element.execute()
                 wait = (beats_elapsed) * self.pace
@@ -131,7 +135,7 @@ class PlayMusicMode(PlayMode):
         measure_count = [len(p.measures) for p in parts]
         assert all(c == measure_count[0] for c in measure_count)
         for part in parts:
-            self.convert_sequences(part)
+            self.expand_sequences(part.measures)
         measure_groups = zip(*(p.measures for p in parts))
         new_measures = [
             self.process_measure_group(parts, measure_group)
