@@ -31,7 +31,7 @@ class Finale(PlayMusicMode):
                 s.Note('♩', s.relay(0, 1)),
                 s.Note('♩', s.relay(0, 1)),
                 beats=8,
-            )
+            ),
             s.Measure(
                 s.Note('♪', s.relay(0, 1)),
                 s.Note('♪', s.relay(0, 1)),
