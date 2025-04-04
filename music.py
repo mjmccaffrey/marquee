@@ -6,7 +6,7 @@ import itertools
 import time
 from typing import Any
 
-from signs import Sign, SpecialParams
+from signs import Sign, ActionParams, SpecialParams
 from modes import PlayMode, PlaySequenceMode, DimmerParams
 
 symbol_duration: dict[str, float] = {
@@ -50,10 +50,14 @@ class PlayMusicMode(PlayMode):
         special: SpecialParams | None = None,
     ):
         """Return callable to effect light pattern."""
-        return lambda: self.player.sign.set_lights(
-            light_pattern=pattern,
-            special=special,
-        )
+        if isinstance(special, ActionParams):
+            result = lambda: special.action(pattern)
+        else:
+            result = lambda: self.player.sign.set_lights(
+                light_pattern=pattern,
+                special=special,
+            )
+        return result
 
     def light_seq(
         self, 
