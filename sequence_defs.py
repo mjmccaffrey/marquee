@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - sequence definitions"""
 
+from collections.abc import Iterator
 import random
 
 from signs import (
@@ -197,10 +198,11 @@ def seq_random_flip(*, light_pattern):
         lights[index] = opposite_pattern(lights[index])
         yield lights
 
-def seq_random_once_each():
+def seq_random_once_each() -> Iterator[list[int]]:
     """Return random light index until all light indexes 
        have been returned exactly one."""
     indices = [i for i in range(LIGHT_COUNT)]
     random.shuffle(indices)
     while indices:
-        yield (indices.pop(),)
+        print(indices)
+        yield [indices.pop()]
