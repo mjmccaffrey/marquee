@@ -29,7 +29,7 @@ def create_sign(brightness_factor: float) -> Sign:
         ShellyProDimmer2PM(index, address)
         for index, address in enumerate(DIMMER_ADDRESSES)
     ]
-    relaymodule: NumatoUSBRelayModule = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
+    light_relays: NumatoUSBRelayModule = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
     buttons = [
         Button('sign_back', _Button(pin=17, bounce_time=0.10), SIGUSR1),
         Button('remote_a', _Button(pin=18, pull_up=False, bounce_time=0.10)),
@@ -39,7 +39,7 @@ def create_sign(brightness_factor: float) -> Sign:
     ]
     return Sign(
         dimmers=dimmers,
-        relaymodule=relaymodule,
+        light_relays=light_relays,
         buttons=buttons,
         brightness_factor=brightness_factor,
     )

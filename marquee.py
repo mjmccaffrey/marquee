@@ -9,8 +9,10 @@ marquee
             PlaySequenceMode
             PlayMusicMode
                 Part
+                    notation
                     Measure
-                        Sequence
+                        sequence
+                            Bell
                             Note
                             Rest
             mode_defs

@@ -71,14 +71,14 @@ class Sign:
     def __init__(
         self,
         dimmers: list[ShellyDimmer],
-        relaymodule: NumatoUSBRelayModule,
+        light_relays: NumatoUSBRelayModule,
         buttons: list[Button],
         brightness_factor: float,
     ):
         """Set up the initial state."""
         print("Initializing sign")
         self.dimmers = dimmers
-        self._relaymodule = relaymodule
+        self._light_relays = light_relays
         self._buttons = buttons
         self.brightness_factor = brightness_factor
 
@@ -91,7 +91,7 @@ class Sign:
         for c in self.dimmer_channels:
             print(c)
         assert len(self.dimmer_channels) == LIGHT_COUNT
-        full_pattern = self._relaymodule.get_state_of_devices()
+        full_pattern = self._light_relays.get_state_of_devices()
         self.light_pattern = full_pattern[:LIGHT_COUNT]
         self.extra_pattern = full_pattern[LIGHT_COUNT:]
 
@@ -103,7 +103,7 @@ class Sign:
         except Exception as e:
             logging.exception(e)
         try:
-            self._relaymodule.close()
+            self._light_relays.close()
         except Exception as e:
             logging.exception(e)
 
@@ -180,7 +180,7 @@ class Sign:
             else:
                 extra_pattern = ''.join(str(e) for e in extra_pattern)
             full_pattern = light_pattern + extra_pattern
-            self._relaymodule.set_state_of_devices(full_pattern)
+            self._light_relays.set_state_of_devices(full_pattern)
             self.extra_pattern = extra_pattern
             self.light_pattern = light_pattern
 
