@@ -5,6 +5,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 import logging
 
+from instruments import BellSet, DrumSet
 from buttons import Button
 from dimmers import (
     ShellyDimmer, DimmerChannel,
@@ -70,6 +71,8 @@ class Sign:
 
     def __init__(
         self,
+        bell_set: BellSet,
+        drum_set: DrumSet,
         dimmers: list[ShellyDimmer],
         light_relays: NumatoUSBRelayModule,
         buttons: list[Button],
@@ -77,6 +80,8 @@ class Sign:
     ):
         """Set up the initial state."""
         print("Initializing sign")
+        self.bell_set = bell_set
+        self.drum_set = drum_set
         self.dimmers = dimmers
         self._light_relays = light_relays
         self._buttons = buttons

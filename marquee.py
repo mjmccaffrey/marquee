@@ -12,7 +12,7 @@ marquee
                     notation
                     Measure
                         sequence
-                            Bell
+                            BellNote
                             Note
                             Rest
             mode_defs

@@ -7,10 +7,11 @@ from buttons import Button
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from finale import Finale
 from gpiozero import Button as _Button  # type: ignore
+from instruments import BellSet, DrumSet
 import modes
 from mode_defs import *
 import players
-from relays import NumatoUSBRelayModule, NumatoRL160001
+from relays import NumatoRL160001
 from sequence_defs import *
 from signs import ALL_RELAYS, ALL_OFF, EXTRA_COUNT, SpecialParams, Sign
 
@@ -25,11 +26,13 @@ DIMMER_ADDRESSES = [
 
 def create_sign(brightness_factor: float) -> Sign:
     """Creates and returns a Sign object and all associated device objects."""
+    bell_set = BellSet()
+    drum_set = DrumSet()
     dimmers: list[ShellyDimmer] = [
         ShellyProDimmer2PM(index, address)
         for index, address in enumerate(DIMMER_ADDRESSES)
     ]
-    light_relays: NumatoUSBRelayModule = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
+    light_relays = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
     buttons = [
         Button('sign_back', _Button(pin=17, bounce_time=0.10), SIGUSR1),
         Button('remote_a', _Button(pin=18, pull_up=False, bounce_time=0.10)),
@@ -38,6 +41,8 @@ def create_sign(brightness_factor: float) -> Sign:
         Button('remote_d', _Button(pin=25, pull_up=False, bounce_time=0.10)),
     ]
     return Sign(
+        bell_set=bell_set,
+        drum_set=drum_set,
         dimmers=dimmers,
         light_relays=light_relays,
         buttons=buttons,
