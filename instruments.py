@@ -4,10 +4,6 @@ from typing import Any, Callable
 
 class Instrument(ABC):
     """"""
-    allows_pitches = False
-    allows_accents = False
-    allows_actions = False
-
     def __init__(
         self, 
     ):
@@ -19,10 +15,6 @@ class Instrument(ABC):
 
 class ActionInstrument(Instrument):
     """"""
-    allows_pitches = False
-    allows_accents = False
-    allows_actions = True
-
     def __init__(
         self, 
     ):
@@ -33,10 +25,6 @@ class ActionInstrument(Instrument):
 
 class BellSet(Instrument):
     """"""
-    allows_pitches = True
-    allows_accents = False
-    allows_actions = False
-
     def __init__(
         self, 
     ):
@@ -50,10 +38,6 @@ class BellSet(Instrument):
 
 class DrumSet(Instrument):
     """"""
-    allows_pitches = False
-    allows_accents = True
-    allows_actions = False
-
     def __init__(
         self, 
     ):
@@ -67,10 +51,6 @@ class DrumSet(Instrument):
 
 class RestInstrument(Instrument):
     """"""
-    allows_pitches = False
-    allows_accents = False
-    allows_actions = False
-
     def __init__(
         self, 
     ):

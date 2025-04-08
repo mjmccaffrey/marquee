@@ -47,12 +47,13 @@ class Finale(PlayMusicMode):
                 s.act('3𝅘𝅥𝅯', s.relay(0, 1)),
                 s.act('3𝅘𝅥𝅯', s.relay(0, 1)),
                 s.act('♪', s.relay(0, 1)),
-                s.act('♪', s.relay(0, 1)),
-                s.act('♪', s.relay(0, 1)),
+                s.act('@', s.relay(0, 1)),
+                s.act('𝄻𝅘𝅥𝅯', s.relay(0, 1)),
             )
         )
 
     def intro(self):
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
         s.play_measures(
             s.measure(
@@ -84,6 +85,7 @@ class Finale(PlayMusicMode):
         )
     
     def body1(self):
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
         s.play_parts(
             s.part(
@@ -105,6 +107,7 @@ class Finale(PlayMusicMode):
         )
 
     def body2(self):
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
         s.play_parts(
             s.part(
@@ -120,7 +123,7 @@ class Finale(PlayMusicMode):
             ),
             s.part(
                 s.measure(
-                    s.drum('♪'),
+                    s.drum('𝄽♪'),
                     s.rest('♪♪'),
                     s.drum('♪^'),
                 ),
@@ -134,9 +137,10 @@ class Finale(PlayMusicMode):
         )
 
     def body3(self):
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
         s.play_measures(
-            *s.notation(s.bells, "♩ ♩C ♩D^  | ♩D ♩E ♩G ♩A | ♩a ♩b ♩c ♩d | ♩e"),
+            *s.notation(s.bells, "♩ ♩C ♩D^  | ♩D ♩E ♩G ♩A | ♩a ♩b ♩c ♩d | 𝄽 𝄽 ♩e 𝄽"),
             *s.notation(s.drums, "3♪C 3♪D | ♩ ♩- ♩> ♩^ | ♩ ♩- ♩> ♩^   |"),
         )
         s.play_parts(

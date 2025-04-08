@@ -6,22 +6,24 @@ from dataclasses import dataclass
 from functools import partial
 import itertools
 import time
-from typing import Any, Self
+from typing import Any
 
 from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument
-from signs import ActionParams, SpecialParams
+# from signs import ActionParams, SpecialParams
+import signs
 from modes import PlayMode
 
 accent_symbols = '->^'
 pitch_symbols = 'DEGAabcde'
-symbol_duration: dict[str, float] = {
-    '𝅝': 4,     '𝄻': 4,
-    '𝅗𝅥': 2,     '𝄼': 2,
-    '♩': 1,     '𝄽': 1,
-    '♪': 0.5,   '𝄾': 0.5,
-    '𝅘𝅥𝅯': 0.25,  '𝄿': 0.25,
-    '𝅘𝅥𝅰': 0.125, '𝅀': 0.125,
+note_duration: dict[str, float] = {
+    '𝅝': 4,     '𝅗𝅥': 2,      '♩': 1,
+    '♪': 0.5,   '𝅘𝅥𝅯': 0.25,  '𝅘𝅥𝅰': 0.125,
 }
+rest_duration: dict[str, float] = {
+    '𝄻': 4,    '𝄼': 2,      '𝄽': 1,
+    '𝄾': 0.5,   '𝄿': 0.25,  '𝅀': 0.125,
+}
+symbol_duration = note_duration | rest_duration
 
 class PlayMusicMode(PlayMode):
     """4 beats per measure by default.
@@ -63,11 +65,11 @@ class PlayMusicMode(PlayMode):
     def light(
         self, 
         pattern: Any,
-        special: SpecialParams | None = None,
+        special: signs.SpecialParams | None = None,
     ):
         """Return callable to effect light pattern."""
         print("*********", pattern)
-        if isinstance(special, ActionParams):
+        if isinstance(special, signs.ActionParams):
             result = lambda: special.action(pattern)
         else:
             result = lambda: self.player.sign.set_lights(
@@ -79,7 +81,7 @@ class PlayMusicMode(PlayMode):
     def light_seq(
         self, 
         sequence=None, 
-        special: SpecialParams | None = None,
+        special: signs.SpecialParams | None = None,
         **kwargs,
     ):
         """"""
@@ -205,28 +207,39 @@ class PlayMusicMode(PlayMode):
         print(elements_out)
         return PlayMusicMode.Measure(self, tuple(elements_out), beats=beats)
 
-    @staticmethod
-    def interpret_symbols(symbols: str) -> tuple[float, str, str]:
-        """Returns duration, pitch, accent. """
+    def interpret_symbols(self, symbols: str) -> tuple[float, str, str, "Rest | None"]:
+        """Returns duration, pitch, accent, rest. """
         if not symbols:
             raise ValueError("Invalid (empty) symbol.")
         elif symbols.startswith('3'):
-            duration, pitch, accent = PlayMusicMode.interpret_symbols(symbols[1:])
+            duration, pitch, accent, rest = self.interpret_symbols(symbols[1:])
             duration *= 2/3
         elif symbols[-1] in accent_symbols:
-            duration, pitch, _ = PlayMusicMode.interpret_symbols(symbols[:-1])
+            duration, pitch, _, rest = self.interpret_symbols(symbols[:-1])
             accent = symbols[-1]
         elif symbols[-1] in pitch_symbols:
-            duration, _, _ = PlayMusicMode.interpret_symbols(symbols[:-1])
+            duration, _, _, rest = self.interpret_symbols(symbols[:-1])
             pitch = symbols[-1]
         else:
-            duration = sum(
-                symbol_duration[s]
-                for s in symbols
-            )
-            pitch = ""
-            accent = ""
-        return duration, pitch, accent
+            if any(
+                s not in symbol_duration for s in symbols
+            ):
+                raise ValueError("Invalid symbol.")
+            if any(
+                s in rest_duration and s in note_duration for s in symbols
+            ):
+                raise ValueError("Cannot mix note and rest symbols.")
+            if symbols[0] in rest_duration:
+                duration = 0
+                rest = self.rest(symbols)
+            else:
+                duration = sum(
+                    note_duration[s]
+                    for s in symbols
+                )
+                rest = None
+            pitch, accent = "", ""
+        return duration, pitch, accent, rest
 
     class Element(ABC):
         """"""
@@ -280,11 +293,11 @@ class PlayMusicMode(PlayMode):
             for action in self.actions:
                 action()
 
-    def act(self, symbols: str, *actions: Callable) -> ActionNote:
-        duration, pitch, accent = self.interpret_symbols(symbols)
+    def act(self, symbols: str, *actions: Callable) -> "ActionNote | Rest":
+        duration, pitch, accent, rest = self.interpret_symbols(symbols)
         if pitch or accent:
             raise ValueError("Action note cannot have pitch or accent.")
-        return PlayMusicMode.ActionNote(self, duration, actions)
+        return rest or PlayMusicMode.ActionNote(self, duration, actions)
 
     class BellNote(NoteBase):
         """Bell Note"""
@@ -301,11 +314,11 @@ class PlayMusicMode(PlayMode):
         def execute(self):
             raise NotImplementedError
 
-    def bell(self, symbols: str) -> BellNote:
-        duration, pitch, accent = self.interpret_symbols(symbols)
+    def bell(self, symbols: str) -> "BellNote | Rest":
+        duration, pitch, accent, rest = self.interpret_symbols(symbols)
         if accent:
             raise ValueError("Bell note cannot have accent.")
-        return PlayMusicMode.BellNote(self, duration, pitch)
+        return rest or PlayMusicMode.BellNote(self, duration, pitch)
 
     def bell_part(self, notation: str, beats_per_measure=4) -> "PlayMusicMode.Part":
         return self.part(
@@ -327,11 +340,11 @@ class PlayMusicMode(PlayMode):
         def execute(self):
             raise NotImplementedError
 
-    def drum(self, symbols: str) -> DrumNote:
-        duration, pitch, accent = self.interpret_symbols(symbols)
+    def drum(self, symbols: str) -> "DrumNote | Rest":
+        duration, pitch, accent, rest = self.interpret_symbols(symbols)
         if pitch:
             raise ValueError("Drum note cannot have pitch.")
-        return PlayMusicMode.DrumNote(self, duration, accent)
+        return rest or PlayMusicMode.DrumNote(self, duration, accent)
 
     def drum_part(self, notation: str, beats_per_measure=4) -> "PlayMusicMode.Part":
         return self.part(
@@ -351,10 +364,10 @@ class PlayMusicMode(PlayMode):
             """"""
 
     def rest(self, symbols: str) -> Rest:
-        duration, pitch, accent = self.interpret_symbols(symbols)
+        duration, pitch, accent, rest = self.interpret_symbols(symbols)
         if pitch or accent:
             raise ValueError("Rest cannot have pitch or accent.")
-        return PlayMusicMode.Rest(self, duration)
+        return rest or PlayMusicMode.Rest(self, duration)
 
     class Part(Element):
         """"""
@@ -418,7 +431,7 @@ class PlayMusicMode(PlayMode):
             step_duration: float, 
             count: int,
             sequence: Callable,
-            special: SpecialParams | None = None,
+            special: signs.SpecialParams | None = None,
             **kwargs,
         ):
             super().__init__(mode)
@@ -433,9 +446,9 @@ class PlayMusicMode(PlayMode):
         symbols: str,
         count: int,
         sequence: Callable,
-        special: SpecialParams | None = None,
+        special: signs.SpecialParams | None = None,
         **kwargs,
     ):
-        step_duration, _, _ = PlayMusicMode.interpret_symbols(symbols)
+        step_duration, _, _, _ = self.interpret_symbols(symbols)
         return PlayMusicMode.Sequence(
             self, step_duration, count, sequence, special, **kwargs)
