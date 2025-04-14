@@ -72,6 +72,7 @@ class NumatoUSBRelayModule(ABC):
            in which the first light is the string's leftmost 0 or 1,
            to a relay pattern, in which the first relay is the
            rightmost bit of the binary / hex value."""
+        print(f"device pattern: {device_pattern}")
         relay_pattern = ''.join(
             str(device_pattern[self._bit_to_device[b]])
             if b in self._bit_to_device else '0'
