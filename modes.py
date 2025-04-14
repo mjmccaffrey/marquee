@@ -262,7 +262,7 @@ class PlayMusicMode(PlayMode):
         self, 
         pattern: Any,
         special: SpecialParams | None = None,
-    ):
+    ) -> Callable:
         """Return callable to effect light pattern."""
         if isinstance(special, ActionParams):
             result = lambda: special.action(pattern)
@@ -353,7 +353,7 @@ class PlayMusicMode(PlayMode):
             sequence, special, **kwargs,
         )
         def func(s: str):
-            return self.act(s, lambda: self.light(next(seq.iter), special))
+            return self.act(s, self.light(next(seq.iter), special))
         return func
     
     def sequence(
