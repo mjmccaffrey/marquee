@@ -61,7 +61,7 @@ class DrumSet(Instrument):
             i = (self.click_next + r) % self.count
             pattern = (
                   pattern[ : i ]
-                + '0' if pattern[i] == '1' else '1'
+                + ('0' if pattern[i] == '1' else '1')
                 + pattern[ i + 1 : ]
             )
             print(i, pattern)
