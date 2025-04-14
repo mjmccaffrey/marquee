@@ -289,8 +289,8 @@ class PlayMusicMode(PlayMode):
         duration, pitch, accent, rest = interpret_symbols(symbols)
         if rest:
             return self.rest(symbols)
-        if pitch or accent:
-            raise ValueError("Action note cannot have pitch or accent.")
+        #if pitch or accent:
+        #    raise ValueError("Action note cannot have pitch or accent.")
         return ActionNote(duration, actions)
 
     def seq_part(
