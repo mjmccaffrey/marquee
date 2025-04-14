@@ -235,7 +235,7 @@ class PlayMusicMode(PlayMode):
         #self.bells = self.player.sign.bell_set
         #self.drums = self.player.sign.drum_set
         self.notation = interpret_notation
-        self.tempo = 60
+        self.tempo = 120
 
     @property
     def tempo(self):
