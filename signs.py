@@ -206,7 +206,7 @@ class Sign:
     def click(self):
         """Generate a small click sound by flipping
            an otherwise unused relay."""
-        self.flip_extra_relays(6)
+        self.flip_extra_relays(5)
 
     def set_dimmers(
             self, 
