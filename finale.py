@@ -154,5 +154,5 @@ class Finale(PlayMusicMode):
                            "♪ 3♪ 3♪ 3♪ ♪ 3♪ 3♪ 3♪ | ♪ ♪ ♪ | 𝄻 | 𝄻 "
         s.play_measures(
             *s.notation(s.drum, notes, beats=2),
-            *s.notation(rows, notes, beats=2),
+            # *s.notation(rows, notes, beats=2),
         )

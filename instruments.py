@@ -64,7 +64,6 @@ class DrumSet(Instrument):
                 + ('0' if pattern[i] == '1' else '1')
                 + pattern[ i + 1 : ]
             )
-            print(i, pattern)
         self.click_next = i + (1 % self.count)
         self.relays.set_state_of_devices(pattern)
         self.pattern = pattern
