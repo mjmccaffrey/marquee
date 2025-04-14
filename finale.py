@@ -148,7 +148,7 @@ class Finale(PlayMusicMode):
     def body4(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
-        rows = s.seq(seq_build_rows, pattern="0", from_top=True)
+        # rows = s.seq(seq_build_rows, pattern="0", from_top=True)
         # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
         notes = "3♪ 3♪ 3♪ | ♪ ♪ ♪ 3♪ 3♪ 3♪ | ♪ ♪ ♪ 3♪ 3♪ 3♪ |" \
                            "♪ 3♪ 3♪ 3♪ ♪ 3♪ 3♪ 3♪ | ♪ ♪ ♪ | 𝄻 | 𝄻 "

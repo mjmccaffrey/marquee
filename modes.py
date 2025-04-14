@@ -412,7 +412,10 @@ class PlayMusicMode(PlayMode):
             for element in measure.elements:
                 start = time.time()
                 assert isinstance(element, BaseNote)
-                element.execute()
+                if isinstance(element, DrumNote):
+                    self.player.sign.drum_set.play(element.accent)
+                else:
+                    element.execute()
                 wait = (element.duration) * self.pace
                 self.player.wait(wait, elapsed = time.time() - start)
                 beat += element.duration
