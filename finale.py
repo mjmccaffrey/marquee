@@ -2,7 +2,7 @@
 
 import sys
 
-from music import PlayMusicMode
+from modes import PlayMusicMode
 from signs import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
 from sequence_defs import *
 
@@ -10,20 +10,15 @@ class Finale(PlayMusicMode):
     """"""
 
     def execute(self):
-        self.test()
+        self.body4()
         sys.exit()
+        self.test()
         self.intro()
         self.body1()
         self.body2()
 
     def test(self):
         s = self
-        assert s.interpret_symbols('♩') == (1, 0, None)
-        assert s.interpret_symbols('♩𝅘𝅥𝅯') == (1.25, 0, None)
-        assert s.interpret_symbols('3♪') == (0.75, 0, None)
-        assert s.interpret_symbols('♪^') == (0.5, 8, None)
-        assert s.interpret_symbols('3♩>') == (1.5, 6, None)
-        assert s.interpret_symbols('3♩>A') == (1.5, 3, 6)
         s.play_measures(
             s.measure(
                 s.act('♩', s.relay(0, 1)),
@@ -47,8 +42,6 @@ class Finale(PlayMusicMode):
                 s.act('3𝅘𝅥𝅯', s.relay(0, 1)),
                 s.act('3𝅘𝅥𝅯', s.relay(0, 1)),
                 s.act('♪', s.relay(0, 1)),
-                s.act('@', s.relay(0, 1)),
-                s.act('𝄻𝅘𝅥𝅯', s.relay(0, 1)),
             )
         )
 
@@ -139,11 +132,27 @@ class Finale(PlayMusicMode):
     def body3(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
+        rows = s.seq(seq_rows)
         s.play_measures(
-            *s.notation(s.bells, "♩ ♩C ♩D^  | ♩D ♩E ♩G ♩A | ♩a ♩b ♩c ♩d | 𝄽 𝄽 ♩e 𝄽"),
-            *s.notation(s.drums, "3♪C 3♪D | ♩ ♩- ♩> ♩^ | ♩ ♩- ♩> ♩^   |"),
+            *s.notation(s.bell, "♩    ♩C ♩D^ | ♩D ♩E ♩G ♩A | ♩a ♩b ♩c ♩d | 𝄽 𝄽 ♩e 𝄽"),
+            *s.notation(s.drum, "3♪C 3♪D    | ♩  ♩- ♩> ♩^ | ♩  ♩- ♩> ♩^   |"),
+            *s.notation(rows, "3♪C   3♪D    | ♩  ♩- ♩> ♩^ | ♩  ♩- ♩> ♩^   |"),
         )
         s.play_parts(
-            *s.bell_part("♩ ♩C ♩D^  | ♩D ♩E ♩G ♩A | ♩a ♩b ♩c ♩d | ♩e"),
-            *s.drum_part("3♪C 3♪D | ♩ ♩- ♩> ♩^ | ♩ ♩- ♩> ♩^   |"),
+            s.bell_part("♩ ♩C ♩D^  | ♩D ♩E ♩G ♩A | ♩a ♩b ♩c ♩d | ♩e"),
+            s.drum_part("3♪C 3♪D | ♩ ♩- ♩> ♩^ | ♩ ♩- ♩> ♩^   |"),
+            s.seq_part(
+                rows,   "3♪C 3♪D | ♩ ♩- ♩> ♩^ | ♩ ♩- ♩> ♩^   |"),
+        )
+
+    def body4(self):
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        s = self
+        rows = s.seq(seq_build_rows, pattern="0", from_top=True)
+        # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
+        notes = "3♪ 3♪ 3♪ | ♪ ♪ ♪ 3♪ 3♪ 3♪ | ♪ ♪ ♪ 3♪ 3♪ 3♪ |" \
+                           "♪ 3♪ 3♪ 3♪ ♪ 3♪ 3♪ 3♪ | ♪ ♪ ♪ | 𝄻 | 𝄻 "
+        s.play_measures(
+            *s.notation(s.drum, notes, beats=2),
+            *s.notation(rows, notes, beats=2),
         )

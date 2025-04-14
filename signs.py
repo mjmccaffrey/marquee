@@ -75,6 +75,7 @@ class Sign:
         drum_set: DrumSet,
         dimmers: list[ShellyDimmer],
         light_relays: NumatoUSBRelayModule,
+        audio_relays: NumatoUSBRelayModule,
         buttons: list[Button],
         brightness_factor: float,
     ):
@@ -84,6 +85,7 @@ class Sign:
         self.drum_set = drum_set
         self.dimmers = dimmers
         self._light_relays = light_relays
+        self._audio_relays = audio_relays
         self._buttons = buttons
         self.brightness_factor = brightness_factor
 
@@ -186,6 +188,7 @@ class Sign:
                 extra_pattern = ''.join(str(e) for e in extra_pattern)
             full_pattern = light_pattern + extra_pattern
             self._light_relays.set_state_of_devices(full_pattern)
+            self._audio_relays.set_state_of_devices(full_pattern)
             self.extra_pattern = extra_pattern
             self.light_pattern = light_pattern
 

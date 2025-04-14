@@ -1,6 +1,6 @@
+"""Marquee Lighted Sign Project - instruments"""
 
 from abc import ABC, abstractmethod
-from typing import Any, Callable
 
 class Instrument(ABC):
     """"""

@@ -8,13 +8,16 @@ marquee
             PlayMode
             PlaySequenceMode
             PlayMusicMode
+                Instrument
                 Part
                     notation
                     Measure
-                        sequence
-                            BellNote
-                            Note
-                            Rest
+                        ActionNote
+                        BellNote
+                        DrumNote
+                        Rest
+                        NoteGroup
+                        NoteSequence
             mode_defs
             sequence_defs
         Sign

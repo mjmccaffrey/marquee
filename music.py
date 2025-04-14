@@ -2,16 +2,8 @@
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-from dataclasses import dataclass
-from functools import partial
-import itertools
-import time
-from typing import Any
 
 from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument
-# from signs import ActionParams, SpecialParams
-import signs
-from modes import PlayMode
 
 accent_symbols = '->^'
 pitch_symbols = 'DEGAabcde'
@@ -25,430 +17,237 @@ rest_duration: dict[str, float] = {
 }
 symbol_duration = note_duration | rest_duration
 
-class PlayMusicMode(PlayMode):
-    """4 beats per measure by default.
-       Every quarter note gets a beat."""
+class Element(ABC):
+    """Base for all musical items."""
+    @abstractmethod
+    def __init__(self):
+        super().__init__()
+    def __str__(self):
+        return f"Element"
+    def __repr__(self):
+        return f"<{self}>"
+    def __eq__(self, other):
+        return (
+            isinstance(other, type(self)) and
+            str(self) == str(other)
+        )
+    
+class BaseNote(Element):
+    """Base for all musical notes."""
+    @abstractmethod
     def __init__(
-        self,
-        player: Any,  # Player
-        name: str,
+        self, 
+        instrument_class: type[Instrument],
+        duration: float,
+    ):
+        super().__init__()
+        self.instrument_class = instrument_class
+        self.duration = duration
+    def __str__(self):
+        return f"BaseNote {self.instrument_class} {self.duration}"
+    @abstractmethod
+    def execute(self):
+        """"""
+
+class Rest(BaseNote):
+    """Musical rest."""
+    def __init__(
+        self, 
+        duration: float,
+    ):
+        super().__init__(RestInstrument, duration)
+    def __str__(self):
+        return f"Rest {self.duration}"
+    def execute(self):
+        """"""
+
+class ActionNote(BaseNote):
+    """Note to execute arbitrary actions."""
+    def __init__(
+        self, 
+        duration: float,
+        actions: tuple[Callable, ...],
+    ):
+        super().__init__(ActionInstrument, duration)
+        assert actions, "Note must have at least 1 action."
+        self.actions = actions
+    def __str__(self):
+        return f"ActionNote {self.duration} {self.actions}"
+    def execute(self):
+        for action in self.actions:
+            action()
+
+class BellNote(BaseNote):
+    """Note to strike 1 or more bells."""
+    def __init__(
+        self, 
+        duration: float,
         #
+        pitches: str,
     ):
-        super().__init__(player, name, preset_dimmers=True)
-        self.bells = self.player.sign.bell_set
-        self.drums = self.player.sign.drum_set
-        # self.beat_unit = 1/4
-        self.tempo = 60
+        super().__init__(BellSet, duration)
+        self.pitches = pitches
+    def __str__(self):
+        return f"BellNote {self.duration} {self.pitches}"
+    def execute(self):
+        raise NotImplementedError
 
-    @property
-    def tempo(self):
-        return self._tempo
+class DrumNote(BaseNote):
+    """Note to click relays."""
+    def __init__(
+        self, 
+        duration: float,
+        #
+        accent: str,
+    ):
+        super().__init__(DrumSet, duration)
+        self.accent = accent
+    def __str__(self):
+        return f"DrumNote {self.duration} {self.accent}"
+    def execute(self):
+        raise NotImplementedError
+
+class NoteGroup(Element):
+    """Contains notes to play concurrently."""
+    def __init__(
+        self, 
+        notes: tuple[BaseNote, ...],
+    ):
+        """"""
+        super().__init__()
+        self.notes = notes
+    def __str__(self):
+        return f"NoteGroup {self.notes}"
     
-    @tempo.setter
-    def tempo(self, value: float):
-        self._tempo = value
-        self.pace = 60 / self._tempo
-
-    def dimmer_seq(self, brightness: int, transition: float):
-        """Return callable to effect state of specified dimmers."""
-        return lambda lights: self.player.sign.execute_dimmer_commands(
-            [
-                (self.player.sign.dimmer_channels[l], brightness, transition)
-                for l in lights
-            ]
-        )
-
-    def dimmer(self, pattern: str):
-        """"""
-        return lambda: self.player.sign.set_dimmers(pattern)
-
-    def light(
+class Measure(Element):
+    """Musical measure containing notes."""
+    def __init__(
         self, 
-        pattern: Any,
-        special: signs.SpecialParams | None = None,
-    ):
-        """Return callable to effect light pattern."""
-        print("*********", pattern)
-        if isinstance(special, signs.ActionParams):
-            result = lambda: special.action(pattern)
-        else:
-            result = lambda: self.player.sign.set_lights(
-                light_pattern=pattern,
-                special=special,
-            )
-        return result
-
-    def light_seq(
-        self, 
-        sequence=None, 
-        special: signs.SpecialParams | None = None,
-        **kwargs,
+        elements: tuple[Element, ...],
+        beats: int = 4,
     ):
         """"""
-        if sequence is not None:
-            self.current_sequence = itertools.cycle(sequence(**kwargs))
-            self.current_special = special
-        return self.light(
-            pattern=next(self.current_sequence),
-            special=self.current_special,
-        )
+        super().__init__()
+        self.elements = elements
+        self.beats = beats
+    def __str__(self):
+        return f"Measure {self.elements} {self.beats}"
     
-    def relay(self, *indices):
-        """Flip"""
-        return lambda: self.player.sign.flip_extra_relays(*indices)
-    
-    def expand_sequences(self, measures: tuple["Measure", ...]):
-        """"""
-        for measure in measures:
-            if not measure.elements:
-                continue
-            if isinstance(measure.elements[0], PlayMusicMode.Sequence):
-                print("sequence found.")
-                assert len(measure.elements) == 1, \
-                    "Sequence must be the only element in the measure."
-                seq = measure.elements[0]
-                measure.elements = tuple(
-                    PlayMusicMode.ActionNote(
-                        mode=self,
-                        duration=seq.step_duration,
-                        actions=(
-                            self.light_seq(
-                                sequence=seq.sequence, 
-                                special=seq.special,
-                                **seq.kwargs,
-                            )
-                                if c == 0 else 
-                            self.light_seq(),
-                        ),
-                    )
-                    for c in range(seq.count)
-                )
-
-    def play_measures(self, *measures: "Measure"):
-        """"""
-        for measure in measures:
-            print("PLAYING MEASURE")
-            beat = 0
-            self.expand_sequences(measures)
-            assert all(
-                isinstance(e, PlayMusicMode.NoteBase)
-                for e in measure.elements
-            )
-            for element in measure.elements:
-                print("playing", element)
-                start = time.time()
-                assert isinstance(element, PlayMusicMode.NoteBase)
-                element.execute()
-                wait = (element.duration) * self.pace
-                self.player.wait(wait, elapsed = time.time() - start)
-                beat += element.duration
-                # print(f"beat is now {beat}")
-            wait = max(0, measure.beats - beat) * self.pace
-            self.player.wait(wait)
-
-    def play_parts(self, *parts: "Part"):
-        """"""
-        assert parts
-        measure_count = [len(p.measures) for p in parts]
-        assert all(c == measure_count[0] for c in measure_count)
-        for part in parts:
-            self.expand_sequences(part.measures)
-        measure_groups = zip(*(p.measures for p in parts))
-        new_measures = [
-            self.process_measure_group(parts, measure_group)
-            for measure_group in measure_groups
-        ]
-        #print(new_measures)
-        self.play_measures(*new_measures)
-
-    def process_measure_group(
+class Part(Element):
+    """Musical part containing measures."""
+    def __init__(
         self, 
-        parts: tuple["Part", ...], 
-        measure_group: tuple["Measure", ...],
-    ) -> "PlayMusicMode.Measure":
-        beats = measure_group[0].beats
-        assert all(m.beats == beats for m in measure_group)
-        measure = {
-            p: measure_group[i]
-            for i, p in enumerate(parts)
-        }
-        elements_in = {p: iter(measure[p].elements) for p in parts}
-        elements_out: list[PlayMusicMode.Element] = []
-        beat_next: dict[PlayMusicMode.Part, float | None] = {p: 0 for p in parts}
-        beat, next_beat = 0.0, 0.0
-        while any(beat_next[p] is not None for p in parts):
-            beat = next_beat
-            out = []
-            for i, p in enumerate(parts):
-                print(f"part: {i}, beat: {beat}, beat_next: {beat_next[p]}")
-                if beat_next[p] == beat:
-                    element = next(elements_in[p], None)
-                    if element is None:
-                        print(f"part: {i} OUT OF ELEMENTS")
-                        beat_next[p] = None
-                    else:
-                        assert isinstance(element, PlayMusicMode.NoteBase)
-                        beat_next[p] = beat + element.duration
-                        print(element)
-                        if not isinstance(element, PlayMusicMode.Rest):
-                            out.append(element)
-                        print(out)
-            if not all(beat_next[p] is None for p in parts):
-                next_beat = min(
-                    beat_next[p] for p in parts  # type: ignore
-                    if beat_next[p] is not None
-                )
-                if not out:
-                    out.append(
-                        PlayMusicMode.Rest(self, next_beat - beat)
-                    )
-            print(out)
-            elements_out.extend(out)
-        print(elements_out)
-        return PlayMusicMode.Measure(self, tuple(elements_out), beats=beats)
-
-    def interpret_symbols(self, symbols: str) -> tuple[float, str, str, "Rest | None"]:
-        """Returns duration, pitch, accent, rest. """
-        if not symbols:
-            raise ValueError("Invalid (empty) symbol.")
-        elif symbols.startswith('3'):
-            duration, pitch, accent, rest = self.interpret_symbols(symbols[1:])
-            duration *= 2/3
-        elif symbols[-1] in accent_symbols:
-            duration, pitch, _, rest = self.interpret_symbols(symbols[:-1])
-            accent = symbols[-1]
-        elif symbols[-1] in pitch_symbols:
-            duration, _, _, rest = self.interpret_symbols(symbols[:-1])
-            pitch = symbols[-1]
-        else:
-            if any(
-                s not in symbol_duration for s in symbols
-            ):
-                raise ValueError("Invalid symbol.")
-            if any(
-                s in rest_duration and s in note_duration for s in symbols
-            ):
-                raise ValueError("Cannot mix note and rest symbols.")
-            if symbols[0] in rest_duration:
-                duration = 0
-                rest = self.rest(symbols)
-            else:
-                duration = sum(
-                    note_duration[s]
-                    for s in symbols
-                )
-                rest = None
-            pitch, accent = "", ""
-        return duration, pitch, accent, rest
-
-    class Element(ABC):
-        """"""
-        @abstractmethod
-        def __init__(
-            self, 
-            mode: "PlayMusicMode", 
-        ):
-            super().__init__()
-            self.mode = mode
-
-        def __str__(self):
-            return f"{type(self).__name__}"
-        
-        def __repr__(self):
-            return f"<{self}>"
-        
-    class NoteBase(Element):
-        """"""
-
-        @abstractmethod
-        def __init__(
-            self, 
-            mode: "PlayMusicMode",
-            name: str,
-            instrument_class: type[Instrument],
-            duration: float,
-        ):
-            super().__init__(mode)
-            self.name = name
-            self.instrument_class = instrument_class
-            self.duration = duration
-
-        @abstractmethod
-        def execute(self):
-            """"""
-
-    class ActionNote(NoteBase):
-        """"""
-        def __init__(
-            self, 
-            mode: "PlayMusicMode", 
-            duration: float,
-            actions: tuple[Callable, ...],
-        ):
-            super().__init__(mode, "act", ActionInstrument, duration)
-            assert actions, "Note must have at least 1 action."
-            self.actions = actions
-
-        def execute(self):
-            for action in self.actions:
-                action()
-
-    def act(self, symbols: str, *actions: Callable) -> "ActionNote | Rest":
-        duration, pitch, accent, rest = self.interpret_symbols(symbols)
-        if pitch or accent:
-            raise ValueError("Action note cannot have pitch or accent.")
-        return rest or PlayMusicMode.ActionNote(self, duration, actions)
-
-    class BellNote(NoteBase):
-        """Bell Note"""
-        def __init__(
-            self, 
-            mode: "PlayMusicMode",
-            duration: float,
-            #
-            pitch: str,
-        ):
-            super().__init__(mode, 'bell', BellSet, duration)
-            self.pitch = pitch
-
-        def execute(self):
-            raise NotImplementedError
-
-    def bell(self, symbols: str) -> "BellNote | Rest":
-        duration, pitch, accent, rest = self.interpret_symbols(symbols)
-        if accent:
-            raise ValueError("Bell note cannot have accent.")
-        return rest or PlayMusicMode.BellNote(self, duration, pitch)
-
-    def bell_part(self, notation: str, beats_per_measure=4) -> "PlayMusicMode.Part":
-        return self.part(
-            *self.notation(self.bell, notation, beats_per_measure)
-        )
-
-    class DrumNote(NoteBase):
-        """Drum Note"""
-        def __init__(
-            self, 
-            mode: "PlayMusicMode",
-            duration: float,
-            #
-            accent: str,
-        ):
-            super().__init__(mode, 'bell', BellSet, duration)
-            self.accent = accent
-
-        def execute(self):
-            raise NotImplementedError
-
-    def drum(self, symbols: str) -> "DrumNote | Rest":
-        duration, pitch, accent, rest = self.interpret_symbols(symbols)
-        if pitch:
-            raise ValueError("Drum note cannot have pitch.")
-        return rest or PlayMusicMode.DrumNote(self, duration, accent)
-
-    def drum_part(self, notation: str, beats_per_measure=4) -> "PlayMusicMode.Part":
-        return self.part(
-            *self.notation(self.drum, notation, beats_per_measure)
-        )
-
-    class Rest(NoteBase):
-        """ Duration in Beats. """
-        def __init__(
-            self, 
-            mode: "PlayMusicMode", 
-            duration: float,
-        ):
-            super().__init__(mode, "rest", RestInstrument, duration)
-
-        def execute(self):
-            """"""
-
-    def rest(self, symbols: str) -> Rest:
-        duration, pitch, accent, rest = self.interpret_symbols(symbols)
-        if pitch or accent:
-            raise ValueError("Rest cannot have pitch or accent.")
-        return rest or PlayMusicMode.Rest(self, duration)
-
-    class Part(Element):
-        """"""
-
-        def __init__(
-            self, 
-            mode: "PlayMusicMode", 
-            measures: tuple["PlayMusicMode.Measure", ...],
-        ):
-            """"""
-            super().__init__(mode)
-            self.measures = measures
-
-    def part(self, *measures: "PlayMusicMode.Measure") -> Part:
-        return PlayMusicMode.Part(self, measures)
-
-    class Measure(Element):
-        """"""
-
-        def __init__(
-            self, 
-            mode: "PlayMusicMode", 
-            elements: tuple["PlayMusicMode.Element", ...],
-            beats: int = 4,
-        ):
-            """"""
-            super().__init__(mode)
-            self.elements = elements
-            self.beats = beats
-
-    def measure(self, *elements: "PlayMusicMode.Element", beats: int = 4) -> Measure:
-        return PlayMusicMode.Measure(self, elements, beats=beats)
-
-    def notation(
-        self, 
-        element_factory: Callable[[str], Element],
-        notation: str, 
-        beats_per_measure: int = 4,
-    ) -> tuple[Measure, ...]:
-        """"""
-        def create_measure(measure):
-            return PlayMusicMode.Measure(
-                self,
-                tuple(
-                    element_factory(symbols)
-                    for symbols in measure.split()
-                ),
-                beats = beats_per_measure,
-            )
-        return tuple(
-            create_measure(measure)
-            for measure in notation.split('|')
-        )
-
-    class Sequence(Element):
-        """"""
-
-        def __init__(
-            self,
-            mode: "PlayMusicMode", 
-            step_duration: float, 
-            count: int,
-            sequence: Callable,
-            special: signs.SpecialParams | None = None,
-            **kwargs,
-        ):
-            super().__init__(mode)
-            self.step_duration = step_duration
-            self.count = count
-            self.sequence = sequence
-            self.special = special
-            self.kwargs = kwargs
-
-    def sequence(
-        self,
-        symbols: str,
-        count: int,
-        sequence: Callable,
-        special: signs.SpecialParams | None = None,
-        **kwargs,
+        measures: tuple[Measure, ...],
     ):
-        step_duration, _, _, _ = self.interpret_symbols(symbols)
-        return PlayMusicMode.Sequence(
-            self, step_duration, count, sequence, special, **kwargs)
+        super().__init__()
+        self.measures = measures
+    def __str__(self):
+        return f"Part {self.measures}"
+    
+def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
+    """Convert measure from each part into single measure
+       of notes with 0 duration, padded with rests."""
+    beats = measures[0].beats
+    assert all(m.beats == beats for m in measures)
+    elements_in = [iter(m.elements) for m in measures]
+    elements_out: list[Element] = []
+    beat_next: list[float | None] = [0 for m in measures]
+    beat, next_beat, rest = 0.0, 0.0, 0.0
+    while any(bn is not None for bn in beat_next):
+        # Get concurrent notes
+        beat = next_beat
+        out: list[Element] = []
+        concurrent_notes: list[BaseNote] = []
+        for i, _ in enumerate(measures):
+            if beat_next[i] == beat:
+                element = next(elements_in[i], None)
+                if element is None:
+                    print(f"part: {i} OUT OF ELEMENTS")
+                    beat_next[i] = None
+                else:
+                    assert isinstance(element, BaseNote)
+                    beat_next[i] = beat + element.duration
+                    if not isinstance(element, Rest):
+                        element.duration = 0
+                        concurrent_notes.append(element)
+        if concurrent_notes and rest:
+            out.append(Rest(rest))
+            rest = 0.0
+        # Group notes if necessary
+        if len(concurrent_notes) > 1:
+            out.append(NoteGroup(tuple(concurrent_notes)))
+        elif len(concurrent_notes) == 1:
+            out.append(concurrent_notes[0])
+        # Calculate next_beat
+        next_beat = min(
+            (bn for bn in beat_next if bn is not None),
+            default=beats
+        )
+        # Add a rest
+        rest += next_beat - beat
+        # Add to output
+        elements_out.extend(out)
+        print(f"concurrent notes: {concurrent_notes}")
+        print(f"beat: {beat}")
+        print(f"out: {out}")
+        print(f"next beat: {next_beat}")
+        print(f"beats next: {beat_next}")
+        print(f"elements_out: {elements_out}")
+        print(f"rest: {rest}")
+    if rest:
+        elements_out.append(Rest(rest))
+    print(f"FINAL elements_out: {elements_out}")
+    return Measure(tuple(elements_out), beats=beats)
+
+def interpret_symbols(symbols: str) -> tuple[float, str, str, bool]:
+    """Return duration, pitch, accent, and rest
+       from a single set of symbols. """
+    if not symbols:
+        raise ValueError("Invalid (empty) symbol.")
+    elif symbols.startswith('3'):
+        duration, pitch, accent, rest = interpret_symbols(symbols[1:])
+        duration *= 2/3
+    elif symbols[-1] in accent_symbols:
+        duration, pitch, accent, rest = interpret_symbols(symbols[:-1])
+        accent = symbols[-1]
+    elif symbols[-1] in pitch_symbols:
+        duration, pitch, accent, rest = interpret_symbols(symbols[:-1])
+        pitch += symbols[-1]
+    else:
+        if any(
+            s not in symbol_duration 
+            for s in symbols
+        ):
+            raise ValueError("Invalid symbol.")
+        if any(
+            s1 in rest_duration and s2 in note_duration 
+            for s1 in symbols for s2 in symbols
+        ):
+            raise ValueError("Cannot mix note and rest symbols.")
+        rest: bool = symbols[0] in rest_duration
+        duration = sum(
+            (rest_duration if rest else note_duration)[s]
+            for s in symbols
+        )
+        pitch, accent = "", ""
+        print(symbols, duration, pitch, accent, rest)
+    return duration, pitch, accent, rest
+
+def interpret_notation(
+    create_note: Callable[[str], BaseNote],
+    notation: str, 
+    beats: int = 4,
+) -> tuple[Measure, ...]:
+    """Return measures from notation using create_note."""
+    def create_measure(measure):
+        return Measure(
+            tuple(
+                create_note(symbols)
+                for symbols in measure.split()
+            ),
+            beats = beats,
+        )
+    return tuple(
+        create_measure(measure)
+        for measure in notation.split('|')
+    )

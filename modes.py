@@ -1,15 +1,21 @@
 """Marquee Lighted Sign Project - modes"""
 
 from abc import ABC, abstractmethod
-from collections.abc import Callable, Iterator
+from collections.abc import Callable
 from dataclasses import dataclass
+import itertools
 import time
 from typing import Any
 
 from buttons import Button
 from dimmers import TRANSITION_DEFAULT
+from music import (
+    Element, BaseNote, Rest, ActionNote, BellNote, DrumNote, Part, Measure,
+    interpret_notation, interpret_symbols, merge_concurrent_measures,
+)
 from sequence_defs import seq_rotate_build_flip
-from signs import ALL_HIGH, ALL_OFF, ALL_ON, DimmerParams, SpecialParams
+from signs import ALL_HIGH, ALL_OFF, ALL_ON
+from signs import ActionParams, DimmerParams, SpecialParams
 
 @dataclass
 class ModeConstructor:
@@ -19,7 +25,6 @@ class ModeConstructor:
 
 class Mode(ABC):
     """Base for all Playing modes and the Select mode."""
-
     def __init__(
         self,
         player: Any,  # Player
@@ -38,7 +43,7 @@ class Mode(ABC):
             self.player.sign.set_lights(ALL_ON)
 
     def mode_index(self, current: int, delta: int) -> int:
-        """Return a new mode index, wrapping in both directions."""
+        """Return a new mode index, wrapping index in both directions."""
         lower, upper = 1, len(self.player.modes) - 1
         value = current + delta % (upper - lower + 1)
         if (dif := value - upper) > 0:
@@ -57,7 +62,6 @@ class Mode(ABC):
  
 class SelectMode(Mode):
     """Supports the select mode."""
-
     def __init__(
         self,
         player: Any,  # Player
@@ -109,7 +113,6 @@ class SelectMode(Mode):
 
 class PlayMode(Mode):
     """Base for custom modes."""
-
     def __init__(
         self,
         player: Any,  # Player
@@ -143,7 +146,6 @@ class PlayMode(Mode):
 
 class PlaySequenceMode(PlayMode):
     """Supports all sequence-based modes."""
-
     def __init__(
         self,
         player: Any,  # Player
@@ -161,7 +163,6 @@ class PlaySequenceMode(PlayMode):
         self.stop = stop
         self.special = special
         self.kwargs = kwargs
-
         if isinstance(special, DimmerParams):
             default_trans = (
                 pace if isinstance(pace, float) else
@@ -171,7 +172,6 @@ class PlaySequenceMode(PlayMode):
                 special.transition_off = default_trans
             if special.transition_on is None:
                 special.transition_on = default_trans
-
         super().__init__(
             player, 
             name, 
@@ -180,6 +180,7 @@ class PlaySequenceMode(PlayMode):
         )
 
     def play_sequence_once(self):
+        """Play established sequence once."""
         self.player.replace_kwarg_values(self.kwargs)
         self.player.play_sequence(
             sequence=self.sequence(**self.kwargs),
@@ -193,3 +194,241 @@ class PlaySequenceMode(PlayMode):
         super().execute()
         while True:
             self.play_sequence_once()
+
+class Sequence(Element):
+    """"""
+    def __init__(
+        self,
+        sequence: Callable,
+        special: SpecialParams | None = None,
+        **kwargs,
+    ):
+        super().__init__()
+        self.sequence = sequence
+        self.special = special
+        self.kwargs = kwargs
+        self.iter = itertools.cycle(sequence(**kwargs))
+
+class NoteSequence(Sequence):
+    """"""
+    def __init__(
+        self,
+        step_duration: float, 
+        count: int,
+        sequence: Callable,
+        special: SpecialParams | None = None,
+        **kwargs,
+    ):
+        super().__init__(sequence, special, **kwargs)
+        self.step_duration = step_duration
+        self.count = count
+
+class PlayMusicMode(PlayMode):
+    """4 beats per measure by default.
+       Every quarter note gets a beat."""
+    def __init__(
+        self,
+        player: Any,  # Player
+        name: str,
+    ):
+        super().__init__(player, name, preset_dimmers=True)
+        #self.bells = self.player.sign.bell_set
+        #self.drums = self.player.sign.drum_set
+        self.notation = interpret_notation
+        self.tempo = 60
+
+    @property
+    def tempo(self):
+        return self._tempo
+    @tempo.setter
+    def tempo(self, value: float):
+        self._tempo = value
+        self.pace = 60 / self._tempo
+
+    def dimmer_seq(self, brightness: int, transition: float):
+        """Return callable to effect state of specified dimmers."""
+        return lambda lights: self.player.sign.execute_dimmer_commands(
+            [
+                (self.player.sign.dimmer_channels[l], brightness, transition)
+                for l in lights
+            ]
+        )
+
+    def dimmer(self, pattern: str):
+        """Return callable to effect dimmer pattern."""
+        return lambda: self.player.sign.set_dimmers(pattern)
+
+    def light(
+        self, 
+        pattern: Any,
+        special: SpecialParams | None = None,
+    ):
+        """Return callable to effect light pattern."""
+        if isinstance(special, ActionParams):
+            result = lambda: special.action(pattern)
+        else:
+            result = lambda: self.player.sign.set_lights(
+                light_pattern=pattern,
+                special=special,
+            )
+        return result
+
+    def relay(self, *indices):
+        """Flip ???????????????????"""
+        return lambda: self.player.sign.flip_extra_relays(*indices)
+    
+    def rest(self, symbols: str) -> Rest:
+        """Validate symbols and return Rest."""
+        duration, pitch, accent, rest = interpret_symbols(symbols)
+        if pitch or accent:
+            raise ValueError("Rest cannot have pitch or accent.")
+        return Rest(duration)
+
+    def act(self, symbols: str, *actions: Callable) -> ActionNote | Rest:
+        """Validate symbols and return ActionNote or Rest."""
+        duration, pitch, accent, rest = interpret_symbols(symbols)
+        if rest:
+            return self.rest(symbols)
+        if pitch or accent:
+            raise ValueError("Action note cannot have pitch or accent.")
+        return ActionNote(duration, actions)
+
+    def seq_part(
+            self, 
+            create_note: Callable[[str], ActionNote | Rest], 
+            notation: str, 
+            beats=4
+    ) -> Part:
+        """Produce sequence part from notation."""
+        return self.part(
+            *interpret_notation(create_note, notation, beats)
+        )
+
+    def bell(self, symbols: str) -> BellNote | Rest:
+        """Validate symbols and return BellNote or Rest."""
+        duration, pitch, accent, rest = interpret_symbols(symbols)
+        if rest:
+            return self.rest(symbols)
+        if accent:
+            raise ValueError("Bell note cannot have accent.")
+        return BellNote(duration, pitch)
+
+    def bell_part(self, notation: str, beats=4) -> Part:
+        """Produce bell part from notation."""
+        return self.part(
+            *interpret_notation(self.bell, notation, beats)
+        )
+
+    def drum(self, symbols: str) -> DrumNote | Rest:
+        """Validate symbols and return DrumNote or Rest."""
+        duration, pitch, accent, rest = interpret_symbols(symbols)
+        if rest:
+            return self.rest(symbols)
+        if pitch:
+            raise ValueError("Drum note cannot have pitch.")
+        return rest or DrumNote(duration, accent)
+
+    def drum_part(self, notation: str, beats=4) -> "Part":
+        """Produce drum part from notation."""
+        return self.part(
+            *interpret_notation(self.drum, notation, beats)
+        )
+
+    def part(self, *measures: Measure) -> Part:
+        """Produce Part."""
+        return Part(measures)
+
+    def measure(self, *elements: Element, beats: int = 4) -> Measure:
+        """Produce Measure."""
+        return Measure(elements, beats=beats)
+
+    def seq(
+        self,
+        sequence: Callable,
+        special: SpecialParams | None = None,
+        **kwargs,
+    ) -> Callable[[str], ActionNote | Rest]:
+        """Return callable to effect each step in sequence."""
+        seq = Sequence(
+            sequence, special, **kwargs,
+        )
+        def func(s: str):
+            return self.act(s, lambda: self.light(next(seq.iter), special))
+        return func
+    
+    def sequence(
+        self,
+        symbols: str,
+        count: int,
+        sequence: Callable,
+        special: SpecialParams | None = None,
+        **kwargs,
+    ) -> "NoteSequence":
+        """Produce a NoteSequence."""
+        step_duration, _, _, _ = interpret_symbols(symbols)
+        return NoteSequence(
+            step_duration, count, sequence, special, **kwargs,
+        )
+
+    def expand_sequences(self, measures: tuple[Measure, ...]):
+        """Convert NoteSequence into multiple ActionNotes."""
+        for measure in measures:
+            if not measure.elements:
+                continue
+            if not isinstance(measure.elements[0], NoteSequence):
+                continue
+            assert len(measure.elements) == 1, \
+                "NoteSequence must be the only element in the measure."
+            seq = measure.elements[0]
+            assert isinstance(seq, "NoteSequence")
+            actions = itertools.cycle(seq.sequence(**seq.kwargs))
+            measure.elements = tuple(
+                ActionNote(
+                    duration=seq.step_duration,
+                    actions=(
+                        self.light(
+                            pattern=next(actions),
+                            special=seq.special,
+                        ),
+                    )
+                )
+                for c in range(seq.count)
+            )
+
+    def prepare_for_playing(self, measures):
+        """All manipulation required before playing measures."""
+        self.expand_sequences(measures)
+
+    def play_measures(self, *measures: Measure):
+        """Play sequential measures."""
+        for measure in measures:
+            print("PLAYING MEASURE")
+            beat = 0
+            self.prepare_for_playing(measures)
+            assert all(
+                isinstance(e, BaseNote)
+                for e in measure.elements
+            )
+            for element in measure.elements:
+                start = time.time()
+                assert isinstance(element, BaseNote)
+                element.execute()
+                wait = (element.duration) * self.pace
+                self.player.wait(wait, elapsed = time.time() - start)
+                beat += element.duration
+            wait = max(0, measure.beats - beat) * self.pace
+            self.player.wait(wait)
+
+    def play_parts(self, *parts: Part):
+        """Merge parts into new sequence of measures, and then play."""
+        assert parts
+        measure_count = [len(p.measures) for p in parts]
+        assert all(c == measure_count[0] for c in measure_count)
+        for part in parts:
+            self.prepare_for_playing(part.measures)
+        concurrent_measures = zip(*(p.measures for p in parts))
+        new_measures = [
+            merge_concurrent_measures(measure_set)
+            for measure_set in concurrent_measures
+        ]
+        self.play_measures(*new_measures)
