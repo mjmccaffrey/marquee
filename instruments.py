@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - instruments"""
 
 from abc import ABC, abstractmethod
+from relays import NumatoUSBRelayModule
 
 class Instrument(ABC):
     """"""
@@ -39,15 +40,33 @@ class BellSet(Instrument):
 class DrumSet(Instrument):
     """"""
     def __init__(
-        self, 
+        self,
+        relays: NumatoUSBRelayModule,
     ):
         super().__init__()
-        accent_to_relay_count = {
-        '-': 4, '>': 8, '^': 12,
-        }
+        self.relays = relays
+        self.count = self.relays.relay_count
+        self.relays.set_state_of_devices("0" * self.count)
+        self.pattern = self.relays.get_state_of_devices()
+        assert self.pattern == "0" * self.count
+        self.click_next = 0
 
-    def play(self):
+    def play(self, accent: str):
         """"""
+        accent_to_relay_count = {
+            '': 2, '-': 4, '>': 8, '^': 12,
+        }
+        pattern = self.pattern
+        for r in range(accent_to_relay_count[accent]):
+            i = (self.click_next + r) % self.count
+            pattern = (
+                  pattern[ : i ]
+                + '0' if pattern[i] == '1' else '1'
+                + pattern[ i + 1 : ]
+            )
+            self.click_next = i + (1 % self.count)
+            self.relays.set_state_of_devices(pattern)
+            self.pattern = pattern
 
 class RestInstrument(Instrument):
     """"""

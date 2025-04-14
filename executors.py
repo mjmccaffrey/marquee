@@ -27,13 +27,17 @@ DIMMER_ADDRESSES = [
 def create_sign(brightness_factor: float) -> Sign:
     """Creates and returns a Sign object and all associated device objects."""
     bell_set = BellSet()
-    drum_set = DrumSet()
+    drum_set = DrumSet(
+        NumatoRL160001(
+            "/dev/ttyACM2",
+            {i: i for i in range(16)},
+        )
+    )
     dimmers: list[ShellyDimmer] = [
         ShellyProDimmer2PM(index, address)
         for index, address in enumerate(DIMMER_ADDRESSES)
     ]
     light_relays = NumatoRL160001("/dev/ttyACM1", ALL_RELAYS)
-    audio_relays = NumatoRL160001("/dev/ttyACM2", ALL_RELAYS)
     buttons = [
         Button('sign_back', _Button(pin=17, bounce_time=0.10), SIGUSR1),
         Button('remote_a', _Button(pin=18, pull_up=False, bounce_time=0.10)),
@@ -46,7 +50,6 @@ def create_sign(brightness_factor: float) -> Sign:
         drum_set=drum_set,
         dimmers=dimmers,
         light_relays=light_relays,
-        audio_relays=audio_relays,
         buttons=buttons,
         brightness_factor=brightness_factor,
     )
@@ -157,7 +160,7 @@ class Executor():
         if command is not None:
             self.execute_command(command)
         elif mode_index is not None:
-            self.execute_mode(mode_index, brightness_factor, speed_factor)
+            self.execute_mode(mode_index, speed_factor)
         else:
             self.execute_pattern(light_pattern, brightness_pattern)
 
@@ -165,7 +168,7 @@ class Executor():
         """Effects the command-line specified command."""
         self.commands[command]()
 
-    def execute_mode(self, mode_index: int, brightness_factor: float, speed_factor: float):
+    def execute_mode(self, mode_index: int, speed_factor: float):
         """Effects the command-line specified mode."""
         self.player = self.create_player(self.modes, self.sign, speed_factor)
         self.player.execute(mode_index)
