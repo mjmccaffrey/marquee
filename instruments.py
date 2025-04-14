@@ -65,9 +65,9 @@ class DrumSet(Instrument):
                 + pattern[ i + 1 : ]
             )
             print(i, pattern)
-            self.click_next = i + (1 % self.count)
-            self.relays.set_state_of_devices(pattern)
-            self.pattern = pattern
+        self.click_next = i + (1 % self.count)
+        self.relays.set_state_of_devices(pattern)
+        self.pattern = pattern
 
 class RestInstrument(Instrument):
     """"""

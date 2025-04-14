@@ -43,6 +43,7 @@ class NumatoUSBRelayModule(ABC):
 
     def set_state_of_devices(self, device_pattern):
         """Set the physical relays per device_pattern."""
+        assert len(device_pattern) == self.relay_count
         relay_pattern = self._devices_to_relays(device_pattern)
         self._set_relays(relay_pattern)
 
