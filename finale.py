@@ -2,7 +2,7 @@
 
 import sys
 
-from modes import PlayMusicMode
+from modes import PlayMusicMode, Sequence
 from signs import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
 from sequence_defs import *
 
@@ -147,6 +147,21 @@ class Finale(PlayMusicMode):
 
     def body4(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+
+        s = Sequence(seq_build_rows, pattern="0", from_top=True)
+        print(next(s.iter))
+        print(next(s.iter))
+        print(next(s.iter))
+        print(next(s.iter))
+        print(next(s.iter))
+        print(next(s.iter))
+        print(next(s.iter))
+        print(next(s.iter))
+        print(next(s.iter))
+        print(next(s.iter))
+        print(next(s.iter))
+        print(next(s.iter))
+
         s = self
         s.tempo = 90
         rows = s.seq(seq_build_rows, pattern="0", from_top=True)
