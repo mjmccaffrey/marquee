@@ -3,11 +3,14 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
-import itertools
 import time
 from typing import Any
 
 from buttons import Button
+from definitions import (
+    ALL_HIGH, ALL_OFF, ALL_ON,
+    ActionParams, DimmerParams, SpecialParams,
+)
 from dimmers import TRANSITION_DEFAULT
 from music import (
     Element, BaseNote, Rest, ActionNote, BellNote, DrumNote, Part, 
@@ -15,8 +18,6 @@ from music import (
     interpret_notation, interpret_symbols, merge_concurrent_measures,
 )
 from sequence_defs import seq_rotate_build_flip
-from signs import ALL_HIGH, ALL_OFF, ALL_ON
-from signs import ActionParams, DimmerParams, SpecialParams
 
 @dataclass
 class ModeConstructor:

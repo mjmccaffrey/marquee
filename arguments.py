@@ -4,7 +4,7 @@ from collections.abc import Callable
 from typing import Any, NoReturn
 
 from argparse import Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
-from signs import LIGHT_COUNT
+from definitions import LIGHT_COUNT
 
 class ArgumentParserImproved(ArgumentParser):
     """
@@ -87,7 +87,7 @@ def validate_light_pattern(arg: str) -> str:
         all(e in {"0", "1"} for e in arg)
     ): 
         print(f"Invalid light pattern:{arg}")
-        raise ValueError()
+        raise ValueError(f"Invalid light pattern:{arg}")
     return arg
 
 def validate_brightness_pattern(arg: str) -> str:
@@ -99,7 +99,7 @@ def validate_brightness_pattern(arg: str) -> str:
         all(e in "0123456789AF" for e in arg_normalized)
     ): 
         print(f"Invalid brightness pattern:{arg}")
-        raise ValueError()
+        raise ValueError(f"Invalid brightness pattern:{arg}")
     return arg_normalized
 
 def parse_arguments(

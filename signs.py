@@ -3,13 +3,13 @@
 import asyncio
 import logging
 
-from definitions import *
-from instruments import BellSet, DrumSet
 from buttons import Button
+from definitions import *
 from dimmers import (
     ShellyDimmer, DimmerChannel,
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,
 )
+from instruments import BellSet, DrumSet
 from relays import NumatoUSBRelayModule
 
 class Sign:

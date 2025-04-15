@@ -4,6 +4,7 @@ from collections.abc import Callable
 from signal import SIGUSR1  # type: ignore
 
 from buttons import Button
+from definitions import ALL_RELAYS, ALL_OFF, EXTRA_COUNT, SpecialParams, Sign
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from finale import Finale
 from gpiozero import Button as _Button  # type: ignore
@@ -13,7 +14,6 @@ from mode_defs import *
 import players
 from relays import NumatoRL160001
 from sequence_defs import *
-from signs import ALL_RELAYS, ALL_OFF, EXTRA_COUNT, SpecialParams, Sign
 
 DIMMER_ADDRESSES = [
     '192.168.51.111',
@@ -117,13 +117,10 @@ class Executor():
         assert all(
             str(k) in self.mode_ids for k in range(1, index)
         ), "Non-sequential mode index"
-        self.mode_menu.append((index, name))
-        self.mode_ids[str(index)] = index
-        self.mode_ids[name] = index
-        assert hidden or ( # !!!!!!!!!!!!!!!!!!!!!!!!!!
-                self.mode_ids.get(str(index)) == index
-            and self.mode_ids.get(name) == index
-        ), "Mode index and / or name do not match registered IDs"
+        if not hidden:
+            self.mode_menu.append((index, name))
+            self.mode_ids[str(index)] = index
+            self.mode_ids[name] = index
         self.modes[index] = modes.ModeConstructor(name, mode_class, kwargs)
 
     def add_sequence_mode(

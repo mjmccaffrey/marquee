@@ -144,7 +144,7 @@ class SequenceMeasure(Measure):
         sequence: Callable,
         step_duration: float, 
         count: int,
-        special: SpecialParams,
+        special: SpecialParams | None = None,
         beats: int = 4,
         **kwargs,
     ):

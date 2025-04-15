@@ -55,7 +55,7 @@ def seq_build_rows(pattern="1", from_top=True):
         for light in row:
             lights[light] = pattern
         print(f"yielding: {lights}")
-        yield lights
+        yield [l for l in lights]
 
 def seq_build_rows_4(*, pattern, from_top):
     """Successive rows on / off, grouping the middle rows together, 

@@ -6,8 +6,9 @@ import time
 from typing import Any
 
 from buttons import Button, ButtonPressed
+from definitions import ActionParams, DimmerParams, SpecialParams
 import modes
-from signs import ActionParams, DimmerParams, SpecialParams, Sign
+from signs import Sign
 
 class Player:
     """Executes one mode at a time."""
