@@ -255,7 +255,7 @@ class PlayMusicMode(PlayMode):
             raise ValueError("Rest cannot have pitch or accent.")
         return Rest(duration)
 
-    def act(self, symbols: str, *actions: Callable) -> ActionNote | Rest:
+    def act(self, symbols: str, *actions: Callable, call_actions: bool = False) -> ActionNote | Rest:
         """Validate symbols and return ActionNote or Rest."""
         duration, pitch, accent, rest = interpret_symbols(symbols)
         if rest:
@@ -263,6 +263,8 @@ class PlayMusicMode(PlayMode):
         if pitch or accent:
             pass
         #    raise ValueError("Action note cannot have pitch or accent.")
+        if call_actions:
+            actions = tuple(action() for action in actions)
         return ActionNote(duration, actions)
 
     def seq_part(
@@ -325,7 +327,10 @@ class PlayMusicMode(PlayMode):
             sequence, **kwargs,
         )
         def func(s: str):
-            return self.act(s, self.light(next(seq.iter), special))
+            return self.act(
+                s, lambda: self.light(next(seq.iter), special),
+                call_actions=True,
+            )
         return func
     
     def seq_measure(
