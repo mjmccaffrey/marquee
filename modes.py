@@ -14,7 +14,7 @@ from definitions import (
 from dimmers import TRANSITION_DEFAULT
 from music import (
     Element, BaseNote, Rest, ActionNote, BellNote, DrumNote, Part, 
-    Measure, SequenceMeasure, Sequence, 
+    Measure, NoteGroup, SequenceMeasure, Sequence, 
     interpret_notation, interpret_symbols, merge_concurrent_measures,
 )
 from sequence_defs import seq_rotate_build_flip
@@ -365,6 +365,13 @@ class PlayMusicMode(PlayMode):
         """All manipulation required before playing measures."""
         self.expand_sequences(measures)
 
+    def play_note(self, note: BaseNote):
+        """"""
+        if isinstance(note, DrumNote):
+            self.player.sign.drum_set.play(note.accent)
+        else:
+            note.execute()
+
     def play_measures(self, *measures: Measure):
         """Play sequential measures."""
         for measure in measures:
@@ -373,20 +380,23 @@ class PlayMusicMode(PlayMode):
             self.prepare_for_playing(measures)
             print("*******************************************")
             print(measure)
-            assert all(
-                isinstance(e, BaseNote)
-                for e in measure.elements
-            )
+            #assert all(
+            #    isinstance(e, BaseNote)
+            #    for e in measure.elements
+            #)
             for element in measure.elements:
                 start = time.time()
-                assert isinstance(element, BaseNote)
-                if isinstance(element, DrumNote):
-                    self.player.sign.drum_set.play(element.accent)
+                if isinstance(element, NoteGroup):
+                    for note in element.notes:
+                        self.play_note(note)
+                    duration = 0
                 else:
-                    element.execute()
-                wait = (element.duration) * self.pace
+                    assert isinstance(element, BaseNote)
+                    self.play_note(element)
+                    duration = element.duration
+                wait = (duration) * self.pace
                 self.player.wait(wait, elapsed = time.time() - start)
-                beat += element.duration
+                beat += duration
             wait = max(0, measure.beats - beat) * self.pace
             self.player.wait(wait)
 
