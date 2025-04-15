@@ -4,7 +4,7 @@ from collections.abc import Callable
 from signal import SIGUSR1  # type: ignore
 
 from buttons import Button
-from definitions import ALL_RELAYS, ALL_OFF, EXTRA_COUNT, SpecialParams, Sign
+from definitions import ALL_RELAYS, ALL_OFF, EXTRA_COUNT, SpecialParams
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from finale import Finale
 from gpiozero import Button as _Button  # type: ignore
@@ -14,6 +14,7 @@ from mode_defs import *
 import players
 from relays import NumatoRL160001
 from sequence_defs import *
+from signs import Sign
 
 DIMMER_ADDRESSES = [
     '192.168.51.111',
