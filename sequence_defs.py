@@ -3,15 +3,7 @@
 from collections.abc import Iterator
 import random
 
-from signs import (
-    ALL_OFF, ALL_ON, 
-    LIGHT_COUNT,
-    CORNER_LIGHTS_CLOCKWISE,
-    TOP_LIGHTS_LEFT_TO_RIGHT,
-    BOTTOM_LIGHTS_LEFT_TO_RIGHT,
-    LIGHTS_CLOCKWISE,
-    LIGHTS_BY_ROW,
-)
+from definitions import *
 
 def opposite_pattern(pattern) -> str:
     """Return pattern with the states flipped."""

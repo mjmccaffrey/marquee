@@ -2,7 +2,8 @@
 
 import sys
 
-from modes import PlayMusicMode, Sequence
+from modes import PlayMusicMode
+from music import Sequence
 from signs import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
 from sequence_defs import *
 
@@ -16,34 +17,6 @@ class Finale(PlayMusicMode):
         self.intro()
         self.body1()
         self.body2()
-
-    def test(self):
-        s = self
-        s.play_measures(
-            s.measure(
-                s.act('♩', s.relay(0, 1)),
-                s.act('♩', s.relay(0, 1)),
-                s.act('♩', s.relay(0, 1)),
-                s.act('♩', s.relay(0, 1)),
-                s.act('3♪', s.relay(0, 1)),
-                s.act('3♪', s.relay(0, 1)),
-                s.act('3♪', s.relay(0, 1)),
-                s.act('♩', s.relay(0, 1)),
-                s.act('♩', s.relay(0, 1, 2, 3, 4, 5)),
-                s.act('♩', s.relay(0, 1, 2, 3, 4, 5)),
-                beats=8,
-            ),
-            s.measure(
-                s.act('♪', s.relay(0, 1)),
-                s.act('♪', s.relay(0, 1)),
-                s.act('♪', s.relay(0, 1)),
-                s.act('♪', s.relay(0, 1)),
-                s.act('3𝅘𝅥𝅯', s.relay(0, 1)),
-                s.act('3𝅘𝅥𝅯', s.relay(0, 1)),
-                s.act('3𝅘𝅥𝅯', s.relay(0, 1)),
-                s.act('♪', s.relay(0, 1)),
-            )
-        )
 
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
@@ -70,10 +43,11 @@ class Finale(PlayMusicMode):
                 s.rest('♩'),
                 s.act('♩', s.light(ALL_ON)),
             ),
-            s.measure(
-                s.sequence('♩', LIGHT_COUNT, seq_random_once_each, 
-                    ActionParams(action=s.dimmer_seq(100, 2))),
-                beats=16),
+            s.seq_measure(
+                '♩', LIGHT_COUNT, seq_random_once_each, 
+                ActionParams(action=s.dimmer_seq(100, 2)),
+                beats=16,
+            ),
             #s.measure(beats=32),
         )
     
@@ -84,17 +58,17 @@ class Finale(PlayMusicMode):
             s.part(
                 s.measure(
                     s.rest('𝅗𝅥♩♪𝅘𝅥𝅰'),
-                    s.act('𝅘𝅥𝅰', s.relay(0, 1)),
-                    s.act('𝅘𝅥𝅰', s.relay(2, 3)),
-                    s.act('𝅘𝅥𝅰', s.relay(4, 5)),
+                    #s.act('𝅘𝅥𝅰', s.relay(0, 1)),
+                    #s.act('𝅘𝅥𝅰', s.relay(2, 3)),
+                    #s.act('𝅘𝅥𝅰', s.relay(4, 5)),
                 ),
-                s.measure(
-                    s.sequence('♪', 8, seq_rotate, 
-                        pattern="0100001000", clockwise=True),
+                s.seq_measure(
+                    '♪', 8, seq_rotate, 
+                    pattern="0100001000", clockwise=True,
                 ),
-                s.measure(
-                    s.sequence('♪', 8, seq_rotate, 
-                        pattern="0100001000", clockwise=False),
+                s.seq_measure(
+                    '♪', 8, seq_rotate, 
+                    pattern="0100001000", clockwise=False,
                 ),
             )
         )
@@ -104,15 +78,9 @@ class Finale(PlayMusicMode):
         s = self
         s.play_parts(
             s.part(
-                s.measure(
-                    s.sequence('♪', 8, seq_rows),
-                ),
-                s.measure(
-                    s.sequence('♪', 8, seq_rows),
-                ),
-                s.measure(
-                    s.sequence('♪', 3, seq_rows),
-                ),
+                s.seq_measure('♪', 8, seq_rows),
+                s.seq_measure('♪', 8, seq_rows),
+                s.seq_measure('♪', 8, seq_rows),
             ),
             s.part(
                 s.measure(

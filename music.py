@@ -2,7 +2,9 @@
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable
+import itertools
 
+from definitions import SpecialParams
 from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument
 
 accent_symbols = '->^'
@@ -135,6 +137,25 @@ class Measure(Element):
     def __str__(self):
         return f"Measure {self.elements} {self.beats}"
     
+class SequenceMeasure(Measure):
+    """Will be expended to a Measure with notes."""
+    def __init__(
+        self,
+        sequence: Callable,
+        step_duration: float, 
+        count: int,
+        special: SpecialParams,
+        beats: int = 4,
+        **kwargs,
+    ):
+        super().__init__((), beats)
+        self.seq = Sequence(sequence, **kwargs)
+        self.step_duration = step_duration
+        self.count = count
+        self.special = special
+    def __str__(self):
+        return f"SequenceMeasure {self.beats}"
+
 class Part(Element):
     """Musical part containing measures."""
     def __init__(
@@ -145,7 +166,19 @@ class Part(Element):
         self.measures = measures
     def __str__(self):
         return f"Part {self.measures}"
-    
+
+class Sequence(Element):
+    """"""
+    def __init__(
+        self,
+        sequence: Callable,
+        **kwargs,
+    ):
+        super().__init__()
+        self.sequence = sequence
+        self.kwargs = kwargs
+        self.iter = itertools.cycle(sequence(**kwargs))
+
 def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
     """Convert measure from each part into single measure
        of notes with 0 duration, padded with rests."""

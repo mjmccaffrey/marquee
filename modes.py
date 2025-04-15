@@ -10,7 +10,8 @@ from typing import Any
 from buttons import Button
 from dimmers import TRANSITION_DEFAULT
 from music import (
-    Element, BaseNote, Rest, ActionNote, BellNote, DrumNote, Part, Measure,
+    Element, BaseNote, Rest, ActionNote, BellNote, DrumNote, Part, 
+    Measure, SequenceMeasure, Sequence, 
     interpret_notation, interpret_symbols, merge_concurrent_measures,
 )
 from sequence_defs import seq_rotate_build_flip
@@ -195,34 +196,6 @@ class PlaySequenceMode(PlayMode):
         while True:
             self.play_sequence_once()
 
-class Sequence(Element):
-    """"""
-    def __init__(
-        self,
-        sequence: Callable,
-        special: SpecialParams | None = None,
-        **kwargs,
-    ):
-        super().__init__()
-        self.sequence = sequence
-        self.special = special
-        self.kwargs = kwargs
-        self.iter = itertools.cycle(sequence(**kwargs))
-
-class NoteSequence(Sequence):
-    """"""
-    def __init__(
-        self,
-        step_duration: float, 
-        count: int,
-        sequence: Callable,
-        special: SpecialParams | None = None,
-        **kwargs,
-    ):
-        super().__init__(sequence, special, **kwargs)
-        self.step_duration = step_duration
-        self.count = count
-
 class PlayMusicMode(PlayMode):
     """4 beats per measure by default.
        Every quarter note gets a beat."""
@@ -274,10 +247,6 @@ class PlayMusicMode(PlayMode):
             )
         return result
 
-    def relay(self, *indices):
-        """Flip ???????????????????"""
-        return lambda: self.player.sign.flip_extra_relays(*indices)
-    
     def rest(self, symbols: str) -> Rest:
         """Validate symbols and return Rest."""
         duration, pitch, accent, rest = interpret_symbols(symbols)
@@ -290,7 +259,8 @@ class PlayMusicMode(PlayMode):
         duration, pitch, accent, rest = interpret_symbols(symbols)
         if rest:
             return self.rest(symbols)
-        #if pitch or accent:
+        if pitch or accent:
+            pass
         #    raise ValueError("Action note cannot have pitch or accent.")
         return ActionNote(duration, actions)
 
@@ -351,49 +321,43 @@ class PlayMusicMode(PlayMode):
     ) -> Callable[[str], ActionNote | Rest]:
         """Return callable to effect each step in sequence."""
         seq = Sequence(
-            sequence, special, **kwargs,
+            sequence, **kwargs,
         )
         def func(s: str):
             return self.act(s, self.light(next(seq.iter), special))
         return func
     
-    def sequence(
+    def seq_measure(
         self,
         symbols: str,
         count: int,
         sequence: Callable,
         special: SpecialParams | None = None,
         **kwargs,
-    ) -> "NoteSequence":
-        """Produce a NoteSequence."""
+    ) -> SequenceMeasure:
+        """Produce a SequenceMeasure."""
         step_duration, _, _, _ = interpret_symbols(symbols)
-        return NoteSequence(
-            step_duration, count, sequence, special, **kwargs,
+        return SequenceMeasure(
+            sequence, step_duration, count, **kwargs,
         )
 
     def expand_sequences(self, measures: tuple[Measure, ...]):
         """Convert NoteSequence into multiple ActionNotes."""
         for measure in measures:
-            if not measure.elements:
+            if not isinstance(measure, SequenceMeasure):
                 continue
-            if not isinstance(measure.elements[0], NoteSequence):
-                continue
-            assert len(measure.elements) == 1, \
-                "NoteSequence must be the only element in the measure."
-            seq = measure.elements[0]
-            assert isinstance(seq, "NoteSequence")
-            actions = itertools.cycle(seq.sequence(**seq.kwargs))
+            assert isinstance(measure, SequenceMeasure)
             measure.elements = tuple(
                 ActionNote(
-                    duration=seq.step_duration,
+                    duration=measure.step_duration,
                     actions=(
                         self.light(
-                            pattern=next(actions),
-                            special=seq.special,
+                            pattern=next(measure.seq.iter),
+                            special=measure.special,
                         ),
                     )
                 )
-                for c in range(seq.count)
+                for c in range(measure.count)
             )
 
     def prepare_for_playing(self, measures):
