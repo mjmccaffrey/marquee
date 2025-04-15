@@ -116,20 +116,6 @@ class Finale(PlayMusicMode):
     def body4(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
 
-        s = Sequence(seq_build_rows, pattern="0", from_top=True)
-        print(next(s.iter))
-        print(next(s.iter))
-        print(next(s.iter))
-        print(next(s.iter))
-        print(next(s.iter))
-        print(next(s.iter))
-        print(next(s.iter))
-        print(next(s.iter))
-        print(next(s.iter))
-        print(next(s.iter))
-        print(next(s.iter))
-        print(next(s.iter))
-
         s = self
         s.tempo = 90
         #rows = s.seq(seq_build_rows, pattern="0", from_top=True)
@@ -137,7 +123,7 @@ class Finale(PlayMusicMode):
         # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
         notes = "𝄼 𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 |" \
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ | 𝄻 | 𝄻 "
-        s.play_measures(
-            *s.notation(s.drum, notes, beats=2),
-            *s.notation(rows, notes, beats=2),
+        s.play_parts(
+            s.drum_part(notes),  # , beats=2
+            s.seq_part(rows, notes),  # , beats=2
         )
