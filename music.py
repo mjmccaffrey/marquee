@@ -76,9 +76,7 @@ class ActionNote(BaseNote):
     def __str__(self):
         return f"ActionNote {self.duration} {self.actions}"
     def execute(self):
-        print("ActionNote execute")
         for action in self.actions:
-            print("ActionNote action")
             action()
 
 class BellNote(BaseNote):
