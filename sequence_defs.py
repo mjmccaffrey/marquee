@@ -62,6 +62,7 @@ def seq_build_rows(pattern="1", from_top=True):
     for row in rows:
         for light in row:
             lights[light] = pattern
+        print(f"yielding: {lights}")
         yield lights
 
 def seq_build_rows_4(*, pattern, from_top):
