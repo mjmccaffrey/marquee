@@ -199,3 +199,34 @@ def seq_random_once_each() -> Iterator[list[int]]:
     while indices:
         print("!!!!!!!!!!!!!!", indices)
         yield [indices.pop()]
+
+def seq_triplet_rhythm() -> Iterator[str]:
+    yield "1000000000"
+    yield "1100000000"
+    yield "1110000000"
+    yield "1111000001"
+    yield "1111100011"
+    yield "1111111111"
+#
+    yield "1111111011"
+    yield "1111110011"
+    yield "1111100011"
+    yield "1111000001"
+    yield "1110000000"
+    yield "0000000000"
+#
+    yield "1000000000"
+    yield "1100000000"
+    yield "1110000000"
+    yield "1111111111"
+#
+    yield "1111111011"
+    yield "1111110011"
+    yield "1111100011"
+#
+    yield "1000000000"
+    yield "1100000000"
+    yield "1110000000"
+    yield "1111111111"
+    yield "0000000000"
+    yield "1111111111"
