@@ -371,6 +371,8 @@ class PlayMusicMode(PlayMode):
             print("PLAYING MEASURE")
             beat = 0
             self.prepare_for_playing(measures)
+            print("*******************************************")
+            print(measure)
             assert all(
                 isinstance(e, BaseNote)
                 for e in measure.elements
