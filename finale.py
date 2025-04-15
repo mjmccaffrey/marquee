@@ -124,6 +124,6 @@ class Finale(PlayMusicMode):
         notes = "𝄼 𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 |" \
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ | 𝄻 | 𝄻 "
         s.play_parts(
-            s.drum_part(notes),  # , beats=2
-            s.seq_part(rows, notes),  # , beats=2
+            s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
+            s.seq_part(rows, notes, beats=2),
         )
