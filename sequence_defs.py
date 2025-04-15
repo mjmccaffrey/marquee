@@ -223,6 +223,7 @@ def seq_triplet_rhythm() -> Iterator[str]:
     yield "1111111011"
     yield "1111110011"
     yield "1111100011"
+    yield "0000000000"
 #
     yield "1000000000"
     yield "1100000000"
