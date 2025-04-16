@@ -82,7 +82,7 @@ class Finale(PlayMusicMode):
             ),
             s.part(
                 s.measure(
-                    s.drum('𝄽♪'),
+                    s.drum('♪'),
                     s.rest('♪♪'),
                     s.drum('♪^'),
                 ),
