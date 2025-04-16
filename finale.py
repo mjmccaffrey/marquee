@@ -115,3 +115,10 @@ class Finale(PlayMusicMode):
             s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
             s.seq_part(rows, notes, beats=2),
         )
+        s.tempo = 600
+        s.play_measures(
+            s.seq_measure(
+                '♩', 80, seq_rotate, 
+                pattern="0100001000", clockwise=True,
+            ),
+        )
