@@ -12,8 +12,9 @@ class Finale(PlayMusicMode):
     def execute(self):
         self.tempo = 90
         # self.intro()
-        self.body1()
-        self.body4()
+        # self.body1()
+        # self.body4()
+        self.body5()
 
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
@@ -115,6 +116,9 @@ class Finale(PlayMusicMode):
             s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
             s.seq_part(rows, notes, beats=2),
         )
+
+    def body5(self):
+        s = self
         s.tempo = 600
         s.play_measures(
             s.seq_measure(
