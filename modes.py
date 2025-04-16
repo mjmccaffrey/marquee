@@ -339,12 +339,13 @@ class PlayMusicMode(PlayMode):
         count: int,
         sequence: Callable,
         special: SpecialParams | None = None,
+        beats: int = 4,
         **kwargs,
     ) -> SequenceMeasure:
         """Produce a SequenceMeasure."""
         step_duration, _, _, _ = interpret_symbols(symbols)
         return SequenceMeasure(
-            sequence, step_duration, count, special, **kwargs,
+            sequence, step_duration, count, special, beats, **kwargs,
         )
 
     def expand_sequences(self, measures: tuple[Measure, ...]):
