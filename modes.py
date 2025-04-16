@@ -344,7 +344,7 @@ class PlayMusicMode(PlayMode):
         """Produce a SequenceMeasure."""
         step_duration, _, _, _ = interpret_symbols(symbols)
         return SequenceMeasure(
-            sequence, step_duration, count, **kwargs,
+            sequence, step_duration, count, special, **kwargs,
         )
 
     def expand_sequences(self, measures: tuple[Measure, ...]):
