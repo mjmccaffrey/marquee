@@ -10,7 +10,7 @@ class Finale(PlayMusicMode):
     """"""
 
     def execute(self):
-        self.intro()
+        # self.intro()
         self.body1()
         self.body4()
 
@@ -111,7 +111,7 @@ class Finale(PlayMusicMode):
         s.play_parts(
             s.part(
                 s.measure(
-                    s.act('♩', s.light(ALL_ON, DimmerParams(transition_on=4))),
+                    s.act('♩', s.light(ALL_ON, DimmerParams(transition_on=5))),
                     beats=2,
                 ),
                 s.measure(beats=2),
