@@ -12,12 +12,12 @@ class Finale(PlayMusicMode):
     def execute(self):
         self.intro()
         self.body1()
-        self.body3()
         self.body4()
 
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
+        s.tempo = 90
         s.play_measures(
             s.measure(
                 s.act('♩', s.light(ALL_OFF)),
@@ -54,9 +54,9 @@ class Finale(PlayMusicMode):
         s.play_parts(
             s.part(
                 s.measure(
-                    s.rest('𝅗𝅥♩♪'),
-                    s.drum('𝅘𝅥𝅯'),
-                    s.drum('𝅘𝅥𝅯'),
+                    s.rest('𝅗𝅥♩♪𝅘𝅥𝅯'),
+                    s.drum('𝅘𝅥𝅰-'),
+                    s.drum('𝅘𝅥𝅰-'),
                 ),
                 s.seq_measure(
                     '♪', 8, seq_rotate, 
@@ -89,7 +89,6 @@ class Finale(PlayMusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
 
         s = self
-        s.tempo = 90
         #rows = s.seq(seq_build_rows, pattern="0", from_top=True)
         rows = s.seq(seq_triplet_rhythm)
         # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
