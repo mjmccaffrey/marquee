@@ -86,7 +86,7 @@ def validate_light_pattern(arg: str) -> str:
         len(arg) == LIGHT_COUNT and 
         all(e in {"0", "1"} for e in arg)
     ): 
-        print(f"Invalid light pattern:{arg}")
+        # print(f"Invalid light pattern:{arg}")
         raise ValueError(f"Invalid light pattern:{arg}")
     return arg
 
@@ -98,7 +98,7 @@ def validate_brightness_pattern(arg: str) -> str:
         len(arg_normalized) == LIGHT_COUNT and 
         all(e in "0123456789AF" for e in arg_normalized)
     ): 
-        print(f"Invalid brightness pattern:{arg}")
+        # print(f"Invalid brightness pattern:{arg}")
         raise ValueError(f"Invalid brightness pattern:{arg}")
     return arg_normalized
 
@@ -130,7 +130,6 @@ def parse_arguments(
     try:
         return top_p.parse_args()
     except (ArgumentError, ArgumentTypeError, ValueError) as err:
-        print(1, err)
         raise ValueError()
 
 def process_arguments(
@@ -143,7 +142,6 @@ def process_arguments(
     try:
         parsed = parse_arguments(mode_ids, commands)
     except ValueError as err:
-        print(2, err)
         raise
     print("Args: " + ''.join(f'{k}: {v}, ' for k, v in vars(parsed).items()))
     if parsed.operation == 'command':
