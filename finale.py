@@ -118,7 +118,7 @@ class Finale(PlayMusicMode):
         s.tempo = 600
         s.play_measures(
             s.seq_measure(
-                '♩', 80, seq_rotate, 
+                '♪', 80, seq_rotate, 
                 pattern="0100001000", clockwise=True,
             ),
         )
