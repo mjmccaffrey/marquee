@@ -93,7 +93,7 @@ class Finale(PlayMusicMode):
         rows = s.seq(seq_triplet_rhythm)
         # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
         notes = "𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 |" \
-                           "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ | 𝄻 | 𝄻 "
+                           "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "  # | 𝄻 | 𝄻 "
         s.play_parts(
             s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
         )
@@ -102,7 +102,11 @@ class Finale(PlayMusicMode):
                 s.measure(
                     s.act('♩', s.light(ALL_ON, DimmerParams(transition_on=4))),
                     beats=2,
-                )
+                ),
+                s.measure(),
+                s.measure(),
+                s.measure(),
+                s.measure(),
             ),
             s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
             s.seq_part(rows, notes, beats=2),
