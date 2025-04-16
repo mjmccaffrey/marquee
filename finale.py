@@ -4,7 +4,6 @@ import sys
 
 from definitions import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
 from modes import PlayMusicMode
-from music import Sequence
 from sequence_defs import *
 
 class Finale(PlayMusicMode):
@@ -12,9 +11,9 @@ class Finale(PlayMusicMode):
 
     def execute(self):
         self.intro()
-        #self.body1()
-        #self.body2()
-        #self.body4()
+        self.body1()
+        self.body3()
+        self.body4()
 
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
@@ -55,10 +54,9 @@ class Finale(PlayMusicMode):
         s.play_parts(
             s.part(
                 s.measure(
-                    s.rest('𝅗𝅥♩♪𝅘𝅥𝅰'),
-                    #s.act('𝅘𝅥𝅰', s.relay(0, 1)),
-                    #s.act('𝅘𝅥𝅰', s.relay(2, 3)),
-                    #s.act('𝅘𝅥𝅰', s.relay(4, 5)),
+                    s.rest('𝅗𝅥♩♪'),
+                    s.drum('𝅘𝅥𝅯'),
+                    s.drum('𝅘𝅥𝅯'),
                 ),
                 s.seq_measure(
                     '♪', 8, seq_rotate, 
@@ -66,33 +64,9 @@ class Finale(PlayMusicMode):
                 ),
                 s.seq_measure(
                     '♪', 8, seq_rotate, 
-                    pattern="0100001000", clockwise=False,
+                    pattern="0010000100", clockwise=False,
                 ),
             )
-        )
-
-    def body2(self):
-        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        s = self
-        s.play_parts(
-            s.part(
-                s.seq_measure('♪', 8, seq_rows),
-                s.seq_measure('♪', 8, seq_rows),
-                s.seq_measure('♪', 8, seq_rows),
-            ),
-            s.part(
-                s.measure(
-                    s.drum('♪'),
-                    s.rest('♪♪'),
-                    s.drum('♪^'),
-                ),
-                s.measure(
-                    s.drum('♪^'),
-                ),
-                s.measure(
-                    s.drum('♪'),
-                ),
-            ),
         )
 
     def body3(self):
@@ -122,6 +96,14 @@ class Finale(PlayMusicMode):
         notes = "𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 |" \
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ | 𝄻 | 𝄻 "
         s.play_parts(
+            s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
+        )
+        s.play_parts(
+            s.part(
+                s.measure(
+                    s.act('♩', s.light(ALL_ON, DimmerParams(transition_on=4))),
+                )
+            ),
             s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
             s.seq_part(rows, notes, beats=2),
         )

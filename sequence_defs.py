@@ -197,7 +197,6 @@ def seq_random_once_each() -> Iterator[list[int]]:
     indices = [i for i in range(LIGHT_COUNT)]
     random.shuffle(indices)
     while indices:
-        print("!!!!!!!!!!!!!!", indices)
         yield [indices.pop()]
 
 def seq_triplet_rhythm() -> Iterator[str]:

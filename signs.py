@@ -187,7 +187,6 @@ class Sign:
             self,
             updates: list[tuple[DimmerChannel, int, float]],
     ):
-        print("????????????????", updates)
         commands = [
             c.make_set_command(
                 brightness=b,

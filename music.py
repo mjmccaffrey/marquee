@@ -126,7 +126,7 @@ class Measure(Element):
     def __init__(
         self, 
         elements: tuple[Element, ...],
-        beats: int = 4,
+        beats: int,
     ):
         """"""
         super().__init__()
@@ -142,8 +142,8 @@ class SequenceMeasure(Measure):
         sequence: Callable,
         step_duration: float, 
         count: int,
-        special: SpecialParams | None = None,
-        beats: int = 4,
+        special: SpecialParams | None,
+        beats: int,
         **kwargs,
     ):
         super().__init__((), beats)
@@ -195,7 +195,7 @@ def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
             if beat_next[i] == beat:
                 element = next(elements_in[i], None)
                 if element is None:
-                    print(f"part: {i} OUT OF ELEMENTS")
+                    #print(f"part: {i} OUT OF ELEMENTS")
                     beat_next[i] = None
                 else:
                     assert isinstance(element, BaseNote)
@@ -263,7 +263,7 @@ def interpret_symbols(symbols: str) -> tuple[float, str, str, bool]:
             for s in symbols
         )
         pitch, accent = "", ""
-        print(symbols, duration, pitch, accent, rest)
+        #print(symbols, duration, pitch, accent, rest)
     return duration, pitch, accent, rest
 
 def interpret_notation(
