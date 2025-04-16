@@ -101,6 +101,7 @@ class Finale(PlayMusicMode):
             s.part(
                 s.measure(
                     s.act('♩', s.light(ALL_ON, DimmerParams(transition_on=4))),
+                    beats=2,
                 )
             ),
             s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
