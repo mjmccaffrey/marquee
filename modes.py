@@ -415,8 +415,14 @@ class PlayMusicMode(PlayMode):
     def play_parts(self, *parts: Part):
         """Merge parts into new sequence of measures, and then play."""
         assert parts
-        measure_count = [len(p.measures) for p in parts]
-        assert all(c == measure_count[0] for c in measure_count)
+        # Make all parts the same length
+        longest = max(len(p.measures) for p in parts)
+        for p in parts:
+            measures = list(p.measures)
+            pad = [Measure(elements=(), beats=measures[-1].beats)]
+            measures.extend(pad * (longest - len(measures)))
+            p.measures = tuple(measures)
+        # Transform and play parts
         for part in parts:
             self.prepare_for_playing(part.measures)
         concurrent_measures = zip(*(p.measures for p in parts))
