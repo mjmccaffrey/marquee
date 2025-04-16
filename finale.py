@@ -102,10 +102,6 @@ class Finale(PlayMusicMode):
                     s.act('♩', s.dimmer(ALL_LOW)),
                     beats=2,
                 ),
-                s.measure(beats=2),
-                s.measure(beats=2),
-                s.measure(beats=2),
-                s.measure(beats=2),
             ),
         )
         s.play_parts(
@@ -114,10 +110,6 @@ class Finale(PlayMusicMode):
                     s.act('♩', s.light(ALL_ON, DimmerParams(transition_on=5))),
                     beats=2,
                 ),
-                s.measure(beats=2),
-                s.measure(beats=2),
-                s.measure(beats=2),
-                s.measure(beats=2),
             ),
             s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
             s.seq_part(rows, notes, beats=2),

@@ -418,10 +418,12 @@ class PlayMusicMode(PlayMode):
         # Make all parts the same length
         longest = max(len(p.measures) for p in parts)
         for p in parts:
-            measures = list(p.measures)
-            pad = [Measure(elements=(), beats=measures[-1].beats)]
-            measures.extend(pad * (longest - len(measures)))
-            p.measures = tuple(measures)
+            if len(p.measures) < longest:
+                pad = Measure(elements=(), beats=p.measures[-1].beats)
+                p.measures = tuple(
+                    p.measures[i] if i < len(p.measures) else pad
+                    for i in range(longest)
+                )
         # Transform and play parts
         for part in parts:
             self.prepare_for_playing(part.measures)
