@@ -10,6 +10,7 @@ class Finale(PlayMusicMode):
     """"""
 
     def execute(self):
+        self.tempo = 90
         # self.intro()
         self.body1()
         self.body4()
@@ -107,7 +108,7 @@ class Finale(PlayMusicMode):
         s.play_parts(
             s.part(
                 s.measure(
-                    s.act('♩', s.light(ALL_ON, DimmerParams(transition_on=5))),
+                    s.act('♩', s.light(ALL_ON, DimmerParams(transition_on=6))),
                     beats=2,
                 ),
             ),
