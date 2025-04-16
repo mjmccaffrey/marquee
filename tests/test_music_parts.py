@@ -1,0 +1,58 @@
+from music import *
+import pytest
+
+def test_merge_1_part_content():
+    measure = Measure((
+        Rest(0.5),
+        DrumNote(1, ""),
+        Rest(0.5),
+        Rest(1),
+        DrumNote(1, "^"),
+    )),
+    assert merge_concurrent_measures(measure) == Measure(
+        elements=(
+            Rest(0.5), 
+            DrumNote(0, ""), 
+            Rest(2.5), 
+            DrumNote(0, "^"), 
+            Rest(1.0),
+        )
+    )
+
+def merged_parts() -> list[Measure]:
+    parts = (
+        Part((
+                Measure((
+                    Rest(1),
+                    BellNote(1 ,"A"),
+                    Rest(1),
+                    BellNote(1, "B"),
+                )),
+        )),
+        Part((
+                Measure((
+                    Rest(0.5),
+                    DrumNote(1, ""),
+                    Rest(0.5),
+                    Rest(1),
+                    DrumNote(1, "^"),
+                )),
+        )),
+    )
+    measures = zip(*(p.measures for p in parts))
+    new_measures = [
+        merge_concurrent_measures(measure)
+        for measure in measures
+    ]
+    return new_measures
+
+def test_merge_2_parts_content():
+    assert merged_parts() == [
+        Measure(
+            elements=(
+                Rest(0.5), DrumNote(0, ""), Rest(0.5), BellNote(0, "A"), 
+                Rest(2.0), NoteGroup((BellNote(0, "B"), DrumNote(0, "^"))),
+                Rest(1.0),
+            )
+        )
+    ]
