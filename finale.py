@@ -96,6 +96,17 @@ class Finale(PlayMusicMode):
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "  # | 𝄻 | 𝄻 "
         s.play_parts(
             s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
+            s.part(
+                s.measure(
+                    s.act('♩', s.light(ALL_OFF)),
+                    s.act('♩', s.dimmer(ALL_LOW)),
+                    beats=2,
+                ),
+                s.measure(beats=2),
+                s.measure(beats=2),
+                s.measure(beats=2),
+                s.measure(beats=2),
+            ),
         )
         s.play_parts(
             s.part(
