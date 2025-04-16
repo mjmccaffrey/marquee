@@ -11,10 +11,10 @@ class Finale(PlayMusicMode):
     """"""
 
     def execute(self):
-        # self.intro()
-        self.body1()
-        self.body2()
-        self.body4()
+        self.intro()
+        #self.body1()
+        #self.body2()
+        #self.body4()
 
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
