@@ -386,12 +386,12 @@ class PlayMusicMode(PlayMode):
     def play_measures(self, *measures: Measure):
         """Play sequential measures."""
         for measure in measures:
-            print("PLAYING MEASURE")
+            #print("PLAYING MEASURE")
             beat = 0
             self.prepare_for_playing(measures)
-            print("*******************************************")
-            for e in measure.elements:
-                print(e)
+            #print("*******************************************")
+            #for e in measure.elements:
+            #    print(e)
             #assert all(
             #    isinstance(e, BaseNote)
             #    for e in measure.elements
