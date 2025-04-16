@@ -220,16 +220,16 @@ def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
         rest += next_beat - beat
         # Add to output
         elements_out.extend(out)
-        print(f"concurrent notes: {concurrent_notes}")
-        print(f"beat: {beat}")
-        print(f"out: {out}")
-        print(f"next beat: {next_beat}")
-        print(f"beats next: {beat_next}")
-        print(f"elements_out: {elements_out}")
-        print(f"rest: {rest}")
+        # print(f"concurrent notes: {concurrent_notes}")
+        # print(f"beat: {beat}")
+        # print(f"out: {out}")
+        # print(f"next beat: {next_beat}")
+        # print(f"beats next: {beat_next}")
+        # print(f"elements_out: {elements_out}")
+        # print(f"rest: {rest}")
     if rest:
         elements_out.append(Rest(rest))
-    print(f"FINAL elements_out: {elements_out}")
+    # print(f"FINAL elements_out: {elements_out}")
     return Measure(tuple(elements_out), beats=beats)
 
 def interpret_symbols(symbols: str) -> tuple[float, str, str, bool]:
