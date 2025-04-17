@@ -273,14 +273,17 @@ class PlayMusicMode(PlayMode):
         return ActionNote(duration, actions)
 
     def seq_part(
-            self, 
-            create_note: Callable[[str], ActionNote | Rest], 
-            notation: str, 
+            self,
+            *sections: tuple[Callable[[str], ActionNote | Rest], str],
             beats=4
     ) -> Part:
         """Produce sequence part from notation."""
         return self.part(
-            *interpret_notation(create_note, notation, beats)
+            *tuple(
+                measure
+                for create_note, notation in sections
+                for measure in interpret_notation(create_note, notation, beats)
+            )
         )
 
     def bell(self, symbols: str) -> BellNote | Rest:

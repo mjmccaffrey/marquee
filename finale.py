@@ -22,36 +22,31 @@ class Finale(PlayMusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
         s.tempo = 75
-        s.play_measures()
+        s.play_measures(s.measure())
         s.play_parts(
-            s.part(
+            s.seq_part(
                 # A
-                s.seq_measure('♩', 4, seq_center_alternate),
-                s.seq_measure('♩', 4, seq_blink_alternate),
-                s.seq_measure('♩', 1, seq_blink_alternate),
+                (s.seq(seq_center_alternate), 
+                    ' ♩ ♩ ♩ ♩ '),
+                (s.seq(seq_blink_alternate), 
+                    ' ♩ ♩ ♩ ♩ '),
+                (s.seq(seq_blink_alternate),
+                    ' ♩ '    ),
                 # B
-                s.seq_measure(
-                    '♪', 8, seq_rotate, 
-                    pattern="0100001000", clockwise=True,
-                ),
-                s.seq_measure(
-                    '♪', 8, seq_rotate, 
-                    pattern="0010000100", clockwise=False,
-                ),
-                s.seq_measure(
-                    '𝅘𝅥𝅯', 16, 
-                    seq_build_rows, pattern='1', from_top=True,
-                ),
-                s.seq_measure(
-                    '𝅘𝅥𝅯', 16, 
-                    seq_build_rows, pattern='1', from_top=False,
-                ),
+                (s.seq(seq_rotate, pattern="0100001000", clockwise=True),
+                    ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
+                (s.seq(seq_rotate, pattern="0100001000", clockwise=False),
+                    ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
+                (s.seq(seq_build_rows, pattern='1', from_top=True),
+                    ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
+                (s.seq(seq_build_rows, pattern='1', from_top=False),
+                    ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
             ),
             s.drum_part(
                 # A
                 ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- '
                 # B
-                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 ♪^ | ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^ | 𝅘𝅥𝅰^ '
+                ' 𝄻 | 𝄼 𝄽 𝄾 ♪^ | ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^ | 𝅘𝅥𝅰^ '
             ),
         )
 
@@ -103,7 +98,7 @@ class Finale(PlayMusicMode):
             s.bell_part("♩ ♩C ♩D^  | ♩D ♩E ♩G ♩A | ♩a ♩b ♩c ♩d | ♩e"),
             s.drum_part("3♪C 3♪D | ♩ ♩- ♩> ♩^ | ♩ ♩- ♩> ♩^   |"),
             s.seq_part(
-                rows,   "3♪C 3♪D | ♩ ♩- ♩> ♩^ | ♩ ♩- ♩> ♩^   |"),
+                (rows,  "3♪C 3♪D | ♩ ♩- ♩> ♩^ | ♩ ♩- ♩> ♩^   |")),
         )
 
     def body4(self):
@@ -127,7 +122,7 @@ class Finale(PlayMusicMode):
         )
         s.play_parts(
             s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
-            s.seq_part(rows, notes, beats=2),
+            s.seq_part((rows, notes), beats=2),
         )
 
     def body5(self):
