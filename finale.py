@@ -38,7 +38,7 @@ class Finale(PlayMusicMode):
                     ' ♩ '    ),
             ),
             s.drum_part(
-                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- | '
+                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- '
             ),
         )
         print(time.time())
