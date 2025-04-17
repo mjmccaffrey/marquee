@@ -22,6 +22,7 @@ class Finale(PlayMusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
         s.tempo = 70
+        s.play_measures()
         s.play_parts(
             s.part(
                 # A
@@ -50,7 +51,7 @@ class Finale(PlayMusicMode):
                 # A
                 ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- '
                 # B
-                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 ♪> | ♪> '
+                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 ♪^ | ♪^ '
             ),
         )
 
