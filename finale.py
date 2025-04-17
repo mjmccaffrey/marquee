@@ -23,8 +23,8 @@ class Finale(PlayMusicMode):
         s.tempo = 75
         s.play_parts(
             s.part(
-                s.seq_measure('♩', 4, seq_center_alternate),
-                s.seq_measure('♩', 4, seq_blink_alternate),
+                s.seq_measure('♩', 4, s.seq(seq_center_alternate)),
+                s.seq_measure('♩', 4, s.seq(seq_blink_alternate)),
                 s.seq_measure('♩', 1, s.seq(seq_blink_alternate)),
             ),
             s.part(
