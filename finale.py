@@ -61,6 +61,56 @@ class Finale(PlayMusicMode):
         )
         print(time.time())
 
+    def original_2(self):
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        s = self
+        s.tempo = 75
+        print(time.time())
+        s.play_measures(s.measure())
+        print(time.time())
+        # A
+        print(time.time())
+        part_a = self.prepare_parts(
+            s.seq_part(
+                (s.seq(center_alternate), 
+                    ' ♩ ♩ ♩ ♩ '),
+                (s.seq(blink_alternate), 
+                    ' ♩ ♩ ♩ ♩ '),
+                (s.seq(blink_alternate),
+                    ' ♩ '    ),
+            ),
+            s.drum_part(
+                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- '
+            ),
+        )
+        print(time.time())
+        # B
+        print(time.time())
+        part_b = self.prepare_parts(
+            s.seq_part(
+                (s.seq(rotate, pattern="0100001000", clockwise=True),
+                    ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
+                (s.seq(rotate, pattern="0100001000", clockwise=False),
+                    ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
+                (s.seq(build_rows, pattern='1', from_top=True),
+                    ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
+                (s.seq(build_rows, pattern='1', from_top=False),
+                    ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
+            ),
+            s.drum_part(
+                ' 𝄻 | 𝄼 𝄽 𝄾 ♪^ | ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^ | 𝅘𝅥𝅰^ '
+            ),
+        )
+        print(time.time())
+        
+        print(time.time())
+        s.play_measures(*part_a)
+        print(time.time())
+
+        print(time.time())
+        s.play_measures(*part_b)
+        print(time.time())
+
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self

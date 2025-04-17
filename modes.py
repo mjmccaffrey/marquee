@@ -375,9 +375,18 @@ class PlayMusicMode(PlayMode):
                 for c in range(measure.count)
             )
 
-    def prepare_for_playing(self, measures):
+    def prepare_measures(self, measures):
         """All manipulation required before playing measures."""
         self.expand_sequences(measures)
+
+    def prepare_parts(self, *parts: Part):
+        for part in parts:
+            self.prepare_measures(part.measures)
+        concurrent_measures = zip(*(p.measures for p in parts))
+        return [
+            merge_concurrent_measures(measure_set)
+            for measure_set in concurrent_measures
+        ]
 
     def play_note(self, note: BaseNote):
         """"""
@@ -391,7 +400,7 @@ class PlayMusicMode(PlayMode):
         for measure in measures:
             #print("PLAYING MEASURE")
             beat = 0
-            self.prepare_for_playing(measures)
+            self.prepare_measures(measures)
             #print("*******************************************")
             #for e in measure.elements:
             #    print(e)
@@ -428,11 +437,5 @@ class PlayMusicMode(PlayMode):
                     for i in range(longest)
                 )
         # Transform and play parts
-        for part in parts:
-            self.prepare_for_playing(part.measures)
-        concurrent_measures = zip(*(p.measures for p in parts))
-        new_measures = [
-            merge_concurrent_measures(measure_set)
-            for measure_set in concurrent_measures
-        ]
+        new_measures = self.prepare_parts(*parts)
         self.play_measures(*new_measures)
