@@ -23,16 +23,23 @@ class Finale(PlayMusicMode):
         s = self
         s.tempo = 75
         s.play_measures(s.measure())
+        # A
         s.play_parts(
             s.seq_part(
-                # A
                 (s.seq(center_alternate), 
                     ' ♩ ♩ ♩ ♩ '),
                 (s.seq(blink_alternate), 
                     ' ♩ ♩ ♩ ♩ '),
                 (s.seq(blink_alternate),
                     ' ♩ '    ),
-                # B
+            ),
+            s.drum_part(
+                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- | '
+            ),
+        )
+        # B
+        s.play_parts(
+            s.seq_part(
                 (s.seq(rotate, pattern="0100001000", clockwise=True),
                     ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
                 (s.seq(rotate, pattern="0100001000", clockwise=False),
@@ -43,9 +50,6 @@ class Finale(PlayMusicMode):
                     ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
             ),
             s.drum_part(
-                # A
-                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- | '
-                # B
                 ' 𝄻 | 𝄼 𝄽 𝄾 ♪^ | ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^ | 𝅘𝅥𝅰^ '
             ),
         )
