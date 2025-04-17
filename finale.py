@@ -10,11 +10,41 @@ class Finale(PlayMusicMode):
     """"""
 
     def execute(self):
+        self.original()
         self.tempo = 90
         # self.intro()
         # self.body1()
         # self.body4()
-        self.body5()
+        # self.body5()
+
+    def original(self):
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        s = self
+        s.tempo = 75
+        s.play_parts(
+            s.part(
+                s.seq_measure('♩', 4, seq_center_alternate),
+                s.seq_measure('♩', 4, seq_blink_alternate),
+                s.seq_measure('♩', 1, s.seq(seq_blink_alternate)),
+            ),
+            s.part(
+                s.measure(),
+                s.measure(),
+                s.measure(
+                    s.rest('𝅗𝅥♩♪𝅘𝅥𝅯'),
+                    s.drum('𝅘𝅥𝅰-'),
+                    s.drum('𝅘𝅥𝅰-'),
+                ),
+                s.seq_measure(
+                    '♪', 8, seq_rotate, 
+                    pattern="0100001000", clockwise=True,
+                ),
+                s.seq_measure(
+                    '♪', 8, seq_rotate, 
+                    pattern="0010000100", clockwise=False,
+                ),
+            )
+        )
 
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
@@ -50,26 +80,6 @@ class Finale(PlayMusicMode):
             #s.measure(beats=32),
         )
     
-    def body1(self):
-        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        s = self
-        s.play_parts(
-            s.part(
-                s.measure(
-                    s.rest('𝅗𝅥♩♪𝅘𝅥𝅯'),
-                    s.drum('𝅘𝅥𝅰-'),
-                    s.drum('𝅘𝅥𝅰-'),
-                ),
-                s.seq_measure(
-                    '♪', 8, seq_rotate, 
-                    pattern="0100001000", clockwise=True,
-                ),
-                s.seq_measure(
-                    '♪', 8, seq_rotate, 
-                    pattern="0010000100", clockwise=False,
-                ),
-            )
-        )
 
     def body3(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
@@ -107,12 +117,6 @@ class Finale(PlayMusicMode):
             ),
         )
         s.play_parts(
-            s.part(
-                s.measure(
-                    s.act('♩', s.light(ALL_ON, DimmerParams(transition_on=6))),
-                    beats=2,
-                ),
-            ),
             s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
             s.seq_part(rows, notes, beats=2),
         )
@@ -120,9 +124,10 @@ class Finale(PlayMusicMode):
     def body5(self):
         s = self
         s.tempo = 600
+        s.light(ALL_ON, DimmerParams(transition_on=6))()
         s.play_measures(
             s.seq_measure(
                 '♪', 80, seq_rotate, 
-                pattern="0100001000", clockwise=True,
+                pattern="0111111111", clockwise=True,
             ),
         )
