@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - finale"""
 
 import sys
+import time
 
 from definitions import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
 from modes import PlayMusicMode
@@ -22,8 +23,11 @@ class Finale(PlayMusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
         s.tempo = 75
+        print(time.time())
         s.play_measures(s.measure())
+        print(time.time())
         # A
+        print(time.time())
         s.play_parts(
             s.seq_part(
                 (s.seq(center_alternate), 
@@ -37,7 +41,9 @@ class Finale(PlayMusicMode):
                 ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- | '
             ),
         )
+        print(time.time())
         # B
+        print(time.time())
         s.play_parts(
             s.seq_part(
                 (s.seq(rotate, pattern="0100001000", clockwise=True),
@@ -53,6 +59,7 @@ class Finale(PlayMusicMode):
                 ' 𝄻 | 𝄼 𝄽 𝄾 ♪^ | ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^ | 𝅘𝅥𝅰^ '
             ),
         )
+        print(time.time())
 
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
