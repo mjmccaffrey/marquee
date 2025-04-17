@@ -11,6 +11,7 @@ class Finale(PlayMusicMode):
 
     def execute(self):
         self.original()
+        sys.exit()
         self.tempo = 90
         # self.intro()
         # self.body1()
@@ -20,21 +21,14 @@ class Finale(PlayMusicMode):
     def original(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
-        s.tempo = 75
+        s.tempo = 70
         s.play_parts(
             s.part(
+                # A
                 s.seq_measure('♩', 4, seq_center_alternate),
                 s.seq_measure('♩', 4, seq_blink_alternate),
                 s.seq_measure('♩', 1, seq_blink_alternate),
-            ),
-            s.part(
-                s.measure(),
-                s.measure(),
-                s.measure(
-                    s.rest('𝅗𝅥♩♪𝅘𝅥𝅯'),
-                    s.drum('𝅘𝅥𝅰-'),
-                    s.drum('𝅘𝅥𝅰-'),
-                ),
+                # B
                 s.seq_measure(
                     '♪', 8, seq_rotate, 
                     pattern="0100001000", clockwise=True,
@@ -43,7 +37,21 @@ class Finale(PlayMusicMode):
                     '♪', 8, seq_rotate, 
                     pattern="0010000100", clockwise=False,
                 ),
-            )
+                s.seq_measure(
+                    '𝅘𝅥𝅯', 16, 
+                    seq_build_rows, pattern='1', from_top=True,
+                ),
+                s.seq_measure(
+                    '𝅘𝅥𝅯', 16, 
+                    seq_build_rows, pattern='1', from_top=False,
+                ),
+            ),
+            s.drum_part(
+                # A
+                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- '
+                # B
+                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 ♪> | ♪> '
+            ),
         )
 
     def intro(self):
