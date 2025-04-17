@@ -30,7 +30,7 @@ def create_sign(brightness_factor: float) -> Sign:
     bell_set = BellSet()
     drum_set = DrumSet(
         NumatoRL160001(
-            "/dev/ttyACM2",
+            "/dev/ttyACM1",
             {i: i for i in range(16)},
         )
     )
@@ -38,7 +38,7 @@ def create_sign(brightness_factor: float) -> Sign:
         ShellyProDimmer2PM(index, address)
         for index, address in enumerate(DIMMER_ADDRESSES)
     ]
-    light_relays = NumatoRL160001("/dev/ttyACM1", ALL_RELAYS)
+    light_relays = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
     buttons = [
         Button('sign_back', _Button(pin=17, bounce_time=0.10), SIGUSR1),
         Button('remote_a', _Button(pin=18, pull_up=False, bounce_time=0.10)),
