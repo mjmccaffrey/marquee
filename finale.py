@@ -68,13 +68,6 @@ class Finale(PlayMusicMode):
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "
         part_c = self.prepare_parts(
             s.drum_part(notes_1, beats=2),
-            s.part(
-                s.measure(
-                    s.act('♩', s.light(ALL_OFF)),
-                    s.act('♩', s.dimmer(ALL_LOW)),
-                    beats=2,
-                ),
-            ),
         )
         # D
         part_d = self.prepare_parts(
