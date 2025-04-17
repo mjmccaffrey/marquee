@@ -376,12 +376,22 @@ class PlayMusicMode(PlayMode):
             )
 
     def prepare_measures(self, measures):
-        """All manipulation required before playing measures."""
         self.expand_sequences(measures)
 
     def prepare_parts(self, *parts: Part):
+        #
         for part in parts:
             self.prepare_measures(part.measures)
+        # Make all parts the same length
+        longest = max(len(p.measures) for p in parts)
+        for p in parts:
+            if len(p.measures) < longest:
+                pad = Measure(elements=(), beats=p.measures[-1].beats)
+                p.measures = tuple(
+                    p.measures[i] if i < len(p.measures) else pad
+                    for i in range(longest)
+                )
+        #
         concurrent_measures = zip(*(p.measures for p in parts))
         return [
             merge_concurrent_measures(measure_set)
