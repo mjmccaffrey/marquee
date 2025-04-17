@@ -19,48 +19,6 @@ class Finale(PlayMusicMode):
         # self.body4()
         # self.body5()
 
-    def original(self):
-        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        s = self
-        s.tempo = 75
-        print(time.time())
-        s.play_measures(s.measure())
-        print(time.time())
-        # A
-        print(time.time())
-        s.play_parts(
-            s.seq_part(
-                (s.seq(center_alternate), 
-                    ' ♩ ♩ ♩ ♩ '),
-                (s.seq(blink_alternate), 
-                    ' ♩ ♩ ♩ ♩ '),
-                (s.seq(blink_alternate),
-                    ' ♩ '    ),
-            ),
-            s.drum_part(
-                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- '
-            ),
-        )
-        print(time.time())
-        # B
-        print(time.time())
-        s.play_parts(
-            s.seq_part(
-                (s.seq(rotate, pattern="0100001000", clockwise=True),
-                    ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
-                (s.seq(rotate, pattern="0100001000", clockwise=False),
-                    ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
-                (s.seq(build_rows, pattern='1', from_top=True),
-                    ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
-                (s.seq(build_rows, pattern='1', from_top=False),
-                    ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
-            ),
-            s.drum_part(
-                ' 𝄻 | 𝄼 𝄽 𝄾 ♪^ | ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^ | 𝅘𝅥𝅰^ '
-            ),
-        )
-        print(time.time())
-
     def original_2(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
@@ -102,6 +60,25 @@ class Finale(PlayMusicMode):
             ),
         )
         print(time.time())
+        # C
+        # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
+        notes = "𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 |" \
+                           "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "  # | 𝄻 | 𝄻 "
+        part_c = self.prepare_parts(
+            s.drum_part(notes, beats=2),
+            s.part(
+                s.measure(
+                    s.act('♩', s.light(ALL_OFF)),
+                    s.act('♩', s.dimmer(ALL_LOW)),
+                    beats=2,
+                ),
+            ),
+        )
+        # D
+        part_d = self.prepare_parts(
+            s.drum_part(notes, beats=2),
+            s.seq_part((s.seq(triplet_rhythm), notes), beats=2),
+        )
         
         print(time.time())
         s.play_measures(*part_a)
@@ -109,6 +86,14 @@ class Finale(PlayMusicMode):
 
         print(time.time())
         s.play_measures(*part_b)
+        print(time.time())
+
+        print(time.time())
+        s.play_measures(*part_c)
+        print(time.time())
+
+        print(time.time())
+        s.play_measures(*part_d)
         print(time.time())
 
     def intro(self):
