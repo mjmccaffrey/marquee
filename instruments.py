@@ -49,6 +49,7 @@ class DrumSet(Instrument):
         self.relays.set_state_of_devices("0" * self.count)
         self.pattern = self.relays.get_state_of_devices()
         assert self.pattern == "0" * self.count
+        self.accent = ''
         self.click_next = 0
 
     def play(self, accent: str):
@@ -56,6 +57,7 @@ class DrumSet(Instrument):
         accent_to_relay_count = {
             '': 2, '-': 6, '>': 10, '^': 16,
         }
+        accent_to_relay_count[''] = accent_to_relay_count[self.accent]
         pattern = self.pattern
         for r in range(accent_to_relay_count[accent]):
             i = (self.click_next + r) % self.count

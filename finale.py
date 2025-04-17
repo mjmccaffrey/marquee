@@ -84,8 +84,10 @@ class Finale(PlayMusicMode):
         print(time.time())
 
         print(time.time())
+        s.drum_accent('-')
         s.play_measures(*part_c)
         print(time.time())
+        s.drum_accent()
 
         print(time.time())
         s.play_measures(*part_d)

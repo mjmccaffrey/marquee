@@ -310,6 +310,9 @@ class PlayMusicMode(PlayMode):
             raise ValueError("Drum note cannot have pitch.")
         return rest or DrumNote(duration, accent)
 
+    def drum_accent(self, symbol: str = ''):
+        self.player.sign.drum_set.accent = symbol
+        
     def drum_part(self, notation: str, beats=4) -> "Part":
         """Produce drum part from notation."""
         return self.part(
