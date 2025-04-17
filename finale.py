@@ -1,7 +1,6 @@
 """Marquee Lighted Sign Project - finale"""
 
 import sys
-import time
 
 from definitions import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
 from modes import PlayMusicMode
@@ -23,11 +22,8 @@ class Finale(PlayMusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
         s.tempo = 75
-        print(time.time())
         s.play_measures(s.measure())
-        print(time.time())
         # A
-        print(time.time())
         part_a = self.prepare_parts(
             s.seq_part(
                 (s.seq(center_alternate), 
@@ -41,9 +37,7 @@ class Finale(PlayMusicMode):
                 ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- '
             ),
         )
-        print(time.time())
         # B
-        print(time.time())
         part_b = self.prepare_parts(
             s.seq_part(
                 (s.seq(rotate, pattern="0100001000", clockwise=True),
@@ -59,7 +53,6 @@ class Finale(PlayMusicMode):
                 ' 𝄻 | 𝄼 𝄽 𝄾 ♪^ | ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^ | 𝅘𝅥𝅰^ '
             ),
         )
-        print(time.time())
         # C
         # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
         notes_1 = "𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | " \
@@ -75,22 +68,21 @@ class Finale(PlayMusicMode):
             s.seq_part((s.seq(triplet_rhythm), notes_2), beats=2),
         )
         
-        print(time.time())
         s.play_measures(*part_a)
-        print(time.time())
-
-        print(time.time())
         s.play_measures(*part_b)
-        print(time.time())
-
-        print(time.time())
         with s.drum_accent('>'):
             s.play_measures(*part_c)
-        print(time.time())
-
-        print(time.time())
         s.play_measures(*part_d)
-        print(time.time())
+        s.play_measures(s.measure(s.act('♩', s.light(ALL_OFF, DimmerParams()))))
+
+        s.tempo = 600
+        s.light(ALL_ON, DimmerParams(transition_on=6))()
+        s.play_measures(
+            s.seq_measure(
+                '♪', 80, rotate, 
+                pattern="0111111111", clockwise=True,
+            ),
+        )
 
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
@@ -126,23 +118,6 @@ class Finale(PlayMusicMode):
             #s.measure(beats=32),
         )
     
-
-    def body3(self):
-        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        s = self
-        rows = s.seq(each_row)
-        s.play_measures(
-            *s.notation(s.bell, "♩    ♩C ♩D^ | ♩D ♩E ♩G ♩A | ♩a ♩b ♩c ♩d | 𝄽 𝄽 ♩e 𝄽"),
-            *s.notation(s.drum, "3♪C 3♪D    | ♩  ♩- ♩> ♩^ | ♩  ♩- ♩> ♩^   |"),
-            *s.notation(rows, "3♪C   3♪D    | ♩  ♩- ♩> ♩^ | ♩  ♩- ♩> ♩^   |"),
-        )
-        s.play_parts(
-            s.bell_part("♩ ♩C ♩D^  | ♩D ♩E ♩G ♩A | ♩a ♩b ♩c ♩d | ♩e"),
-            s.drum_part("3♪C 3♪D | ♩ ♩- ♩> ♩^ | ♩ ♩- ♩> ♩^   |"),
-            s.seq_part(
-                (rows,  "3♪C 3♪D | ♩ ♩- ♩> ♩^ | ♩ ♩- ♩> ♩^   |")),
-        )
-
     def body4(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
 
@@ -152,19 +127,23 @@ class Finale(PlayMusicMode):
         # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
         notes = "𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 |" \
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "  # | 𝄻 | 𝄻 "
-        s.play_parts(
-            s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
-            s.part(
-                s.measure(
-                    s.act('♩', s.light(ALL_OFF)),
-                    s.act('♩', s.dimmer(ALL_LOW)),
-                    beats=2,
+        s.play_measures(
+            *s.prepare_parts(
+                s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
+                s.part(
+                    s.measure(
+                        s.act('♩', s.light(ALL_OFF)),
+                        s.act('♩', s.dimmer(ALL_LOW)),
+                        beats=2,
+                    ),
                 ),
-            ),
+            )
         )
-        s.play_parts(
-            s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
-            s.seq_part((rows, notes), beats=2),
+        s.play_measures(
+            *s.prepare_parts(
+                s.drum_part(notes, beats=2),
+                s.seq_part((rows, notes), beats=2),
+            )
         )
 
     def body5(self):

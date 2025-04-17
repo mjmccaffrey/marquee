@@ -408,7 +408,7 @@ class PlayMusicMode(PlayMode):
             for measure_set in concurrent_measures
         ]
 
-    def play_note(self, note: BaseNote):
+    def _play_note(self, note: BaseNote):
         """"""
         if isinstance(note, DrumNote):
             self.player.sign.drum_set.play(note.accent)
@@ -416,7 +416,7 @@ class PlayMusicMode(PlayMode):
             note.execute()
 
     def play_measures(self, *measures: Measure):
-        """Play sequential measures."""
+        """Play a series of measures."""
         for measure in measures:
             #print("PLAYING MEASURE")
             beat = 0
@@ -432,30 +432,14 @@ class PlayMusicMode(PlayMode):
                 start = time.time()
                 if isinstance(element, NoteGroup):
                     for note in element.notes:
-                        self.play_note(note)
+                        self._play_note(note)
                     duration = 0
                 else:
                     assert isinstance(element, BaseNote)
-                    self.play_note(element)
+                    self._play_note(element)
                     duration = element.duration
                 wait = (duration) * self.pace
                 self.player.wait(wait, elapsed = time.time() - start)
                 beat += duration
             wait = max(0, measure.beats - beat) * self.pace
             self.player.wait(wait)
-
-    def play_parts(self, *parts: Part):
-        """Merge parts into new sequence of measures, and then play."""
-        assert parts
-        # Make all parts the same length
-        longest = max(len(p.measures) for p in parts)
-        for p in parts:
-            if len(p.measures) < longest:
-                pad = Measure(elements=(), beats=p.measures[-1].beats)
-                p.measures = tuple(
-                    p.measures[i] if i < len(p.measures) else pad
-                    for i in range(longest)
-                )
-        # Transform and play parts
-        new_measures = self.prepare_parts(*parts)
-        self.play_measures(*new_measures)

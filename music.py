@@ -216,6 +216,8 @@ def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
             (bn for bn in beat_next if bn is not None),
             default=beats
         )
+        if beat >= beats:
+            raise ValueError("Too many actual beats in measure.")
         # Add a rest
         rest += next_beat - beat
         # Add to output
