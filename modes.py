@@ -354,7 +354,7 @@ class PlayMusicMode(PlayMode):
         )
 
     def expand_sequences(self, measures: tuple[Measure, ...]):
-        """Convert NoteSequence into multiple ActionNotes."""
+        """Populate SequenceMeasures with ActionNotes."""
         for measure in measures:
             if not isinstance(measure, SequenceMeasure):
                 continue
