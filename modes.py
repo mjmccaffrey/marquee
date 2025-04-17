@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable
+from contextlib import contextmanager
 from dataclasses import dataclass
 import time
 from typing import Any
@@ -310,9 +311,15 @@ class PlayMusicMode(PlayMode):
             raise ValueError("Drum note cannot have pitch.")
         return rest or DrumNote(duration, accent)
 
+    @contextmanager
     def drum_accent(self, symbol: str = ''):
-        self.player.sign.drum_set.accent = symbol
-        
+        try:
+            saved = self.player.sign.drum_set.accent
+            self.player.sign.drum_set.accent = symbol
+            yield
+        finally:
+            self.player.sign.drum_set.accent = saved
+
     def drum_part(self, notation: str, beats=4) -> "Part":
         """Produce drum part from notation."""
         return self.part(
