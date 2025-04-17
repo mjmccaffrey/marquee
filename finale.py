@@ -62,10 +62,12 @@ class Finale(PlayMusicMode):
         print(time.time())
         # C
         # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
-        notes = "𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 |" \
-                           "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "  # | 𝄻 | 𝄻 "
+        notes_1 = "𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 |" \
+                           "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ 𝄾 𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 "
+        notes_2 = " ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 |" \
+                           "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "
         part_c = self.prepare_parts(
-            s.drum_part(notes, beats=2),
+            s.drum_part(notes_1, beats=2),
             s.part(
                 s.measure(
                     s.act('♩', s.light(ALL_OFF)),
@@ -76,8 +78,8 @@ class Finale(PlayMusicMode):
         )
         # D
         part_d = self.prepare_parts(
-            s.drum_part(notes, beats=2),
-            s.seq_part((s.seq(triplet_rhythm), notes), beats=2),
+            s.drum_part(notes_2, beats=2),
+            s.seq_part((s.seq(triplet_rhythm), notes_2), beats=2),
         )
         
         print(time.time())
