@@ -17,7 +17,7 @@ from music import (
     Measure, NoteGroup, SequenceMeasure, Sequence, 
     interpret_notation, interpret_symbols, merge_concurrent_measures,
 )
-from sequence_defs import seq_rotate_build_flip
+from sequence_defs import rotate_build_flip
 
 @dataclass
 class ModeConstructor:
@@ -102,7 +102,7 @@ class SelectMode(Mode):
             self.player.sign.set_lights(ALL_OFF)
             time.sleep(0.5)
             self.player.play_sequence(
-                seq_rotate_build_flip(count=self.desired_mode),
+                rotate_build_flip(count=self.desired_mode),
                 pace=0.20, post_delay=4.0,
             )
             self.previous_desired_mode = self.desired_mode

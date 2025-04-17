@@ -26,27 +26,27 @@ class Finale(PlayMusicMode):
         s.play_parts(
             s.seq_part(
                 # A
-                (s.seq(seq_center_alternate), 
+                (s.seq(center_alternate), 
                     ' ♩ ♩ ♩ ♩ '),
-                (s.seq(seq_blink_alternate), 
+                (s.seq(blink_alternate), 
                     ' ♩ ♩ ♩ ♩ '),
-                (s.seq(seq_blink_alternate),
+                (s.seq(blink_alternate),
                     ' ♩ '    ),
                 # B
-                (s.seq(seq_rotate, pattern="0100001000", clockwise=True),
+                (s.seq(rotate, pattern="0100001000", clockwise=True),
                     ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
-                (s.seq(seq_rotate, pattern="0100001000", clockwise=False),
+                (s.seq(rotate, pattern="0100001000", clockwise=False),
                     ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
-                (s.seq(seq_build_rows, pattern='1', from_top=True),
+                (s.seq(build_rows, pattern='1', from_top=True),
                     ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
-                (s.seq(seq_build_rows, pattern='1', from_top=False),
+                (s.seq(build_rows, pattern='1', from_top=False),
                     ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
             ),
             s.drum_part(
                 # A
-                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- '
+                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- | '
                 # B
-                ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 ♪^ | ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^ | 𝅘𝅥𝅰^ '
+                ' 𝄻 | 𝄼 𝄽 𝄾 ♪^ | ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^ | 𝅘𝅥𝅰^ '
             ),
         )
 
@@ -77,7 +77,7 @@ class Finale(PlayMusicMode):
                 s.act('♩', s.light(ALL_ON)),
             ),
             s.seq_measure(
-                '♩', LIGHT_COUNT, seq_random_once_each, 
+                '♩', LIGHT_COUNT, random_once_each, 
                 ActionParams(action=s.dimmer_seq(100, 2)),
                 beats=16,
             ),
@@ -88,7 +88,7 @@ class Finale(PlayMusicMode):
     def body3(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
-        rows = s.seq(seq_rows)
+        rows = s.seq(each_row)
         s.play_measures(
             *s.notation(s.bell, "♩    ♩C ♩D^ | ♩D ♩E ♩G ♩A | ♩a ♩b ♩c ♩d | 𝄽 𝄽 ♩e 𝄽"),
             *s.notation(s.drum, "3♪C 3♪D    | ♩  ♩- ♩> ♩^ | ♩  ♩- ♩> ♩^   |"),
@@ -105,8 +105,8 @@ class Finale(PlayMusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
 
         s = self
-        #rows = s.seq(seq_build_rows, pattern="0", from_top=True)
-        rows = s.seq(seq_triplet_rhythm)
+        #rows = s.seq(build_rows, pattern="0", from_top=True)
+        rows = s.seq(triplet_rhythm)
         # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
         notes = "𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 |" \
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "  # | 𝄻 | 𝄻 "
@@ -131,7 +131,7 @@ class Finale(PlayMusicMode):
         s.light(ALL_ON, DimmerParams(transition_on=6))()
         s.play_measures(
             s.seq_measure(
-                '♪', 80, seq_rotate, 
+                '♪', 80, rotate, 
                 pattern="0111111111", clockwise=True,
             ),
         )
