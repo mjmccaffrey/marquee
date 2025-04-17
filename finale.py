@@ -11,7 +11,7 @@ class Finale(PlayMusicMode):
     """"""
 
     def execute(self):
-        self.original()
+        self.original_2()
         sys.exit()
         self.tempo = 90
         # self.intro()
