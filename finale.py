@@ -68,15 +68,15 @@ class Finale(PlayMusicMode):
             s.seq_part((s.seq(triplet_rhythm), notes_2), beats=2),
         )
         
-        s.play(*part_a)
-        s.play(*part_b)
+        #s.play(*part_a)
+        #s.play(*part_b)
         #with s.drum_accent('>'):
         #    s.play(*part_c)
         #s.play(*part_d)
         s.play(s.measure(s.act('♩', s.light(ALL_OFF, DimmerParams()))))
 
         # E # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        s.tempo = 750
+        s.tempo = 725
         s.light(ALL_ON, DimmerParams(transition_on=6))()
         part_e = s.prepare_parts(
             s.part(
@@ -87,7 +87,9 @@ class Finale(PlayMusicMode):
                 ),
                 s.measure(s.act('♪', s.light(ALL_ON)), beats=60),
             ),
-            s.drum_part(' ♪^ 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 ' * 12, beats=60),
+            s.drum_part(
+                ' ♪^ 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 ' * 12 + ' | ♪^ ',
+                beats=60),
         )
         s.play(*part_e)
 
