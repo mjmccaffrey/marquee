@@ -80,7 +80,7 @@ class Finale(PlayMusicMode):
         s.tempo = 675
         s.light(ALL_ON, DimmerParams(transition_on=6))()
         pattern = [
-            p for _ in range(12)
+            p for _ in range(10)
                 for p in rotate(
                     pattern="0111111111", clockwise=True)
         ] +                ["1111111111"]
@@ -99,7 +99,7 @@ class Finale(PlayMusicMode):
         # F # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         part_f = s.prepare_parts(
             s.seq_part(
-                (s.seq(each_row, DimmerParams(transition_off=2), pattern='0'), 
+                (s.seq(build_rows, DimmerParams(transition_off=4), pattern='0'), 
                     ' 𝄻 | 𝄻 | ♩ ♩ ♩ ♩ '),
             )
         )
