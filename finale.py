@@ -72,7 +72,7 @@ class Finale(PlayMusicMode):
         s.play(*part_b)
         with s.drum_accent('>'):
             s.play(*part_c)
-        s.play(*part_d)
+        #s.play(*part_d)
         s.play(s.measure(s.act('♩', s.light(ALL_OFF, DimmerParams()))))
 
         # E # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
@@ -87,14 +87,7 @@ class Finale(PlayMusicMode):
                 ),
                 s.measure(s.act('♪', s.light(ALL_ON))),
             ),
-            s.drum_part(' ♪^ | ♪^ | ♪^ | ♪^ | ♪^ | ♪^ | ♪^ | ♪^ | ♪^ '),
-        )
-        s.play(
-            s.seq_measure(
-                '♪', 119, rotate, 
-                pattern="0111111111", clockwise=True,
-            ),
-            s.measure(s.act('♩', s.light(ALL_ON)))
+            s.drum_part(' ♪^ 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 ' * 12),
         )
 
     def intro(self):
