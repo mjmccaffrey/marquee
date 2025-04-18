@@ -79,17 +79,19 @@ class Finale(PlayMusicMode):
         # E # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s.tempo = 725
         s.light(ALL_ON, DimmerParams(transition_on=6))()
+        pattern = [
+            p for _ in range(12)
+                for p in rotate(pattern="0111111111", clockwise=True)
+        ]
+        pattern.append("1111111111")
         part_e = s.prepare_parts(
             s.part(
                 s.seq_measure(
-                    '♪', 119, rotate, 
-                    pattern="0111111111", clockwise=True,
+                    '♪', 121, lambda: iter(pattern), 
                 ),
-                s.measure(s.act('♪', s.light(ALL_ON))),
             ),
             s.drum_part(
-                ' ♪^ 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 ' * 12 
-                #' ♪^ 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 ♪^ ',
+                ' ♪^ 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 ♪^ ' * 12 + ' ♪^ '
             ),
             beats=60,
         )
