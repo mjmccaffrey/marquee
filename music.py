@@ -3,6 +3,8 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 import itertools
+import time
+from typing import Any
 
 from definitions import SpecialParams
 from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument
@@ -216,8 +218,6 @@ def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
             (bn for bn in beat_next if bn is not None),
             default=beats
         )
-        #if beat >= beats:
-        #    raise ValueError("Too many actual beats in WHICH measure.")
         # Add a rest
         rest += next_beat - beat
         # Add to output
@@ -286,3 +286,86 @@ def interpret_notation(
         create_measure(measure)
         for measure in notation.split('|')
     )
+
+def expand_sequences(
+        measures: tuple[Measure, ...],
+        light: Callable[[Any, SpecialParams | None], Callable],
+):
+    """Populate SequenceMeasures with ActionNotes."""
+    for measure in measures:
+        if not isinstance(measure, SequenceMeasure):
+            continue
+        assert isinstance(measure, SequenceMeasure)
+        measure.elements = tuple(
+            ActionNote(
+                duration=measure.step_duration,
+                actions=(
+                    light(
+                        next(measure.seq.iter),
+                        measure.special,
+                    ),
+                )
+            )
+            for _ in range(measure.count)
+        )
+
+def prepare_parts(
+        *parts: Part, 
+        light: Callable[[Any, SpecialParams | None], Callable],
+) -> list[Measure]:
+    #
+    for part in parts:
+        expand_sequences(part.measures, light)
+    # Make all parts the same length
+    longest = max(len(p.measures) for p in parts)
+    for p in parts:
+        if len(p.measures) < longest:
+            pad = Measure(elements=(), beats=p.measures[-1].beats)
+            p.measures = tuple(
+                p.measures[i] if i < len(p.measures) else pad
+                for i in range(longest)
+            )
+    #
+    concurrent_measures = zip(*(p.measures for p in parts))
+    return [
+        merge_concurrent_measures(measure_set)
+        for measure_set in concurrent_measures
+    ]
+
+def play(
+        *measures: Measure, 
+        light: Callable[[Any, SpecialParams | None], Callable],
+        play_note: Callable[[BaseNote], None],
+        wait: Callable[[float, float], None],
+        pace: float,
+    ):
+    """Play a series of measures."""
+    for measure in measures:
+        print("PLAYING MEASURE")
+        beat = 0
+        expand_sequences(measures, light)
+        #print("*******************************************")
+        #for e in measure.elements:
+        #    print(e)
+        #assert all(
+        #    isinstance(e, BaseNote)
+        #    for e in measure.elements
+        #)
+        for element in measure.elements:
+            start = time.time()
+            if isinstance(element, NoteGroup):
+                for note in element.notes:
+                    play_note(note)
+                duration = 0
+            else:
+                assert isinstance(element, BaseNote)
+                play_note(element)
+                duration = element.duration
+            wait_dur = (duration) * pace
+            wait(wait_dur, time.time() - start)
+            beat += duration
+            print(beat, duration, measure.beats)
+            if beat > measure.beats:
+                raise ValueError("Too many actual beats in measure.")
+        wait_dur = max(0, measure.beats - beat) * pace
+        wait(wait_dur, 0)

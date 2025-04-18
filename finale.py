@@ -22,8 +22,8 @@ class Finale(PlayMusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
         s.tempo = 75
-        s.play_measures(s.measure())
-        # A
+        s.play(s.measure())
+        # A # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         part_a = self.prepare_parts(
             s.seq_part(
                 (s.seq(center_alternate), 
@@ -37,7 +37,7 @@ class Finale(PlayMusicMode):
                 ' 𝄻 | 𝄻 | 𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰- '
             ),
         )
-        # B
+        # B # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         part_b = self.prepare_parts(
             s.seq_part(
                 (s.seq(rotate, pattern="0100001000", clockwise=True),
@@ -53,42 +53,54 @@ class Finale(PlayMusicMode):
                 ' 𝄻 | 𝄼 𝄽 𝄾 ♪^ | ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^ | 𝅘𝅥𝅰^ '
             ),
         )
-        # C
+        # C # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
-        notes_1 = "𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | " \
+        notes_1 = "     𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | " \
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 "
         notes_2 = " ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | " \
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "
         part_c = self.prepare_parts(
             s.drum_part(notes_1, beats=2),
         )
-        # D
+        # D # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         part_d = self.prepare_parts(
             s.drum_part(notes_2, beats=2),
             s.seq_part((s.seq(triplet_rhythm), notes_2), beats=2),
         )
         
-        s.play_measures(*part_a)
-        s.play_measures(*part_b)
+        s.play(*part_a)
+        s.play(*part_b)
         with s.drum_accent('>'):
-            s.play_measures(*part_c)
-        s.play_measures(*part_d)
-        s.play_measures(s.measure(s.act('♩', s.light(ALL_OFF, DimmerParams()))))
+            s.play(*part_c)
+        s.play(*part_d)
+        s.play(s.measure(s.act('♩', s.light(ALL_OFF, DimmerParams()))))
 
-        s.tempo = 600
+        # E # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        s.tempo = 750
         s.light(ALL_ON, DimmerParams(transition_on=6))()
-        s.play_measures(
+        s.prepare_parts(
+            s.part(
+                s.seq_measure(
+                    '♪', 119, rotate, 
+                    pattern="0111111111", clockwise=True,
+                ),
+                s.measure(s.act('♪', s.light(ALL_ON))),
+            ),
+            s.drum_part(' ♪^ | ♪^ | ♪^ | ♪^ | ♪^ | ♪^ | ♪^ | ♪^ | ♪^ '),
+        )
+        s.play(
             s.seq_measure(
-                '♪', 80, rotate, 
+                '♪', 119, rotate, 
                 pattern="0111111111", clockwise=True,
             ),
+            s.measure(s.act('♩', s.light(ALL_ON)))
         )
 
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
         s.tempo = 90
-        s.play_measures(
+        s.play(
             s.measure(
                 s.act('♩', s.light(ALL_OFF)),
                 s.act('♩', s.dimmer(ALL_HIGH)),
@@ -127,9 +139,9 @@ class Finale(PlayMusicMode):
         # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
         notes = "𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 |" \
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "  # | 𝄻 | 𝄻 "
-        s.play_measures(
+        s.play(
             *s.prepare_parts(
-                s.drum_part(notes, beats=2),  # , play_measures beats=2 !!!!!
+                s.drum_part(notes, beats=2),  # , play beats=2 !!!!!
                 s.part(
                     s.measure(
                         s.act('♩', s.light(ALL_OFF)),
@@ -139,7 +151,7 @@ class Finale(PlayMusicMode):
                 ),
             )
         )
-        s.play_measures(
+        s.play(
             *s.prepare_parts(
                 s.drum_part(notes, beats=2),
                 s.seq_part((rows, notes), beats=2),
@@ -150,7 +162,7 @@ class Finale(PlayMusicMode):
         s = self
         s.tempo = 600
         s.light(ALL_ON, DimmerParams(transition_on=6))()
-        s.play_measures(
+        s.play(
             s.seq_measure(
                 '♪', 80, rotate, 
                 pattern="0111111111", clockwise=True,

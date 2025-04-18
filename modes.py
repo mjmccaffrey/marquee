@@ -17,6 +17,7 @@ from music import (
     Element, BaseNote, Rest, ActionNote, BellNote, DrumNote, Part, 
     Measure, NoteGroup, SequenceMeasure, Sequence, 
     interpret_notation, interpret_symbols, merge_concurrent_measures,
+    play, prepare_parts
 )
 from sequence_defs import rotate_build_flip
 
@@ -207,16 +208,16 @@ class PlayMusicMode(PlayMode):
         name: str,
     ):
         super().__init__(player, name, preset_dimmers=True)
-        #self.bells = self.player.sign.bell_set
-        #self.drums = self.player.sign.drum_set
         self.notation = interpret_notation
-        self.tempo = 60  # Default
+        self.tempo = 60
 
     @property
     def tempo(self):
+        """Return current tempo."""
         return self._tempo
     @tempo.setter
     def tempo(self, value: float):
+        """Set tempo and associated values."""
         self._tempo = value
         self.pace = 60 / self._tempo
 
@@ -313,6 +314,7 @@ class PlayMusicMode(PlayMode):
 
     @contextmanager
     def drum_accent(self, symbol: str = ''):
+        """Set the default accent level for drum notes."""
         try:
             saved = self.player.sign.drum_set.accent
             self.player.sign.drum_set.accent = symbol
@@ -341,9 +343,7 @@ class PlayMusicMode(PlayMode):
         **kwargs,
     ) -> Callable[[str], ActionNote | Rest]:
         """Return callable to effect each step in sequence."""
-        seq = Sequence(
-            sequence, **kwargs,
-        )
+        seq = Sequence(sequence, **kwargs)
         def func(s: str):
             return self.act(
                 s, lambda: self.light(next(seq.iter), special),
@@ -366,48 +366,6 @@ class PlayMusicMode(PlayMode):
             sequence, step_duration, count, special, beats, **kwargs,
         )
 
-    def expand_sequences(self, measures: tuple[Measure, ...]):
-        """Populate SequenceMeasures with ActionNotes."""
-        for measure in measures:
-            if not isinstance(measure, SequenceMeasure):
-                continue
-            assert isinstance(measure, SequenceMeasure)
-            measure.elements = tuple(
-                ActionNote(
-                    duration=measure.step_duration,
-                    actions=(
-                        self.light(
-                            pattern=next(measure.seq.iter),
-                            special=measure.special,
-                        ),
-                    )
-                )
-                for c in range(measure.count)
-            )
-
-    def prepare_measures(self, measures):
-        self.expand_sequences(measures)
-
-    def prepare_parts(self, *parts: Part):
-        #
-        for part in parts:
-            self.prepare_measures(part.measures)
-        # Make all parts the same length
-        longest = max(len(p.measures) for p in parts)
-        for p in parts:
-            if len(p.measures) < longest:
-                pad = Measure(elements=(), beats=p.measures[-1].beats)
-                p.measures = tuple(
-                    p.measures[i] if i < len(p.measures) else pad
-                    for i in range(longest)
-                )
-        #
-        concurrent_measures = zip(*(p.measures for p in parts))
-        return [
-            merge_concurrent_measures(measure_set)
-            for measure_set in concurrent_measures
-        ]
-
     def _play_note(self, note: BaseNote):
         """"""
         if isinstance(note, DrumNote):
@@ -415,31 +373,18 @@ class PlayMusicMode(PlayMode):
         else:
             note.execute()
 
-    def play_measures(self, *measures: Measure):
-        """Play a series of measures."""
-        for measure in measures:
-            #print("PLAYING MEASURE")
-            beat = 0
-            self.prepare_measures(measures)
-            #print("*******************************************")
-            #for e in measure.elements:
-            #    print(e)
-            #assert all(
-            #    isinstance(e, BaseNote)
-            #    for e in measure.elements
-            #)
-            for element in measure.elements:
-                start = time.time()
-                if isinstance(element, NoteGroup):
-                    for note in element.notes:
-                        self._play_note(note)
-                    duration = 0
-                else:
-                    assert isinstance(element, BaseNote)
-                    self._play_note(element)
-                    duration = element.duration
-                wait = (duration) * self.pace
-                self.player.wait(wait, elapsed = time.time() - start)
-                beat += duration
-            wait = max(0, measure.beats - beat) * self.pace
-            self.player.wait(wait)
+    def play(self, *measures: Measure):
+        """"""
+        play(
+            *measures, 
+            light=self.light,
+            play_note=self._play_note, 
+            wait=self.player.wait,
+            pace=self.pace,
+        )
+
+    def prepare_parts(
+            self,
+            *parts: Part, 
+    ) -> list[Measure]:
+        return prepare_parts(*parts, light=self.light)
