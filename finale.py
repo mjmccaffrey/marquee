@@ -78,7 +78,7 @@ class Finale(PlayMusicMode):
         # E # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s.tempo = 750
         s.light(ALL_ON, DimmerParams(transition_on=6))()
-        s.prepare_parts(
+        part_e = s.prepare_parts(
             s.part(
                 s.seq_measure(
                     '♪', 119, rotate, 
@@ -89,6 +89,7 @@ class Finale(PlayMusicMode):
             ),
             s.drum_part(' ♪^ 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 ' * 12, beats=60),
         )
+        s.play(*part_e)
 
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
