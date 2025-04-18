@@ -87,7 +87,7 @@ class Finale(PlayMusicMode):
         part_e = s.prepare_parts(
             s.part(
                 s.seq_measure(
-                    '♪', 121, lambda: iter(pattern), 
+                    '♪', 101, lambda: iter(pattern), 
                 ),
             ),
             s.drum_part(
@@ -103,7 +103,7 @@ class Finale(PlayMusicMode):
                     ' 𝄻 | 𝄻 | ♩ ♩ ♩ ♩ '),
             )
         )
-        s.tempo = 60
+        s.tempo = 30
         s.play(*part_f)
 
     def intro(self):
