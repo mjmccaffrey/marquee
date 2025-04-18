@@ -64,8 +64,9 @@ class Finale(PlayMusicMode):
         )
         # D # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         part_d = self.prepare_parts(
-            s.drum_part(notes_2, beats=2),
-            s.seq_part((s.seq(triplet_rhythm), notes_2), beats=2),
+            s.drum_part(notes_2),
+            s.seq_part((s.seq(triplet_rhythm), notes_2)),
+            beats=2,
         )
         
         #s.play(*part_a)
@@ -87,7 +88,7 @@ class Finale(PlayMusicMode):
                 s.measure(s.act('♪', s.light(ALL_ON))),
             ),
             s.drum_part(
-                ' ♪^ 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 ' * 12 + ' | ♪^ ',
+                ' ♪> 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 ' * 12 + ' | ♪^ ',
             ),
             beats=60,
         )
@@ -124,7 +125,6 @@ class Finale(PlayMusicMode):
                 ActionParams(action=s.dimmer_seq(100, 2)),
                 beats=16,
             ),
-            #s.measure(beats=32),
         )
     
     def body4(self):
@@ -138,30 +138,20 @@ class Finale(PlayMusicMode):
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "  # | 𝄻 | 𝄻 "
         s.play(
             *s.prepare_parts(
-                s.drum_part(notes, beats=2),  # , play beats=2 !!!!!
+                s.drum_part(notes),
                 s.part(
                     s.measure(
                         s.act('♩', s.light(ALL_OFF)),
                         s.act('♩', s.dimmer(ALL_LOW)),
-                        beats=2,
                     ),
                 ),
+                beats=2,
             )
         )
         s.play(
             *s.prepare_parts(
-                s.drum_part(notes, beats=2),
-                s.seq_part((rows, notes), beats=2),
+                s.drum_part(notes),
+                s.seq_part((rows, notes)),
+                beats=2,
             )
-        )
-
-    def body5(self):
-        s = self
-        s.tempo = 600
-        s.light(ALL_ON, DimmerParams(transition_on=6))()
-        s.play(
-            s.seq_measure(
-                '♪', 80, rotate, 
-                pattern="0111111111", clockwise=True,
-            ),
         )
