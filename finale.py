@@ -70,8 +70,8 @@ class Finale(PlayMusicMode):
         
         s.play(*part_a)
         s.play(*part_b)
-        with s.drum_accent('>'):
-            s.play(*part_c)
+        #with s.drum_accent('>'):
+        #    s.play(*part_c)
         #s.play(*part_d)
         s.play(s.measure(s.act('♩', s.light(ALL_OFF, DimmerParams()))))
 
@@ -87,7 +87,7 @@ class Finale(PlayMusicMode):
                 ),
                 s.measure(s.act('♪', s.light(ALL_ON))),
             ),
-            s.drum_part(' ♪^ 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 ' * 12),
+            s.drum_part(' ♪^ 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 ' * 12, beats=60),
         )
 
     def intro(self):
