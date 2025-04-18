@@ -35,11 +35,11 @@ def blink_alternate():
     yield next(even_on())
     yield next(even_off())
 
-def each_row():
+def each_row(pattern="1"):
     """"""
     for row in LIGHTS_BY_ROW:
         yield ''.join(
-            '1' if i in row else '0'
+            pattern if i in row else opposite_pattern(pattern)
             for i in range(LIGHT_COUNT)
         )
 
