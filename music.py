@@ -312,11 +312,17 @@ def expand_sequences(
 def prepare_parts(
         *parts: Part, 
         light: Callable[[Any, SpecialParams | None], Callable],
+        beats: int | None = None,
 ) -> list[Measure]:
+    # If beats specified, apply it to all measures in all parts.
+    if beats is not None:
+        for part in parts:
+            for measure in part.measures:
+                measure.beats = beats
     #
     for part in parts:
         expand_sequences(part.measures, light)
-    # Make all parts the same length
+    # Make all parts have the same # of measures
     longest = max(len(p.measures) for p in parts)
     for p in parts:
         if len(p.measures) < longest:

@@ -386,5 +386,6 @@ class PlayMusicMode(PlayMode):
     def prepare_parts(
             self,
             *parts: Part, 
+            beats: int | None = None,
     ) -> list[Measure]:
-        return prepare_parts(*parts, light=self.light)
+        return prepare_parts(*parts, light=self.light, beats=beats)

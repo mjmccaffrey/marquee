@@ -83,13 +83,13 @@ class Finale(PlayMusicMode):
                 s.seq_measure(
                     '♪', 119, rotate, 
                     pattern="0111111111", clockwise=True,
-                    beats=60,
                 ),
-                s.measure(s.act('♪', s.light(ALL_ON)), beats=60),
+                s.measure(s.act('♪', s.light(ALL_ON))),
             ),
             s.drum_part(
                 ' ♪^ 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 𝄾 ' * 12 + ' | ♪^ ',
-                beats=60),
+            ),
+            beats=60,
         )
         s.play(*part_e)
 
