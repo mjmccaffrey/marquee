@@ -77,34 +77,36 @@ class Finale(PlayMusicMode):
         s.play(s.measure(s.act('♩', s.light(ALL_OFF, DimmerParams()))))
 
         # E # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        s.tempo = 675
         s.light(ALL_ON, DimmerParams(transition_on=6))()
+        rotations = 10
         pattern = [
-            p for _ in range(10)
+            p for _ in range(rotations)
                 for p in rotate(
                     pattern="0111111111", clockwise=True)
         ] +                ["1111111111"]
-        part_e = s.prepare_parts(
+        section_e = s.section(
             s.part(
                 s.seq_measure(
-                    '♪', 101, lambda: iter(pattern), 
+                    '♪', rotations * 10 + 1, lambda: iter(pattern), 
                 ),
             ),
             s.drum_part(
-                ' ♪^ 𝄾 𝄾 𝄾 𝄾 ♪^ 𝄾 𝄾 𝄾 𝄾 ' * 12 + ' ♪^ '
+                ' ♪^ 𝄾 𝄾 𝄾 𝄾 ♪^ 𝄾 𝄾 𝄾 𝄾 ' * rotations + ' ♪^ '
             ),
             beats=60,
+            tempo=675,
         )
-        s.play(*part_e)
+        s.play(*section_e)
+
         # F # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        part_f = s.prepare_parts(
+        section_f = s.section(
             s.seq_part(
                 (s.seq(build_rows, DimmerParams(transition_off=4), pattern='0'), 
                     ' 𝄻 | 𝄻 | ♩ ♩ ♩ ♩ '),
-            )
+            ),
+            tempo=45,
         )
-        s.tempo = 30
-        s.play(*part_f)
+        s.play(*section_f)
 
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀

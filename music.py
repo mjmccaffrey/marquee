@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable
+from dataclasses import data
 import itertools
 import time
 from typing import Any
@@ -21,6 +22,7 @@ rest_duration: dict[str, float] = {
 }
 symbol_duration = note_duration | rest_duration
 
+@data
 class Element(ABC):
     """Base for all musical items."""
     @abstractmethod
@@ -167,6 +169,62 @@ class Part(Element):
     def __str__(self):
         return f"Part {self.measures}"
 
+class Section(Element):
+    """Musical section containing parts and meta info."""
+    def __init__(
+        self, 
+        parts: tuple[Part, ...],
+        tempo: int = 60,
+        default_drum_accent: str = '',
+    ):
+        super().__init__()
+        self.parts = parts
+        self.tempo = tempo
+        self.default_drum_accent = default_drum_accent
+
+        expand_sequences(measures, light)  PUT THIS BACK INSIDE PLAY
+
+    def play(self):
+        play(self._measures)
+        
+        self.player.sign.drum_set.accent = symbol
+
+            if beat > measure.beats:
+                raise ValueError("Too many actual beats in measure.")
+
+    def __str__(self):
+        return f"Part {self.parts}"
+
+    def _prepare_parts(
+            self,
+            *parts: Part, 
+            light: Callable[[Any, SpecialParams | None], Callable],
+            beats: int | None = None,
+    ) -> list[Measure]:
+        # If beats specified, apply it to all measures in all parts.
+        if beats is not None:
+            for part in parts:
+                for measure in part.measures:
+                    measure.beats = beats
+        #
+        for part in parts:
+            expand_sequences(part.measures, light)
+        # Make all parts have the same # of measures
+        longest = max(len(p.measures) for p in parts)
+        for p in parts:
+            if len(p.measures) < longest:
+                pad = Measure(elements=(), beats=p.measures[-1].beats)
+                p.measures = tuple(
+                    p.measures[i] if i < len(p.measures) else pad
+                    for i in range(longest)
+                )
+        #
+        concurrent_measures = zip(*(p.measures for p in parts))
+        return [
+            merge_concurrent_measures(measure_set)
+            for measure_set in concurrent_measures
+        ]
+
 class Sequence(Element):
     """"""
     def __init__(
@@ -309,37 +367,8 @@ def expand_sequences(
             for _ in range(measure.count)
         )
 
-def prepare_parts(
-        *parts: Part, 
-        light: Callable[[Any, SpecialParams | None], Callable],
-        beats: int | None = None,
-) -> list[Measure]:
-    # If beats specified, apply it to all measures in all parts.
-    if beats is not None:
-        for part in parts:
-            for measure in part.measures:
-                measure.beats = beats
-    #
-    for part in parts:
-        expand_sequences(part.measures, light)
-    # Make all parts have the same # of measures
-    longest = max(len(p.measures) for p in parts)
-    for p in parts:
-        if len(p.measures) < longest:
-            pad = Measure(elements=(), beats=p.measures[-1].beats)
-            p.measures = tuple(
-                p.measures[i] if i < len(p.measures) else pad
-                for i in range(longest)
-            )
-    #
-    concurrent_measures = zip(*(p.measures for p in parts))
-    return [
-        merge_concurrent_measures(measure_set)
-        for measure_set in concurrent_measures
-    ]
-
 def play(
-        *measures: Measure, 
+        *measures: Measure,
         light: Callable[[Any, SpecialParams | None], Callable],
         play_note: Callable[[BaseNote], None],
         wait: Callable[[float, float], None],
@@ -349,7 +378,6 @@ def play(
     for measure in measures:
         print("PLAYING MEASURE")
         beat = 0
-        expand_sequences(measures, light)
         #print("*******************************************")
         #for e in measure.elements:
         #    print(e)
@@ -371,7 +399,5 @@ def play(
             wait(wait_dur, time.time() - start)
             beat += duration
             print(beat, duration, measure.beats)
-            if beat > measure.beats:
-                raise ValueError("Too many actual beats in measure.")
         wait_dur = max(0, measure.beats - beat) * pace
         wait(wait_dur, 0)

@@ -2,7 +2,6 @@
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-from contextlib import contextmanager
 from dataclasses import dataclass
 import time
 from typing import Any
@@ -16,8 +15,7 @@ from dimmers import TRANSITION_DEFAULT
 from music import (
     Element, BaseNote, Rest, ActionNote, BellNote, DrumNote, Part, 
     Measure, NoteGroup, SequenceMeasure, Sequence, 
-    interpret_notation, interpret_symbols, merge_concurrent_measures,
-    play, prepare_parts
+    interpret_notation, interpret_symbols, play
 )
 from sequence_defs import rotate_build_flip
 
@@ -276,14 +274,14 @@ class PlayMusicMode(PlayMode):
 
     def seq_part(
             self,
-            *sections: tuple[Callable[[str], ActionNote | Rest], str],
+            *segments: tuple[Callable[[str], ActionNote | Rest], str],
             beats=4
     ) -> Part:
         """Produce sequence part from notation."""
         return self.part(
             *tuple(
                 measure
-                for create_note, notation in sections
+                for create_note, notation in segments
                 for measure in interpret_notation(create_note, notation, beats)
             )
         )
@@ -311,16 +309,6 @@ class PlayMusicMode(PlayMode):
         if pitch:
             raise ValueError("Drum note cannot have pitch.")
         return rest or DrumNote(duration, accent)
-
-    @contextmanager
-    def drum_accent(self, symbol: str = ''):
-        """Set the default accent level for drum notes."""
-        try:
-            saved = self.player.sign.drum_set.accent
-            self.player.sign.drum_set.accent = symbol
-            yield
-        finally:
-            self.player.sign.drum_set.accent = saved
 
     def drum_part(self, notation: str, beats=4) -> "Part":
         """Produce drum part from notation."""
@@ -382,10 +370,3 @@ class PlayMusicMode(PlayMode):
             wait=self.player.wait,
             pace=self.pace,
         )
-
-    def prepare_parts(
-            self,
-            *parts: Part, 
-            beats: int | None = None,
-    ) -> list[Measure]:
-        return prepare_parts(*parts, light=self.light, beats=beats)
