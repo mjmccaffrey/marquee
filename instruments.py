@@ -1,13 +1,12 @@
 """Marquee Lighted Sign Project - instruments"""
 
 from abc import ABC, abstractmethod
+
 from relays import NumatoUSBRelayModule
 
 class Instrument(ABC):
     """"""
-    def __init__(
-        self, 
-    ):
+    def __init__(self):
         super().__init__()
 
     @abstractmethod
@@ -16,66 +15,56 @@ class Instrument(ABC):
 
 class ActionInstrument(Instrument):
     """"""
-    def __init__(
-        self, 
-    ):
+    def __init__(self):
         super().__init__()
 
     def play(self):
-        """"""
+        raise NotImplementedError
 
 class BellSet(Instrument):
     """"""
-    def __init__(
-        self, 
-    ):
+    def __init__(self):
         super().__init__()
         #pitch_to_relay: dict[str, int] = {
         #    p: l for l, p in enumerate(pitches)
         #}
 
-    def play(self):
+    def play(self, pitch: str):
         """"""
 
 class DrumSet(Instrument):
     """"""
-    def __init__(
-        self,
-        relays: NumatoUSBRelayModule,
-    ):
+    def __init__(self, relays: NumatoUSBRelayModule):
         super().__init__()
         self.relays = relays
         self.count = self.relays.relay_count
         self.relays.set_state_of_devices("0" * self.count)
         self.pattern = self.relays.get_state_of_devices()
         assert self.pattern == "0" * self.count
-        self.accent = ''
         self.click_next = 0
 
     def play(self, accent: str):
         """"""
-        accent_to_relay_count = {
+        accent_to_relays = {
             '': 2, '-': 6, '>': 10, '^': 16,
         }
-        accent_to_relay_count[''] = accent_to_relay_count[self.accent]
         pattern = self.pattern
-        for r in range(accent_to_relay_count[accent]):
+        for r in range(accent_to_relays[accent]):
             i = (self.click_next + r) % self.count
             pattern = (
                   pattern[ : i ]
                 + ('0' if pattern[i] == '1' else '1')
                 + pattern[ i + 1 : ]
             )
-        self.click_next = i + (1 % self.count)
+        self.click_next = (i + 1) % self.count
+        print(f"click_next: {self.click_next}")
         self.relays.set_state_of_devices(pattern)
         self.pattern = pattern
 
 class RestInstrument(Instrument):
     """"""
-    def __init__(
-        self, 
-    ):
+    def __init__(self):
         super().__init__()
 
     def play(self):
-        """"""
+        raise NotImplementedError

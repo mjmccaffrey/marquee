@@ -24,7 +24,7 @@ class Finale(PlayMusicMode):
         s.tempo = 75
         s.play(s.measure())
         # A # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        part_a = self.prepare_parts(
+        section_a = self.section(
             s.seq_part(
                 (s.seq(center_alternate), 
                     ' ♩ ♩ ♩ ♩ '),
@@ -38,7 +38,7 @@ class Finale(PlayMusicMode):
             ),
         )
         # B # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        part_b = self.prepare_parts(
+        section_b = self.section(
             s.seq_part(
                 (s.seq(rotate, pattern="0100001000", clockwise=True),
                     ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
@@ -59,21 +59,20 @@ class Finale(PlayMusicMode):
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 "
         notes_2 = " ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | " \
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "
-        part_c = self.prepare_parts(
+        section_c = self.section(
             s.drum_part(notes_1, beats=2),
         )
         # D # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        part_d = self.prepare_parts(
-            s.drum_part(notes_2),
+        section_d = self.section(
+            s.drum_part(notes_2, accent='>'),
             s.seq_part((s.seq(triplet_rhythm), notes_2)),
             beats=2,
         )
-        
-        #s.play(*part_a)
-        #s.play(*part_b)
-        #with s.drum_accent('>'):
-        #    s.play(*part_c)
-        #s.play(*part_d)
+        section_a.play()
+        section_b.play()
+        section_c.play()
+        section_d.play()
+
         s.play(s.measure(s.act('♩', s.light(ALL_OFF, DimmerParams()))))
 
         # E # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
@@ -96,7 +95,7 @@ class Finale(PlayMusicMode):
             beats=60,
             tempo=675,
         )
-        s.play(*section_e)
+        section_e.play()
 
         # F # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         section_f = s.section(
@@ -106,7 +105,7 @@ class Finale(PlayMusicMode):
             ),
             tempo=45,
         )
-        s.play(*section_f)
+        section_f.play()
 
     def intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
@@ -141,31 +140,3 @@ class Finale(PlayMusicMode):
             ),
         )
     
-    def body4(self):
-        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-
-        s = self
-        #rows = s.seq(build_rows, pattern="0", from_top=True)
-        rows = s.seq(triplet_rhythm)
-        # 1231 & 2 1231 & 2 1231 (&) 1232 1231 & 2
-        notes = "𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 |" \
-                           "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "  # | 𝄻 | 𝄻 "
-        s.play(
-            *s.prepare_parts(
-                s.drum_part(notes),
-                s.part(
-                    s.measure(
-                        s.act('♩', s.light(ALL_OFF)),
-                        s.act('♩', s.dimmer(ALL_LOW)),
-                    ),
-                ),
-                beats=2,
-            )
-        )
-        s.play(
-            *s.prepare_parts(
-                s.drum_part(notes),
-                s.seq_part((rows, notes)),
-                beats=2,
-            )
-        )

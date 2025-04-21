@@ -13,9 +13,10 @@ from definitions import (
 )
 from dimmers import TRANSITION_DEFAULT
 from music import (
-    Element, BaseNote, Rest, ActionNote, BellNote, DrumNote, Part, 
-    Measure, NoteGroup, SequenceMeasure, Sequence, 
-    interpret_notation, interpret_symbols, play
+    Element, Rest, ActionNote, BellNote, DrumNote, 
+    Part, Measure, Section, SequenceMeasure, Sequence, 
+    interpret_notation, interpret_symbols, play, 
+    Environment, set_environment
 )
 from sequence_defs import rotate_build_flip
 
@@ -206,6 +207,14 @@ class PlayMusicMode(PlayMode):
         name: str,
     ):
         super().__init__(player, name, preset_dimmers=True)
+        set_environment(
+            Environment(
+                bell_set=self.player.sign.bell_set,
+                drum_set=self.player.sign.drum_set,
+                light=self.light,
+                wait=self.player.sign.wait,
+            )
+        )
         self.notation = interpret_notation
         self.tempo = 60
 
@@ -310,20 +319,34 @@ class PlayMusicMode(PlayMode):
             raise ValueError("Drum note cannot have pitch.")
         return rest or DrumNote(duration, accent)
 
-    def drum_part(self, notation: str, beats=4) -> "Part":
+    def drum_part(self, notation: str, accent: str = '', beats=4) -> "Part":
         """Produce drum part from notation."""
         return self.part(
-            *interpret_notation(self.drum, notation, beats)
+            *interpret_notation(self.drum, notation, beats),
+            accent=accent,
         )
-
-    def part(self, *measures: Measure) -> Part:
-        """Produce Part."""
-        return Part(measures)
 
     def measure(self, *elements: Element, beats: int = 4) -> Measure:
         """Produce Measure."""
         return Measure(elements, beats=beats)
 
+    def part(self, *measures: Measure, accent: str = '') -> Part:
+        """Produce Part."""
+        return Part(measures, accent)
+
+    def section(
+        self,
+        *parts: Part,
+        beats: int = 4,
+        tempo: int = 60,
+    ):
+        return Section(
+            parts, 
+            pace=self.pace,
+            beats=beats, 
+            tempo=tempo,
+        )
+    
     def seq(
         self,
         sequence: Callable,
@@ -351,22 +374,15 @@ class PlayMusicMode(PlayMode):
         """Produce a SequenceMeasure."""
         step_duration, _, _, _ = interpret_symbols(symbols)
         return SequenceMeasure(
-            sequence, step_duration, count, special, beats, **kwargs,
+            elements=(),
+            beats=beats,
+            sequence=sequence, 
+            kwargs=kwargs,
+            step_duration=step_duration, 
+            count=count, 
+            special=special,
         )
-
-    def _play_note(self, note: BaseNote):
-        """"""
-        if isinstance(note, DrumNote):
-            self.player.sign.drum_set.play(note.accent)
-        else:
-            note.execute()
 
     def play(self, *measures: Measure):
         """"""
-        play(
-            *measures, 
-            light=self.light,
-            play_note=self._play_note, 
-            wait=self.player.wait,
-            pace=self.pace,
-        )
+        play(*measures, pace=self.pace)
