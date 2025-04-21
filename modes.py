@@ -354,7 +354,7 @@ class PlayMusicMode(PlayMode):
         **kwargs,
     ) -> Callable[[str], ActionNote | Rest]:
         """Return callable to effect each step in sequence."""
-        seq = Sequence(sequence, **kwargs)
+        seq = Sequence(sequence, kwargs)
         def func(s: str):
             return self.act(
                 s, lambda: self.light(next(seq.iter), special),
