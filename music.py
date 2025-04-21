@@ -124,7 +124,7 @@ class Part(Element):
     default_accent: str = ''
 
     def __post_init__(self):
-        if self.default_accent is not None:
+        if self.default_accent:
             self._apply_accent(self.default_accent, self.measures)
 
     @staticmethod
