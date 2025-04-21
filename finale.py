@@ -93,6 +93,7 @@ class Finale(PlayMusicMode):
         )
         # F # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s.light(ALL_ON)()
+        s.light(ALL_ON, DimmerParams())()
         section_f = s.section(
             s.seq_part(
                 (s.seq(build_rows, DimmerParams(transition_off=4), pattern='0'), 

@@ -206,7 +206,7 @@ class PlayMusicMode(PlayMode):
         player: Any,  # Player
         name: str,
     ):
-        super().__init__(player, name, preset_dimmers=True)
+        super().__init__(player, name, preset_dimmers=True, preset_relays=True)
         set_environment(
             Environment(
                 bell_set=self.player.sign.bell_set,
