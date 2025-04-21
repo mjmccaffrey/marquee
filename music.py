@@ -82,7 +82,7 @@ class DrumNote(BaseNote):
     accent: str
 
     def play(self):
-        environment.bell_set.play(self.accent)
+        environment.drum_set.play(self.accent)
 
 @dataclass
 class NoteGroup(Element):
@@ -106,7 +106,7 @@ class SequenceMeasure(Measure):
     beats: int
 
     def __post_init__(self):
-        self.seq = Sequence(self.sequence, **self.kwargs)
+        self.seq = Sequence(self.sequence, self.kwargs)
 
 @dataclass
 class Sequence(Element):
