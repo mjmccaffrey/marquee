@@ -92,9 +92,12 @@ class Finale(PlayMusicMode):
             tempo=675,
         )
         # F # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        s.light(ALL_ON)()
-        s.light(ALL_ON, DimmerParams())()
         section_f = s.section(
+            s.part(
+                s.measure(
+                    s.act('♩', s.light(ALL_ON), s.light(ALL_ON, DimmerParams()))
+                )
+            ),
             s.seq_part(
                 (s.seq(build_rows, DimmerParams(transition_off=4), pattern='0'), 
                     ' 𝄻 | 𝄻 | ♩ ♩ ♩ ♩ '),
