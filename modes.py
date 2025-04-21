@@ -212,7 +212,7 @@ class PlayMusicMode(PlayMode):
                 bell_set=self.player.sign.bell_set,
                 drum_set=self.player.sign.drum_set,
                 light=self.light,
-                wait=self.player.sign.wait,
+                wait=self.player.wait,
             )
         )
         self.notation = interpret_notation
