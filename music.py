@@ -340,7 +340,7 @@ def play(
                 duration = 0
             else:
                 assert isinstance(element, BaseNote)
-                note.play()
+                element.play()
                 duration = element.duration
             wait_dur = (duration) * pace
             environment.wait(wait_dur, time.time() - start)
