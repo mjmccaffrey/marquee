@@ -342,6 +342,5 @@ def play(
             wait_dur = (duration) * pace
             environment.wait(wait_dur, time.time() - start)
             beat += duration
-            print(beat, duration, measure.beats)
         wait_dur = max(0, measure.beats - beat) * pace
         environment.wait(wait_dur, 0)

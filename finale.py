@@ -34,9 +34,6 @@ class Finale(PlayMusicMode):
             ),
             tempo=75,
         )
-        print()
-        print(section_a)
-        print()
         # B # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         section_b = self.section(
             s.seq_part(

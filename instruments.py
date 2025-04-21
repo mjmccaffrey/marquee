@@ -57,7 +57,10 @@ class DrumSet(Instrument):
                 + pattern[ i + 1 : ]
             )
         self.click_next = (i + 1) % self.count
+        print()
+        print(f"accent: {accent}")
         print(f"click_next: {self.click_next}")
+        print()
         self.relays.set_state_of_devices(pattern)
         self.pattern = pattern
 
