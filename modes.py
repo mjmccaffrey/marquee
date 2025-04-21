@@ -216,17 +216,6 @@ class PlayMusicMode(PlayMode):
             )
         )
         self.notation = interpret_notation
-        self.tempo = 60
-
-    @property
-    def tempo(self):
-        """Return current tempo."""
-        return self._tempo
-    @tempo.setter
-    def tempo(self, value: float):
-        """Set tempo and associated values."""
-        self._tempo = value
-        self.pace = 60 / self._tempo
 
     def dimmer_seq(self, brightness: int, transition: float):
         """Return callable to effect state of specified dimmers."""
@@ -342,8 +331,7 @@ class PlayMusicMode(PlayMode):
     ):
         return Section(
             parts, 
-            pace=self.pace,
-            beats=beats, 
+            beats=beats,
             tempo=tempo,
         )
     
@@ -383,6 +371,6 @@ class PlayMusicMode(PlayMode):
             special=special,
         )
 
-    def play(self, *measures: Measure):
+    def play(self, *measures: Measure, tempo=60):
         """"""
-        play(*measures, pace=self.pace)
+        play(*measures, tempo=tempo)

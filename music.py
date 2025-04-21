@@ -140,7 +140,6 @@ class Part(Element):
 class Section(Element):
     """Musical section containing parts and meta info."""
     parts: tuple[Part, ...]
-    pace: float
     beats: int
     tempo: int
 
@@ -152,10 +151,7 @@ class Section(Element):
 
     def play(self):
         """"""
-        play(
-            *self._measures,
-            pace=self.pace,
-        )
+        play(*self._measures, tempo=self.tempo)
 
     @staticmethod
     def _apply_beats(beats, parts):
@@ -326,10 +322,11 @@ def expand_sequences(
 
 def play(
         *measures: Measure,
-        pace: float,
+        tempo: int,
     ):
     """Play a series of measures."""
     expand_sequences(measures)
+    pace = 60 / tempo
     for measure in measures:
         beat = 0
         for element in measure.elements:
