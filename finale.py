@@ -34,7 +34,9 @@ class Finale(PlayMusicMode):
             ),
             tempo=75,
         )
+        print()
         print(section_a)
+        print()
         # B # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         section_b = self.section(
             s.seq_part(
@@ -52,7 +54,6 @@ class Finale(PlayMusicMode):
             ),
             tempo=75,
         )
-        print(section_b)
         # C # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         notes_1 = "     𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | " \
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 "
@@ -60,9 +61,9 @@ class Finale(PlayMusicMode):
                            "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "
         section_c = self.section(
             s.drum_part(notes_1, beats=2),
+            beats=2,
             tempo=75,
         )
-        print(section_c)
         # D # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         section_d = self.section(
             s.drum_part(notes_2, accent='>'),
@@ -70,7 +71,6 @@ class Finale(PlayMusicMode):
             beats=2,
             tempo=75,
         )
-        print(section_d)
         # E # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s.light(ALL_ON, DimmerParams(transition_on=6))()
         rotations = 10
@@ -91,8 +91,8 @@ class Finale(PlayMusicMode):
             beats=60,
             tempo=675,
         )
-        print(section_e)
         # F # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        s.light(ALL_ON)()
         section_f = s.section(
             s.seq_part(
                 (s.seq(build_rows, DimmerParams(transition_off=4), pattern='0'), 
@@ -100,7 +100,6 @@ class Finale(PlayMusicMode):
             ),
             tempo=45,
         )
-        print(section_f)
         section_a.play()
         section_b.play()
         section_c.play()
