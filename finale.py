@@ -99,16 +99,16 @@ class Finale(PlayMusicMode):
                 )
             ),
             s.seq_part(
-                (s.seq(build_rows, DimmerParams(transition_off=4), pattern='0'), 
+                (s.seq(build_rows, DimmerParams(transition_off=3), pattern='0'), 
                     ' 𝄻 | 𝄻 | ♩ ♩ ♩ ♩ '),
             ),
-            tempo=45,
+            tempo=60,
         )
         section_a.play()
         section_b.play()
         section_c.play()
         section_d.play()
-        # section_e.play()
+        section_e.play()
         section_f.play()
 
     def intro(self):
