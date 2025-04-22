@@ -6,7 +6,7 @@ from signal import SIGUSR1  # type: ignore
 from buttons import Button
 from definitions import ALL_RELAYS, ALL_OFF, EXTRA_COUNT, SpecialParams
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
-from finale import Finale
+from demo import Demo
 from gpiozero import Button as _Button  # type: ignore
 from instruments import BellSet, DrumSet
 import modes
@@ -273,4 +273,4 @@ class Executor():
         self.add_mode(25, "rotate_reversible_2", 
             RotateReversible, pace=0.35, 
             pattern = "0" + "1" * (LIGHT_COUNT - 1))
-        self.add_mode(26, "finale", Finale)
+        self.add_mode(26, "demo", Demo)
