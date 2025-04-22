@@ -105,8 +105,9 @@ class Demo(PlayMusicMode):
         section_b.play()
         section_3_1.play()
         section_3_2.play()
-        section_finale.play()
+        # section_finale.play()
         section_dim.play()
+        sys.exit()
 
     def future_intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀

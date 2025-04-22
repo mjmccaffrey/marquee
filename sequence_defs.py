@@ -187,6 +187,7 @@ def random_flip(*, light_pattern):
     while True:
         index = next(random_gen)
         lights[index] = opposite_pattern(lights[index])
+        print(lights)
         yield lights
 
 def random_once_each() -> Iterator[list[int]]:
