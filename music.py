@@ -140,6 +140,7 @@ class Part(Element):
 class Section(Element):
     """Musical section containing parts and meta info."""
     parts: tuple[Part, ...]
+
     beats: int
     tempo: int
 
