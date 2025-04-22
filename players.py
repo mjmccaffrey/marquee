@@ -110,7 +110,8 @@ class Player:
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
         if seconds is not None:
-            seconds = seconds * self.speed_factor - elapsed
-            if seconds <= 0:
+            duration = seconds * self.speed_factor - elapsed
+            if duration <= 0:
+                print("!!!!!", seconds, elapsed, duration)
                 return
-        Button.wait(seconds)
+        Button.wait(duration)
