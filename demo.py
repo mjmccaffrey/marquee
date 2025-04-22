@@ -105,7 +105,7 @@ class Demo(PlayMusicMode):
         # F # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         section_step = s.section(
             s.drum_part(
-                ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯   𝅘𝅥𝅯> 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯   𝅘𝅥𝅯 𝅘𝅥𝅯> 𝅘𝅥𝅯 𝅘𝅥𝅯   𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 | ' * 4
+                ' 𝄿 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯   𝅘𝅥𝅯> 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯   𝄿 𝅘𝅥𝅯> 𝅘𝅥𝅯 𝅘𝅥𝅯   𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 | ' * 4
             ),
             tempo=110,
         )
