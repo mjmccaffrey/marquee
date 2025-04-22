@@ -63,6 +63,7 @@ class ActionNote(BaseNote):
     actions: tuple[Callable, ...]
 
     def play(self):
+        """"""
         for action in self.actions:
             action()
 
@@ -140,7 +141,6 @@ class Part(Element):
 class Section(Element):
     """Musical section containing parts and meta info."""
     parts: tuple[Part, ...]
-
     beats: int
     tempo: int
 
@@ -173,6 +173,7 @@ class Section(Element):
     def _prepare_parts(
             parts: tuple[Part, ...], 
     ) -> list[Measure]:
+        """"""
         #
         for part in parts:
             expand_sequences(part.measures)
@@ -329,9 +330,10 @@ def play(
     expand_sequences(measures)
     pace = 60 / tempo
     for measure in measures:
+        print()
         beat = 0
+        start = time.time()
         for element in measure.elements:
-            start = time.time()
             if isinstance(element, NoteGroup):
                 for note in element.notes:
                     note.play()
@@ -340,9 +342,12 @@ def play(
                 assert isinstance(element, BaseNote)
                 element.play()
                 duration = element.duration
-            wait_dur = (duration) * pace
-            if wait_dur:
-                environment.wait(wait_dur, time.time() - start)
+                if duration:
+                    wait_dur = (duration) * pace
+                    environment.wait(wait_dur, time.time() - start)
+                    start = time.time()
             beat += duration
-        wait_dur = max(0, measure.beats - beat) * pace
-        environment.wait(wait_dur, 0)
+        # Play implied rests at end of measure
+        wait_dur = (measure.beats - beat) * pace 
+        print(f"wait_dur: {wait_dur}")
+        environment.wait(wait_dur, time.time() - start)

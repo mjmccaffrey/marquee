@@ -9,6 +9,7 @@ marquee
             PlaySequenceMode
             PlayMusicMode
                 Instrument
+                Section
                 Part
                     notation
                     Measure

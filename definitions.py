@@ -43,10 +43,6 @@ class ActionParams(SpecialParams):
     action: Callable
 
 @dataclass
-class ClickParams(SpecialParams):
-    """"""
-
-@dataclass
 class DimmerParams(SpecialParams):
     """ Parameters for using dimmers rather than relays. """
     concurrent: bool = True
