@@ -220,6 +220,7 @@ class DimmerChannel:
             # output=output,
         )
         try:
+            start = time.time()
             self.dimmer.session.get(
                 url=command.url,
                 params=command.params,
@@ -231,6 +232,7 @@ class DimmerChannel:
         else:
             if (b := command.params.get('brightness')) is not None:
                 self.brightness = b
+            print("Set: ", time.time() - start)
         if wait:
             assert transition is not None
             print("WAIT")
