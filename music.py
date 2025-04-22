@@ -341,7 +341,8 @@ def play(
                 element.play()
                 duration = element.duration
             wait_dur = (duration) * pace
-            environment.wait(wait_dur, time.time() - start)
+            if wait_dur:
+                environment.wait(wait_dur, time.time() - start)
             beat += duration
         wait_dur = max(0, measure.beats - beat) * pace
         environment.wait(wait_dur, 0)
