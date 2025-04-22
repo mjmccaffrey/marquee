@@ -58,6 +58,7 @@ class Demo(PlayMusicMode):
             beats=2,
             tempo=75,
         )
+        print(section_3_1._measures)
         # D # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         d = (   " ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | "
                 " ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "
@@ -101,8 +102,8 @@ class Demo(PlayMusicMode):
             ),
             tempo=60,
         )
-        section_intro.play()
-        section_b.play()
+        #section_intro.play()
+        #section_b.play()
         section_3_1.play()
         section_3_2.play()
         # section_finale.play()
