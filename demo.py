@@ -52,7 +52,7 @@ class Demo(PlayMusicMode):
                        "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 "
             ),
             s.seq_part(
-                (s.seq(random_flip, DimmerParams()), 
+                (s.seq(random_flip, DimmerParams(), light_pattern='0000000000'), 
                  ' ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪'),
             ),
             beats=2,

@@ -180,8 +180,7 @@ def random_flip_start_blank(*, pattern="1"):
 
 def random_flip(*, light_pattern):
     """Random light on / off, never immediately repeating a light.
-       Starts with the lights in their current state, and flips
-       each selected light.
+       Pass in current / starting state of lights.
        This sequence does not end on its own."""
     lights = list(light_pattern)
     random_gen = _random_light_gen()
