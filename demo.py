@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - finale"""
 
+import itertools
 import sys
 
 from definitions import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
@@ -25,11 +26,23 @@ class Demo(PlayMusicMode):
                             brightness_off = 30,
                         )
                     ),
-                    ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪'
+                    '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |    '
+                    '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ | 𝄻  '
                 )
-            )
+            ),
+            s.seq_part(
+                (   
+                    s.seq(
+                        lambda: itertools.chain(all_on(), all_off()),
+                        special=DimmerParams(
+                            transition_off=2,
+                            transition_on=2,
+                        ),
+                    ),
+                    '  𝄻 |  𝄻 |  𝄻 |  𝄻 | 𝅝 | 𝅝  ',
+                )
+            ),
         )
-
         # A # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         section_intro = s.section(
             s.seq_part(
@@ -75,7 +88,6 @@ class Demo(PlayMusicMode):
             beats=2,
             tempo=75,
         )
-        print(section_3_1._measures)
         # D # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         d = (   " ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | "
                 " ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "

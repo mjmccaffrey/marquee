@@ -232,12 +232,10 @@ class DimmerChannel:
         else:
             if (b := command.params.get('brightness')) is not None:
                 self.brightness = b
-            print("Set: ", time.time() - start)
         if wait:
             assert transition is not None
             print("WAIT")
             time.sleep(transition)
-        #print("end:", time.time())
 
 @dataclass
 class _DimmerCommand:

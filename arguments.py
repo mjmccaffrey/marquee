@@ -56,7 +56,7 @@ def display_help(
     print("Usage:")
     print("  marquee.py mode [mode_index | mode_name]")
     print("                  [--brightness_factor=[0 - 1.0]]")
-    print("                  [--speed_factor=[0 - 1.0]]")
+    print("                  [--speed_factor=[0 - 5.0]]")
     print("  marquee.py pattern [--dimmer=[pattern] &| --relay=[pattern]]")
     print("                     [--derive_missing=[true|false]]")
     print("  marquee.py command [command_name]")
