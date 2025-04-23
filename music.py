@@ -30,7 +30,7 @@ class Environment:
     wait: Callable[[float, float], None]
 
 def set_environment(env: Environment):
-    """"""
+    """Called once to link to Player and Sign resources."""
     global environment
     environment = env
 
@@ -46,7 +46,7 @@ class BaseNote(Element):
 
     @abstractmethod
     def play(self):
-        """"""
+        """Play single BaseNote (abstract)."""
 
 @dataclass
 class Rest(BaseNote):
@@ -54,7 +54,7 @@ class Rest(BaseNote):
     instrument_class: ClassVar[type[Instrument]] = RestInstrument
 
     def play(self):
-        """"""
+        """Play single rest (do nothing)."""
 
 @dataclass
 class ActionNote(BaseNote):
@@ -63,7 +63,7 @@ class ActionNote(BaseNote):
     actions: tuple[Callable, ...]
 
     def play(self):
-        """"""
+        """Play single ActionNote."""
         for action in self.actions:
             action()
 
@@ -74,6 +74,7 @@ class BellNote(BaseNote):
     pitches: str
 
     def play(self):
+        """Play single BellNote."""
         environment.bell_set.play(self.pitches)
 
 @dataclass
@@ -83,6 +84,7 @@ class DrumNote(BaseNote):
     accent: str
 
     def play(self):
+        """Play single DrumNote."""
         environment.drum_set.play(self.accent)
 
 @dataclass
@@ -98,7 +100,7 @@ class Measure(Element):
     
 @dataclass
 class SequenceMeasure(Measure):
-    """Will be expanded to a Measure with notes."""
+    """Defines a measure with a sequence of light events."""
     sequence: Callable
     kwargs: dict[str, Any]
     step_duration: float
@@ -107,15 +109,17 @@ class SequenceMeasure(Measure):
     beats: int
 
     def __post_init__(self):
+        """Create Sequence component."""
         self.seq = Sequence(self.sequence, self.kwargs)
 
 @dataclass
 class Sequence(Element):
-    """"""
+    """Defines a sequence of light patterns."""
     sequence: Callable
     kwargs: dict[str, Any]
 
     def __post_init__(self):
+        """Create Sequence iterator."""
         self.iter = itertools.cycle(self.sequence(**self.kwargs))
 
 @dataclass
@@ -125,12 +129,13 @@ class Part(Element):
     default_accent: str = ''
 
     def __post_init__(self):
+        """Process measures."""
         if self.default_accent:
             self._apply_accent(self.default_accent, self.measures)
 
     @staticmethod
     def _apply_accent(accent, measures: tuple[Measure, ...]):
-        """"""
+        """Apply default accent (drums only)."""
         for measure in measures:
             for element in measure.elements:
                 assert isinstance(element, DrumNote)
@@ -145,18 +150,18 @@ class Section(Element):
     tempo: int
 
     def __post_init__(self):
-        """"""
+        """Process parts so they are ready to play."""
         if self.beats is not None:
             self._apply_beats(self.beats, self.parts)
         self._measures = self._prepare_parts(self.parts)
 
     def play(self):
-        """"""
+        """Play already-generated measures comprising Section."""
         play(*self._measures, tempo=self.tempo)
 
     @staticmethod
     def _apply_beats(beats, parts):
-        """"""
+        """Apply default # of beats to all measures in the Section."""
         for part in parts:
             for measure in part.measures:
                 measure.beats = beats
@@ -173,7 +178,9 @@ class Section(Element):
     def _prepare_parts(
             parts: tuple[Part, ...], 
     ) -> list[Measure]:
-        """"""
+        """ Expand SequenceMeasures.
+            Make all parts the same length.
+            Merge parts into single sequence of Measures."""
         #
         for part in parts:
             expand_sequences(part.measures)
@@ -349,5 +356,5 @@ def play(
             beat += duration
         # Play implied rests at end of measure
         wait_dur = (measure.beats - beat) * pace 
-        print(f"wait_dur: {wait_dur}")
+        #print(f"wait_dur: {wait_dur}")
         environment.wait(wait_dur, time.time() - start)

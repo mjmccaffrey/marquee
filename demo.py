@@ -13,6 +13,23 @@ class Demo(PlayMusicMode):
 
         s.play(s.measure(), s.measure())
 
+        # 0 # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        section_pre = s.section(
+            s.seq_part(
+                (   
+                    s.seq(
+                        rotate,
+                        special=DimmerParams(
+                            concurrent=False,
+                            brightness_on = 100,
+                            brightness_off = 30,
+                        )
+                    ),
+                    ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪'
+                )
+            )
+        )
+
         # A # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         section_intro = s.section(
             s.seq_part(
@@ -102,20 +119,12 @@ class Demo(PlayMusicMode):
             ),
             tempo=60,
         )
-        # F # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        section_step = s.section(
-            s.drum_part(
-                ' 𝄿 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯   𝅘𝅥𝅯> 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯   𝄿 𝅘𝅥𝅯> 𝅘𝅥𝅯 𝅘𝅥𝅯   𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 | ' * 4
-            ),
-            tempo=110,
-        )
-
         #section_intro.play()
         #section_b.play()
         #section_3_1.play()
         #section_3_2.play()
         # section_finale.play()
-        section_step.play()
+        section_pre.play()
         section_dim.play()
         sys.exit()
 

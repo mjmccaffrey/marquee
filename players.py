@@ -109,7 +109,9 @@ class Player:
     def wait(self, seconds: float | None, elapsed: float = 0):
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
-        if seconds is not None:
+        if seconds is None:
+            duration = None
+        else:
             duration = seconds * self.speed_factor - elapsed
             if duration <= 0:
                 print("!!!!!", seconds, elapsed, duration)
