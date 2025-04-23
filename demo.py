@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - finale"""
 
-import itertools
+from itertools import chain, cycle
 import sys
 
 from definitions import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
@@ -33,7 +33,7 @@ class Demo(PlayMusicMode):
             s.seq_part(
                 (   
                     s.seq(
-                        lambda: itertools.chain(all_on(), all_off()),
+                        lambda: chain(all_on(), all_off()),
                         special=DimmerParams(
                             transition_off=2,
                             transition_on=2,
@@ -95,7 +95,13 @@ class Demo(PlayMusicMode):
         )
         section_3_2 = s.section(
             s.drum_part(d, accent='-'),
-            s.seq_part((s.seq(triplet_rhythm), d)),
+            s.seq_part(
+                (
+                    s.seq(lambda: cycle(chain(all_on(), all_off()))), 
+                    " 𝄾 ♪ ♪ 𝄾 | 𝄾 ♪ ♪ 𝄾 | "
+                    " ♪ 𝄾 ♪ 𝄾 | 𝄾 ♪ ♪ "
+                ),
+            ),
             beats=2,
             tempo=75,
         )
