@@ -27,7 +27,7 @@ class Demo(PlayMusicMode):
                         )
                     ),
                     '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |    '
-                    '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ | 𝄻  '
+                    '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪  '
                 )
             ),
             s.seq_part(
@@ -42,6 +42,7 @@ class Demo(PlayMusicMode):
                     '  𝄻 |  𝄻 |  𝄻 |  𝄻 | 𝅝 | 𝅝  ',
                 )
             ),
+            tempo=90,
         )
         # A # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         section_intro = s.section(
@@ -131,12 +132,12 @@ class Demo(PlayMusicMode):
             ),
             tempo=60,
         )
+        section_pre.play()
         #section_intro.play()
         #section_b.play()
-        #section_3_1.play()
-        #section_3_2.play()
+        section_3_1.play()
+        section_3_2.play()
         # section_finale.play()
-        section_pre.play()
         section_dim.play()
         sys.exit()
 
