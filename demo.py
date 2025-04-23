@@ -23,7 +23,7 @@ class Demo(PlayMusicMode):
                         special=DimmerParams(
                             concurrent=False,
                             brightness_on = 100,
-                            brightness_off = 30,
+                            brightness_off = 40,
                         )
                     ),
                     '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |    '
@@ -94,7 +94,7 @@ class Demo(PlayMusicMode):
                 " ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "
         )
         section_3_2 = s.section(
-            s.drum_part(d, accent='>'),
+            s.drum_part(d, accent='-'),
             s.seq_part((s.seq(triplet_rhythm), d)),
             beats=2,
             tempo=75,

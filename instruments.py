@@ -46,7 +46,7 @@ class DrumSet(Instrument):
     def play(self, accent: str):
         """"""
         accent_to_relays = {
-            '': 2, '-': 6, '>': 8, '^': 16,
+            '': 2, '-': 4, '>': 8, '^': 16,
         }
         pattern = self.pattern
         for r in range(accent_to_relays[accent]):

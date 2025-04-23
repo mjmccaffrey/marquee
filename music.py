@@ -167,8 +167,6 @@ class Section(Element):
                 measure.beats = beats
 
 
-    #     self.player.sign.drum_set.accent = symbol
-
     #         
     # NEED THIS FOR Sections and raw measures:
     # if beat > measure.beats:
