@@ -138,8 +138,7 @@ class Part(Element):
         """Apply default accent (drums only)."""
         for measure in measures:
             for element in measure.elements:
-                assert isinstance(element, DrumNote)
-                if not element.accent:
+                if isinstance(element, DrumNote) and not element.accent:
                     element.accent = accent
 
 @dataclass
