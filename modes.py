@@ -268,6 +268,7 @@ class PlayMusicMode(PlayMode):
         #    raise ValueError("Action note cannot have pitch or accent.")
         if call_actions:
             actions = tuple(action() for action in actions)
+        print("ACT:", actions)
         return ActionNote(duration, actions)
 
     def act_part(
