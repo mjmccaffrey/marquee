@@ -87,7 +87,7 @@ class Demo(PlayMusicMode):
             #     (s.seq(random_flip, DimmerParams(concurrent=False), light_pattern='0000000000'), 
             #      ' ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪'),
             # ),
-            s.part(s.measure(s.act('♩', s.light(ALL_ON, DimmerParams()))))
+            s.part(s.measure(s.act('♩', s.light(ALL_ON, DimmerParams())))),
             beats=2,
             tempo=75,
         )
