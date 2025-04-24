@@ -80,12 +80,14 @@ class Demo(PlayMusicMode):
         section_3_1= s.section(
             s.drum_part(
                 " 𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | "
-                       "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 "
+                       "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ",
+                accent='-',
             ),
             # s.seq_part(
             #     (s.seq(random_flip, DimmerParams(concurrent=False), light_pattern='0000000000'), 
             #      ' ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪'),
             # ),
+            s.part(s.measure(s.act('♩', s.light(ALL_ON, DimmerParams()))))
             beats=2,
             tempo=75,
         )
@@ -94,7 +96,9 @@ class Demo(PlayMusicMode):
                 " ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "
         )
         section_3_2 = s.section(
-            s.drum_part(d, accent='-'),
+            s.drum_part(
+                d,
+            ),
             s.seq_part(
                 (
                     s.seq(lambda: cycle(chain(all_on(), all_off()))), 
