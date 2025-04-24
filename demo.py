@@ -89,7 +89,7 @@ class Demo(PlayMusicMode):
             # ),
             s.part(
                 s.measure(
-                    s.rest(' ♩ ♩ '),
+                    s.rest(' ♩♩ '),
                 ),
                 s.measure(
                     s.act(' ♩ ', s.light(ALL_OFF)),
