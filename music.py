@@ -249,7 +249,7 @@ class Section(Element):
 def interpret_symbols(symbols: str) -> tuple[float, str, str, bool]:
     """Return duration, pitch, accent, and rest
        from a single set of symbols. """
-    symbols.replace(' ', '')
+    symbols = symbols.replace(' ', '')
     if not symbols:
         raise ValueError("Invalid (empty) symbol.")
     elif symbols.startswith('3'):
