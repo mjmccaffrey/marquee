@@ -270,6 +270,20 @@ class PlayMusicMode(PlayMode):
             actions = tuple(action() for action in actions)
         return ActionNote(duration, actions)
 
+    def act_part(
+            self,
+            notation: str, 
+            *action_sets: tuple[Callable, ...],
+            beats=4,
+    ) -> Part:
+        """"""
+        def func(symbols: str):
+            return self.act(symbols, *next(actions))
+        actions = (action_set for action_set in action_sets)
+        return self.part(
+            *interpret_notation(func, notation, beats)
+        )
+
     def seq_part(
             self,
             *segments: tuple[Callable[[str], ActionNote | Rest], str],

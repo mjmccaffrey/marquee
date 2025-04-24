@@ -83,23 +83,29 @@ class Demo(PlayMusicMode):
                        "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ",
                 accent='-',
             ),
+            s.act_part(
+                "  𝄽 𝄽 | ♩ 𝄽 | ♩ 𝄽  ",
+                (s.light(ALL_OFF),),
+                (s.light(ALL_ON, DimmerParams()),),
+            ),
             # s.seq_part(
             #     (s.seq(random_flip, DimmerParams(concurrent=False), light_pattern='0000000000'), 
             #      ' ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪'),
             # ),
-            s.part(
-                s.measure(
-                    s.rest(' ♩♩ '),
-                ),
-                s.measure(
-                    s.act(' ♩ ', s.light(ALL_OFF)),
-                    s.rest(' ♩ '),
-                ),
-                s.measure(
-                    s.act(' ♩ ', s.light(ALL_ON, DimmerParams())),
-                    s.rest(' ♩ '),
-                ),
-            ),
+
+            # s.part(
+            #     s.measure(
+            #         s.rest(' ♩♩ '),
+            #     ),
+            #     s.measure(
+            #         s.act(' ♩ ', s.light(ALL_OFF)),
+            #         s.rest(' ♩ '),
+            #     ),
+            #     s.measure(
+            #         s.act(' ♩ ', s.light(ALL_ON, DimmerParams())),
+            #         s.rest(' ♩ '),
+            #     ),
+            # ),
             beats=2,
             tempo=75,
         )
