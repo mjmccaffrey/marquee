@@ -265,7 +265,7 @@ def interpret_symbols(symbols: str) -> tuple[float, str, str, bool]:
             s not in symbol_duration 
             for s in symbols
         ):
-            raise ValueError("Invalid symbol.")
+            raise ValueError(f"Invalid symbol in '{symbols}'.")
         if any(
             s1 in rest_duration and s2 in note_duration 
             for s1 in symbols for s2 in symbols
