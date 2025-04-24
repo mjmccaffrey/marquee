@@ -85,8 +85,8 @@ class Demo(PlayMusicMode):
             ),
             s.act_part(
                 "  𝄽 𝄽 | ♩ 𝄽 | ♩ 𝄽  ",
-                (s.light(ALL_OFF),),
-                (s.light(ALL_ON, DimmerParams()),),
+                s.light(ALL_OFF),
+                s.light(ALL_ON, DimmerParams()),
             ),
             # s.seq_part(
             #     (s.seq(random_flip, DimmerParams(concurrent=False), light_pattern='0000000000'), 

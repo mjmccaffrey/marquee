@@ -268,20 +268,18 @@ class PlayMusicMode(PlayMode):
         #    raise ValueError("Action note cannot have pitch or accent.")
         if call_actions:
             actions = tuple(action() for action in actions)
-        print("ACT:", duration, pitch, accent, rest, actions)
         return ActionNote(duration, actions)
 
     def act_part(
             self,
             notation: str, 
-            *action_sets: tuple[Callable, ...],
+            *actions: Callable,
             beats=4,
     ) -> Part:
         """"""
-        print("ACT PART", len(action_sets))
         def func(symbols: str):
-            return self.act(symbols, *next(actions))
-        actions = (action_set for action_set in action_sets)
+            return self.act(symbols, lambda: next(acts), call_actions=True)
+        acts = iter(actions)
         return self.part(
             *interpret_notation(func, notation, beats)
         )
