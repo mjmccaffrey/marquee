@@ -34,3 +34,30 @@ def test_arguments_light_pattern_invalid_char():
     with pytest.raises(ValueError, match="light pattern"):
         arguments.validate_light_pattern("2222222222")
 
+def test_validate_brightness_factor_invalid():
+    with pytest.raises(ValueError, match="brightness factor"):
+        arguments.validate_brightness_factor('q')
+
+def test_validate_brightness_factor_negative():
+    with pytest.raises(ValueError, match="brightness factor"):
+        arguments.validate_brightness_factor('-1')
+
+def test_validate_brightness_factor_too_large():
+    with pytest.raises(ValueError, match="brightness factor"):
+        arguments.validate_brightness_factor('1.0001')
+
+def test_validate_speed_factor_invalid():
+    with pytest.raises(ValueError, match="speed factor"):
+        arguments.validate_speed_factor('q')
+
+def test_validate_speed_factor_zero():
+    with pytest.raises(ValueError, match="speed factor"):
+        arguments.validate_speed_factor('0')
+
+def test_validate_speed_factor_negative():
+    with pytest.raises(ValueError, match="speed factor"):
+        arguments.validate_speed_factor('-1')
+
+def test_validate_speed_factor_too_large():
+    with pytest.raises(ValueError, match="speed factor"):
+        arguments.validate_speed_factor('5.0001')

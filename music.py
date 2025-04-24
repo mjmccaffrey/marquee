@@ -166,12 +166,6 @@ class Section(Element):
             for measure in part.measures:
                 measure.beats = beats
 
-
-    #         
-    # NEED THIS FOR Sections and raw measures:
-    # if beat > measure.beats:
-    #             raise ValueError("Too many actual beats in measure.")
-
     @staticmethod
     def _prepare_parts(
             parts: tuple[Part, ...], 
@@ -335,7 +329,6 @@ def play(
     expand_sequences(measures)
     pace = 60 / tempo
     for measure in measures:
-        print()
         beat = 0
         start = time.time()
         for element in measure.elements:
@@ -352,6 +345,8 @@ def play(
                     environment.wait(wait_dur, time.time() - start)
                     start = time.time()
             beat += duration
+            if beat > measure.beats:
+                raise ValueError("Too many actual beats in measure.")
         # Play implied rests at end of measure
         wait_dur = (measure.beats - beat) * pace 
         #print(f"wait_dur: {wait_dur}")
