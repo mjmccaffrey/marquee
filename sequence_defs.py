@@ -17,10 +17,14 @@ def all_off():
     """All lights off."""
     yield ALL_OFF
 
-def blink_all():
+def blink_all(on_first=True):
     """All lights on and then off."""
-    yield next(all_on())
-    yield next(all_off())
+    if on_first:
+        yield next(all_on())
+        yield next(all_off())
+    else:
+        yield next(all_off())
+        yield next(all_on())
 
 def even_on():
     """Even-numbered lights on; others off."""

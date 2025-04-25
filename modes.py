@@ -215,7 +215,6 @@ class PlayMusicMode(PlayMode):
                 wait=self.player.wait,
             )
         )
-        self.notation = interpret_notation
 
     def dimmer_seq(self, brightness: int, transition: float):
         """Return callable to effect state of specified dimmers."""
@@ -258,7 +257,7 @@ class PlayMusicMode(PlayMode):
             raise ValueError("Rest cannot have pitch or accent.")
         return Rest(duration)
 
-    def act(self, symbols: str, *actions: Callable, call_actions: bool = False) -> ActionNote | Rest:
+    def act(self, symbols: str, *actions: Callable, pre_call_actions: bool = False) -> ActionNote | Rest:
         """Validate symbols and return ActionNote or Rest."""
         duration, pitch, accent, rest = interpret_symbols(symbols)
         if rest:
@@ -266,7 +265,7 @@ class PlayMusicMode(PlayMode):
         if pitch or accent:
             pass
         #    raise ValueError("Action note cannot have pitch or accent.")
-        if call_actions:
+        if pre_call_actions:
             actions = tuple(action() for action in actions)
         return ActionNote(duration, actions)
 
@@ -278,7 +277,7 @@ class PlayMusicMode(PlayMode):
     ) -> Part:
         """"""
         def func(symbols: str):
-            return self.act(symbols, lambda: next(acts), call_actions=True)
+            return self.act(symbols, lambda: next(acts), pre_call_actions=True)
         acts = iter(actions)
         return self.part(
             *interpret_notation(func, notation, beats)
@@ -360,7 +359,7 @@ class PlayMusicMode(PlayMode):
         def func(s: str):
             return self.act(
                 s, lambda: self.light(next(seq.iter), special),
-                call_actions=True,
+                pre_call_actions=True,
             )
         return func
     

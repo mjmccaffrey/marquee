@@ -1,6 +1,5 @@
 """Marquee Lighted Sign Project - finale"""
 
-from itertools import chain, cycle
 import sys
 
 from definitions import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
@@ -33,11 +32,12 @@ class Demo(PlayMusicMode):
             s.seq_part(
                 (   
                     s.seq(
-                        lambda: chain(all_on(), all_off()),
+                        blink_all,
                         special=DimmerParams(
                             transition_off=2,
                             transition_on=2,
                         ),
+                        on_first=False,
                     ),
                     '  𝄻 |  𝄻 |  𝄻 |  𝄻 | 𝅝 | 𝅝  ',
                 )
@@ -92,40 +92,25 @@ class Demo(PlayMusicMode):
             #     (s.seq(random_flip, DimmerParams(concurrent=False), light_pattern='0000000000'), 
             #      ' ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪'),
             # ),
-
-            # s.part(
-            #     s.measure(
-            #         s.rest(' ♩♩ '),
-            #     ),
-            #     s.measure(
-            #         s.act(' ♩ ', s.light(ALL_OFF)),
-            #         s.rest(' ♩ '),
-            #     ),
-            #     s.measure(
-            #         s.act(' ♩ ', s.light(ALL_ON, DimmerParams())),
-            #         s.rest(' ♩ '),
-            #     ),
-            # ),
             beats=2,
-            tempo=75,
+            tempo=90,
         )
         # D # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        d = (   " ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | "
-                " ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "
-        )
         section_3_2 = s.section(
             s.drum_part(
-                d,
+                " ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | "
+                " ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "
             ),
             s.seq_part(
                 (
-                    s.seq(lambda: cycle(chain(all_on(), all_off()))), 
+                    s.seq(blink_alternate),
+                    # s.seq(lambda: cycle(chain(all_on(), all_off()))), 
                     " 𝄾 ♪ ♪ 𝄾 | 𝄾 ♪ ♪ 𝄾 | "
                     " ♪ 𝄾 ♪ 𝄾 | 𝄾 ♪ ♪ "
                 ),
             ),
             beats=2,
-            tempo=75,
+            tempo=90,
         )
         # E # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s.light(ALL_ON, DimmerParams(transition_on=6))()
