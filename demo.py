@@ -42,7 +42,7 @@ class Demo(PlayMusicMode):
                     '  𝄻 |  𝄻 |  𝄻 |  𝄻 | 𝅝 | 𝅝  ',
                 )
             ),
-            tempo=90,
+            tempo=80,
         )
         # A # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         section_intro = s.section(
@@ -93,7 +93,7 @@ class Demo(PlayMusicMode):
             #      ' ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪'),
             # ),
             beats=2,
-            tempo=90,
+            tempo=80,
         )
         # D # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         section_3_2 = s.section(
@@ -110,7 +110,7 @@ class Demo(PlayMusicMode):
                 ),
             ),
             beats=2,
-            tempo=90,
+            tempo=80,
         )
         # E # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s.light(ALL_ON, DimmerParams(transition_on=6))()
