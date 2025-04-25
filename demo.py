@@ -52,7 +52,7 @@ class Demo(PlayMusicMode):
                         ),
                         on_first=True,
                     ),
-                    '  𝄻 |  𝄻 |  𝄻 |  𝄻 | 𝅝 | 𝅝  ',
+                    '  𝄻 |  𝄻 |  𝄻 |  𝄻 | 𝅝 | 𝄻  ',
                 )
             ),
             tempo=90,
