@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - finale"""
+"""Marquee Lighted Sign Project - demo"""
 
 import sys
 
@@ -9,12 +9,25 @@ from sequence_defs import *
 class Demo(PlayMusicMode):
     """"""
 
-    def execute(s):  # type: ignore
+    def execute(self):
+        """"""
+        sections = [
+            self.pre(),
+            self.intro(),
+            self.rotate(),
+            self.triplett_a(),
+            self.triplett_b(),
+            self.rotate_fast(),
+            self.dim(),
+        ]
+        # s.play(s.measure(), s.measure())
+        for section in sections:
+            section.play()
+        sys.exit()
 
-        s.play(s.measure(), s.measure())
-
-        # 0 # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        section_pre = s.section(
+    def pre(s):  # type: ignore
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        return s.section(
             s.seq_part(
                 (   
                     s.seq(
@@ -44,8 +57,10 @@ class Demo(PlayMusicMode):
             ),
             tempo=80,
         )
-        # A # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        section_intro = s.section(
+
+    def intro(s):  # type: ignore
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        return s.section(
             s.seq_part(
                 (s.seq(center_alternate), 
                     ' ♩ ♩ ♩ ♩ '),
@@ -59,8 +74,10 @@ class Demo(PlayMusicMode):
             ),
             tempo=75,
         )
-        # B # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        section_b = s.section(
+    
+    def rotate(s):  # type: ignore
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        return s.section(
             s.seq_part(
                 (s.seq(rotate, pattern="0100001000", clockwise=True),
                     ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
@@ -76,8 +93,10 @@ class Demo(PlayMusicMode):
             ),
             tempo=75,
         )
-        # C # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        section_3_1= s.section(
+    
+    def triplett_a(s):  # type: ignore
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        return s.section(
             s.drum_part(
                 " 𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | "
                        "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ",
@@ -95,8 +114,10 @@ class Demo(PlayMusicMode):
             beats=2,
             tempo=80,
         )
-        # D # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        section_3_2 = s.section(
+
+    def triplett_b(s):  # type: ignore
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        return s.section(
             s.drum_part(
                 " ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | "
                 " ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "
@@ -112,7 +133,9 @@ class Demo(PlayMusicMode):
             beats=2,
             tempo=80,
         )
-        # E # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+    
+    def rotate_fast(s):  # type: ignore
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s.light(ALL_ON, DimmerParams(transition_on=6))()
         rotations = 10
         pattern = [
@@ -132,8 +155,10 @@ class Demo(PlayMusicMode):
             beats=60,
             tempo=675,
         )
-        # F # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        section_dim = s.section(
+
+    def dim(s):  # type: ignore
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        return s.section(
             s.part(
                 s.measure(
                     s.act('♩', s.light(ALL_ON), s.light(ALL_ON, DimmerParams()))
@@ -145,14 +170,6 @@ class Demo(PlayMusicMode):
             ),
             tempo=60,
         )
-        section_pre.play()
-        #section_intro.play()
-        #section_b.play()
-        section_3_1.play()
-        section_3_2.play()
-        # section_finale.play()
-        section_dim.play()
-        sys.exit()
 
     def future_intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
