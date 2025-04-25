@@ -13,7 +13,7 @@ class Demo(PlayMusicMode):
         """"""
         sections = [
             self.pre(),
-            self.intro(),
+            self.alternate(),
             self.rotate(),
             self.triplett_a(),
             self.triplett_b(),
@@ -50,15 +50,15 @@ class Demo(PlayMusicMode):
                             transition_off=2,
                             transition_on=2,
                         ),
-                        on_first=False,
+                        on_first=True,
                     ),
                     '  𝄻 |  𝄻 |  𝄻 |  𝄻 | 𝅝 | 𝅝  ',
                 )
             ),
-            tempo=80,
+            tempo=90,
         )
 
-    def intro(s):  # type: ignore
+    def alternate(s):  # type: ignore
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return s.section(
             s.seq_part(
@@ -124,7 +124,7 @@ class Demo(PlayMusicMode):
             ),
             s.seq_part(
                 (
-                    s.seq(blink_alternate),
+                    s.seq(blink_all, on_first=False),
                     # s.seq(lambda: cycle(chain(all_on(), all_off()))), 
                     " 𝄾 ♪ ♪ 𝄾 | 𝄾 ♪ ♪ 𝄾 | "
                     " ♪ 𝄾 ♪ 𝄾 | 𝄾 ♪ ♪ "
@@ -143,7 +143,7 @@ class Demo(PlayMusicMode):
                 for p in rotate(
                     pattern="0111111111", clockwise=True)
         ] +                ["1111111111"]
-        section_finale = s.section(
+        return s.section(
             s.part(
                 s.seq_measure(
                     '♪', rotations * 10 + 1, lambda: iter(pattern), 
