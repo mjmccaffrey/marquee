@@ -448,15 +448,15 @@ def section(
     )
 
 def sequence(
-    sequence: Callable,
+    seq: Callable,
     special: SpecialParams | None = None,
     **kwargs,
 ) -> Callable[[str], ActionNote | Rest]:
     """Return callable to effect each step in sequence."""
-    seq= Sequence(sequence, kwargs)
+    sequence_obj = Sequence(seq, kwargs)
     def func(s: str):
         return act(
-            s, lambda: environment.light(next(seq.iter), special),
+            s, lambda: environment.light(next(sequence_obj.iter), special),
             pre_call_actions=True,
         )
     return func
