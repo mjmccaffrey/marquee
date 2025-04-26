@@ -139,23 +139,23 @@ class Demo(PlayMusicMode):
     
     def rotate_fast(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        light(ALL_ON, DimmerParams(transition_on=6))()
+        # light(ALL_ON, DimmerParams(transition_on=6))()
         rotations = 11
         pattern = [
             p for _ in range(rotations)
-                for p in rotate(
-                    pattern="0111111111", clockwise=True)
+                for p in rotate_build_flip(count = rotations * 10)
+                    # pattern="0111111111", clockwise=True)
         ] +                ["1111111111"]
         return section(
             part(
                 sequence_measure(
-                    '♪', rotations * 10 + 1, lambda: iter(pattern), 
+                    '♩', rotations * 10 + 1, lambda: iter(pattern), 
                 ),
             ),
             drum_part(
-                ' ♪^ 𝄾 𝄾 𝄾 𝄾 ♪^ 𝄾 𝄾 𝄾 𝄾 ' * rotations + ' ♪^ '
+                ' ♩^ ♩ ♩ ♩ ♩ ♩^ ♩ ♩ ♩ ♩ ' * rotations + ' ♩^ '
             ),
-            beats=111,
+            beats=rotations * 10 + 1,
             tempo=675,
         )
 
