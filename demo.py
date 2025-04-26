@@ -17,9 +17,9 @@ class Demo(PlayMusicMode):
         """"""
         sections = [
             self.pre(),
-            self.alternate(),
-            self.rotate(),
-            self.triplett_a(),
+            #self.alternate(),
+            #self.rotate(),
+            #self.triplett_a(),
             self.triplett_b(),
             self.rotate_fast(),
             self.dim(),
@@ -140,12 +140,11 @@ class Demo(PlayMusicMode):
     def rotate_fast(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         # light(ALL_ON, DimmerParams(transition_on=6))()
-        rotations = 11
+        rotations = 5
         pattern = [
-            p for _ in range(rotations)
-                for p in rotate_build_flip(count = rotations * 10 - 1)
-                    # pattern="0111111111", clockwise=True)
-        ] +                ["1111111111"]
+            p
+            for p in rotate_build_flip(count = rotations * 10)
+        ] + ["1111111111"]
         return section(
             part(
                 sequence_measure(
@@ -156,7 +155,7 @@ class Demo(PlayMusicMode):
                 ' ♩^ ♩ ♩ ♩ ♩ ♩^ ♩ ♩ ♩ ♩ ' * rotations + ' ♩^ '
             ),
             beats=rotations * 10 + 1,
-            tempo=675,
+            tempo=300,  # 675,
         )
 
     def dim(self):
