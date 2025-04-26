@@ -5,7 +5,7 @@ import sys
 from definitions import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
 from modes import PlayMusicMode
 from music import (
-    act, act_part, drum_part, measure, part, play, 
+    act, act_part, dimmer, drum_part, light, measure, part, play, 
     rest, section, sequence, sequence_measure, sequence_part
 )
 from sequence_defs import *
@@ -107,8 +107,8 @@ class Demo(PlayMusicMode):
             ),
             act_part(
                 "  𝄽 𝄽 | ♩ 𝄽 | ♩ 𝄽  ",
-                self.light(ALL_OFF),
-                self.light(ALL_ON, DimmerParams()),
+                light(ALL_OFF),
+                light(ALL_ON, DimmerParams()),
             ),
             # sequence_part(
             #     (sequence(random_flip, DimmerParams(concurrent=False), light_pattern='0000000000'), 
@@ -139,7 +139,7 @@ class Demo(PlayMusicMode):
     
     def rotate_fast(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        self.light(ALL_ON, DimmerParams(transition_on=6))()
+        light(ALL_ON, DimmerParams(transition_on=6))()
         rotations = 10
         pattern = [
             p for _ in range(rotations)
@@ -164,7 +164,7 @@ class Demo(PlayMusicMode):
         return section(
             part(
                 measure(
-                    act('♩', self.light(ALL_ON), self.light(ALL_ON, DimmerParams()))
+                    act('♩', light(ALL_ON), light(ALL_ON, DimmerParams()))
                 )
             ),
             sequence_part(
@@ -176,32 +176,31 @@ class Demo(PlayMusicMode):
 
     def future_intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        s = self
         play(
             measure(
-                act('♩', self.light(ALL_OFF)),
-                act('♩', self.dimmer(ALL_HIGH)),
+                act('♩', light(ALL_OFF)),
+                act('♩', dimmer(ALL_HIGH)),
                 rest('𝅗𝅥'),
             ),
             measure(
-                act('♩', self.light("0100000000")),
+                act('♩', light("0100000000")),
             ),
             measure(
-                act('♩', self.light("0000000000")),
+                act('♩', light("0000000000")),
             ),
             measure(
-                act('♩', self.light("1110001000")),
+                act('♩', light("1110001000")),
                 rest('♩𝅘𝅥𝅯'),
-                act('♩', self.light("0000000000")),
-                act('♩', self.dimmer(ALL_LOW)),
+                act('♩', light("0000000000")),
+                act('♩', dimmer(ALL_LOW)),
             ),
             measure(
                 rest('♩'),
-                act('♩', self.light(ALL_ON)),
+                act('♩', light(ALL_ON)),
             ),
             sequence_measure(
                 '♩', LIGHT_COUNT, random_once_each, 
-                ActionParams(action=self.dimmer_seq(100, 2)),
+                ActionParams(action=self.dimmer_sequence(100, 2)),
                 beats=16,
             ),
             tempo = 90,

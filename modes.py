@@ -211,21 +211,25 @@ class PlayMusicMode(PlayMode):
             Environment(
                 bell_set=self.player.sign.bell_set,
                 drum_set=self.player.sign.drum_set,
+                dimmer=self.dimmer,
                 light=self.light,
                 wait=self.player.wait,
             )
         )
 
-    def dimmer_seq(self, brightness: int, transition: float):
+    def dimmer_sequence(self, brightness: int, transition: float) -> Callable:
         """Return callable to effect state of specified dimmers."""
-        return lambda lights: self.player.sign.execute_dimmer_commands(
-            [
-                (self.player.sign.dimmer_channels[l], brightness, transition)
+        def func(lights: list[int]):
+            self.player.sign.execute_dimmer_commands([
+                (   self.player.sign.dimmer_channels[l], 
+                    brightness, 
+                    transition,
+                )
                 for l in lights
-            ]
-        )
+            ])
+        return func
 
-    def dimmer(self, pattern: str):
+    def dimmer(self, pattern: str) -> Callable:
         """Return callable to effect dimmer pattern."""
         return lambda: self.player.sign.set_dimmers(pattern)
 

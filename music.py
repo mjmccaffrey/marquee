@@ -26,6 +26,7 @@ symbol_duration = note_duration | rest_duration
 class Environment:
     bell_set: BellSet
     drum_set: DrumSet
+    dimmer: Callable[[str], Callable]
     light: Callable[[Any, SpecialParams | None], Callable]
     wait: Callable[[float, float], None]
 
@@ -480,3 +481,14 @@ def sequence_measure(
         count=count, 
         special=special,
     )
+
+def dimmer(pattern: str) -> Callable:
+    """"""
+    return environment.dimmer(pattern)
+
+def light(
+    pattern: Any,
+    special: SpecialParams | None = None,
+) -> Callable:
+    """"""
+    return environment.light(pattern, special)
