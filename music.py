@@ -200,7 +200,7 @@ class Section(Element):
         elements_in = [iter(m.elements) for m in measures]
         elements_out: list[Element] = []
         beat_next: list[float | None] = [0 for m in measures]
-        beat, next_beat, rest = 0.0, 0.0, 0.0
+        beat, next_beat, rest_dur = 0.0, 0.0, 0.0
         while any(bn is not None for bn in beat_next):
             # Get concurrent notes
             beat = next_beat
@@ -218,8 +218,8 @@ class Section(Element):
                             element.duration = 0
                             concurrent_notes.append(element)
             if concurrent_notes and rest:
-                out.append(Rest(rest))
-                rest = 0.0
+                out.append(Rest(rest_dur))
+                rest_dur = 0.0
             # Group notes if necessary
             if len(concurrent_notes) > 1:
                 out.append(NoteGroup(tuple(concurrent_notes)))
@@ -231,7 +231,7 @@ class Section(Element):
                 default=beats
             )
             # Add a rest
-            rest += next_beat - beat
+            rest_dur += next_beat - beat
             # Add to output
             elements_out.extend(out)
             # print(f"concurrent notes: {concurrent_notes}")
@@ -242,24 +242,24 @@ class Section(Element):
             # print(f"elements_out: {elements_out}")
             # print(f"rest: {rest}")
         if rest:
-            elements_out.append(Rest(rest))
+            elements_out.append(Rest(rest_dur))
         # print(f"FINAL elements_out: {elements_out}")
         return Measure(tuple(elements_out), beats=beats)
 
 def interpret_symbols(symbols: str) -> tuple[float, str, str, bool]:
-    """Return duration, pitch, accent, and rest
+    """Return duration, pitch, accent, and is_rest
        from a single set of symbols. """
     symbols = symbols.replace(' ', '')
     if not symbols:
         raise ValueError("Invalid (empty) symbol.")
     elif symbols.startswith('3'):
-        duration, pitch, accent, rest = interpret_symbols(symbols[1:])
+        duration, pitch, accent, is_rest = interpret_symbols(symbols[1:])
         duration *= 2/3
     elif symbols[-1] in accent_symbols:
-        duration, pitch, accent, rest = interpret_symbols(symbols[:-1])
+        duration, pitch, accent, is_rest = interpret_symbols(symbols[:-1])
         accent = symbols[-1]
     elif symbols[-1] in pitch_symbols:
-        duration, pitch, accent, rest = interpret_symbols(symbols[:-1])
+        duration, pitch, accent, is_rest = interpret_symbols(symbols[:-1])
         pitch += symbols[-1]
     else:
         if any(
@@ -272,14 +272,14 @@ def interpret_symbols(symbols: str) -> tuple[float, str, str, bool]:
             for s1 in symbols for s2 in symbols
         ):
             raise ValueError("Cannot mix note and rest symbols.")
-        rest: bool = symbols[0] in rest_duration
+        is_rest: bool = symbols[0] in rest_duration
         duration = sum(
-            (rest_duration if rest else note_duration)[s]
+            (rest_duration if is_rest else note_duration)[s]
             for s in symbols
         )
         pitch, accent = "", ""
-        #print(symbols, duration, pitch, accent, rest)
-    return duration, pitch, accent, rest
+        #print(symbols, duration, pitch, accent, is_rest)
+    return duration, pitch, accent, is_rest
 
 def interpret_notation(
     create_note: Callable[[str], BaseNote],
@@ -313,7 +313,7 @@ def expand_sequences(
                 duration=measure.step_duration,
                 actions=(
                     environment.light(
-                        next(measure.seq.iter),
+                        next(measure.sequence.iter),
                         measure.special,
                     ),
                 )
@@ -324,7 +324,7 @@ def expand_sequences(
 def play(
         *measures: Measure,
         tempo: int,
-    ):
+):
     """Play a series of measures."""
     expand_sequences(measures)
     pace = 60 / tempo
@@ -351,3 +351,132 @@ def play(
         wait_dur = (measure.beats - beat) * pace 
         #print(f"wait_dur: {wait_dur}")
         environment.wait(wait_dur, time.time() - start)
+
+def rest(symbols: str) -> Rest:
+    """Validate symbols and return Rest."""
+    duration, pitch, accent, is_rest = interpret_symbols(symbols)
+    if pitch or accent:
+        raise ValueError("Rest cannot have pitch or accent.")
+    return Rest(duration)
+
+def act(symbols: str, *actions: Callable, pre_call_actions: bool = False) -> ActionNote | Rest:
+    """Validate symbols and return ActionNote or Rest."""
+    duration, pitch, accent, is_rest = interpret_symbols(symbols)
+    if is_rest:
+        return rest(symbols)
+    if pitch or accent:
+        # raise ValueError("Action note cannot have pitch or accent.")
+        pass
+    if pre_call_actions:
+        actions = tuple(action() for action in actions)
+    return ActionNote(duration, actions)
+
+def act_part(
+        notation: str, 
+        *actions: Callable,
+        beats=4,
+) -> Part:
+    """"""
+    def func(symbols: str):
+        return act(symbols, lambda: next(acts), pre_call_actions=True)
+    acts = iter(actions)
+    return part(
+        *interpret_notation(func, notation, beats)
+    )
+
+def sequence_part(
+        *segments: tuple[Callable[[str], ActionNote | Rest], str],
+        beats=4
+) -> Part:
+    """Produce sequence part from notation."""
+    return part(
+        *tuple(
+            measure
+            for create_note, notation in segments
+            for measure in interpret_notation(create_note, notation, beats)
+        )
+    )
+
+def bell(symbols: str) -> BellNote | Rest:
+    """Validate symbols and return BellNote or Rest."""
+    duration, pitch, accent, is_rest = interpret_symbols(symbols)
+    if is_rest:
+        return rest(symbols)
+    if accent:
+        raise ValueError("Bell note cannot have accent.")
+    return BellNote(duration, pitch)
+
+def bell_part(notation: str, beats=4) -> Part:
+    """Produce bell part from notation."""
+    return part(
+        *interpret_notation(bell, notation, beats)
+    )
+
+def drum(symbols: str) -> DrumNote | Rest:
+    """Validate symbols and return DrumNote or Rest."""
+    duration, pitch, accent, is_rest = interpret_symbols(symbols)
+    if is_rest:
+        return rest(symbols)
+    if pitch:
+        raise ValueError("Drum note cannot have pitch.")
+    return DrumNote(duration, accent)
+
+def drum_part(notation: str, accent: str = '', beats=4) -> "Part":
+    """Produce drum part from notation."""
+    return part(
+        *interpret_notation(drum, notation, beats),
+        accent=accent,
+    )
+
+def measure(*elements: Element, beats: int = 4) -> Measure:
+    """Produce Measure."""
+    return Measure(elements, beats=beats)
+
+def part(*measures: Measure, accent: str = '') -> Part:
+    """Produce Part."""
+    return Part(measures, accent)
+
+def section(
+    *parts: Part,
+    beats: int = 4,
+    tempo: int = 60,
+):
+    return Section(
+        parts, 
+        beats=beats,
+        tempo=tempo,
+    )
+
+def sequence(
+    sequence: Callable,
+    special: SpecialParams | None = None,
+    **kwargs,
+) -> Callable[[str], ActionNote | Rest]:
+    """Return callable to effect each step in sequence."""
+    seq= Sequence(sequence, kwargs)
+    def func(s: str):
+        return act(
+            s, lambda: environment.light(next(seq.iter), special),
+            pre_call_actions=True,
+        )
+    return func
+
+def sequence_measure(
+    symbols: str,
+    count: int,
+    sequence: Callable,
+    special: SpecialParams | None = None,
+    beats: int = 4,
+    **kwargs,
+) -> SequenceMeasure:
+    """Produce a SequenceMeasure."""
+    step_duration, _, _, _ = interpret_symbols(symbols)
+    return SequenceMeasure(
+        elements=(),
+        beats=beats,
+        sequence=sequence, 
+        kwargs=kwargs,
+        step_duration=step_duration, 
+        count=count, 
+        special=special,
+    )

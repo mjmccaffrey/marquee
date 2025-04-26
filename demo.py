@@ -4,6 +4,10 @@ import sys
 
 from definitions import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
 from modes import PlayMusicMode
+from music import (
+    act, act_part, drum_part, measure, part, play, 
+    rest, section, sequence, sequence_measure, sequence_part
+)
 from sequence_defs import *
 
 class Demo(PlayMusicMode):
@@ -20,17 +24,16 @@ class Demo(PlayMusicMode):
             self.rotate_fast(),
             self.dim(),
         ]
-        # s.play(s.measure(), s.measure())
         for section in sections:
             section.play()
         sys.exit()
 
-    def pre(s):  # type: ignore
+    def pre(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        return s.section(
-            s.seq_part(
+        return section(
+            sequence_part(
                 (   
-                    s.seq(
+                    sequence(
                         rotate,
                         special=DimmerParams(
                             concurrent=False,
@@ -42,9 +45,9 @@ class Demo(PlayMusicMode):
                     '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪  '
                 )
             ),
-            s.seq_part(
+            sequence_part(
                 (   
-                    s.seq(
+                    sequence(
                         blink_all,
                         special=DimmerParams(
                             transition_off=2,
@@ -58,74 +61,74 @@ class Demo(PlayMusicMode):
             tempo=90,
         )
 
-    def alternate(s):  # type: ignore
+    def alternate(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        return s.section(
-            s.seq_part(
-                (s.seq(center_alternate), 
+        return section(
+            sequence_part(
+                (sequence(center_alternate), 
                     ' ♩ ♩ ♩ ♩ '),
-                (s.seq(blink_alternate), 
+                (sequence(blink_alternate), 
                     ' ♩ ♩ ♩ ♩ '),
-                (s.seq(blink_alternate),
+                (sequence(blink_alternate),
                     ' ♩ '    ),
             ),
-            s.drum_part(
+            drum_part(
                     '  𝄻  |  𝄻  |  𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰-  '
             ),
             tempo=75,
         )
     
-    def rotate(s):  # type: ignore
+    def rotate(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        return s.section(
-            s.seq_part(
-                (s.seq(rotate, pattern="0100001000", clockwise=True),
+        return section(
+            sequence_part(
+                (sequence(rotate, pattern="0100001000", clockwise=True),
                     ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
-                (s.seq(rotate, pattern="0000100001", clockwise=False),
+                (sequence(rotate, pattern="0000100001", clockwise=False),
                     ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
-                (s.seq(build_rows, pattern='1', from_top=True),
+                (sequence(build_rows, pattern='1', from_top=True),
                     ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
-                (s.seq(build_rows, pattern='1', from_top=False),
+                (sequence(build_rows, pattern='1', from_top=False),
                     ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
             ),
-            s.drum_part(
+            drum_part(
                 '  𝄻  |  𝄻  |  ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^  |  𝅘𝅥𝅰^  '
             ),
             tempo=75,
         )
     
-    def triplett_a(s):  # type: ignore
+    def triplett_a(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        return s.section(
-            s.drum_part(
+        return section(
+            drum_part(
                 " 𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | "
                        "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ",
                 accent='-',
             ),
-            s.act_part(
+            act_part(
                 "  𝄽 𝄽 | ♩ 𝄽 | ♩ 𝄽  ",
-                s.light(ALL_OFF),
-                s.light(ALL_ON, DimmerParams()),
+                self.light(ALL_OFF),
+                self.light(ALL_ON, DimmerParams()),
             ),
-            # s.seq_part(
-            #     (s.seq(random_flip, DimmerParams(concurrent=False), light_pattern='0000000000'), 
+            # sequence_part(
+            #     (sequence(random_flip, DimmerParams(concurrent=False), light_pattern='0000000000'), 
             #      ' ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪'),
             # ),
             beats=2,
             tempo=80,
         )
 
-    def triplett_b(s):  # type: ignore
+    def triplett_b(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        return s.section(
-            s.drum_part(
+        return section(
+            drum_part(
                 " ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | "
-                " ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ "
+                " ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ ",
+                accent='-',
             ),
-            s.seq_part(
+            sequence_part(
                 (
-                    s.seq(blink_all, on_first=False),
-                    # s.seq(lambda: cycle(chain(all_on(), all_off()))), 
+                    sequence(blink_all, on_first=False),
                     " 𝄾 ♪ ♪ 𝄾 | 𝄾 ♪ ♪ 𝄾 | "
                     " ♪ 𝄾 ♪ 𝄾 | 𝄾 ♪ ♪ "
                 ),
@@ -134,38 +137,38 @@ class Demo(PlayMusicMode):
             tempo=80,
         )
     
-    def rotate_fast(s):  # type: ignore
+    def rotate_fast(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        s.light(ALL_ON, DimmerParams(transition_on=6))()
+        self.light(ALL_ON, DimmerParams(transition_on=6))()
         rotations = 10
         pattern = [
             p for _ in range(rotations)
                 for p in rotate(
                     pattern="0111111111", clockwise=True)
         ] +                ["1111111111"]
-        return s.section(
-            s.part(
-                s.seq_measure(
+        return section(
+            part(
+                sequence_measure(
                     '♪', rotations * 10 + 1, lambda: iter(pattern), 
                 ),
             ),
-            s.drum_part(
+            drum_part(
                 ' ♪^ 𝄾 𝄾 𝄾 𝄾 ♪^ 𝄾 𝄾 𝄾 𝄾 ' * rotations + ' ♪^ '
             ),
             beats=60,
             tempo=675,
         )
 
-    def dim(s):  # type: ignore
+    def dim(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        return s.section(
-            s.part(
-                s.measure(
-                    s.act('♩', s.light(ALL_ON), s.light(ALL_ON, DimmerParams()))
+        return section(
+            part(
+                measure(
+                    act('♩', self.light(ALL_ON), self.light(ALL_ON, DimmerParams()))
                 )
             ),
-            s.seq_part(
-                (s.seq(build_rows, DimmerParams(transition_off=3), pattern='0'), 
+            sequence_part(
+                (sequence(build_rows, DimmerParams(transition_off=3), pattern='0'), 
                     '  𝄻  | ♩ ♩ ♩ ♩ '),
             ),
             tempo=60,
@@ -174,31 +177,31 @@ class Demo(PlayMusicMode):
     def future_intro(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         s = self
-        s.play(
-            s.measure(
-                s.act('♩', s.light(ALL_OFF)),
-                s.act('♩', s.dimmer(ALL_HIGH)),
-                s.rest('𝅗𝅥'),
+        play(
+            measure(
+                act('♩', self.light(ALL_OFF)),
+                act('♩', self.dimmer(ALL_HIGH)),
+                rest('𝅗𝅥'),
             ),
-            s.measure(
-                s.act('♩', s.light("0100000000")),
+            measure(
+                act('♩', self.light("0100000000")),
             ),
-            s.measure(
-                s.act('♩', s.light("0000000000")),
+            measure(
+                act('♩', self.light("0000000000")),
             ),
-            s.measure(
-                s.act('♩', s.light("1110001000")),
-                s.rest('♩𝅘𝅥𝅯'),
-                s.act('♩', s.light("0000000000")),
-                s.act('♩', s.dimmer(ALL_LOW)),
+            measure(
+                act('♩', self.light("1110001000")),
+                rest('♩𝅘𝅥𝅯'),
+                act('♩', self.light("0000000000")),
+                act('♩', self.dimmer(ALL_LOW)),
             ),
-            s.measure(
-                s.rest('♩'),
-                s.act('♩', s.light(ALL_ON)),
+            measure(
+                rest('♩'),
+                act('♩', self.light(ALL_ON)),
             ),
-            s.seq_measure(
+            sequence_measure(
                 '♩', LIGHT_COUNT, random_once_each, 
-                ActionParams(action=s.dimmer_seq(100, 2)),
+                ActionParams(action=self.dimmer_seq(100, 2)),
                 beats=16,
             ),
             tempo = 90,
