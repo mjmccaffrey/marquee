@@ -153,9 +153,9 @@ class Demo(PlayMusicMode):
                 ),
             ),
             drum_part(
-                ' ♪^ 𝄾 𝄾 𝄾 𝄾 ♪^ 𝄾 𝄾 𝄾 𝄾 ' * rotations + ' | ♪^ '
+                ' ♪^ 𝄾 𝄾 𝄾 𝄾 ♪^ 𝄾 𝄾 𝄾 𝄾 ' * rotations + ' ♪^ '
             ),
-            beats=105,
+            beats=111,
             tempo=675,
         )
 
