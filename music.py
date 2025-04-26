@@ -110,7 +110,7 @@ class SequenceMeasure(Measure):
 
     def __post_init__(self):
         """Create Sequence component."""
-        self.seq = Sequence(self.sequence, self.kwargs)
+        self.sequence_obj = Sequence(self.sequence, self.kwargs)
 
 @dataclass
 class Sequence(Element):
@@ -313,7 +313,7 @@ def expand_sequences(
                 duration=measure.step_duration,
                 actions=(
                     environment.light(
-                        next(measure.sequence.iter),
+                        next(measure.sequence_obj.iter),
                         measure.special,
                     ),
                 )
