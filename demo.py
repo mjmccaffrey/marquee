@@ -140,7 +140,7 @@ class Demo(PlayMusicMode):
     def rotate_fast(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         light(ALL_ON, DimmerParams(transition_on=6))()
-        rotations = 10
+        rotations = 11
         pattern = [
             p for _ in range(rotations)
                 for p in rotate(
@@ -153,9 +153,9 @@ class Demo(PlayMusicMode):
                 ),
             ),
             drum_part(
-                ' ♪^ 𝄾 𝄾 𝄾 𝄾 ♪^ 𝄾 𝄾 𝄾 𝄾 ' * rotations + ' ♪^ '
+                ' ♪^ 𝄾 𝄾 𝄾 𝄾 ♪^ 𝄾 𝄾 𝄾 𝄾 ' * rotations + ' | ♪^ '
             ),
-            beats=60,
+            beats=105,
             tempo=675,
         )
 
@@ -168,7 +168,7 @@ class Demo(PlayMusicMode):
                 )
             ),
             sequence_part(
-                (sequence(build_rows, DimmerParams(transition_off=3), pattern='0'), 
+                (sequence(build_rows, DimmerParams(transition_off=2), pattern='0'), 
                     '  𝄻  | ♩ ♩ ♩ ♩ '),
             ),
             tempo=60,
