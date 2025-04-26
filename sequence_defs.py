@@ -149,7 +149,7 @@ def rotate_build_flip(*, count: int, clockwise=True):
     for c in range(count):
         i = c % LIGHT_COUNT
         lights[i] = 0 if lights[i] else 1
-        yield lights
+        yield [l for l in lights]
 
 def center_alternate():
     """Alternate the top and bottom center lights."""
