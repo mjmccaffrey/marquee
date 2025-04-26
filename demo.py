@@ -140,7 +140,7 @@ class Demo(PlayMusicMode):
     def rotate_fast(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         # light(ALL_ON, DimmerParams(transition_on=6))()
-        rotations = 5
+        rotations = 11
         pattern = [
             p
             for p in rotate_build_flip(count = rotations * 10)
@@ -155,7 +155,7 @@ class Demo(PlayMusicMode):
                 ' ♩^ ♩ ♩ ♩ ♩ ♩^ ♩ ♩ ♩ ♩ ' * rotations + ' ♩^ '
             ),
             beats=rotations * 10 + 1,
-            tempo=300,  # 675,
+            tempo=675,
         )
 
     def dim(self):
