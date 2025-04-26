@@ -143,7 +143,7 @@ class Demo(PlayMusicMode):
         rotations = 11
         pattern = [
             p for _ in range(rotations)
-                for p in rotate_build_flip(count = rotations * 10)
+                for p in rotate_build_flip(count = rotations * 10 - 1)
                     # pattern="0111111111", clockwise=True)
         ] +                ["1111111111"]
         return section(
