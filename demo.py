@@ -17,9 +17,9 @@ class Demo(PlayMusicMode):
         """"""
         sections = [
             self.pre(),
-            #self.alternate(),
-            #self.rotate(),
-            #self.triplett_a(),
+            self.alternate(),
+            self.rotate(),
+            self.triplett_a(),
             self.triplett_b(),
             self.rotate_fast(),
             self.dim(),
