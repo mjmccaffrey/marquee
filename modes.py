@@ -12,7 +12,7 @@ from definitions import (
     ActionParams, DimmerParams, SpecialParams,
 )
 from dimmers import TRANSITION_DEFAULT
-from music import set_environment
+from music import Environment, set_environment
 from sequence_defs import rotate_build_flip
 
 @dataclass
