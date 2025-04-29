@@ -125,7 +125,7 @@ class Demo(PlayMusicMode):
             beats=2,
             tempo=80,
         )
-    
+
     def rotate_fast(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         # light(ALL_ON, DimmerParams(transition_on=6))()

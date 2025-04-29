@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - music"""
 
 from abc import ABC, abstractmethod
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 import itertools
 import time
@@ -111,12 +111,14 @@ class SequenceMeasure(Measure):
 
     def __post_init__(self):
         """Create Sequence component."""
-        self.sequence_obj = Sequence(self.sequence, self.kwargs)
+        self.patterns = itertools.cycle(self.sequence(**self.kwargs))
 
 @dataclass
 class Sequence(Element):
     """Defines a sequence of light patterns."""
     sequence: Callable
+    special: SpecialParams | None
+    measures: int
     kwargs: dict[str, Any]
 
     def __post_init__(self):
@@ -175,7 +177,7 @@ class Section(Element):
             Merge parts into single sequence of Measures."""
         #
         for part in parts:
-            expand_sequences(part.measures)
+            expand_sequence_measures(part.measures)
         # Make all parts have the same # of measures
         longest = max(len(p.measures) for p in parts)
         for p in parts:
@@ -282,6 +284,12 @@ def interpret_symbols(symbols: str) -> tuple[float, str, str, bool]:
         #print(symbols, duration, pitch, accent, is_rest)
     return duration, pitch, accent, is_rest
 
+def each_notation_measure(notation: str) -> Iterator[str]:
+    """"""
+    for measure in notation.split('|'):
+        if measure.replace(' ', ''):
+            yield measure
+
 def interpret_notation(
     create_note: Callable[[str], BaseNote],
     notation: str, 
@@ -298,11 +306,10 @@ def interpret_notation(
         )
     return tuple(
         create_measure(measure)
-        for measure in notation.split('|')
-        if measure.replace(' ', '')
+        for measure in each_notation_measure(notation)
     )
 
-def expand_sequences(
+def expand_sequence_measures(
         measures: tuple[Measure, ...],
 ):
     """Populate SequenceMeasures with ActionNotes."""
@@ -315,7 +322,7 @@ def expand_sequences(
                 duration=measure.step_duration,
                 actions=(
                     environment.light(
-                        next(measure.sequence_obj.iter),
+                        next(measure.patterns),
                         measure.special,
                     ),
                 )
@@ -328,7 +335,7 @@ def play(
         tempo: int,
 ):
     """Play a series of measures."""
-    expand_sequences(measures)
+    expand_sequence_measures(measures)
     pace = 60 / tempo
     for measure in measures:
         beat = 0
@@ -378,7 +385,7 @@ def act_part(
         *actions: Callable,
         beats=4,
 ) -> Part:
-    """"""
+    """Produce act part from notation."""
     def func(symbols: str):
         return act(symbols, lambda: next(acts), pre_call_actions=True)
     acts = iter(actions)
@@ -388,17 +395,31 @@ def act_part(
 
 def sequence_part(
         notation: str, 
-        *actions: Callable,
+        *sequences: Sequence,
         beats=4,
 ) -> Part:
     """Produce sequence part from notation."""
-    return part(
-        *tuple(
-            measure
-            for create_note, notation in segments
-            for measure in interpret_notation(create_note, notation, beats)
+    def sequence_gen():
+        for sequence in sequences:
+            for _ in range(sequence.measures):
+                yield sequence
+    each_sequence = sequence_gen()
+    def func(s: str) -> ActionNote | Rest:
+        sequence = next(each_sequence)
+        return act(
+            s, 
+            lambda: environment.light(
+                next(sequence.iter), 
+                sequence.special,
+            ),
+            pre_call_actions=True,
         )
+    measures = tuple(
+        m
+        for nm in each_notation_measure(notation)
+        for m in interpret_notation(func, nm, beats)
     )
+    return part(*measures)
 
 def bell(symbols: str) -> BellNote | Rest:
     """Validate symbols and return BellNote or Rest."""
@@ -453,16 +474,12 @@ def section(
 def sequence(
     seq: Callable,
     special: SpecialParams | None = None,
+    measures: int = 1,
     **kwargs,
-) -> Callable[[str], ActionNote | Rest]:
+) -> Sequence:
     """Return callable to effect each step in sequence."""
-    sequence_obj = Sequence(seq, kwargs)
-    def func(s: str):
-        return act(
-            s, lambda: environment.light(next(sequence_obj.iter), special),
-            pre_call_actions=True,
-        )
-    return func
+    sequence_obj = Sequence(seq, special, measures, kwargs)
+    return sequence_obj
 
 def sequence_measure(
     symbols: str,
