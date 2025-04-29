@@ -405,7 +405,7 @@ def sequence_part(
                 yield sequence
     each_sequence = sequence_gen()
     def func(s: str) -> ActionNote | Rest:
-        sequence = next(each_sequence)
+        print(f"{s=}")
         return act(
             s, 
             lambda: environment.light(
@@ -414,11 +414,13 @@ def sequence_part(
             ),
             pre_call_actions=True,
         )
-    measures = tuple(
-        m
-        for nm in each_notation_measure(notation)
-        for m in interpret_notation(func, nm, beats)
-    )
+    measures = []
+    for nm in each_notation_measure(notation):
+        sequence = next(each_sequence)
+        m = interpret_notation(func, nm, beats)
+        print(f"{m=}")
+        assert len(m) == 1
+        measures.append(m[0])
     return part(*measures)
 
 def bell(symbols: str) -> BellNote | Rest:
