@@ -393,39 +393,6 @@ def act_part(
         *interpret_notation(func, notation, beats)
     )
 
-def sequence_part(
-        notation: str, 
-        *sequences: Sequence,
-        beats=4,
-) -> Part:
-    """Produce sequence part from notation."""
-    def sequence_gen():
-        for sequence in sequences:
-            for _ in range(sequence.measures):
-                yield sequence
-        while True:
-            yield sequence
-
-    each_sequence = sequence_gen()
-    def func(s: str) -> ActionNote | Rest:
-        print(f"{s=}")
-        return act(
-            s, 
-            lambda: environment.light(
-                next(sequence.iter), 
-                sequence.special,
-            ),
-            pre_call_actions=True,
-        )
-    measures = []
-    for nm in each_notation_measure(notation):
-        sequence = next(each_sequence)
-        m = interpret_notation(func, nm, beats)
-        print(f"{m=}")
-        assert len(m) == 1
-        measures.append(m[0])
-    return part(*measures)
-
 def bell(symbols: str) -> BellNote | Rest:
     """Validate symbols and return BellNote or Rest."""
     duration, pitch, accent, is_rest = interpret_symbols(symbols)
@@ -505,6 +472,38 @@ def sequence_measure(
         count=count, 
         special=special,
     )
+
+def sequence_part(
+        notation: str, 
+        *sequences: Sequence,
+        beats=4,
+) -> Part:
+    """Produce sequence part from notation."""
+    def sequence_gen():
+        for sequence in sequences:
+            for _ in range(sequence.measures):
+                yield sequence
+        while True:
+            yield sequence
+
+    def func(s: str) -> ActionNote | Rest:
+        print(f"{s=}")
+        return act(
+            s, 
+            lambda: environment.light(
+                next(sequence.iter), 
+                sequence.special,
+            ),
+            pre_call_actions=True,
+        )
+    measures = [
+        interpret_notation(func, nm, beats)[0]
+        for nm, sequence in zip(
+                each_notation_measure(notation),
+                sequence_gen()
+        )
+    ]
+    return part(*measures)
 
 def dimmer(pattern: str) -> Callable:
     """"""
