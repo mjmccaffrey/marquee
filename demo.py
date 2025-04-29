@@ -51,6 +51,7 @@ class Demo(PlayMusicMode):
                         transition_on=2,
                     ),
                     on_first=True,
+                    measures=6,
                 ),
             ),
             tempo=90,
