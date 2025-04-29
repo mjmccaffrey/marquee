@@ -486,6 +486,7 @@ def sequence_part(
         while True:
             yield sequence
 
+    each_sequence = sequence_gen()
     def func(s: str) -> ActionNote | Rest:
         print(f"{s=}")
         return act(
@@ -496,13 +497,13 @@ def sequence_part(
             ),
             pre_call_actions=True,
         )
-    measures = [
-        interpret_notation(func, nm, beats)[0]
-        for nm, sequence in zip(
-                each_notation_measure(notation),
-                sequence_gen()
-        )
-    ]
+    measures = []
+    for notation in each_notation_measure(notation):
+        sequence = next(each_sequence)
+        measure_tuple = interpret_notation(func, notation, beats)
+        print(f"{measure_tuple=}")
+        assert len(measure_tuple) == 1
+        measures.append(measure_tuple[0])
     return part(*measures)
 
 def dimmer(pattern: str) -> Callable:
