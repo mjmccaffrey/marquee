@@ -1,6 +1,29 @@
 from music import *
+from definitions import *
+from sequence_defs import *
 import pytest
 
+# 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+
+def test_sequence_part():
+    assert sequence_part(
+        "  ♩ ♩ ♩ ♩ | ♩  ",
+        sequence(all_on, measures=2),
+        sequence(all_off),
+    ) == Part(
+        (
+            Measure(
+                (
+                    ActionNote(
+                        1,
+                        (
+                            
+                        )
+                    ),
+                )
+            ),
+        )
+    )
 # def test_merge_1_part_content():
 #     measure = Measure(
 #         (

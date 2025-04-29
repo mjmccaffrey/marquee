@@ -299,6 +299,7 @@ def interpret_notation(
     return tuple(
         create_measure(measure)
         for measure in notation.split('|')
+        if measure.replace(' ', '')
     )
 
 def expand_sequences(
@@ -386,8 +387,9 @@ def act_part(
     )
 
 def sequence_part(
-        *segments: tuple[Callable[[str], ActionNote | Rest], str],
-        beats=4
+        notation: str, 
+        *actions: Callable,
+        beats=4,
 ) -> Part:
     """Produce sequence part from notation."""
     return part(

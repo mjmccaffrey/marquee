@@ -32,31 +32,25 @@ class Demo(PlayMusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             sequence_part(
-                (   
-                    sequence(
-                        rotate,
-                        special=DimmerParams(
-                            concurrent=False,
-                            brightness_on = 100,
-                            brightness_off = 40,
-                        )
+                '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  '
+                '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  '
+                '  𝄻 |  𝄻 |  𝄻 |  𝄻 | 𝅝 | 𝄻  ',
+                sequence(
+                    rotate,
+                    special=DimmerParams(
+                        concurrent=False,
+                        brightness_on = 100,
+                        brightness_off = 40,
+                    )
+                ),
+                sequence(
+                    blink_all,
+                    special=DimmerParams(
+                        transition_off=2,
+                        transition_on=2,
                     ),
-                    '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |    '
-                    '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪  '
-                )
-            ),
-            sequence_part(
-                (   
-                    sequence(
-                        blink_all,
-                        special=DimmerParams(
-                            transition_off=2,
-                            transition_on=2,
-                        ),
-                        on_first=True,
-                    ),
-                    '  𝄻 |  𝄻 |  𝄻 |  𝄻 | 𝅝 | 𝄻  ',
-                )
+                    on_first=True,
+                ),
             ),
             tempo=90,
         )
@@ -65,15 +59,13 @@ class Demo(PlayMusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             sequence_part(
-                (sequence(center_alternate), 
-                    ' ♩ ♩ ♩ ♩ '),
-                (sequence(blink_alternate), 
-                    ' ♩ ♩ ♩ ♩ '),
-                (sequence(blink_alternate),
-                    ' ♩ '    ),
+                '  ♩ ♩ ♩ ♩ | ♩ ♩ ♩ ♩ | ♩  ',
+                sequence(center_alternate), 
+                sequence(blink_alternate), 
+                sequence(blink_alternate),
             ),
             drum_part(
-                    '  𝄻  |  𝄻  |  𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰-  '
+                '  𝄻  |  𝄻  |  𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰-  '
             ),
             tempo=75,
         )
@@ -82,14 +74,14 @@ class Demo(PlayMusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             sequence_part(
-                (sequence(rotate, pattern="0100001000", clockwise=True),
-                    ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
-                (sequence(rotate, pattern="0000100001", clockwise=False),
-                    ' ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ '),
-                (sequence(build_rows, pattern='1', from_top=True),
-                    ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
-                (sequence(build_rows, pattern='1', from_top=False),
-                    ' 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 '),
+                '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  '
+                '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  '
+                '  𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 |  '
+                '  𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯  ',
+                sequence(rotate, pattern="0100001000", clockwise=True),
+                sequence(rotate, pattern="0000100001", clockwise=False),
+                sequence(build_rows, pattern='1', from_top=True),
+                sequence(build_rows, pattern='1', from_top=False),
             ),
             drum_part(
                 '  𝄻  |  𝄻  |  ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^  |  𝅘𝅥𝅰^  '
@@ -127,11 +119,8 @@ class Demo(PlayMusicMode):
                 accent='-',
             ),
             sequence_part(
-                (
-                    sequence(blink_all, on_first=False),
-                    " 𝄾 ♪ ♪ 𝄾 | 𝄾 ♪ ♪ 𝄾 | "
-                    " ♪ 𝄾 ♪ 𝄾 | 𝄾 ♪ ♪ "
-                ),
+                "  𝄾 ♪ ♪ 𝄾 | 𝄾 ♪ ♪ 𝄾 | ♪ 𝄾 ♪ 𝄾 | 𝄾 ♪ ♪  ",
+                sequence(blink_all, on_first=False),
             ),
             beats=2,
             tempo=80,
@@ -167,8 +156,8 @@ class Demo(PlayMusicMode):
                 )
             ),
             sequence_part(
-                (sequence(build_rows, DimmerParams(transition_off=2), pattern='0'), 
-                    '  𝄻  | ♩ ♩ ♩ ♩ '),
+                '  𝄻  | ♩ ♩ ♩ ♩ ',
+                sequence(build_rows, DimmerParams(transition_off=2), pattern='0'),
             ),
             tempo=60,
         )

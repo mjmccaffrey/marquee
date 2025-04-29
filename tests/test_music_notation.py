@@ -25,8 +25,8 @@ def test_interpret_symbols_pitch():
 def test_interpret_notation_measure_count():
     def rest(s: str) -> Rest:
         return Rest(1)
-    assert len(interpret_notation(rest, "")) == 1
-    assert len(interpret_notation(rest, "|||")) == 4
+    assert len(interpret_notation(rest, "")) == 0
+    assert len(interpret_notation(rest, "|||")) == 0
     assert len(interpret_notation(rest, "♩")) == 1
     assert len(interpret_notation(rest, "♩ ♩ ♩ | ♩ ♩", beats=5)) == 2
     assert all(
@@ -41,3 +41,11 @@ def test_interpret_notation_measure_length():
         o.beats == 5 
         for o in interpret_notation(rest, "♩ ♩ ♩ | ♩ ♩", beats=5)
     )
+
+def test_interpret_notation_empty_measures():
+    def rest(s: str) -> Rest:
+        return Rest(1)
+    measures = interpret_notation(rest, " | ♩ ♩ ♩ | ♩ ♩ | ")
+    assert len(measures) == 2
+    assert len(measures[0].elements) == 3
+    assert len(measures[1].elements) == 2
