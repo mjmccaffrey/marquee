@@ -32,18 +32,15 @@ class ShellyDimmer(ABC):
                 dimmer=self,
                 index=self.index * 2 + id,
                 id=id, 
-                # output=status['output'], 
                 brightness=status['brightness'],
             ) 
             for id, status in self._get_status()
         ]
 
     def __str__(self):
-        """"""
         return f"{type(self).__name__} {self.index} @ {self.ip_address}"
     
     def __repr__(self):
-        """"""
         return f"<{self}>"
     
     def close(self):
@@ -52,7 +49,7 @@ class ShellyDimmer(ABC):
     @property
     @abstractmethod
     def channel_count(self) -> int:
-        """"""
+        """Return # of channels supported by dimmer model."""
 
     def _get_status(self) -> list[tuple[int, dict]]:
         """ Fetch status parameters for all channels. """
@@ -109,7 +106,6 @@ class ShellyDimmer(ABC):
             for channel in dimmer.channels:
                 channel.set(
                     brightness=100,
-                    # output=True,
                 )
         time.sleep(5)
         for id in range(max(d.channel_count for d in cls._dimmers)):
@@ -123,7 +119,6 @@ class ShellyDimmer(ABC):
                 for dimmer in cls._dimmers
                 if id < dimmer.channel_count
             ]
-            print(commands)
             asyncio.run(cls.execute_multiple_commands(commands))
             time.sleep(150)
         print("Calibration complete")
@@ -161,7 +156,6 @@ class DimmerChannel:
             dimmer: ShellyDimmer, 
             index: int,
             id: int, 
-            # output: bool, 
             brightness: int,
         ):
         """Create the dimmer channel instance."""
@@ -170,7 +164,6 @@ class DimmerChannel:
         self.ip_address = self.dimmer.ip_address
         self.id = id
         # print(f"Initializing {self}")
-        # self.output = output
         self.brightness = brightness
         self.next_update: float = 0
         # self.set(output=True)  # !!! make part of a larger init?
@@ -186,7 +179,6 @@ class DimmerChannel:
         brightness: int | None = None, 
         offset: int | None = None,
         transition: float | None = None, 
-        # output: bool | None = None,
     ) -> "_DimmerCommand":
         """Produce dimmer API parameters from requested values and state."""
         assert transition is None or transition >= TRANSITION_MINIMUM
@@ -202,7 +194,6 @@ class DimmerChannel:
                 if new_brightness is not None else {}) |
             ({'transition_duration': 
                 transition or TRANSITION_DEFAULT}) |
-            # ({'on': str(output).lower()} if output is not None else {})
             ({'on': 'true'})
         )
         return _DimmerCommand(
@@ -227,6 +218,7 @@ class DimmerChannel:
             # output=output,
         )
         try:
+            start = time.time()
             self.dimmer.session.get(
                 url=command.url,
                 params=command.params,
@@ -242,7 +234,6 @@ class DimmerChannel:
             assert transition is not None
             print("WAIT")
             time.sleep(transition)
-        #print("end:", time.time())
 
 @dataclass
 class _DimmerCommand:
@@ -251,16 +242,6 @@ class _DimmerCommand:
     url: str
     params: dict
     
-@dataclass
-class RelayOverride:
-    """ Parameters for using dimmers rather than relays. """
-    concurrent: bool = True
-    brightness_on: int = 100
-    brightness_off: int = 0
-    speed_factor: float = 1.0
-    transition_on: float | None = None
-    transition_off: float | None = None
-
 class ShellyProDimmer2PM(ShellyDimmer):
     """Supports the Shelly Pro Dimmer 2PM."""
 

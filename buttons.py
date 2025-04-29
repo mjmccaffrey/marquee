@@ -39,7 +39,6 @@ class Button:
     ):
         """Create a button instance."""
         self.name = name
-        #print(f"Initializing {self}")
         if not Button.buttons:
             print(f"Initializing buttons")
             Button.reset()

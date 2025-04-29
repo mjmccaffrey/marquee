@@ -1,11 +1,10 @@
 """Marquee Lighted Sign Project - arguments"""
 
 from collections.abc import Callable
-import sys
+from typing import Any, NoReturn
 
 from argparse import Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
-from signs import LIGHT_COUNT
-from typing import Any, NoReturn
+from definitions import LIGHT_COUNT
 
 class ArgumentParserImproved(ArgumentParser):
     """
@@ -56,6 +55,8 @@ def display_help(
     print()
     print("Usage:")
     print("  marquee.py mode [mode_index | mode_name]")
+    print("                  [--brightness_factor=[0 - 1.0]]")
+    print("                  [--speed_factor=(0 - 5.0]]")
     print("  marquee.py pattern [--dimmer=[pattern] &| --relay=[pattern]]")
     print("                     [--derive_missing=[true|false]]")
     print("  marquee.py command [command_name]")
@@ -78,6 +79,30 @@ def display_help(
         print(f'  {command}')
     print()
 
+def validate_brightness_factor(arg: str) -> float:
+    """ Return arg as float if it is a valid brightness factor,
+        otherwise raise exception. """
+    try:
+        value = float(arg)
+        if not 0.0 <= value <= 1.0:
+            raise ValueError
+    except ValueError:
+        raise ValueError(f"Invalid brightness factor: {arg}")
+    else:
+        return value
+
+def validate_speed_factor(arg: str) -> float:
+    """ Return arg as float if it is a valid speed factor,
+        otherwise raise exception. """
+    try:
+        value = float(arg)
+        if not 0.0 < value <= 5.0:
+            raise ValueError
+    except ValueError:
+        raise ValueError(f"Invalid speed factor: {arg}")
+    else:
+        return value
+    
 def validate_light_pattern(arg: str) -> str:
     """ Return arg if it is a valid light pattern, 
         otherwise raise exception. """
@@ -85,8 +110,7 @@ def validate_light_pattern(arg: str) -> str:
         len(arg) == LIGHT_COUNT and 
         all(e in {"0", "1"} for e in arg)
     ): 
-        print(f"Invalid light pattern:{arg}")
-        raise ValueError()
+        raise ValueError(f"Invalid light pattern: {arg}")
     return arg
 
 def validate_brightness_pattern(arg: str) -> str:
@@ -97,8 +121,7 @@ def validate_brightness_pattern(arg: str) -> str:
         len(arg_normalized) == LIGHT_COUNT and 
         all(e in "0123456789AF" for e in arg_normalized)
     ): 
-        print(f"Invalid brightness pattern:{arg}")
-        raise ValueError()
+        raise ValueError(f"Invalid brightness pattern: {arg}")
     return arg_normalized
 
 def parse_arguments(
@@ -113,9 +136,12 @@ def parse_arguments(
     mode_p = sub_p.add_parser('mode')
     mode_choices = mode_ids.keys()
     mode_p.add_argument('mode_id', choices=mode_choices)
+    mode_p.add_argument('brightness_factor', 
+        optional=True, 
+        type=validate_brightness_factor, default=1.0)
     mode_p.add_argument('speed_factor', 
         optional=True, 
-        type=float, default=1.0)
+        type=validate_speed_factor, default=1.0)
     pattern_p = sub_p.add_parser('pattern')
     pattern_p.add_argument('relay', 
         optional=True, type=validate_light_pattern)
@@ -137,13 +163,15 @@ def process_arguments(
        otherwise raise an error."""
     try:
         parsed = parse_arguments(mode_ids, commands)
-    except ValueError:
+    except ValueError as err:
         raise
+    print("Args: " + ''.join(f'{k}: {v}, ' for k, v in vars(parsed).items()))
     if parsed.operation == 'command':
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':
         args = {
             "mode_index": mode_ids[parsed.mode_id],
+            "brightness_factor": parsed.brightness_factor,
             "speed_factor": parsed.speed_factor,
         }
     elif parsed.operation == 'pattern':

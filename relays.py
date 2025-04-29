@@ -43,6 +43,7 @@ class NumatoUSBRelayModule(ABC):
 
     def set_state_of_devices(self, device_pattern):
         """Set the physical relays per device_pattern."""
+        assert len(device_pattern) == self.relay_count
         relay_pattern = self._devices_to_relays(device_pattern)
         self._set_relays(relay_pattern)
 
@@ -86,11 +87,10 @@ class NumatoUSBRelayModule(ABC):
             relay_pattern[self._device_to_bit[d]]
             for d in range(self.device_count)
         )
-        # print(f"r2d device_pattern:{device_pattern}")
         return device_pattern
 
-class NumatoRelayModuleRL160001(NumatoUSBRelayModule):
-    """Supports the Numato 16 Channel USB Relay Module (RL160001)."""
+class NumatoRL160001(NumatoUSBRelayModule):
+    """Supports the Numato RL160001 16 Channel USB Relay Module."""
 
     @property
     def relay_count(self) -> int:
