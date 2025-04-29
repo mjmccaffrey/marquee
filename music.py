@@ -403,6 +403,9 @@ def sequence_part(
         for sequence in sequences:
             for _ in range(sequence.measures):
                 yield sequence
+        while True:
+            yield sequence
+
     each_sequence = sequence_gen()
     def func(s: str) -> ActionNote | Rest:
         print(f"{s=}")
@@ -475,8 +478,8 @@ def section(
 
 def sequence(
     seq: Callable,
-    special: SpecialParams | None = None,
     measures: int = 1,
+    special: SpecialParams | None = None,
     **kwargs,
 ) -> Sequence:
     """Return callable to effect each step in sequence."""
