@@ -114,6 +114,6 @@ class Player:
         else:
             duration = seconds * self.speed_factor - elapsed
             if duration <= 0:
-                print("!!!!!", seconds, elapsed, duration)
+                #print("!!!!!", seconds, elapsed, duration)
                 return
         Button.wait(duration)
