@@ -233,7 +233,6 @@ class PlayMusicMode(PlayMode):
         special: SpecialParams | None = None,
     ) -> Callable:
         """Return callable to effect light pattern."""
-        # print(f"light: {pattern}")
         if isinstance(special, DimmerParams):
             if special.transition_off is None:
                 special.transition_off = TRANSITION_DEFAULT

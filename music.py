@@ -489,7 +489,6 @@ def sequence_part(
 
     each_sequence = sequence_gen()
     def func(s: str) -> ActionNote | Rest:
-        print(f"{s=}")
         return act(
             s, 
             lambda: environment.light(
@@ -502,7 +501,6 @@ def sequence_part(
     for notation in each_notation_measure(notation):
         sequence = next(each_sequence)
         measure_tuple = interpret_notation(func, notation, beats)
-        print(f"{measure_tuple=}")
         assert len(measure_tuple) == 1
         measures.append(measure_tuple[0])
     return part(*measures)
