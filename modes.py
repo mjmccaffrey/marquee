@@ -139,7 +139,7 @@ class PlayMode(Mode):
                 new_mode = self.mode_index(self.player.current_mode, +1)
                 print("Button Action: ", new_mode)
             case _:
-                raise Exception
+                raise ValueError("Unrecognized button name.")
         return new_mode
 
 class PlaySequenceMode(PlayMode):

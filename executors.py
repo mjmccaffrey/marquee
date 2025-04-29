@@ -40,7 +40,7 @@ def create_sign(brightness_factor: float) -> Sign:
     ]
     light_relays = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
     buttons = [
-        Button('sign_back', _Button(pin=17, bounce_time=0.10), SIGUSR1),
+        Button('body_back', _Button(pin=17, bounce_time=0.10), SIGUSR1),
         Button('remote_a', _Button(pin=18, pull_up=False, bounce_time=0.10)),
         Button('remote_b', _Button(pin=23, pull_up=False, bounce_time=0.10)),
         Button('remote_c', _Button(pin=24, pull_up=False, bounce_time=0.10)),
