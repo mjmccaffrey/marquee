@@ -29,7 +29,7 @@ class Player:
         """Close."""
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
-        """"""
+        """Replace variables with current runtime values."""
         new = {}
         for k, v in kwargs.items():
             match v:

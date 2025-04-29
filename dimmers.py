@@ -38,11 +38,9 @@ class ShellyDimmer(ABC):
         ]
 
     def __str__(self):
-        """"""
         return f"{type(self).__name__} {self.index} @ {self.ip_address}"
     
     def __repr__(self):
-        """"""
         return f"<{self}>"
     
     def close(self):
@@ -51,7 +49,7 @@ class ShellyDimmer(ABC):
     @property
     @abstractmethod
     def channel_count(self) -> int:
-        """"""
+        """Return # of channels supported by dimmer model."""
 
     def _get_status(self) -> list[tuple[int, dict]]:
         """ Fetch status parameters for all channels. """

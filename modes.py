@@ -12,12 +12,7 @@ from definitions import (
     ActionParams, DimmerParams, SpecialParams,
 )
 from dimmers import TRANSITION_DEFAULT
-from music import (
-    Element, Rest, ActionNote, BellNote, DrumNote, 
-    Part, Measure, Section, SequenceMeasure, Sequence, 
-    interpret_notation, interpret_symbols, play, 
-    Environment, set_environment
-)
+from music import set_environment
 from sequence_defs import rotate_build_flip
 
 @dataclass
@@ -199,8 +194,7 @@ class PlaySequenceMode(PlayMode):
             self.play_sequence_once()
 
 class PlayMusicMode(PlayMode):
-    """4 beats per measure by default.
-       Every quarter note gets a beat."""
+    """Mode for playing music."""
     def __init__(
         self,
         player: Any,  # Player

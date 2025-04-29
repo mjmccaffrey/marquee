@@ -110,7 +110,7 @@ class SequenceMeasure(Measure):
     beats: int
 
     def __post_init__(self):
-        """Create Sequence component."""
+        """Create iterator."""
         self.patterns = itertools.cycle(self.sequence(**self.kwargs))
 
 @dataclass
@@ -122,7 +122,7 @@ class Sequence(Element):
     kwargs: dict[str, Any]
 
     def __post_init__(self):
-        """Create Sequence iterator."""
+        """Create iterator."""
         self.iter = itertools.cycle(self.sequence(**self.kwargs))
 
 @dataclass
@@ -285,7 +285,7 @@ def interpret_symbols(symbols: str) -> tuple[float, str, str, bool]:
     return duration, pitch, accent, is_rest
 
 def each_notation_measure(notation: str) -> Iterator[str]:
-    """"""
+    """Yield non-empty measures of notation."""
     for measure in notation.split('|'):
         if measure.replace(' ', ''):
             yield measure
@@ -437,6 +437,7 @@ def section(
     beats: int = 4,
     tempo: int = 60,
 ):
+    """Produce Section."""
     return Section(
         parts, 
         beats=beats,
@@ -507,12 +508,12 @@ def sequence_part(
     return part(*measures)
 
 def dimmer(pattern: str) -> Callable:
-    """"""
+    """Callable to effect dimmer pattern."""
     return environment.dimmer(pattern)
 
 def light(
     pattern: Any,
     special: SpecialParams | None = None,
 ) -> Callable:
-    """"""
+    """Callable to effect light pattern."""
     return environment.light(pattern, special)

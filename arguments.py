@@ -80,7 +80,8 @@ def display_help(
     print()
 
 def validate_brightness_factor(arg: str) -> float:
-    """"""
+    """ Return arg as float if it is a valid brightness factor,
+        otherwise raise exception. """
     try:
         value = float(arg)
         if not 0.0 <= value <= 1.0:
@@ -91,7 +92,8 @@ def validate_brightness_factor(arg: str) -> float:
         return value
 
 def validate_speed_factor(arg: str) -> float:
-    """"""
+    """ Return arg as float if it is a valid speed factor,
+        otherwise raise exception. """
     try:
         value = float(arg)
         if not 0.0 < value <= 5.0:

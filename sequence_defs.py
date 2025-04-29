@@ -40,7 +40,7 @@ def blink_alternate():
     yield next(even_off())
 
 def each_row(pattern="1"):
-    """"""
+    """Each row, starting at the top."""
     for row in LIGHTS_BY_ROW:
         yield ''.join(
             pattern if i in row else opposite_pattern(pattern)
@@ -200,35 +200,3 @@ def random_once_each() -> Iterator[list[int]]:
     random.shuffle(indices)
     while indices:
         yield [indices.pop()]
-
-def triplet_rhythm() -> Iterator[str]:
-    yield "1000000000"
-    yield "1100000000"
-    yield "1110000000"
-    yield "1111000001"
-    yield "1111100011"
-    yield "1111111111"
-#
-    yield "1111111011"
-    yield "1111110011"
-    yield "1111100011"
-    yield "1111000001"
-    yield "1110000000"
-    yield "0000000000"
-#
-    yield "1000000000"
-    yield "1100000000"
-    yield "1110000000"
-    yield "1111111111"
-#
-    yield "1111111011"
-    yield "1111110011"
-    yield "1111100011"
-    yield "0000000000"
-#
-    yield "1000000000"
-    yield "1100000000"
-    yield "1110000000"
-    yield "1111111111"
-    yield "0000000000"
-    yield "1111111111"

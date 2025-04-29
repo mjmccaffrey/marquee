@@ -11,10 +11,10 @@ from music import (
 from sequence_defs import *
 
 class Demo(PlayMusicMode):
-    """"""
+    """Version 3 demo."""
 
     def execute(self):
-        """"""
+        """Execute version 3 demo."""
         sections = [
             self.pre(),
             self.alternate(),
@@ -61,7 +61,7 @@ class Demo(PlayMusicMode):
             sequence_part(
                 '  ♩ ♩ ♩ ♩ | ♩ ♩ ♩ ♩ | ♩  ',
                 sequence(center_alternate), 
-                sequence(blink_alternate, 2),
+                sequence(blink_alternate),
             ),
             drum_part(
                 '  𝄻  |  𝄻  |  𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰-  '
@@ -101,10 +101,6 @@ class Demo(PlayMusicMode):
                 light(ALL_OFF),
                 light(ALL_ON, DimmerParams()),
             ),
-            # sequence_part(
-            #     (sequence(random_flip, DimmerParams(concurrent=False), light_pattern='0000000000'), 
-            #      ' ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪ | ♪ ♪ ♪ ♪'),
-            # ),
             beats=2,
             tempo=80,
         )
