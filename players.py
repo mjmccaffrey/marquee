@@ -6,15 +6,17 @@ import time
 from typing import Any
 
 from buttons import Button, ButtonPressed
-from definitions import ActionParams, DimmerParams, SpecialParams
-import modes
+from definitions import (
+    ActionParams, DimmerParams, SpecialParams,
+    ModeConstructor, ModeInterface,
+)
 from signs import Sign
 
 class Player:
     """Executes one mode at a time."""
     def __init__(
             self, 
-            modes: dict[int, modes.ModeConstructor],
+            modes: dict[int, ModeConstructor],
             sign: Sign, 
             speed_factor: float,
         ):
@@ -47,8 +49,8 @@ class Player:
         while True:
             mode = self.modes[new_mode]
             mode = mode.mode_class(
-                self, 
-                mode.name, 
+                player=self, 
+                name=mode.name, 
                 **self.replace_kwarg_values(mode.kwargs),
             )
             self.current_mode = new_mode
@@ -57,7 +59,7 @@ class Player:
             if new_mode == 222:
                 new_mode = 2
 
-    def play_mode_until_changed(self, mode: modes.Mode):
+    def play_mode_until_changed(self, mode: ModeInterface):
         """Play the specified mode until another mode is selected."""
         new_mode = None
         while new_mode is None:

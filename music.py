@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - music"""
 
 from abc import ABC, abstractmethod
-from collections.abc import Callable, Iterator
+from collections.abc import Callable
 from dataclasses import dataclass
 import itertools
 import time
@@ -10,18 +10,6 @@ from typing import Any, ClassVar
 from definitions import SpecialParams
 from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument
 
-accent_symbols = '->^'
-pitch_symbols = 'DEGAabcde'
-note_duration: dict[str, float] = {
-    '𝅝': 4,     '𝅗𝅥': 2,      '♩': 1,
-    '♪': 0.5,   '𝅘𝅥𝅯': 0.25,  '𝅘𝅥𝅰': 0.125,
-}
-rest_duration: dict[str, float] = {
-    '𝄻': 4,    '𝄼': 2,      '𝄽': 1,
-    '𝄾': 0.5,   '𝄿': 0.25,  '𝅀': 0.125,
-}
-symbol_duration = note_duration | rest_duration
-
 @dataclass
 class Environment:
     bell_set: BellSet
@@ -29,6 +17,8 @@ class Environment:
     dimmer: Callable[[str], Callable]
     light: Callable[[Any, SpecialParams | None], Callable]
     wait: Callable[[float, float], None]
+
+environment: Environment | None = None
 
 def set_environment(env: Environment):
     """Called once to link to Player and Sign resources."""
@@ -220,7 +210,7 @@ class Section(Element):
                         if not isinstance(element, Rest):
                             element.duration = 0
                             concurrent_notes.append(element)
-            if concurrent_notes and rest:
+            if concurrent_notes and rest_dur:
                 out.append(Rest(rest_dur))
                 rest_dur = 0.0
             # Group notes if necessary
@@ -244,70 +234,10 @@ class Section(Element):
             # print(f"beats next: {beat_next}")
             # print(f"elements_out: {elements_out}")
             # print(f"rest: {rest}")
-        if rest:
+        if rest_dur:
             elements_out.append(Rest(rest_dur))
         # print(f"FINAL elements_out: {elements_out}")
         return Measure(tuple(elements_out), beats=beats)
-
-def interpret_symbols(symbols: str) -> tuple[float, str, str, bool]:
-    """Return duration, pitch, accent, and is_rest
-       from a single set of symbols. """
-    symbols = symbols.replace(' ', '')
-    if not symbols:
-        raise ValueError("Invalid (empty) symbol.")
-    elif symbols.startswith('3'):
-        duration, pitch, accent, is_rest = interpret_symbols(symbols[1:])
-        duration *= 2/3
-    elif symbols[-1] in accent_symbols:
-        duration, pitch, accent, is_rest = interpret_symbols(symbols[:-1])
-        accent = symbols[-1]
-    elif symbols[-1] in pitch_symbols:
-        duration, pitch, accent, is_rest = interpret_symbols(symbols[:-1])
-        pitch += symbols[-1]
-    else:
-        if any(
-            s not in symbol_duration 
-            for s in symbols
-        ):
-            raise ValueError(f"Invalid symbol in '{symbols}'.")
-        if any(
-            s1 in rest_duration and s2 in note_duration 
-            for s1 in symbols for s2 in symbols
-        ):
-            raise ValueError("Cannot mix note and rest symbols.")
-        is_rest: bool = symbols[0] in rest_duration
-        duration = sum(
-            (rest_duration if is_rest else note_duration)[s]
-            for s in symbols
-        )
-        pitch, accent = "", ""
-        #print(symbols, duration, pitch, accent, is_rest)
-    return duration, pitch, accent, is_rest
-
-def each_notation_measure(notation: str) -> Iterator[str]:
-    """Yield non-empty measures of notation."""
-    for measure in notation.split('|'):
-        if measure.replace(' ', ''):
-            yield measure
-
-def interpret_notation(
-    create_note: Callable[[str], BaseNote],
-    notation: str, 
-    beats: int = 4,
-) -> tuple[Measure, ...]:
-    """Return measures from notation using create_note."""
-    def create_measure(measure):
-        return Measure(
-            tuple(
-                create_note(symbols)
-                for symbols in measure.split()
-            ),
-            beats = beats,
-        )
-    return tuple(
-        create_measure(measure)
-        for measure in each_notation_measure(notation)
-    )
 
 def expand_sequence_measures(
         measures: tuple[Measure, ...],
@@ -361,69 +291,6 @@ def play(
         #print(f"wait_dur: {wait_dur}")
         environment.wait(wait_dur, time.time() - start)
 
-def rest(symbols: str) -> Rest:
-    """Validate symbols and return Rest."""
-    duration, pitch, accent, is_rest = interpret_symbols(symbols)
-    if pitch or accent:
-        raise ValueError("Rest cannot have pitch or accent.")
-    return Rest(duration)
-
-def act(symbols: str, *actions: Callable, pre_call_actions: bool = False) -> ActionNote | Rest:
-    """Validate symbols and return ActionNote or Rest."""
-    duration, pitch, accent, is_rest = interpret_symbols(symbols)
-    if is_rest:
-        return rest(symbols)
-    if pitch or accent:
-        # raise ValueError("Action note cannot have pitch or accent.")
-        pass
-    if pre_call_actions:
-        actions = tuple(action() for action in actions)
-    return ActionNote(duration, actions)
-
-def act_part(
-        notation: str, 
-        *actions: Callable,
-        beats=4,
-) -> Part:
-    """Produce act part from notation."""
-    def func(symbols: str):
-        return act(symbols, lambda: next(acts), pre_call_actions=True)
-    acts = iter(actions)
-    return part(
-        *interpret_notation(func, notation, beats)
-    )
-
-def bell(symbols: str) -> BellNote | Rest:
-    """Validate symbols and return BellNote or Rest."""
-    duration, pitch, accent, is_rest = interpret_symbols(symbols)
-    if is_rest:
-        return rest(symbols)
-    if accent:
-        raise ValueError("Bell note cannot have accent.")
-    return BellNote(duration, pitch)
-
-def bell_part(notation: str, beats=4) -> Part:
-    """Produce bell part from notation."""
-    return part(
-        *interpret_notation(bell, notation, beats)
-    )
-
-def drum(symbols: str) -> DrumNote | Rest:
-    """Validate symbols and return DrumNote or Rest."""
-    duration, pitch, accent, is_rest = interpret_symbols(symbols)
-    if is_rest:
-        return rest(symbols)
-    if pitch:
-        raise ValueError("Drum note cannot have pitch.")
-    return DrumNote(duration, accent)
-
-def drum_part(notation: str, accent: str = '', beats=4) -> "Part":
-    """Produce drum part from notation."""
-    return part(
-        *interpret_notation(drum, notation, beats),
-        accent=accent,
-    )
-
 def measure(*elements: Element, beats: int = 4) -> Measure:
     """Produce Measure."""
     return Measure(elements, beats=beats)
@@ -453,57 +320,6 @@ def sequence(
     """Return callable to effect each step in sequence."""
     sequence_obj = Sequence(seq, special, measures, kwargs)
     return sequence_obj
-
-def sequence_measure(
-    symbols: str,
-    count: int,
-    sequence: Callable,
-    special: SpecialParams | None = None,
-    beats: int = 4,
-    **kwargs,
-) -> SequenceMeasure:
-    """Produce a SequenceMeasure."""
-    step_duration, _, _, _ = interpret_symbols(symbols)
-    return SequenceMeasure(
-        elements=(),
-        beats=beats,
-        sequence=sequence, 
-        kwargs=kwargs,
-        step_duration=step_duration, 
-        count=count, 
-        special=special,
-    )
-
-def sequence_part(
-        notation: str, 
-        *sequences: Sequence,
-        beats=4,
-) -> Part:
-    """Produce sequence part from notation."""
-    def sequence_gen():
-        for sequence in sequences:
-            for _ in range(sequence.measures):
-                yield sequence
-        while True:
-            yield sequence
-
-    each_sequence = sequence_gen()
-    def func(s: str) -> ActionNote | Rest:
-        return act(
-            s, 
-            lambda: environment.light(
-                next(sequence.iter), 
-                sequence.special,
-            ),
-            pre_call_actions=True,
-        )
-    measures = []
-    for notation in each_notation_measure(notation):
-        sequence = next(each_sequence)
-        measure_tuple = interpret_notation(func, notation, beats)
-        assert len(measure_tuple) == 1
-        measures.append(measure_tuple[0])
-    return part(*measures)
 
 def dimmer(pattern: str) -> Callable:
     """Callable to effect dimmer pattern."""

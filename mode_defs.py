@@ -14,7 +14,7 @@ class RotateReversible(PlayMode):
     """Rotate a pattern, reversing direction in response to a button press."""
     def __init__(
         self,
-        player: Any,  # Player
+        player: Player,  # Player
         name: str,
         #
         pace: float,
@@ -43,7 +43,7 @@ class RandomFade(PlayMode):
 
     def __init__(
         self,
-        player: Any,  # Player
+        player: Player,  # Player
         name: str,
         #
         transition: float = -1,
@@ -86,7 +86,7 @@ class EvenOddFade(PlayMode):
 
     def __init__(
         self,
-        player: Any,  # Player
+        player: Player,  # Player
         name: str,
         #
         pace: float,
@@ -121,7 +121,7 @@ class RapidFade(PlayMode):
     """"""
     def __init__(
         self,
-        player: Any,  # Player
+        player: Player,  # Player
         name: str,
         #
     ):
@@ -153,7 +153,7 @@ class BuildBrightness(PlayMode):
 
     def __init__(
         self,
-        player: Any,  # Player
+        player: Player,  # Player
         name: str,
         #
         equal_trans: bool,

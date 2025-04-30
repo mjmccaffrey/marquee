@@ -10,22 +10,18 @@ from buttons import Button
 from definitions import (
     ALL_HIGH, ALL_OFF, ALL_ON,
     ActionParams, DimmerParams, SpecialParams,
+    ModeInterface,
 )
 from dimmers import TRANSITION_DEFAULT
 from music import Environment, set_environment
+from players import Player
 from sequence_defs import rotate_build_flip
 
-@dataclass
-class ModeConstructor:
-    name: str
-    mode_class: type["Mode"]
-    kwargs: dict[str, Any]
-
-class Mode(ABC):
+class Mode(ModeInterface):
     """Base for all Playing modes and the Select mode."""
     def __init__(
         self,
-        player: Any,  # Player
+        player: Player,  # Player
         name: str,
         preset_dimmers: bool = False,
         preset_relays: bool = False,
@@ -62,7 +58,7 @@ class SelectMode(Mode):
     """Supports the select mode."""
     def __init__(
         self,
-        player: Any,  # Player
+        player: Player,  # Player
         name: str,
         #
         previous_mode: int,
@@ -113,7 +109,7 @@ class PlayMode(Mode):
     """Base for custom modes."""
     def __init__(
         self,
-        player: Any,  # Player
+        player: Player,  # Player
         name: str,
         preset_dimmers: bool = False,
         preset_relays: bool = False,
@@ -146,7 +142,7 @@ class PlaySequenceMode(PlayMode):
     """Supports all sequence-based modes."""
     def __init__(
         self,
-        player: Any,  # Player
+        player: Player,  # Player
         name: str,
         #
         sequence: Callable,
@@ -197,7 +193,7 @@ class PlayMusicMode(PlayMode):
     """Mode for playing music."""
     def __init__(
         self,
-        player: Any,  # Player
+        player: Player,  # Player
         name: str,
     ):
         super().__init__(player, name, preset_dimmers=True, preset_relays=True)
