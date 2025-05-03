@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - players"""
 
 from collections.abc import Iterable
+from dataclasses import dataclass
 import itertools
 import time
 from typing import Any
@@ -8,27 +9,43 @@ from typing import Any
 from buttons import Button, ButtonPressed
 from definitions import (
     ActionParams, DimmerParams, SpecialParams,
-    ModeConstructor, ModeInterface,
+    Buttons,
 )
-from signs import Sign
+from instruments import BellSet, DrumSet
+from lights import LightSet
+from mode_interface import ModeConstructor, ModeInterface
 
+@dataclass
 class Player:
     """Executes one mode at a time."""
-    def __init__(
-            self, 
-            modes: dict[int, ModeConstructor],
-            sign: Sign, 
-            speed_factor: float,
-        ):
+    modes: dict[int, ModeConstructor]
+
+    bells: BellSet
+    buttons: Buttons
+    drums: DrumSet
+    lights: LightSet
+
+    brightness_factor: float
+    speed_factor: float
+
+    def __post_init__(self):
         """Set up initial state."""
         print("Initializing player")
-        self.modes = modes
-        self.sign = sign
-        self.speed_factor = speed_factor
         self.current_mode = -1
 
     def close(self):
-        """Close."""
+        """Clean up."""
+        try:
+            # !!! for button in self.buttons:
+            # !!!     button.close()
+            pass
+        except Exception as e:
+            print(e)
+        try:
+            # !!! self.lights.close()
+            pass
+        except Exception as e:
+            print(e)
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""
@@ -36,7 +53,7 @@ class Player:
         for k, v in kwargs.items():
             match v:
                 case 'LIGHT_PATTERN':
-                    new[k] = self.sign.light_pattern
+                    new[k] = self.lights.relay_pattern
                 case 'PREVIOUS_MODE':
                     new[k] = self.current_mode
                 case _:
@@ -100,7 +117,7 @@ class Player:
                 if isinstance(special, ActionParams):
                     special.action(lights)
                 else:
-                    self.sign.set_lights(
+                    self.lights.set_relays(
                         lights, 
                         special=special,
                     )
@@ -119,3 +136,19 @@ class Player:
                 #print("!!!!!", seconds, elapsed, duration)
                 return
         Button.wait(duration)
+
+    def flip_extra_relays(self, *indices: int):
+        """"""
+        def flip(s):
+            return '0' if s == '1' else '1'
+        assert all(0 <= i < len(self.lights.extra_pattern) for i in indices)
+        extra = ''.join(
+            flip(e) if i in indices else e
+            for i, e in enumerate(self.lights.extra_pattern)
+        )
+        self.lights.set_relays(self.lights.relay_pattern, extra)
+
+    def click(self):
+        """Generate a small click sound by flipping
+           an otherwise unused relay."""
+        self.flip_extra_relays(5)

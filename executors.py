@@ -4,56 +4,49 @@ from collections.abc import Callable
 from signal import SIGUSR1  # type: ignore
 
 from buttons import Button
-from definitions import ALL_RELAYS, ALL_OFF, EXTRA_COUNT, SpecialParams
+from definitions import (
+    ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT, LIGHT_TO_RELAY, 
+    SpecialParams
+)
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from demo import Demo
 from gpiozero import Button as _Button  # type: ignore
 from instruments import BellSet, DrumSet
+from lights import LightSet
+from mode_interface import ModeConstructor, ModeInterface
 import modes
 from mode_defs import *
-import players
 from relays import NumatoRL160001
 from sequence_defs import *
-from signs import Sign
 
-DIMMER_ADDRESSES = [
-    '192.168.51.111',
-    '192.168.51.112',
-    '192.168.51.113',
-    '192.168.51.114',
-    '192.168.51.115',
-]
-#   '192.168.51.116',
-
-def create_sign(brightness_factor: float) -> Sign:
-    """Creates and returns a Sign object and all associated device objects."""
-    bell_set = BellSet()
-    drum_set = DrumSet(
+def setup_devices(brightness_factor: float):
+    """"""
+    bells = BellSet()
+    drums = DrumSet(
         NumatoRL160001(
             "/dev/ttyACM1",
             {i: i for i in range(16)},
         )
     )
-    dimmers: list[ShellyDimmer] = [
-        ShellyProDimmer2PM(index, address)
-        for index, address in enumerate(DIMMER_ADDRESSES)
-    ]
-    light_relays = NumatoRL160001("/dev/ttyACM0", ALL_RELAYS)
-    buttons = [
-        Button('body_back', _Button(pin=17, bounce_time=0.10), SIGUSR1),
-        Button('remote_a', _Button(pin=18, pull_up=False, bounce_time=0.10)),
-        Button('remote_b', _Button(pin=23, pull_up=False, bounce_time=0.10)),
-        Button('remote_c', _Button(pin=24, pull_up=False, bounce_time=0.10)),
-        Button('remote_d', _Button(pin=25, pull_up=False, bounce_time=0.10)),
-    ]
-    return Sign(
-        bell_set=bell_set,
-        drum_set=drum_set,
-        dimmers=dimmers,
-        light_relays=light_relays,
-        buttons=buttons,
+    lights = LightSet(
+        relays = NumatoRL160001(
+            "/dev/ttyACM0",
+            LIGHT_TO_RELAY,
+        ),
+        dimmers = [
+            ShellyProDimmer2PM(i, ip)
+            for i, ip in enumerate(DIMMER_ADDRESSES)
+        ],
         brightness_factor=brightness_factor,
     )
+    buttons = Buttons(
+        body_back = Button(_Button(pin=17, bounce_time=0.10), SIGUSR1),
+        remote_a = Button(_Button(pin=18, pull_up=False, bounce_time=0.10)),
+        remote_b = Button(_Button(pin=23, pull_up=False, bounce_time=0.10)),
+        remote_c = Button(_Button(pin=24, pull_up=False, bounce_time=0.10)),
+        remote_d = Button(_Button(pin=25, pull_up=False, bounce_time=0.10)),
+    )
+    return bells, buttons, drums, lights
 
 class Executor():
     """Executes patterns and commands specified on the command line.
@@ -61,22 +54,16 @@ class Executor():
        creates and turns control over to a Player object."""
 
     def __init__(
-            self, 
-            create_sign: Callable[[float], Sign],
-            create_player: Callable[[
-                    dict[int, modes.ModeConstructor], 
-                    Sign, 
-                    float
-                ], 
-                players.Player
-            ],
+            self,
+            create_player: Callable,
+            setup_devices: Callable,
         ):
         """"""
-        self.create_sign = create_sign
         self.create_player = create_player
+        self.setup_devices = setup_devices
         self.mode_ids: dict[str, int] = {}
         self.mode_menu: list[tuple[int, str]] = []
-        self.modes: dict[int, modes.ModeConstructor] = {}
+        self.modes: dict[int, ModeConstructor] = {}
         self.register_modes()
         self.commands: dict[str, Callable] = {
             'calibrate_dimmers': self.command_calibrate_dimmers,
@@ -87,7 +74,7 @@ class Executor():
     def close(self):
         """Close dependencies."""
         self.player.close()
-        self.sign.close()
+        # !!! close devices
 
     def command_calibrate_dimmers(self):
         """Calibrate dimmers."""
@@ -99,7 +86,7 @@ class Executor():
 
     def command_off(self):
         """Turn off all relays and potentially other devices."""
-        self.sign.set_lights(ALL_OFF, '0' * EXTRA_COUNT)
+        self.lights.set_relays(ALL_OFF, '0' * EXTRA_COUNT)
         print("Marquee hardware is now partially shut down.")
         print()
 
@@ -122,7 +109,7 @@ class Executor():
             self.mode_menu.append((index, name))
             self.mode_ids[str(index)] = index
             self.mode_ids[name] = index
-        self.modes[index] = modes.ModeConstructor(name, mode_class, kwargs)
+        self.modes[index] = ModeConstructor(name, mode_class, kwargs)
 
     def add_sequence_mode(
             self,
@@ -154,7 +141,9 @@ class Executor():
             brightness_pattern: str | None = None,
         ):
         """Effects the command-line specified command, mode or pattern(s)."""
-        self.sign: Sign = self.create_sign(brightness_factor)
+        self.bells, self.buttons, self.drums, self.lights = (
+            setup_devices(brightness_factor)
+        )
         if command is not None:
             self.execute_command(command)
         elif mode_index is not None:
@@ -168,18 +157,18 @@ class Executor():
 
     def execute_mode(self, mode_index: int, speed_factor: float):
         """Effects the command-line specified mode."""
-        self.player = self.create_player(self.modes, self.sign, speed_factor)
+        self.player = self.create_player(self.modes, speed_factor)
         self.player.execute(mode_index)
 
     def execute_pattern(self, light_pattern: str | None, brightness_pattern: str | None):
         """Effects the command-line specified pattern(s)."""
         if brightness_pattern is not None:
             print(f"Setting dimmers {brightness_pattern}")
-            self.sign.set_dimmers(brightness_pattern)
+            self.lights.set_dimmers(brightness_pattern)
             Button.wait(TRANSITION_DEFAULT)
         if light_pattern is not None:
             print(f"Setting lights {light_pattern}")
-            self.sign.set_lights(light_pattern)
+            self.lights.set_relays(light_pattern)
 
     def register_modes(self):
         """Register all operating modes."""

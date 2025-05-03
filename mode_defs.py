@@ -31,7 +31,7 @@ class RotateReversible(PlayMode):
     def execute(self):
         """Display a single pattern.
            Called repeatedly until the mode is changed."""
-        self.player.sign.set_lights(self.pattern)
+        self.player.set_lights(self.pattern)
         self.player.wait(self.pace)
         self.pattern = (
             self.pattern[self.direction:] + self.pattern[:self.direction]
@@ -69,10 +69,10 @@ class RandomFade(PlayMode):
     
     def execute(self):
         """"""
-        for channel in self.player.sign.dimmer_channels:
+        for channel in self.player.dimmer_channels:
             channel.next_update = 0
         while True:
-            for channel in self.player.sign.dimmer_channels:
+            for channel in self.player.dimmer_channels:
                 if channel.next_update < (now := time.time()):
                     channel.set(
                         transition = (tran := self._new_transition()),
@@ -100,12 +100,12 @@ class EvenOddFade(PlayMode):
 
     def execute(self):
         """"""
-        self.player.sign.set_dimmers(ALL_LOW) 
+        self.player.set_dimmers(ALL_LOW) 
         delay = 5.0
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
         even_on = opposite_pattern(odd_on)
         for pattern in itertools.cycle((even_on, odd_on)):
-            self.player.sign.set_lights(
+            self.player.set_lights(
                 pattern, 
                 special=DimmerParams(
                     concurrent=True,
@@ -133,11 +133,11 @@ class RapidFade(PlayMode):
  
     def execute(self):
         """"""
-        self.player.sign.set_lights(ALL_ON)
+        self.player.set_lights(ALL_ON)
         while True:
-            self.player.sign.set_dimmers(ALL_HIGH, force_update=True)
+            self.player.set_dimmers(ALL_HIGH, force_update=True)
             previous = None
-            for channel in self.player.sign.dimmer_channels:
+            for channel in self.player.dimmer_channels:
                 start = time.time()
                 channel.set(brightness=0, transition=TRANSITION_MINIMUM)
                 if previous:
@@ -166,13 +166,13 @@ class BuildBrightness(PlayMode):
         self.equal_trans = equal_trans
 
     def execute(self):
-        self.player.sign.set_dimmers(ALL_LOW)
+        self.player.set_dimmers(ALL_LOW)
         brightnesss = [(i + 1) * 10 for i in range(LIGHT_COUNT)]
         transitions = (
             [0.5] * LIGHT_COUNT
                 if self.equal_trans else
             [(i + 1) * 2 for i in range(LIGHT_COUNT)]
         )
-        for dimmer, brightness, transition in zip(self.player.sign.dimmer_channels, brightnesss, transitions):
+        for dimmer, brightness, transition in zip(self.player.dimmer_channels, brightnesss, transitions):
             dimmer.set(brightness=brightness, transition=transition)
         self.player.wait(4)

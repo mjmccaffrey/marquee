@@ -1,38 +1,26 @@
-"""Marquee Lighted Sign Project - signs"""
+"""Marquee Lighted Sign Project - lights"""
 
 import asyncio
-import logging
+from dataclasses import dataclass
 
-from buttons import Button
-from definitions import *
+from definitions import (
+    DimmerParams, SpecialParams, 
+    EXTRA_COUNT, LIGHT_COUNT,
+)
 from dimmers import (
     ShellyDimmer, DimmerChannel,
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,
 )
-from instruments import BellSet, DrumSet
 from relays import NumatoUSBRelayModule
 
-class Sign:
-    """Supports the physical devices."""
+@dataclass
+class LightSet:
+    """"""
+    relays: NumatoUSBRelayModule
+    dimmers: list[ShellyDimmer]
+    brightness_factor: float
 
-    def __init__(
-        self,
-        bell_set: BellSet,
-        drum_set: DrumSet,
-        dimmers: list[ShellyDimmer],
-        light_relays: NumatoUSBRelayModule,
-        buttons: list[Button],
-        brightness_factor: float,
-    ):
-        """Set up the initial state."""
-        print("Initializing sign")
-        self.bell_set = bell_set
-        self.drum_set = drum_set
-        self.dimmers = dimmers
-        self._light_relays = light_relays
-        self._buttons = buttons
-        self.brightness_factor = brightness_factor
-
+    def __post_init__(self):
         # channel[i] maps to light[i], 0 <= i < LIGHT_COUNT
         self.dimmer_channels: list[DimmerChannel] = [
             channel
@@ -42,21 +30,9 @@ class Sign:
         for c in self.dimmer_channels:
             print(c)
         assert len(self.dimmer_channels) == LIGHT_COUNT
-        full_pattern = self._light_relays.get_state_of_devices()
-        self.light_pattern = full_pattern[:LIGHT_COUNT]
+        full_pattern = self.relays.get_state_of_devices()
+        self.relay_pattern = full_pattern[:LIGHT_COUNT]
         self.extra_pattern = full_pattern[LIGHT_COUNT:]
-
-    def close(self):
-        """Clean up."""
-        try:
-            for button in self._buttons:
-                button.close()
-        except Exception as e:
-            logging.exception(e)
-        try:
-            self._light_relays.close()
-        except Exception as e:
-            logging.exception(e)
 
     def _updates_needed(
         self, 
@@ -74,7 +50,7 @@ class Sign:
             if c.brightness != b
         ]
 
-    def _set_lights_relay_override(
+    def _set_relays_override(
             self,
             light_pattern: list | str, 
             special: DimmerParams,
@@ -111,7 +87,7 @@ class Sign:
             for c, b, t in updates:
                 c.set(brightness=b, transition=t)
             
-    def set_lights(
+    def set_relays(
             self, 
             light_pattern: str,
             extra_pattern: str | None = None,
@@ -124,32 +100,16 @@ class Sign:
         assert extra_pattern is None or len(extra_pattern) == EXTRA_COUNT
         light_pattern = ''.join(str(e) for e in light_pattern)
         if isinstance(special, DimmerParams):
-            self._set_lights_relay_override(light_pattern, special)
+            self._set_relays_override(light_pattern, special)
         else:
             if extra_pattern is None:
                 extra_pattern = self.extra_pattern
             else:
                 extra_pattern = ''.join(str(e) for e in extra_pattern)
             full_pattern = light_pattern + extra_pattern
-            self._light_relays.set_state_of_devices(full_pattern)
+            self.relays.set_state_of_devices(full_pattern)
             self.extra_pattern = extra_pattern
-            self.light_pattern = light_pattern
-
-    def flip_extra_relays(self, *indices: int):
-        """"""
-        def flip(s):
-            return '0' if s == '1' else '1'
-        assert all(0 <= i < len(self.extra_pattern) for i in indices)
-        extra = ''.join(
-            flip(e) if i in indices else e
-            for i, e in enumerate(self.extra_pattern)
-        )
-        self.set_lights(self.light_pattern, extra)
-
-    def click(self):
-        """Generate a small click sound by flipping
-           an otherwise unused relay."""
-        self.flip_extra_relays(5)
+            self.relay_pattern = light_pattern
 
     def set_dimmers(
             self, 
@@ -186,6 +146,7 @@ class Sign:
             self,
             updates: list[tuple[DimmerChannel, int, float]],
     ):
+        """"""
         commands = [
             c.make_set_command(
                 brightness=b,
@@ -198,14 +159,14 @@ class Sign:
             command.channel.brightness = command.params['brightness']
 
     @property
-    def light_pattern(self) -> str:
+    def relay_pattern(self) -> str:
         """Return the active light pattern."""
-        return self._light_pattern
+        return self._relay_pattern
     
-    @light_pattern.setter
-    def light_pattern(self, value):
+    @relay_pattern.setter
+    def relay_pattern(self, value):
         """Update the active light pattern."""
-        self._light_pattern = value
+        self._relay_pattern = value
 
     def dimmer_brightnesses(self) -> list[int]:
         """Return the active dimmer pattern."""

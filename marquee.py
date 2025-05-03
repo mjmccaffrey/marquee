@@ -4,6 +4,12 @@ marquee
     arguments
     Executor
         Player
+            BellSet
+            Buttons
+            DrumSet
+            LightSet
+                Dimmers
+                Relays
             SelectMode
             PlayMode
             PlaySequenceMode
@@ -27,19 +33,15 @@ marquee
                         Sequence
             mode_defs
             sequence_defs
-        Sign
-            Buttons
-            Dimmers
-            Relays
 """
 from arguments import display_help, process_arguments
-from executors import Executor, create_sign
+from executors import Executor, setup_devices
 from players import Player
 
 def main():
     """Execute Marquee application."""
     try:
-        exec = Executor(create_sign, Player)
+        exec = Executor(Player, setup_devices)
         try:
             args = process_arguments(exec.mode_ids, exec.commands)
         except ValueError:

@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 
-from relays import NumatoUSBRelayModule
+from relays import RelayModuleInterface
 
 class Instrument(ABC):
     """"""
@@ -34,7 +34,7 @@ class BellSet(Instrument):
 
 class DrumSet(Instrument):
     """"""
-    def __init__(self, relays: NumatoUSBRelayModule):
+    def __init__(self, relays: RelayModuleInterface):
         super().__init__()
         self.relays = relays
         self.count = self.relays.relay_count

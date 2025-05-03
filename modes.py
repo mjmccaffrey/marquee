@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - modes"""
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
 import time
@@ -10,10 +10,10 @@ from buttons import Button
 from definitions import (
     ALL_HIGH, ALL_OFF, ALL_ON,
     ActionParams, DimmerParams, SpecialParams,
-    ModeInterface,
 )
 from dimmers import TRANSITION_DEFAULT
-from music import Environment, set_environment
+from mode_interface import ModeInterface
+from music import set_player
 from players import Player
 from sequence_defs import rotate_build_flip
 
@@ -27,14 +27,13 @@ class Mode(ModeInterface):
         preset_relays: bool = False,
     ):
         """"""
-        self.player = player
-        self.name = name
+        super().__init__(player, name)
         if preset_dimmers:
             print("presetting DIMMERS")
-            self.player.sign.set_dimmers(ALL_HIGH, force_update=True)
+            self.player.lights.set_dimmers(ALL_HIGH, force_update=True)
         if preset_relays:
             print("presetting RELAYS")
-            self.player.sign.set_lights(ALL_ON)
+            self.player.lights.set_relays(ALL_ON)
 
     def mode_index(self, current: int, delta: int) -> int:
         """Return a new mode index, wrapping index in both directions."""
@@ -71,16 +70,17 @@ class SelectMode(Mode):
     def button_action(self, button: Button):
         """Respond to the button press."""
         assert self.desired_mode is not None
-        match button.name:
-            case 'body_back' | 'remote_a' | 'remote_d':
+        b = self.player.buttons
+        match button:
+            case b.body_back | b.remote_a | b.remote_d:
                 self.desired_mode = self.mode_index(self.desired_mode, +1)
-            case 'remote_b':
+            case b.remote_b:
                 self.desired_mode = self.mode_index(self.desired_mode, -1)
-            case 'remote_c':
+            case b.remote_c:
                 # self.desired_mode = 2  # ALL_OFF
                 return 222  # Quick change to mode ALL_OFF
             case _:
-                raise Exception
+                raise ValueError("Unrecognized button.")
         return None
 
     def execute(self):
@@ -91,7 +91,7 @@ class SelectMode(Mode):
         if self.desired_mode != self.previous_desired_mode:
             # Not last pass.
             # Show user what desired mode number is currently selected.
-            self.player.sign.set_lights(ALL_OFF)
+            self.player.lights.set_relays(ALL_OFF)
             time.sleep(0.5)
             self.player.play_sequence(
                 rotate_build_flip(count=self.desired_mode),
@@ -121,21 +121,22 @@ class PlayMode(Mode):
     def button_action(self, button: Button):
         """Respond to the button press."""
         new_mode = None
-        match button.name:
-            case 'remote_a' | 'body_back':
+        b = self.player.buttons
+        match button:
+            case b.remote_a | b.body_back:
                 new_mode = 0
-            case 'remote_c':
-                self.player.sign.click()
+            case b.remote_c:
+                self.player.click()
                 self.direction *= -1
-            case 'remote_b':
-                self.player.sign.click()
+            case b.remote_b:
+                self.player.click()
                 new_mode = self.mode_index(self.player.current_mode, -1)
-            case 'remote_d':
-                self.player.sign.click()
+            case b.remote_d:
+                self.player.click()
                 new_mode = self.mode_index(self.player.current_mode, +1)
                 print("Button Action: ", new_mode)
             case _:
-                raise ValueError("Unrecognized button name.")
+                raise ValueError("Unrecognized button.")
         return new_mode
 
 class PlaySequenceMode(PlayMode):
@@ -197,31 +198,7 @@ class PlayMusicMode(PlayMode):
         name: str,
     ):
         super().__init__(player, name, preset_dimmers=True, preset_relays=True)
-        set_environment(
-            Environment(
-                bell_set=self.player.sign.bell_set,
-                drum_set=self.player.sign.drum_set,
-                dimmer=self.dimmer,
-                light=self.light,
-                wait=self.player.wait,
-            )
-        )
-
-    def dimmer_sequence(self, brightness: int, transition: float) -> Callable:
-        """Return callable to effect state of specified dimmers."""
-        def func(lights: list[int]):
-            self.player.sign.execute_dimmer_commands([
-                (   self.player.sign.dimmer_channels[l], 
-                    brightness, 
-                    transition,
-                )
-                for l in lights
-            ])
-        return func
-
-    def dimmer(self, pattern: str) -> Callable:
-        """Return callable to effect dimmer pattern."""
-        return lambda: self.player.sign.set_dimmers(pattern)
+        set_player(self.player)
 
     def light(
         self, 
@@ -237,7 +214,7 @@ class PlayMusicMode(PlayMode):
         if isinstance(special, ActionParams):
             result = lambda: special.action(pattern)
         else:
-            result = lambda: self.player.sign.set_lights(
+            result = lambda: self.player.lights.set_relays(
                 light_pattern=pattern,
                 special=special,
             )

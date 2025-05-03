@@ -9,21 +9,11 @@ from typing import Any, ClassVar
 
 from definitions import SpecialParams
 from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument
+from players import Player
 
-@dataclass
-class Environment:
-    bell_set: BellSet
-    drum_set: DrumSet
-    dimmer: Callable[[str], Callable]
-    light: Callable[[Any, SpecialParams | None], Callable]
-    wait: Callable[[float, float], None]
-
-environment: Environment | None = None
-
-def set_environment(env: Environment):
-    """Called once to link to Player and Sign resources."""
-    global environment
-    environment = env
+def set_player(the_player: Player):
+    global player
+    player = the_player
 
 @dataclass
 class Element(ABC):
@@ -66,7 +56,7 @@ class BellNote(BaseNote):
 
     def play(self):
         """Play single BellNote."""
-        environment.bell_set.play(self.pitches)
+        player.bells.play(self.pitches)
 
 @dataclass
 class DrumNote(BaseNote):
@@ -76,7 +66,7 @@ class DrumNote(BaseNote):
 
     def play(self):
         """Play single DrumNote."""
-        environment.drum_set.play(self.accent)
+        player.drums.play(self.accent)
 
 @dataclass
 class NoteGroup(Element):
@@ -251,7 +241,7 @@ def expand_sequence_measures(
             ActionNote(
                 duration=measure.step_duration,
                 actions=(
-                    environment.light(
+                    light(
                         next(measure.patterns),
                         measure.special,
                     ),
@@ -281,7 +271,7 @@ def play(
                 duration = element.duration
                 if duration:
                     wait_dur = (duration) * pace
-                    environment.wait(wait_dur, time.time() - start)
+                    player.wait(wait_dur, time.time() - start)
                     start = time.time()
             beat += duration
             if beat > measure.beats:
@@ -289,7 +279,7 @@ def play(
         # Play implied rests at end of measure
         wait_dur = (measure.beats - beat) * pace 
         #print(f"wait_dur: {wait_dur}")
-        environment.wait(wait_dur, time.time() - start)
+        player.wait(wait_dur, time.time() - start)
 
 def measure(*elements: Element, beats: int = 4) -> Measure:
     """Produce Measure."""
@@ -322,12 +312,24 @@ def sequence(
     return sequence_obj
 
 def dimmer(pattern: str) -> Callable:
-    """Callable to effect dimmer pattern."""
-    return environment.dimmer(pattern)
+    """Return callable to effect dimmer pattern."""
+    return lambda: player.lights.set_dimmers(pattern)
+
+def dimmer_sequence(brightness: int, transition: float) -> Callable:
+    """Return callable to effect state of specified dimmers."""
+    def func(lights: list[int]):
+        player.lights.execute_dimmer_commands([
+            (   player.lights.dimmer_channels[l], 
+                brightness, 
+                transition,
+            )
+            for l in lights
+        ])
+    return func
 
 def light(
     pattern: Any,
     special: SpecialParams | None = None,
 ) -> Callable:
     """Callable to effect light pattern."""
-    return environment.light(pattern, special)
+    return lambda: player.lights.set_relays(pattern, special=special)

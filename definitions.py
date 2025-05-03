@@ -1,12 +1,9 @@
 """Marquee Lighted Sign Project - definitions"""
 
-from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any
 
 from buttons import Button
-from players import Player
 
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
@@ -37,6 +34,23 @@ ALL_HIGH = HIGH * LIGHT_COUNT
 ALL_LOW = LOW * LIGHT_COUNT
 ALL_ON = ON * LIGHT_COUNT
 ALL_OFF = OFF * LIGHT_COUNT
+DIMMER_ADDRESSES = [
+    '192.168.51.111',
+    '192.168.51.112',
+    '192.168.51.113',
+    '192.168.51.114',
+    '192.168.51.115',
+]
+#   '192.168.51.116',
+
+@dataclass
+class Buttons:
+    """Every button."""
+    body_back: Button
+    remote_a: Button
+    remote_b: Button
+    remote_c: Button
+    remote_d: Button
 
 @dataclass
 class SpecialParams:
@@ -56,29 +70,3 @@ class DimmerParams(SpecialParams):
     speed_factor: float = 1.0
     transition_on: float | None = None
     transition_off: float | None = None
-
-class ModeInterface(ABC):
-    """"""
-
-    def __init__(
-            self, 
-            player: Player,
-            name: str,
-    ):
-        """"""
-        self.player = player
-        self.name = name
-
-    @abstractmethod
-    def button_action(self, button: Button):
-        """"""        
-
-    @abstractmethod
-    def execute(self):
-        """"""
-
-@dataclass
-class ModeConstructor:
-    name: str
-    mode_class: type[ModeInterface]
-    kwargs: dict[str, Any]

@@ -126,28 +126,20 @@ class ShellyDimmer(ABC):
     @classmethod
     def configure_all(cls):
         """ """  # !!!
-        DIMMER_ADDRESSES = [
-            '192.168.51.111',
-            '192.168.51.112',
-            '192.168.51.113',
-            '192.168.51.114',
-            '192.168.51.115',
-            '192.168.51.116',
-        ]
         print("Configuring dimmers")
-        commands = [
-            _DimmerCommand(
-                channel=cls._dimmers[0].channels[0], 
-                url=f'http://{ip}/rpc/Shelly.GetConfig',
-                params={},
-            )
-            for ip in DIMMER_ADDRESSES
-        ]
-        results = asyncio.run(cls.execute_multiple_commands(commands))
-        for result in results:
-            print()
-            print(result)
-            print()
+        # commands = [
+        #     _DimmerCommand(
+        #         channel=cls._dimmers[0].channels[0], 
+        #         url=f'http://{ip}/rpc/Shelly.GetConfig',
+        #         params={},
+        #     )
+        #     for ip in DIMMER_ADDRESSES
+        # ]
+        # results = asyncio.run(cls.execute_multiple_commands(commands))
+        # for result in results:
+        #     print()
+        #     print(result)
+        #     print()
 
 class DimmerChannel:
     """ Models a single dimmer channel (light). """

@@ -5,8 +5,12 @@ import sys
 from definitions import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
 from modes import PlayMusicMode
 from music import (
-    act, act_part, dimmer, drum_part, light, measure, part, play, 
-    rest, section, sequence, sequence_measure, sequence_part
+    dimmer, dimmer_sequence, light, measure, part, play,
+    section, sequence,
+)
+from notation import(
+    act, act_part, drum_part,
+    rest, sequence_measure, sequence_part
 )
 from sequence_defs import *
 
@@ -183,7 +187,7 @@ class Demo(PlayMusicMode):
             ),
             sequence_measure(
                 '♩', LIGHT_COUNT, random_once_each, 
-                ActionParams(action=self.dimmer_sequence(100, 2)),
+                ActionParams(action=dimmer_sequence(100, 2)),
                 beats=16,
             ),
             tempo = 90,

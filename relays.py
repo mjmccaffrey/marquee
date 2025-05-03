@@ -1,10 +1,24 @@
 """Marquee Lighted Sign Project - relayboards"""
 
 from abc import ABC, abstractmethod
+from typing import ClassVar
 
 import serial  # type: ignore
 
-class NumatoUSBRelayModule(ABC):
+class RelayModuleInterface(ABC):
+    """"""
+
+    relay_count: ClassVar[int]
+
+    @abstractmethod
+    def set_state_of_devices(self, device_pattern):
+        """Set the physical relays per device_pattern."""
+
+    @abstractmethod
+    def get_state_of_devices(self) -> str:
+        """Get the state of all devices and output a device pattern."""
+
+class NumatoUSBRelayModule(RelayModuleInterface):
     """Supports Numato USB Relay Modules."""
 
     def __init__(self, port_address, device_mapping):
@@ -35,11 +49,6 @@ class NumatoUSBRelayModule(ABC):
     def close(self):
         """Clean up."""
         self._serial_port.close()
-
-    @property
-    @abstractmethod
-    def relay_count(self) -> int:
-        """Return a specific model's number of relays."""
 
     def set_state_of_devices(self, device_pattern):
         """Set the physical relays per device_pattern."""
@@ -92,7 +101,4 @@ class NumatoUSBRelayModule(ABC):
 class NumatoRL160001(NumatoUSBRelayModule):
     """Supports the Numato RL160001 16 Channel USB Relay Module."""
 
-    @property
-    def relay_count(self) -> int:
-        """Return the specific model's number of relays."""
-        return 16
+    relay_count = 16
