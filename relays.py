@@ -31,6 +31,8 @@ class NumatoUSBRelayModule(RelayModuleInterface):
             timeout=1,
         )
         print(f"Initializing {self}")
+        print(device_mapping)
+        print(self.relay_count)
         assert len(device_mapping) == self.relay_count
         self.device_mapping = device_mapping
         self.device_count = max(device_mapping.keys()) + 1
