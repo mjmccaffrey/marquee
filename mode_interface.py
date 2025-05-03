@@ -6,13 +6,12 @@ from typing import Any
 
 
 from buttons import Button
-from players import Player
 
 class ModeInterface(ABC):
     """Mode abstract base."""
     def __init__(
             self, 
-            player: Player,
+            player: Any,  # Player,
             name: str,
     ):
         self.player = player
