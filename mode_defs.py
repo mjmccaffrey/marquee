@@ -9,6 +9,7 @@ from typing import Any
 from definitions import DimmerParams, ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
 from dimmers import TRANSITION_MINIMUM
 from modes import PlayMode
+from players import Player
 
 class RotateReversible(PlayMode):
     """Rotate a pattern, reversing direction in response to a button press."""
