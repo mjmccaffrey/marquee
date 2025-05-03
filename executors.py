@@ -31,7 +31,7 @@ def setup_devices(brightness_factor: float):
     lights = LightSet(
         relays = NumatoRL160001(
             "/dev/ttyACM0",
-            LIGHT_TO_RELAY,
+            ALL_RELAYS,
         ),
         dimmers = [
             ShellyProDimmer2PM(i, ip)
