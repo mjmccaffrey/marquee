@@ -5,7 +5,7 @@ from signal import SIGUSR1  # type: ignore
 
 from buttons import Button
 from definitions import (
-    ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT, LIGHT_TO_RELAY, 
+    ALL_RELAYS, ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT, LIGHT_TO_RELAY, 
     SpecialParams
 )
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
