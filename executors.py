@@ -108,17 +108,17 @@ class Executor():
             index: int, 
             name: str,
             mode_class: type[modes.Mode],
-            hidden: bool = False,
             **kwargs,
     ):
-        """Register the mode IDs and everything needed to create an instance."""
+        """Register the mode IDs and everything needed to create an instance.
+           Value of index <= 0 indicates hidden mode."""
         assert (str(index) not in self.mode_ids
             and name not in self.mode_ids
         ), "Duplicate mode index or name"
         assert all(
             str(k) in self.mode_ids for k in range(1, index)
         ), "Non-sequential mode index"
-        if not hidden:
+        if index > 0:
             self.mode_menu.append((index, name))
             self.mode_ids[str(index)] = index
             self.mode_ids[name] = index
@@ -183,7 +183,10 @@ class Executor():
 
     def register_modes(self):
         """Register all operating modes."""
-        self.add_mode(0, "selection", modes.SelectMode, hidden=True, previous_mode="PREVIOUS_MODE")
+        self.add_mode(-1, "select_brightness", modes.BrightnessSelectMode)
+        self.add_mode(0, "select_mode", modes.ModeSelectMode, 
+            previous_mode="PREVIOUS_MODE",
+        )
         self.add_sequence_mode(1, "all_on", all_on)
         self.add_sequence_mode(2, "all_off", all_off)
         self.add_sequence_mode(3, "even_on", even_on)

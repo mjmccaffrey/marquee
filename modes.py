@@ -40,15 +40,21 @@ class Mode(ABC):
             print("presetting RELAYS")
             self.player.sign.set_lights(ALL_ON)
 
-    def mode_index(self, current: int, delta: int) -> int:
-        """Return a new mode index, wrapping index in both directions."""
-        lower, upper = 1, len(self.player.modes) - 1
+    @staticmethod
+    def wrap_value[T: (float, int)](
+        lower: T, upper: T, current: T, delta: T,
+    ):
+        """"""
         value = current + delta % (upper - lower + 1)
         if (dif := value - upper) > 0:
             value = lower + dif - 1
         elif (dif := value - lower) < 0:
             value = upper + dif + 1
         return value
+
+    def mode_index(self, current: int, delta: int) -> int:
+        """Return a new mode index, wrapping index in both directions."""
+        return self.wrap_value(1, max(self.player.modes), current, delta)
 
     @abstractmethod
     def button_action(self, button: Button):
@@ -58,56 +64,115 @@ class Mode(ABC):
     def execute(self):
         """Play the mode."""
  
-class SelectMode(Mode):
-    """Supports the select mode."""
+class SelectMode[T: (float, int)](Mode):
+    """Supports the selection modes."""
+
     def __init__(
         self,
         player: Any,  # Player
         name: str,
-        #
-        previous_mode: int,
+        lower: T,
+        upper: T,
+        step: T,
+        scale: T,
+        previous: T,
+        special_mode: int,
     ):
         """"""
         super().__init__(player, name, preset_dimmers=True)
-        self.desired_mode = previous_mode
-        self.previous_desired_mode = -1
+        self.lower = lower
+        self.upper = upper
+        self.step = step
+        self.scale = scale
+        self.desired: T = previous
+        self.previous_desired = None
+        self.special_mode = special_mode
+
+    def update_desired(self, delta: T) -> T:
+        return self.wrap_value(self.lower, self.upper, self.desired, delta)
 
     def button_action(self, button: Button):
         """Respond to the button press."""
-        assert self.desired_mode is not None
         match button.name:
             case 'body_back' | 'remote_a' | 'remote_d':
-                self.desired_mode = self.mode_index(self.desired_mode, +1)
+                self.desired = self.update_desired(+self.step)
             case 'remote_b':
-                self.desired_mode = self.mode_index(self.desired_mode, -1)
+                self.desired = self.update_desired(-self.step)
             case 'remote_c':
-                # self.desired_mode = 2  # ALL_OFF
-                return 222  # Quick change to mode ALL_OFF
+                return self.special_mode
             case _:
                 raise Exception
         return None
 
     def execute(self):
-        """User presses the button to select 
-           the next mode to execute."""
-        super().execute()
-        new_mode = None
-        if self.desired_mode != self.previous_desired_mode:
+        """Indicate current selection, 
+           give user chance to change it."""
+        if self.desired == self.special_mode:
+            return self.special_mode
+        if self.desired != self.previous_desired:
             # Not last pass.
             # Show user what desired mode number is currently selected.
             self.player.sign.set_lights(ALL_OFF)
             time.sleep(0.5)
             self.player.play_sequence(
-                rotate_build_flip(count=self.desired_mode),
+                rotate_build_flip(count = int(self.desired * self.scale)),
                 pace=0.20, post_delay=4.0,
             )
-            self.previous_desired_mode = self.desired_mode
+            self.previous_desired = self.desired
+            result = None
         else:
             # Last pass.
             # Time elapsed without a button being pressed.
-            # Play the selected mode.
-            new_mode = self.desired_mode
-        return new_mode
+            # Implement the selection.
+            result = self.desired
+        return result
+
+class BrightnessSelectMode(SelectMode):
+    """Allows user to select maximum brightness."""
+
+    def __init__(
+        self,
+        player: Any,  # Player
+        name: str,
+        previous_mode: int,
+    ):
+        """"""
+        super().__init__(
+            player=player, 
+            name=name, 
+            lower=0, upper=1, 
+            step=0.1, scale=10,
+            previous=player.sign.brightness_factor,
+            special_mode=222,
+        )
+        self.previous_mode = previous_mode
+
+    def execute(self):
+        """Indicate current brightness selection, 
+           give user chance to change it."""
+        self.player.sign.brightness_factor = self.desired
+        result = super().execute()
+        if result is not None and result != self.special_mode:
+            result = self.previous_mode
+        return result
+
+class ModeSelectMode(SelectMode):
+    """Allows user to select mode."""
+
+    def __init__(
+        self,
+        player: Any,  # Player
+        name: str,
+        previous_mode: int,
+    ):
+        """"""
+        super().__init__(
+            player=player, name=name, 
+            lower=1, upper=max(player.modes), 
+            step=1, scale=1, 
+            previous=previous_mode, 
+            special_mode=-1,
+        )
 
 class PlayMode(Mode):
     """Base for custom modes."""
