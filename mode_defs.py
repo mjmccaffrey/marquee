@@ -4,7 +4,6 @@ import itertools
 import random
 from sequence_defs import *
 import time
-from typing import Any
 
 from definitions import DimmerParams, ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
 from dimmers import TRANSITION_MINIMUM

@@ -72,7 +72,7 @@ class Demo(PlayMusicMode):
             ),
             tempo=75,
         )
-    
+
     def rotate(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
@@ -91,7 +91,7 @@ class Demo(PlayMusicMode):
             ),
             tempo=75,
         )
-    
+
     def triplett_a(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(

@@ -1,8 +1,8 @@
 """Marquee Lighted Sign Project - music"""
 
 from abc import ABC, abstractmethod
-from collections.abc import Callable
-from dataclasses import dataclass
+from collections.abc import Callable, Iterator
+from dataclasses import dataclass, field, replace
 import itertools
 import time
 from typing import Any, ClassVar
@@ -12,14 +12,15 @@ from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInst
 from players import Player
 
 def set_player(the_player: Player):
+    """Set the Player object used throughout this module."""
     global player
     player = the_player
 
-@dataclass
+@dataclass(frozen=True)
 class Element(ABC):
     """Base for all musical items."""
     
-@dataclass
+@dataclass(frozen=True)
 class BaseNote(Element):
     """Base for all musical notes."""
     instrument_class: ClassVar[type[Instrument]]
@@ -29,7 +30,7 @@ class BaseNote(Element):
     def play(self):
         """Play single BaseNote (abstract)."""
 
-@dataclass
+@dataclass(frozen=True)
 class Rest(BaseNote):
     """Musical rest."""
     instrument_class: ClassVar[type[Instrument]] = RestInstrument
@@ -37,7 +38,7 @@ class Rest(BaseNote):
     def play(self):
         """Play single rest (do nothing)."""
 
-@dataclass
+@dataclass(frozen=True)
 class ActionNote(BaseNote):
     """Note to execute arbitrary actions."""
     instrument_class: ClassVar[type[Instrument]] = ActionInstrument
@@ -48,7 +49,7 @@ class ActionNote(BaseNote):
         for action in self.actions:
             action()
 
-@dataclass
+@dataclass(frozen=True)
 class BellNote(BaseNote):
     """Note to strike 1 or more bells."""
     instrument_class: ClassVar[type[Instrument]] = BellSet
@@ -58,7 +59,7 @@ class BellNote(BaseNote):
         """Play single BellNote."""
         player.bells.play(self.pitches)
 
-@dataclass
+@dataclass(frozen=True)
 class DrumNote(BaseNote):
     """Note to click & clack relays."""
     instrument_class: ClassVar[type[Instrument]] = DrumSet
@@ -68,18 +69,24 @@ class DrumNote(BaseNote):
         """Play single DrumNote."""
         player.drums.play(self.accent)
 
-@dataclass
+@dataclass(frozen=True)
 class NoteGroup(Element):
     """Contains notes to play concurrently."""
     notes: tuple[BaseNote, ...]
+    duration: float = 0.0
+
+    def play(self):
+        """Play all notes in group."""
+        for note in self.notes:
+            note.play()
     
-@dataclass
+@dataclass(frozen=True)
 class Measure(Element):
     """Musical measure containing notes."""
     elements: tuple[Element, ...]
     beats: int
-    
-@dataclass
+
+@dataclass(frozen=True)
 class SequenceMeasure(Measure):
     """Defines a measure with a sequence of light events."""
     sequence: Callable
@@ -88,28 +95,31 @@ class SequenceMeasure(Measure):
     count: int
     special: SpecialParams | None
     beats: int
+    patterns: Iterator = field(init=False)
 
     def __post_init__(self):
         """Create iterator."""
-        self.patterns = itertools.cycle(self.sequence(**self.kwargs))
+        setattr(self, 'patterns', itertools.cycle(self.sequence(**self.kwargs)))
 
-@dataclass
+@dataclass(frozen=True)
 class Sequence(Element):
     """Defines a sequence of light patterns."""
     sequence: Callable
     special: SpecialParams | None
     measures: int
     kwargs: dict[str, Any]
+    iter: Iterator = field(init=False)
 
     def __post_init__(self):
         """Create iterator."""
-        self.iter = itertools.cycle(self.sequence(**self.kwargs))
+        setattr(self, 'iter', itertools.cycle(self.sequence(**self.kwargs)))
 
-@dataclass
+@dataclass(frozen=True)
 class Part(Element):
     """Musical part containing measures."""
     measures: tuple[Measure, ...]
     default_accent: str = ''
+    elements: tuple[Element] = field(init=False)
 
     def __post_init__(self):
         """Process measures."""
@@ -120,33 +130,41 @@ class Part(Element):
     def _apply_accent(accent, measures: tuple[Measure, ...]):
         """Apply default accent (drums only)."""
         for measure in measures:
-            for element in measure.elements:
-                if isinstance(element, DrumNote) and not element.accent:
-                    element.accent = accent
+            elements = tuple(
+                replace(element, accent=accent)
+                    if (        isinstance(element, DrumNote) 
+                        and not element.accent) else
+                element
+                for element in measure.elements
+            )
+            setattr(measure, 'elements', elements)
 
-@dataclass
+@dataclass(frozen=True)
 class Section(Element):
     """Musical section containing parts and meta info."""
     parts: tuple[Part, ...]
     beats: int
     tempo: int
+    measures: list[Measure] = field(init=False)
 
     def __post_init__(self):
         """Process parts so they are ready to play."""
         if self.beats is not None:
             self._apply_beats(self.beats, self.parts)
-        self._measures = self._prepare_parts(self.parts)
+        setattr(self, 'measures', self._prepare_parts(self.parts))
 
     def play(self):
         """Play already-generated measures comprising Section."""
-        play(*self._measures, tempo=self.tempo)
+        play(*self.measures, tempo=self.tempo)
 
     @staticmethod
     def _apply_beats(beats, parts):
         """Apply default # of beats to all measures in the Section."""
         for part in parts:
-            for measure in part.measures:
-                measure.beats = beats
+            part.measures = [
+                replace(measure, beats=beats)
+                for measure in part.measures
+            ]
 
     @staticmethod
     def _prepare_parts(
@@ -157,38 +175,31 @@ class Section(Element):
             Merge parts into single sequence of Measures."""
         #
         for part in parts:
-            expand_sequence_measures(part.measures)
+            _expand_sequence_measures(part.measures)
         # Make all parts have the same # of measures
         longest = max(len(p.measures) for p in parts)
         for p in parts:
             if len(p.measures) < longest:
                 pad = Measure(elements=(), beats=p.measures[-1].beats)
-                p.measures = tuple(
+                setattr(p, 'measures', tuple(
                     p.measures[i] if i < len(p.measures) else pad
                     for i in range(longest)
-                )
+                ))
         #
         concurrent_measures = zip(*(p.measures for p in parts))
         return [
-            Section.merge_concurrent_measures(measure_set)
+            Section._merge_concurrent_measures(measure_set)
             for measure_set in concurrent_measures
         ]
 
     @staticmethod
-    def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
+    def _merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
         """Convert measure from each part into single measure
-        of notes with 0 duration, padded with rests."""
-        beats = measures[0].beats
-        assert all(m.beats == beats for m in measures)
-        elements_in = [iter(m.elements) for m in measures]
-        elements_out: list[Element] = []
-        beat_next: list[float | None] = [0 for m in measures]
-        beat, next_beat, rest_dur = 0.0, 0.0, 0.0
-        while any(bn is not None for bn in beat_next):
-            # Get concurrent notes
-            beat = next_beat
-            out: list[Element] = []
-            concurrent_notes: list[BaseNote] = []
+        of (non-rest) notes with 0 duration, padded with rests."""
+
+        def get_concurrent_notes(beat: float) -> list[BaseNote]:
+            """Return all notes occuring on beat."""
+            result = []
             for i, _ in enumerate(measures):
                 if beat_next[i] == beat:
                     element = next(elements_in[i], None)
@@ -198,38 +209,44 @@ class Section(Element):
                         assert isinstance(element, BaseNote)
                         beat_next[i] = beat + element.duration
                         if not isinstance(element, Rest):
-                            element.duration = 0
-                            concurrent_notes.append(element)
-            if concurrent_notes and rest_dur:
-                out.append(Rest(rest_dur))
-                rest_dur = 0.0
-            # Group notes if necessary
-            if len(concurrent_notes) > 1:
-                out.append(NoteGroup(tuple(concurrent_notes)))
-            elif len(concurrent_notes) == 1:
-                out.append(concurrent_notes[0])
-            # Calculate next_beat
+                            result.append(replace(element, duration=0))
+            return result
+
+        def concurrent_note_output(concurrent: list[BaseNote]) -> Element | None:
+            """Return concurrent notes as single object."""
+            if len(concurrent) > 1:
+                result = NoteGroup(tuple(concurrent))
+            elif len(concurrent) == 1:
+                result = concurrent[0]
+            else:
+                result = None
+            return result
+
+        beats = measures[0].beats
+        assert all(m.beats == beats for m in measures)
+        elements_in: list[Iterator] = [iter(m.elements) for m in measures]
+        elements_out: list[Element] = []
+        beat_next: list[float | None] = [0.0 for _ in measures]
+        beat, rest_accumulated = 0.0, 0.0
+        while any(bn is not None for bn in beat_next):
+            concurrent = get_concurrent_notes(beat)
+            out = concurrent_note_output(concurrent)
+            if out is not None:
+                if rest_accumulated:
+                    elements_out.append(Rest(rest_accumulated))
+                    rest_accumulated = 0.0
+                elements_out.append(out)
             next_beat = min(
                 (bn for bn in beat_next if bn is not None),
                 default=beats
             )
-            # Add a rest
-            rest_dur += next_beat - beat
-            # Add to output
-            elements_out.extend(out)
-            # print(f"concurrent notes: {concurrent_notes}")
-            # print(f"beat: {beat}")
-            # print(f"out: {out}")
-            # print(f"next beat: {next_beat}")
-            # print(f"beats next: {beat_next}")
-            # print(f"elements_out: {elements_out}")
-            # print(f"rest: {rest}")
-        if rest_dur:
-            elements_out.append(Rest(rest_dur))
-        # print(f"FINAL elements_out: {elements_out}")
+            rest_accumulated += next_beat - beat
+            beat = next_beat
+        if rest_accumulated:
+            elements_out.append(Rest(rest_accumulated))
         return Measure(tuple(elements_out), beats=beats)
 
-def expand_sequence_measures(
+def _expand_sequence_measures(
         measures: tuple[Measure, ...],
 ):
     """Populate SequenceMeasures with ActionNotes."""
@@ -237,7 +254,7 @@ def expand_sequence_measures(
         if not isinstance(measure, SequenceMeasure):
             continue
         assert isinstance(measure, SequenceMeasure)
-        measure.elements = tuple(
+        elements = tuple(
             ActionNote(
                 duration=measure.step_duration,
                 actions=(
@@ -249,37 +266,32 @@ def expand_sequence_measures(
             )
             for _ in range(measure.count)
         )
+        setattr(measure, 'elements', elements)
 
-def play(
-        *measures: Measure,
-        tempo: int,
-):
+def _play_measure(measure: Measure, pace: float):
+    """Play all notes in measure."""
+    start = time.time()
+    beat = 0
+    for element in measure.elements:
+        assert isinstance(element, (BaseNote, NoteGroup))
+        element.play()
+        if element.duration:
+            wait_dur = (element.duration) * pace
+            player.wait(wait_dur, time.time() - start)
+            start = time.time()
+        beat += element.duration
+        if beat > measure.beats:
+            raise ValueError("Too many actual beats in measure.")
+    # Play implied rests at end of measure
+    wait_dur = (measure.beats - beat) * pace 
+    player.wait(wait_dur, time.time() - start)
+
+def play(*measures: Measure, tempo: int):
     """Play a series of measures."""
-    expand_sequence_measures(measures)
+    _expand_sequence_measures(measures)
     pace = 60 / tempo
     for measure in measures:
-        beat = 0
-        start = time.time()
-        for element in measure.elements:
-            if isinstance(element, NoteGroup):
-                for note in element.notes:
-                    note.play()
-                duration = 0
-            else:
-                assert isinstance(element, BaseNote)
-                element.play()
-                duration = element.duration
-                if duration:
-                    wait_dur = (duration) * pace
-                    player.wait(wait_dur, time.time() - start)
-                    start = time.time()
-            beat += duration
-            if beat > measure.beats:
-                raise ValueError("Too many actual beats in measure.")
-        # Play implied rests at end of measure
-        wait_dur = (measure.beats - beat) * pace 
-        #print(f"wait_dur: {wait_dur}")
-        player.wait(wait_dur, time.time() - start)
+        _play_measure(measure, pace)
 
 def measure(*elements: Element, beats: int = 4) -> Measure:
     """Produce Measure."""
