@@ -74,8 +74,14 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         command = "relay readall\n\r"
         self._serial_port.write(bytes(command, 'utf-8'))
         # Response example: b'relay readall\n\n\r0000\n\r>'
-        response = self._serial_port.read(23)
-        val = response[-7:-3].decode('utf-8')
+        if self.relay_count == 16:
+            response = self._serial_port.read(23)
+            val = response[-7:-3].decode('utf-8')
+        else:
+            response = self._serial_port.read(21)
+            val = response[-5:-3].decode('utf-8')
+        print(response)
+        print(val)
         val = bin(int(val, base=16))[2:]
         return f"{val:>0{self.relay_count}}"
 

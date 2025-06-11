@@ -99,7 +99,7 @@ class SequenceMeasure(Measure):
 
     def __post_init__(self):
         """Create iterator."""
-        setattr(self, 'patterns', itertools.cycle(self.sequence(**self.kwargs)))
+        self.__setattr__('patterns', itertools.cycle(self.sequence(**self.kwargs)))
 
 @dataclass(frozen=True)
 class Sequence(Element):
@@ -112,7 +112,7 @@ class Sequence(Element):
 
     def __post_init__(self):
         """Create iterator."""
-        setattr(self, 'iter', itertools.cycle(self.sequence(**self.kwargs)))
+        self.__setattr__('iter', itertools.cycle(self.sequence(**self.kwargs)))
 
 @dataclass(frozen=True)
 class Part(Element):
@@ -137,7 +137,7 @@ class Part(Element):
                 element
                 for element in measure.elements
             )
-            setattr(measure, 'elements', elements)
+            measure.__setattr__('elements', elements)
 
 @dataclass(frozen=True)
 class Section(Element):
@@ -145,52 +145,43 @@ class Section(Element):
     parts: tuple[Part, ...]
     beats: int
     tempo: int
-    measures: list[Measure] = field(init=False)
+    measures: tuple[Measure, ...] = field(init=False)
 
     def __post_init__(self):
         """Process parts so they are ready to play."""
         if self.beats is not None:
             self._apply_beats(self.beats, self.parts)
-        setattr(self, 'measures', self._prepare_parts(self.parts))
+        self.__setattr__('measures', self._prepare_parts(self.parts))
 
     def play(self):
         """Play already-generated measures comprising Section."""
         play(*self.measures, tempo=self.tempo)
 
     @staticmethod
-    def _apply_beats(beats, parts):
+    def _apply_beats(beats: int, parts: tuple[Part, ...]):
         """Apply default # of beats to all measures in the Section."""
         for part in parts:
-            part.measures = [
+            measures = tuple(
                 replace(measure, beats=beats)
                 for measure in part.measures
-            ]
+            )
+            part.__setattr__('measures', measures)
 
     @staticmethod
     def _prepare_parts(
             parts: tuple[Part, ...], 
-    ) -> list[Measure]:
+    ) -> tuple[Measure, ...]:
         """ Expand SequenceMeasures.
             Make all parts the same length.
             Merge parts into single sequence of Measures."""
-        #
         for part in parts:
             _expand_sequence_measures(part.measures)
-        # Make all parts have the same # of measures
-        longest = max(len(p.measures) for p in parts)
-        for p in parts:
-            if len(p.measures) < longest:
-                pad = Measure(elements=(), beats=p.measures[-1].beats)
-                setattr(p, 'measures', tuple(
-                    p.measures[i] if i < len(p.measures) else pad
-                    for i in range(longest)
-                ))
-        #
-        concurrent_measures = zip(*(p.measures for p in parts))
-        return [
+        _make_parts_equal_length(parts)
+        concurrent_measures = zip(*(part.measures for part in parts))
+        return tuple(
             Section._merge_concurrent_measures(measure_set)
             for measure_set in concurrent_measures
-        ]
+        )
 
     @staticmethod
     def _merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
@@ -246,9 +237,7 @@ class Section(Element):
             elements_out.append(Rest(rest_accumulated))
         return Measure(tuple(elements_out), beats=beats)
 
-def _expand_sequence_measures(
-        measures: tuple[Measure, ...],
-):
+def _expand_sequence_measures(measures: tuple[Measure, ...]):
     """Populate SequenceMeasures with ActionNotes."""
     for measure in measures:
         if not isinstance(measure, SequenceMeasure):
@@ -266,7 +255,20 @@ def _expand_sequence_measures(
             )
             for _ in range(measure.count)
         )
-        setattr(measure, 'elements', elements)
+        measure.__setattr__('elements', elements)
+
+@staticmethod
+def _make_parts_equal_length(parts: tuple[Part, ...]):
+    # Make all parts have the same # of measures
+    longest = max(len(part.measures) for part in parts)
+    for part in parts:
+        if len(part.measures) < longest:
+            pad = Measure(elements=(), beats=part.measures[-1].beats)
+            measures = tuple(
+                part.measures[i] if i < len(part.measures) else pad
+                for i in range(longest)
+            )
+            part.__setattr__('measures', measures)
 
 def _play_measure(measure: Measure, pace: float):
     """Play all notes in measure."""
