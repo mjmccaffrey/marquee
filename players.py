@@ -7,11 +7,11 @@ import time
 from typing import Any
 
 from buttons import Button, ButtonPressed
+from buttonsets import ButtonSet
 from definitions import (
     ActionParams, DimmerParams, SpecialParams,
-    Buttons,
 )
-from instruments import BellSet, DrumSet
+from instruments import BellSet, DrumSet, Piano
 from lights import LightSet
 from mode_interface import ModeConstructor, ModeInterface
 
@@ -21,10 +21,10 @@ class Player:
     modes: dict[int, ModeConstructor]
 
     bells: BellSet
-    buttons: Buttons
+    buttons: ButtonSet
     drums: DrumSet
     lights: LightSet
-
+    piano: Piano
     brightness_factor: float
     speed_factor: float
 

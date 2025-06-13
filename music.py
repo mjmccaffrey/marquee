@@ -8,10 +8,10 @@ import time
 from typing import Any, ClassVar
 
 from definitions import SpecialParams
-from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument
-from players import Player
+from instruments import Instrument, ActionInstrument, BellSet, DrumSet, Piano, RestInstrument
+from player_interface import PlayerInterface
 
-def set_player(the_player: Player):
+def set_player(the_player: PlayerInterface):
     """Set the Player object used throughout this module."""
     global player
     player = the_player
@@ -23,7 +23,7 @@ class Element(ABC):
 @dataclass(frozen=True)
 class BaseNote(Element):
     """Base for all musical notes."""
-    instrument_class: ClassVar[type[Instrument]]
+    instrument: ClassVar[type[Instrument]]
     duration: float
 
     @abstractmethod
@@ -33,7 +33,7 @@ class BaseNote(Element):
 @dataclass(frozen=True)
 class Rest(BaseNote):
     """Musical rest."""
-    instrument_class: ClassVar[type[Instrument]] = RestInstrument
+    instrument: ClassVar[type[Instrument]] = RestInstrument
 
     def play(self):
         """Play single rest (do nothing)."""
@@ -41,7 +41,7 @@ class Rest(BaseNote):
 @dataclass(frozen=True)
 class ActionNote(BaseNote):
     """Note to execute arbitrary actions."""
-    instrument_class: ClassVar[type[Instrument]] = ActionInstrument
+    instrument: ClassVar[type[Instrument]] = ActionInstrument
     actions: tuple[Callable, ...]
 
     def play(self):
@@ -52,22 +52,40 @@ class ActionNote(BaseNote):
 @dataclass(frozen=True)
 class BellNote(BaseNote):
     """Note to strike 1 or more bells."""
-    instrument_class: ClassVar[type[Instrument]] = BellSet
+    instrument: ClassVar[type[Instrument]] = BellSet
     pitches: str
 
     def play(self):
         """Play single BellNote."""
-        player.bells.play(self.pitches)
+        # player.bells.play(self.pitches)
 
 @dataclass(frozen=True)
 class DrumNote(BaseNote):
     """Note to click & clack relays."""
-    instrument_class: ClassVar[type[Instrument]] = DrumSet
+    instrument: ClassVar[type[Instrument]] = DrumSet
     accent: str
 
     def play(self):
         """Play single DrumNote."""
         player.drums.play(self.accent)
+
+@dataclass(frozen=True)
+class SustainedNote(BaseNote):
+    """ """
+    release: bool
+
+@dataclass(frozen=True)
+class PianoNote(SustainedNote):
+    """Note for MIDI piano."""
+    instrument: ClassVar[type[Instrument]] = Piano
+    pitches: str
+
+    def play(self):
+        """Strike or release single PianoNote."""
+        if self.release:
+            player.piano.release(self.pitches)
+        else:
+            player.piano.play(self.pitches, self.duration, player.pace)
 
 @dataclass(frozen=True)
 class NoteGroup(Element):
@@ -79,7 +97,7 @@ class NoteGroup(Element):
         """Play all notes in group."""
         for note in self.notes:
             note.play()
-    
+
 @dataclass(frozen=True)
 class Measure(Element):
     """Musical measure containing notes."""
@@ -176,6 +194,7 @@ class Section(Element):
             Merge parts into single sequence of Measures."""
         for part in parts:
             _expand_sequence_measures(part.measures)
+            _convert_sustained_notes(part.measures)
         _make_parts_equal_length(parts)
         concurrent_measures = zip(*(part.measures for part in parts))
         return tuple(
@@ -237,6 +256,25 @@ class Section(Element):
             elements_out.append(Rest(rest_accumulated))
         return Measure(tuple(elements_out), beats=beats)
 
+def _convert_note_if_sustained(element: Element):
+    """"""
+    if isinstance(element, SustainedNote):
+        result = [element, replace(element, duration=0, release=True)]
+    else:
+        result = [element]
+    return result
+
+def _convert_sustained_notes(measures: tuple[Measure, ...]):
+    """Add release 'notes' for all notes played
+       by an instrument that supports sustaining."""
+    for measure in measures:
+        elements = tuple(
+            e
+            for element in measure.elements
+            for e in _convert_note_if_sustained(element)
+        )
+        object.__setattr__(measure, 'elements', elements)
+
 def _expand_sequence_measures(measures: tuple[Measure, ...]):
     """Populate SequenceMeasures with ActionNotes."""
     for measure in measures:
@@ -270,7 +308,7 @@ def _make_parts_equal_length(parts: tuple[Part, ...]):
             )
             part.__setattr__('measures', measures)
 
-def _play_measure(measure: Measure, pace: float):
+def _play_measure(measure: Measure):
     """Play all notes in measure."""
     start = time.time()
     beat = 0
@@ -278,22 +316,22 @@ def _play_measure(measure: Measure, pace: float):
         assert isinstance(element, (BaseNote, NoteGroup))
         element.play()
         if element.duration:
-            wait_dur = (element.duration) * pace
+            wait_dur = (element.duration) * player.pace
             player.wait(wait_dur, time.time() - start)
             start = time.time()
         beat += element.duration
         if beat > measure.beats:
             raise ValueError("Too many actual beats in measure.")
     # Play implied rests at end of measure
-    wait_dur = (measure.beats - beat) * pace 
+    wait_dur = (measure.beats - beat) * player.pace 
     player.wait(wait_dur, time.time() - start)
 
 def play(*measures: Measure, tempo: int):
     """Play a series of measures."""
     _expand_sequence_measures(measures)
-    pace = 60 / tempo
+    player.pace = 60 / tempo
     for measure in measures:
-        _play_measure(measure, pace)
+        _play_measure(measure)
 
 def measure(*elements: Element, beats: int = 4) -> Measure:
     """Produce Measure."""

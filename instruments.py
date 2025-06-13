@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - instruments"""
 
 from abc import ABC, abstractmethod
+import time
 
 from relays import RelayModuleInterface
 
@@ -59,6 +60,39 @@ class DrumSet(Instrument):
         self.click_next = (i + 1) % self.count
         self.relays.set_state_of_devices(pattern)
         self.pattern = pattern
+
+class Piano(Instrument):
+    """"""
+    velocity = 127
+    pitch_to_midi = {
+        'D': 62,  'E': 64,
+        'G': 67,  'A': 69,
+        'a': 81,  'b': 83,
+        'c': 84,  'd': 86,
+        'e': 88,
+    }
+
+    def __init__(self):
+        super().__init__()
+        import pygame.midi
+        pygame.midi.init()
+        self.player = pygame.midi.Output(0)
+        self.player.set_instrument(0)
+        # del player
+        # pygame.midi.quit()
+
+    def play(self, pitch: str, duration: float, pace: float):
+        """ """
+        note = self.pitch_to_midi[pitch]
+        self.player.note_on(note, self.velocity)
+        if duration:
+            time.sleep(duration * pace)
+            self.release(pitch)
+
+    def release(self, pitch: str):
+        """ """
+        note = self.pitch_to_midi[pitch]
+        self.player.note_off(note)
 
 class RestInstrument(Instrument):
     """"""

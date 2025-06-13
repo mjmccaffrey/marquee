@@ -3,8 +3,6 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from buttons import Button
-
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
     [ 9,          3, ],
@@ -42,15 +40,6 @@ DIMMER_ADDRESSES = [
     '192.168.51.115',
 ]
 #   '192.168.51.116',
-
-@dataclass
-class Buttons:
-    """Every button."""
-    body_back: Button
-    remote_a: Button
-    remote_b: Button
-    remote_c: Button
-    remote_d: Button
 
 @dataclass
 class SpecialParams:

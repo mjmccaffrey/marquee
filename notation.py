@@ -2,7 +2,8 @@
 
 from collections.abc import Callable, Iterator
 from music import (
-    ActionNote, BaseNote, BellNote, DrumNote, Measure, Part, Rest,
+    ActionNote, BaseNote, BellNote, DrumNote, PianoNote, 
+    Measure, Part, Rest,
     Sequence, SequenceMeasure, SpecialParams,
     light, part,
 )
@@ -144,6 +145,21 @@ def drum_part(notation: str, accent: str = '', beats=4) -> "Part":
     return part(
         *_interpret_notation(drum, notation, beats),
         accent=accent,
+    )
+
+def piano(symbols: str) -> PianoNote | Rest:
+    """Validate symbols and return PianoNote or Rest."""
+    duration, pitch, accent, is_rest = _interpret_symbols(symbols)
+    if is_rest:
+        return rest(symbols)
+    if accent:
+        raise ValueError("Piano note cannot have accent.")
+    return PianoNote(duration, False, pitch)
+
+def piano_part(notation: str, beats=4) -> Part:
+    """Produce piano part from notation."""
+    return part(
+        *_interpret_notation(piano, notation, beats)
     )
 
 def sequence_measure(

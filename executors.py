@@ -4,6 +4,7 @@ from collections.abc import Callable
 from signal import SIGUSR1  # type: ignore
 
 from buttons import Button
+from buttonsets import ButtonSet
 from definitions import (
     ALL_RELAYS, ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT, LIGHT_TO_RELAY, 
     SpecialParams
@@ -11,7 +12,7 @@ from definitions import (
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from demo import Demo
 from gpiozero import Button as _Button  # type: ignore
-from instruments import BellSet, DrumSet
+from instruments import BellSet, DrumSet, Piano
 from lights import LightSet
 from mode_interface import ModeConstructor, ModeInterface
 import modes
@@ -28,6 +29,7 @@ def setup_devices(brightness_factor: float):
             {i: i for i in range(16)},
         )
     )
+    piano = Piano()
     lights = LightSet(
         relays = NumatoRL160001(
             "/dev/ttyACM0",
@@ -39,14 +41,14 @@ def setup_devices(brightness_factor: float):
         ],
         brightness_factor=brightness_factor,
     )
-    buttons = Buttons(
+    buttons = ButtonSet(
         body_back = Button(_Button(pin=17, bounce_time=0.10), SIGUSR1),
         remote_a = Button(_Button(pin=18, pull_up=False, bounce_time=0.10)),
         remote_b = Button(_Button(pin=23, pull_up=False, bounce_time=0.10)),
         remote_c = Button(_Button(pin=24, pull_up=False, bounce_time=0.10)),
         remote_d = Button(_Button(pin=25, pull_up=False, bounce_time=0.10)),
     )
-    return bells, buttons, drums, lights
+    return bells, buttons, drums, lights, piano
 
 class Executor():
     """Executes patterns and commands specified on the command line.
@@ -141,7 +143,7 @@ class Executor():
             brightness_pattern: str | None = None,
         ):
         """Effects the command-line specified command, mode or pattern(s)."""
-        self.bells, self.buttons, self.drums, self.lights = (
+        self.bells, self.buttons, self.drums, self.lights, self.piano = (
             setup_devices(brightness_factor)
         )
         if command is not None:
