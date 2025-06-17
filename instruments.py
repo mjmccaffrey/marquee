@@ -40,6 +40,7 @@ class DrumSet(Instrument):
         self.relays = relays
         self.count = self.relays.relay_count
         self.relays.set_state_of_devices("0" * self.count)
+        time.sleep(2)
         self.pattern = self.relays.get_state_of_devices()
         assert self.pattern == "0" * self.count
         self.click_next = 0

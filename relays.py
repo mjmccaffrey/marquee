@@ -29,7 +29,6 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         self.port_address = port_address
         self._serial_port = serial.Serial(
             self.port_address, 
-            timeout=0,
         )
         print(f"Initializing {self}")
         print(device_mapping)
@@ -68,22 +67,24 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         relays = self._get_relays()
         return self._relays_to_devices(relays)
 
+    def _send(self, command):
+        """"""
+        count = self._serial_port.write(bytes(command, 'utf-8'))
+        assert count is not None
+        self._serial_port.read(count)
+
     def _set_relays(self, relay_pattern_hex):
         """Send command to relay board to set all relays."""
-        command = f"relay writeall {relay_pattern_hex}\n\r"
-        self._serial_port.write(bytes(command, 'utf-8'))
+        self._send(f"relay writeall {relay_pattern_hex}\n\r")
 
     def _get_relays(self) -> str:
         """Get the state of all relays and output a relay pattern."""
         self._serial_port.reset_input_buffer()
         print("WAITING:", self._serial_port.in_waiting)
-        command = "relay readall\n\r"
-        self._serial_port.write(bytes(command, 'utf-8'))
-        # Response example: b'relay readall\n\n\r0000\n\r>'
-        time.sleep(2)
-        print("WAITING:", self._serial_port.in_waiting)
-        response = self._serial_port.read(255)  # 19 + self.relay_pattern_len)
-        val = response[16:-3].decode('utf-8')
+        self._send("relay readall\n\r")
+        # Response example: b'0000\n\r>'
+        response = self._serial_port.read(self.relay_pattern_len + 3)
+        val = response[:self.relay_pattern_len].decode('utf-8')
         print(response)
         print(val)
         val = bin(int(val, base=16))[2:]
