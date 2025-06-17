@@ -121,3 +121,8 @@ class NumatoRL160001(NumatoUSBRelayModule):
     """Supports the Numato RL160001 16 Channel USB Relay Module."""
 
     relay_count = 16
+
+class NumatoSSR80001(NumatoUSBRelayModule):
+    """Supports the Numato SSR80001 8 Channel USB Relay Module."""
+
+    relay_count = 8
