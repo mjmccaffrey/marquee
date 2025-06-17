@@ -29,6 +29,7 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         self.port_address = port_address
         self._serial_port = serial.Serial(
             self.port_address, 
+            timeout=2,
         )
         print(f"Initializing {self}")
         print(device_mapping)
@@ -37,8 +38,8 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         self.device_mapping = device_mapping
         self.device_count = max(device_mapping.keys()) + 1
         match self.device_count:
-            case 8: self.relay_pattern_len = 2
-            case 16: self.relay_pattern_len = 4
+            case 8: self.relay_pattern_hex_len = 2
+            case 16: self.relay_pattern_hex_len = 4
             case _: raise ValueError("Unrecognized device count")
         self._device_to_bit = {
             l: self.relay_count - 1 - r
@@ -58,7 +59,7 @@ class NumatoUSBRelayModule(RelayModuleInterface):
 
     def set_state_of_devices(self, device_pattern):
         """Set the physical relays per device_pattern."""
-        assert len(device_pattern) == self.relay_count
+        assert len(device_pattern) == self.device_count
         relay_pattern = self._devices_to_relays(device_pattern)
         self._set_relays(relay_pattern)
 
@@ -67,29 +68,33 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         relays = self._get_relays()
         return self._relays_to_devices(relays)
 
-    def _send(self, command):
-        """"""
-        count = self._serial_port.write(bytes(command, 'utf-8'))
-        assert count is not None
-        buffer = self._serial_port.read(count)
+    def _send_command(self, command: str):
+        """Send command and read echo."""
+        print(self._serial_port.in_waiting)
+        self._serial_port.reset_input_buffer()
+        print(self._serial_port.in_waiting)
+        command_b = bytes(command + '\r', 'utf-8')
+        self._serial_port.write(command_b)
+        buffer = self._serial_port.read(len(command_b) + 1)
         print(buffer)
+        print(len(buffer))
 
     def _set_relays(self, relay_pattern_hex):
         """Send command to relay board to set all relays."""
-        self._send(f"relay writeall {relay_pattern_hex}\n\r")
+        self._send_command(f"relay writeall {relay_pattern_hex}")
 
     def _get_relays(self) -> str:
         """Get the state of all relays and output a relay pattern."""
         self._serial_port.reset_input_buffer()
         print("WAITING:", self._serial_port.in_waiting)
-        self._send("relay readall\n\r")
+        self._send_command("relay readall")
         # Response example: b'0000\n\r>'
-        response = self._serial_port.read(self.relay_pattern_len + 3)
-        val = response[:self.relay_pattern_len].decode('utf-8')
+        response = self._serial_port.read(self.relay_pattern_hex_len + 3)
+        val = response[:self.relay_pattern_hex_len].decode('utf-8')
         print(response)
         print(val)
         val = bin(int(val, base=16))[2:]
-        return f"{val:>0{self.relay_pattern_len}}"
+        return f"{val:>0{self.relay_count}}"
 
     def _devices_to_relays(self, device_pattern) -> str:
         """Convert desired device (light) pattern,
