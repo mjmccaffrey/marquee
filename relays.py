@@ -75,6 +75,7 @@ class NumatoUSBRelayModule(RelayModuleInterface):
     def _get_relays(self) -> str:
         """Get the state of all relays and output a relay pattern."""
         self._serial_port.reset_input_buffer()
+        print("WAITING:", self._serial_port.in_waiting)
         command = "relay readall\n\r"
         self._serial_port.write(bytes(command, 'utf-8'))
         # Response example: b'relay readall\n\n\r0000\n\r>'
