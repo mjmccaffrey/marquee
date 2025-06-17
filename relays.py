@@ -36,6 +36,10 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         assert len(device_mapping) == self.relay_count
         self.device_mapping = device_mapping
         self.device_count = max(device_mapping.keys()) + 1
+        match self.device_count:
+            case 8: self.relay_pattern_len = 2
+            case 16: self.relay_pattern_len = 4
+            case _: raise ValueError("Unrecognized device count")
         self._device_to_bit = {
             l: self.relay_count - 1 - r
             for l, r in self.device_mapping.items()
@@ -74,16 +78,12 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         command = "relay readall\n\r"
         self._serial_port.write(bytes(command, 'utf-8'))
         # Response example: b'relay readall\n\n\r0000\n\r>'
-        if self.relay_count == 16:
-            response = self._serial_port.read(23)
-            val = response[-7:-3].decode('utf-8')
-        else:
-            response = self._serial_port.read(21)
-            val = response[-5:-3].decode('utf-8')
+        response = self._serial_port.read(19 + self.relay_pattern_len)
+        val = response[16:-3].decode('utf-8')
         print(response)
         print(val)
         val = bin(int(val, base=16))[2:]
-        return f"{val:>0{self.relay_count}}"
+        return f"{val:>0{self.relay_pattern_len}}"
 
     def _devices_to_relays(self, device_pattern) -> str:
         """Convert desired device (light) pattern,

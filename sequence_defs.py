@@ -60,43 +60,6 @@ def build_rows(pattern="1", from_top=True):
             lights[light] = pattern
         yield [l for l in lights]
 
-def build_rows_4(*, pattern, from_top):
-    """Successive rows on / off, grouping the middle rows together, 
-       and starting with no rows."""
-    assert len(pattern) == 1
-    yield [opposite_pattern(pattern)] * LIGHT_COUNT
-    seq = build_rows(pattern, from_top)
-    yield next(seq)  # Row 0
-    _ = next(seq)    # Row 1
-    yield next(seq)  # Row 2
-    yield next(seq)  # Row 3
-
-def build_halves(from_left=True):
-    """Grow the upper and lower halves together, 
-       starting from the left or the right."""
-    if from_left:
-        top = TOP_LIGHTS_LEFT_TO_RIGHT
-        bot = BOTTOM_LIGHTS_LEFT_TO_RIGHT
-    else:  # from right
-        top = reversed(TOP_LIGHTS_LEFT_TO_RIGHT)
-        bot = reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)
-    lights = [0] * LIGHT_COUNT # ???
-    for t, b in zip(top, bot):
-        lights[t], lights[b] = 1, 1
-        yield lights
-
-def move_halves(from_left=True):
-    """Move lit lights in the upper and lower halves, 
-       starting from the left or the right."""
-    if from_left:
-        top = TOP_LIGHTS_LEFT_TO_RIGHT
-        bot = BOTTOM_LIGHTS_LEFT_TO_RIGHT
-    else:  # from right
-        top = reversed(TOP_LIGHTS_LEFT_TO_RIGHT)
-        bot = reversed(BOTTOM_LIGHTS_LEFT_TO_RIGHT)
-    for t, b in zip(top, bot):
-        yield [int(y in {t, b}) for y in range(LIGHT_COUNT)]
-
 def rotate(pattern="1"+"0"*(LIGHT_COUNT-1), clockwise=True):
     """Rotate a pattern of lights counter/clockwise.
        Pattern is a string of length LIGHT_COUNT containing 0 and 1."""
@@ -111,16 +74,17 @@ def rotate(pattern="1"+"0"*(LIGHT_COUNT-1), clockwise=True):
 def opposite_corner_pairs():
     """Alternate the lights in 2 diagonally-opposite corners
        with the other 2 diagonally-opposite corners."""
-    lights_in_opposite_corners = [
-        {
-            l
-            for i, c in enumerate(CORNER_LIGHTS_CLOCKWISE)
-            for l in c
-            if (i % 2) == eo
-        }
-        for eo in range(2)
+    corners_clockwise = [
+        (LIGHTS_TOP[0], LIGHTS_LEFT[0]),
+        (LIGHTS_TOP[-1], LIGHTS_RIGHT[0]),
+        (LIGHTS_BOTTOM[-1], LIGHTS_RIGHT[-1]),
+        (LIGHTS_BOTTOM[0], LIGHTS_LEFT[-1]),
     ]
-    for lights in lights_in_opposite_corners:
+    opposite_corners = [
+        corners_clockwise[0] + corners_clockwise[2],
+        corners_clockwise[1] + corners_clockwise[3],
+    ]
+    for lights in opposite_corners:
         pattern = [
             "0" if i in lights else "1"
             for i in range(LIGHT_COUNT)
@@ -153,8 +117,8 @@ def rotate_build_flip(*, count: int, clockwise=True):
 
 def center_alternate():
     """Alternate the top and bottom center lights."""
-    yield "0100000000"
-    yield "0000001000"
+    yield "010000000000"
+    yield "000000010000"
 
 @staticmethod
 def _random_light_gen():

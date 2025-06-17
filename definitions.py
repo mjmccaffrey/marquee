@@ -5,23 +5,25 @@ from dataclasses import dataclass
 
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
-    [ 9,          3, ],
-    [ 8,          4, ],
-    [    7, 6, 5,    ],
+    [ 11,         3, ],
+    [ 10,         4, ],
+    [ 9,          5, ],
+    [    8, 7, 6,    ],
 ]
-TOP_LIGHTS_LEFT_TO_RIGHT = [9, 0, 1, 2, 3]
-BOTTOM_LIGHTS_LEFT_TO_RIGHT = [8, 7, 6, 5, 4]
-CORNER_LIGHTS_CLOCKWISE = [(9, 0), (2, 3), (4, 5), (7, 8)]
-LIGHTS_CLOCKWISE = [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+LIGHTS_TOP = [0, 1, 2,]
+LIGHTS_LEFT = [11, 10, 9,]
+LIGHTS_RIGHT = [3, 4, 5,]
+LIGHTS_BOTTOM = [8, 7, 6,]
+LIGHTS_CLOCKWISE = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 LIGHT_TO_RELAY = {
-            0:  9,  1: 13,  2: 14,
-    9:  8,                          3: 15,
-    8:  7,                          4:  2,
-            7:  6,  6:  0,  5:  1,
+            0:  6,  1:  7,  2:  8,
+    11:  5,                        3:  9,
+    10:  4,                        4: 12,
+     9:  1,                        5: 13,
+            8:  0,  7: 15,  6: 14,
 }
 EXTRA_TO_RELAY = {
-    10:10, 11:11, 
-    12:12, 13:3, 14:4, 15:5,
+     2: 2,  3: 3, 10: 10, 11: 11,
 }
 ALL_RELAYS = LIGHT_TO_RELAY | EXTRA_TO_RELAY
 LIGHT_COUNT = len(LIGHT_TO_RELAY)
@@ -38,8 +40,8 @@ DIMMER_ADDRESSES = [
     '192.168.51.113',
     '192.168.51.114',
     '192.168.51.115',
+    '192.168.51.116',
 ]
-#   '192.168.51.116',
 
 @dataclass
 class SpecialParams:

@@ -32,9 +32,9 @@ def _interpret_symbols(symbols: str) -> tuple[float, str, str, bool]:
     elif symbols[-1] in accent_symbols:
         duration, pitch, accent, is_rest = _interpret_symbols(symbols[:-1])
         accent = symbols[-1]
-    elif symbols[-1] in pitch_symbols:
-        duration, pitch, accent, is_rest = _interpret_symbols(symbols[:-1])
-        pitch += symbols[-1]
+    elif symbols[0] in pitch_symbols:
+        duration, pitch, accent, is_rest = _interpret_symbols(symbols[1:])
+        pitch = symbols[0]
     else:
         if any(
             s not in symbol_duration 

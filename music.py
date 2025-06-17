@@ -137,7 +137,7 @@ class Part(Element):
     """Musical part containing measures."""
     measures: tuple[Measure, ...]
     default_accent: str = ''
-    elements: tuple[Element] = field(init=False)
+    # ??? elements: tuple[Element] = field(init=False)
 
     def __post_init__(self):
         """Process measures."""
