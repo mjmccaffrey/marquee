@@ -71,7 +71,8 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         """"""
         count = self._serial_port.write(bytes(command, 'utf-8'))
         assert count is not None
-        self._serial_port.read(count)
+        buffer = self._serial_port.read(count)
+        print(buffer)
 
     def _set_relays(self, relay_pattern_hex):
         """Send command to relay board to set all relays."""
