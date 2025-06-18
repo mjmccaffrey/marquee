@@ -37,10 +37,11 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         assert len(device_mapping) == self.relay_count
         self.device_mapping = device_mapping
         self.device_count = max(device_mapping.keys()) + 1
-        match self.device_count:
-            case 8: self.relay_pattern_hex_len = 2
-            case 16: self.relay_pattern_hex_len = 4
-            case _: raise ValueError("Unrecognized device count")
+        try:
+            hex_lengths = {8: 2, 16: 4}
+            self.relay_pattern_hex_len = hex_lengths[self.device_count]
+        except LookupError:
+            raise ValueError("Unrecognized device count")
         self._device_to_bit = {
             l: self.relay_count - 1 - r
             for l, r in self.device_mapping.items()
@@ -60,8 +61,8 @@ class NumatoUSBRelayModule(RelayModuleInterface):
     def set_state_of_devices(self, device_pattern):
         """Set the physical relays per device_pattern."""
         assert len(device_pattern) == self.device_count
-        relay_pattern = self._devices_to_relays(device_pattern)
-        self._set_relays(relay_pattern)
+        relay_pattern_hex = self._devices_to_relays(device_pattern)
+        self._set_relays(relay_pattern_hex)
 
     def get_state_of_devices(self) -> str:
         """Get the state of all devices and output a device pattern."""
@@ -107,7 +108,7 @@ class NumatoUSBRelayModule(RelayModuleInterface):
             for b in range(self.relay_count)
         )
         val = hex(int(''.join(str(e) for e in relay_pattern), 2))[2:]
-        return f"{val:>04}"
+        return f"{val:>0{self.relay_pattern_hex_len}}"
 
     def _relays_to_devices(self, relay_pattern) -> str:
         """Convert a relay pattern to a device pattern."""
