@@ -23,7 +23,7 @@ LIGHT_TO_RELAY = {
             8:  0,  7: 15,  6: 14,
 }
 EXTRA_TO_RELAY = {
-     2: 2,  3: 3, 10: 10, 11: 11,
+     12: 2,  13: 3, 14: 10, 15: 11,
 }
 ALL_RELAYS = LIGHT_TO_RELAY | EXTRA_TO_RELAY
 LIGHT_COUNT = len(LIGHT_TO_RELAY)
