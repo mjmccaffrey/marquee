@@ -81,8 +81,8 @@ class Demo(PlayMusicMode):
                 '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  '
                 '  𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 |  '
                 '  𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 |  ',
-                sequence(rotate, pattern="0100001000", clockwise=True),
-                sequence(rotate, pattern="0000100001", clockwise=False),
+                sequence(rotate, pattern="100000100000", clockwise=True),
+                sequence(rotate, pattern="000001000001", clockwise=False),
                 sequence(build_rows, pattern='1', from_top=True),
                 sequence(build_rows, pattern='1', from_top=False),
             ),
@@ -132,7 +132,7 @@ class Demo(PlayMusicMode):
         pattern = [
             p
             for p in rotate_build_flip(count = rotations * 10)
-        ] + ["1111111111"]
+        ] + ["111111111111"]
         return section(
             part(
                 sequence_measure(
