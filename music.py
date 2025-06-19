@@ -117,7 +117,7 @@ class SequenceMeasure(Measure):
 
     def __post_init__(self):
         """Create iterator."""
-        self.__setattr__('patterns', itertools.cycle(self.sequence(**self.kwargs)))
+        object.__setattr__(self, 'patterns', itertools.cycle(self.sequence(**self.kwargs)))
 
 @dataclass(frozen=True)
 class Sequence(Element):
@@ -130,7 +130,7 @@ class Sequence(Element):
 
     def __post_init__(self):
         """Create iterator."""
-        self.__setattr__('iter', itertools.cycle(self.sequence(**self.kwargs)))
+        object.__setattr__(self, 'iter', itertools.cycle(self.sequence(**self.kwargs)))
 
 @dataclass(frozen=True)
 class Part(Element):
@@ -155,7 +155,7 @@ class Part(Element):
                 element
                 for element in measure.elements
             )
-            measure.__setattr__('elements', elements)
+            object.__setattr__(measure, 'elements', elements)
 
 @dataclass(frozen=True)
 class Section(Element):
@@ -169,7 +169,7 @@ class Section(Element):
         """Process parts so they are ready to play."""
         if self.beats is not None:
             self._apply_beats(self.beats, self.parts)
-        self.__setattr__('measures', self._prepare_parts(self.parts))
+        object.__setattr__(self, 'measures', self._prepare_parts(self.parts))
 
     def play(self):
         """Play already-generated measures comprising Section."""
@@ -183,7 +183,7 @@ class Section(Element):
                 replace(measure, beats=beats)
                 for measure in part.measures
             )
-            part.__setattr__('measures', measures)
+            object.__setattr__(part, 'measures', measures)
 
     @staticmethod
     def _prepare_parts(
@@ -293,7 +293,7 @@ def _expand_sequence_measures(measures: tuple[Measure, ...]):
             )
             for _ in range(measure.count)
         )
-        measure.__setattr__('elements', elements)
+        object.__setattr__(measure, 'elements', elements)
 
 @staticmethod
 def _make_parts_equal_length(parts: tuple[Part, ...]):
@@ -306,7 +306,7 @@ def _make_parts_equal_length(parts: tuple[Part, ...]):
                 part.measures[i] if i < len(part.measures) else pad
                 for i in range(longest)
             )
-            part.__setattr__('measures', measures)
+            object.__setattr__(part, 'measures', measures)
 
 def _play_measure(measure: Measure):
     """Play all notes in measure."""
