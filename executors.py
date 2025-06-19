@@ -276,3 +276,9 @@ class Executor():
         self.add_sequence_mode(28, "sides_2", rotate_sides, pace=1.0, pattern='0', clockwise=True)
         self.add_sequence_mode(29, "sides_3", rotate_sides, pace=1.0, pattern='1', clockwise=False)
         self.add_sequence_mode(30, "sides_4", rotate_sides, pace=1.0, pattern='0', clockwise=False)
+        self.add_sequence_mode(31, "sides_5", rotate_sides, pace=1.0, pattern='0', clockwise=False,
+            special=DimmerParams(
+                brightness_on = 100,
+                brightness_off = 30,
+            )
+        )
