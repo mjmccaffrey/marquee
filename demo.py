@@ -12,7 +12,7 @@ from notation import(
     act, act_part, drum_part,
     rest, sequence_measure, sequence_part
 )
-from sequence_defs import *
+from sequences import *
 
 class Demo(PlayMusicMode):
     """Version 3 demo."""

@@ -18,7 +18,7 @@ from mode_interface import ModeConstructor, ModeInterface
 import modes
 from mode_defs import *
 from relays import NumatoRL160001
-from sequence_defs import *
+from sequences import *
 
 def setup_devices(brightness_factor: float):
     """"""
@@ -186,7 +186,7 @@ class Executor():
             pace=1, 
         )
         self.add_sequence_mode(7, "rotate", rotate, 
-            pace=0.5, pattern="1100000000",
+            pace=0.5, pattern="110000000000",
         )
         self.add_sequence_mode(8, "random_flip", random_flip, 
             pace=0.5, light_pattern='LIGHT_PATTERN',
@@ -203,7 +203,7 @@ class Executor():
             special=DimmerParams(),
             light_pattern='LIGHT_PATTERN',
         )
-        self.add_sequence_mode(12, "blink_all_fade_seq",
+        self.add_sequence_mode(12, "blink_all_fade_sequen",
             blink_all, pace=1,
             special=DimmerParams(
                 concurrent=False,
@@ -211,7 +211,7 @@ class Executor():
                 transition_off=0.5,
             )
         )
-        self.add_sequence_mode(13, "blink_all_fade_con", 
+        self.add_sequence_mode(13, "blink_all_fade_consec", 
             blink_all, pace=1,
             special=DimmerParams(
                 concurrent=True,
@@ -265,3 +265,7 @@ class Executor():
             RotateReversible, pace=0.35, 
             pattern = "0" + "1" * (LIGHT_COUNT - 1))
         self.add_mode(26, "demo", Demo)
+        self.add_sequence_mode(27, "sides_1", rotate_sides, pace=1.0, pattern='1', clockwise=True)
+        self.add_sequence_mode(28, "sides_2", rotate_sides, pace=1.0, pattern='0', clockwise=True)
+        self.add_sequence_mode(29, "sides_3", rotate_sides, pace=1.0, pattern='1', clockwise=False)
+        self.add_sequence_mode(30, "sides_4", rotate_sides, pace=1.0, pattern='0', clockwise=False)

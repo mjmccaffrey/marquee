@@ -2,7 +2,7 @@
 
 import itertools
 import random
-from sequence_defs import *
+from sequences import *
 import time
 
 from definitions import DimmerParams, ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
@@ -103,7 +103,7 @@ class EvenOddFade(PlayMode):
         self.player.set_dimmers(ALL_LOW) 
         delay = 5.0
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
-        even_on = opposite_pattern(odd_on)
+        even_on = opposite(odd_on)
         for pattern in itertools.cycle((even_on, odd_on)):
             self.player.set_lights(
                 pattern, 

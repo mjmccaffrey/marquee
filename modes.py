@@ -15,7 +15,7 @@ from dimmers import TRANSITION_DEFAULT
 from mode_interface import ModeInterface
 from music import set_player
 from players import Player
-from sequence_defs import rotate_build_flip
+from sequences import rotate_build_flip
 
 class Mode(ModeInterface):
     """Base for all Playing modes and the Select mode."""

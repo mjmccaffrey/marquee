@@ -4,7 +4,7 @@
 # from definitions import *
 # from music import *
 # from notation import *
-# from sequence_defs import *
+# from sequences import *
 
 # # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
 

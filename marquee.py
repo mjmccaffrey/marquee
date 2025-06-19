@@ -32,7 +32,7 @@ marquee
                         SequenceMeasure
                         Sequence
             mode_defs
-            sequence_defs
+            sequences
 """
 from arguments import display_help, process_arguments
 from executors import Executor, setup_devices

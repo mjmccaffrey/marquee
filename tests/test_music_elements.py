@@ -2,7 +2,7 @@
 from music import *
 from music import _convert_sustained_notes
 from notation import *
-from sequence_defs import *
+from sequences import *
 
 # def test_SequenceMeasure():
 #     sm = SequenceMeasure(build_rows, 0.5, 8, None, beats=4)
