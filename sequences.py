@@ -41,9 +41,10 @@ def blink_alternate() -> Iterator[str]:
 
 def each_row(pattern="1") -> Iterator[str]:
     """Each row, starting at the top."""
+    opp = opposite(pattern)
     for row in LIGHTS_BY_ROW:
         yield ''.join(
-            pattern if i in row else opposite(pattern)
+            pattern if i in row else opp
             for i in range(LIGHT_COUNT)
         )
 
@@ -85,10 +86,10 @@ def opposite_corner_pairs() -> Iterator[str]:
     """Alternate the lights in 2 diagonally-opposite corners
        with the other 2 diagonally-opposite corners."""
     corners_clockwise = [
-        (LIGHTS_TOP[0], LIGHTS_LEFT[0]),
+        (LIGHTS_TOP[0], LIGHTS_LEFT[-1]),
         (LIGHTS_TOP[-1], LIGHTS_RIGHT[0]),
-        (LIGHTS_BOTTOM[-1], LIGHTS_RIGHT[-1]),
-        (LIGHTS_BOTTOM[0], LIGHTS_LEFT[-1]),
+        (LIGHTS_BOTTOM[0], LIGHTS_RIGHT[-1]),
+        (LIGHTS_BOTTOM[-1], LIGHTS_LEFT[-1]),
     ]
     opposite_corners = [
         corners_clockwise[0] + corners_clockwise[2],
