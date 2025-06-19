@@ -25,7 +25,7 @@ class Player:
     drums: DrumSet
     lights: LightSet
     piano: Piano
-    brightness_factor: float
+    # brightness_factor: float
     speed_factor: float
 
     def __post_init__(self):

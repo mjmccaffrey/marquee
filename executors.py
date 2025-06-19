@@ -159,7 +159,14 @@ class Executor():
 
     def execute_mode(self, mode_index: int, speed_factor: float):
         """Effects the command-line specified mode."""
-        self.player = self.create_player(self.modes, speed_factor)
+        self.player = self.create_player(
+            self.modes, 
+            self.bells,
+            self.buttons,
+            self.drums,
+            self.lights,
+            self.piano,
+            speed_factor)
         self.player.execute(mode_index)
 
     def execute_pattern(self, light_pattern: str | None, brightness_pattern: str | None):
