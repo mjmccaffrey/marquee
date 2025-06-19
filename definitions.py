@@ -64,5 +64,5 @@ class DimmerParams(SpecialParams):
     brightness_on: int = 100
     brightness_off: int = 0
     speed_factor: float = 1.0
-    transition_on: float | None = None
-    transition_off: float | None = None
+    transition_on: float | None = 0.5  # !!!! None
+    transition_off: float | None = 0.5  # !!!! None
