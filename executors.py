@@ -32,7 +32,7 @@ def setup_devices(brightness_factor: float):
     piano = Piano()
     lights = LightSet(
         relays = NumatoRL160001(
-            "/dev/ttyACM0",
+            "/dev/ttyACM1",
             ALL_RELAYS,
         ),
         dimmers = [
@@ -42,7 +42,7 @@ def setup_devices(brightness_factor: float):
         brightness_factor=brightness_factor,
     )
     buttons = ButtonSet(
-        body_back = Button(_Button(pin=17, bounce_time=0.10), SIGUSR1),
+        body_back = Button(_Button(pin=26, bounce_time=0.10), SIGUSR1),
         remote_a = Button(_Button(pin=18, pull_up=False, bounce_time=0.10)),
         remote_b = Button(_Button(pin=23, pull_up=False, bounce_time=0.10)),
         remote_c = Button(_Button(pin=24, pull_up=False, bounce_time=0.10)),
