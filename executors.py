@@ -25,7 +25,7 @@ def setup_devices(brightness_factor: float):
     bells = BellSet()
     drums = DrumSet(
         NumatoRL160001(
-            "/dev/ttyACM2",
+            "/dev/ttyACM0",
             {i: i for i in range(16)},
         )
     )
