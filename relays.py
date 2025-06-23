@@ -36,7 +36,7 @@ class NumatoUSBRelayModule(RelayModuleInterface):
             self.device_mapping = device_mapping
         else:
             self.device_mapping = {i: i for i in range(self.relay_count)}
-        self.device_count = max(device_mapping.keys()) + 1
+        self.device_count = max(self.device_mapping.keys()) + 1
         try:
             hex_lengths = {8: 2, 16: 4}
             self.relay_pattern_hex_len = hex_lengths[self.device_count]
