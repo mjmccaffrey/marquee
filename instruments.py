@@ -46,12 +46,14 @@ class RelayInstrument(Instrument):
             if p == desired_state
         ]
         try:
-            selected= set(random.sample(candidates, desired_count))
+            selected = set(random.sample(candidates, desired_count))
         except ValueError:
-            raise ValueError(
+            #raise ValueError(
+            print(
                 f'{len(candidates)} of {desired_count} '
                 f'{desired_state} relays present.'
             )
+            selected = set(candidates)
         return selected
 
 class BellSet(RelayInstrument):
