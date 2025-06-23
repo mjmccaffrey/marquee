@@ -49,7 +49,7 @@ class RelayInstrument(Instrument):
             selected= set(random.sample(candidates, desired_count))
         except ValueError:
             raise ValueError(
-                f'{len(candidates)} of {desired_state}'
+                f'{len(candidates)} of {desired_count} '
                 f'{desired_state} relays present.'
             )
         return selected
