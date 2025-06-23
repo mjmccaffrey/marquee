@@ -8,7 +8,7 @@ import time
 from typing import Any, ClassVar
 
 from definitions import SpecialParams
-from instruments import Instrument, ActionInstrument, BellSet, DrumSet, Piano, RestInstrument
+from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument
 from player_interface import PlayerInterface
 
 def set_player(the_player: PlayerInterface):
@@ -53,39 +53,22 @@ class ActionNote(BaseNote):
 class BellNote(BaseNote):
     """Note to strike 1 or more bells."""
     instrument: ClassVar[type[Instrument]] = BellSet
-    pitches: str
+    pitches: set[int]
 
     def play(self):
         """Play single BellNote."""
-        # player.bells.play(self.pitches)
+        player.bells.play(self.pitches)
 
 @dataclass(frozen=True)
 class DrumNote(BaseNote):
-    """Note to click & clack relays."""
+    """Note to sound relays."""
     instrument: ClassVar[type[Instrument]] = DrumSet
-    accent: str
-
+    accent: int
+    pitches: set
+    
     def play(self):
         """Play single DrumNote."""
-        player.drums.play(self.accent)
-
-@dataclass(frozen=True)
-class SustainedNote(BaseNote):
-    """ """
-    release: bool
-
-@dataclass(frozen=True)
-class PianoNote(SustainedNote):
-    """Note for MIDI piano."""
-    instrument: ClassVar[type[Instrument]] = Piano
-    pitches: str
-
-    def play(self):
-        """Strike or release single PianoNote."""
-        if self.release:
-            player.piano.release(self.pitches)
-        else:
-            player.piano.play(self.pitches, self.duration, player.pace)
+        player.drums.play(self.accent, self.pitches)
 
 @dataclass(frozen=True)
 class NoteGroup(Element):
@@ -194,7 +177,6 @@ class Section(Element):
             Merge parts into single sequence of Measures."""
         for part in parts:
             _expand_sequence_measures(part.measures)
-            _convert_sustained_notes(part.measures)
         _make_parts_equal_length(parts)
         concurrent_measures = zip(*(part.measures for part in parts))
         return tuple(
@@ -255,25 +237,6 @@ class Section(Element):
         if rest_accumulated:
             elements_out.append(Rest(rest_accumulated))
         return Measure(tuple(elements_out), beats=beats)
-
-def _convert_note_if_sustained(element: Element):
-    """"""
-    if isinstance(element, SustainedNote):
-        result = [element, replace(element, duration=0, release=True)]
-    else:
-        result = [element]
-    return result
-
-def _convert_sustained_notes(measures: tuple[Measure, ...]):
-    """Add release 'notes' for all notes played
-       by an instrument that supports sustaining."""
-    for measure in measures:
-        elements = tuple(
-            e
-            for element in measure.elements
-            for e in _convert_note_if_sustained(element)
-        )
-        object.__setattr__(measure, 'elements', elements)
 
 def _expand_sequence_measures(measures: tuple[Measure, ...]):
     """Populate SequenceMeasures with ActionNotes."""

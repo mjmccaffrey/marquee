@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from instruments import BellSet, DrumSet, Piano
+from instruments import BellSet, DrumSet
 from lights import LightSet
 
 @dataclass
@@ -10,7 +10,6 @@ class PlayerInterface:
     bells: BellSet
     drums: DrumSet
     lights: LightSet
-    piano: Piano
     pace: float = 0.0
 
     @abstractmethod

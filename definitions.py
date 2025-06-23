@@ -3,6 +3,8 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 
+# USB DEVICE NAMES
+
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
     [ 11,         3, ],

@@ -2,26 +2,37 @@ from notation import *
 from notation import _interpret_notation, _interpret_symbols
 import pytest
 
+a = {
+    '-': 1, '>': 2, '^': 3,
+}
+p = {
+    'e': 8, 'd': 7,
+    'c': 6, 'b': 5,
+    'a': 4, 'A': 3,
+    'G': 2, 'E': 1,
+    'D': 0,
+}
+
 def test__interpret_symbols_duration():
-    assert _interpret_symbols('♩') == (1, "", "", False)
-    assert _interpret_symbols('♩𝅘𝅥𝅯') == (1.25, "", "", False)
-    assert _interpret_symbols('3♪') == (1/3, "", "", False)
-    assert _interpret_symbols('𝄻') == (4, "", "", True)
+    assert _interpret_symbols('♩') == (1, set(), 0, False)
+    assert _interpret_symbols('♩𝅘𝅥𝅯') == (1.25, set(), 0, False)
+    assert _interpret_symbols('3♪') == (1/3, set(), 0, False)
+    assert _interpret_symbols('𝄻') == (4, set(), 0, True)
     with pytest.raises(ValueError, match="Cannot mix"):
-        _interpret_symbols('♩𝄻>')
+        _interpret_symbols('♩𝄻')
     with pytest.raises(ValueError, match="empty"):
-        _interpret_symbols('A')
+        _interpret_symbols('A', pitch_map=p)
 
 def test__interpret_symbols_accent():
-    assert _interpret_symbols('♪^') == (0.5, "", "^", False)
-    assert _interpret_symbols('3♩>') == (2/3, "", ">", False)
-    assert _interpret_symbols('3♩A>') == (2/3   , "A", ">", False)
+    assert _interpret_symbols('♪^', accent_map=a) == (0.5, set(), 3, False)
+    assert _interpret_symbols('3♩>', accent_map=a) == (2/3, set(), 2, False)
+    assert _interpret_symbols('A3♩>', accent_map=a, pitch_map=p) == (2/3, {3}, 2, False)
 
 def test__interpret_symbols_pitch():
     with pytest.raises(ValueError, match="Invalid symbol."):
-        _interpret_symbols('3♩q>')
-    assert _interpret_symbols('♩A>') == (1, "A", ">", False)
-    assert _interpret_symbols('♩Ad>') == (1, "Ad", ">", False)
+        _interpret_symbols('q3♩>', accent_map=a, pitch_map=p)
+    assert _interpret_symbols('A♩>', accent_map=a, pitch_map=p) == (1, {3}, 2, False)
+    assert _interpret_symbols('aD♩>', accent_map=a, pitch_map=p) == (1, {4, 0}, 2, False)
 
 def test__interpret_notation_measure_count():
     def rest(s: str) -> Rest:

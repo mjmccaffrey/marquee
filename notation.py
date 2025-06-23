@@ -2,14 +2,13 @@
 
 from collections.abc import Callable, Iterator
 from music import (
-    ActionNote, BaseNote, BellNote, DrumNote, PianoNote, 
+    ActionNote, BaseNote, BellNote, DrumNote,
     Measure, Part, Rest,
     Sequence, SequenceMeasure, SpecialParams,
     light, part,
 )
+from instruments import BellSet, DrumSet
 
-accent_symbols = '->^'
-pitch_symbols = 'DEGAabcde'
 note_duration: dict[str, float] = {
     '𝅝': 4,     '𝅗𝅥': 2,      '♩': 1,
     '♪': 0.5,   '𝅘𝅥𝅯': 0.25,  '𝅘𝅥𝅰': 0.125,
@@ -20,40 +19,47 @@ rest_duration: dict[str, float] = {
 }
 symbol_duration = note_duration | rest_duration
 
-def _interpret_symbols(symbols: str) -> tuple[float, str, str, bool]:
-    """Return duration, pitch, accent, and is_rest
+def _interpret_symbols(
+    symbols: str, 
+    accent_map: dict = {},
+    pitch_map: dict = {},
+) -> tuple[float, set, int, bool]:
+    """Return duration, pitches, accent, and is_rest
        from a single set of symbols. """
-    symbols = symbols.replace(' ', '')
-    if not symbols:
-        raise ValueError("Invalid (empty) symbol.")
-    elif symbols.startswith('3'):
-        duration, pitch, accent, is_rest = _interpret_symbols(symbols[1:])
-        duration *= 2/3
-    elif symbols[-1] in accent_symbols:
-        duration, pitch, accent, is_rest = _interpret_symbols(symbols[:-1])
-        accent = symbols[-1]
-    elif symbols[0] in pitch_symbols:
-        duration, pitch, accent, is_rest = _interpret_symbols(symbols[1:])
-        pitch = symbols[0]
-    else:
-        if any(
-            s not in symbol_duration 
-            for s in symbols
-        ):
-            raise ValueError(f"Invalid symbol in '{symbols}'.")
-        if any(
-            s1 in rest_duration and s2 in note_duration 
-            for s1 in symbols for s2 in symbols
-        ):
-            raise ValueError("Cannot mix note and rest symbols.")
-        is_rest: bool = symbols[0] in rest_duration
-        duration = sum(
-            (rest_duration if is_rest else note_duration)[s]
-            for s in symbols
-        )
-        pitch, accent = "", ""
-        #print(symbols, duration, pitch, accent, is_rest)
-    return duration, pitch, accent, is_rest
+    def interpret(symbols: str):
+        print(symbols)
+        symbols = symbols.replace(' ', '')
+        if not symbols:
+            raise ValueError("Invalid (empty) symbol.")
+        elif symbols[0] == '3':
+            duration, pitches, accent, is_rest = interpret(symbols[1:])
+            duration *= 2/3
+        elif symbols[-1] in accent_map:
+            duration, pitches, accent, is_rest = interpret(symbols[:-1])
+            accent = accent_map[symbols[-1]]
+        elif symbols[0] in pitch_map:
+            duration, pitches, accent, is_rest = interpret(symbols[1:])
+            pitches = {pitch_map[symbols[0]]} | pitches
+        else:
+            if any(
+                s not in symbol_duration 
+                for s in symbols
+            ):
+                raise ValueError(f"Invalid symbol in '{symbols}'.")
+            if any(
+                s1 in rest_duration and s2 in note_duration 
+                for s1 in symbols for s2 in symbols
+            ):
+                raise ValueError("Cannot mix note and rest symbols.")
+            is_rest: bool = symbols[0] in rest_duration
+            duration = sum(
+                (rest_duration if is_rest else note_duration)[s]
+                for s in symbols
+            )
+            pitches, accent = set(), 0
+            #print(symbols, duration, pitches, accent, is_rest)
+        return duration, pitches, accent, is_rest
+    return interpret(symbols)
 
 def _each_notation_measure(notation: str) -> Iterator[str]:
     """Yield non-empty measures of notation."""
@@ -82,8 +88,8 @@ def _interpret_notation(
 
 def rest(symbols: str) -> Rest:
     """Validate symbols and return Rest."""
-    duration, pitch, accent, is_rest = _interpret_symbols(symbols)
-    if pitch or accent:
+    duration, pitches, accent, is_rest = _interpret_symbols(symbols)
+    if pitches or accent:
         raise ValueError("Rest cannot have pitch or accent.")
     return Rest(duration)
 
@@ -93,10 +99,10 @@ def act(
         pre_call_actions: bool = False,
     ) -> ActionNote | Rest:
     """Validate symbols and return ActionNote or Rest."""
-    duration, pitch, accent, is_rest = _interpret_symbols(symbols)
+    duration, pitches, accent, is_rest = _interpret_symbols(symbols)
     if is_rest:
         return rest(symbols)
-    if pitch or accent:
+    if pitches or accent:
         # raise ValueError("Action note cannot have pitch or accent.")
         pass
     if pre_call_actions:
@@ -118,12 +124,19 @@ def act_part(
 
 def bell(symbols: str) -> BellNote | Rest:
     """Validate symbols and return BellNote or Rest."""
-    duration, pitch, accent, is_rest = _interpret_symbols(symbols)
+    duration, pitches, accent, is_rest = _interpret_symbols(
+        symbols,
+        pitch_map={
+            '-': 1, '>': 2, '^': 3,
+        }
+    )
     if is_rest:
         return rest(symbols)
     if accent:
         raise ValueError("Bell note cannot have accent.")
-    return BellNote(duration, pitch)
+    if not pitches:
+        raise ValueError("Bell note must have at least one pitch.")
+    return BellNote(duration, pitches)
 
 def bell_part(notation: str, beats=4) -> Part:
     """Produce bell part from notation."""
@@ -133,33 +146,26 @@ def bell_part(notation: str, beats=4) -> Part:
 
 def drum(symbols: str) -> DrumNote | Rest:
     """Validate symbols and return DrumNote or Rest."""
-    duration, pitch, accent, is_rest = _interpret_symbols(symbols)
+    duration, pitches, accent, is_rest = _interpret_symbols(
+        symbols, 
+        accent_map={
+            '-': 1, '>': 2, '^': 3,
+        },
+        pitch_map={
+            'h': 0, 'l': 1,
+        }
+    )
     if is_rest:
         return rest(symbols)
-    if pitch:
-        raise ValueError("Drum note cannot have pitch.")
-    return DrumNote(duration, accent)
+    if not pitches:
+        raise ValueError("Drum note must have at least one pitch.")
+    return DrumNote(duration, accent, pitches)
 
 def drum_part(notation: str, accent: str = '', beats=4) -> "Part":
     """Produce drum part from notation."""
     return part(
         *_interpret_notation(drum, notation, beats),
         accent=accent,
-    )
-
-def piano(symbols: str) -> PianoNote | Rest:
-    """Validate symbols and return PianoNote or Rest."""
-    duration, pitch, accent, is_rest = _interpret_symbols(symbols)
-    if is_rest:
-        return rest(symbols)
-    if accent:
-        raise ValueError("Piano note cannot have accent.")
-    return PianoNote(duration, False, pitch)
-
-def piano_part(notation: str, beats=4) -> Part:
-    """Produce piano part from notation."""
-    return part(
-        *_interpret_notation(piano, notation, beats)
     )
 
 def sequence_measure(

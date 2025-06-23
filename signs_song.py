@@ -9,7 +9,7 @@ from music import (
     section, sequence,
 )
 from notation import(
-    act, act_part, drum_part, piano_part,
+    act, act_part, bell_part, drum_part,
     rest, sequence_measure, sequence_part
 )
 from sequences import *
@@ -29,8 +29,20 @@ class SignsSong(PlayMusicMode):
     def hook(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            piano_part(
-                '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩    e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯   e𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪ a♪ '
-            ),
+            drum_part(
+                '  l♪> 𝄿 l𝅘𝅥𝅯  l𝅘𝅥𝅯> l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯  l𝅘𝅥𝅯>  l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯  l𝅘𝅥𝅯>  l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯 |  '
+                '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh♪> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
+                '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh>𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh♪> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
+            ), 
+            # bell_part(
+            #     # Intro
+            #     '  𝄻 | 𝄻 | c♩ c♩ d𝅘𝅥𝅯 c♪ 𝄿 cG♩   eE𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪ ceG♩   dD𝅘𝅥𝅯 c♪ 𝄿 ceE♩ |  '
+            #     # Sign, sign, everywhere a sign
+            #     '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩  '
+            #     # Blockin' out the scenery, breakin' my mind
+            #     '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯   e𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪   a𝅘𝅥𝅯 c𝅘𝅥𝅯 c♪ c♩'
+            #     # Do this, don't do that, can't you read the sign?
+            #     '  e♪ e♪   e𝅘𝅥𝅯 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ c𝅘𝅥𝅯 c𝅘𝅥𝅯'
+            # ),
         tempo=70,
         )

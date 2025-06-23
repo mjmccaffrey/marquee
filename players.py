@@ -11,7 +11,7 @@ from buttonsets import ButtonSet
 from definitions import (
     ActionParams, DimmerParams, SpecialParams,
 )
-from instruments import BellSet, DrumSet, Piano
+from instruments import BellSet, DrumSet
 from lights import LightSet
 from mode_interface import ModeConstructor, ModeInterface
 
@@ -24,7 +24,6 @@ class Player:
     buttons: ButtonSet
     drums: DrumSet
     lights: LightSet
-    piano: Piano
     # brightness_factor: float
     speed_factor: float
 

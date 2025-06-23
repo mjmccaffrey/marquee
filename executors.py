@@ -12,24 +12,27 @@ from definitions import (
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from demo import Demo
 from gpiozero import Button as _Button  # type: ignore
-from instruments import BellSet, DrumSet, Piano
+from instruments import BellSet, DrumSet
 from lights import LightSet
 from mode_interface import ModeConstructor, ModeInterface
 import modes
 from mode_defs import *
-from relays import NumatoRL160001
+from relays import NumatoRL160001, NumatoSSR80001
 from sequences import *
+from signs_song import SignsSong
 
 def setup_devices(brightness_factor: float):
     """"""
-    bells = BellSet()
+    bells = BellSet(
+        NumatoSSR80001(
+            "/dev/ttyACM2",
+        )
+    )
     drums = DrumSet(
         NumatoRL160001(
             "/dev/ttyACM0",
-            {i: i for i in range(16)},
         )
     )
-    piano = Piano()
     lights = LightSet(
         relays = NumatoRL160001(
             "/dev/ttyACM1",
@@ -48,7 +51,7 @@ def setup_devices(brightness_factor: float):
         remote_c = Button(_Button(pin=24, pull_up=False, bounce_time=0.10)),
         remote_d = Button(_Button(pin=25, pull_up=False, bounce_time=0.10)),
     )
-    return bells, buttons, drums, lights, piano
+    return bells, buttons, drums, lights
 
 class Executor():
     """Executes patterns and commands specified on the command line.
@@ -143,7 +146,7 @@ class Executor():
             brightness_pattern: str | None = None,
         ):
         """Effects the command-line specified command, mode or pattern(s)."""
-        self.bells, self.buttons, self.drums, self.lights, self.piano = (
+        self.bells, self.buttons, self.drums, self.lights = (
             setup_devices(brightness_factor)
         )
         if command is not None:
@@ -165,7 +168,6 @@ class Executor():
             self.buttons,
             self.drums,
             self.lights,
-            self.piano,
             speed_factor)
         self.player.execute(mode_index)
 
@@ -271,7 +273,7 @@ class Executor():
         self.add_mode(25, "rotate_reversible_2", 
             RotateReversible, pace=0.35, 
             pattern = "0" + "1" * (LIGHT_COUNT - 1))
-        self.add_mode(26, "demo", Demo)
+        self.add_mode(26, "signs", SignsSong)
         self.add_sequence_mode(27, "sides_1", rotate_sides, pace=1.0, pattern='1', clockwise=True)
         self.add_sequence_mode(28, "sides_2", rotate_sides, pace=1.0, pattern='0', clockwise=True)
         self.add_sequence_mode(29, "sides_3", rotate_sides, pace=1.0, pattern='1', clockwise=False)

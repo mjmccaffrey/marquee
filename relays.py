@@ -21,7 +21,7 @@ class RelayModuleInterface(ABC):
 class NumatoUSBRelayModule(RelayModuleInterface):
     """Supports Numato USB Relay Modules."""
 
-    def __init__(self, port_address, device_mapping: Mapping):
+    def __init__(self, port_address, device_mapping: Mapping = {}):
         """Create the object, where device_mapping
            maps device indices to relay indices.
            Establish connection to relay module via serial port."""
@@ -31,8 +31,11 @@ class NumatoUSBRelayModule(RelayModuleInterface):
             timeout=2,
         )
         print(f"Initializing {self}")
-        assert len(device_mapping) == self.relay_count
-        self.device_mapping = device_mapping
+        if device_mapping:
+            assert len(device_mapping) == self.relay_count
+            self.device_mapping = device_mapping
+        else:
+            self.device_mapping = {i: i for i in range(self.relay_count)}
         self.device_count = max(device_mapping.keys()) + 1
         try:
             hex_lengths = {8: 2, 16: 4}
