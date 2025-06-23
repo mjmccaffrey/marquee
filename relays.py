@@ -86,8 +86,11 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         self._send_command("relay readall")
         # Response example: b'0000\n\r>'
         response = self._serial_port.read(self.relay_pattern_hex_len + 3)
+        print(response)
         val = response[:self.relay_pattern_hex_len].decode('utf-8')
+        print(val)
         val = bin(int(val, base=16))[2:]
+        print(val)
         return f"{val:>0{self.relay_count}}"
 
     def _devices_to_relays(self, device_pattern: Sequence) -> str:
