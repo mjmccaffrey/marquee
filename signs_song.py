@@ -30,7 +30,7 @@ class SignsSong(PlayMusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             drum_part(
-                '  h𝅝>^ | '
+                '  h𝅝^ | '
                 '  l♪ 𝄿 l𝅘𝅥𝅯  l𝅘𝅥𝅯 l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯  l𝅘𝅥𝅯  l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯  l𝅘𝅥𝅯  l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯 |  ',
                 # '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh♪> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
                 # '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh♪> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  ',
