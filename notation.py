@@ -18,6 +18,9 @@ rest_duration: dict[str, float] = {
     '𝄾': 0.5,   '𝄿': 0.25,  '𝅀': 0.125,
 }
 symbol_duration = note_duration | rest_duration
+drum_accent_map = {
+    '-': 1, '>': 2, '^': 3,
+}
 
 def _interpret_symbols(
     symbols: str, 
@@ -148,9 +151,7 @@ def drum(symbols: str) -> DrumNote | Rest:
     """Validate symbols and return DrumNote or Rest."""
     duration, pitches, accent, is_rest = _interpret_symbols(
         symbols, 
-        accent_map={
-            '-': 1, '>': 2, '^': 3,
-        },
+        accent_map=drum_accent_map,
         pitch_map={
             'h': 0, 'l': 1,
         }
@@ -165,7 +166,7 @@ def drum_part(notation: str, accent: str = '', beats=4) -> "Part":
     """Produce drum part from notation."""
     return part(
         *_interpret_notation(drum, notation, beats),
-        accent=accent,
+        accent=drum_accent_map[accent],
     )
 
 def sequence_measure(

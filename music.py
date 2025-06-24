@@ -119,7 +119,7 @@ class Sequence(Element):
 class Part(Element):
     """Musical part containing measures."""
     measures: tuple[Measure, ...]
-    default_accent: str = ''
+    default_accent: int = 0
     # ??? elements: tuple[Element] = field(init=False)
 
     def __post_init__(self):
@@ -128,7 +128,7 @@ class Part(Element):
             self._apply_accent(self.default_accent, self.measures)
 
     @staticmethod
-    def _apply_accent(accent, measures: tuple[Measure, ...]):
+    def _apply_accent(accent: int, measures: tuple[Measure, ...]):
         """Apply default accent (drums only)."""
         for measure in measures:
             elements = tuple(
@@ -300,7 +300,7 @@ def measure(*elements: Element, beats: int = 4) -> Measure:
     """Produce Measure."""
     return Measure(elements, beats=beats)
 
-def part(*measures: Measure, accent: str = '') -> Part:
+def part(*measures: Measure, accent: int = 0) -> Part:
     """Produce Part."""
     return Part(measures, accent)
 
