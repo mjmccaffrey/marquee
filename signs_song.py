@@ -46,5 +46,5 @@ class SignsSong(PlayMusicMode):
             #     # Do this, don't do that, can't you read the sign?
             #     '  e♪ e♪   e𝅘𝅥𝅯 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ c𝅘𝅥𝅯 c𝅘𝅥𝅯'
             # ),
-        tempo=70,
+        tempo=50,
         )
