@@ -32,6 +32,7 @@ class SignsSong(PlayMusicMode):
             drum_part(
                 '  h𝅝> | '
                 #'  l♪ 𝄿 l𝅘𝅥𝅯  l𝅘𝅥𝅯 l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯  l𝅘𝅥𝅯  l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯  l𝅘𝅥𝅯  l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯 |  ',
+                 '  l♩ l♩ l♩ l♩ | l♪ h♪ l♪ h♪ l♪ h♪ l♪ h♪|'
                  '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
                  '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  ',
                 accent=''
