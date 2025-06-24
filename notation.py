@@ -19,7 +19,7 @@ rest_duration: dict[str, float] = {
 }
 symbol_duration = note_duration | rest_duration
 drum_accent_map = {
-    '-': 1, '>': 2, '^': 3,
+    '': 0, '-': 1, '>': 2, '^': 3,
 }
 
 def _interpret_symbols(
