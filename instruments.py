@@ -58,7 +58,7 @@ class RelayInstrument(Instrument):
 
 class BellSet(RelayInstrument):
     """"""
-    pitch_levels = 9
+    pitch_levels = 8
 
     def __init__(self, relays: RelayModuleInterface):
         super().__init__(relays)
