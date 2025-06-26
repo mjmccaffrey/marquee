@@ -8,7 +8,7 @@ from typing import Any
 
 from buttons import Button, ButtonPressed
 from buttonsets import ButtonSet
-from definitions import (
+from configuration import (
     ActionParams, DimmerParams, SpecialParams,
 )
 from instruments import BellSet, DrumSet

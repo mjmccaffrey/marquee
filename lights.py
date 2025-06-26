@@ -3,7 +3,7 @@
 import asyncio
 from dataclasses import dataclass
 
-from definitions import (
+from configuration import (
     DimmerParams, SpecialParams, 
     EXTRA_COUNT, LIGHT_COUNT,
 )
@@ -141,6 +141,7 @@ class LightSet:
             updates = [t for t in zip(self.dimmer_channels, brightnesses, transitions)]
         else:
             updates = self._updates_needed(brightnesses, transitions)
+        print(f"set_dimmers {pattern=} {brightnesses=} {transitions=} {updates=}")
         self.execute_dimmer_commands(updates)
 
     def execute_dimmer_commands(

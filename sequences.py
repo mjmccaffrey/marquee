@@ -1,9 +1,9 @@
-"""Marquee Lighted Sign Project - sequence definitions"""
+"""Marquee Lighted Sign Project - sequence configuration"""
 
 from collections.abc import Iterator, Sequence
 import random
 
-from definitions import *
+from configuration import *
 
 def opposite(pattern: Sequence) -> str:
     """Return pattern or element with the state(s) flipped."""

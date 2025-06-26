@@ -7,7 +7,7 @@ import itertools
 import time
 from typing import Any, ClassVar
 
-from definitions import SpecialParams
+from configuration import SpecialParams
 from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument
 from player_interface import PlayerInterface
 

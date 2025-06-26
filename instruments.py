@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import random
 import time
 
-from definitions import LIGHT_COUNT
+from configuration import LIGHT_COUNT
 from relays import RelayModuleInterface
 from sequences import opposite
 

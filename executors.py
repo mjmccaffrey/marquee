@@ -5,7 +5,7 @@ from signal import SIGUSR1  # type: ignore
 
 from buttons import Button
 from buttonsets import ButtonSet
-from definitions import (
+from configuration import (
     ALL_RELAYS, ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT, LIGHT_TO_RELAY, 
     SpecialParams
 )

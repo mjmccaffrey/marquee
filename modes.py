@@ -7,7 +7,7 @@ import time
 from typing import Any
 
 from buttons import Button
-from definitions import (
+from configuration import (
     ALL_HIGH, ALL_OFF, ALL_ON,
     ActionParams, DimmerParams, SpecialParams,
 )

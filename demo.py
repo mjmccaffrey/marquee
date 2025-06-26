@@ -2,7 +2,7 @@
 
 import sys
 
-from definitions import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
+from configuration import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
 from modes import PlayMusicMode
 from music import (
     dimmer, dimmer_sequence, light, measure, part, play,

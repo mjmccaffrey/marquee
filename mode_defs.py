@@ -1,11 +1,11 @@
-"""Marquee Lighted Sign Project - mode definitions"""
+"""Marquee Lighted Sign Project - mode configuration"""
 
 import itertools
 import random
 from sequences import *
 import time
 
-from definitions import DimmerParams, ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
+from configuration import DimmerParams, ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
 from dimmers import TRANSITION_MINIMUM
 from modes import PlayMode
 from players import Player
