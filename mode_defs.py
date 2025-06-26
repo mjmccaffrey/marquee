@@ -105,7 +105,6 @@ class EvenOddFade(PlayMode):
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
         even_on = opposite(odd_on)
         for pattern in itertools.cycle((even_on, odd_on)):
-            print(pattern)
             self.player.lights.set_relays(
                 pattern, 
                 special=DimmerParams(
@@ -116,7 +115,7 @@ class EvenOddFade(PlayMode):
                     transition_off=delay,
                 )
             )
-            self.player.wait(delay)
+            # .player.wait(delay)
 
 class RapidFade(PlayMode):
     """"""
