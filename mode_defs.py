@@ -108,7 +108,7 @@ class EvenOddFade(PlayMode):
             self.player.lights.set_relays(
                 pattern, 
                 special=DimmerParams(
-                    concurrent=False,
+                    concurrent=True,
                     brightness_on = 90,
                     brightness_off = 10,
                     transition_on=delay,
