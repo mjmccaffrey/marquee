@@ -21,7 +21,7 @@ class Mode(ModeInterface):
     """Base for all Playing modes and the Select mode."""
     def __init__(
         self,
-        player: Player,  # Player
+        player: Player, 
         name: str,
         preset_dimmers: bool = False,
         preset_relays: bool = False,
@@ -57,7 +57,7 @@ class SelectMode(Mode):
     """Supports the select mode."""
     def __init__(
         self,
-        player: Player,  # Player
+        player: Player, 
         name: str,
         #
         previous_mode: int,
@@ -109,7 +109,7 @@ class PlayMode(Mode):
     """Base for custom modes."""
     def __init__(
         self,
-        player: Player,  # Player
+        player: Player, 
         name: str,
         preset_dimmers: bool = False,
         preset_relays: bool = False,
@@ -143,7 +143,7 @@ class PlaySequenceMode(PlayMode):
     """Supports all sequence-based modes."""
     def __init__(
         self,
-        player: Player,  # Player
+        player: Player, 
         name: str,
         #
         sequence: Callable,
@@ -194,7 +194,7 @@ class PlayMusicMode(PlayMode):
     """Mode for playing music."""
     def __init__(
         self,
-        player: Player,  # Player
+        player: Player, 
         name: str,
     ):
         super().__init__(player, name, preset_dimmers=True, preset_relays=True)

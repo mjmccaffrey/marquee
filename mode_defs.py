@@ -14,7 +14,7 @@ class RotateReversible(PlayMode):
     """Rotate a pattern, reversing direction in response to a button press."""
     def __init__(
         self,
-        player: Player,  # Player
+        player: Player, 
         name: str,
         #
         pace: float,
@@ -43,7 +43,7 @@ class RandomFade(PlayMode):
 
     def __init__(
         self,
-        player: Player,  # Player
+        player: Player, 
         name: str,
         #
         transition: float = -1,
@@ -86,7 +86,7 @@ class EvenOddFade(PlayMode):
 
     def __init__(
         self,
-        player: Player,  # Player
+        player: Player, 
         name: str,
         #
         pace: float,
@@ -100,12 +100,12 @@ class EvenOddFade(PlayMode):
 
     def execute(self):
         """"""
-        self.player.set_dimmers(ALL_LOW) 
+        self.player.lights.set_dimmers(ALL_LOW) 
         delay = 5.0
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
         even_on = opposite(odd_on)
         for pattern in itertools.cycle((even_on, odd_on)):
-            self.player.set_lights(
+            self.player.lights.set_lights(
                 pattern, 
                 special=DimmerParams(
                     concurrent=True,
@@ -121,7 +121,7 @@ class RapidFade(PlayMode):
     """"""
     def __init__(
         self,
-        player: Player,  # Player
+        player: Player, 
         name: str,
         #
     ):
@@ -153,7 +153,7 @@ class BuildBrightness(PlayMode):
 
     def __init__(
         self,
-        player: Player,  # Player
+        player: Player, 
         name: str,
         #
         equal_trans: bool,
