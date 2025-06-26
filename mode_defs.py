@@ -31,7 +31,7 @@ class RotateReversible(PlayMode):
     def execute(self):
         """Display a single pattern.
            Called repeatedly until the mode is changed."""
-        self.player.set_lights(self.pattern)
+        self.player.set_relays(self.pattern)
         self.player.wait(self.pace)
         self.pattern = (
             self.pattern[self.direction:] + self.pattern[:self.direction]
@@ -105,7 +105,7 @@ class EvenOddFade(PlayMode):
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
         even_on = opposite(odd_on)
         for pattern in itertools.cycle((even_on, odd_on)):
-            self.player.lights.set_lights(
+            self.player.lights.set_relays(
                 pattern, 
                 special=DimmerParams(
                     concurrent=True,
@@ -133,7 +133,7 @@ class RapidFade(PlayMode):
  
     def execute(self):
         """"""
-        self.player.set_lights(ALL_ON)
+        self.player.set_relays(ALL_ON)
         while True:
             self.player.set_dimmers(ALL_HIGH, force_update=True)
             previous = None
