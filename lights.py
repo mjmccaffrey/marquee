@@ -156,6 +156,8 @@ class LightSet:
             )
             for c, b, t in updates
         ]
+        print()
+        print(commands)
         asyncio.run(ShellyDimmer.execute_multiple_commands(commands))
         for command in commands:
             command.channel.brightness = command.params['brightness']
