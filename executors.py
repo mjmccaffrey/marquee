@@ -30,12 +30,12 @@ def setup_devices(brightness_factor: float):
     )
     drums = DrumSet(
         NumatoRL160001(
-            "/dev/ttyACM0",
+            "/dev/ttyACM1",
         )
     )
     lights = LightSet(
         relays = NumatoRL160001(
-            "/dev/ttyACM1",
+            "/dev/ttyACM3",
             ALL_RELAYS,
         ),
         dimmers = [
