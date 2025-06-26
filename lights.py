@@ -60,7 +60,6 @@ class LightSet:
             0: int(special.brightness_off * self.brightness_factor), 
             1: int(special.brightness_on * self.brightness_factor),
         }
-        print(f"set_relays_override {light_pattern=} {special=}")
         assert special.transition_off is not None
         assert special.transition_on is not None
         trans_values: dict[int, float] = {
@@ -156,8 +155,6 @@ class LightSet:
             )
             for c, b, t in updates
         ]
-        print()
-        print(commands)
         asyncio.run(ShellyDimmer.execute_multiple_commands(commands))
         for command in commands:
             command.channel.brightness = command.params['brightness']

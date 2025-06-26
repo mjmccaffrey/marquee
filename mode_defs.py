@@ -101,7 +101,7 @@ class EvenOddFade(PlayMode):
     def execute(self):
         """"""
         self.player.lights.set_dimmers(ALL_LOW) 
-        delay = 5.0
+        delay = 0.5
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
         even_on = opposite(odd_on)
         for pattern in itertools.cycle((even_on, odd_on)):
