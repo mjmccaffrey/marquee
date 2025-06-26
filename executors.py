@@ -262,7 +262,7 @@ class Executor():
                 brightness_off = 30,
             )
         )
-        self.add_mode(19, "even_odd_fade", EvenOddFade, pace=2)
+        self.add_mode(19, "even_odd_fade", EvenOddFade, pace=0.5)
         self.add_mode(20, "random_fade", RandomFade)
         self.add_mode(21, "random_fade_steady", RandomFade, transition=2)
         self.add_mode(22, "build_brightness_equal", BuildBrightness, equal_trans=True)
