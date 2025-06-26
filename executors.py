@@ -35,7 +35,7 @@ def setup_devices(brightness_factor: float):
     )
     lights = LightSet(
         relays = NumatoRL160001(
-            "/dev/ttyACM3",
+            "/dev/ttyACM0",
             ALL_RELAYS,
         ),
         dimmers = [
