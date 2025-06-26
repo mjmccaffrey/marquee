@@ -60,6 +60,7 @@ class LightSet:
             0: int(special.brightness_off * self.brightness_factor), 
             1: int(special.brightness_on * self.brightness_factor),
         }
+        print(f"set_relays_override {light_pattern=} {special=}")
         assert special.transition_off is not None
         assert special.transition_on is not None
         trans_values: dict[int, float] = {
