@@ -174,11 +174,9 @@ class Executor():
     def execute_pattern(self, light_pattern: str | None, brightness_pattern: str | None):
         """Effects the command-line specified pattern(s)."""
         if brightness_pattern is not None:
-            print(f"Setting dimmers {brightness_pattern}")
             self.lights.set_dimmers(brightness_pattern)
             Button.wait(TRANSITION_DEFAULT)
         if light_pattern is not None:
-            print(f"Setting lights {light_pattern}")
             self.lights.set_relays(light_pattern)
 
     def register_modes(self):
