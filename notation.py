@@ -130,7 +130,11 @@ def bell(symbols: str) -> BellNote | Rest:
     duration, pitches, accent, is_rest = _interpret_symbols(
         symbols,
         pitch_map={
-            '-': 1, '>': 2, '^': 3,
+            'e': 7, 'd': 6,
+            'c': 5, 'b': 4,
+            'a': 3, 
+            'G': 2, # F#
+            'E': 1, 'D': 0,
         }
     )
     if is_rest:
