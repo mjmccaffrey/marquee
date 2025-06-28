@@ -29,17 +29,18 @@ class SignsSong(PlayMusicMode):
     def hook(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            # drum_part(
-            #     '  h𝅝> | '
-            #     #'  l♪ 𝄿 l𝅘𝅥𝅯  l𝅘𝅥𝅯 l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯  l𝅘𝅥𝅯  l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯  l𝅘𝅥𝅯  l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯 |  ',
-            #      '  lh♩ lh♩ lh♩ lh♩ | l♪ h♪ l♪ h♪ l♪ h♪ l♪ h♪|'
-            #      '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
-            #      '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  ',
-            #     accent=''
-            # ),  
+            drum_part(
+                '  h𝅝> | '
+                '  l♪ 𝄿 l𝅘𝅥𝅯  l𝅘𝅥𝅯 l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯  l𝅘𝅥𝅯  l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯  l𝅘𝅥𝅯  l𝅘𝅥𝅯 𝄿  l𝅘𝅥𝅯 |  '
+                 '  lh♩ lh♩ lh♩ lh♩ | l♪ h♪ l♪ h♪ l♪ h♪ l♪ h♪|'
+                 '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
+                 '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  ',
+                accent=''
+            ),  
             bell_part(
                 # Intro
-                '  𝄻 | 𝄻 | c♩ c♩ d𝅘𝅥𝅯 c♪ 𝄿 cG♩ | eE𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪ ceG♩   dD𝅘𝅥𝅯 c♪ 𝄿 ceE♩ |  '
+                '  𝄻 | 𝄻 |  𝄻 | '
+                '  c♩ c♩ d𝅘𝅥𝅯 c♪ 𝄿 cG♩ | eE𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪ ceG♩   dD𝅘𝅥𝅯 c♪ 𝄿 ceE♩ |  '
                 # Sign, sign, everywhere a sign
                 '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
                 # Blockin' out the scenery, breakin' my mind
