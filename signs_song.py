@@ -67,7 +67,7 @@ class SignsSong(PlayMusicMode):
                 ' d𝅘𝅥𝅯   d♪  d𝅘𝅥𝅯 d𝅘𝅥𝅯  d𝅘𝅥𝅯  d𝅘𝅥𝅯   b𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 e♪ 𝄿 d𝅘𝅥𝅯 𝄾 |'
 
                 # me, a-working for you,    Oh...
-                ' d♪ 𝄿 b𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ '
+                ' d♪ 𝄿 b𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ | '
 
                 # Sign, sign, everywhere a sign
                 '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
