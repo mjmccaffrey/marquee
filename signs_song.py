@@ -38,8 +38,8 @@ class SignsSong(PlayMusicMode):
             #     accent=''
             # ),  
             bell_part(
-                # # Intro
-                # '  𝄻 | 𝄻 | c♩ c♩ d𝅘𝅥𝅯 c♪ 𝄿 cG♩   eE𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪ ceG♩   dD𝅘𝅥𝅯 c♪ 𝄿 ceE♩ |  '
+                # Intro
+                '  𝄻 | 𝄻 | c♩ c♩ d𝅘𝅥𝅯 c♪ 𝄿 cG♩   eE𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪ ceG♩   dD𝅘𝅥𝅯 c♪ 𝄿 ceE♩ |  '
                 # Sign, sign, everywhere a sign
                 '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
                 # Blockin' out the scenery, breakin' my mind
@@ -47,9 +47,10 @@ class SignsSong(PlayMusicMode):
                 # Do this, don't do that, can't you read the sign?
                 '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯   𝄿 de𝅘𝅥𝅯 de𝅘𝅥𝅯 de𝅘𝅥𝅯    𝄿 d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 | 𝄾 d♩   '
             ),
-            sequence_part(
-                "  𝄾 ♪ ♪ 𝄾 | 𝄾 ♪ ♪ 𝄾 | ♪ 𝄾 ♪ 𝄾 | 𝄾 ♪ ♪  ",
-                sequence(blink_all, on_first=False),
-            ),
+            # sequence_part(
+            #     "  𝄾 ♪ ♪ 𝄾 | 𝄾 ♪ ♪ 𝄾 | ♪ 𝄾 ♪ 𝄾 | 𝄾 ♪ ♪  ",
+            #     sequence(blink_all, on_first=False),
+            # ),
         tempo=60,
         )
+ 
