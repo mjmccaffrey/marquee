@@ -9,7 +9,6 @@ from typing import Any, ClassVar
 
 from specialparams import SpecialParams
 from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument
-from music_implementation import _expand_sequence_measures, _make_parts_equal_length, _play
 from player_interface import PlayerInterface
 
 def _set_player(the_player: PlayerInterface):

@@ -1,6 +1,6 @@
 
 from collections.abc import Callable, Iterator
-from music_implementation import (
+from music.music_implementation import (
     ActionNote, BaseNote, BellNote, DrumNote,
     Measure, Part, Rest,
     Sequence, SequenceMeasure, SpecialParams,

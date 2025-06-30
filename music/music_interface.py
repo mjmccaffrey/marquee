@@ -6,7 +6,7 @@ from dataclasses import dataclass, field, replace
 from typing import Any
 
 from specialparams import SpecialParams
-from music_implementation import (
+from music.music_implementation import (
     Element, Measure, Part, Section, Sequence, 
     _dimmer, _dimmer_sequence, _light,
     _play_measures, _set_player
