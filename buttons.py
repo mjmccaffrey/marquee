@@ -32,7 +32,6 @@ class Button:
     @classmethod
     def wait(cls, seconds: float | None):
         """Wait until seconds have elapsed or any button is pressed."""
-        print(f"wait {seconds=}")
         if cls.pressed_event.wait(seconds):
             raise PhysicalButtonPressed(cls.which_button_pressed)
 
