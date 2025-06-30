@@ -5,7 +5,7 @@ from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field, replace
 from typing import Any
 
-from configuration import SpecialParams
+from specialparams import SpecialParams
 from music_implementation import (
     Element, Measure, Part, Section, Sequence, 
     _dimmer, _dimmer_sequence, _light,
