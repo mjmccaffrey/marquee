@@ -127,7 +127,7 @@ def rotate_build_flip(*, count: int, clockwise=True) -> Iterator[str]:
     lights = ['0'] * LIGHT_COUNT
     for c in range(count):
         i = c % LIGHT_COUNT
-        lights[i] = '0' if lights[i] else '1'
+        lights[i] = opposite(lights[i])
         yield ''.join(e for e in lights)
 
 def center_alternate() -> Iterator[str]:
