@@ -123,24 +123,6 @@ class ShellyDimmer(ABC):
             time.sleep(150)
         print("Calibration complete")
 
-    @classmethod
-    def configure_all(cls):
-        """ """  # !!!
-        print("Configuring dimmers")
-        # commands = [
-        #     _DimmerCommand(
-        #         channel=cls._dimmers[0].channels[0], 
-        #         url=f'http://{ip}/rpc/Shelly.GetConfig',
-        #         params={},
-        #     )
-        #     for ip in DIMMER_ADDRESSES
-        # ]
-        # results = asyncio.run(cls.execute_multiple_commands(commands))
-        # for result in results:
-        #     print()
-        #     print(result)
-        #     print()
-
 class DimmerChannel:
     """ Models a single dimmer channel (light). """
     def __init__(

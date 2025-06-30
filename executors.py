@@ -69,7 +69,6 @@ class Executor():
         self.register_modes()
         self.commands: dict[str, Callable] = {
             'calibrate_dimmers': self.command_calibrate_dimmers,
-            'configure_dimmers': self.command_configure_dimmers,
             'off': self.command_off,
         }
 
@@ -81,10 +80,6 @@ class Executor():
     def command_calibrate_dimmers(self):
         """Calibrate dimmers."""
         ShellyDimmer.calibrate_all()
-
-    def command_configure_dimmers(self):
-        """Configure dimmers."""
-        ShellyDimmer.configure_all()
 
     def command_off(self):
         """Turn off all relays and potentially other devices."""
