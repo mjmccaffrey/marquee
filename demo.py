@@ -8,7 +8,7 @@ from music import (
     dimmer, dimmer_sequence, light, measure, part, play,
     section, sequence,
 )
-from notation import(
+from music_notation import(
     act, act_part, drum_part,
     rest, sequence_measure, sequence_part
 )

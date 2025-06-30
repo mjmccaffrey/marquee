@@ -1,5 +1,5 @@
-from notation import *
-from notation import _interpret_notation, _interpret_symbols
+from music_notation import *
+from music_notation import _interpret_notation, _interpret_symbols
 import pytest
 
 a = {

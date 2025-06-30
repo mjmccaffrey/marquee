@@ -1,6 +1,6 @@
 
 from music import *
-from notation import *
+from music_notation import *
 from sequences import *
 
 # def test_SequenceMeasure():

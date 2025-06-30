@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - music"""
+"""Marquee Lighted Sign Project - music elements"""
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterator
@@ -9,9 +9,10 @@ from typing import Any, ClassVar
 
 from configuration import SpecialParams
 from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument
+from music_implementation import _expand_sequence_measures, _make_parts_equal_length, _play
 from player_interface import PlayerInterface
 
-def set_player(the_player: PlayerInterface):
+def _set_player(the_player: PlayerInterface):
     """Set the Player object used throughout this module."""
     global player
     player = the_player
@@ -27,7 +28,7 @@ class BaseNote(Element):
     duration: float
 
     @abstractmethod
-    def play(self):
+    def play(self, player: PlayerInterface):
         """Play single BaseNote (abstract)."""
 
 @dataclass(frozen=True)
@@ -35,7 +36,7 @@ class Rest(BaseNote):
     """Musical rest."""
     instrument: ClassVar[type[Instrument]] = RestInstrument
 
-    def play(self):
+    def play(self, player: PlayerInterface):
         """Play single rest (do nothing)."""
 
 @dataclass(frozen=True)
@@ -44,7 +45,7 @@ class ActionNote(BaseNote):
     instrument: ClassVar[type[Instrument]] = ActionInstrument
     actions: tuple[Callable, ...]
 
-    def play(self):
+    def play(self, player: PlayerInterface):
         """Play single ActionNote."""
         for action in self.actions:
             action()
@@ -55,7 +56,7 @@ class BellNote(BaseNote):
     instrument: ClassVar[type[Instrument]] = BellSet
     pitches: set[int]
 
-    def play(self):
+    def play(self, player: PlayerInterface):
         """Play single BellNote."""
         player.bells.play(self.pitches)
 
@@ -66,7 +67,7 @@ class DrumNote(BaseNote):
     accent: int
     pitches: set
     
-    def play(self):
+    def play(self, player: PlayerInterface):
         """Play single DrumNote."""
         player.drums.play(self.accent, self.pitches)
 
@@ -76,10 +77,10 @@ class NoteGroup(Element):
     notes: tuple[BaseNote, ...]
     duration: float = 0.0
 
-    def play(self):
+    def play(self, player: PlayerInterface):
         """Play all notes in group."""
         for note in self.notes:
-            note.play()
+            note.play(player)
 
 @dataclass(frozen=True)
 class Measure(Element):
@@ -120,7 +121,6 @@ class Part(Element):
     """Musical part containing measures."""
     measures: tuple[Measure, ...]
     default_accent: int = 0
-    # ??? elements: tuple[Element] = field(init=False)
 
     def __post_init__(self):
         """Process measures."""
@@ -154,9 +154,9 @@ class Section(Element):
             self._apply_beats(self.beats, self.parts)
         object.__setattr__(self, 'measures', self._prepare_parts(self.parts))
 
-    def play(self):
+    def play(self, tempo: int = 0):
         """Play already-generated measures comprising Section."""
-        play(*self.measures, tempo=self.tempo)
+        _play_measures(*self.measures, tempo = tempo or self.tempo)
 
     @staticmethod
     def _apply_beats(beats: int, parts: tuple[Part, ...]):
@@ -248,7 +248,7 @@ def _expand_sequence_measures(measures: tuple[Measure, ...]):
             ActionNote(
                 duration=measure.step_duration,
                 actions=(
-                    light(
+                    _light(
                         next(measure.patterns),
                         measure.special,
                     ),
@@ -277,7 +277,7 @@ def _play_measure(measure: Measure):
     beat = 0
     for element in measure.elements:
         assert isinstance(element, (BaseNote, NoteGroup))
-        element.play()
+        element.play(player)
         if element.duration:
             wait_dur = (element.duration) * player.pace
             player.wait(wait_dur, time.time() - start)
@@ -289,48 +289,18 @@ def _play_measure(measure: Measure):
     wait_dur = (measure.beats - beat) * player.pace 
     player.wait(wait_dur, time.time() - start)
 
-def play(*measures: Measure, tempo: int):
+def _play_measures(*measures: Measure, tempo: int):
     """Play a series of measures."""
     _expand_sequence_measures(measures)
     player.pace = 60 / tempo
     for measure in measures:
         _play_measure(measure)
 
-def measure(*elements: Element, beats: int = 4) -> Measure:
-    """Produce Measure."""
-    return Measure(elements, beats=beats)
-
-def part(*measures: Measure, accent: int = 0) -> Part:
-    """Produce Part."""
-    return Part(measures, accent)
-
-def section(
-    *parts: Part,
-    beats: int = 4,
-    tempo: int = 60,
-):
-    """Produce Section."""
-    return Section(
-        parts, 
-        beats=beats,
-        tempo=tempo,
-    )
-
-def sequence(
-    seq: Callable,
-    measures: int = 1,
-    special: SpecialParams | None = None,
-    **kwargs,
-) -> Sequence:
-    """Return callable to effect each step in sequence."""
-    sequence_obj = Sequence(seq, special, measures, kwargs)
-    return sequence_obj
-
-def dimmer(pattern: str) -> Callable:
+def _dimmer(pattern: str) -> Callable:
     """Return callable to effect dimmer pattern."""
     return lambda: player.lights.set_dimmers(pattern)
 
-def dimmer_sequence(brightness: int, transition: float) -> Callable:
+def _dimmer_sequence(brightness: int, transition: float) -> Callable:
     """Return callable to effect state of specified dimmers."""
     def func(lights: list[int]):
         player.lights.execute_dimmer_commands([
@@ -342,7 +312,7 @@ def dimmer_sequence(brightness: int, transition: float) -> Callable:
         ])
     return func
 
-def light(
+def _light(
     pattern: Any,
     special: SpecialParams | None = None,
 ) -> Callable:

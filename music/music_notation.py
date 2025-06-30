@@ -1,13 +1,11 @@
-"""Marquee Lighted Sign Project - notation"""
 
 from collections.abc import Callable, Iterator
-from music import (
+from music_implementation import (
     ActionNote, BaseNote, BellNote, DrumNote,
     Measure, Part, Rest,
     Sequence, SequenceMeasure, SpecialParams,
-    light, part,
 )
-from instruments import BellSet, DrumSet
+from music_interface import light, part
 
 note_duration: dict[str, float] = {
     '𝅝': 4,     '𝅗𝅥': 2,      '♩': 1,
