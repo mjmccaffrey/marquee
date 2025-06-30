@@ -5,7 +5,7 @@ from music.music_implementation import (
     Measure, Part, Rest,
     Sequence, SequenceMeasure, SpecialParams,
 )
-from music_interface import light, part
+from .music_interface import light, part
 
 note_duration: dict[str, float] = {
     '𝅝': 4,     '𝅗𝅥': 2,      '♩': 1,
