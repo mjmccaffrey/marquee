@@ -84,6 +84,7 @@ class SelectMode(Mode):
     def execute(self):
         """User presses the button to select 
            the next mode to execute."""
+        print("SelectMode.execute()")
         super().execute()
         new_mode = None
         if self.desired_mode != self.previous_desired_mode:
