@@ -7,15 +7,13 @@ import time
 from typing import Any
 
 from buttons import Button
-from configuration import (
-    ALL_HIGH, ALL_OFF, ALL_ON,
-    ActionParams, DimmerParams, SpecialParams,
-)
+from configuration import ALL_HIGH, ALL_OFF, ALL_ON
 from dimmers import TRANSITION_DEFAULT
 from mode_interface import ModeInterface
 from music import set_player
 from players import Player
 from sequences import rotate_build_flip
+from specialparams import ActionParams, DimmerParams, SpecialParams
 
 class Mode(ModeInterface):
     """Base for all Playing modes and the Select mode."""

@@ -3,7 +3,11 @@
 from collections.abc import Iterator, Sequence
 import random
 
-from configuration import *
+from configuration import (
+    ALL_OFF, ALL_ON, LIGHT_COUNT, 
+    LIGHTS_BY_ROW, LIGHTS_CLOCKWISE, 
+    LIGHTS_SIDES, LIGHTS_BOTTOM, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_TOP
+)
 
 def opposite(pattern: Sequence) -> str:
     """Return pattern or element with the state(s) flipped."""

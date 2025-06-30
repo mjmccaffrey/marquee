@@ -2,7 +2,7 @@
 
 import sys
 
-from configuration import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
+from configuration import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
 from modes import PlayMusicMode
 from music import (
     dimmer, dimmer_sequence, light, measure, part, play,
@@ -13,6 +13,7 @@ from music import(
     rest, sequence_measure, sequence_part
 )
 from sequences import *
+from specialparams import ActionParams, DimmerParams, SpecialParams
 
 class SignsSong(PlayMusicMode):
     """Signs song."""
@@ -77,10 +78,12 @@ class SignsSong(PlayMusicMode):
                 '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯   e𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪   a𝅘𝅥𝅯 c𝅘𝅥𝅯 c♪ c♩ |  '
                 # Do this, don't do that, can't you read the sign?
                 '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯   𝄿 de𝅘𝅥𝅯 de𝅘𝅥𝅯 de𝅘𝅥𝅯    𝄿 d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 | 𝄾 d♩   '
-            )
-            # sequence_part(
-            #     "  𝄾 ♪ ♪ 𝄾 | 𝄾 ♪ ♪ 𝄾 | ♪ 𝄾 ♪ 𝄾 | 𝄾 ♪ ♪  ",
-            #     sequence(blink_all, on_first=False),
-            # ),
+            ),
+            sequence_part(
+                # Sign, sign, everywhere a sign
+                # OnOff On, fade down
+                '  ♪ ♪ ♩  ',
+                 sequence(blink_all),
+            ),
         )
  

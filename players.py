@@ -8,7 +8,7 @@ from typing import Any
 
 from buttons import Button, ButtonPressed
 from buttonsets import ButtonSet
-from configuration import (
+from specialparams import (
     ActionParams, DimmerParams, SpecialParams,
 )
 from instruments import BellSet, DrumSet
@@ -82,6 +82,7 @@ class Player:
             try:
                 new_mode = mode.execute()
             except ButtonPressed as press:
+                print("ButtonPressed caught")
                 button, = press.args
                 Button.reset()
                 new_mode = mode.button_action(button)

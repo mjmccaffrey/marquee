@@ -5,10 +5,11 @@ import random
 from sequences import *
 import time
 
-from configuration import DimmerParams, ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
+from configuration import ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
 from dimmers import TRANSITION_MINIMUM
 from modes import PlayMode
 from players import Player
+from specialparams import DimmerParams
 
 class RotateReversible(PlayMode):
     """Rotate a pattern, reversing direction in response to a button press."""

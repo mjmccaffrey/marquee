@@ -1,10 +1,5 @@
 """Marquee Lighted Sign Project - configuration"""
 
-from collections.abc import Callable
-from dataclasses import dataclass
-
-# USB DEVICE NAMES
-
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
     [ 11,         3, ],
@@ -49,22 +44,3 @@ DIMMER_ADDRESSES = [
     '192.168.64.115',
     '192.168.64.116',
 ]
-
-@dataclass
-class SpecialParams:
-    """Base class for special parameters."""
-
-@dataclass
-class ActionParams(SpecialParams):
-    """Parameters for an arbitrary action."""
-    action: Callable
-
-@dataclass
-class DimmerParams(SpecialParams):
-    """Parameters for using dimmers rather than relays."""
-    concurrent: bool = True
-    brightness_on: int = 100
-    brightness_off: int = 0
-    speed_factor: float = 1.0
-    transition_on: float | None = 0.5  # !!!! None
-    transition_off: float | None = 0.5  # !!!! None

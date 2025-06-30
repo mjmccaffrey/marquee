@@ -3,10 +3,8 @@
 import asyncio
 from dataclasses import dataclass
 
-from configuration import (
-    DimmerParams, SpecialParams, 
-    EXTRA_COUNT, LIGHT_COUNT,
-)
+from configuration import EXTRA_COUNT, LIGHT_COUNT
+from specialparams import DimmerParams, SpecialParams
 from dimmers import (
     ShellyDimmer, DimmerChannel,
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,

@@ -6,32 +6,29 @@ from signal import SIGUSR1  # type: ignore
 from buttons import Button
 from buttonsets import ButtonSet
 from configuration import (
-    ALL_RELAYS, ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT, LIGHT_TO_RELAY, 
-    SpecialParams
+    ALL_RELAYS, ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT
 )
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
-from demo import Demo
 from gpiozero import Button as _Button  # type: ignore
 from instruments import BellSet, DrumSet
 from lights import LightSet
-from mode_interface import ModeConstructor, ModeInterface
+from mode_interface import ModeConstructor
 import modes
-from mode_defs import *
+from mode_defs import (
+    BuildBrightness,  EvenOddFade, RotateReversible, RandomFade, RapidFade
+)
 from relays import NumatoRL160001, NumatoSSR80001
 from sequences import *
 from signs_song import SignsSong
+from specialparams import DimmerParams, SpecialParams
 
 def setup_devices(brightness_factor: float):
     """"""
     bells = BellSet(
-        NumatoSSR80001(
-            "/dev/ttyACM1",
-        )
+        NumatoSSR80001("/dev/ttyACM1")
     )
     drums = DrumSet(
-        NumatoRL160001(
-            "/dev/ttyACM0",
-        )
+        NumatoRL160001("/dev/ttyACM0")
     )
     lights = LightSet(
         relays = NumatoRL160001(

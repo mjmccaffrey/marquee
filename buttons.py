@@ -25,12 +25,14 @@ class Button:
     @classmethod
     def reset(cls):
         """Prepare for a button press."""
+        print("Button.reset()")
         cls.which_button_pressed: Button | None = None
         cls.pressed_event = threading.Event()
 
     @classmethod
     def wait(cls, seconds: float | None):
         """Wait until seconds have elapsed or any button is pressed."""
+        print(f"wait {seconds=}")
         if cls.pressed_event.wait(seconds):
             raise PhysicalButtonPressed(cls.which_button_pressed)
 
@@ -56,7 +58,7 @@ class Button:
 
     def button_pressed(self):
         """Callback for button press."""
-        # print(f"Button <{self}> pressed")
+        print(f"Button <{self}> pressed")
         Button.which_button_pressed = self
         Button.pressed_event.set()
 
