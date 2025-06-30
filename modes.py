@@ -95,7 +95,7 @@ class SelectMode(Mode):
             self.player.lights.set_relays(ALL_OFF)
             time.sleep(0.5)
             self.player.play_sequence(
-                rotate_build_flip(count=self.desired_mode),
+                rotate_build_flip(count=self.desired_mode+1),
                 pace=0.20, post_delay=4.0,
             )
             self.previous_desired_mode = self.desired_mode
