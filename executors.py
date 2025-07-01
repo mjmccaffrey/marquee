@@ -138,6 +138,7 @@ class Executor():
             brightness_pattern: str | None = None,
         ):
         """Effects the command-line specified command, mode or pattern(s)."""
+        print(f"{mode_index=}, {command=}, {light_pattern=}, {brightness_pattern=}")
         self.bells, self.buttons, self.drums, self.lights = (
             setup_devices(brightness_factor)
         )
