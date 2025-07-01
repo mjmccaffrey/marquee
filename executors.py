@@ -174,7 +174,7 @@ class Executor():
 
     def register_modes(self):
         """Register all operating modes."""
-        self.add_mode(-10, "silent_variety", modes.SelectMode, hidden=True)
+        self.add_mode(-10, "silent_variety", modes.SelectMode)
         self.add_mode(0, "selection", modes.SelectMode, hidden=True, previous_mode="PREVIOUS_MODE")
         self.add_sequence_mode(1, "all_on", all_on)
         self.add_sequence_mode(2, "all_off", all_off)
