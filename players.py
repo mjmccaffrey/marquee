@@ -146,7 +146,7 @@ class Player:
     def wait(self, seconds: float | None, elapsed: float = 0):
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
-        if self.auto_mode_change_time > time.time():
+        if self.auto_mode_change_time < time.time():
             raise AutoModeChangeDue
         if seconds is None:
             duration = None
