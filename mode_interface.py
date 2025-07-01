@@ -29,3 +29,11 @@ class ModeConstructor:
     name: str
     mode_class: type[ModeInterface]
     kwargs: dict[str, Any]
+
+@dataclass
+class AutoModeChangeEntry:
+    duration_seconds: int
+    mode_index: int
+
+class AutoModeChangeDue(Exception):
+    """Automatic mode change due exception."""

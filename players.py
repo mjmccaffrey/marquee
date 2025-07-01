@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - players"""
 
-from collections.abc import Iterable
-from dataclasses import dataclass
+from collections.abc import Iterable, Iterator
+from dataclasses import dataclass, field
 import itertools
 import time
 from typing import Any
@@ -13,7 +13,10 @@ from specialparams import (
 )
 from instruments import BellSet, DrumSet
 from lights import LightSet
-from mode_interface import ModeConstructor, ModeInterface
+from mode_interface import (
+    AutoModeChangeDue, AutoModeChangeEntry, 
+    ModeConstructor, ModeInterface
+)
 
 @dataclass
 class Player:
@@ -31,6 +34,8 @@ class Player:
         """Set up initial state."""
         print("Initializing player")
         self.current_mode = -1
+        self.auto_mode_change_time: float = 0.0
+        self.auto_mode_change_iter: Iterator[AutoModeChangeEntry]
 
     def close(self):
         """Clean up."""
@@ -75,6 +80,14 @@ class Player:
             if new_mode == 222:
                 new_mode = 2
 
+    def next_auto_mode(self):
+        """Effect change to next auto mode in sequence."""
+        next_mode = next(self.auto_mode_change_iter)
+        self.auto_mode_change_time = (
+            time.time() + next_mode.duration_seconds
+        )
+        return(next_mode.mode_index)
+
     def play_mode_until_changed(self, mode: ModeInterface):
         """Play the specified mode until another mode is selected."""
         new_mode = None
@@ -86,6 +99,9 @@ class Player:
                 button, = press.args
                 Button.reset()
                 new_mode = mode.button_action(button)
+            except AutoModeChangeDue:
+                print("AutoModeChangeDue caught")
+                new_mode = self.next_auto_mode()
         return new_mode
 
     def play_sequence(
@@ -130,6 +146,8 @@ class Player:
     def wait(self, seconds: float | None, elapsed: float = 0):
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
+        if self.auto_mode_change_time > time.time():
+            raise AutoModeChangeDue
         if seconds is None:
             duration = None
         else:

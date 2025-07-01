@@ -2,7 +2,7 @@
 
 import itertools
 import random
-from sequences import *
+from sequences import opposite
 import time
 
 from configuration import ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT

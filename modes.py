@@ -3,13 +3,14 @@
 from abc import abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
+import itertools
 import time
 from typing import Any
 
 from buttons import Button
 from configuration import ALL_HIGH, ALL_OFF, ALL_ON
 from dimmers import TRANSITION_DEFAULT
-from mode_interface import ModeInterface
+from mode_interface import AutoModeChangeEntry, ModeInterface
 from music import set_player
 from players import Player
 from sequences import rotate_build_flip
@@ -50,7 +51,26 @@ class Mode(ModeInterface):
     @abstractmethod
     def execute(self):
         """Play the mode."""
- 
+
+class AutoMode(Mode):
+    """Supports auto mode change."""
+
+    def button_action(self, button: Button):
+        """Respond to the button press."""
+        pass
+
+    @abstractmethod
+    def execute(self):
+        """Set the mode change sequence."""
+        self.auto_mode_change_iter = itertools.cycle(
+            AutoModeChangeEntry(
+                duration_seconds=10,
+                mode_index=i
+            )
+            for i in [10, 11, 12, 13, 14, 15, 16, 17, 18, 31]
+        )
+        return self.player.next_auto_mode()
+
 class SelectMode(Mode):
     """Supports the select mode."""
     def __init__(
