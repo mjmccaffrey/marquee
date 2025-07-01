@@ -61,7 +61,7 @@ class AutoMode(Mode):
 
     def execute(self):
         """Set the mode change sequence."""
-        self.auto_mode_change_iter = itertools.cycle(
+        self.player.auto_mode_change_iter = itertools.cycle(
             AutoModeChangeEntry(
                 duration_seconds=10,
                 mode_index=i
