@@ -59,7 +59,6 @@ class AutoMode(Mode):
         """Respond to the button press."""
         pass
 
-    @abstractmethod
     def execute(self):
         """Set the mode change sequence."""
         self.auto_mode_change_iter = itertools.cycle(
