@@ -63,10 +63,10 @@ class AutoMode(Mode):
         """Set the mode change sequence."""
         self.player.auto_mode_change_iter = itertools.cycle(
             AutoModeChangeEntry(
-                duration_seconds=10,
+                duration_seconds=30,
                 mode_index=i
             )
-            for i in [10, 11, 12, 13, 14, 15, 16, 17, 18, 31]
+            for i in [10, 11, 13, 14, 15, 17, 18, 31]
         )
         return self.player.next_auto_mode()
 
