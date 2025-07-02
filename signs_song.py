@@ -55,7 +55,7 @@ class SignsSong(PlayMusicMode):
                 ' 𝄾 a♪ a♪ 𝄿 G𝅘𝅥𝅯 𝄽 𝄾 a𝅘𝅥𝅯 a𝅘𝅥𝅯  |'
 
                 # tucked my hair up under my hat and I
-                '𝄿 a♪    𝄿  a♪   a♪  b𝅘𝅥𝅯 a𝅘𝅥𝅯 𝄾  a♪ d𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
+                '𝄿 a♪    a𝅘𝅥𝅯 a♪   a♪  b♪ a♪ a♪ d𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
 
                 # went in to ask him why
                 ' d𝅘𝅥𝅯 d♪   b𝅘𝅥𝅯 d♪ d♪ b𝅘𝅥𝅯 a𝅘𝅥𝅯 𝄾 𝄽 |'
