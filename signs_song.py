@@ -48,8 +48,11 @@ class SignsSong(PlayMusicMode):
                 #                     And the
                 '  𝄻 | 𝄻 |  𝄻 |  𝄼 𝄽 𝄾 a𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
                 
-                # sign says long-haired freaky people need not apply  so I
-                '  c♩ c♩ b♪ b♪ b♪ b𝅘𝅥𝅯 G𝅘𝅥𝅯  |  𝄽 𝄾   a𝅘𝅥𝅯 a𝅘𝅥𝅯 𝄾   G♩  𝄽  |'
+                # sign says long-haired freaky people 
+                '  c♩ c♩     b♪ b♪      b♪ b𝅘𝅥𝅯 G𝅘𝅥𝅯  |  '
+                
+                # need not apply  so I
+                ' 𝄾 a♪ a♪ 𝄿 G𝅘𝅥𝅯 𝄽 𝄾 a𝅘𝅥𝅯 a𝅘𝅥𝅯  |'
 
                 # tucked my hair up under my hat and I
                 '𝄿 a♪    a𝅘𝅥𝅯 a♪   a𝅘𝅥𝅯 b♪ a𝅘𝅥𝅯 a𝅘𝅥𝅯 a𝅘𝅥𝅯 𝄾 d𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
@@ -60,11 +63,11 @@ class SignsSong(PlayMusicMode):
                 # He said, you look like a fine, upstanding young
                 '  𝄿 e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿   e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 d𝅘𝅥𝅯   𝄾 c♪    c♪ d♪ |'
 
-                # man, I think you'll do, uh, so I
-                ' c𝅘𝅥𝅯 a♪ c𝅘𝅥𝅯   c𝅘𝅥𝅯 a𝅘𝅥𝅯 G𝅘𝅥𝅯 G𝅘𝅥𝅯   𝄽   𝄾 e𝅘𝅥𝅯 c𝅘𝅥𝅯  |'
+                # man,  I think you'll do, uh, so I
+                ' d𝅘𝅥𝅯 c♪ a𝅘𝅥𝅯 d♪   d♪     c♩  𝄿 a𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  |'
 
                 # took off my hat and said imagine that, huh
-                ' e𝅘𝅥𝅯   e♪  c𝅘𝅥𝅯 e♪  e♪   𝄾 |'
+                ' e𝅘𝅥𝅯   e♪  c𝅘𝅥𝅯 e♪      c♪   d𝅘𝅥𝅯 d𝅘𝅥𝅯   d♪    𝄿 e𝅘𝅥𝅯  𝄾 |'
 
                 # me, working for you,    Oh...
                 '  c♪ 𝄾  c𝅘𝅥𝅯 a𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯  𝄽  𝄾  G♪  '  # e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ | '
@@ -93,7 +96,7 @@ class SignsSong(PlayMusicMode):
                 # Blockin' out the scenery, breakin' my mind
                 '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯   e𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪   a𝅘𝅥𝅯 c𝅘𝅥𝅯 c♪ c♩ |  '
                 # Do this, don't do that, can't you read the sign?
-                '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯   𝄿 de𝅘𝅥𝅯 de𝅘𝅥𝅯 de𝅘𝅥𝅯    𝄿 d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 | 𝄾 d♩   '
+                '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯   𝄿 de𝅘𝅥𝅯 de𝅘𝅥𝅯 de𝅘𝅥𝅯    𝄿 d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 |' # 𝄾 d♩   '
             ),
         )
  
