@@ -86,7 +86,8 @@ class SignsSong(PlayMusicMode):
             ),
             bell_part(
                 # '  𝄻 |  '
-                '  𝄽 𝄽 eca♪ eca♪ eEG♪ eEG♪ |  '
+                '  D♪ D♪ D♪ D♪ |  '
+                # '  𝄽 𝄽 eca♪ eca♪ eEG♪ eEG♪ |  '
                 # Sign, sign, everywhere a sign
                 '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
                 # Blockin' out the scenery, breakin' my mind
