@@ -58,16 +58,16 @@ class SignsSong(PlayMusicMode):
                 ' d𝅘𝅥𝅯 d♪   b𝅘𝅥𝅯 d♪ d♪ b𝅘𝅥𝅯 a𝅘𝅥𝅯 𝄾 𝄽 |'
 
                 # He said, you look like a fine, upstanding young
-                '  𝄿 e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿   e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 d𝅘𝅥𝅯   𝄾 d♪    e♪ d♪ |'
+                '  𝄿 e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿   e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 d𝅘𝅥𝅯   𝄾 c♪    c♪ d♪ |'
 
                 # man, I think you'll do, uh, so I
-                ' e𝅘𝅥𝅯 d♪ b𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 𝄽 𝄿 b𝅘𝅥𝅯 d𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
+                ' c𝅘𝅥𝅯 a♪ c𝅘𝅥𝅯   c𝅘𝅥𝅯 a𝅘𝅥𝅯 G𝅘𝅥𝅯 G𝅘𝅥𝅯   𝄽   𝄾 e𝅘𝅥𝅯 c𝅘𝅥𝅯  |'
 
                 # took off my hat and said imagine that, huh
-                ' d𝅘𝅥𝅯   d♪  d𝅘𝅥𝅯 d𝅘𝅥𝅯  d𝅘𝅥𝅯  d𝅘𝅥𝅯   b𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 e♪ 𝄿 d𝅘𝅥𝅯 𝄾 |'
+                ' e𝅘𝅥𝅯   e♪  c𝅘𝅥𝅯 e♪  e♪   𝄾 |'
 
                 # me, working for you,    Oh...
-                '  c♪ 𝄾  c𝅘𝅥𝅯 a𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯 𝄿  𝄽  𝄾  G♪  '  # e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ | '
+                '  c♪ 𝄾  c𝅘𝅥𝅯 a𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯  𝄽  𝄾  G♪  '  # e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ | '
             )
         )
 
