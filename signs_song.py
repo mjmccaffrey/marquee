@@ -58,7 +58,7 @@ class SignsSong(PlayMusicMode):
                 ' d𝅘𝅥𝅯 d♪   b𝅘𝅥𝅯 d♪ d♪ b𝅘𝅥𝅯 a𝅘𝅥𝅯 𝄾 𝄽 |'
 
                 # He said, you look like a fine, upstanding young
-                '  𝄿 d𝅘𝅥𝅯 d𝅘𝅥𝅯 𝄿   d𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d𝅘𝅥𝅯   d♪ d♪ d♪ e♪ d♪ |'
+                '  𝄿 e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿   e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 d𝅘𝅥𝅯   𝄾 d♪    e♪ d♪ |'
 
                 # man, I think you'll do, uh, so I
                 ' e𝅘𝅥𝅯 d♪ b𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 𝄽 𝄿 b𝅘𝅥𝅯 d𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
@@ -74,19 +74,19 @@ class SignsSong(PlayMusicMode):
     def refrain_1(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            drum_part(
-                '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |  '
-            ),
+            # drum_part(
+            #     '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |  '
+            # ),
             sequence_part(
-                '  𝄻 |  '
+                # '  𝄻 |  '
                 # Sign, sign, everywhere a sign
                 # OnOff On, fade down
-                '  ♪ ♪ ♩  ',
+                '  ♪ ♪ ♩  | ♩  ',
                  sequence(blink_all),
             ),
             bell_part(
                 # '  𝄻 |  '
-                '  D♪ D♪ D♪ D♪ |  '
+                # '  D♪ D♪ D♪ D♪ |  '
                 # '  𝄽 𝄽 eca♪ eca♪ eEG♪ eEG♪ |  '
                 # Sign, sign, everywhere a sign
                 '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
