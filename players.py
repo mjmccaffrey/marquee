@@ -122,7 +122,6 @@ class Player:
         else:
             pace_iter = itertools.cycle(pace)
         for _ in range(count):
-            print(_)
             for i, lights in enumerate(sequence):
                 if stop is not None and i == stop:
                     break

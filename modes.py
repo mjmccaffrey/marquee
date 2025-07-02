@@ -2,7 +2,6 @@
 
 from abc import abstractmethod
 from collections.abc import Callable
-from dataclasses import dataclass
 import itertools
 import time
 from typing import Any
@@ -53,7 +52,7 @@ class Mode(ModeInterface):
         """Play the mode."""
 
 class AutoMode(Mode):
-    """Supports auto mode change."""
+    """Supports time-based automatic mode change."""
 
     def button_action(self, button: Button):
         """Respond to the button press."""
@@ -66,7 +65,7 @@ class AutoMode(Mode):
                 duration_seconds=30,
                 mode_index=i
             )
-            for i in [10, 11, 13, 14, 15, 17, 18, 31]
+            for i in [10, 11, 13, 15, 17, 18, 31]
         )
         return self.player.next_auto_mode()
 
@@ -103,9 +102,6 @@ class SelectMode(Mode):
     def execute(self):
         """User presses the button to select 
            the next mode to execute."""
-        print(
-            f"SelectMode.execute {self.desired_mode=} {self.previous_desired_mode=}"
-        )
         super().execute()
         new_mode = None
         if self.desired_mode != self.previous_desired_mode:

@@ -266,13 +266,12 @@ class Executor():
             RotateReversible, pace=0.35, 
             pattern = "0" + "1" * (LIGHT_COUNT - 1))
         self.add_mode(26, "signs", SignsSong)
-        self.add_sequence_mode(27, "sides_1", rotate_sides, pace=1.0, pattern='1', clockwise=True)
-        self.add_sequence_mode(28, "sides_2", rotate_sides, pace=1.0, pattern='0', clockwise=True)
-        self.add_sequence_mode(29, "sides_3", rotate_sides, pace=1.0, pattern='1', clockwise=False)
-        self.add_sequence_mode(30, "sides_4", rotate_sides, pace=1.0, pattern='0', clockwise=False)
-        self.add_sequence_mode(31, "sides_5", rotate_sides, pace=2.0, pattern='0', clockwise=False,
+        self.add_sequence_mode(27, "rotate_sides", rotate_sides, pace=1.0, pattern='1', clockwise=True)
+        self.add_sequence_mode(28, "rotate_sides_silent", rotate_sides, pace=2.0, pattern='0', clockwise=False,
             special=DimmerParams(
                 brightness_on = 90,
                 brightness_off = 10,
+                transition_on=1.0,
+                transition_off=1.0,
             )
         )
