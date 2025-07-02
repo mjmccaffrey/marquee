@@ -49,7 +49,7 @@ class SignsSong(PlayMusicMode):
                 '  𝄻 | 𝄻 |  𝄻 |  𝄼 𝄽 𝄾 a𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
                 
                 # sign says long-haired freaky people need not apply  so I
-                'c♩ c♩       b♪ b♪       c𝅘𝅥𝅯 a𝅘𝅥𝅯 b𝅘𝅥𝅯 G𝅘𝅥𝅯 | 𝄾 a♪ a♪ a𝅘𝅥𝅯 G𝅘𝅥𝅯 𝄽 𝄾 a𝅘𝅥𝅯 a𝅘𝅥𝅯 |'
+                'c♩ c♩       b♪ b♪ b♪ G♪ a♩ | 𝄾 a𝅘𝅥𝅯 a𝅘𝅥𝅯 G𝅘𝅥𝅯 𝄽 𝄾 |'
 
                 # tucked my hair up under my hat and I
                 '𝄿 a♪    a𝅘𝅥𝅯 a♪   a𝅘𝅥𝅯 b♪ a𝅘𝅥𝅯 a𝅘𝅥𝅯 a𝅘𝅥𝅯 𝄾 d𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
@@ -66,8 +66,8 @@ class SignsSong(PlayMusicMode):
                 # took off my hat and said imagine that, huh
                 ' d𝅘𝅥𝅯   d♪  d𝅘𝅥𝅯 d𝅘𝅥𝅯  d𝅘𝅥𝅯  d𝅘𝅥𝅯   b𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 e♪ 𝄿 d𝅘𝅥𝅯 𝄾 |'
 
-                # me, a-working for you,    Oh...
-                ' d♪ 𝄿 b𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ | '
+                # me, working for you,    Oh...
+                ' c♪ 𝄿 c𝅘𝅥𝅯 a𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯 '  # e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ | '
             )
         )
 
