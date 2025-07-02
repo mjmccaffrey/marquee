@@ -24,7 +24,8 @@ class SignsSong(PlayMusicMode):
         self.player.lights.set_relays(ALL_OFF)
         time.sleep(5)
         sections = [
-            self.hook(),
+            self.intro(),
+            self.refrain_1(),
         ]
         for section in sections:
             section.play(tempo=60)
@@ -42,7 +43,6 @@ class SignsSong(PlayMusicMode):
                  '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
                  '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
                  '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  ',
-                accent=''
             ),  
             bell_part(
                 #                     And the
@@ -71,7 +71,7 @@ class SignsSong(PlayMusicMode):
             )
         )
 
-    def hook(self):
+    def refrain_1(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             drum_part(
@@ -97,3 +97,43 @@ class SignsSong(PlayMusicMode):
             ),
         )
  
+     # def full_first_verse(self):
+    #     # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+    #     return section(
+    #         drum_part(
+    #             '  h𝅝> | '
+    #              '  lh♩ lh♩ lh♩ lh♩ | l♪ h♪ l♪ h♪ l♪ h♪ l♪ h♪|'
+    #              '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
+    #              '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
+    #              '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
+    #              '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
+    #              '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
+    #              '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  ',
+    #         ),  
+    #         bell_part(
+    #             #                     And the
+    #             '  𝄻 | 𝄻 |  𝄻 |  𝄼 𝄽 𝄾 a𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
+                
+    #             # sign says long-haired freaky people need not apply  so I
+    #             'c♩ c♩       b♪ b♪       c𝅘𝅥𝅯 a𝅘𝅥𝅯 b𝅘𝅥𝅯 G𝅘𝅥𝅯 | 𝄾 a♪ a♪ a𝅘𝅥𝅯 G𝅘𝅥𝅯 𝄽 𝄾 a𝅘𝅥𝅯 a𝅘𝅥𝅯 |'
+
+    #             # tucked my hair up under my hat and I
+    #             '𝄿 a♪    a𝅘𝅥𝅯 a♪   a𝅘𝅥𝅯 b♪ a𝅘𝅥𝅯 a𝅘𝅥𝅯 a𝅘𝅥𝅯 𝄾 d𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
+
+    #             # went in to ask him why
+    #             ' d𝅘𝅥𝅯 d♪   b𝅘𝅥𝅯 d♪ d♪ b𝅘𝅥𝅯 a𝅘𝅥𝅯 𝄾 𝄽 |'
+
+    #             # He said, you look like a fine, upstanding young
+    #             ' 𝄿 d𝅘𝅥𝅯 d𝅘𝅥𝅯  d𝅘𝅥𝅯  d𝅘𝅥𝅯   d𝅘𝅥𝅯   d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ d♪ d𝅘𝅥𝅯 d𝅘𝅥𝅯 e♪ |'
+
+    #             # man, I think you'll do, uh, so I
+    #             ' e𝅘𝅥𝅯 d♪ b𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 𝄽 𝄿 b𝅘𝅥𝅯 d𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
+
+    #             # took off my hat and said imagine that, huh
+    #             ' d𝅘𝅥𝅯   d♪  d𝅘𝅥𝅯 d𝅘𝅥𝅯  d𝅘𝅥𝅯  d𝅘𝅥𝅯   b𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 e♪ 𝄿 d𝅘𝅥𝅯 𝄾 |'
+
+    #             # me, a-working for you,    Oh...
+    #             ' d♪ 𝄿 b𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 d𝅘𝅥𝅯 e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ | '
+    #         )
+    #     )
+
