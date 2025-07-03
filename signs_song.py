@@ -93,7 +93,6 @@ class SignsSong(PlayMusicMode):
         )
         if play_thru == 1:
             return section(
-                bells,
                 #drum_part(
                 # for build-up    '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |  '
                 #),
@@ -104,10 +103,10 @@ class SignsSong(PlayMusicMode):
                 #     '  ♪ ♪ ♩  | ♩  ',
                 #     sequence(blink_all),
                 # ),
+                bells,
             )
         else:
             return section(
-                bells,
                 drum_part(
                 # for build-up    '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |  '
                 '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯 |  '
@@ -121,6 +120,7 @@ class SignsSong(PlayMusicMode):
                 #    '  ♪ ♪ ♩  | ♩  ',
                 #    sequence(blink_all),
                 #),
+            bells,
             )
  
      # def full_first_verse(self):
