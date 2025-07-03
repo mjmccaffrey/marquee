@@ -81,7 +81,7 @@ class SignsSong(PlayMusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             drum_part(
-                '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |  '
+            # for build-up    '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |  '
             ),
             sequence_part(
                 '  𝄻 |  '
@@ -91,9 +91,9 @@ class SignsSong(PlayMusicMode):
                  sequence(blink_all),
             ),
             bell_part(
-                # '  𝄻 |  '
-                # '  D♪ D♪ D♪ D♪ |  '
-                # '  𝄽 𝄽 eca♪ eca♪ eEG♪ eEG♪ |  '
+                '  𝄻 |  '
+                # '  D♪ D♪ D♪ D♪ |  ' Build-up experiment
+                # '  𝄽 𝄽 eca♪ eca♪ eEG♪ eEG♪ |  ' Build-up experiment
                 # Sign, sign, everywhere a sign
                 '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
                 # Blockin' out the scenery, breakin' my mind
