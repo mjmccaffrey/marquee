@@ -6,19 +6,30 @@ from signal import SIGUSR1  # type: ignore
 from buttons import Button
 from buttonsets import ButtonSet
 from configuration import (
-    ALL_RELAYS, ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT
+    ALL_RELAYS, ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT, LIGHT_COUNT,
 )
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from gpiozero import Button as _Button  # type: ignore
 from instruments import BellSet, DrumSet
 from lights import LightSet
-from mode_interface import ModeConstructor
+from mode_interface import AutoModeChangeEntry, ModeConstructor
 import modes
 from mode_defs import (
     BuildBrightness,  EvenOddFade, RotateReversible, RandomFade, RapidFade
 )
 from relays import NumatoRL160001, NumatoSSR80001
-from sequences import *
+from sequences import (
+    all_on, 
+    all_off,
+    even_on,
+    even_off,
+    blink_all,
+    blink_alternate,
+    rotate,
+    random_flip,
+    opposite_corner_pairs,
+    rotate_sides,
+)
 from signs_song import SignsSong
 from specialparams import DimmerParams, SpecialParams
 
@@ -174,7 +185,6 @@ class Executor():
 
     def register_modes(self):
         """Register all operating modes."""
-        self.add_mode(-10, "silent_variety", modes.AutoMode)
         self.add_mode(0, "selection", modes.SelectMode, hidden=True, previous_mode="PREVIOUS_MODE")
         self.add_sequence_mode(1, "all_on", all_on)
         self.add_sequence_mode(2, "all_off", all_off)
@@ -200,7 +210,7 @@ class Executor():
                 transition_off=3.0,
             )
         )
-        self.add_sequence_mode(11, "random_flip_fade", random_flip, pace=2.0,
+        self.add_sequence_mode(11, "random_flip_fade_medium", random_flip, pace=2.0,
             special=DimmerParams(),
             light_pattern='LIGHT_PATTERN',
         )
@@ -274,4 +284,17 @@ class Executor():
                 transition_on=1.0,
                 transition_off=1.0,
             )
+        )
+        self.add_sequence_mode(29, "random_flip_fade_fast", random_flip, pace=0.5,
+            special=DimmerParams(),
+            light_pattern='LIGHT_PATTERN',
+        )
+        self.add_mode(30, "silent_variety", modes.AutoMode,
+            mode_sequence=[
+                AutoModeChangeEntry(
+                    duration_seconds=60,
+                    mode_index=i
+                )
+                for i in [10, 11, 15, 18, 28, 29]
+            ]
         )

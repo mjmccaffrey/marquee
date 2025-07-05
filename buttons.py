@@ -20,7 +20,7 @@ class VirtualButtonPressed(ButtonPressed):
 class Button:
     """Supports physical buttons on remote and sign."""
 
-    buttons: ClassVar[list["Button"]] = []
+    _buttons: ClassVar[list["Button"]] = []
 
     @classmethod
     def reset(cls):
@@ -40,10 +40,10 @@ class Button:
 
     def __post_init__(self):
         """Create a button instance."""
-        if not Button.buttons:
+        if not Button._buttons:
             print(f"Initializing buttons")
             Button.reset()
-        Button.buttons.append(self)
+        Button._buttons.append(self)
         self.button.when_pressed = self.button_pressed
         if self.signal_number is not None:
             signal(

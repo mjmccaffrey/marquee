@@ -8,14 +8,14 @@ import time
 from configuration import ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
 from dimmers import TRANSITION_MINIMUM
 from modes import PlayMode
-from players import Player
+from player_interface import PlayerInterface
 from specialparams import DimmerParams
 
 class RotateReversible(PlayMode):
     """Rotate a pattern, reversing direction in response to a button press."""
     def __init__(
         self,
-        player: Player, 
+        player: PlayerInterface,
         name: str,
         #
         pace: float,
@@ -44,7 +44,7 @@ class RandomFade(PlayMode):
 
     def __init__(
         self,
-        player: Player, 
+        player: PlayerInterface, 
         name: str,
         #
         transition: float = -1,
@@ -87,7 +87,7 @@ class EvenOddFade(PlayMode):
 
     def __init__(
         self,
-        player: Player, 
+        player: PlayerInterface, 
         name: str,
         #
         pace: float,
@@ -123,7 +123,7 @@ class RapidFade(PlayMode):
     """"""
     def __init__(
         self,
-        player: Player, 
+        player: PlayerInterface, 
         name: str,
         #
     ):
@@ -155,7 +155,7 @@ class BuildBrightness(PlayMode):
 
     def __init__(
         self,
-        player: Player, 
+        player: PlayerInterface, 
         name: str,
         #
         equal_trans: bool,

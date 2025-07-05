@@ -1,23 +1,20 @@
-"""Marquee Lighted Sign Project - mode interface"""
+"""Marquee Lighted Sign Project - mode interface."""
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any
 
-from buttons import Button
+from button_interface import ButtonInterface
+from player_interface import PlayerInterface
 
+@dataclass
 class ModeInterface(ABC):
     """Mode abstract base."""
-    def __init__(
-            self, 
-            player: Any,  # Player,
-            name: str,
-    ):
-        self.player = player
-        self.name = name
+    player: PlayerInterface
+    name: str
 
     @abstractmethod
-    def button_action(self, button: Button):
+    def button_action(self, button: ButtonInterface):
         """"""        
 
     @abstractmethod

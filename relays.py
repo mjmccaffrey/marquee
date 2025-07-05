@@ -21,7 +21,7 @@ class RelayModuleInterface(ABC):
 class NumatoUSBRelayModule(RelayModuleInterface):
     """Supports Numato USB Relay Modules."""
 
-    def __init__(self, port_address, device_mapping: Mapping = {}):
+    def __init__(self, port_address: str, device_mapping: Mapping = {}):
         """Create the object, where device_mapping
            maps device indices to relay indices.
            Establish connection to relay module via serial port."""
@@ -51,7 +51,7 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         }
 
     def __str__(self):
-        """"""
+        """__str__."""
         return f"{type(self).__name__} @ {self.port_address}"
     
     def close(self):
@@ -112,9 +112,11 @@ class NumatoUSBRelayModule(RelayModuleInterface):
         return device_pattern
 
 class NumatoRL160001(NumatoUSBRelayModule):
-    """Supports the Numato RL160001 16 Channel USB Relay Module."""
+    """Supports the Numato RL160001 16 Channel USB 
+       Mechanical Relay Module."""
     relay_count = 16
 
 class NumatoSSR80001(NumatoUSBRelayModule):
-    """Supports the Numato SSR80001 8 Channel USB Relay Module."""
+    """Supports the Numato SSR80001 8 Channel USB 
+       Solid State Relay Module."""
     relay_count = 8

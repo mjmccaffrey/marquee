@@ -22,12 +22,10 @@ from mode_interface import (
 class Player:
     """Executes one mode at a time."""
     modes: dict[int, ModeConstructor]
-
     bells: BellSet
     buttons: ButtonSet
     drums: DrumSet
     lights: LightSet
-    # brightness_factor: float
     speed_factor: float
 
     def __post_init__(self):
@@ -35,7 +33,7 @@ class Player:
         print("Initializing player")
         self.current_mode = -1
         self.auto_mode_change_time: float = 0.0
-        self.auto_mode_change_iter: Iterator[AutoModeChangeEntry]
+        self.auto_mode_change_iter: Iterator[AutoModeChangeEntry] = iter([])
 
     def close(self):
         """Clean up."""
@@ -76,7 +74,7 @@ class Player:
             )
             self.current_mode = new_mode
             print(f"Executing mode {self.current_mode} {mode.name}")
-            new_mode = self.play_mode_until_changed(mode)
+            new_mode = self._play_mode_until_changed(mode)
             if new_mode == 222:
                 new_mode = 2
 
@@ -88,7 +86,7 @@ class Player:
         )
         return(next_mode.mode_index)
 
-    def play_mode_until_changed(self, mode: ModeInterface):
+    def _play_mode_until_changed(self, mode: ModeInterface):
         """Play the specified mode until another mode is selected."""
         new_mode = None
         while new_mode is None:
@@ -145,7 +143,7 @@ class Player:
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
         if (self.auto_mode_change_time and
-            self.auto_mode_change_time< time.time()
+            self.auto_mode_change_time < time.time()
         ):
             raise AutoModeChangeDue
         if seconds is None:
@@ -157,7 +155,7 @@ class Player:
                 return
         Button.wait(duration)
 
-    def flip_extra_relays(self, *indices: int):
+    def _flip_extra_relays(self, *indices: int):
         """"""
         def flip(s):
             return '0' if s == '1' else '1'
@@ -171,4 +169,4 @@ class Player:
     def click(self):
         """Generate a small click sound by flipping
            an otherwise unused relay."""
-        self.flip_extra_relays(5)
+        self._flip_extra_relays(5)
