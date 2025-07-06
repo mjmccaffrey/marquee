@@ -8,7 +8,7 @@ from typing import Any
 
 from buttons import Button
 from configuration import ALL_HIGH, ALL_OFF, ALL_ON
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from dimmers import TRANSITION_DEFAULT
 from mode_interface import ModeInterface
 from music import set_player
@@ -50,7 +50,7 @@ class Mode(ModeInterface):
 @dataclass
 class AutoMode(Mode):
     """Supports time-based automatic mode change."""
-    mode_sequence: list[AutoModeChangeEntry] = []
+    mode_sequence: list[AutoModeChangeEntry] = field(default_factory=list)
     preset_dimmers: bool = False
     preset_relays: bool = False
 
