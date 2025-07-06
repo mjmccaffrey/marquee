@@ -82,6 +82,8 @@ class Player(PlayerInterface):
         self.auto_mode_change_time = (
             time.time() + next_mode.duration_seconds
         )
+        print(f"Next auto mode is {next_mode.mode_index} "
+              f"for {next_mode.duration_seconds} seconds.")
         return(next_mode.mode_index)
 
     def _play_mode_until_changed(self, mode: ModeInterface):
@@ -96,7 +98,7 @@ class Player(PlayerInterface):
                 Button.reset()
                 new_mode = mode.button_action(button)
             except AutoModeChangeDue:
-                print("AutoModeChangeDue caught")
+                # print("AutoModeChangeDue caught")
                 new_mode = self.next_auto_mode()
         return new_mode
 

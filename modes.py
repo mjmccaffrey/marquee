@@ -23,10 +23,10 @@ class Mode(ModeInterface):
     def effect_presets(self, dimmers: bool, relays: bool):
         """Preset the dimmers and relays as specified."""
         if dimmers:
-            print("presetting DIMMERS")
+            # print("Presetting DIMMERS")
             self.player.lights.set_dimmers(ALL_HIGH, force_update=True)
         if relays:
-            print("presetting RELAYS")
+            # print("Presetting RELAYS")
             self.player.lights.set_relays(ALL_ON)
 
     def mode_index(self, current: int, delta: int) -> int:
