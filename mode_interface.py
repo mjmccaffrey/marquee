@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Type
 
 from button_interface import ButtonInterface
 from player_interface import PlayerInterface
@@ -24,7 +24,7 @@ class ModeInterface(ABC):
 @dataclass
 class ModeConstructor:
     name: str
-    mode_class: type[ModeInterface]
+    mode_class: Type
     kwargs: dict[str, Any]
 
 @dataclass

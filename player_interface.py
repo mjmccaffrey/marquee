@@ -2,22 +2,25 @@
 
 from abc import ABC, abstractmethod
 from buttonsets import ButtonSet
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from instruments import BellSet, DrumSet
 from lights import LightSet
-from mode_interface import ModeConstructor
+from mode_interface import AutoModeChangeEntry, ModeConstructor
 from specialparams import SpecialParams
 from typing import Any
 
 @dataclass
-class PlayerInterface:
+class PlayerInterface(ABC):
     modes: dict[int, ModeConstructor]
     bells: BellSet
     buttons: ButtonSet
     drums: DrumSet
     lights: LightSet
     speed_factor: float
+    current_mode: int
+    auto_mode_change_time: float
+    auto_mode_change_iter: Iterator[AutoModeChangeEntry]
 
     @abstractmethod
     def close(self):
@@ -53,3 +56,8 @@ class PlayerInterface:
     @abstractmethod
     def wait(self, seconds: float | None, elapsed: float = 0):
         """"""
+
+    @abstractmethod
+    def click(self):
+        """Generate a small click sound by flipping
+           an otherwise unused relay."""

@@ -17,9 +17,10 @@ from mode_interface import (
     AutoModeChangeDue, AutoModeChangeEntry, 
     ModeConstructor, ModeInterface
 )
+from player_interface import PlayerInterface
 
 @dataclass
-class Player:
+class Player(PlayerInterface):
     """Executes one mode at a time."""
     modes: dict[int, ModeConstructor]
     bells: BellSet
@@ -27,13 +28,16 @@ class Player:
     drums: DrumSet
     lights: LightSet
     speed_factor: float
+    current_mode: int = field(init=False)
+    auto_mode_change_time: float = field(init=False)
+    auto_mode_change_iter: Iterator[AutoModeChangeEntry] = field(init=False)
 
     def __post_init__(self):
         """Set up initial state."""
         print("Initializing player")
         self.current_mode = -1
-        self.auto_mode_change_time: float = 0.0
-        self.auto_mode_change_iter: Iterator[AutoModeChangeEntry] = iter([])
+        self.auto_mode_change_time = 0.0
+        self.auto_mode_change_iter = iter([])
 
     def close(self):
         """Clean up."""
@@ -67,14 +71,14 @@ class Player:
         new_mode = starting_mode_index
         while True:
             mode = self.modes[new_mode]
-            mode = mode.mode_class(
+            mode_instance = mode.mode_class(
                 player=self, 
                 name=mode.name, 
                 **self.replace_kwarg_values(mode.kwargs),
             )
             self.current_mode = new_mode
             print(f"Executing mode {self.current_mode} {mode.name}")
-            new_mode = self._play_mode_until_changed(mode)
+            new_mode = self._play_mode_until_changed(mode_instance)
             if new_mode == 222:
                 new_mode = 2
 
