@@ -21,7 +21,7 @@ class RelayModuleInterface(ABC):
 class NumatoUSBRelayModule(RelayModuleInterface):
     """Supports Numato USB Relay Modules."""
 
-    def __init__(self, port_address: str, device_mapping: Mapping = {}):
+    def __init__(self, port_address: str, device_mapping: Mapping[int, int] = {}):
         """Create the object, where device_mapping
            maps device indices to relay indices.
            Establish connection to relay module via serial port."""

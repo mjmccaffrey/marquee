@@ -8,12 +8,12 @@ from typing import Any
 
 from buttons import Button, ButtonPressed
 from buttonsets import ButtonSet
-from specialparams import (
+from definitions import (
     ActionParams, DimmerParams, SpecialParams,
     AutoModeChangeEntry, ModeConstructor
 )
 from instruments import BellSet, DrumSet
-from lights import LightSet
+from lightsets import LightSet
 from mode_interface import (
     ModeInterface
 )
@@ -25,22 +25,13 @@ class AutoModeChangeDue(Exception):
 @dataclass
 class Player(PlayerInterface):
     """Executes one mode at a time."""
-    modes: dict[int, ModeConstructor]
-    bells: BellSet
-    buttons: ButtonSet
-    drums: DrumSet
-    lights: LightSet
-    speed_factor: float
-    current_mode: int = field(init=False)
-    auto_mode_change_time: float = field(init=False)
-    auto_mode_change_iter: Iterator[AutoModeChangeEntry] = field(init=False)
 
     def __post_init__(self):
         """Set up initial state."""
         print("Initializing player")
-        self.current_mode = -1
         self.auto_mode_change_time = 0.0
         self.auto_mode_change_iter = iter([])
+        self.current_mode = -1
 
     def close(self):
         """Clean up."""

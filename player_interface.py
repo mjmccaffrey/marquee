@@ -3,10 +3,10 @@
 from abc import ABC, abstractmethod
 from buttonsets import ButtonSet
 from collections.abc import Iterable, Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from instruments import BellSet, DrumSet
-from lights import LightSet
-from specialparams import SpecialParams, AutoModeChangeEntry, ModeConstructor
+from lightsets import LightSet
+from definitions import SpecialParams, AutoModeChangeEntry, ModeConstructor
 from typing import Any
 
 @dataclass
@@ -17,9 +17,10 @@ class PlayerInterface(ABC):
     drums: DrumSet
     lights: LightSet
     speed_factor: float
-    current_mode: int
-    auto_mode_change_time: float
-    auto_mode_change_iter: Iterator[AutoModeChangeEntry]
+    auto_mode_change_time: float = field(init=False)
+    auto_mode_change_iter: Iterator[AutoModeChangeEntry] = field(init=False)
+    current_mode: int = field(init=False)
+    pace: float = field(init=False)
 
     @abstractmethod
     def close(self):

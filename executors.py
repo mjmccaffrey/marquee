@@ -11,7 +11,7 @@ from configuration import (
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from gpiozero import Button as _Button  # type: ignore
 from instruments import BellSet, DrumSet
-from lights import LightSet
+from lightsets import LightSet
 import modes
 from mode_defs import (
     BuildBrightness,  EvenOddFade, RotateReversible, RandomFade, RapidFade
@@ -30,7 +30,7 @@ from sequences import (
     rotate_sides,
 )
 from signs_song import SignsSong
-from specialparams import DimmerParams, SpecialParams, AutoModeChangeEntry, ModeConstructor
+from definitions import DimmerParams, SpecialParams, AutoModeChangeEntry, ModeConstructor
 
 def setup_devices(brightness_factor: float):
     """"""

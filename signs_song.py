@@ -14,7 +14,7 @@ from music import(
     rest, sequence_measure, sequence_part
 )
 from sequences import blink_all
-from specialparams import ActionParams, DimmerParams, SpecialParams
+from definitions import ActionParams, DimmerParams, SpecialParams
 
 class SignsSong(PlayMusicMode):
     """Signs song."""
