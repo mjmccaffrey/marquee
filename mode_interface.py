@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Any
 
 from button_interface import ButtonInterface
 from player_interface import PlayerInterface
@@ -9,7 +10,7 @@ from player_interface import PlayerInterface
 @dataclass
 class ModeInterface(ABC):
     """Mode abstract base."""
-    player: PlayerInterface
+    player: Any  # PlayerInterface
     name: str
 
     @abstractmethod
