@@ -6,8 +6,7 @@ from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from instruments import BellSet, DrumSet
 from lights import LightSet
-from mode_interface import AutoModeChangeEntry, ModeConstructor
-from specialparams import SpecialParams
+from specialparams import SpecialParams, AutoModeChangeEntry, ModeConstructor
 from typing import Any
 
 @dataclass

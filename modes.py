@@ -10,11 +10,11 @@ from buttons import Button
 from configuration import ALL_HIGH, ALL_OFF, ALL_ON
 from dataclasses import dataclass
 from dimmers import TRANSITION_DEFAULT
-from mode_interface import AutoModeChangeEntry, ModeInterface
+from mode_interface import ModeInterface
 from music import set_player
 from player_interface import PlayerInterface
 from sequences import rotate_build_flip
-from specialparams import ActionParams, DimmerParams, SpecialParams
+from specialparams import ActionParams, DimmerParams, SpecialParams, AutoModeChangeEntry, ModeConstructor
 
 @dataclass
 class Mode(ModeInterface):

@@ -2,7 +2,6 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Type
 
 from button_interface import ButtonInterface
 from player_interface import PlayerInterface
@@ -20,17 +19,3 @@ class ModeInterface(ABC):
     @abstractmethod
     def execute(self):
         """"""
-
-@dataclass
-class ModeConstructor:
-    name: str
-    mode_class: Type
-    kwargs: dict[str, Any]
-
-@dataclass
-class AutoModeChangeEntry:
-    duration_seconds: int
-    mode_index: int
-
-class AutoModeChangeDue(Exception):
-    """Automatic mode change due exception."""

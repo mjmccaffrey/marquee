@@ -10,14 +10,17 @@ from buttons import Button, ButtonPressed
 from buttonsets import ButtonSet
 from specialparams import (
     ActionParams, DimmerParams, SpecialParams,
+    AutoModeChangeEntry, ModeConstructor
 )
 from instruments import BellSet, DrumSet
 from lights import LightSet
 from mode_interface import (
-    AutoModeChangeDue, AutoModeChangeEntry, 
-    ModeConstructor, ModeInterface
+    ModeInterface
 )
 from player_interface import PlayerInterface
+
+class AutoModeChangeDue(Exception):
+    """Automatic mode change due exception."""
 
 @dataclass
 class Player(PlayerInterface):
