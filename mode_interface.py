@@ -8,7 +8,7 @@ from button_interface import ButtonInterface
 from player_interface import PlayerInterface
 
 @dataclass
-class ModeInterface(ABC):
+class ModeInterface:
     """Mode abstract base."""
     player: Any  # PlayerInterface
     name: str
