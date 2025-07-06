@@ -8,25 +8,24 @@ from typing import Any
 
 from buttons import Button
 from configuration import ALL_HIGH, ALL_OFF, ALL_ON
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from dimmers import TRANSITION_DEFAULT
 from mode_interface import ModeInterface
 from music import set_player
 from player_interface import PlayerInterface
 from sequences import rotate_build_flip
-from definitions import ActionParams, DimmerParams, SpecialParams, AutoModeChangeEntry, ModeConstructor
+from definitions import ActionParams, DimmerParams, SpecialParams, AutoModeChangeEntry
 
 @dataclass
 class Mode(ModeInterface):
     """Base for all Playing modes and the Select mode."""
-    preset_dimmers: bool
-    preset_relays: bool
 
-    def __post_init__(self):
-        if self.preset_dimmers:
+    def effect_presets(self, dimmers: bool, relays: bool):
+        """Preset the dimmers and relays as specified."""
+        if dimmers:
             print("presetting DIMMERS")
             self.player.lights.set_dimmers(ALL_HIGH, force_update=True)
-        if self.preset_relays:
+        if relays:
             print("presetting RELAYS")
             self.player.lights.set_relays(ALL_ON)
 
@@ -50,9 +49,11 @@ class Mode(ModeInterface):
 @dataclass
 class AutoMode(Mode):
     """Supports time-based automatic mode change."""
-    mode_sequence: list[AutoModeChangeEntry] = field(default_factory=list)
-    preset_dimmers: bool = False
-    preset_relays: bool = False
+    mode_sequence: list[AutoModeChangeEntry]
+
+    def __post_init__(self):
+        """Initialize."""
+        self.effect_presets(dimmers=False, relays=False)
 
     def execute(self):
         """Set the mode change sequence."""
@@ -63,11 +64,10 @@ class AutoMode(Mode):
 class SelectMode(Mode):
     """Supports the select mode."""
     previous_mode: int
-    preset_dimmers: bool = True
-    preset_relays: bool = False
 
     def __post_init__(self):
         """Initialize."""
+        self.effect_presets(dimmers=True, relays=False)
         self.desired_mode = self.previous_mode
         self.previous_desired_mode = -1
 
@@ -90,7 +90,6 @@ class SelectMode(Mode):
     def execute(self):
         """User presses the button to select 
            the next mode to execute."""
-        super().execute()
         new_mode = None
         if self.desired_mode != self.previous_desired_mode:
             # Not last pass.
@@ -112,11 +111,10 @@ class SelectMode(Mode):
 @dataclass
 class PlayMode(Mode):
     """Base for custom modes."""
-    preset_dimmers: bool = False
-    preset_relays: bool = False
 
     def __post_init__(self):
-        """ """
+        """Initialize."""
+        self.effect_presets(dimmers=False, relays=False)
         self.direction = +1
 
     def button_action(self, button: Button):
@@ -146,14 +144,14 @@ class PlaySequenceMode(PlayMode):
         self,
         player: PlayerInterface,
         name: str,
-        #
         sequence: Callable,
         pace: tuple[float, ...] | float | None = None,
         stop: int | None = None,
         special: SpecialParams | None = None,
         **kwargs,
     ):
-        """"""
+        """Initialize."""
+        super().__init__(player, name)
         self.sequence = sequence
         self.pace = pace
         self.stop = stop
@@ -168,11 +166,9 @@ class PlaySequenceMode(PlayMode):
                 special.transition_off = default_trans
             if special.transition_on is None:
                 special.transition_on = default_trans
-        super().__init__(
-            player, 
-            name, 
-            preset_dimmers=(special is None),
-            preset_relays=(special is not None),
+        self.effect_presets(
+            dimmers=(special is None),
+            relays=(special is not None),
         )
 
     def play_sequence_once(self):
@@ -187,18 +183,16 @@ class PlaySequenceMode(PlayMode):
 
     def execute(self):
         """Play the mode."""
-        super().execute()
         while True:
             self.play_sequence_once()
 
 @dataclass
 class PlayMusicMode(PlayMode):
     """Mode for playing music."""
-    preset_dimmers: bool = True
-    preset_relays: bool = True
 
     def __post_init__(self):
         """Initialize."""
+        self.effect_presets(dimmers=True, relays=True)
         set_player(self.player)
 
     def light(
