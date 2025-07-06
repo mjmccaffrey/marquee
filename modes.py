@@ -50,7 +50,7 @@ class Mode(ModeInterface):
 @dataclass
 class AutoMode(Mode):
     """Supports time-based automatic mode change."""
-    mode_sequence: list[AutoModeChangeEntry]
+    mode_sequence: list[AutoModeChangeEntry] = []
     preset_dimmers: bool = False
     preset_relays: bool = False
 

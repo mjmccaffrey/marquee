@@ -10,7 +10,7 @@ from player_interface import PlayerInterface
 @dataclass
 class ModeInterface:
     """Mode abstract base."""
-    player: Any  # PlayerInterface
+    player: PlayerInterface
     name: str
 
     @abstractmethod
