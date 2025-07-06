@@ -322,7 +322,7 @@ class Executor():
             special=DimmerParams(),
             light_pattern='LIGHT_PATTERN',
         )
-        self.add_sequence_mode(34, "blink_all_fade_slowwww", 
+        self.add_sequence_mode(34, "silent_blink_all_slowwww", 
             blink_all, pace=10,
             special=DimmerParams(
                 transition_on=5.0,
