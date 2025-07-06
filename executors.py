@@ -291,9 +291,43 @@ class Executor():
         self.add_mode(30, "silent_variety", modes.AutoMode,
             mode_sequence=[
                 AutoModeChangeEntry(
-                    duration_seconds=60,
-                    mode_index=i
+                    duration_seconds=(d or 60),
+                    mode_index=i,
                 )
-                for i in [10, 11, 15, 18, 28, 29]
-            ]
+                for i, d in [
+                    (31, None),
+                    (32, None),
+                    (33, 15),
+                    (18, None),
+                    (28, None),
+                    (29, None),
+                ]
+            ],
+        )
+        self.add_sequence_mode(31, "silent_blink_alternate_slow",
+            blink_alternate, pace=10, 
+            special=DimmerParams(
+                transition_on=2.0,
+                transition_off=3.0,
+            )
+        )
+        self.add_sequence_mode(32, "silent_random_flip_medium", random_flip, pace=2.0,
+            special=DimmerParams(
+                transition_on=2.0,
+                transition_off=2.0,
+            ),
+            light_pattern='LIGHT_PATTERN',
+        )
+        self.add_sequence_mode(33, "silent_random_flip_fast", random_flip, pace=0.25,
+            special=DimmerParams(),
+            light_pattern='LIGHT_PATTERN',
+        )
+        self.add_sequence_mode(34, "blink_all_fade_slowwww", 
+            blink_all, pace=10,
+            special=DimmerParams(
+                transition_on=5.0,
+                transition_off=5.0,
+                brightness_on=100,
+                brightness_off=10,
+            )
         )
