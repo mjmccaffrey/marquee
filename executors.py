@@ -339,11 +339,11 @@ class Executor():
         )
         self.add_mode(35, "silent_fade_build", SilentFadeBuild)
         self.add_sequence_mode(36, "silent_rotate_slight_fade",
-            rotate, pace=0.25, 
+            rotate, pace=0.5, 
             special=DimmerParams(
                 concurrent=False,
                 brightness_on = 100,
-                brightness_off = 30,
+                brightness_off = 20,
             ),
             pattern='110000000000',
         )
