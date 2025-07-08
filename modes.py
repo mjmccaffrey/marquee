@@ -6,11 +6,12 @@ from itertools import cycle
 import time
 from typing import Any
 
+from automode_interface import AutoModeInterface
 from buttons import Button
 from configuration import ALL_HIGH, ALL_OFF, ALL_ON
 from dataclasses import dataclass, field
 from dimmers import TRANSITION_DEFAULT
-from mode_interfaces import AutoModeInterface, ModeInterface
+from mode_interface import ModeInterface
 from music import set_player
 from player_interface import PlayerInterface
 from sequences import rotate_build_flip

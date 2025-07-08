@@ -9,7 +9,7 @@ from buttonsets import ButtonSet
 from definitions import SpecialParams, ModeConstructor
 from instruments import BellSet, DrumSet
 from lightsets import LightSet
-from mode_interfaces import AutoModeInterface
+from automode_interface import AutoModeInterface
 
 @dataclass
 class PlayerInterface(ABC):

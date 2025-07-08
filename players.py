@@ -8,7 +8,7 @@ from typing import Any
 
 from buttons import Button, ButtonPressed
 from definitions import ActionParams, DimmerParams, SpecialParams
-from mode_interfaces import AutoModeInterface, ModeInterface
+from mode_interface import ModeInterface
 from player_interface import PlayerInterface
 
 class AutoModeDue(Exception):
