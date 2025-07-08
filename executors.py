@@ -299,6 +299,7 @@ class Executor():
                     mode_index=i,
                 )
                 for i, d in [
+                    (35, 360),
                     (31, None),
                     (32, None),
                     (33, 15),
