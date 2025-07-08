@@ -191,6 +191,6 @@ class SilentFadeBuild(PlayMode):
                         self.player.lights.set_dimmer_subset(
                             lights, brightness, 1.0
                         )
-                        time.sleep(0.5)
-                    time.sleep(1.0)
-                time.sleep(1.0)
+                        self.player.wait(0.5)
+                    self.player.wait(1.0)
+                self.player.wait(1.0)
