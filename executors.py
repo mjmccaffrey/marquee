@@ -295,17 +295,18 @@ class Executor():
         self.add_mode(30, "silent_variety", modes.AutoMode,
             mode_sequence=[
                 AutoModeEntry(
-                    duration_seconds=(d or 60),
+                    duration_seconds=(d or 30),
                     mode_index=i,
                 )
                 for i, d in [
-                    (35, 60),
+                    (36, None),
                     (31, None),
                     (32, None),
                     (33, 15),
-                    (18, None),
-                    (28, None),
-                    (29, None),
+                    (34, None),
+                    (35, None),
+                    (36, None),
+                    (37, None),
                 ]
             ],
         )
@@ -337,3 +338,16 @@ class Executor():
             )
         )
         self.add_mode(35, "silent_fade_build", SilentFadeBuild)
+        self.add_sequence_mode(36, "silent_rotate_slight_fade",
+            rotate, pace=0.25, 
+            special=DimmerParams(
+                concurrent=False,
+                brightness_on = 100,
+                brightness_off = 30,
+            ),
+            pattern='110000000000',
+        )
+        self.add_sequence_mode(37, "silent_random_flip_fade_fast", random_flip, pace=0.5,
+            special=DimmerParams(),
+            light_pattern='LIGHT_PATTERN',
+        )
