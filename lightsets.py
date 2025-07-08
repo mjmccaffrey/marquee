@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - lights"""
+"""Marquee Lighted Sign Project - lightsets"""
 
 import asyncio
 from dataclasses import dataclass
@@ -139,6 +139,21 @@ class LightSet:
         else:
             updates = self._updates_needed(brightnesses, transitions)
         self.execute_dimmer_commands(updates)
+
+    def set_dimmer_subset(
+            self,
+            lights: list[int],
+            brightness: int,
+            transition: float,
+    ):
+        """"""
+        self.execute_dimmer_commands([
+            (   self.dimmer_channels[light], 
+                brightness, 
+                transition,
+            )
+            for light in lights
+        ])
 
     def execute_dimmer_commands(
             self,

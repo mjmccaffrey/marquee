@@ -11,11 +11,17 @@ LIGHTS_TOP = [0, 1, 2,]
 LIGHTS_RIGHT = [3, 4, 5,]
 LIGHTS_BOTTOM = [6, 7, 8,]
 LIGHTS_LEFT = [9, 10, 11]
-LIGHTS_SIDES = [
+LIGHTS_BY_SIDE = [
     LIGHTS_TOP, LIGHTS_RIGHT, LIGHTS_BOTTOM, LIGHTS_LEFT,
 ]
+LIGHTS_COL_B = [0, 8]
+LIGHTS_COL_C = [1, 7]
+LIGHTS_COL_D = [2, 6]
+LIGHTS_BY_COL = [
+    LIGHTS_LEFT, LIGHTS_COL_B, LIGHTS_COL_C, LIGHTS_COL_D, LIGHTS_RIGHT,
+]
 LIGHTS_CLOCKWISE = [
-    i for side in LIGHTS_SIDES for i in side
+    i for side in LIGHTS_BY_SIDE for i in side
 ]
 LIGHT_TO_RELAY = {
             0:  6,  1:  7,  2:  8,

@@ -1,13 +1,15 @@
-"""Marquee Lighted Sign Project - player interface"""
+"""Marquee Lighted Sign Project - player_interface"""
 
 from abc import ABC, abstractmethod
-from buttonsets import ButtonSet
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, field
+from typing import Any
+
+from buttonsets import ButtonSet
+from definitions import SpecialParams, ModeConstructor
 from instruments import BellSet, DrumSet
 from lightsets import LightSet
-from definitions import SpecialParams, AutoModeChangeEntry, ModeConstructor
-from typing import Any
+from mode_interfaces import AutoModeInterface
 
 @dataclass
 class PlayerInterface(ABC):
@@ -17,8 +19,7 @@ class PlayerInterface(ABC):
     drums: DrumSet
     lights: LightSet
     speed_factor: float
-    auto_mode_change_time: float = field(init=False)
-    auto_mode_change_iter: Iterator[AutoModeChangeEntry] = field(init=False)
+    auto_mode: AutoModeInterface | None = field(init=False)
     current_mode: int = field(init=False)
     pace: float = field(init=False)
 

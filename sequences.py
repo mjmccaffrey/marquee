@@ -1,17 +1,27 @@
-"""Marquee Lighted Sign Project - sequence configuration"""
+"""Marquee Lighted Sign Project - sequences"""
 
 from collections.abc import Iterator, Sequence
 import random
 
 from configuration import (
     ALL_OFF, ALL_ON, LIGHT_COUNT, 
-    LIGHTS_BY_ROW, LIGHTS_CLOCKWISE, 
-    LIGHTS_SIDES, LIGHTS_BOTTOM, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_TOP
+    LIGHTS_BY_COL, LIGHTS_BY_ROW, LIGHTS_CLOCKWISE, 
+    LIGHTS_BY_SIDE, LIGHTS_BOTTOM, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_TOP
 )
 
 def opposite(pattern: Sequence) -> str:
     """Return pattern or element with the state(s) flipped."""
     return "".join("1" if str(p) == "0" else "0" for p in pattern)
+
+def pp(p: Sequence):
+    """Pretty print pattern p."""
+    print(
+        f"  {p[0]} {p[1]} {p[2]}\n"
+        f"{p[11]}       {p[3]}\n"
+        f"{p[10]}       {p[4]}\n"
+        f"{p[9]}       {p[5]}\n"
+        f"  {p[8]} {p[7]} {p[6]}\n"
+    )
 
 def all_on() -> Iterator[str]:
     """All lights on."""
@@ -52,16 +62,23 @@ def each_row(pattern="1") -> Iterator[str]:
             for i in range(LIGHT_COUNT)
         )
 
-def build_rows(pattern="1", from_top=True) -> Iterator[str]:
-    """Successive rows on / off."""
+def lights_in_groups(rows=True, from_top_left=True) -> Iterator[list[int]]:
+    """Return lights in each group section."""
+    if rows:
+        groups = LIGHTS_BY_ROW
+    else:  # cols
+        groups = LIGHTS_BY_COL
+    if not from_top_left:
+        groups = reversed(groups)
+    for group in groups:
+        yield group
+    
+def build(pattern="1", rows=True, from_top_left=True) -> Iterator[str]:
+    """Successive rows or cols on / off."""
     assert len(pattern) == 1
-    if from_top:
-        rows = LIGHTS_BY_ROW
-    else:  # from_bottom
-        rows = reversed(LIGHTS_BY_ROW)
     lights = [opposite(pattern)] * LIGHT_COUNT
-    for row in rows:
-        for light in row:
+    for group in lights_in_groups(rows, from_top_left):
+        for light in group:
             lights[light] = pattern
         yield ''.join(l for l in lights)
 
@@ -78,7 +95,7 @@ def rotate(pattern="1"+"0"*(LIGHT_COUNT-1), clockwise=True) -> Iterator[str]:
 
 def rotate_sides(pattern="1", clockwise=True) -> Iterator[str]:
     """ """
-    sequence = LIGHTS_SIDES if clockwise else reversed(LIGHTS_SIDES)
+    sequence = LIGHTS_BY_SIDE if clockwise else reversed(LIGHTS_BY_SIDE)
     opp = opposite(pattern)
     for lights in sequence:
         yield ''.join(
@@ -93,7 +110,7 @@ def opposite_corner_pairs() -> Iterator[str]:
         (LIGHTS_TOP[0], LIGHTS_LEFT[-1]),
         (LIGHTS_TOP[-1], LIGHTS_RIGHT[0]),
         (LIGHTS_BOTTOM[0], LIGHTS_RIGHT[-1]),
-        (LIGHTS_BOTTOM[-1], LIGHTS_LEFT[-1]),
+        (LIGHTS_BOTTOM[-1], LIGHTS_LEFT[0]),
     ]
     opposite_corners = [
         corners_clockwise[0] + corners_clockwise[2],

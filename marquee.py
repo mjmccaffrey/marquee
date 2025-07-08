@@ -1,23 +1,26 @@
-"""Marquee Lighted Sign Project - main"""
+"""Marquee Lighted Sign Project - marquee (main)"""
 """
 marquee
     arguments
     Executor
         Player
             BellSet
-            Buttons
+            ButtonSet
+                Buttons
             DrumSet
             LightSet
                 Dimmers
                 Relays
+            AutoMode
             SelectMode
             PlayMode
             PlaySequenceMode
             PlayMusicMode
                 Instrument
                     ActionInstrument
-                    BellSet
-                    DrumSet
+                    RelayInstrument
+                        BellSet
+                        DrumSet
                     RestInstrument
                 Section
                     Part
@@ -31,7 +34,6 @@ marquee
                                 NoteGroup
                         SequenceMeasure
                         Sequence
-            mode_defs
             sequences
 """
 from arguments import display_help, process_arguments

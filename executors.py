@@ -1,25 +1,30 @@
 """Marquee Lighted Sign Project - executors"""
 
 from collections.abc import Callable
+from itertools import chain
 from signal import SIGUSR1  # type: ignore
+
+from gpiozero import Button as _Button  # type: ignore
 
 from buttons import Button
 from buttonsets import ButtonSet
 from configuration import (
     ALL_RELAYS, ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT, LIGHT_COUNT,
 )
+from definitions import DimmerParams, SpecialParams, AutoModeEntry, ModeConstructor
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
-from gpiozero import Button as _Button  # type: ignore
 from instruments import BellSet, DrumSet
 from lightsets import LightSet
 import modes
-from mode_defs import (
-    BuildBrightness,  EvenOddFade, RotateReversible, RandomFade, RapidFade
+from modes_advanced import (
+    BuildBrightness,  EvenOddFade, RotateReversible, 
+    RandomFade, RapidFade, SilentFadeBuild,
 )
 from relays import NumatoRL160001, NumatoSSR80001
 from sequences import (
     all_on, 
     all_off,
+    build,
     even_on,
     even_off,
     blink_all,
@@ -30,7 +35,6 @@ from sequences import (
     rotate_sides,
 )
 from signs_song import SignsSong
-from definitions import DimmerParams, SpecialParams, AutoModeChangeEntry, ModeConstructor
 
 def setup_devices(brightness_factor: float):
     """"""
@@ -290,7 +294,7 @@ class Executor():
         )
         self.add_mode(30, "silent_variety", modes.AutoMode,
             mode_sequence=[
-                AutoModeChangeEntry(
+                AutoModeEntry(
                     duration_seconds=(d or 60),
                     mode_index=i,
                 )
@@ -331,3 +335,5 @@ class Executor():
                 brightness_off=10,
             )
         )
+        self.add_mode(35, "silent_fade_build", SilentFadeBuild)
+

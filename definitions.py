@@ -1,4 +1,4 @@
-""""""
+"""Marquee Lighted Sign Project - definitions"""
 
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -31,6 +31,6 @@ class ModeConstructor:
     kwargs: dict[str, Any]
 
 @dataclass
-class AutoModeChangeEntry:
+class AutoModeEntry:
     duration_seconds: int
     mode_index: int

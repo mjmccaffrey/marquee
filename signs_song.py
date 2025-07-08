@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - Signs Song"""
+"""Marquee Lighted Sign Project - signs_song"""
 
 import sys
 import time

@@ -1,25 +1,17 @@
 """Marquee Lighted Sign Project - players"""
 
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 import itertools
 import time
 from typing import Any
 
 from buttons import Button, ButtonPressed
-from buttonsets import ButtonSet
-from definitions import (
-    ActionParams, DimmerParams, SpecialParams,
-    AutoModeChangeEntry, ModeConstructor
-)
-from instruments import BellSet, DrumSet
-from lightsets import LightSet
-from mode_interface import (
-    ModeInterface
-)
+from definitions import ActionParams, DimmerParams, SpecialParams
+from mode_interfaces import AutoModeInterface, ModeInterface
 from player_interface import PlayerInterface
 
-class AutoModeChangeDue(Exception):
+class AutoModeDue(Exception):
     """Automatic mode change due exception."""
 
 @dataclass
@@ -29,8 +21,7 @@ class Player(PlayerInterface):
     def __post_init__(self):
         """Set up initial state."""
         print("Initializing player")
-        self.auto_mode_change_time = 0.0
-        self.auto_mode_change_iter = iter([])
+        self.auto_mode = None
         self.current_mode = -1
 
     def close(self):
@@ -76,16 +67,6 @@ class Player(PlayerInterface):
             if new_mode == 222:
                 new_mode = 2
 
-    def next_auto_mode(self):
-        """Effect change to next auto mode in sequence."""
-        next_mode = next(self.auto_mode_change_iter)
-        self.auto_mode_change_time = (
-            time.time() + next_mode.duration_seconds
-        )
-        print(f"Next auto mode is {next_mode.mode_index} "
-              f"for {next_mode.duration_seconds} seconds.")
-        return(next_mode.mode_index)
-
     def _play_mode_until_changed(self, mode: ModeInterface):
         """Play the specified mode until another mode is selected."""
         new_mode = None
@@ -97,9 +78,10 @@ class Player(PlayerInterface):
                 button, = press.args
                 Button.reset()
                 new_mode = mode.button_action(button)
-            except AutoModeChangeDue:
-                # print("AutoModeChangeDue caught")
-                new_mode = self.next_auto_mode()
+            except AutoModeDue:
+                # print("AutoModeDue caught")
+                assert self.auto_mode is not None
+                new_mode = self.auto_mode.next_mode()
         return new_mode
 
     def play_sequence(
@@ -142,10 +124,10 @@ class Player(PlayerInterface):
     def wait(self, seconds: float | None, elapsed: float = 0):
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
-        if (self.auto_mode_change_time and
-            self.auto_mode_change_time < time.time()
+        if (self.auto_mode and
+            self.auto_mode.trigger_time < time.time()
         ):
-            raise AutoModeChangeDue
+            raise AutoModeDue
         if seconds is None:
             duration = None
         else:

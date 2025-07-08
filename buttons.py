@@ -7,6 +7,8 @@ from signal import signal
 
 from gpiozero import Button as _Button  # type: ignore
 
+from button_interface import ButtonInterface
+
 class ButtonPressed(Exception):
     """Button pressed base exception."""
 
@@ -17,7 +19,7 @@ class VirtualButtonPressed(ButtonPressed):
     """Virtual button pressed (IPC signal received) exception."""
 
 @dataclass
-class Button:
+class Button(ButtonInterface):
     """Supports physical buttons on remote and sign."""
 
     _buttons: ClassVar[list["Button"]] = []
@@ -25,7 +27,7 @@ class Button:
     @classmethod
     def reset(cls):
         """Prepare for a button press."""
-        print("Button.reset()")
+        # print("Button.reset()")
         cls.which_button_pressed: Button | None = None
         cls.pressed_event = threading.Event()
 

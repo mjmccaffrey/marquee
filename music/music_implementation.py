@@ -21,7 +21,7 @@ class Element(ABC):
     """Base for all musical items."""
     
 @dataclass(frozen=True)
-class BaseNote(Element):
+class BaseNote(Element, ABC):
     """Base for all musical notes."""
     instrument: ClassVar[type[Instrument]]
     duration: float
@@ -302,13 +302,7 @@ def _dimmer(pattern: str) -> Callable:
 def _dimmer_sequence(brightness: int, transition: float) -> Callable:
     """Return callable to effect state of specified dimmers."""
     def func(lights: list[int]):
-        player.lights.execute_dimmer_commands([
-            (   player.lights.dimmer_channels[l], 
-                brightness, 
-                transition,
-            )
-            for l in lights
-        ])
+        player.lights.set_dimmer_subset(lights, brightness, transition)
     return func
 
 def _light(

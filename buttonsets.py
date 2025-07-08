@@ -1,13 +1,13 @@
 """Marquee Lighted Sign Project - buttonsets"""
 
 from dataclasses import dataclass
-from buttons import Button
+from button_interface import ButtonInterface
 
 @dataclass
 class ButtonSet:
     """Every button."""
-    body_back: Button
-    remote_a: Button
-    remote_b: Button
-    remote_c: Button
-    remote_d: Button
+    body_back: ButtonInterface
+    remote_a: ButtonInterface
+    remote_b: ButtonInterface
+    remote_c: ButtonInterface
+    remote_d: ButtonInterface

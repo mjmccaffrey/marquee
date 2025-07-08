@@ -1,23 +1,23 @@
 """Marquee Lighted Sign Project - modes"""
 
-from abc import abstractmethod
-from collections.abc import Callable
+from abc import ABC, abstractmethod
+from collections.abc import Callable, Iterator
 from itertools import cycle
 import time
 from typing import Any
 
 from buttons import Button
 from configuration import ALL_HIGH, ALL_OFF, ALL_ON
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from dimmers import TRANSITION_DEFAULT
-from mode_interface import ModeInterface
+from mode_interfaces import AutoModeInterface, ModeInterface
 from music import set_player
 from player_interface import PlayerInterface
 from sequences import rotate_build_flip
-from definitions import ActionParams, DimmerParams, SpecialParams, AutoModeChangeEntry
+from definitions import ActionParams, DimmerParams, SpecialParams, AutoModeEntry
 
 @dataclass
-class Mode(ModeInterface):
+class Mode(ModeInterface, ABC):
     """Base for all Playing modes and the Select mode."""
 
     def effect_presets(self, dimmers: bool, relays: bool):
@@ -47,18 +47,35 @@ class Mode(ModeInterface):
         """Play the mode."""
 
 @dataclass
-class AutoMode(Mode):
+class AutoMode(AutoModeInterface, Mode):
     """Supports time-based automatic mode change."""
-    mode_sequence: list[AutoModeChangeEntry]
+    mode_sequence: list[AutoModeEntry]
+    mode_iter: Iterator[AutoModeEntry] = field(init=False)
+    trigger_time: float = field(init=False)
 
     def __post_init__(self):
         """Initialize."""
+        self.player.auto_mode = self
         self.effect_presets(dimmers=False, relays=False)
+        self.mode_iter = cycle(self.mode_sequence)
+
+    def exit(self):
+        """Stop auto mode."""
+        self.player.auto_mode = None
 
     def execute(self):
-        """Set the mode change sequence."""
-        self.player.auto_mode_change_iter = cycle(self.mode_sequence)
-        return self.player.next_auto_mode()
+        """Return next mode in sequence."""
+        return self.next_mode()
+
+    def next_mode(self):
+        """Set up next mode in sequence."""
+        next_mode = next(self.mode_iter)
+        self.trigger_time = (
+            time.time() + next_mode.duration_seconds
+        )
+        print(f"Next auto mode is {next_mode.mode_index} "
+              f"for {next_mode.duration_seconds} seconds.")
+        return(next_mode.mode_index)
 
 @dataclass
 class SelectMode(Mode):
@@ -123,17 +140,23 @@ class PlayMode(Mode):
         b = self.player.buttons
         match button:
             case b.remote_a | b.body_back:
+                if self.player.auto_mode is not None:
+                    self.player.auto_mode.exit()
                 new_mode = 0
             case b.remote_c:
                 self.player.click()
                 self.direction *= -1
             case b.remote_b:
                 self.player.click()
-                new_mode = self.mode_index(self.player.current_mode, -1)
+                if self.player.auto_mode is None:
+                    new_mode = self.mode_index(self.player.current_mode, -1)
             case b.remote_d:
                 self.player.click()
-                new_mode = self.mode_index(self.player.current_mode, +1)
-                print("Button Action: ", new_mode)
+                if self.player.auto_mode is None:
+                    new_mode = self.mode_index(self.player.current_mode, +1)
+                else:
+                    new_mode = self.player.next_auto_mode()
+                # print("Button Action: ", new_mode)
             case _:
                 raise ValueError("Unrecognized button.")
         return new_mode
