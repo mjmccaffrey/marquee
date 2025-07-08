@@ -142,7 +142,7 @@ class PlayMode(Mode):
         match button:
             case b.remote_a | b.body_back:
                 if self.player.auto_mode is not None:
-                    self.player.auto_mode.exit()
+                    self.player.auto_mode.exit()  # type: ignore
                 new_mode = 0
             case b.remote_c:
                 self.player.click()

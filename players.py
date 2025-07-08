@@ -81,7 +81,7 @@ class Player(PlayerInterface):
             except AutoModeDue:
                 # print("AutoModeDue caught")
                 assert self.auto_mode is not None
-                new_mode = self.auto_mode.next_mode()
+                new_mode = self.auto_mode.next_mode()  # type: ignore
         return new_mode
 
     def play_sequence(
@@ -125,7 +125,7 @@ class Player(PlayerInterface):
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
         if (self.auto_mode and
-            self.auto_mode.trigger_time < time.time()
+            self.auto_mode.trigger_time < time.time()  # type: ignore
         ):
             raise AutoModeDue
         if seconds is None:

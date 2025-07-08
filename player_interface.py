@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - player_interface"""
 
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, field
@@ -9,7 +10,6 @@ from buttonsets import ButtonSet
 from definitions import SpecialParams, ModeConstructor
 from instruments import BellSet, DrumSet
 from lightsets import LightSet
-from automode_interface import AutoModeInterface
 
 @dataclass
 class PlayerInterface(ABC):
@@ -19,7 +19,7 @@ class PlayerInterface(ABC):
     drums: DrumSet
     lights: LightSet
     speed_factor: float
-    auto_mode = field(init=False)  # type: AutoModeInterface | None
+    auto_mode: object | None = field(init=False)  # AutoModeInterface
     current_mode: int = field(init=False)
     pace: float = field(init=False)
 
