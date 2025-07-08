@@ -183,10 +183,14 @@ class SilentFadeBuild(PlayMode):
         self.player.lights.set_relays(ALL_ON)
         while True:
             for rows in (False, True):
-                for from_top_left, brightness in ((True, 100), (False, 0)):
+                for from_top_left, brightness in (
+                    (True, 100), (False, 0),
+                    (False, 100), (True, 0),
+                ):
                     for lights in lights_in_groups(rows, from_top_left):
                         self.player.lights.set_dimmer_subset(
                             lights, brightness, 1.0
                         )
                         time.sleep(0.5)
+                    time.sleep(1.0)
                 time.sleep(1.0)

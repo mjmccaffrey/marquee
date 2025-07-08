@@ -337,4 +337,3 @@ class Executor():
             )
         )
         self.add_mode(35, "silent_fade_build", SilentFadeBuild)
-
