@@ -36,10 +36,6 @@ class PlayerInterface(ABC):
         """Play the specified mode and all subsequently selected modes."""
 
     @abstractmethod
-    def next_auto_mode(self):
-        """Effect change to next auto mode in sequence."""
-
-    @abstractmethod
     def play_sequence(
             self, 
             sequence: Iterable, 
