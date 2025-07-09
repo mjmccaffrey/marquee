@@ -8,10 +8,12 @@ from itertools import cycle
 import time
 from typing import Any
 
+from player_interface import PlayerInterface
+
 @dataclass
 class BaseMode(ABC):
     """Base class for all modes."""
-    player: Any
+    player: PlayerInterface
     name: str
 
     @abstractmethod
