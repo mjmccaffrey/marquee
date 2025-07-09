@@ -36,6 +36,9 @@ class AutoMode(BaseMode):
         """Initialize."""
         self.mode_iter = cycle(self.mode_sequence)
 
+    def button_action(self, button: ButtonInterface):
+        """"""        
+
     def execute(self):
         """Return next mode in sequence."""
         return self.next_mode()

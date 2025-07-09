@@ -39,6 +39,7 @@ class Mode(BaseMode, ABC):
             value = upper + dif + 1
         return value
 
+    @abstractmethod
     def button_action(self, button: Button):
         """Respond to the button press."""
 
