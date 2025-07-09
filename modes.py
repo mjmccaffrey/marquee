@@ -19,6 +19,11 @@ from definitions import ActionParams, DimmerParams, SpecialParams
 @dataclass
 class Mode(BaseMode, ABC):
     """Base for all Playing modes and the Select mode."""
+    pace: tuple[float, ...] | float | None = field(init=False)
+
+    def __post_init__(self):
+        """Initialize."""
+        self.pace = 1.0
 
     def effect_presets(self, dimmers: bool, relays: bool):
         """Preset the dimmers and relays as specified."""

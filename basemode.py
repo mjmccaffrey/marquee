@@ -6,7 +6,6 @@ from dataclasses import dataclass, field
 from definitions import AutoModeEntry
 from itertools import cycle
 import time
-from typing import Any
 
 from button_interface import ButtonInterface
 from player_interface import PlayerInterface
@@ -29,7 +28,6 @@ class BaseMode(ABC):
 class AutoMode(BaseMode):
     """Supports time-based automatic mode change."""
     mode_sequence: list[AutoModeEntry]
-    pace: float = 1.0
     mode_iter: Iterator[AutoModeEntry] = field(init=False)
     trigger_time: float = field(init=False)
 

@@ -51,7 +51,10 @@ class PlayerInterface(ABC):
            Pause for post_delay seconds before exiting."""
 
     @abstractmethod
-    def wait(self, seconds: float | None, elapsed: float = 0):
+    def wait(
+        self, 
+        seconds: tuple[float, ...] | float | None, elapsed: float = 0,
+    ):
         """"""
 
     @abstractmethod
