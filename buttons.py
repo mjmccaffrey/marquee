@@ -23,22 +23,27 @@ class Button(ButtonInterface):
     """Supports physical buttons on remote and sign."""
 
     _buttons: ClassVar[list["Button"]] = []
+    which_button_pressed: ClassVar["Button | None"]
+    button_was_held: ClassVar[bool]
+    button: _Button
+    support_hold: bool = False
+    signal_number: int | None = None
 
     @classmethod
     def reset(cls):
         """Prepare for a button press."""
         # print("Button.reset()")
         cls.which_button_pressed: Button | None = None
+        cls.button_was_held = False
         cls.pressed_event = threading.Event()
 
     @classmethod
     def wait(cls, seconds: float | None):
         """Wait until seconds have elapsed or any button is pressed."""
         if cls.pressed_event.wait(seconds):
-            raise PhysicalButtonPressed(cls.which_button_pressed)
-
-    button: _Button
-    signal_number: int | None = None
+            raise PhysicalButtonPressed(
+                cls.which_button_pressed, cls.button_was_held,
+            )
 
     def __post_init__(self):
         """Create a button instance."""
@@ -47,6 +52,8 @@ class Button(ButtonInterface):
             Button.reset()
         Button._buttons.append(self)
         self.button.when_pressed = self.button_pressed
+        if self.support_hold:
+            self.button.when_held = self.button_held
         if self.signal_number is not None:
             signal(
                 self.signal_number,
@@ -57,9 +64,17 @@ class Button(ButtonInterface):
         """Clean up."""
         self.button.close()
 
-    def button_pressed(self):
+    def button_held(self):
+        """Callback for button hold."""
+        self.button_pressed(held=True)
+
+    def button_pressed(self, held: bool = False):
         """Callback for button press."""
-        print(f"Button <{self}> pressed")
+        if held:
+            print(f"Button <{self}> held")
+        else:
+            print(f"Button <{self}> pressed")
+        Button.button_was_held = held
         Button.which_button_pressed = self
         Button.pressed_event.set()
 

@@ -3,6 +3,7 @@
 from collections.abc import Iterable
 from dataclasses import dataclass
 import itertools
+import os
 import time
 from typing import Any
 
@@ -80,7 +81,10 @@ class Player(PlayerInterface):
                 new_mode = mode.execute()
             except ButtonPressed as press:
                 print("ButtonPressed caught")
-                button, = press.args
+                button, held = press.args
+                if held:
+                    print("Shutting down.")
+                    os.system("sudo shutdown --halt now")
                 Button.reset()
                 assert isinstance(mode, Mode)
                 new_mode = mode.button_action(button)
