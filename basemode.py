@@ -6,14 +6,14 @@ from dataclasses import dataclass, field
 from definitions import AutoModeEntry
 from itertools import cycle
 import time
+from typing import Any
 
 from button_interface import ButtonInterface
-from player_interface import PlayerInterface
 
 @dataclass
 class BaseMode(ABC):
     """Base class for all modes."""
-    player: PlayerInterface
+    player: Any
     name: str
 
     @abstractmethod
