@@ -64,7 +64,6 @@ class Player(PlayerInterface):
                 name=mode.name, 
                 **self.replace_kwarg_values(mode.kwargs),
             )
-            print(isinstance(mode_instance, AutoMode))
             if isinstance(mode_instance, AutoMode):
                 self.auto_mode = mode_instance
             self.current_mode = new_mode
@@ -131,7 +130,6 @@ class Player(PlayerInterface):
     def wait(self, seconds: float | None, elapsed: float = 0):
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
-        print(self.auto_mode)
         if (self.auto_mode is not None and
             self.auto_mode.trigger_time < time.time()  # type: ignore
         ):
