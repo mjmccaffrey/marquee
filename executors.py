@@ -300,14 +300,15 @@ class Executor():
                     mode_index=i,
                 )
                 for i, d in [
-                    (36, None),
+                    (37, None),
+                    (38, None),
+                    (39, None),
                     (31, None),
                     (32, None),
-                    (33, 15),
+                    (33, None),
                     (34, None),
                     (35, None),
                     (36, None),
-                    (37, None),
                 ]
             ],
         )
@@ -348,7 +349,10 @@ class Executor():
             ),
             pattern='110000000000',
         )
-        self.add_sequence_mode(37, "silent_random_flip_fade_fast", random_flip, pace=0.5,
+        self.add_sequence_mode(37, "silent_random_flip_fade_fast", 
+            random_flip, pace=0.5,
             special=DimmerParams(),
             light_pattern='LIGHT_PATTERN',
         )
+        self.add_mode(38, "silent_random_steady", RandomFade, transition=0.5)
+        self.add_mode(39, "silent_random_random", RandomFade)
