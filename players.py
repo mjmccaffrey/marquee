@@ -86,7 +86,7 @@ class Player(PlayerInterface):
                 assert isinstance(mode, Mode)
                 new_mode = mode.button_action(button)
             except AutoModeDue:
-                # print("AutoModeDue caught")
+                print("AutoModeDue caught")
                 assert self.auto_mode is not None
                 new_mode = self.auto_mode.next_mode()  # type: ignore
         return new_mode
@@ -131,7 +131,8 @@ class Player(PlayerInterface):
     def wait(self, seconds: float | None, elapsed: float = 0):
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
-        if (self.auto_mode and
+        print(self.auto_mode)
+        if (self.auto_mode is not None and
             self.auto_mode.trigger_time < time.time()  # type: ignore
         ):
             raise AutoModeDue
