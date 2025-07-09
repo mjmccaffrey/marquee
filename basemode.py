@@ -29,6 +29,7 @@ class BaseMode(ABC):
 class AutoMode(BaseMode):
     """Supports time-based automatic mode change."""
     mode_sequence: list[AutoModeEntry]
+    pace: float = 1.0
     mode_iter: Iterator[AutoModeEntry] = field(init=False)
     trigger_time: float = field(init=False)
 
