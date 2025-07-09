@@ -6,9 +6,13 @@ from dataclasses import dataclass, field
 from definitions import AutoModeEntry
 from itertools import cycle
 import time
+from typing import Any
 
+@dataclass
 class BaseMode(ABC):
     """Base class for all modes."""
+    player: Any
+    name: str
 
     @abstractmethod
     def execute(self):
