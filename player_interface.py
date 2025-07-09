@@ -19,7 +19,7 @@ class PlayerInterface(ABC):
     drums: DrumSet
     lights: LightSet
     speed_factor: float
-    auto_mode: object | None = field(init=False)  # AutoModeInterface
+    auto_mode: object | None = field(init=False)
     current_mode: int = field(init=False)
     pace: float = field(init=False)
 

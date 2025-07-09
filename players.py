@@ -1,14 +1,16 @@
 """Marquee Lighted Sign Project - players"""
 
 from collections.abc import Iterable
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import itertools
 import time
 from typing import Any
 
-from buttons import Button, ButtonPressed
+from basemode import AutoMode, BaseMode
 from definitions import ActionParams, DimmerParams, SpecialParams
-from mode_interface import ModeInterface
+from modes import Mode
+from buttons import Button, ButtonPressed
+
 from player_interface import PlayerInterface
 
 class AutoModeDue(Exception):
@@ -61,13 +63,17 @@ class Player(PlayerInterface):
                 name=mode.name, 
                 **self.replace_kwarg_values(mode.kwargs),
             )
+            if isinstance(mode_instance, AutoMode):
+                self.auto_mode = mode_instance
+            else:
+                self.auto_mode = None
             self.current_mode = new_mode
             print(f"Executing mode {self.current_mode} {mode.name}")
             new_mode = self._play_mode_until_changed(mode_instance)
             if new_mode == 222:
                 new_mode = 2
 
-    def _play_mode_until_changed(self, mode: ModeInterface):
+    def _play_mode_until_changed(self, mode: BaseMode):
         """Play the specified mode until another mode is selected."""
         new_mode = None
         while new_mode is None:
@@ -77,6 +83,7 @@ class Player(PlayerInterface):
                 print("ButtonPressed caught")
                 button, = press.args
                 Button.reset()
+                assert isinstance(mode, Mode)
                 new_mode = mode.button_action(button)
             except AutoModeDue:
                 # print("AutoModeDue caught")

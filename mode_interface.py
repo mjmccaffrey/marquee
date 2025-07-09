@@ -5,11 +5,11 @@ from collections.abc import Iterator
 from dataclasses import dataclass, field
 
 from button_interface import ButtonInterface
-from definitions import AutoModeEntry
+from basemode import BaseMode
 from player_interface import PlayerInterface
 
 @dataclass
-class ModeInterface(ABC):
+class ModeInterface(BaseMode, ABC):
     """Mode abstract base."""
     player: PlayerInterface
     name: str

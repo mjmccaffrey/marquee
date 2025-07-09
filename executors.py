@@ -6,6 +6,7 @@ from signal import SIGUSR1  # type: ignore
 
 from gpiozero import Button as _Button  # type: ignore
 
+from basemode import AutoMode, BaseMode
 from buttons import Button
 from buttonsets import ButtonSet
 from configuration import (
@@ -15,7 +16,7 @@ from definitions import DimmerParams, SpecialParams, AutoModeEntry, ModeConstruc
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from instruments import BellSet, DrumSet
 from lightsets import LightSet
-import modes
+from modes import PlaySequenceMode, SelectMode
 from modes_advanced import (
     BuildBrightness,  EvenOddFade, RotateReversible, 
     RandomFade, RapidFade, SilentFadeBuild,
@@ -105,7 +106,7 @@ class Executor():
             self, 
             index: int, 
             name: str,
-            mode_class: type[modes.Mode],
+            mode_class: type[BaseMode],
             hidden: bool = False,
             **kwargs,
     ):
@@ -135,7 +136,7 @@ class Executor():
         self.add_mode(
             index, 
             name, 
-            modes.PlaySequenceMode,
+            PlaySequenceMode,
             sequence=sequence,
             pace=pace,
             special=special,
@@ -188,7 +189,7 @@ class Executor():
 
     def register_modes(self):
         """Register all operating modes."""
-        self.add_mode(0, "selection", modes.SelectMode, hidden=True, previous_mode="PREVIOUS_MODE")
+        self.add_mode(0, "selection", SelectMode, hidden=True, previous_mode="PREVIOUS_MODE")
         self.add_sequence_mode(1, "all_on", all_on)
         self.add_sequence_mode(2, "all_off", all_off)
         self.add_sequence_mode(3, "even_on", even_on)
@@ -292,7 +293,7 @@ class Executor():
             special=DimmerParams(),
             light_pattern='LIGHT_PATTERN',
         )
-        self.add_mode(30, "silent_variety", modes.AutoMode,
+        self.add_mode(30, "silent_variety", AutoMode,
             mode_sequence=[
                 AutoModeEntry(
                     duration_seconds=(d or 30),
