@@ -66,6 +66,8 @@ class Player(PlayerInterface):
             print(isinstance(mode_instance, AutoMode))
             if isinstance(mode_instance, AutoMode):
                 self.auto_mode = mode_instance
+            else:
+                self.auto_mode = None
             self.current_mode = new_mode
             print(f"Executing mode {self.current_mode} {mode.name}")
             new_mode = self._play_mode_until_changed(mode_instance)
