@@ -63,6 +63,7 @@ class Player(PlayerInterface):
                 name=mode.name, 
                 **self.replace_kwarg_values(mode.kwargs),
             )
+            print(isinstance(mode_instance, AutoMode))
             if isinstance(mode_instance, AutoMode):
                 self.auto_mode = mode_instance
             else:
