@@ -25,6 +25,7 @@ class Player(PlayerInterface):
         print("Initializing player")
         self.auto_mode = None
         self.current_mode = -1
+        self.pace = 0.0
 
     def close(self):
         """Clean up."""
