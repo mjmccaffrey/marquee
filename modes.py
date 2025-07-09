@@ -123,7 +123,7 @@ class PlayMode(Mode):
                 if self.player.auto_mode is None:
                     new_mode = self.mode_index(self.player.current_mode, +1)
                 else:
-                    new_mode = self.player.auto_mode.next_mode()  # type: ignore
+                    new_mode = self.player.auto_mode.next_mode()
                 # print("Button Action: ", new_mode)
             case _:
                 raise ValueError("Unrecognized button.")

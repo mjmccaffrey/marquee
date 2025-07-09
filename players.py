@@ -74,7 +74,9 @@ class Player(PlayerInterface):
                 new_mode = 2
 
     def _play_mode_until_changed(self, mode: BaseMode):
-        """Play the specified mode until another mode is selected."""
+        """Play the specified mode until another mode is selected,
+           either by the user or automatically.
+           Shut down the system if the (body_back) button is held."""
         new_mode = None
         while new_mode is None:
             try:
@@ -91,7 +93,7 @@ class Player(PlayerInterface):
             except AutoModeDue:
                 print("AutoModeDue caught")
                 assert self.auto_mode is not None
-                new_mode = self.auto_mode.next_mode()  # type: ignore
+                new_mode = self.auto_mode.next_mode()
         return new_mode
 
     def play_sequence(
@@ -135,7 +137,7 @@ class Player(PlayerInterface):
         """Wait the specified seconds after adjusting for
            speed_factor and time already elapsed."""
         if (self.auto_mode is not None and
-            self.auto_mode.trigger_time < time.time()  # type: ignore
+            self.auto_mode.trigger_time < time.time()
         ):
             raise AutoModeDue
         if seconds is None:

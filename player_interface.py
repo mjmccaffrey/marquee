@@ -5,6 +5,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import Any
 
+from basemode import AutoMode
 from buttonsets import ButtonSet
 from definitions import SpecialParams, ModeConstructor
 from instruments import BellSet, DrumSet
@@ -18,7 +19,7 @@ class PlayerInterface(ABC):
     drums: DrumSet
     lights: LightSet
     speed_factor: float
-    auto_mode: object | None = field(init=False)
+    auto_mode: AutoMode | None = field(init=False)
     current_mode: int = field(init=False)
     pace: float = field(init=False)
 
