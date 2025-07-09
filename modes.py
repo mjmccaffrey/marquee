@@ -6,18 +6,18 @@ from itertools import cycle
 import time
 from typing import Any
 
+from basemode import BaseMode
 from buttons import Button
 from configuration import ALL_HIGH, ALL_OFF, ALL_ON
 from dataclasses import dataclass, field
 from dimmers import TRANSITION_DEFAULT
-from mode_interface import ModeInterface
 from music import set_player
 from player_interface import PlayerInterface
 from sequences import rotate_build_flip
-from definitions import ActionParams, DimmerParams, SpecialParams, AutoModeEntry
+from definitions import ActionParams, DimmerParams, SpecialParams
 
 @dataclass
-class Mode(ModeInterface, ABC):
+class Mode(BaseMode, ABC):
     """Base for all Playing modes and the Select mode."""
 
     def effect_presets(self, dimmers: bool, relays: bool):

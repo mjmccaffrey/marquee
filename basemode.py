@@ -8,6 +8,7 @@ from itertools import cycle
 import time
 from typing import Any
 
+from button_interface import ButtonInterface
 from player_interface import PlayerInterface
 
 @dataclass
@@ -15,6 +16,10 @@ class BaseMode(ABC):
     """Base class for all modes."""
     player: PlayerInterface
     name: str
+
+    @abstractmethod
+    def button_action(self, button: ButtonInterface):
+        """"""        
 
     @abstractmethod
     def execute(self):
