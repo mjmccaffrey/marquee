@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - mode_defs"""
 
+from dataclasses import dataclass
 import itertools
 import random
 from sequences import opposite, lights_in_groups
@@ -11,23 +12,15 @@ from modes import PlayMode
 from player_interface import PlayerInterface
 from definitions import DimmerParams
 
+@dataclass
 class RotateReversible(PlayMode):
     """Rotate a pattern, reversing direction in response to a button press."""
-    def __init__(
-        self,
-        player: PlayerInterface,
-        name: str,
-        #
-        pace: float,
-        pattern: str,
-    ):
-        super().__init__(
-            player=player, 
-            name=name, 
-        )
+    pace: float
+    pattern: str
+
+    def __post_init__(self):
+        """Initialize."""
         self.effect_presets(dimmers=True, relays=False)
-        self.pattern = pattern
-        self.pace = pace
 
     def execute(self):
         """Display a single pattern.
@@ -38,20 +31,15 @@ class RotateReversible(PlayMode):
             self.pattern[self.direction:] + self.pattern[:self.direction]
         )
 
+@dataclass
 class RandomFade(PlayMode):
     """Change brightness of random bulb to a random level,
        with either a random or specified transition time."""
+    transition: float = -1
 
-    def __init__(
-        self,
-        player: PlayerInterface, 
-        name: str,
-        #
-        transition: float = -1,
-    ):
-        super().__init__(player, name)
+    def __post_init__(self):
+        """Initialize."""
         self.effect_presets(dimmers=False, relays=True)
-        self.transition = transition
 
     def _new_transition(self) -> float:
         if self.transition == -1:
@@ -79,19 +67,14 @@ class RandomFade(PlayMode):
                     channel.next_update = now + tran
             self.player.wait(0.1)
 
+@dataclass
 class EvenOddFade(PlayMode):
     """Fade every-other bulb."""
+    pace: float
 
-    def __init__(
-        self,
-        player: PlayerInterface, 
-        name: str,
-        #
-        pace: float,
-    ):
-        super().__init__(player, name)
+    def __post_init__(self):
+        """Initialize."""
         self.effect_presets(dimmers=False, relays=True)
-        self.pace = pace
 
     def execute(self):
         """"""
@@ -113,15 +96,12 @@ class EvenOddFade(PlayMode):
             )
             self.player.wait(delay, time.time() - start)
 
+@dataclass
 class RapidFade(PlayMode):
     """"""
-    def __init__(
-        self,
-        player: PlayerInterface, 
-        name: str,
-        #
-    ):
-        super().__init__(player, name)
+
+    def __post_init__(self):
+        """Initialize."""
         self.effect_presets(dimmers=False, relays=True)
  
     def execute(self):
@@ -141,19 +121,14 @@ class RapidFade(PlayMode):
             previous.set(brightness=40, transition=TRANSITION_MINIMUM)
             # self.player.wait(10)
 
+@dataclass
 class BuildBrightness(PlayMode):
     """Brightness change rate test."""
+    equal_trans: bool
 
-    def __init__(
-        self,
-        player: PlayerInterface, 
-        name: str,
-        #
-        equal_trans: bool,
-    ):
-        super().__init__(player, name)
+    def __post_init__(self):
+        """Initialize."""
         self.effect_presets(dimmers=False, relays=True)
-        self.equal_trans = equal_trans
 
     def execute(self):
         self.player.lights.set_dimmers(ALL_LOW)
@@ -167,15 +142,12 @@ class BuildBrightness(PlayMode):
             dimmer.set(brightness=brightness, transition=transition)
         self.player.wait(4)
 
+@dataclass
 class SilentFadeBuild(PlayMode):
     """"""
-    def __init__(
-        self,
-        player: PlayerInterface, 
-        name: str,
-        #
-    ):
-        super().__init__(player, name)
+
+    def __post_init__(self):
+        """Initialize."""
         self.effect_presets(dimmers=False, relays=True)
  
     def execute(self):
