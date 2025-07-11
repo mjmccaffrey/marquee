@@ -1,7 +1,6 @@
 """Marquee Lighted Sign Project - executors"""
 
 from collections.abc import Callable
-from itertools import chain
 from signal import SIGUSR1  # type: ignore
 
 import gpiozero  # type: ignore
@@ -19,7 +18,7 @@ from instruments import BellSet, DrumSet
 from lightsets import LightSet
 from modes import PlaySequenceMode, SelectMode
 from modes_advanced import (
-    BuildBrightness,  EvenOddFade, RotateReversible, 
+    BellTest, BuildBrightness,  EvenOddFade, RotateReversible, 
     RandomFade, RapidFade, SilentFadeBuild,
 )
 from relays import NumatoRL160001, NumatoSSR80001
@@ -361,3 +360,4 @@ class Executor():
         )
         self.add_mode(38, "silent_random_steady", RandomFade, transition=0.5)
         self.add_mode(39, "silent_random_random", RandomFade)
+        self.add_mode(40, "bell_test", BellTest)
