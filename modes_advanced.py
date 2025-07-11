@@ -8,10 +8,19 @@ import time
 
 from configuration import ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
 from dimmers import TRANSITION_MINIMUM
-from modes import PlayMode
-from player_interface import PlayerInterface
+from modes import PlayMusicMode, PlayMode
 from definitions import DimmerParams
 
+@dataclass
+class BellTest(PlayMusicMode):
+    """Test all bells."""
+
+    def execute(self):
+        """Perform bell test."""
+        for pitch in range(8):
+            self.player.bells.play({pitch})
+            self.player.wait(0.5)
+        
 @dataclass
 class RotateReversible(PlayMode):
     """Rotate a pattern, reversing direction in response to a button press."""

@@ -4,6 +4,7 @@ from collections.abc import Callable
 from itertools import chain
 from signal import SIGUSR1  # type: ignore
 
+import gpiozero  # type: ignore
 from gpiozero import Button as _Button  # type: ignore
 
 from basemode import AutoMode, BaseMode
@@ -57,8 +58,8 @@ def setup_devices(brightness_factor: float):
         brightness_factor=brightness_factor,
     )
     buttons = ButtonSet(
-        body_back = Button(
-            _Button(pin=26, bounce_time=0.10, hold_time=10), 
+        body_back = SignButton(                                         # type: ignore
+            gpiozero.Button(pin=26, bounce_time=0.10, hold_time=10), 
             support_hold=True,
             signal_number=SIGUSR1,
         ),

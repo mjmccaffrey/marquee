@@ -88,11 +88,15 @@ class ShellyDimmer(ABC):
         return response
     
     @classmethod
-    async def execute_multiple_commands(cls, commands: list["_DimmerCommand"]) -> list[aiohttp.ClientResponse]:
-        """ Send multiple commands asynchronously. """
+    async def execute_multiple_commands(
+        cls, commands: list["_DimmerCommand"]
+    ) -> list[aiohttp.ClientResponse]:
+        """Send multiple commands asynchronously."""
         async with asyncio.TaskGroup() as tg:
             tasks = [
-                tg.create_task(cls._execute_single_command(command))
+                tg.create_task(
+                    cls._execute_single_command(command)
+                )
                 for command in commands
             ]
         return [task.result() for task in tasks]
