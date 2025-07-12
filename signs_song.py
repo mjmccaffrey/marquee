@@ -142,7 +142,7 @@ class SignsSong(PlayMusicMode):
             )
         else: 
             return section(
-                drum_part(),
+                # drum_part(),
                 bell_part(
                 #                 And the
                 '  𝄻 | 𝄻 |  𝄼 𝄽 𝄾 a𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
