@@ -29,6 +29,7 @@ class LightSet:
             print(c)
         assert len(self.dimmer_channels) == LIGHT_COUNT
         full_pattern = self.relays.get_state_of_devices()
+        print(f"Upon init: {full_pattern}")
         self.relay_pattern = full_pattern[:LIGHT_COUNT]
         self.extra_pattern = full_pattern[LIGHT_COUNT:]
 

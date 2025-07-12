@@ -1,8 +1,7 @@
 """Marquee Lighted Sign Project - modes"""
 
-from abc import ABC, abstractmethod
-from collections.abc import Callable, Iterator
-from itertools import cycle
+from abc import ABC
+from collections.abc import Callable
 import time
 from typing import Any
 
@@ -21,13 +20,13 @@ class Mode(BaseMode, ABC):
     """Base for all Playing modes and the Select mode."""
     player: PlayerInterface
 
-    def effect_presets(self, dimmers: bool, relays: bool):
+    def preset_devices(self, dimmers: bool = False, relays: bool = False):
         """Preset the dimmers and relays as specified."""
         if dimmers:
-            # print("Presetting DIMMERS")
+            print("Presetting DIMMERS")
             self.player.lights.set_dimmers(ALL_HIGH, force_update=True)
         if relays:
-            # print("Presetting RELAYS")
+            print("Presetting RELAYS")
             self.player.lights.set_relays(ALL_ON)
 
     def mode_index(self, current: int, delta: int) -> int:
@@ -47,7 +46,7 @@ class SelectMode(Mode):
 
     def __post_init__(self):
         """Initialize."""
-        self.effect_presets(dimmers=True, relays=False)
+        self.preset_devices(dimmers=True)
         self.desired_mode = self.previous_mode
         self.previous_desired_mode = -1
 
@@ -94,7 +93,7 @@ class PlayMode(Mode):
 
     def __post_init__(self):
         """Initialize."""
-        self.effect_presets(dimmers=False, relays=False)
+        self.preset_devices()
         self.direction = +1
 
     def button_action(self, button: Button):
@@ -153,7 +152,7 @@ class PlaySequenceMode(PlayMode):
                 special.transition_off = default_trans
             if special.transition_on is None:
                 special.transition_on = default_trans
-        self.effect_presets(
+        self.preset_devices(
             dimmers=(special is None),
             relays=(special is not None),
         )
@@ -179,7 +178,6 @@ class PlayMusicMode(PlayMode):
 
     def __post_init__(self):
         """Initialize."""
-        self.effect_presets(dimmers=True, relays=True)
         set_player(self.player)
 
     def light(

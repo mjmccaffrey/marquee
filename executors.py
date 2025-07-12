@@ -17,7 +17,7 @@ from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from instruments import BellSet, DrumSet
 from lightsets import LightSet
 from modes import PlaySequenceMode, SelectMode
-from modes_advanced import (
+from advanced_modes import (
     BellTest, BuildBrightness,  EvenOddFade, RotateReversible, 
     RandomFade, RapidFade, SilentFadeBuild,
 )

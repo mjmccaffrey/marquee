@@ -34,6 +34,7 @@ class SignsSong(PlayMusicMode):
         sys.exit()
 
     def intro(self):
+        """Sings song intro."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             drum_part(
@@ -80,6 +81,7 @@ class SignsSong(PlayMusicMode):
         )
 
     def refrain(self, play_thru: int):
+        """Sings song refrain."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         bells = bell_part(
             #'  𝄻 |  '
@@ -126,6 +128,7 @@ class SignsSong(PlayMusicMode):
             )
  
     def transition (self, play_thru: int):
+        """Sings song transition."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         if play_thru == 1:
             return section(

@@ -1,21 +1,27 @@
 """Marquee Lighted Sign Project - demo"""
 
+from dataclasses import dataclass
 import sys
 
-from configuration import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
+from configuration import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
 from modes import PlayMusicMode
 from music import (
     dimmer, dimmer_sequence, light, measure, part, play,
     section, sequence,
 )
-from music_notation import(
+from music import(
     act, act_part, drum_part,
     rest, sequence_measure, sequence_part
 )
 from sequences import *
 
+@dataclass
 class Demo(PlayMusicMode):
     """Version 3 demo."""
+
+    def __post_init__(self):
+        """Initialize."""
+        self.preset_devices(dimmers=True, relays=True)
 
     def execute(self):
         """Execute version 3 demo."""
