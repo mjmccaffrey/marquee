@@ -124,7 +124,7 @@ class SignsSong(PlayMusicMode):
                 #    '  ♪ ♪ ♩  | ♩  ',
                 #    sequence(blink_all),
                 #),
-            bells,
+                bells,
             )
  
     def transition (self, play_thru: int):
@@ -138,5 +138,20 @@ class SignsSong(PlayMusicMode):
                 '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
                 '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
                # '  lh♩ lh♩ lh♩ lh♩ | l♪ h♪ l♪ h♪ l♪ h♪ l♪ h♪|  '
+                )
+            )
+        else: 
+            return section(
+                drum_part(),
+                bell_part(
+                #                 And the
+                '  𝄻 | 𝄻 |  𝄼 𝄽 𝄾 a𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
+                
+                # sign said you got to have a   membership 
+                ' ce♩  ce♪ 𝄿 ac𝅘𝅥𝅯 bd𝅘𝅥𝅯 ac𝅘𝅥𝅯 bd𝅘𝅥𝅯 ac𝅘𝅥𝅯 bd𝅘𝅥𝅯 ac𝅘𝅥𝅯 Gb♪ | '
+                
+                # card to get inside 
+                ' ad♪ 𝄿 ad𝅘𝅥𝅯 ad𝅘𝅥𝅯  ad♪ Gb𝅘𝅥𝅯 𝄼 | '
+                
                 )
             )
