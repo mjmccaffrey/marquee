@@ -25,8 +25,6 @@ class LightSet:
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
-        for c in self.dimmer_channels:
-            print(c)
         assert len(self.dimmer_channels) == LIGHT_COUNT
         full_pattern = self.relays.get_state_of_devices()
         print(f"Upon init: {full_pattern}")

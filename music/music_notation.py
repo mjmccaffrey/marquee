@@ -28,7 +28,6 @@ def _interpret_symbols(
     """Return duration, pitches, accent, and is_rest
        from a single set of symbols. """
     def interpret(symbols: str):
-        print(symbols)
         symbols = symbols.replace(' ', '')
         if not symbols:
             raise ValueError("Invalid (empty) symbol.")
@@ -58,7 +57,6 @@ def _interpret_symbols(
                 for s in symbols
             )
             pitches, accent = set(), 0
-            #print(symbols, duration, pitches, accent, is_rest)
         return duration, pitches, accent, is_rest
     return interpret(symbols)
 

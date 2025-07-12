@@ -24,10 +24,11 @@ class SignsSong(PlayMusicMode):
         self.player.lights.set_relays(ALL_OFF)
         time.sleep(5)
         sections = [
-            self.intro(),
-            self.refrain(1),
-            self.transition(1),
-            self.refrain(2),
+            # self.intro(),
+            # self.refrain(1),
+            # self.transition(1),
+            # self.refrain(2),
+            self.transition(2),
         ]
         for section in sections:
             section.play(tempo=60)
