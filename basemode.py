@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - basemode"""
 
 from abc import ABC, abstractmethod
-from collections.abc import Iterator
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field
 from definitions import AutoModeEntry
 from itertools import cycle
@@ -27,7 +27,7 @@ class BaseMode(ABC):
 @dataclass
 class AutoMode(BaseMode):
     """Supports time-based automatic mode change."""
-    mode_sequence: list[AutoModeEntry]
+    mode_sequence: Sequence[AutoModeEntry]
     mode_iter: Iterator[AutoModeEntry] = field(init=False)
     trigger_time: float = field(init=False)
 

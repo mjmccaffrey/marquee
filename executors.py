@@ -19,7 +19,7 @@ from lightsets import LightSet
 from modes import PlaySequenceMode, SelectMode
 from advanced_modes import (
     BellTest, BuildBrightness,  EvenOddFade, RotateReversible, 
-    RandomFade, RapidFade, SilentFadeBuild,
+    RandomFade, RapidFade, RotateRewind, SilentFadeBuild,
 )
 from relays import NumatoRL160001, NumatoSSR80001
 from sequences import (
@@ -306,10 +306,10 @@ class Executor():
                     (37, None),
                     (38, None),
                     (39, None),
-                    (31, None),
+                    (31, 15),
                     (32, None),
                     (33, None),
-                    (34, None),
+                    (34, 15),
                     (35, None),
                     (36, None),
                 ]
@@ -342,7 +342,9 @@ class Executor():
                 brightness_off=10,
             )
         )
-        self.add_mode(35, "silent_fade_build", SilentFadeBuild)
+        self.add_mode(35, "silent_fade_build", 
+            SilentFadeBuild,
+        )
         self.add_sequence_mode(36, "silent_rotate_slight_fade",
             rotate, pace=0.5, 
             special=DimmerParams(
@@ -357,6 +359,10 @@ class Executor():
             special=DimmerParams(),
             light_pattern='LIGHT_PATTERN',
         )
-        self.add_mode(38, "silent_random_steady", RandomFade, transition=0.5)
-        self.add_mode(39, "silent_random_random", RandomFade)
+        self.add_mode(38, "silent_random_steady_trans", RandomFade, transition=0.5)
+        self.add_mode(39, "silent_random_random_trans", RandomFade)
         self.add_mode(40, "bell_test", BellTest)
+        self.add_mode(41, "rotate_rewind_1", RotateRewind)
+        self.add_mode(42, "rotate_rewind_2", RotateRewind,
+            special=DimmerParams(),
+        )

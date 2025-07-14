@@ -1,9 +1,10 @@
 """Marquee Lighted Sign Project - mode_defs"""
 
+from collections.abc import Iterator
 from dataclasses import dataclass
 import itertools
 import random
-from sequences import opposite, lights_in_groups
+from sequences import lights_in_groups, opposite, rotate
 import time
 
 from configuration import ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
@@ -43,6 +44,47 @@ class RotateReversible(PlayMode):
         self.pattern = (
             self.pattern[self.direction:] + self.pattern[:self.direction]
         )
+
+@dataclass
+class RotateRewind(PlayMode):
+    """Rotate a pattern at a decreasing speed, and then rewind."""
+    clockwise: bool
+    pattern: str
+    start_pace: float
+    special: DimmerParams | None
+
+    def __post_init__(self):
+        """Initialize."""
+        self.preset_devices(
+            dimmers=(self.special is None),
+            relays=(self.special is not None),
+        )
+        self.paces = [v for v in self._spin_pace(self.start_pace)]
+
+    @staticmethod
+    def _spin_pace(start: float) -> Iterator[float]:
+        """Return a series of spin pace values."""
+        pace = start
+        while pace < 2.0:
+            yield pace
+            pace *= 1.2
+
+    def execute(self):
+        """"""
+        values = [
+            (pattern, pace)
+            for pattern, pace  in zip(
+                rotate(self.pattern, self.clockwise),
+                self._spin_pace(self.start_pace),
+            )
+        ]
+        values.extend(reversed(values))
+        for pattern, pace in itertools.cycle(values):
+            self.player.lights.set_relays(
+                pattern, 
+                special=self.special,
+            )
+            self.player.wait(pace)
 
 @dataclass
 class RandomFade(PlayMode):
