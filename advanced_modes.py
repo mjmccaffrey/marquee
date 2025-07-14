@@ -59,7 +59,6 @@ class RotateRewind(PlayMode):
             dimmers=(self.special is None),
             relays=(self.special is not None),
         )
-        self.paces = [v for v in self._spin_pace(self.start_pace)]
 
     @staticmethod
     def _spin_pace(start: float) -> Iterator[float]:
@@ -67,7 +66,7 @@ class RotateRewind(PlayMode):
         pace = start
         while pace < 2.0:
             yield pace
-            pace *= 1.2
+            pace *= 1.1
 
     def execute(self):
         """"""
