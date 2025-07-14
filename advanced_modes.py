@@ -64,7 +64,7 @@ class RotateRewind(PlayMode):
     def _spin_pace(start: float) -> Iterator[float]:
         """Return a series of spin pace values."""
         pace = start
-        while pace < 2.0:
+        while pace < 1.75:
             yield pace
             pace *= 1.1
 
@@ -79,6 +79,7 @@ class RotateRewind(PlayMode):
         ]
         values.extend(reversed(values))
         for pattern, pace in itertools.cycle(values):
+            print(pace)
             self.player.lights.set_relays(
                 pattern, 
                 special=self.special,
