@@ -77,7 +77,7 @@ class RotateRewind(PlayMode):
                 self._spin_pace(self.start_pace),
             )
         ]
-        values.extend(reversed(values))
+        values.extend(reversed(values[:-1]))
         for pattern, pace in itertools.cycle(values):
             print(pace)
             self.player.lights.set_relays(
