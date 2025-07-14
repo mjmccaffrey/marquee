@@ -362,7 +362,7 @@ class Executor():
         self.add_mode(38, "silent_random_steady_trans", RandomFade, transition=0.5)
         self.add_mode(39, "silent_random_random_trans", RandomFade)
         self.add_mode(40, "bell_test", BellTest)
-        self.add_mode(41, "rotate_rewind_1", RotateRewind)
+        self.add_mode(41, "rotate_rewind_1", RotateRewind, start_pace=0.05)
         self.add_mode(42, "rotate_rewind_2", RotateRewind,
             special=DimmerParams(),
         )
