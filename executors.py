@@ -364,5 +364,5 @@ class Executor():
         self.add_mode(40, "bell_test", BellTest)
         self.add_mode(41, "rotate_rewind_1", RotateRewind, pattern="100000100000")
         self.add_mode(42, "rotate_rewind_2", RotateRewind,
-            # special=DimmerParams(),
+            special=DimmerParams(),
         )
