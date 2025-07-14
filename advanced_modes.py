@@ -50,7 +50,7 @@ class RotateRewind(PlayMode):
     """Rotate a pattern at a decreasing speed, and then rewind."""
     pattern: str = "1" + "0" * (LIGHT_COUNT - 1)
     clockwise: bool = True
-    start_pace: float = 0.25
+    start_pace: float = 0.1
     special: DimmerParams | None = None
 
     def __post_init__(self):
