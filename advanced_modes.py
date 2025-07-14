@@ -73,7 +73,7 @@ class RotateRewind(PlayMode):
         values = [
             (pattern, pace)
             for pattern, pace  in zip(
-                rotate(self.pattern, self.clockwise),
+                itertools.cycle(rotate(self.pattern, self.clockwise)),
                 self._spin_pace(self.start_pace),
             )
         ]
