@@ -206,6 +206,7 @@ class Executor():
         self.add_sequence_mode(4, "even_off", even_off)
         self.add_sequence_mode(5, "blink_all", blink_all, 
             pace=1,
+            special=MirrorParams(),
         )
         self.add_sequence_mode(6, "blink_alternate", blink_alternate, 
             pace=1, 
