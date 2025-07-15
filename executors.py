@@ -182,7 +182,8 @@ class Executor():
             self.buttons,
             self.drums,
             self.lights,
-            speed_factor)
+            speed_factor,
+        )
         self.player.execute(mode_index)
 
     def execute_pattern(self, light_pattern: str | None, brightness_pattern: str | None):
@@ -195,7 +196,10 @@ class Executor():
 
     def register_modes(self):
         """Register all operating modes."""
-        self.add_mode(0, "selection", SelectMode, hidden=True, previous_mode="PREVIOUS_MODE")
+        self.add_mode(0, "selection", SelectMode, 
+            hidden=True, special=MirrorParams(),
+            previous_mode="PREVIOUS_MODE",
+        )
         self.add_sequence_mode(1, "all_on", all_on)
         self.add_sequence_mode(2, "all_off", all_off)
         self.add_sequence_mode(3, "even_on", even_on)

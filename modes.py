@@ -21,11 +21,13 @@ from definitions import (
 class Mode(BaseMode, ABC):
     """Base for all Playing modes and the Select mode."""
     player: PlayerInterface
+    special: SpecialParams | None = None
 
     def __post_init__(self):
         """Initialize."""
+        if isinstance(self.special, MirrorParams):
+            self.special.func = self.player.drums.mirror
         
-
     def preset_devices(self, dimmers: bool = False, relays: bool = False):
         """Preset the dimmers and relays as specified."""
         if dimmers:
@@ -48,10 +50,11 @@ class Mode(BaseMode, ABC):
 @dataclass
 class SelectMode(Mode):
     """Supports the select mode."""
-    previous_mode: int
+    previous_mode: int = field(init=False)
 
     def __post_init__(self):
         """Initialize."""
+        super().__post_init__()
         self.preset_devices(dimmers=True)
         self.desired_mode = self.previous_mode
         self.previous_desired_mode = -1
@@ -99,6 +102,7 @@ class PlayMode(Mode):
 
     def __post_init__(self):
         """Initialize."""
+        super().__post_init__()
         self.preset_devices()
         self.direction = +1
 
@@ -143,7 +147,7 @@ class PlaySequenceMode(PlayMode):
         **kwargs,
     ):
         """Initialize."""
-        super().__init__(player, name)
+        super().__init__(player, name, special)
         self.sequence = sequence
         self.pace = pace
         self.stop = stop
@@ -158,8 +162,6 @@ class PlaySequenceMode(PlayMode):
                 special.transition_off = default_trans
             if special.transition_on is None:
                 special.transition_on = default_trans
-        if isinstance(special, MirrorParams):
-            special.func = self.player.drums.mirror
         self.preset_devices(
             dimmers=(special is None),
             relays=(special is not None),

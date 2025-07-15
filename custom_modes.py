@@ -12,7 +12,7 @@ from dimmers import TRANSITION_MINIMUM
 from modes import PlayMusicMode, PlayMode
 from definitions import DimmerParams, MirrorParams
 
-@dataclass
+@dataclass(kw_only=True)
 class BellTest(PlayMusicMode):
     """Test all bells."""
 
@@ -26,7 +26,7 @@ class BellTest(PlayMusicMode):
             self.player.bells.play({pitch})
             self.player.wait(0.5)
         
-@dataclass
+@dataclass(kw_only=True)
 class RotateReversible(PlayMode):
     """Rotate a pattern, reversing direction in response to a button press."""
     pace: float
@@ -45,7 +45,7 @@ class RotateReversible(PlayMode):
             self.pattern[self.direction:] + self.pattern[:self.direction]
         )
 
-@dataclass
+@dataclass(kw_only=True)
 class RotateRewind(PlayMode):
     """Rotate a pattern at a decreasing speed, and then rewind."""
     pattern: str = "1" + "0" * (LIGHT_COUNT - 1)
@@ -89,7 +89,7 @@ class RotateRewind(PlayMode):
             )
             self.player.wait(pace, time.time() - start)
 
-@dataclass
+@dataclass(kw_only=True)
 class RandomFade(PlayMode):
     """Change brightness of random bulb to a random level,
        with either a random or specified transition time."""
@@ -125,7 +125,7 @@ class RandomFade(PlayMode):
                     channel.next_update = now + tran
             self.player.wait(0.1)
 
-@dataclass
+@dataclass(kw_only=True)
 class EvenOddFade(PlayMode):
     """Fade every-other bulb."""
     pace: float
@@ -154,7 +154,7 @@ class EvenOddFade(PlayMode):
             )
             self.player.wait(delay, time.time() - start)
 
-@dataclass
+@dataclass(kw_only=True)
 class RapidFade(PlayMode):
     """"""
 
@@ -179,7 +179,7 @@ class RapidFade(PlayMode):
             previous.set(brightness=40, transition=TRANSITION_MINIMUM)
             # self.player.wait(10)
 
-@dataclass
+@dataclass(kw_only=True)
 class BuildBrightness(PlayMode):
     """Brightness change rate test."""
     equal_trans: bool
@@ -200,7 +200,7 @@ class BuildBrightness(PlayMode):
             dimmer.set(brightness=brightness, transition=transition)
         self.player.wait(4)
 
-@dataclass
+@dataclass(kw_only=True)
 class SilentFadeBuild(PlayMode):
     """"""
 
