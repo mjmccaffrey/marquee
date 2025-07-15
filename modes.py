@@ -36,7 +36,7 @@ class Mode(BaseMode, ABC):
             self.player.lights.set_dimmers(ALL_HIGH, force_update=True)
         if relays:
             print("Presetting RELAYS")
-            self.player.lights.set_relays(ALL_ON)
+            self.player.lights.set_relays(ALL_ON, special=self.special)
 
     def mode_index(self, current: int, delta: int) -> int:
         """Return a new mode index, wrapping index in both directions."""
@@ -83,11 +83,12 @@ class SelectMode(Mode):
         if self.desired_mode != self.previous_desired_mode:
             # Not last pass.
             # Show user what desired mode number is currently selected.
-            self.player.lights.set_relays(ALL_OFF)
+            self.player.lights.set_relays(ALL_OFF, special=self.special)
             time.sleep(0.5)
             self.player.play_sequence(
                 rotate_build_flip(count=self.desired_mode),
                 pace=0.20, post_delay=4.0,
+                special=self.special,
             )
             self.previous_desired_mode = self.desired_mode
         else:
