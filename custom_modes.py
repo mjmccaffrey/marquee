@@ -10,7 +10,7 @@ import time
 from configuration import ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
 from dimmers import TRANSITION_MINIMUM
 from modes import PlayMusicMode, PlayMode
-from definitions import DimmerParams
+from definitions import DimmerParams, MirrorParams
 
 @dataclass
 class BellTest(PlayMusicMode):
@@ -55,6 +55,8 @@ class RotateRewind(PlayMode):
 
     def __post_init__(self):
         """Initialize."""
+        if isinstance(self.special, MirrorParams):
+            self.special.func = self.player.drums.mirror
         self.preset_devices(
             dimmers=(self.special is None),
             relays=(self.special is not None),
