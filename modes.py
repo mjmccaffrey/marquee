@@ -26,6 +26,7 @@ class Mode(BaseMode, ABC):
     def __post_init__(self):
         """Initialize."""
         if isinstance(self.special, MirrorParams):
+            print("MirrorParams!")
             self.special.func = self.player.drums.mirror
         
     def preset_devices(self, dimmers: bool = False, relays: bool = False):
