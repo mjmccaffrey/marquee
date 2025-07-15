@@ -47,10 +47,10 @@ class Mode(BaseMode, ABC):
             value = upper + dif + 1
         return value
 
-@dataclass
+@dataclass(kw_only=True)
 class SelectMode(Mode):
     """Supports the select mode."""
-    previous_mode: int = field(init=False)
+    previous_mode: int
 
     def __post_init__(self):
         """Initialize."""
