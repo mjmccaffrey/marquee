@@ -27,7 +27,7 @@ class DimmerParams(SpecialParams):
 @dataclass
 class MirrorParams(SpecialParams):
     """Parameters to mirror lights with another relay board."""
-    func: Callable[[str]] = field(init=False)
+    func: Callable[[str], None] = field(init=False)
     
 @dataclass
 class ModeConstructor:
