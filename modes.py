@@ -13,12 +13,18 @@ from dimmers import TRANSITION_DEFAULT
 from music import set_player
 from player_interface import PlayerInterface
 from sequences import rotate_build_flip
-from definitions import ActionParams, DimmerParams, SpecialParams
+from definitions import (
+    ActionParams, DimmerParams, MirrorParams, SpecialParams,
+)
 
 @dataclass
 class Mode(BaseMode, ABC):
     """Base for all Playing modes and the Select mode."""
     player: PlayerInterface
+
+    def __post_init__(self):
+        """Initialize."""
+        
 
     def preset_devices(self, dimmers: bool = False, relays: bool = False):
         """Preset the dimmers and relays as specified."""
@@ -152,6 +158,8 @@ class PlaySequenceMode(PlayMode):
                 special.transition_off = default_trans
             if special.transition_on is None:
                 special.transition_on = default_trans
+        if isinstance(special, MirrorParams):
+            special.func = self.player.drums.mirror
         self.preset_devices(
             dimmers=(special is None),
             relays=(special is not None),

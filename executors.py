@@ -12,12 +12,15 @@ from buttonsets import ButtonSet
 from configuration import (
     ALL_RELAYS, ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT, LIGHT_COUNT,
 )
-from definitions import DimmerParams, SpecialParams, AutoModeEntry, ModeConstructor
+from definitions import (
+    DimmerParams, MirrorParams, SpecialParams, 
+    AutoModeEntry, ModeConstructor,
+)
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from instruments import BellSet, DrumSet
 from lightsets import LightSet
 from modes import PlaySequenceMode, SelectMode
-from advanced_modes import (
+from custom_modes import (
     BellTest, BuildBrightness,  EvenOddFade, RotateReversible, 
     RandomFade, RapidFade, RotateRewind, SilentFadeBuild,
 )
@@ -362,7 +365,6 @@ class Executor():
         self.add_mode(38, "silent_random_steady_trans", RandomFade, transition=0.5)
         self.add_mode(39, "silent_random_random_trans", RandomFade)
         self.add_mode(40, "bell_test", BellTest)
-        self.add_mode(41, "rotate_rewind_1", RotateRewind, pattern="100000100000")
-        self.add_mode(42, "rotate_rewind_2", RotateRewind,
-            special=DimmerParams(concurrent=False),
+        self.add_mode(41, "rotate_rewind_1", RotateRewind, 
+            pattern="100000100000", special=MirrorParams(),
         )

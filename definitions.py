@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - definitions"""
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from typing import Any, Type
 
@@ -24,6 +24,11 @@ class DimmerParams(SpecialParams):
     transition_on: float | None = 0.5  # !!!! None
     transition_off: float | None = 0.5  # !!!! None
 
+@dataclass
+class MirrorParams(SpecialParams):
+    """Parameters to mirror lights with another relay board."""
+    func: Callable[[str]] = field(init=False)
+    
 @dataclass
 class ModeConstructor:
     name: str

@@ -98,8 +98,11 @@ class DrumSet(RelayInstrument):
                 for i, p in enumerate(new_pattern)
             )
         self.relays.set_state_of_devices(new_pattern)
-        print(self.pattern, new_pattern)
         self.pattern = new_pattern
+
+    def mirror(self, pattern: str):
+        self.relays.set_state_of_devices(pattern)
+        self.pattern = pattern
 
 class RestInstrument(Instrument):
     """"""

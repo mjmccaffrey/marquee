@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 import threading
 from typing import ClassVar
-from signal import signal
+import signal
 
 from gpiozero import Button as _Button  # type: ignore
 
@@ -55,9 +55,9 @@ class Button(ButtonInterface):
         if self.support_hold:
             self.button.when_held = self.button_held
         if self.signal_number is not None:
-            signal(
+            signal.signal(
                 self.signal_number,
-                lambda _, __: self.virtual_button_pressed(),
+                self.virtual_button_pressed,
             )
     
     def close(self):
@@ -78,7 +78,7 @@ class Button(ButtonInterface):
         Button.which_button_pressed = self
         Button.pressed_event.set()
 
-    def virtual_button_pressed(self):
+    def virtual_button_pressed(self, signal_number, stack_frame):
         """Callback for virtual button press."""
         print(f"Virtual button <{self}> pressed")
         raise VirtualButtonPressed(self)

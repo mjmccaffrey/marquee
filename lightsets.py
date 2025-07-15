@@ -4,7 +4,7 @@ import asyncio
 from dataclasses import dataclass
 
 from configuration import EXTRA_COUNT, LIGHT_COUNT
-from definitions import DimmerParams, SpecialParams
+from definitions import DimmerParams, MirrorParams, SpecialParams
 from dimmers import (
     ShellyDimmer, DimmerChannel,
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,
@@ -104,6 +104,8 @@ class LightSet:
                 extra_pattern = ''.join(str(e) for e in extra_pattern)
             full_pattern = light_pattern + extra_pattern
             self.relays.set_state_of_devices(full_pattern)
+            if isinstance(special, MirrorParams):
+                special.func(full_pattern)
             self.extra_pattern = extra_pattern
             self.relay_pattern = light_pattern
 
