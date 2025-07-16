@@ -8,7 +8,7 @@ from typing import Any
 from basemode import BaseMode
 from buttons import Button
 from configuration import ALL_HIGH, ALL_OFF, ALL_ON
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from dimmers import TRANSITION_DEFAULT
 from music import set_player
 from player_interface import PlayerInterface
@@ -23,14 +23,10 @@ class Mode(BaseMode, ABC):
     player: PlayerInterface
     special: SpecialParams | None = None
 
-    def __post_init__(self):
-        """Initialize."""
-        if isinstance(self.special, MirrorParams):
-            print("MirrorParams!")
-            self.special.func = self.player.drums.mirror
-        
     def preset_devices(self, dimmers: bool = False, relays: bool = False):
         """Preset the dimmers and relays as specified."""
+        if isinstance(self.special, MirrorParams):
+            self.special.func = self.player.drums.mirror
         if dimmers:
             print("Presetting DIMMERS")
             self.player.lights.set_dimmers(ALL_HIGH, force_update=True)
@@ -55,7 +51,6 @@ class SelectMode(Mode):
 
     def __post_init__(self):
         """Initialize."""
-        super().__post_init__()
         self.preset_devices(dimmers=True)
         self.desired_mode = self.previous_mode
         self.previous_desired_mode = -1
@@ -104,7 +99,6 @@ class PlayMode(Mode):
 
     def __post_init__(self):
         """Initialize."""
-        super().__post_init__()
         self.preset_devices()
         self.direction = +1
 
@@ -153,7 +147,6 @@ class PlaySequenceMode(PlayMode):
         self.sequence = sequence
         self.pace = pace
         self.stop = stop
-        self.special = special
         self.kwargs = kwargs
         if isinstance(special, DimmerParams):
             default_trans = (
@@ -190,6 +183,10 @@ class PlayMusicMode(PlayMode):
 
     def __post_init__(self):
         """Initialize."""
+        self.preset_devices(
+            dimmers=(self.special is None),
+            relays=(self.special is not None),
+        )
         set_player(self.player)
 
     def light(

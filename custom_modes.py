@@ -55,8 +55,6 @@ class RotateRewind(PlayMode):
 
     def __post_init__(self):
         """Initialize."""
-        if isinstance(self.special, MirrorParams):
-            self.special.func = self.player.drums.mirror
         self.preset_devices(
             dimmers=(self.special is None),
             relays=(self.special is not None),
