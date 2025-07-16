@@ -42,7 +42,7 @@ class PlayerInterface(ABC):
             count: int = 1, 
             pace: tuple[float, ...] | float | None = None,
             stop: int | None = None, 
-            post_delay: float = 0, 
+            post_delay: float | None = 0.0, 
             special: SpecialParams | None = None,
         ):
         """Execute sequence count times, with pace seconds in between.

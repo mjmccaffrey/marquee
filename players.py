@@ -100,19 +100,19 @@ class Player(PlayerInterface):
             self, 
             sequence: Iterable, 
             count: int = 1, 
-            pace: tuple[float, ...] | float | None = None,
+            pace: Iterable[float | None] | float | None = None,
             stop: int | None = None, 
-            post_delay: float = 0, 
+            post_delay: float | None = 0.0,
             special: SpecialParams | None = None,
         ):
         """Execute sequence count times, with pace seconds in between.
            If stop is specified, end the sequence 
            just before the nth pattern.
            Pause for post_delay seconds before exiting."""
-        if isinstance(pace, (int, float)) or pace is None:
-            pace_iter = itertools.repeat(pace)
-        else:
+        if isinstance(pace, Iterable):
             pace_iter = itertools.cycle(pace)
+        else:
+            pace_iter = itertools.repeat(pace)
         print(f"{stop=}")
         for _ in range(count):
             for i, lights in enumerate(sequence):

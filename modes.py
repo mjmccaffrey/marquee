@@ -139,6 +139,7 @@ class PlaySequenceMode(PlayMode):
         sequence: Callable,
         pace: tuple[float, ...] | float | None = None,
         stop: int | None = None,
+        post_delay: float | None = 0.0,
         special: SpecialParams | None = None,
         **kwargs,
     ):
@@ -147,6 +148,7 @@ class PlaySequenceMode(PlayMode):
         self.sequence = sequence
         self.pace = pace
         self.stop = stop
+        self.post_delay = post_delay
         self.kwargs = kwargs
         if isinstance(special, DimmerParams):
             default_trans = (
@@ -169,6 +171,7 @@ class PlaySequenceMode(PlayMode):
             sequence=self.sequence(**self.kwargs),
             pace=self.pace,
             stop=self.stop,
+            post_delay=self.post_delay,
             special=self.special,
         )
 

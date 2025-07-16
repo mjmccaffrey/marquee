@@ -39,11 +39,13 @@ marquee
 from arguments import display_help, process_arguments
 from executors import Executor, setup_devices
 from players import Player
+from register_modes import register_modes
 
 def main():
     """Execute Marquee application."""
     try:
         exec = Executor(Player, setup_devices)
+        register_modes(exec)
         try:
             args = process_arguments(exec.mode_ids, exec.commands)
         except ValueError:
