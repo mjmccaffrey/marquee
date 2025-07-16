@@ -191,7 +191,8 @@ def register_modes(exec: Executor):
     )
 
     # ********** PRESENTATION **********
-    exec.add_sequence_mode("bulb_fill", bulb_fill, pace=1.0, wait=None)
+    exec.add_sequence_mode("twelve_off", all_off)
+    exec.add_sequence_mode("bulb_fill", bulb_fill, pace=1.0, post_delay=None)
     exec.add_sequence_mode("ten_on", lambda: iter(["101111101111"]))
     exec.add_sequence_mode("ten_rotate", rotate, 
         pattern="110111110111", pace=(1.0, 1.0, 999), stop=3)
