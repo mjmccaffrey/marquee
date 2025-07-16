@@ -107,12 +107,12 @@ class PlayMode(Mode):
         new_mode = None
         b = self.player.buttons
         match button:
-            case b.remote_a | b.body_back:
+            case b.remote_a:  # | b.body_back:
                 if self.player.auto_mode is not None:
                     print("Exiting auto mode.")
                     self.player.auto_mode = None
                 new_mode = 0
-            case b.remote_c:
+            case b.remote_c | b.body_back:
                 self.player.click()
                 self.direction *= -1
             case b.remote_b:
