@@ -163,4 +163,4 @@ class Player(PlayerInterface):
     def click(self):
         """Generate a small click sound by flipping
            an otherwise unused relay."""
-        self._flip_extra_relays(5)
+        # self._flip_extra_relays(5)
