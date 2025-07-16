@@ -371,7 +371,7 @@ class Executor():
         self.add_mode("rotate_rewind_1", RotateRewind, 
             pattern="100000100000", special=MirrorParams(),
         )
-        self.add_sequence_mode("ten_on", lambda: lambda: "101111101111")
+        self.add_sequence_mode("ten_on", lambda: (p for p in ["101111101111"]))
         self.add_sequence_mode("ten_rotate", rotate, 
             pattern="101111101111", stop=3)
         self.add_sequence_mode("twelve_on", all_on)
