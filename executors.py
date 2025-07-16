@@ -373,6 +373,6 @@ class Executor():
         )
         self.add_sequence_mode("ten_on", lambda: (p for p in ["101111101111"]))
         self.add_sequence_mode("ten_rotate", rotate, 
-            pattern="101111101111", stop=3)
+            pattern="101111101111", pace=1.0, stop=3)
         self.add_sequence_mode("twelve_on", all_on)
         
