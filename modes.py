@@ -112,14 +112,14 @@ class PlayMode(Mode):
                     print("Exiting auto mode.")
                     self.player.auto_mode = None
                 new_mode = 0
-            case b.remote_c | b.body_back:
+            case b.remote_c:
                 self.player.click()
                 self.direction *= -1
             case b.remote_b:
                 self.player.click()
                 if self.player.auto_mode is None:
                     new_mode = self.mode_index(self.player.current_mode, -1)
-            case b.remote_d:
+            case b.remote_d | b.body_back:
                 self.player.click()
                 if self.player.auto_mode is None:
                     new_mode = self.mode_index(self.player.current_mode, +1)
