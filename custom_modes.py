@@ -242,3 +242,4 @@ class FillBulbs(PlayMode):
             if pattern.endswith("BELL"):
                 self.player.wait(0.25)
                 self.player.bells.play({0})
+        self.player.wait(None)
