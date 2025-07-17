@@ -7,7 +7,10 @@ import random
 from sequences import bulb_fill, lights_in_groups, opposite, rotate
 import time
 
-from configuration import ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
+from configuration import (
+    ALL_HIGH, ALL_LOW, ALL_ON, 
+    LIGHT_COUNT, LIGHTS_BY_ROW,
+)
 from dimmers import TRANSITION_MINIMUM
 from modes import PlayMusicMode, PlayMode
 from definitions import DimmerParams, MirrorParams
@@ -241,5 +244,29 @@ class FillBulbs(PlayMode):
             self.player.wait(0.25)
             if pattern.endswith("BELL"):
                 self.player.wait(0.25)
-                self.player.bells.play({0})
+                self.player.bells.play({7})
+        self.player.wait(None)
+
+@dataclass(kw_only=True)
+class FillBulbs2(PlayMode):
+    """Fill sign with electricity gag."""
+
+    def __post_init__(self):
+        """Initialize."""
+        self.preset_devices(relays=True)
+ 
+    def execute(self):
+        """"""
+        for lights in LIGHTS_BY_ROW:
+            self.player.lights.set_dimmer_subset(
+                lights, 50, 0.5,
+            )
+            self.player.wait(0.5)
+        self.player.wait(1.0)
+        for lights in reversed(LIGHTS_BY_ROW):
+            self.player.lights.set_dimmer_subset(
+                lights, 100, 0.5,
+            )
+            self.player.wait(0.5)
+            self.player.bells.play({7})
         self.player.wait(None)
