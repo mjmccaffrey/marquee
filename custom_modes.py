@@ -261,14 +261,14 @@ class FillBulbs2(PlayMode):
         """"""
         for lights in LIGHTS_BY_ROW:
             self.player.lights.set_dimmer_subset(
-                lights, 50, 0.5,
+                lights, 50, 1.0,
             )
             self.player.wait(1.0)
         self.player.wait(1.0)
         for lights in reversed(LIGHTS_BY_ROW):
             self.player.lights.set_dimmer_subset(
-                lights, 100, 0.5,
+                lights, 100, 1.5,
             )
-            self.player.wait(1.0)
+            self.player.wait(1.5)
             self.player.bells.play({7})
         self.player.wait(None)
