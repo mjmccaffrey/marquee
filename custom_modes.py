@@ -253,6 +253,8 @@ class FillBulbs2(PlayMode):
 
     def __post_init__(self):
         """Initialize."""
+        self.player.lights.set_dimmers(ALL_LOW)
+        self.player.wait(0.5)
         self.preset_devices(relays=True)
  
     def execute(self):
@@ -261,12 +263,12 @@ class FillBulbs2(PlayMode):
             self.player.lights.set_dimmer_subset(
                 lights, 50, 0.5,
             )
-            self.player.wait(0.5)
+            self.player.wait(1.0)
         self.player.wait(1.0)
         for lights in reversed(LIGHTS_BY_ROW):
             self.player.lights.set_dimmer_subset(
                 lights, 100, 0.5,
             )
-            self.player.wait(0.5)
+            self.player.wait(1.0)
             self.player.bells.play({7})
         self.player.wait(None)
