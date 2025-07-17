@@ -21,18 +21,18 @@ def test__interpret_symbols_duration():
     with pytest.raises(ValueError, match="Cannot mix"):
         _interpret_symbols('♩𝄻')
     with pytest.raises(ValueError, match="empty"):
-        _interpret_symbols('A', pitch_map=p)
+        _interpret_symbols('A', bell_pitch_to_relay=p)
 
 def test__interpret_symbols_accent():
     assert _interpret_symbols('♪^', accent_map=a) == (0.5, set(), 3, False)
     assert _interpret_symbols('3♩>', accent_map=a) == (2/3, set(), 2, False)
-    assert _interpret_symbols('A3♩>', accent_map=a, pitch_map=p) == (2/3, {3}, 2, False)
+    assert _interpret_symbols('A3♩>', accent_map=a, bell_pitch_to_relay=p) == (2/3, {3}, 2, False)
 
 def test__interpret_symbols_pitch():
     with pytest.raises(ValueError, match="Invalid symbol."):
-        _interpret_symbols('q3♩>', accent_map=a, pitch_map=p)
-    assert _interpret_symbols('A♩>', accent_map=a, pitch_map=p) == (1, {3}, 2, False)
-    assert _interpret_symbols('aD♩>', accent_map=a, pitch_map=p) == (1, {4, 0}, 2, False)
+        _interpret_symbols('q3♩>', accent_map=a, bell_pitch_to_relay=p)
+    assert _interpret_symbols('A♩>', accent_map=a, bell_pitch_to_relay=p) == (1, {3}, 2, False)
+    assert _interpret_symbols('aD♩>', accent_map=a, bell_pitch_to_relay=p) == (1, {4, 0}, 2, False)
 
 def test__interpret_notation_measure_count():
     def rest(s: str) -> Rest:

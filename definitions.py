@@ -15,6 +15,10 @@ class ActionParams(SpecialParams):
     action: Callable
 
 @dataclass
+class BellParams(SpecialParams):
+    """Parameters to ring bells."""
+
+@dataclass
 class DimmerParams(SpecialParams):
     """Parameters for using dimmers rather than relays."""
     concurrent: bool = True

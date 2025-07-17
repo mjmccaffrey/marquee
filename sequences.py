@@ -220,6 +220,4 @@ def bulb_fill() -> Iterator[str]:
             trickle[index] = "1"
             yield ''.join(l for l in trickle)
         filled[sequence[-1]] = "1"
-        yield ''.join(l for l in filled)
-            
-    
+        yield ''.join(l for l in filled) + "BELL"

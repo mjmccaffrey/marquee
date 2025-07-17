@@ -6,7 +6,7 @@ from definitions import DimmerParams, MirrorParams, AutoModeEntry
 from executors import Executor
 from modes import SelectMode
 from custom_modes import (
-    BellTest, BuildBrightness,  EvenOddFade, RotateReversible, 
+    BellTest, BuildBrightness,  EvenOddFade, FillBulbs, RotateReversible, 
     RandomFade, RapidFade, RotateRewind, SilentFadeBuild,
 )
 from sequences import (
@@ -192,11 +192,10 @@ def register_modes(exec: Executor):
 
     # ********** PRESENTATION **********
     exec.add_sequence_mode("twelve_off", all_off)
-    exec.add_sequence_mode("bulb_fill", bulb_fill, pace=0.25, 
-        post_delay=None)  # , special=DimmerParams())
+    exec.add_sequence_mode("fill_bulbs", FillBulbs)
     exec.add_sequence_mode("ten_on", lambda: iter(["101111101111"]))
     exec.add_sequence_mode("ten_rotate", rotate, 
-        pattern="110111110111", pace=(1.0, 1.0, 999), stop=3)
+        pattern="110111110111", pace=1.0, stop=3, post_delay=None)
     exec.add_sequence_mode("twelve_on", all_on)
     exec.add_sequence_mode("blink_all_fade_sequen",
         blink_all, pace=1,

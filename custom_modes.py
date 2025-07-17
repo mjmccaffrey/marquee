@@ -4,7 +4,7 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 import itertools
 import random
-from sequences import lights_in_groups, opposite, rotate
+from sequences import bulb_fill, lights_in_groups, opposite, rotate
 import time
 
 from configuration import ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT
@@ -222,3 +222,23 @@ class SilentFadeBuild(PlayMode):
                         self.player.wait(0.5)
                     self.player.wait(1.0)
                 self.player.wait(1.0)
+
+@dataclass(kw_only=True)
+class FillBulbs(PlayMode):
+    """Fill sign with electricity gag."""
+
+    def __post_init__(self):
+        """Initialize."""
+        self.preset_devices(relays=True)
+ 
+    def execute(self):
+        """"""
+        for pattern in bulb_fill():
+            self.player.lights.set_relays(
+                pattern[:LIGHT_COUNT], 
+                special=DimmerParams()
+            )
+            self.player.wait(0.25)
+            if pattern.endswith("BELL"):
+                self.player.wait(0.25)
+                self.player.bells.play({0,6})
