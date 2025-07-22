@@ -167,7 +167,7 @@ def register_modes(exec: Executor):
     exec.add_mode("silent_random_random_trans", RandomFade)
     AutoMode.init(default_duration=60, mode_lookup=exec.mode_ids)
     exec.add_mode("silent_variety_group", AutoMode,
-        mode_sequence=[
+        modes=[
             AutoMode.add("silent_blink_alternate_slow"),
             AutoMode.add("silent_random_flip_medium"),
             AutoMode.add("silent_random_flip_fast", 15.0),

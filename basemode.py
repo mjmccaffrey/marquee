@@ -29,7 +29,7 @@ class AutoMode(BaseMode):
     """Supports time-based automatic mode change."""
     default_duration: ClassVar[float]
     mode_lookup: ClassVar[dict[str, int]]
-    modes: list[AutoModeEntry] = field(init=False)
+    modes: list[AutoModeEntry]
     mode_iter: Iterator[AutoModeEntry] = field(init=False)
     trigger_time: float = field(init=False)
 
