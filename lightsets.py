@@ -138,7 +138,6 @@ class LightSet:
             updates = [t for t in zip(self.dimmer_channels, brightnesses, transitions)]
         else:
             updates = self._updates_needed(brightnesses, transitions)
-        print(updates)
         self.execute_dimmer_commands(updates)
 
     def set_dimmer_subset(
