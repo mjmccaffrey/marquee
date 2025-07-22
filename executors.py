@@ -36,14 +36,27 @@ def setup_devices(brightness_factor: float):
     )
     buttons = ButtonSet(
         body_back = Button(
+            "body_back",
             _Button(pin=26, bounce_time=0.10, hold_time=10), 
             support_hold=True,
             signal_number=SIGUSR1,
         ),
-        remote_a = Button(_Button(pin=5, pull_up=False, bounce_time=0.10)),
-        remote_b = Button(_Button(pin=6, pull_up=False, bounce_time=0.10)),
-        remote_c = Button(_Button(pin=13, pull_up=False, bounce_time=0.10)),
-        remote_d = Button(_Button(pin=19, pull_up=False, bounce_time=0.10)),
+        remote_a = Button(
+            "remote_a",
+            _Button(pin=5, pull_up=False, bounce_time=0.10)
+        ),
+        remote_b = Button(
+            "remote_b",
+            _Button(pin=6, pull_up=False, bounce_time=0.10)
+        ),
+        remote_c = Button(
+            "remote_c",
+            _Button(pin=13, pull_up=False, bounce_time=0.10)
+        ),
+        remote_d = Button(
+            "remote_d",
+            _Button(pin=19, pull_up=False, bounce_time=0.10)
+        ),
     )
     return bells, buttons, drums, lights
 

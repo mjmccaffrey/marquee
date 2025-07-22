@@ -25,6 +25,7 @@ class Button(ButtonInterface):
     _buttons: ClassVar[list["Button"]] = []
     which_button_pressed: ClassVar["Button | None"]
     button_was_held: ClassVar[bool]
+    name: str
     button: _Button
     support_hold: bool = False
     signal_number: int | None = None
