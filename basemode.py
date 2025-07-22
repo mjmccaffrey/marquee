@@ -35,7 +35,6 @@ class AutoMode(BaseMode):
 
     def __post_init__(self):
         """Initialize."""
-        self.modes = []
         self.mode_iter = cycle(self.modes)
 
     @classmethod
