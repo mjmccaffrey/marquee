@@ -155,7 +155,7 @@ def center_alternate() -> Iterator[str]:
 @staticmethod
 def _random_light_gen() -> Iterator[int]:
     """Generate random light indexes 
-       that never immediately repeats."""
+       that never immediately repeat."""
     new = -1
     while True:
         old = new
@@ -195,29 +195,3 @@ def random_once_each() -> Iterator[list[int]]:
     random.shuffle(indices)
     while indices:
         yield [indices.pop()]
-
-def bulb_fill() -> Iterator[str]:
-    """Fill the sign with electricity."""
-    sequences = [
-        [1, 0, 11, 10, 9, 8, 7],
-        [1, 2, 3, 4, 5, 6],
-        [1, 0, 11, 10, 9, 8],
-        [1, 2, 3, 4, 5],
-        [1, 0, 11, 10, 9],
-        [1, 2, 3, 4],
-        [1, 0, 11, 10],
-        [1, 2, 3],
-        [1, 0, 11],
-        [1, 2],
-        [1, 0],
-        [1],
-    ]
-    filled = ["0"] * LIGHT_COUNT
-    for sequence in sequences:
-        trickle = [l for l in filled]
-        for index in sequence[:-1]:
-            trickle = [l for l in filled]
-            trickle[index] = "1"
-            yield ''.join(l for l in trickle)
-        filled[sequence[-1]] = "1"
-        yield ''.join(l for l in filled) + "BELL"

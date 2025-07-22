@@ -3,7 +3,9 @@
 from collections.abc import Callable
 from typing import Any, NoReturn
 
-from argparse import Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
+from argparse import (
+    Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
+)
 from configuration import LIGHT_COUNT
 
 class ArgumentParserImproved(ArgumentParser):

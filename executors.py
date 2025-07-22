@@ -19,7 +19,7 @@ from modes import PlaySequenceMode
 from relays import NumatoRL160001, NumatoSSR80001
 
 def setup_devices(brightness_factor: float):
-    """"""
+    """Create and return device objects."""
     bells = BellSet(
         NumatoSSR80001("/dev/ttyACM0")
     )
@@ -43,17 +43,17 @@ def setup_devices(brightness_factor: float):
             support_hold=True,
             signal_number=SIGUSR1,
         ),
-        remote_a = Button(_Button(pin=18, pull_up=False, bounce_time=0.10)),
-        remote_b = Button(_Button(pin=23, pull_up=False, bounce_time=0.10)),
-        remote_c = Button(_Button(pin=24, pull_up=False, bounce_time=0.10)),
-        remote_d = Button(_Button(pin=25, pull_up=False, bounce_time=0.10)),
+        remote_a = Button(_Button(pin=5, pull_up=False, bounce_time=0.10)),
+        remote_b = Button(_Button(pin=6, pull_up=False, bounce_time=0.10)),
+        remote_c = Button(_Button(pin=13, pull_up=False, bounce_time=0.10)),
+        remote_d = Button(_Button(pin=19, pull_up=False, bounce_time=0.10)),
     )
     return bells, buttons, drums, lights
 
 class Executor():
     """Executes patterns and commands specified on the command line.
-       Registers all of the play modes, and if specified on the command line,
-       creates and turns control over to a Player object."""
+       If a mode is specified, creates and turns control over 
+       to a Player object."""
 
     def __init__(
             self,
@@ -94,13 +94,8 @@ class Executor():
             **kwargs,
     ):
         """Register the mode IDs and everything needed to create an instance."""
+        assert name not in self.mode_ids, "Duplicate mode name"
         index = len(self.modes)
-        assert (str(index) not in self.mode_ids
-            and name not in self.mode_ids
-        ), "Duplicate mode index or name"
-        assert all(
-            str(k) in self.mode_ids for k in range(1, index)
-        ), "Non-sequential mode index"
         if not hidden:
             self.mode_menu.append((index, name))
             self.mode_ids[str(index)] = index
@@ -161,7 +156,11 @@ class Executor():
         )
         self.player.execute(mode_index)
 
-    def execute_pattern(self, light_pattern: str | None, brightness_pattern: str | None):
+    def execute_pattern(
+        self, 
+        light_pattern: str | None, 
+        brightness_pattern: str | None,
+    ):
         """Effects the command-line specified pattern(s)."""
         if brightness_pattern is not None:
             self.lights.set_dimmers(brightness_pattern)

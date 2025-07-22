@@ -25,8 +25,8 @@ class DimmerParams(SpecialParams):
     brightness_on: int = 100
     brightness_off: int = 0
     speed_factor: float = 1.0
-    transition_on: float | None = 0.5  # !!!! None
-    transition_off: float | None = 0.5  # !!!! None
+    transition_on: float = 0.5
+    transition_off: float = 0.5
 
 @dataclass
 class MirrorParams(SpecialParams):
@@ -41,5 +41,6 @@ class ModeConstructor:
 
 @dataclass
 class AutoModeEntry:
-    duration_seconds: int
-    mode_index: int
+    index: int
+    name: str
+    duration: float

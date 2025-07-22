@@ -1,10 +1,10 @@
-"""Marquee Lighted Sign Project - mode_defs"""
+"""Marquee Lighted Sign Project - custom_modes"""
 
 from collections.abc import Iterator
 from dataclasses import dataclass
 import itertools
 import random
-from sequences import bulb_fill, lights_in_groups, opposite, rotate
+from sequences import lights_in_groups, opposite, rotate
 import time
 
 from configuration import (
@@ -13,7 +13,7 @@ from configuration import (
 )
 from dimmers import TRANSITION_MINIMUM
 from modes import PlayMusicMode, PlayMode
-from definitions import DimmerParams, MirrorParams
+from definitions import DimmerParams
 
 @dataclass(kw_only=True)
 class BellTest(PlayMusicMode):
@@ -228,28 +228,7 @@ class SilentFadeBuild(PlayMode):
 
 @dataclass(kw_only=True)
 class FillBulbs(PlayMode):
-    """Fill sign with electricity gag."""
-
-    def __post_init__(self):
-        """Initialize."""
-        self.preset_devices(relays=True)
- 
-    def execute(self):
-        """"""
-        for pattern in bulb_fill():
-            self.player.lights.set_relays(
-                pattern[:LIGHT_COUNT], 
-                special=DimmerParams()
-            )
-            self.player.wait(0.25)
-            if pattern.endswith("BELL"):
-                self.player.wait(0.25)
-                self.player.bells.play({7})
-        self.player.wait(None)
-
-@dataclass(kw_only=True)
-class FillBulbs2(PlayMode):
-    """Fill sign with electricity gag."""
+    """Gag to fill sign with electricity."""
 
     def __post_init__(self):
         """Initialize."""
@@ -258,7 +237,7 @@ class FillBulbs2(PlayMode):
         self.preset_devices(relays=True)
  
     def execute(self):
-        """"""
+        """Bulb juice flows down from the top center."""
         for lights in LIGHTS_BY_ROW:
             self.player.lights.set_dimmer_subset(
                 lights, 30, 2.0,

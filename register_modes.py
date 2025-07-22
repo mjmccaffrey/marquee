@@ -2,17 +2,16 @@
 
 from basemode import AutoMode
 from configuration import LIGHT_COUNT
-from definitions import DimmerParams, MirrorParams, AutoModeEntry
+from definitions import DimmerParams, MirrorParams
 from executors import Executor
 from modes import SelectMode
 from custom_modes import (
-    BellTest, BuildBrightness, EvenOddFade, FillBulbs, FillBulbs2, RotateReversible, 
+    BellTest, BuildBrightness, EvenOddFade, FillBulbs, RotateReversible, 
     RandomFade, RapidFade, RotateRewind, SilentFadeBuild,
 )
 from sequences import (
     all_on, 
     all_off,
-    bulb_fill,
     even_on,
     even_off,
     blink_all,
@@ -34,10 +33,7 @@ def register_modes(exec: Executor):
     exec.add_sequence_mode("all_off", all_off)
     exec.add_sequence_mode("even_on", even_on)
     exec.add_sequence_mode("even_off", even_off)
-    exec.add_sequence_mode("blink_all", blink_all, 
-        pace=1,
-        special=MirrorParams(),
-    )
+    exec.add_sequence_mode("blink_all", blink_all, pace=1)
     exec.add_sequence_mode("blink_alternate", blink_alternate, 
         pace=1, 
     )
@@ -94,7 +90,6 @@ def register_modes(exec: Executor):
         )
     )
     exec.add_mode("even_odd_fade", EvenOddFade, pace=0.5)
-    exec.add_mode("random_fade", RandomFade)
     exec.add_mode("random_fade_steady", RandomFade, transition=2)
     exec.add_mode("build_brightness_equal", BuildBrightness, equal_trans=True)
     exec.add_mode("build_brightness_unequal", BuildBrightness, equal_trans=False)
@@ -118,27 +113,12 @@ def register_modes(exec: Executor):
         special=DimmerParams(),
         light_pattern='LIGHT_PATTERN',
     )
+    exec.add_mode("bell_test", BellTest)
+    exec.add_mode("rotate_rewind_1", RotateRewind, 
+        pattern="100000100000", special=MirrorParams(),
+    )
 
     # ********** SILENT SIGN **********
-    exec.add_mode("silent_variety_group", AutoMode,
-        mode_sequence=[
-            AutoModeEntry(
-                duration_seconds=(d or 30),
-                mode_index=i,
-            )
-            for i, d in [
-                (37, None),
-                (38, None),
-                (39, None),
-                (31, 15),
-                (32, None),
-                (33, None),
-                (34, 15),
-                (35, None),
-                (36, None),
-            ]
-        ],
-    )
     exec.add_sequence_mode("silent_blink_alternate_slow",
         blink_alternate, pace=10, 
         special=DimmerParams(
@@ -185,32 +165,45 @@ def register_modes(exec: Executor):
     )
     exec.add_mode("silent_random_steady_trans", RandomFade, transition=0.5)
     exec.add_mode("silent_random_random_trans", RandomFade)
-    exec.add_mode("bell_test", BellTest)
-    exec.add_mode("rotate_rewind_1", RotateRewind, 
-        pattern="100000100000", special=MirrorParams(),
+    AutoMode.init(default_duration=60, mode_lookup=exec.mode_ids)
+    exec.add_mode("silent_variety_group", AutoMode,
+        default_duration=60,
+        mode_sequence=[
+            AutoMode.add("silent_blink_alternate_slow"),
+            AutoMode.add("silent_random_flip_medium"),
+            AutoMode.add("silent_random_flip_fast", 15.0),
+            AutoMode.add("silent_blink_all_slowwww"),
+            AutoMode.add("silent_fade_build"),
+            AutoMode.add("silent_rotate_slight_fade"),
+            AutoMode.add("silent_random_flip_fade_fast"),
+            AutoMode.add("silent_random_steady_trans"),
+            AutoMode.add("silent_random_random_trans"),
+        ],
     )
 
     # ********** PRESENTATION **********
-    exec.add_sequence_mode("twelve_off", all_off)
-    # exec.add_mode("fill_bulbs", FillBulbs)
-    exec.add_mode("fill_bulbs2", FillBulbs2)
-    exec.add_sequence_mode("ten_on", lambda: iter(["101111101111"]))
-    exec.add_sequence_mode("ten_rotate", rotate, 
-        pattern="110111110111", pace=1.0, stop=3, post_delay=None)
-    exec.add_sequence_mode("twelve_on", all_on)
-    exec.add_sequence_mode("blink_all_fade_sequen",
+    exec.add_sequence_mode("12_off", all_off)
+    exec.add_mode("fill_bulbs", FillBulbs)
+    exec.add_sequence_mode("10_on", lambda: iter(["101111101111"]),
+        special=MirrorParams(),
+    )
+    exec.add_sequence_mode("10_rotate", rotate, 
+        pattern="110111110111", pace=1.0, stop=3, post_delay=None,
+        special=MirrorParams(),
+    )
+    exec.add_sequence_mode("12_on", all_on,
+        special=MirrorParams(),
+    )
+    exec.add_mode("random_fade", RandomFade)
+    exec.add_sequence_mode("blink_all_fade_sequential",
         blink_all, pace=1,
         special=DimmerParams(
             concurrent=False,
-            transition_on=0.5,
-            transition_off=0.5,
         )
     )
-    exec.add_sequence_mode("blink_all_fade_consec", 
+    exec.add_sequence_mode("blink_all_fade_consecutive", 
         blink_all, pace=1,
         special=DimmerParams(
             concurrent=True,
-            transition_on=0.5,
-            transition_off=0.5,
         )
     )

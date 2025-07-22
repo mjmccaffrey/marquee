@@ -11,7 +11,7 @@ from music import (
 )
 from music import(
     act, act_part, bell_part, drum_part,
-    rest, sequence_measure, sequence_part
+    sequence_measure, sequence_part
 )
 from sequences import blink_all
 from definitions import ActionParams, DimmerParams, SpecialParams

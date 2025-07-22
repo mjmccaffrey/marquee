@@ -1,14 +1,14 @@
 """Marquee Lighted Sign Project - basemode"""
 
 from abc import ABC, abstractmethod
-from collections.abc import Iterator, Sequence
+from collections.abc import Iterator
 from dataclasses import dataclass, field
-from definitions import AutoModeEntry
 from itertools import cycle
 import time
-from typing import Any
+from typing import Any, ClassVar
 
 from button_interface import ButtonInterface
+from definitions import AutoModeEntry
 
 @dataclass
 class BaseMode(ABC):
@@ -27,14 +27,39 @@ class BaseMode(ABC):
 @dataclass
 class AutoMode(BaseMode):
     """Supports time-based automatic mode change."""
-    mode_sequence: Sequence[AutoModeEntry]
+    default_duration: ClassVar[float]
+    mode_lookup: ClassVar[dict[str, int]]
+    modes: list[AutoModeEntry] = field(init=False)
     mode_iter: Iterator[AutoModeEntry] = field(init=False)
     trigger_time: float = field(init=False)
 
     def __post_init__(self):
         """Initialize."""
-        self.mode_iter = cycle(self.mode_sequence)
+        self.modes = []
+        self.mode_iter = cycle(self.modes)
 
+    @classmethod
+    def init(
+        cls, 
+        default_duration: float,
+        mode_lookup: dict[str, int],
+    ):
+        cls.default_duration = default_duration
+        cls.mode_lookup = mode_lookup
+
+    @classmethod
+    def add(cls, name: str, duration: float | None = None):
+        """Add mode with name."""
+        try:
+            index = cls.mode_lookup[name]
+        except LookupError:
+            raise ValueError(f"Mode {name} not defined.")
+        return AutoModeEntry(
+            index=index, 
+            name=name,
+            duration=duration or cls.default_duration,
+        )
+    
     def button_action(self, button: ButtonInterface):
         """"""        
 
@@ -44,10 +69,10 @@ class AutoMode(BaseMode):
 
     def next_mode(self):
         """Set up next mode in sequence."""
-        next_mode = next(self.mode_iter)
+        mode = next(self.mode_iter)
         self.trigger_time = (
-            time.time() + next_mode.duration_seconds
+            time.time() + mode.duration
         )
-        print(f"Next auto mode is {next_mode.mode_index} "
-              f"for {next_mode.duration_seconds} seconds.")
-        return(next_mode.mode_index)
+        print(f"Next auto mode is {mode.name} "
+              f"for {mode.duration} seconds.")
+        return(mode.index)

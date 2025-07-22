@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - button interface"""
+"""Marquee Lighted Sign Project - button_interface"""
 
 from abc import ABC, abstractmethod
 

@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - dimmers"""
 
-from abc import ABC, abstractmethod
+from abc import ABC
 import asyncio
 from dataclasses import dataclass
 import requests
@@ -14,6 +14,9 @@ TRANSITION_MAXIMUM = 10800.0
 
 class ShellyDimmer(ABC):
     """Supports Shelly Dimmers."""
+
+    channel_count: int  # Abstract
+
     _dimmers: list["ShellyDimmer"] = []
 
     def __init__(self, index: int, ip_address: str):
@@ -45,11 +48,6 @@ class ShellyDimmer(ABC):
     
     def close(self):
         """Clean up."""
-
-    @property
-    @abstractmethod
-    def channel_count(self) -> int:
-        """Return # of channels supported by dimmer model."""
 
     def _get_status(self) -> list[tuple[int, dict]]:
         """ Fetch status parameters for all channels. """
@@ -141,10 +139,8 @@ class DimmerChannel:
         self.index = index
         self.ip_address = self.dimmer.ip_address
         self.id = id
-        # print(f"Initializing {self}")
         self.brightness = brightness
         self.next_update: float = 0
-        # self.set(output=True)  # !!! make part of a larger init?
 
     def __str__(self):
         return (f"dimmer {self.dimmer.index} channel {self.index}")
@@ -184,16 +180,13 @@ class DimmerChannel:
             brightness: int | None = None, 
             offset: int | None = None,
             transition: float | None = None, 
-            # output: bool | None = None,
             wait: bool = False,
     ):
         """Set the dimmer channel per requested values and state."""
-        #print("start:", time.time())
         command = self.make_set_command(
             brightness=brightness,
             offset=offset,
             transition=transition,
-            # output=output,
         )
         try:
             start = time.time()
@@ -222,8 +215,4 @@ class _DimmerCommand:
     
 class ShellyProDimmer2PM(ShellyDimmer):
     """Supports the Shelly Pro Dimmer 2PM."""
-
-    @property
-    def channel_count(self) -> int:
-        """"""
-        return 2
+    channel_count = 2

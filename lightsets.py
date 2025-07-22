@@ -147,7 +147,8 @@ class LightSet:
             brightness: int,
             transition: float,
     ):
-        """"""
+        """Set lights (indexes) / dimmer channels 
+           to brightness with transition."""
         self.execute_dimmer_commands([
             (   self.dimmer_channels[light], 
                 brightness, 
