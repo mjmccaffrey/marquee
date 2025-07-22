@@ -24,11 +24,11 @@ def setup_devices(brightness_factor: float):
         NumatoSSR80001("/dev/ttyACM1")
     )
     drums = DrumSet(
-        NumatoRL160001("/dev/ttyACM0")
+        NumatoRL160001("/dev/ttyACM2")
     )
     lights = LightSet(
         relays = NumatoRL160001(
-            "/dev/ttyACM1",
+            "/dev/ttyACM0",
             ALL_RELAYS,
         ),
         dimmers = [
