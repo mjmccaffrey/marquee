@@ -82,7 +82,7 @@ class Player(PlayerInterface):
             try:
                 new_mode = mode.execute()
             except ButtonPressed as press:
-                print("ButtonPressed caught")
+                # print("ButtonPressed caught")
                 button, held = press.args
                 if held:
                     print("Shutting down.")

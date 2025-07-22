@@ -160,8 +160,8 @@ class PlaySequenceMode(PlayMode):
             if special.transition_on is None:
                 special.transition_on = default_trans
         self.preset_devices(
-            dimmers=(special is None),
-            relays=(special is not None),
+            dimmers = not isinstance(special, DimmerParams),
+            relays = isinstance(special, DimmerParams),
         )
 
     def play_sequence_once(self):
@@ -187,8 +187,8 @@ class PlayMusicMode(PlayMode):
     def __post_init__(self):
         """Initialize."""
         self.preset_devices(
-            dimmers=(self.special is None),
-            relays=(self.special is not None),
+            dimmers = not isinstance(self.special, DimmerParams),
+            relays = isinstance(self.special, DimmerParams),
         )
         set_player(self.player)
 
