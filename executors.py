@@ -21,10 +21,10 @@ from relays import NumatoRL160001, NumatoSSR80001
 def setup_devices(brightness_factor: float):
     """Create and return device objects."""
     bells = BellSet(
-        NumatoSSR80001("/dev/ttyACM0")
+        NumatoSSR80001("/dev/ttyACM1")
     )
     drums = DrumSet(
-        NumatoRL160001("/dev/ttyACM2")
+        NumatoRL160001("/dev/ttyACM0")
     )
     lights = LightSet(
         relays = NumatoRL160001(
