@@ -113,10 +113,11 @@ def register_modes(exec: Executor):
     #     special=DimmerParams(),
     #     light_pattern='LIGHT_PATTERN',
     # )
-    # exec.add_mode("bell_test", BellTest)
     # exec.add_mode("rotate_rewind_1", RotateRewind, 
     #     pattern="100000100000", special=MirrorParams(),
     # )
+
+    exec.add_mode("bell_test", BellTest)
 
     # ********** SILENT SIGN **********
     exec.add_sequence_mode("silent_blink_alternate_slow",
@@ -188,11 +189,11 @@ def register_modes(exec: Executor):
         special=MirrorParams(),
     )
     exec.add_sequence_mode("rotate_sides", rotate_sides, 
-        pace=1.0, pattern='1', clockwise=False,
+        pace=0.75, pattern='1', clockwise=False,
         special=MirrorParams(),
     )
     exec.add_sequence_mode("section_2", all_off)
-    exec.add_mode("random_fade", RandomFade)
+    exec.add_mode("12_random_random_trans", RandomFade)
     exec.add_sequence_mode("blink_all_fade_sequential",
         blink_all, pace=1,
         special=DimmerParams(concurrent=False),
@@ -201,3 +202,4 @@ def register_modes(exec: Executor):
         blink_all, pace=1,
         special=DimmerParams(concurrent=True),
     )
+    exec.add_sequence_mode("section_3", all_off)
