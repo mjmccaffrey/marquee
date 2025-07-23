@@ -61,6 +61,12 @@ class Button(ButtonInterface):
                 self.virtual_button_pressed,
             )
     
+    def __repr__(self) -> str:
+        return f"<{self}>"
+    
+    def __str__(self) -> str:
+        return self.name
+
     def close(self):
         """Clean up."""
         self.button.close()
