@@ -32,7 +32,7 @@ class Mode(BaseMode, ABC):
             self.player.lights.set_dimmers(ALL_HIGH, force_update=True)
         if relays:
             print("Presetting RELAYS")
-            self.player.lights.set_relays(ALL_ON, special=self.special)
+            self.player.lights.set_relays(ALL_ON)
 
     def mode_index(self, current: int, delta: int) -> int:
         """Return a new mode index, wrapping index in both directions."""
