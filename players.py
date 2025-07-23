@@ -153,6 +153,7 @@ class Player(PlayerInterface):
         """"""
         def flip(s):
             return '0' if s == '1' else '1'
+        print(f"{self.lights.extra_pattern=}")
         assert all(0 <= i < len(self.lights.extra_pattern) for i in indices)
         extra = ''.join(
             flip(e) if i in indices else e
