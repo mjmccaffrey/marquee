@@ -99,7 +99,6 @@ def register_modes(exec: Executor):
     # exec.add_mode("rotate_reversible_2", 
     #     RotateReversible, pace=0.35, 
     #     pattern = "0" + "1" * (LIGHT_COUNT - 1))
-    # exec.add_mode("signs", SignsSong)
     # exec.add_sequence_mode("rotate_sides", rotate_sides, pace=1.0, pattern='1', clockwise=True)
     # exec.add_sequence_mode("rotate_sides_silent", rotate_sides, pace=2.0, pattern='0', clockwise=False,
     #     special=DimmerParams(
@@ -203,3 +202,5 @@ def register_modes(exec: Executor):
         special=DimmerParams(concurrent=True),
     )
     exec.add_sequence_mode("section_3", all_off)
+    exec.add_sequence_mode("section_4", all_off)
+    exec.add_mode("signs", SignsSong)
