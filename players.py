@@ -158,9 +158,12 @@ class Player(PlayerInterface):
             flip(e) if i in indices else e
             for i, e in enumerate(self.lights.extra_pattern)
         )
-        self.lights.set_relays(self.lights.relay_pattern, extra)
+        self.lights.set_relays(
+            light_pattern=self.lights.relay_pattern, 
+            extra_pattern=extra,
+        )
 
     def click(self):
         """Generate a small click sound by flipping
            an otherwise unused relay."""
-        # self._flip_extra_relays(5)
+        self._flip_extra_relays(3, 4, 5)

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import sys
 
 from configuration import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
+from definitions import ActionParams, DimmerParams
 from modes import PlayMusicMode
 from music import (
     dimmer, dimmer_sequence, light, measure, part, play,

@@ -13,7 +13,8 @@ class ButtonInterface(ABC):
     @classmethod
     @abstractmethod
     def wait(cls, seconds: float | None):
-        """Wait until seconds have elapsed or any button is pressed."""
+        """Wait until seconds have elapsed 
+           or any button is pressed."""
     
     @abstractmethod
     def close(self):

@@ -19,7 +19,6 @@ from modes import PlaySequenceMode
 from relays import NumatoRL160001, NumatoSSR80001
 
 def setup_devices(brightness_factor: float):
-    """Create and return device objects."""
     bells = BellSet(
         relays = NumatoSSR80001("/dev/ttyACM1")
     )

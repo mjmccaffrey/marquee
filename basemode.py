@@ -43,6 +43,7 @@ class AutoMode(BaseMode):
         default_duration: float,
         mode_lookup: dict[str, int],
     ):
+        """Prepare for classmethod add to be called."""
         cls.default_duration = default_duration
         cls.mode_lookup = mode_lookup
 
