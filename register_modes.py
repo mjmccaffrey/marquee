@@ -175,7 +175,7 @@ def register_modes(exec: Executor):
     )
 
     # ********** PRESENTATION **********
-    exec.add_sequence_mode("12_off", all_off)
+    exec.add_sequence_mode("section_1", all_off)
     exec.add_mode("fill_bulbs", FillBulbs)
     exec.add_sequence_mode("10_on", lambda: iter(["101111101111"]),
         special=MirrorParams(),
@@ -191,7 +191,7 @@ def register_modes(exec: Executor):
         pace=1.0, pattern='1', clockwise=False,
         special=MirrorParams(),
     )
-    exec.add_sequence_mode("12_off", all_off)
+    exec.add_sequence_mode("section_2", all_off)
     exec.add_mode("random_fade", RandomFade)
     exec.add_sequence_mode("blink_all_fade_sequential",
         blink_all, pace=1,
