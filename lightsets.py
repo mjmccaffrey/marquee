@@ -92,6 +92,7 @@ class LightSet:
         """Set all lights and extra relays per supplied patterns and special.
            Set light_pattern property, always as string
            rather than list."""
+        print(f"set_relays {light_pattern}, {extra_pattern}, {special}")
         assert len(light_pattern) == LIGHT_COUNT
         assert extra_pattern is None or len(extra_pattern) == EXTRA_COUNT
         light_pattern = ''.join(str(e) for e in light_pattern)
