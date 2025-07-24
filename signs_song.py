@@ -67,14 +67,14 @@ class SignsSong(PlayMusicMode):
                 # went in to ask him why
                 ' d𝅘𝅥𝅯 d♪   b𝅘𝅥𝅯 d♪ d♪ b𝅘𝅥𝅯 a𝅘𝅥𝅯 𝄾 𝄽 |'
 
-                # He said, you look like a fine, upstanding young
-                '  𝄿 e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿   e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 d𝅘𝅥𝅯   𝄾 c♪    c♪ d♪ |'
+                #   He said, you look like a fine, upstanding young -- updated 7/24, can be simplified
+                '  𝄿 e𝅘𝅥𝅯 e𝅘𝅥𝅯   e𝅘𝅥𝅯  e𝅘𝅥𝅯   e𝅘𝅥𝅯   e♪  d♪   c♪ c♪     d♪ |'
 
                 # man,  I think you'll do, uh, so I
                 ' d𝅘𝅥𝅯 c♪ a𝅘𝅥𝅯 d♪   d♪     c♩  𝄿 a𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  |'
 
-                # took off my hat and said imagine that, huh
-                ' e𝅘𝅥𝅯   e♪  c𝅘𝅥𝅯 e♪      c♪   d𝅘𝅥𝅯 d𝅘𝅥𝅯   d♪    𝄿 e𝅘𝅥𝅯  𝄾 |'
+                # took off my hat and said imagine that, huh -- first part of imagine changed from two 16ths to one 8th 7/24
+                ' e𝅘𝅥𝅯   e♪  c𝅘𝅥𝅯 e♪      c♪   d♪   d♪    𝄿 e𝅘𝅥𝅯  𝄾 |'
 
                 # me, working for you,    Oh...
                 '  c♪ 𝄾  c𝅘𝅥𝅯 a𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯  𝄽  𝄾  G♪  '  # e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ | '
