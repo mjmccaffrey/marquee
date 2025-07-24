@@ -89,10 +89,6 @@ class SignsSong(PlayMusicMode):
                 # Sign, sign, everywhere a sign
                 '  ♪ ♪ ♩  | 𝄻  | 𝄻  | 𝄻  | 𝄻 ',
                 sequence(blink_all),
-                sequence(all_off, special=DimmerParams(transition_off=3.5)),
-                sequence(all_on, special=DimmerParams(transition_on=3.5)),
-                sequence(all_off, special=DimmerParams(transition_off=3.5)),
-                sequence(all_on, special=DimmerParams(transition_on=3.5)),
             ),
             bell_part(
                 # Sign, sign, everywhere a sign -- Would be good to keep these 16ths if they are not too much 7/24
@@ -105,10 +101,12 @@ class SignsSong(PlayMusicMode):
             sequence_part(
                 # Sign, sign, everywhere a sign
                 '  𝄻  | 𝅝  | 𝅝  | 𝅝  | 𝅝 ',
-                sequence(all_off, special=DimmerParams(transition_off=3.5)),
-                sequence(all_on, special=DimmerParams(transition_on=3.5)),
-                sequence(all_off, special=DimmerParams(transition_off=3.5)),
-                sequence(all_on, special=DimmerParams(transition_on=3.5)),
+                sequence(blink_all, on_first=False,
+                    special=DimmerParams(
+                        transition_off=3.5,
+                        transition_on=3.5,
+                    )
+                ),
             ),
         )
  
