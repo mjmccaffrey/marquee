@@ -39,15 +39,15 @@ class SignsSong(PlayMusicMode):
         return section(
             drum_part(
                 '  h𝅝> | '
-                 '  lh♩ lh♩ lh♩ lh♩ | l♪ h♪ l♪ h♪ l♪ h♪ l♪ h♪|  ' #And the
-                 '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ |  ' #Sign says long-haired freaky people
-                 '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ |  ' #Need not apply so I
-                 '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ |  ' #Tucked my hair up under my hat and I
-                 '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 𝄿 𝄿 lh𝅘𝅥𝅯> l𝅘𝅥𝅯 𝄿 𝄿 hl♪ hl♪ lh♪ lh♪> |  ' #Went in to ask him why
-                 '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ |  ' #He said...
-                 '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ |  ' #Man, I think
-                 '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 𝄿 𝄿 lh𝅘𝅥𝅯> l𝅘𝅥𝅯 𝄿 𝄿 hl♪ hl♪ lh♪ lh♪> |  ' #Took off my hat...
-                 '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ | ', #Me, working for you
+                 '  lh♩ lh♩ lh♩ lh♩ | l♪ h♪ l♪ h♪ l♪ h♪ l♪ h♪|  ' # And the
+                 '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ |  ' # Sign says long-haired freaky people
+                 '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ |  ' # Need not apply so I
+                 '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ |  ' # Tucked my hair up under my hat and I
+                 '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 𝄿 𝄿 lh𝅘𝅥𝅯> l𝅘𝅥𝅯 𝄿 𝄿 hl♪ hl♪ lh♪ lh♪> |  ' # Went in to ask him why
+                 '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ |  ' # He said...
+                 '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ |  ' # Man, I think
+                 '  lh𝅘𝅥𝅯> l𝅘𝅥𝅯 𝄿 𝄿 lh𝅘𝅥𝅯> l𝅘𝅥𝅯 𝄿 𝄿 hl♪ hl♪ lh♪ lh♪> |  ' # Took off my hat...
+                 '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ | ', # Me, working for you
                  
             ),  
             bell_part(
@@ -87,7 +87,7 @@ class SignsSong(PlayMusicMode):
         return section(
             sequence_part(
                 # Sign, sign, everywhere a sign
-                '  ♪ ♪ ♩  | 𝅝  | 𝅝  | 𝅝  | 𝅝 ',
+                '  ♪ ♪ ♩  | 𝄻  | 𝄻  | 𝄻  | 𝄻 ',
                 sequence(blink_all),
                 sequence(all_off, special=DimmerParams(transition_off=3.5)),
                 sequence(all_on, special=DimmerParams(transition_on=3.5)),
@@ -101,7 +101,15 @@ class SignsSong(PlayMusicMode):
                 '  e♪      e♪      e𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪   a𝅘𝅥𝅯 c𝅘𝅥𝅯 c♪ c♩ |  '
                 # Do this, don't do that,   can't you read   the   sign? -- Do the e 16ths need to be simplifed?
                 '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯    𝄿 de𝅘𝅥𝅯 de𝅘𝅥𝅯 de𝅘𝅥𝅯    𝄾 d𝅘𝅥𝅯 d𝅘𝅥𝅯  | c♪ 𝄿 d𝅘𝅥𝅯 𝄽 𝄼 |' 
-            )
+            ),
+            sequence_part(
+                # Sign, sign, everywhere a sign
+                '  𝄻  | 𝅝  | 𝅝  | 𝅝  | 𝅝 ',
+                sequence(all_off, special=DimmerParams(transition_off=3.5)),
+                sequence(all_on, special=DimmerParams(transition_on=3.5)),
+                sequence(all_off, special=DimmerParams(transition_off=3.5)),
+                sequence(all_on, special=DimmerParams(transition_on=3.5)),
+            ),
         )
  
     def transition (self):
