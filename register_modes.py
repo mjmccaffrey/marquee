@@ -187,7 +187,7 @@ def register_modes(exec: Executor):
     )
     exec.add_sequence_mode("section_3", all_off)
     exec.add_sequence_mode("section_4", all_off)
-    exec.add_mode("signs", SignsSong)
+    exec.add_mode("signs", SignsSong, special=DimmerParams())
 
     # ********** SILENT SIGN **********
     AutoMode.init(default_duration=60, mode_lookup=exec.mode_ids)
