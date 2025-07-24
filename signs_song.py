@@ -85,16 +85,16 @@ class SignsSong(PlayMusicMode):
         """Signs song refrain."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            sequence_part(
-                # Sign, sign, everywhere a sign
-                # OnOff On, fade down
-                '  ♪ ♪ ♩  | 𝅝  | 𝅝  ',
-                sequence(blink_all),
-                sequence(all_off, special=DimmerParams(transition_off=3.5)),
-                sequence(all_on, special=DimmerParams(transition_on=3.5)),
-                sequence(all_off, special=DimmerParams(transition_off=3.5)),
-                sequence(all_on, special=DimmerParams(transition_on=3.5)),
-            ),
+            # sequence_part(
+            #     # Sign, sign, everywhere a sign
+            #     # OnOff On, fade down
+            #     '  ♪ ♪ ♩  | 𝅝  | 𝅝  ',
+            #     sequence(blink_all),
+            #     sequence(all_off, special=DimmerParams(transition_off=3.5)),
+            #     sequence(all_on, special=DimmerParams(transition_on=3.5)),
+            #     sequence(all_off, special=DimmerParams(transition_off=3.5)),
+            #     sequence(all_on, special=DimmerParams(transition_on=3.5)),
+            # ),
             bell_part(
                 # Sign, sign, everywhere a sign -- Would be good to keep these 16ths if they are not too much 7/24
                 '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
