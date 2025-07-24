@@ -20,7 +20,7 @@ class SignsSong(PlayMusicMode):
 
     def execute(self):
         """Perform Signs song."""
-        self.player.lights.set_relays(ALL_OFF)
+        # self.player.lights.set_relays(ALL_OFF)
         time.sleep(1)
         sections = [
             self.intro(),
