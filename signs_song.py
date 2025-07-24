@@ -71,7 +71,7 @@ class SignsSong(PlayMusicMode):
                 '  𝄿 e𝅘𝅥𝅯 e𝅘𝅥𝅯   e𝅘𝅥𝅯  e𝅘𝅥𝅯   e𝅘𝅥𝅯   e♪  d♪   c♪ c♪     d♪ |'
 
                 # man,  I think you'll do, uh, so I -- 7/24
-                ' d𝅘𝅥𝅯 c♪ a𝅘𝅥𝅯 d♩           c♩  𝄿 a𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  |'
+                ' d𝅘𝅥𝅯 c♪ a𝅘𝅥𝅯 d♪ d♪       c♩  𝄿 a𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  |'
 
                 # took off my hat and said imagine that, huh -- 7/24
                 ' e𝅘𝅥𝅯   e♪  c𝅘𝅥𝅯 e♪      c♪   d♪   d♪    𝄿 e𝅘𝅥𝅯  𝄾 |'
