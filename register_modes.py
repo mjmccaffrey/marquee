@@ -12,13 +12,10 @@ from custom_modes import (
 from sequences import (
     all_on, 
     all_off,
-    even_on,
-    even_off,
     blink_all,
     blink_alternate,
     rotate,
     random_flip,
-    opposite_corner_pairs,
     rotate_sides,
 )
 from signs_song import SignsSong

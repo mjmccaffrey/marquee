@@ -242,7 +242,7 @@ def _expand_sequence_measures(measures: tuple[Measure, ...]):
     for measure in measures:
         if not isinstance(measure, SequenceMeasure):
             continue
-        # assert isinstance(measure, SequenceMeasure)
+        assert isinstance(measure, SequenceMeasure)
         elements = tuple(
             ActionNote(
                 duration=measure.step_duration,

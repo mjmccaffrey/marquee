@@ -23,11 +23,25 @@
     * Shelly ProDimmer2PM A0DD6C9F72D0| 1.4.4| 679fcca9
         * 192.168.64.116
 * **USB Ports**
-* **GPIO Pinout**
+SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250501R0027", SYMLINK+="marquee_lights"
+SUBSYSTEM=="tty", ATTRS{serial}=="NLRL260501R0296", SYMLINK+="marquee_drums"
+SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250409R0868", SYMLINK+="marquee_bells"
 * **Dependencies**
     * pip install aiohttp --break-system-packages
-
+* **Bells**
 *   c   d   e
 *   b   a   G
 *   D   E
+* **Auto Start**
+    [Unit]
+    Description=Marquee
+    After=multi-user.target
 
+    [Service]
+    Type=idle
+    ExecStart=/usr/bin/python /home/mjmccaffrey/marquee/marquee.py mode 1
+    WorkingDirectory=/home/mjmccaffrey/marquee
+    User=mjmccaffrey
+
+    [Install]
+    WantedBy=multi-user.target
