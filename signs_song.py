@@ -85,7 +85,7 @@ class SignsSong(PlayMusicMode):
                 '  ♩ ♩ ♩ ♩  |  ',
                 sequence(
                     random_flip, 
-                    pattern='LIGHT_PATTERN',
+                    light_pattern='LIGHT_PATTERN',
                     special=DimmerParams(),
                 ),
             ),
