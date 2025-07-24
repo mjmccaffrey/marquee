@@ -85,23 +85,22 @@ class SignsSong(PlayMusicMode):
         """Signs song refrain."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            # sequence_part(
-            #     # Sign, sign, everywhere a sign
-            #     # OnOff On, fade down
-            #     '  ♪ ♪ ♩  | 𝅝  | 𝅝  ',
-            #     sequence(blink_all),
-            #     sequence(all_off, special=DimmerParams(transition_off=3.5)),
-            #     sequence(all_on, special=DimmerParams(transition_on=3.5)),
-            #     sequence(all_off, special=DimmerParams(transition_off=3.5)),
-            #     sequence(all_on, special=DimmerParams(transition_on=3.5)),
-            # ),
+            sequence_part(
+                # Sign, sign, everywhere a sign
+                '  ♪ ♪ ♩  | 𝅝  | 𝅝  | 𝅝  | 𝅝 ',
+                sequence(blink_all),
+                sequence(all_off, special=DimmerParams(transition_off=3.5)),
+                sequence(all_on, special=DimmerParams(transition_on=3.5)),
+                sequence(all_off, special=DimmerParams(transition_off=3.5)),
+                sequence(all_on, special=DimmerParams(transition_on=3.5)),
+            ),
             bell_part(
                 # Sign, sign, everywhere a sign -- Would be good to keep these 16ths if they are not too much 7/24
                 '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
                 # Blockin' out the scenery, breakin' my mind -- 7/24
                 '  e♪      e♪      e𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪   a𝅘𝅥𝅯 c𝅘𝅥𝅯 c♪ c♩ |  '
                 # Do this, don't do that,   can't you read   the   sign? -- Do the e 16ths need to be simplifed?
-                '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯    𝄿 de𝅘𝅥𝅯 de𝅘𝅥𝅯 de𝅘𝅥𝅯    𝄾 𝄿 d𝅘𝅥𝅯  | c♪ 𝄿 d𝅘𝅥𝅯 𝄽 𝄼 |' 
+                '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯    𝄿 de𝅘𝅥𝅯 de𝅘𝅥𝅯 de𝅘𝅥𝅯    𝄾 d𝅘𝅥𝅯 d𝅘𝅥𝅯  | c♪ 𝄿 d𝅘𝅥𝅯 𝄽 𝄼 |' 
             )
         )
  
