@@ -160,19 +160,6 @@ def register_modes(exec: Executor):
     )
     exec.add_mode("silent_random_steady_trans", RandomFade, transition=0.5)
     exec.add_mode("silent_random_random_trans", RandomFade)
-    AutoMode.init(default_duration=60, mode_lookup=exec.mode_ids)
-    exec.add_mode("silent_variety_group", AutoMode,
-        modes=[
-            AutoMode.add("silent_blink_alternate_slow"),
-            AutoMode.add("silent_random_flip_medium"),
-            AutoMode.add("silent_random_flip_fast", 15.0),
-            AutoMode.add("silent_blink_all_slowwww"),
-            AutoMode.add("silent_fade_build"),
-            AutoMode.add("silent_rotate_slight_fade"),
-            AutoMode.add("silent_random_steady_trans"),
-            AutoMode.add("silent_random_random_trans"),
-        ],
-    )
 
     # ********** PRESENTATION **********
     exec.add_sequence_mode("section_1", all_off)
@@ -204,3 +191,18 @@ def register_modes(exec: Executor):
     exec.add_sequence_mode("section_3", all_off)
     exec.add_sequence_mode("section_4", all_off)
     exec.add_mode("signs", SignsSong)
+
+    # ********** SILENT SIGN **********
+    AutoMode.init(default_duration=60, mode_lookup=exec.mode_ids)
+    exec.add_mode("silent_variety_group", AutoMode,
+        modes=[
+            AutoMode.add("silent_blink_alternate_slow"),
+            AutoMode.add("silent_random_flip_medium"),
+            AutoMode.add("silent_random_flip_fast", 15.0),
+            AutoMode.add("silent_blink_all_slowwww"),
+            AutoMode.add("silent_fade_build"),
+            AutoMode.add("silent_rotate_slight_fade"),
+            AutoMode.add("silent_random_steady_trans"),
+            AutoMode.add("silent_random_random_trans"),
+        ],
+    )

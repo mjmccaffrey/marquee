@@ -20,13 +20,13 @@ from relays import NumatoRL160001, NumatoSSR80001
 
 def setup_devices(brightness_factor: float):
     bells = BellSet(
-        relays = NumatoSSR80001("/dev/ttyACM1")
+        relays = NumatoSSR80001("/dev/marquee-bells")  # /dev/ttyACM1
     )
     drums = DrumSet(
-        relays = NumatoRL160001("/dev/ttyACM0")
+        relays = NumatoRL160001("/dev/marquee-drums")  # /dev/ttyACM0
     )
     lights = LightSet(
-        relays = NumatoRL160001("/dev/ttyACM2", ALL_RELAYS),
+        relays = NumatoRL160001("/dev/marquee-lights", ALL_RELAYS),  # /dev/ttyACM2
         dimmers = [
             ShellyProDimmer2PM(i, ip)
             for i, ip in enumerate(DIMMER_ADDRESSES)

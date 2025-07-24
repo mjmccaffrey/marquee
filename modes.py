@@ -65,7 +65,6 @@ class SelectMode(Mode):
             case b.remote_b:
                 self.desired_mode = self.mode_index(self.desired_mode, -1)
             case b.remote_c:
-                # self.desired_mode = 2  # ALL_OFF
                 return 222  # Quick change to mode ALL_OFF
             case _:
                 raise ValueError("Unrecognized button.")
@@ -125,7 +124,6 @@ class PlayMode(Mode):
                     new_mode = self.mode_index(self.player.current_mode, +1)
                 else:
                     new_mode = self.player.auto_mode.next_mode()
-                # print("Button Action: ", new_mode)
             case _:
                 raise ValueError("Unrecognized button.")
         return new_mode
