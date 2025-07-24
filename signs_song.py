@@ -13,7 +13,7 @@ from music import(
     act, act_part, bell_part, drum_part,
     sequence_measure, sequence_part
 )
-from sequences import all_off, all_on, blink_all
+from sequences import blink_all, random_flip
 from definitions import ActionParams, DimmerParams, SpecialParams
 
 class SignsSong(PlayMusicMode):
@@ -22,7 +22,7 @@ class SignsSong(PlayMusicMode):
     def execute(self):
         """Perform Signs song."""
         self.player.lights.set_relays(ALL_OFF)
-        time.sleep(5)
+        time.sleep(1)
         sections = [
             self.intro(),
             self.refrain(1),
@@ -78,7 +78,17 @@ class SignsSong(PlayMusicMode):
 
                 # me,   working for you,    Oh...
                 '  c♪ 𝄾  c♪      c♪ d♪  𝄾  𝄾  G♪  '  # e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ | ' -- 7/24
-            )
+            ),
+            sequence_part(
+                '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  '
+                '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  '
+                '  ♩ ♩ ♩ ♩  |  ',
+                sequence(
+                    random_flip, 
+                    pattern='LIGHT_PATTERN',
+                    special=DimmerParams(),
+                ),
+            ),
         )
 
     def refrain(self, play_thru: int):
