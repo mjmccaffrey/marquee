@@ -93,7 +93,7 @@ class SignsSong(PlayMusicMode):
             # Blockin' out the scenery, breakin' my mind -- 7/24
             '  e♪      e♪      e𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪   a𝅘𝅥𝅯 c𝅘𝅥𝅯 c♪ c♩ |  '
             # Do this, don't do that,   can't you read   the   sign? -- Do the e 16ths need to be simplifed?
-            '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯 𝄿 de𝅘𝅥𝅯   de𝅘𝅥𝅯 de𝅘𝅥𝅯    d♪ 𝄾 | c♪ 𝄿 d𝅘𝅥𝅯 𝄽 𝄼 |' 
+            '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯 𝄿 de𝅘𝅥𝅯   de𝅘𝅥𝅯 de𝅘𝅥𝅯  𝄾  d♪ | c♪ 𝄿 d𝅘𝅥𝅯 𝄽 𝄼 |' 
         )
         return section(
             #drum_part(
