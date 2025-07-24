@@ -13,7 +13,7 @@ from music import(
     act, act_part, bell_part, drum_part,
     sequence_measure, sequence_part
 )
-from sequences import blink_all
+from sequences import all_off, all_on, blink_all
 from definitions import ActionParams, DimmerParams, SpecialParams
 
 class SignsSong(PlayMusicMode):
@@ -26,13 +26,12 @@ class SignsSong(PlayMusicMode):
         sections = [
             self.intro(),
             self.refrain(1),
-            self.transition(1),
+            self.transition(),
             self.refrain(2),
-            # self.transition(2),
         ]
         for section in sections:
             section.play(tempo=75)
-        sys.exit()
+        self.player.wait(None)
 
     def intro(self):
         """Signs song intro."""
@@ -58,6 +57,7 @@ class SignsSong(PlayMusicMode):
                 # sign says long-haired freaky people 
                 '  c♩ c♩     b♪ b♪      b♪ b𝅘𝅥𝅯 G𝅘𝅥𝅯  |  '
                 
+                # (need) not a-       pply
                 # need not apply  so I - 7/24
                 ' 𝄾 a♪ a♪ 𝄿 G𝅘𝅥𝅯 𝄽 𝄾 a♪  |'
 
@@ -84,56 +84,44 @@ class SignsSong(PlayMusicMode):
     def refrain(self, play_thru: int):
         """Signs song refrain."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        bells = bell_part(
-            #'  𝄻 |  '
-            # '  D♪ D♪ D♪ D♪ |  ' Build-up experiment
-            # '  𝄽 𝄽 eca♪ eca♪ eEG♪ eEG♪ |  ' Build-up experiment
-            # Sign, sign, everywhere a sign -- Would be good to keep these 16ths if they are not too much 7/24
-            '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
-            # Blockin' out the scenery, breakin' my mind -- 7/24
-            '  e♪      e♪      e𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪   a𝅘𝅥𝅯 c𝅘𝅥𝅯 c♪ c♩ |  '
-            # Do this, don't do that,   can't you read   the   sign? -- Do the e 16ths need to be simplifed?
-            '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯 𝄿 de𝅘𝅥𝅯   de𝅘𝅥𝅯 de𝅘𝅥𝅯    d♪ 𝄾 | c♪ 𝄿 d𝅘𝅥𝅯 𝄽 𝄼 |' 
-        )
         return section(
+            sequence_part(
+                # Sign, sign, everywhere a sign
+                # OnOff On, fade down
+                '  ♪ ♪ ♩  | 𝅝  | 𝅝  ',
+                sequence(blink_all),
+                sequence(all_off, special=DimmerParams(transition_off=3.5)),
+                sequence(all_on, special=DimmerParams(transition_on=3.5)),
+                sequence(all_off, special=DimmerParams(transition_off=3.5)),
+                sequence(all_on, special=DimmerParams(transition_on=3.5)),
+            ),
+            bell_part(
+                # Sign, sign, everywhere a sign -- Would be good to keep these 16ths if they are not too much 7/24
+                '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
+                # Blockin' out the scenery, breakin' my mind -- 7/24
+                '  e♪      e♪      e𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪   a𝅘𝅥𝅯 c𝅘𝅥𝅯 c♪ c♩ |  '
+                # Do this, don't do that,   can't you read   the   sign? -- Do the e 16ths need to be simplifed?
+                '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯 𝄿 de𝅘𝅥𝅯   de𝅘𝅥𝅯 de𝅘𝅥𝅯    d♪ 𝄾 | c♪ 𝄿 d𝅘𝅥𝅯 𝄽 𝄼 |' 
+            )
+        )
+ 
+    def transition (self):
+        """Signs song transition."""
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        return section(
+            drum_part(
+            '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
+            '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
+            '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
+            '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
+            # '  lh♩ lh♩ lh♩ lh♩ | l♪ h♪ l♪ h♪ l♪ h♪ l♪ h♪|  '
+            )
+        )
+
+    # '  D♪ D♪ D♪ D♪ |  ' Build-up experiment
+
+    # '  𝄽 𝄽 eca♪ eca♪ eEG♪ eEG♪ |  ' Build-up experiment
+
             #drum_part(
             # for build-up    '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |  '
             #),
-            # sequence_part(
-            #     #'  𝄻 |  '
-            #     # Sign, sign, everywhere a sign
-            #     # OnOff On, fade down
-            #     '  ♪ ♪ ♩  | ♩  ',
-            #     sequence(blink_all),
-            # ),
-            bells,
-        )
- 
-    def transition (self, play_thru: int):
-        """Signs song transition."""
-        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        if play_thru == 1:
-            return section(
-                drum_part(
-                '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
-                '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
-                '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
-                '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
-               # '  lh♩ lh♩ lh♩ lh♩ | l♪ h♪ l♪ h♪ l♪ h♪ l♪ h♪|  '
-                )
-            )
-        else: 
-            return section(
-                # drum_part(),
-                bell_part(
-                #                 And the
-                '  𝄻 | 𝄻 |  𝄼 𝄽 𝄾 a𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
-                
-                # sign said you got to have a   membership 
-                ' ce♩  ce♪ 𝄿 ac𝅘𝅥𝅯 bd𝅘𝅥𝅯 ac𝅘𝅥𝅯 bd𝅘𝅥𝅯 ac𝅘𝅥𝅯 bd𝅘𝅥𝅯 ac𝅘𝅥𝅯 Gb♪ | '
-                
-                # card to get inside 
-                ' ad♪ 𝄿 ad𝅘𝅥𝅯 ad𝅘𝅥𝅯  ad♪ Gb𝅘𝅥𝅯 𝄼 | '
-                
-                )
-            )
