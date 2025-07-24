@@ -58,26 +58,26 @@ class SignsSong(PlayMusicMode):
                 # sign says long-haired freaky people 
                 '  c♩ c♩     b♪ b♪      b♪ b𝅘𝅥𝅯 G𝅘𝅥𝅯  |  '
                 
-                # need not apply  so I
-                ' 𝄾 a♪ a♪ 𝄿 G𝅘𝅥𝅯 𝄽 𝄾 a𝅘𝅥𝅯 a𝅘𝅥𝅯  |'
+                # need not apply  so I - 7/24
+                ' 𝄾 a♪ a♪ 𝄿 G𝅘𝅥𝅯 𝄽 𝄾 a♪  |'
 
-                # tucked my hair up under my hat and I
-                '𝄿 a♪    a𝅘𝅥𝅯 a♪   a♪  b♪ a♪ a♪ d𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
+                # tucked my hair up under my hat and I -- 7/24
+                '𝄿 a♪    𝄿 a♪   a♪  b♪ a♪ a♪ d𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
 
-                # went in to ask him why
-                ' d𝅘𝅥𝅯 d♪   b𝅘𝅥𝅯 d♪ d♪ b𝅘𝅥𝅯 a𝅘𝅥𝅯 𝄾 𝄽 |'
+                # went in to ask him why -- 7/24
+                ' d♪      b♪ d♪ d♪   b𝅘𝅥𝅯 a𝅘𝅥𝅯 𝄾 𝄽 |'
 
-                #   He said, you look like a fine, upstanding young -- updated 7/24, can be simplified
+                #   He said, you look like a fine, upstanding young -- 7/24
                 '  𝄿 e𝅘𝅥𝅯 e𝅘𝅥𝅯   e𝅘𝅥𝅯  e𝅘𝅥𝅯   e𝅘𝅥𝅯   e♪  d♪   c♪ c♪     d♪ |'
 
-                # man,  I think you'll do, uh, so I
-                ' d𝅘𝅥𝅯 c♪ a𝅘𝅥𝅯 d♪   d♪     c♩  𝄿 a𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  |'
+                # man,  I think you'll do, uh, so I -- 7/24
+                ' d𝅘𝅥𝅯 c♪ a𝅘𝅥𝅯 d♩           c♩  𝄿 a𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  |'
 
-                # took off my hat and said imagine that, huh -- first part of imagine changed from two 16ths to one 8th 7/24
+                # took off my hat and said imagine that, huh -- 7/24
                 ' e𝅘𝅥𝅯   e♪  c𝅘𝅥𝅯 e♪      c♪   d♪   d♪    𝄿 e𝅘𝅥𝅯  𝄾 |'
 
-                # me, working for you,    Oh...
-                '  c♪ 𝄾  c𝅘𝅥𝅯 a𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯  𝄽  𝄾  G♪  '  # e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ | '
+                # me,   working for you,    Oh...
+                '  c♪ 𝄾  c♪      c♪ d♪  𝄾  𝄾  G♪  '  # e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ | ' -- 7/24
             )
         )
 
@@ -88,12 +88,12 @@ class SignsSong(PlayMusicMode):
             #'  𝄻 |  '
             # '  D♪ D♪ D♪ D♪ |  ' Build-up experiment
             # '  𝄽 𝄽 eca♪ eca♪ eEG♪ eEG♪ |  ' Build-up experiment
-            # Sign, sign, everywhere a sign
+            # Sign, sign, everywhere a sign -- Would be good to keep these 16ths if they are not too much 7/24
             '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
-            # Blockin' out the scenery, breakin' my mind
-            '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯 e𝅘𝅥𝅯   e𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪   a𝅘𝅥𝅯 c𝅘𝅥𝅯 c♪ c♩ |  '
-            # Do this, don't do that,   can't you read   the sign?
-            '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯 𝄿 de𝅘𝅥𝅯   de𝅘𝅥𝅯 de𝅘𝅥𝅯 d♪ c♪ | c♪ 𝄿 d𝅘𝅥𝅯 𝄽 𝄼 |' 
+            # Blockin' out the scenery, breakin' my mind -- 7/24
+            '  e♪      e♪      e𝅘𝅥𝅯 d𝅘𝅥𝅯 c♪   a𝅘𝅥𝅯 c𝅘𝅥𝅯 c♪ c♩ |  '
+            # Do this, don't do that,   can't you read   the   sign? -- Do the e 16ths need to be simplifed?
+            '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯 𝄿 de𝅘𝅥𝅯   de𝅘𝅥𝅯 de𝅘𝅥𝅯    d♪ 𝄾 | c♪ 𝄿 d𝅘𝅥𝅯 𝄽 𝄼 |' 
         )
         return section(
             #drum_part(
