@@ -31,7 +31,7 @@ class SignsSong(PlayMusicMode):
             # self.transition(2),
         ]
         for section in sections:
-            section.play(tempo=60)
+            section.play(tempo=75)
         sys.exit()
 
     def intro(self):
