@@ -36,7 +36,7 @@ class SignsSong(PlayMusicMode):
 
     def intro_end_lights(self):
         count = 0
-        def func():
+        def func(pattern):
             print(count)
             if count == 0:
                 self.player.lights.set_relays(ALL_OFF)
