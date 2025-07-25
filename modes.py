@@ -184,10 +184,10 @@ class PlayMusicMode(PlayMode):
 
     def __post_init__(self):
         """Initialize."""
-        self.preset_devices(
-            dimmers = not isinstance(self.special, DimmerParams),
-            relays = isinstance(self.special, DimmerParams),
-        )
+        # self.preset_devices(
+        #     dimmers = not isinstance(self.special, DimmerParams),
+        #     relays = isinstance(self.special, DimmerParams),
+        # )
         set_player(self.player)
 
     def light(
