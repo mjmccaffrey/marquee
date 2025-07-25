@@ -13,7 +13,7 @@ from music import(
     act, act_part, bell_part, drum_part,
     sequence_measure, sequence_part
 )
-from sequences import blink_all, random_each
+from sequences import all_off, all_on, blink_all, random_each
 from definitions import ActionParams, DimmerParams, SpecialParams
 
 class SignsSong(PlayMusicMode):
@@ -85,11 +85,14 @@ class SignsSong(PlayMusicMode):
                 '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩  ',
                 sequence(
                     random_each,
-                    measures=10,
+                    measures=9,
                     special=ActionParams(action=dimmer_sequence_flip(1)),
                 ),
                 sequence(
-                    blink_all,
+                    all_off,
+                ),
+                sequence(
+                    all_on,
                     special=DimmerParams(),
                 ),
             ),
