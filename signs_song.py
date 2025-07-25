@@ -89,8 +89,8 @@ class SignsSong(PlayMusicMode):
                     special=ActionParams(action=dimmer_sequence_flip(1)),
                 ),
                 sequence(
-                    random_each,
-                    special=ActionParams(action=dimmer(ALL_HIGH)),
+                    blink_all,
+                    special=DimmerParams(),
                 ),
             ),
         )
