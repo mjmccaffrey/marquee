@@ -35,13 +35,15 @@ class SignsSong(PlayMusicMode):
         self.player.wait(None)
 
     def intro_end_lights(self):
-        def func(lights: list[int]):
-            self.player.lights.set_relays(ALL_OFF)
-            yield None
-            self.player.lights.set_relays(ALL_ON, special=DimmerParams())
-            yield None
-        return func
-
+        count = 0
+        def func():
+            print(count)
+            if count == 0:
+                self.player.lights.set_relays(ALL_OFF)
+            else:
+                self.player.lights.set_relays(ALL_ON, special=DimmerParams())
+            count += 1
+    
     def intro(self):
         """Signs song intro."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
@@ -97,8 +99,8 @@ class SignsSong(PlayMusicMode):
                     special=ActionParams(action=dimmer_sequence_flip(1)),
                 ),
                 sequence(
-                    self.intro_end_lights,
-                    special=ActionParams(action=lambda: None)
+                    random_each,
+                    special=ActionParams(self.intro_end_lights)
                 ),
             ),
         )
