@@ -35,10 +35,12 @@ class SignsSong(PlayMusicMode):
         self.player.wait(None)
 
     def intro_end_lights(self):
-        self.player.lights.set_relays(ALL_OFF)
-        yield None
-        self.player.lights.set_relays(ALL_ON, special=DimmerParams())
-        yield None
+        def func():
+            self.player.lights.set_relays(ALL_OFF)
+            yield None
+            self.player.lights.set_relays(ALL_ON, special=DimmerParams())
+            yield None
+        return func
 
     def intro(self):
         """Signs song intro."""
