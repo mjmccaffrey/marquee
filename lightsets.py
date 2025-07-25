@@ -4,7 +4,7 @@ import asyncio
 from dataclasses import dataclass
 
 from configuration import EXTRA_COUNT, LIGHT_COUNT
-from definitions import DimmerParams, MirrorParams, SpecialParams
+from definitions import ActionParams, DimmerParams, MirrorParams, SpecialParams
 from dimmers import (
     ShellyDimmer, DimmerChannel,
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,
@@ -93,9 +93,11 @@ class LightSet:
         """Set all lights and extra relays per supplied patterns and special.
            Set light_pattern property, always as string
            rather than list."""
-        print(light_pattern)
-        assert len(light_pattern) == LIGHT_COUNT
-        assert extra_pattern is None or len(extra_pattern) == EXTRA_COUNT
+        # assert len(light_pattern) == LIGHT_COUNT
+        # assert extra_pattern is None or len(extra_pattern) == EXTRA_COUNT
+        if isinstance(special, ActionParams):
+            special.action(light_pattern)
+            return
         light_pattern = ''.join(str(e) for e in light_pattern)
         if isinstance(special, DimmerParams):
             self._set_relays_override(light_pattern, special)
