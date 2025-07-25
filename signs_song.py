@@ -43,6 +43,7 @@ class SignsSong(PlayMusicMode):
             else:
                 self.player.lights.set_relays(ALL_ON, special=DimmerParams())
             count += 1
+        return func
     
     def intro(self):
         """Signs song intro."""
@@ -100,7 +101,7 @@ class SignsSong(PlayMusicMode):
                 ),
                 sequence(
                     random_each,
-                    special=ActionParams(self.intro_end_lights)
+                    special=ActionParams(self.intro_end_lights())
                 ),
             ),
         )
