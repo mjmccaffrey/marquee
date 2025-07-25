@@ -82,10 +82,15 @@ class SignsSong(PlayMusicMode):
             sequence_part(
                 '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  '
                 '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  '
-                '  ♩ ♩ ♩ ♩  |  ',
+                '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩  ',
                 sequence(
                     random_each,
+                    measures=10,
                     special=ActionParams(action=dimmer_sequence_flip(1)),
+                ),
+                sequence(
+                    random_each,
+                    special=ActionParams(action=dimmer(ALL_HIGH)),
                 ),
             ),
         )
