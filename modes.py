@@ -65,7 +65,7 @@ class SelectMode(Mode):
             case b.remote_b:
                 self.desired_mode = self.mode_index(self.desired_mode, -1)
             case b.remote_c:
-                return 222  # Quick change to mode ALL_OFF
+                return 222  # Quick change
             case _:
                 raise ValueError("Unrecognized button.")
         return None
@@ -113,7 +113,7 @@ class PlayMode(Mode):
                 new_mode = 0
             case b.remote_c:
                 self.player.click()
-                self.direction *= -1
+                new_mode = self.player.mode_ids['section_1']
             case b.remote_b:
                 self.player.click()
                 if self.player.auto_mode is None:

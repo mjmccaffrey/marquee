@@ -157,6 +157,7 @@ class Executor():
         """Effects the command-line specified mode."""
         self.player = self.create_player(
             self.modes, 
+            self.mode_ids,
             self.bells,
             self.buttons,
             self.drums,

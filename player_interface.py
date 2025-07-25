@@ -14,6 +14,7 @@ from lightsets import LightSet
 @dataclass
 class PlayerInterface(ABC):
     modes: dict[int, ModeConstructor]
+    mode_ids: dict[str, int]
     bells: BellSet
     buttons: ButtonSet
     drums: DrumSet

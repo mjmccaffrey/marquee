@@ -71,7 +71,7 @@ class Player(PlayerInterface):
             print(f"Executing mode {self.current_mode} {mode.name}")
             new_mode = self._play_mode_until_changed(mode_instance)
             if new_mode == 222:
-                new_mode = 2
+                new_mode = self.mode_ids['section_1']
 
     def _play_mode_until_changed(self, mode: BaseMode):
         """Play the specified mode until another mode is selected,
