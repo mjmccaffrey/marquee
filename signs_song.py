@@ -104,7 +104,7 @@ class SignsSong(PlayMusicMode):
         return section(
             sequence_part(
                 # Sign, sign, everywhere a sign
-                '  ♪ ♪ ♩  | 𝄻  | 𝄻  | 𝄻  | 𝄻 ',
+                '  ♪ ♪ ♩  | 𝄻  | 𝄻  | 𝄻  | ',
                 sequence(blink_all),
             ),
             bell_part(
@@ -118,7 +118,7 @@ class SignsSong(PlayMusicMode):
             ),
             sequence_part(
                 # Sign, sign, everywhere a sign
-                '  𝄻  | 𝅝  | 𝅝  | 𝅝  | 𝅝 ',
+                '  𝄻  | 𝅝  | 𝅝  | 𝅝  | ',
                 sequence(blink_all, on_first=False,
                     special=DimmerParams(
                         transition_off=3.5,
@@ -140,11 +140,3 @@ class SignsSong(PlayMusicMode):
             # # '  lh♩ lh♩ lh♩ lh♩ | l♪ h♪ l♪ h♪ l♪ h♪ l♪ h♪|  '
             )
         )
-
-    # '  D♪ D♪ D♪ D♪ |  ' Build-up experiment
-
-    # '  𝄽 𝄽 eca♪ eca♪ eEG♪ eEG♪ |  ' Build-up experiment
-
-            #drum_part(
-            # for build-up    '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |  '
-            #),
