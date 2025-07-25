@@ -8,8 +8,8 @@ from typing import Any
 from definitions import SpecialParams
 from music.music_implementation import (
     Element, Measure, Part, Section, Sequence, 
-    _dimmer, _dimmer_sequence, _light,
-    _play_measures, _set_player
+    _dimmer, _dimmer_sequence, _dimmer_sequence_flip,
+    _light, _play_measures, _set_player
 )
 from player_interface import PlayerInterface
 
@@ -58,6 +58,10 @@ def dimmer(pattern: str) -> Callable:
 def dimmer_sequence(brightness: int, transition: float) -> Callable:
     """Return callable to effect state of specified dimmers."""
     return _dimmer_sequence(brightness, transition)
+
+def dimmer_sequence_flip(transition: float) -> Callable:
+    """Return callable to flip state of specified dimmers."""
+    return _dimmer_sequence_flip(transition)
 
 def light(
     pattern: Any,

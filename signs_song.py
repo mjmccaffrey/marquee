@@ -5,14 +5,15 @@ import time
 from configuration import ALL_HIGH, ALL_OFF, ALL_LOW, ALL_ON
 from modes import PlayMusicMode
 from music import (
-    dimmer, dimmer_sequence, light, measure, part, play,
+    dimmer, dimmer_sequence, dimmer_sequence_flip, 
+    light, measure, part, play,
     section, sequence,
 )
 from music import(
     act, act_part, bell_part, drum_part,
     sequence_measure, sequence_part
 )
-from sequences import blink_all, random_flip_start_blank
+from sequences import blink_all, random_each
 from definitions import ActionParams, DimmerParams, SpecialParams
 
 class SignsSong(PlayMusicMode):
@@ -83,8 +84,9 @@ class SignsSong(PlayMusicMode):
                 '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  '
                 '  ♩ ♩ ♩ ♩  |  ',
                 sequence(
-                    random_flip_start_blank, 
-                    special=DimmerParams(),
+                    random_each,
+                    special=ActionParams(action=dimmer_sequence_flip(1)),
+                    
                 ),
             ),
         )

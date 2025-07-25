@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - sequences"""
 
 from collections.abc import Iterator, Sequence
+import itertools
 import random
 
 from configuration import (
@@ -195,3 +196,8 @@ def random_once_each() -> Iterator[list[int]]:
     random.shuffle(indices)
     while indices:
         yield [indices.pop()]
+
+def random_each() -> Iterator[list[int]]:
+    """"""
+    for index in itertools.cycle(random_once_each()):
+        yield index

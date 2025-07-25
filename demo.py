@@ -90,8 +90,8 @@ class Demo(PlayMusicMode):
                 '  𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 |  ',
                 sequence(rotate, pattern="100000100000", clockwise=True),
                 sequence(rotate, pattern="100000100000", clockwise=False),
-                sequence(build_rows, pattern='1', from_top=True),
-                sequence(build_rows, pattern='1', from_top=False),
+                # sequence(build_rows, pattern='1', from_top=True),
+                # sequence(build_rows, pattern='1', from_top=False),
             ),
             drum_part(
                 '  𝄻  |  𝄻  |  ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^  |  𝅘𝅥𝅰^  '
@@ -163,7 +163,7 @@ class Demo(PlayMusicMode):
             ),
             sequence_part(
                 '  𝄻  | ♩ ♩ ♩ ♩ ',
-                sequence(build_rows, special=DimmerParams(transition_off=2), pattern='0'),
+                # sequence(build_rows, special=DimmerParams(transition_off=2), pattern='0'),
             ),
             tempo=60,
         )

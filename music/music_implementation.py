@@ -305,6 +305,13 @@ def _dimmer_sequence(brightness: int, transition: float) -> Callable:
         player.lights.set_dimmer_subset(lights, brightness, transition)
     return func
 
+def _dimmer_sequence_flip(transition: float) -> Callable:
+    """Return callable to flip state of specified dimmers."""
+    def func(lights: list[int]):
+        brightness = 0 if player.lights.relay_pattern[lights[0]] else 100
+        player.lights.set_dimmer_subset(lights, brightness, transition)
+    return func
+
 def _light(
     pattern: Any,
     special: SpecialParams | None = None,
