@@ -185,15 +185,6 @@ def register_modes(exec: Executor):
         blink_all, pace=1,
         special=DimmerParams(concurrent=True),
     )
-    exec.add_sequence_mode("12_silent_blink_all_slowwww", 
-        blink_all, pace=10,
-        special=DimmerParams(
-            transition_on=10.0,
-            transition_off=10.0,
-            brightness_on=100,
-            brightness_off=10,
-        )
-    )
     exec.add_sequence_mode("section_3", all_off)
     exec.add_mode("signs", SignsSong, special=DimmerParams())
     exec.add_sequence_mode("section_4", all_off)
