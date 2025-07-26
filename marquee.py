@@ -1,17 +1,26 @@
-"""Marquee Lighted Sign Project - main"""
+"""Marquee Lighted Sign Project - marquee (main)"""
 """
 marquee
     arguments
     Executor
         Player
+            BellSet
+            ButtonSet
+                Buttons
+            DrumSet
+            LightSet
+                Dimmers
+                Relays
+            AutoMode
             SelectMode
             PlayMode
             PlaySequenceMode
             PlayMusicMode
                 Instrument
                     ActionInstrument
-                    BellSet
-                    DrumSet
+                    RelayInstrument
+                        BellSet
+                        DrumSet
                     RestInstrument
                 Section
                     Part
@@ -25,21 +34,18 @@ marquee
                                 NoteGroup
                         SequenceMeasure
                         Sequence
-            mode_defs
-            sequence_defs
-        Sign
-            Buttons
-            Dimmers
-            Relays
+            sequences
 """
 from arguments import display_help, process_arguments
-from executors import Executor, create_sign
+from executors import Executor, setup_devices
 from players import Player
+from register_modes import register_modes
 
 def main():
     """Execute Marquee application."""
     try:
-        exec = Executor(create_sign, Player)
+        exec = Executor(Player, setup_devices)
+        register_modes(exec)
         try:
             args = process_arguments(exec.mode_ids, exec.commands)
         except ValueError:

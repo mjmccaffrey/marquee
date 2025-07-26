@@ -1,11 +1,18 @@
 """Marquee Lighted Sign Project - instruments"""
 
 from abc import ABC, abstractmethod
+import random
+import time
 
-from relays import NumatoUSBRelayModule
+from configuration import LIGHT_COUNT
+from relays import RelayModuleInterface
+from sequences import opposite
 
 class Instrument(ABC):
     """"""
+    accent_levels = 0
+    pitch_levels = 0
+
     def __init__(self):
         super().__init__()
 
@@ -21,42 +28,79 @@ class ActionInstrument(Instrument):
     def play(self):
         raise NotImplementedError
 
-class BellSet(Instrument):
+class RelayInstrument(Instrument):
     """"""
-    def __init__(self):
-        super().__init__()
-        #pitch_to_relay: dict[str, int] = {
-        #    p: l for l, p in enumerate(pitches)
-        #}
-
-    def play(self, pitch: str):
-        """"""
-
-class DrumSet(Instrument):
-    """"""
-    def __init__(self, relays: NumatoUSBRelayModule):
+    def __init__(self, relays: RelayModuleInterface):
         super().__init__()
         self.relays = relays
         self.count = self.relays.relay_count
         self.relays.set_state_of_devices("0" * self.count)
+        # time.sleep(2)
         self.pattern = self.relays.get_state_of_devices()
         assert self.pattern == "0" * self.count
-        self.click_next = 0
 
-    def play(self, accent: str):
-        """"""
-        accent_to_relays = {
-            '': 2, '-': 4, '>': 8, '^': 16,
-        }
-        pattern = self.pattern
-        for r in range(accent_to_relays[accent]):
-            i = (self.click_next + r) % self.count
-            pattern = (
-                  pattern[ : i ]
-                + ('0' if pattern[i] == '1' else '1')
-                + pattern[ i + 1 : ]
+    def select_relays(self, desired_state: str, desired_count: int) -> set[int]:
+        candidates = [
+            i
+            for i, p in enumerate(self.pattern)
+            if p == desired_state
+        ]
+        try:
+            selected = set(random.sample(candidates, desired_count))
+        except ValueError:
+            print(
+                f'{len(candidates)} of {desired_count} '
+                f'{desired_state} relays present.'
             )
-        self.click_next = (i + 1) % self.count
+            selected = set(candidates)
+        return selected
+
+class BellSet(RelayInstrument):
+    """"""
+    pitch_levels = 8
+
+    def __init__(self, relays: RelayModuleInterface):
+        super().__init__(relays)
+
+    def play(self, pitches: set[int]):
+        """"""
+        pattern = [
+            '1' if i in pitches else '0'
+            for i in range(self.pitch_levels)
+        ]
+        self.relays.set_state_of_devices(pattern)
+        time.sleep(0.1)
+        self.relays.set_state_of_devices(['0'] * self.pitch_levels)
+
+class DrumSet(RelayInstrument):
+    """"""
+    accent_levels = 3
+    accent_to_relay_count = {
+        0: 2, 1: 4, 2: 8, 3: 16,
+    }
+    pitch_levels = 2
+    pitch_to_relay_state = {
+        0: '0', 1: '1',
+    }
+
+    def __init__(self, relays: RelayModuleInterface):
+        super().__init__(relays)
+
+    def play(self, accent: int, pitches: set[int]):
+        """"""
+        new_pattern = self.pattern
+        desired_count = self.accent_to_relay_count[accent]
+        for pitch in pitches:
+            desired_state = self.pitch_to_relay_state[pitch]
+            selected = self.select_relays(desired_state, desired_count)
+            new_pattern = ''.join(
+                opposite(p) if i in selected else p
+                for i, p in enumerate(new_pattern)
+            )
+        self.relays.set_state_of_devices(new_pattern)
+        self.pattern = new_pattern
+
+    def mirror(self, pattern: str):
         self.relays.set_state_of_devices(pattern)
         self.pattern = pattern
 

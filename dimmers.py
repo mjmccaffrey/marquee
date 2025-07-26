@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - dimmers"""
 
-from abc import ABC, abstractmethod
+from abc import ABC
 import asyncio
 from dataclasses import dataclass
 import requests
@@ -14,6 +14,9 @@ TRANSITION_MAXIMUM = 10800.0
 
 class ShellyDimmer(ABC):
     """Supports Shelly Dimmers."""
+
+    channel_count: int  # Abstract
+
     _dimmers: list["ShellyDimmer"] = []
 
     def __init__(self, index: int, ip_address: str):
@@ -46,11 +49,6 @@ class ShellyDimmer(ABC):
     def close(self):
         """Clean up."""
 
-    @property
-    @abstractmethod
-    def channel_count(self) -> int:
-        """Return # of channels supported by dimmer model."""
-
     def _get_status(self) -> list[tuple[int, dict]]:
         """ Fetch status parameters for all channels. """
         try:
@@ -72,7 +70,7 @@ class ShellyDimmer(ABC):
     async def _execute_single_command(cls, command: "_DimmerCommand") -> aiohttp.ClientResponse:
         """ Send individual command as part of asynchonous batch. """
         try:
-            async with aiohttp.ClientSession() as session: # type: ignore
+            async with aiohttp.ClientSession() as session:
                 async with session.get(
                     url=command.url,
                     params=command.params,
@@ -88,11 +86,15 @@ class ShellyDimmer(ABC):
         return response
     
     @classmethod
-    async def execute_multiple_commands(cls, commands: list["_DimmerCommand"]) -> list[aiohttp.ClientResponse]:
-        """ Send multiple commands asynchronously. """
+    async def execute_multiple_commands(
+        cls, commands: list["_DimmerCommand"]
+    ) -> list[aiohttp.ClientResponse]:
+        """Send multiple commands asynchronously."""
         async with asyncio.TaskGroup() as tg:
             tasks = [
-                tg.create_task(cls._execute_single_command(command))
+                tg.create_task(
+                    cls._execute_single_command(command)
+                )
                 for command in commands
             ]
         return [task.result() for task in tasks]
@@ -123,32 +125,6 @@ class ShellyDimmer(ABC):
             time.sleep(150)
         print("Calibration complete")
 
-    @classmethod
-    def configure_all(cls):
-        """ """  # !!!
-        DIMMER_ADDRESSES = [
-            '192.168.51.111',
-            '192.168.51.112',
-            '192.168.51.113',
-            '192.168.51.114',
-            '192.168.51.115',
-            '192.168.51.116',
-        ]
-        print("Configuring dimmers")
-        commands = [
-            _DimmerCommand(
-                channel=cls._dimmers[0].channels[0], 
-                url=f'http://{ip}/rpc/Shelly.GetConfig',
-                params={},
-            )
-            for ip in DIMMER_ADDRESSES
-        ]
-        results = asyncio.run(cls.execute_multiple_commands(commands))
-        for result in results:
-            print()
-            print(result)
-            print()
-
 class DimmerChannel:
     """ Models a single dimmer channel (light). """
     def __init__(
@@ -163,10 +139,8 @@ class DimmerChannel:
         self.index = index
         self.ip_address = self.dimmer.ip_address
         self.id = id
-        # print(f"Initializing {self}")
         self.brightness = brightness
         self.next_update: float = 0
-        # self.set(output=True)  # !!! make part of a larger init?
 
     def __str__(self):
         return (f"dimmer {self.dimmer.index} channel {self.index}")
@@ -206,16 +180,13 @@ class DimmerChannel:
             brightness: int | None = None, 
             offset: int | None = None,
             transition: float | None = None, 
-            # output: bool | None = None,
             wait: bool = False,
     ):
         """Set the dimmer channel per requested values and state."""
-        #print("start:", time.time())
         command = self.make_set_command(
             brightness=brightness,
             offset=offset,
             transition=transition,
-            # output=output,
         )
         try:
             start = time.time()
@@ -244,8 +215,4 @@ class _DimmerCommand:
     
 class ShellyProDimmer2PM(ShellyDimmer):
     """Supports the Shelly Pro Dimmer 2PM."""
-
-    @property
-    def channel_count(self) -> int:
-        """"""
-        return 2
+    channel_count = 2

@@ -1,17 +1,28 @@
 """Marquee Lighted Sign Project - demo"""
 
+from dataclasses import dataclass
 import sys
 
-from definitions import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON, ActionParams
+from configuration import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
+from definitions import ActionParams, DimmerParams
 from modes import PlayMusicMode
 from music import (
-    act, act_part, dimmer, drum_part, light, measure, part, play, 
-    rest, section, sequence, sequence_measure, sequence_part
+    dimmer, dimmer_sequence, light, measure, part, play,
+    section, sequence,
 )
-from sequence_defs import *
+from music import(
+    act, act_part, drum_part,
+    rest, sequence_measure, sequence_part
+)
+from sequences import *
 
+@dataclass
 class Demo(PlayMusicMode):
     """Version 3 demo."""
+
+    def __post_init__(self):
+        """Initialize."""
+        self.preset_devices(dimmers=True, relays=True)
 
     def execute(self):
         """Execute version 3 demo."""
@@ -68,7 +79,7 @@ class Demo(PlayMusicMode):
             ),
             tempo=75,
         )
-    
+
     def rotate(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
@@ -77,17 +88,17 @@ class Demo(PlayMusicMode):
                 '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  '
                 '  𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 |  '
                 '  𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 |  ',
-                sequence(rotate, pattern="0100001000", clockwise=True),
-                sequence(rotate, pattern="0000100001", clockwise=False),
-                sequence(build_rows, pattern='1', from_top=True),
-                sequence(build_rows, pattern='1', from_top=False),
+                sequence(rotate, pattern="100000100000", clockwise=True),
+                sequence(rotate, pattern="100000100000", clockwise=False),
+                # sequence(build_rows, pattern='1', from_top=True),
+                # sequence(build_rows, pattern='1', from_top=False),
             ),
             drum_part(
                 '  𝄻  |  𝄻  |  ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^  |  𝅘𝅥𝅰^  '
             ),
             tempo=75,
         )
-    
+
     def triplett_a(self):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
@@ -128,7 +139,7 @@ class Demo(PlayMusicMode):
         pattern = [
             p
             for p in rotate_build_flip(count = rotations * 10)
-        ] + ["1111111111"]
+        ] + ["111111111111"]
         return section(
             part(
                 sequence_measure(
@@ -152,7 +163,7 @@ class Demo(PlayMusicMode):
             ),
             sequence_part(
                 '  𝄻  | ♩ ♩ ♩ ♩ ',
-                sequence(build_rows, special=DimmerParams(transition_off=2), pattern='0'),
+                # sequence(build_rows, special=DimmerParams(transition_off=2), pattern='0'),
             ),
             tempo=60,
         )
@@ -183,7 +194,7 @@ class Demo(PlayMusicMode):
             ),
             sequence_measure(
                 '♩', LIGHT_COUNT, random_once_each, 
-                ActionParams(action=self.dimmer_sequence(100, 2)),
+                ActionParams(action=dimmer_sequence(100, 2)),
                 beats=16,
             ),
             tempo = 90,

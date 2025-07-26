@@ -1,6 +1,7 @@
 
 from music import *
-from sequence_defs import *
+from music_notation import *
+from sequences import *
 
 # def test_SequenceMeasure():
 #     sm = SequenceMeasure(build_rows, 0.5, 8, None, beats=4)
