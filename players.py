@@ -30,8 +30,8 @@ class Player(PlayerInterface):
     def close(self):
         """Clean up."""
         try:
-            # !!! for button in self.buttons:
-            # !!!     button.close()
+            # for button in self.buttons:
+            #   button.close()
             pass
         except Exception as e:
             print(e)
@@ -143,7 +143,7 @@ class Player(PlayerInterface):
         else:
             duration = seconds * self.speed_factor - elapsed
             if duration <= 0:
-                #print("!!!!!", seconds, elapsed, duration)
+                # print("!!!!!", seconds, elapsed, duration)
                 return
         Button.wait(duration)
 

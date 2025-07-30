@@ -122,7 +122,7 @@ class LightSet:
         assert pattern is None or len(pattern) == LIGHT_COUNT
         assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
         if pattern is not None:
-            bulb_adjustments = {  # !!! adjust for frosted 40 watt
+            bulb_adjustments = {
                 '0': 0, '1': 15, '2': 20, '3': 30, '4': 40,
                 '5': 50, '6': 60, '7': 70, '8':80, '9': 90,
                 'A': 100, 'F': 23,

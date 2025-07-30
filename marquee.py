@@ -56,9 +56,8 @@ def main():
             try:
                 exec.execute(**args)
             except Shutdown:
-                # ????? CLOSE OBJECTS ?????
                 print("Shutting down.")
-                os.system("sudo shutdown --halt now")
+                os.system("sudo shutdown --halt")
     finally:
         try:
             exec.close()

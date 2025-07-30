@@ -40,7 +40,7 @@ def register_modes(exec: Executor):
     # exec.add_sequence_mode("random_flip", random_flip, 
     #     pace=0.5, light_pattern='LIGHT_PATTERN',
     # )
-    # exec.add_mode("rapid_fade", RapidFade)  # !!!!!!!!!
+    # exec.add_mode("rapid_fade", RapidFade)
     # exec.add_sequence_mode("blink_alternate_fade",
     #     blink_alternate, pace=4, 
     #     special=DimmerParams(
