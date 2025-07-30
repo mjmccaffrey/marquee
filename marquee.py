@@ -37,7 +37,9 @@ marquee
             sequences
 """
 from arguments import display_help, process_arguments
+from definitions import Shutdown
 from executors import Executor, setup_devices
+import os
 from players import Player
 from register_modes import register_modes
 
@@ -51,7 +53,12 @@ def main():
         except ValueError:
             display_help(exec.mode_menu, exec.commands)
         else:
-            exec.execute(**args)
+            try:
+                exec.execute(**args)
+            except Shutdown:
+                # ????? CLOSE OBJECTS ?????
+                print("Shutting down.")
+                os.system("sudo shutdown --halt now")
     finally:
         try:
             exec.close()

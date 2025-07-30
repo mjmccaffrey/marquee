@@ -1,3 +1,4 @@
+"""Marquee Lighted Sign Project - music_notation"""
 
 from collections.abc import Callable, Iterator
 from .music_implementation import (

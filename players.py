@@ -3,12 +3,11 @@
 from collections.abc import Iterable
 from dataclasses import dataclass
 import itertools
-import os
 import time
 from typing import Any
 
 from basemode import AutoMode, BaseMode
-from definitions import ActionParams, DimmerParams, SpecialParams
+from definitions import ActionParams, DimmerParams, SpecialParams, Shutdown
 from modes import Mode
 from buttons import Button, ButtonPressed
 
@@ -85,8 +84,7 @@ class Player(PlayerInterface):
                 # print("ButtonPressed caught")
                 button, held = press.args
                 if held:
-                    print("Shutting down.")
-                    os.system("sudo shutdown --halt now")
+                    raise Shutdown("Button was held.")
                 Button.reset()
                 assert isinstance(mode, Mode)
                 new_mode = mode.button_action(button)

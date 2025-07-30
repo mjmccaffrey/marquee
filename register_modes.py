@@ -113,8 +113,6 @@ def register_modes(exec: Executor):
     #     pattern="100000100000", special=MirrorParams(),
     # )
 
-    exec.add_mode("bell_test", BellTest)
-
     # ********** SILENT SIGN **********
     exec.add_sequence_mode("silent_blink_alternate_slow",
         blink_alternate, pace=10, 
@@ -157,6 +155,8 @@ def register_modes(exec: Executor):
     )
     exec.add_mode("silent_random_steady_trans", RandomFade, transition=0.5)
     exec.add_mode("silent_random_random_trans", RandomFade)
+
+    exec.add_mode("bell_test", BellTest)
 
     # ********** PRESENTATION **********
     exec.add_sequence_mode("section_1", all_off)
