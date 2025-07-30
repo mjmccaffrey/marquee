@@ -51,7 +51,6 @@ class LightSet:
             light_pattern: list | str, 
             special: DimmerParams,
     ):
-        print(f"{light_pattern=} {special=}")
         """Set dimmers per the specified pattern and special."""
         bright_values: dict[int, int] = {
             0: int(special.brightness_off * self.brightness_factor), 
