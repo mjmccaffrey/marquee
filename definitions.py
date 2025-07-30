@@ -44,3 +44,6 @@ class AutoModeEntry:
     index: int
     name: str
     duration: float
+
+class Shutdown(Exception):
+    """Triggered to clean up and shut down the system."""

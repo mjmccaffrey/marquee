@@ -2,19 +2,16 @@
 
 import time
 
-from configuration import ALL_HIGH, ALL_OFF, ALL_LOW, ALL_ON
+from configuration import ALL_OFF, ALL_LOW, ALL_ON
 from modes import PlayMusicMode
 from music import (
-    dimmer, dimmer_sequence, dimmer_sequence_flip, 
-    light, measure, part, play,
-    section, sequence,
+    dimmer_sequence_flip, section, sequence,
 )
 from music import(
-    act, act_part, bell_part, drum_part,
-    sequence_measure, sequence_part
+    act_part, bell_part, drum_part, sequence_part
 )
-from sequences import all_off, all_on, blink_all, random_each
-from definitions import ActionParams, DimmerParams, SpecialParams
+from sequences import all_on, blink_all, random_each
+from definitions import ActionParams, DimmerParams
 
 class SignsSong(PlayMusicMode):
     """Signs song."""
@@ -34,18 +31,6 @@ class SignsSong(PlayMusicMode):
             section.play(tempo=75)
         self.player.wait(None)
 
-    def intro_end_lights(self):
-        count = 0
-        def func(pattern):
-            nonlocal count
-            print(count)
-            if count == 0:
-                self.player.lights.set_relays(ALL_OFF)
-            else:
-                self.player.lights.set_relays(ALL_ON, special=DimmerParams())
-            count += 1
-        return func
-    
     def intro(self):
         """Signs song intro."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
@@ -94,16 +79,17 @@ class SignsSong(PlayMusicMode):
             sequence_part(
                 '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  '
                 '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  '
-                '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩  ',
+                '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ',
                 sequence(
                     random_each,
                     measures=10,
                     special=ActionParams(action=dimmer_sequence_flip(1)),
                 ),
-                sequence(
-                    random_each,
-                    special=ActionParams(self.intro_end_lights())
-                ),
+            ),
+            act_part(
+                    '  𝄻  |  ' * 10 + '  ♩ ♩  |  ',
+                    lambda: self.player.lights.set_relays(ALL_OFF),
+                    lambda: self.player.lights.set_relays(ALL_ON, special=DimmerParams()),
             ),
         )
 

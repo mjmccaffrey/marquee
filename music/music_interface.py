@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - music"""
+"""Marquee Lighted Sign Project - music_interface"""
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterator
@@ -67,5 +67,5 @@ def light(
     pattern: Any,
     special: SpecialParams | None = None,
 ) -> Callable:
-    """Callable to effect light pattern."""
+    """Return callable to effect light pattern."""
     return _light(pattern, special)

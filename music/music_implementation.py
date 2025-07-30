@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - music elements"""
+"""Marquee Lighted Sign Project - music_implementation"""
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterator
@@ -7,8 +7,12 @@ import itertools
 import time
 from typing import Any, ClassVar
 
-from definitions import SpecialParams
-from instruments import Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument
+from definitions import (
+    ActionParams, DimmerParams, SpecialParams,
+)
+from instruments import (
+    Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument,
+)
 from player_interface import PlayerInterface
 
 def _set_player(the_player: PlayerInterface):
@@ -316,5 +320,17 @@ def _light(
     pattern: Any,
     special: SpecialParams | None = None,
 ) -> Callable:
-    """Callable to effect light pattern."""
-    return lambda: player.lights.set_relays(pattern, special=special)
+    """Return callable to effect light pattern."""
+    if isinstance(special, DimmerParams):
+        if special.transition_off is None:
+            special.transition_off = TRANSITION_DEFAULT
+        if special.transition_on is None:
+            special.transition_on = TRANSITION_DEFAULT
+    if isinstance(special, ActionParams):
+        result = lambda: special.action(pattern)
+    else:
+        result = lambda: player.lights.set_relays(
+            light_pattern=pattern,
+            special=special,
+        )
+    return result

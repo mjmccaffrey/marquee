@@ -3,19 +3,18 @@
 from abc import ABC
 from collections.abc import Callable
 import time
-from typing import Any
 
 from basemode import BaseMode
 from buttons import Button
 from configuration import ALL_HIGH, ALL_OFF, ALL_ON
 from dataclasses import dataclass
+from definitions import (
+    DimmerParams, MirrorParams, SpecialParams,
+)
 from dimmers import TRANSITION_DEFAULT
 from music import set_player
 from player_interface import PlayerInterface
 from sequences import rotate_build_flip
-from definitions import (
-    ActionParams, DimmerParams, MirrorParams, SpecialParams,
-)
 
 @dataclass
 class Mode(BaseMode, ABC):
@@ -189,23 +188,3 @@ class PlayMusicMode(PlayMode):
         #     relays = isinstance(self.special, DimmerParams),
         # )
         set_player(self.player)
-
-    def light(
-        self, 
-        pattern: Any,
-        special: SpecialParams | None = None,
-    ) -> Callable:
-        """Return callable to effect light pattern."""
-        if isinstance(special, DimmerParams):
-            if special.transition_off is None:
-                special.transition_off = TRANSITION_DEFAULT
-            if special.transition_on is None:
-                special.transition_on = TRANSITION_DEFAULT
-        if isinstance(special, ActionParams):
-            result = lambda: special.action(pattern)
-        else:
-            result = lambda: self.player.lights.set_relays(
-                light_pattern=pattern,
-                special=special,
-            )
-        return result
