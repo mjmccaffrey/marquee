@@ -296,12 +296,14 @@ def _play_measure(measure: Measure):
         nonlocal release_note, release_start
         if release_note:
             assert release_note.release_time <= duration  # ???
+            print(f"RN {release_note.release_time} {time.time() - release_start}")
             player.wait(
                 release_note.release_time, 
                 time.time() - release_start
             )
             release_note.release(player)  # type: ignore
             release_note, release_start = None, 0.0
+        print(f"{duration} {time.time() - start}")
         player.wait(duration, time.time() - start)
 
     start = time.time()
