@@ -293,7 +293,7 @@ def _play_measure(measure: Measure):
 
     def _wait(duration: float):
         """Wait for duration, and also 'play' any waiting release."""
-        nonlocal release_dur, release_start
+        nonlocal release_note, release_dur, release_start
         if release_dur:
             assert release_dur <= duration  # ???
             player.wait(release_dur, time.time() - release_start)
