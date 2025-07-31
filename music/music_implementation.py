@@ -297,13 +297,13 @@ def _play_measure(measure: Measure):
         if release_dur:
             assert release_dur <= duration  # ???
             player.wait(release_dur, time.time() - release_start)
-            element.release(player)  # type: ignore
-            release_dur, release_start = 0.0, 0.0
+            release_note.release(player)  # type: ignore
+            release_note, release_dur, release_start = None, 0.0, 0.0
         player.wait(duration, time.time() - start)
 
     start = time.time()
     beat = 0.0 
-    release_dur, release_start = 0.0, 0.0
+    release_note, release_dur, release_start = None, 0.0, 0.0
     for element in measure.elements:
         assert isinstance(element, (BaseNote, NoteGroup))
         element.play(player)
