@@ -56,12 +56,14 @@ class ActionNote(BaseNote):
 @dataclass(frozen=True)
 class ReleasableNote(BaseNote):
     """ """
+    release_time: ClassVar[float]  # Abstract
     release: bool
 
 @dataclass(frozen=True)
 class BellNote(ReleasableNote):
     """Note to strike or release 1 or more bells."""
     instrument: ClassVar[type[Instrument]] = BellSet
+    release_time = BellSet.strike_time
     pitches: set[int]
 
     def play(self, player: PlayerInterface):
@@ -248,31 +250,7 @@ class Section(Element):
 
 def _prepare_measures(measures: tuple[Measure, ...]):
     """"""
-    _convert_releasable_notes(measures)
     _expand_sequence_measures(measures)
-
-def _convert_note_if_releasable(element: Element):
-    """"""
-    result = (
-        [
-            replace(element, duration=BellSet.strike_time),
-            replace(element, duration=0, release=True)
-        ]
-            if isinstance(element, ReleasableNote) else
-        [element]
-    )
-    return result
-
-def _convert_releasable_notes(measures: tuple[Measure, ...]):
-    """Add release 'notes' for all notes played
-       by an instrument that requires releasing."""
-    for measure in measures:
-        elements = tuple(
-            e
-            for element in measure.elements
-            for e in _convert_note_if_releasable(element)
-        )
-        object.__setattr__(measure, 'elements', elements)
 
 def _expand_sequence_measures(measures: tuple[Measure, ...]):
     """Populate SequenceMeasures with ActionNotes."""
@@ -309,21 +287,34 @@ def _make_parts_equal_length(parts: tuple[Part, ...]):
 
 def _play_measure(measure: Measure):
     """Play all notes in measure."""
+
+    def _wait(duration: float):
+        """Wait for duration, and also 'play' any waiting release."""
+        nonlocal release_dur, release_start
+        if release_dur:
+            assert release_dur <= duration  # ???
+            player.wait(release_dur, time.time() - release_start)
+            replace(element, release=True).play(player)  # type: ignore
+            release_dur, release_start = 0.0, 0.0
+        player.wait(duration, time.time() - start)
+
     start = time.time()
-    beat = 0
+    beat = 0.0 
+    release_dur, release_start = 0.0, 0.0
     for element in measure.elements:
         assert isinstance(element, (BaseNote, NoteGroup))
         element.play(player)
+        if isinstance(element, ReleasableNote):
+            release_dur = element.release_time
+            release_start = time.time()
         if element.duration:
-            wait_dur = (element.duration) * player.pace
-            player.wait(wait_dur, time.time() - start)
+            _wait(element.duration * player.pace)
             start = time.time()
         beat += element.duration
         if beat > measure.beats:
             raise ValueError("Too many actual beats in measure.")
     # Play implied rests at end of measure
-    wait_dur = (measure.beats - beat) * player.pace 
-    player.wait(wait_dur, time.time() - start)
+    _wait((measure.beats - beat) * player.pace)
 
 def _play_measures(*measures: Measure, tempo: int):
     """Play a series of measures, which must be ready to play."""
