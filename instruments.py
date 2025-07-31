@@ -56,7 +56,7 @@ class RelayInstrument(Instrument):
 
 class BellSet(RelayInstrument):
     """"""
-    strike_time = 0.1
+    strike_time = 0.09
     pitch_levels = 8
 
     def __init__(self, relays: RelayModuleInterface):
