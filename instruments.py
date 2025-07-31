@@ -2,7 +2,6 @@
 
 from abc import ABC, abstractmethod
 import random
-import time
 
 from configuration import LIGHT_COUNT
 from relays import RelayModuleInterface
@@ -57,24 +56,26 @@ class RelayInstrument(Instrument):
 
 class BellSet(RelayInstrument):
     """"""
+    strike_time = 0.1
     pitch_levels = 8
 
     def __init__(self, relays: RelayModuleInterface):
         super().__init__(relays)
 
-    def play(self, pitches: set[int]):
+    def play(self, pitches: set[int], release: bool):
         """"""
-        pattern = [
-            '1' if i in pitches else '0'
-            for i in range(self.pitch_levels)
-        ]
+        if release:
+            pattern = ['0'] * self.pitch_levels
+        else:
+            pattern = [
+                '1' if i in pitches else '0'
+                for i in range(self.pitch_levels)
+            ]
         self.relays.set_state_of_devices(pattern)
-        time.sleep(0.1)
-        self.relays.set_state_of_devices(['0'] * self.pitch_levels)
 
 class DrumSet(RelayInstrument):
     """"""
-    accent_levels = 3
+    accent_levels = 4
     accent_to_relay_count = {
         0: 2, 1: 4, 2: 8, 3: 16,
     }

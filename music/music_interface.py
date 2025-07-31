@@ -1,15 +1,13 @@
 """Marquee Lighted Sign Project - music_interface"""
 
-from abc import ABC, abstractmethod
-from collections.abc import Callable, Iterator
-from dataclasses import dataclass, field, replace
+from collections.abc import Callable
 from typing import Any
 
 from definitions import SpecialParams
 from music.music_implementation import (
     Element, Measure, Part, Section, Sequence, 
     _dimmer, _dimmer_sequence, _dimmer_sequence_flip,
-    _light, _play_measures, _set_player
+    _light, _play_measures, _prepare_measures, _set_player
 )
 from player_interface import PlayerInterface
 
@@ -18,7 +16,8 @@ def set_player(the_player: PlayerInterface):
     _set_player(the_player)
 
 def play(*measures: Measure, tempo: int):
-    """Play a series of measures."""
+    """Process and then play a series of measures."""
+    _prepare_measures(measures)
     _play_measures(*measures, tempo=tempo)
 
 def measure(*elements: Element, beats: int = 4) -> Measure:

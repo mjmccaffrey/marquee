@@ -17,8 +17,18 @@ rest_duration: dict[str, float] = {
     '𝄾': 0.5,   '𝄿': 0.25,  '𝅀': 0.125,
 }
 symbol_duration = note_duration | rest_duration
+bell_pitch_map = {
+        'e': 7, 'd': 6,
+        'c': 5, 'b': 4,
+        'a': 3, 
+        'G': 2, # F#
+        'E': 1, 'D': 0,
+}
 drum_accent_map = {
     '': 0, '-': 1, '>': 2, '^': 3,
+}
+drum_pitch_map = {
+    'h': 0, 'l': 1,
 }
 
 def _interpret_symbols(
@@ -126,13 +136,7 @@ def bell(symbols: str) -> BellNote | Rest:
     """Validate symbols and return BellNote or Rest."""
     duration, pitches, accent, is_rest = _interpret_symbols(
         symbols,
-        pitch_map={
-            'e': 7, 'd': 6,
-            'c': 5, 'b': 4,
-            'a': 3, 
-            'G': 2, # F#
-            'E': 1, 'D': 0,
-        }
+        pitch_map=bell_pitch_map
     )
     if is_rest:
         return rest(symbols)
@@ -140,7 +144,7 @@ def bell(symbols: str) -> BellNote | Rest:
         raise ValueError("Bell note cannot have accent.")
     if not pitches:
         raise ValueError("Bell note must have at least one pitch.")
-    return BellNote(duration, pitches)
+    return BellNote(duration, release=False, pitches=pitches)
 
 def bell_part(notation: str, beats=4) -> Part:
     """Produce bell part from notation."""
@@ -153,9 +157,7 @@ def drum(symbols: str) -> DrumNote | Rest:
     duration, pitches, accent, is_rest = _interpret_symbols(
         symbols, 
         accent_map=drum_accent_map,
-        pitch_map={
-            'h': 0, 'l': 1,
-        }
+        pitch_map=drum_pitch_map,
     )
     if is_rest:
         return rest(symbols)

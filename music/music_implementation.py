@@ -54,14 +54,19 @@ class ActionNote(BaseNote):
             action()
 
 @dataclass(frozen=True)
-class BellNote(BaseNote):
-    """Note to strike 1 or more bells."""
+class ReleasableNote(BaseNote):
+    """ """
+    release: bool
+
+@dataclass(frozen=True)
+class BellNote(ReleasableNote):
+    """Note to strike or release 1 or more bells."""
     instrument: ClassVar[type[Instrument]] = BellSet
     pitches: set[int]
 
     def play(self, player: PlayerInterface):
         """Play single BellNote."""
-        player.bells.play(self.pitches)
+        player.bells.play(self.pitches, self.release)
 
 @dataclass(frozen=True)
 class DrumNote(BaseNote):
@@ -179,7 +184,7 @@ class Section(Element):
             Make all parts the same length.
             Merge parts into single sequence of Measures."""
         for part in parts:
-            _expand_sequence_measures(part.measures)
+            _prepare_measures(part.measures)
         _make_parts_equal_length(parts)
         concurrent_measures = zip(*(part.measures for part in parts))
         return tuple(
@@ -241,6 +246,34 @@ class Section(Element):
             elements_out.append(Rest(rest_accumulated))
         return Measure(tuple(elements_out), beats=beats)
 
+def _prepare_measures(measures: tuple[Measure, ...]):
+    """"""
+    _convert_releasable_notes(measures)
+    _expand_sequence_measures(measures)
+
+def _convert_note_if_releasable(element: Element):
+    """"""
+    result = (
+        [
+            replace(element, duration=BellSet.strike_time),
+            replace(element, duration=0, release=True)
+        ]
+            if isinstance(element, ReleasableNote) else
+        [element]
+    )
+    return result
+
+def _convert_releasable_notes(measures: tuple[Measure, ...]):
+    """Add release 'notes' for all notes played
+       by an instrument that requires releasing."""
+    for measure in measures:
+        elements = tuple(
+            e
+            for element in measure.elements
+            for e in _convert_note_if_releasable(element)
+        )
+        object.__setattr__(measure, 'elements', elements)
+
 def _expand_sequence_measures(measures: tuple[Measure, ...]):
     """Populate SequenceMeasures with ActionNotes."""
     for measure in measures:
@@ -293,8 +326,7 @@ def _play_measure(measure: Measure):
     player.wait(wait_dur, time.time() - start)
 
 def _play_measures(*measures: Measure, tempo: int):
-    """Play a series of measures."""
-    _expand_sequence_measures(measures)
+    """Play a series of measures, which must be ready to play."""
     player.pace = 60 / tempo
     for measure in measures:
         _play_measure(measure)

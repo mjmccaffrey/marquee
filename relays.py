@@ -9,6 +9,8 @@ import serial  # type: ignore
 class RelayModuleInterface(ABC):
     """Interface for any relay module."""
     
+    relay_count: ClassVar[int]  # Abstract
+
     @abstractmethod
     def set_state_of_devices(self, device_pattern: Sequence):
         """Set state of each relay per device_pattern."""
@@ -19,8 +21,6 @@ class RelayModuleInterface(ABC):
 
 class NumatoUSBRelayModule(RelayModuleInterface):
     """Supports Numato USB Relay Modules."""
-
-    relay_count: ClassVar[int]  # Abstract
 
     def __init__(self, port_address: str, device_mapping: Mapping[int, int] = {}):
         """Create the object, where device_mapping
