@@ -292,23 +292,30 @@ def _play_measure(measure: Measure):
     """Play all notes in measure."""
 
     def _wait(duration: float):
-        """Wait for duration, and also 'play' any waiting release."""
-        nonlocal release_note, release_start
-        if release_note:
-            assert release_note.release_time <= duration  # ???
-            print(f"RN {release_note.release_time} {time.time() - release_start}")
-            player.wait(
-                release_note.release_time, 
-                time.time() - release_start
-            )
-            release_note.release(player)  # type: ignore
-            release_note, release_start = None, 0.0
-        print(f"{duration} {time.time() - start}")
-        player.wait(duration, time.time() - start)
+        """Wait for duration, and also release any due notes."""
+        print(f"WAIT {duration}")
+        while True:
+            now = time.time()
+            elapsed = now - start
+            remaining = duration - elapsed
+            end = now + remaining
+            if now > end:
+                break
+            if release_queue:
+                if release_queue[0][0] < now:
+                    _, release_note = release_queue.pop(0)
+                    print(f"RELEASING {release_note}")
+                    release_note.release(player)  # type: ignore
+                elif release_queue[0][0] < end:
+                    print(f"WAITING for {release_queue[0]}")
+                    player.wait(release_queue[0][0] - now)
+            else:
+                print(f"WAITING {remaining}")
+                player.wait(remaining)
 
     start = time.time()
     beat = 0.0 
-    release_note, release_start = None, 0.0
+    release_queue = []
     for element in measure.elements:
         assert isinstance(element, (BaseNote, NoteGroup))
         element.play(player)
