@@ -56,18 +56,23 @@ class ActionNote(BaseNote):
 @dataclass(frozen=True)
 class ReleasableNote(BaseNote):
     """ """
-    release_time: ClassVar[float]  # Abstract
+
+    def add_to_release_queue(self, duration: float):
+        """"""
+        player.release_queue.append(
+            (time.time() + duration, self)
+        )
 
 @dataclass(frozen=True)
 class BellNote(ReleasableNote):
     """Note to strike or release 1 or more bells."""
     instrument: ClassVar[type[Instrument]] = BellSet
-    release_time = BellSet.strike_time
     pitches: set[int]
 
     def play(self, player: PlayerInterface):
         """Play single BellNote."""
         player.bells.play(self.pitches)
+        self.add_to_release_queue(BellSet.strike_time)
 
     def release(self, player: PlayerInterface):
         """Release all BellNotes."""
@@ -301,14 +306,14 @@ def _play_measure(measure: Measure):
             end = now + remaining
             if now > end:
                 break
-            if release_queue:
-                when_next_release = release_queue[0][0]
+            if player.release_queue:
+                when_next_release = player.release_queue[0][0]
                 if when_next_release < now:
-                    _, release_note = release_queue.pop(0)
+                    _, release_note = player.release_queue.pop(0)
                     print(f"RELEASING {release_note}")
                     release_note.release(player)  # type: ignore
                 elif when_next_release < end:
-                    print(f"WAITING for {release_queue[0]}")
+                    print(f"WAITING for {player.release_queue[0]}")
                     player.wait(when_next_release - now)
             else:
                 print(f"WAITING {remaining}")
@@ -316,12 +321,11 @@ def _play_measure(measure: Measure):
 
     start = time.time()
     beat = 0.0 
-    release_queue = []
     for element in measure.elements:
         assert isinstance(element, (BaseNote, NoteGroup))
         element.play(player)
         if isinstance(element, ReleasableNote):
-            release_queue.append((time.time, element))
+            player.release_queue.append((time.time(), element))
         if element.duration:
             _wait(element.duration * player.pace)
             start = time.time()
@@ -330,7 +334,7 @@ def _play_measure(measure: Measure):
             raise ValueError("Too many actual beats in measure.")
     # Play implied rests at end of measure
     _wait((measure.beats - beat) * player.pace)
-    assert not release_queue
+    assert not player.release_queue
 
 def _play_measures(*measures: Measure, tempo: int):
     """Play a series of measures, which must be ready to play."""

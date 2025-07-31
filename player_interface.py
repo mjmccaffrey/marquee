@@ -23,6 +23,7 @@ class PlayerInterface(ABC):
     auto_mode: AutoMode | None = field(init=False)
     current_mode: int = field(init=False)
     pace: float = field(init=False)
+    release_queue: list[tuple[float, Any]] = field(init=False)
 
     @abstractmethod
     def close(self):

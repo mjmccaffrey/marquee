@@ -26,6 +26,7 @@ class Player(PlayerInterface):
         self.auto_mode = None
         self.current_mode = -1
         self.pace = 0.0
+        self.release_queue = []
 
     def close(self):
         """Clean up."""
