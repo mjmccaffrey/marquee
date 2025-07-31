@@ -97,11 +97,6 @@ class SignsSong(PlayMusicMode):
         """Signs song refrain."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            sequence_part(
-                # Sign, sign, everywhere a sign
-                '  ♪ ♪ ♩  | 𝄻  | 𝄻  | 𝄻  | ',
-                sequence(blink_all),
-            ),
             bell_part(
                 # Sign, sign, everywhere a sign
                 '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
@@ -113,7 +108,8 @@ class SignsSong(PlayMusicMode):
             ),
             sequence_part(
                 # Sign, sign, everywhere a sign
-                '  𝄻  | 𝅝  | 𝅝  | 𝅝  | ',
+                '  ♪ ♪ ♩  | 𝅝  | 𝅝  | 𝅝  | ',
+                sequence(blink_all),
                 sequence(blink_all, on_first=False,
                     special=DimmerParams(
                         transition_off=3.5,
