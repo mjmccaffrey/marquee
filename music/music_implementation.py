@@ -321,8 +321,7 @@ def _play_measure(measure: Measure):
         assert isinstance(element, (BaseNote, NoteGroup))
         element.play(player)
         if isinstance(element, ReleasableNote):
-            release_note = element
-            release_start = time.time()
+            release_queue.append((time.time, element))
         if element.duration:
             _wait(element.duration * player.pace)
             start = time.time()
@@ -331,6 +330,7 @@ def _play_measure(measure: Measure):
             raise ValueError("Too many actual beats in measure.")
     # Play implied rests at end of measure
     _wait((measure.beats - beat) * player.pace)
+    assert not release_queue
 
 def _play_measures(*measures: Measure, tempo: int):
     """Play a series of measures, which must be ready to play."""
