@@ -302,13 +302,14 @@ def _play_measure(measure: Measure):
             if now > end:
                 break
             if release_queue:
-                if release_queue[0][0] < now:
+                when_next_release = release_queue[0][0]
+                if when_next_release < now:
                     _, release_note = release_queue.pop(0)
                     print(f"RELEASING {release_note}")
                     release_note.release(player)  # type: ignore
-                elif release_queue[0][0] < end:
+                elif when_next_release < end:
                     print(f"WAITING for {release_queue[0]}")
-                    player.wait(release_queue[0][0] - now)
+                    player.wait(when_next_release - now)
             else:
                 print(f"WAITING {remaining}")
                 player.wait(remaining)
