@@ -64,6 +64,7 @@ class BellSet(RelayInstrument):
 
     def play(self, pitches: set[int]):
         """"""
+        print(pitches)
         pattern = [
             '1' if i in pitches else '0'
             for i in range(self.pitch_levels)
