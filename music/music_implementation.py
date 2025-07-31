@@ -57,7 +57,6 @@ class ActionNote(BaseNote):
 class ReleasableNote(BaseNote):
     """ """
     release_time: ClassVar[float]  # Abstract
-    release: bool
 
 @dataclass(frozen=True)
 class BellNote(ReleasableNote):
@@ -68,7 +67,11 @@ class BellNote(ReleasableNote):
 
     def play(self, player: PlayerInterface):
         """Play single BellNote."""
-        player.bells.play(self.pitches, self.release)
+        player.bells.play(self.pitches)
+
+    def release(self, player: PlayerInterface):
+        """Release all BellNotes."""
+        player.bells.release()
 
 @dataclass(frozen=True)
 class DrumNote(BaseNote):
@@ -294,7 +297,7 @@ def _play_measure(measure: Measure):
         if release_dur:
             assert release_dur <= duration  # ???
             player.wait(release_dur, time.time() - release_start)
-            replace(element, release=True).play(player)  # type: ignore
+            element.release(player)  # type: ignore
             release_dur, release_start = 0.0, 0.0
         player.wait(duration, time.time() - start)
 

@@ -62,16 +62,19 @@ class BellSet(RelayInstrument):
     def __init__(self, relays: RelayModuleInterface):
         super().__init__(relays)
 
-    def play(self, pitches: set[int], release: bool):
+    def play(self, pitches: set[int]):
         """"""
-        if release:
-            pattern = ['0'] * self.pitch_levels
-        else:
-            pattern = [
-                '1' if i in pitches else '0'
-                for i in range(self.pitch_levels)
-            ]
+        pattern = [
+            '1' if i in pitches else '0'
+            for i in range(self.pitch_levels)
+        ]
         self.relays.set_state_of_devices(pattern)
+
+    def release(self):
+        """"""
+        pattern = ['0'] * self.pitch_levels
+        self.relays.set_state_of_devices(pattern)
+        print("RELEASED")
 
 class DrumSet(RelayInstrument):
     """"""

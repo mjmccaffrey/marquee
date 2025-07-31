@@ -144,7 +144,7 @@ def bell(symbols: str) -> BellNote | Rest:
         raise ValueError("Bell note cannot have accent.")
     if not pitches:
         raise ValueError("Bell note must have at least one pitch.")
-    return BellNote(duration, release=False, pitches=pitches)
+    return BellNote(duration, pitches=pitches)
 
 def bell_part(notation: str, beats=4) -> Part:
     """Produce bell part from notation."""
