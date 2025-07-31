@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - instruments"""
 
 from abc import ABC, abstractmethod
+from collections.abc import Collection
 import random
 
 from configuration import LIGHT_COUNT
@@ -34,7 +35,6 @@ class RelayInstrument(Instrument):
         self.relays = relays
         self.count = self.relays.relay_count
         self.relays.set_state_of_devices("0" * self.count)
-        # time.sleep(2)
         self.pattern = self.relays.get_state_of_devices()
         assert self.pattern == "0" * self.count
 
@@ -62,20 +62,24 @@ class BellSet(RelayInstrument):
     def __init__(self, relays: RelayModuleInterface):
         super().__init__(relays)
 
-    def play(self, pitches: set[int]):
+    def _update_relays(self, state: str, relays: Collection[int]):
         """"""
-        print(pitches)
         pattern = [
-            '1' if i in pitches else '0'
-            for i in range(self.pitch_levels)
+            state if i in relays else p
+            for i, p in enumerate(self.pattern)
         ]
         self.relays.set_state_of_devices(pattern)
+        self.pattern = pattern
 
-    def release(self):
+    def play(self, pitches: set[int]):
         """"""
-        pattern = ['0'] * self.pitch_levels
-        self.relays.set_state_of_devices(pattern)
-        print("RELEASED")
+        print("play", pitches)
+        self._update_relays('1', pitches)
+
+    def release(self, pitches: set[int]):
+        """"""
+        print("release", pitches)
+        self._update_relays('0', pitches)
 
 class DrumSet(RelayInstrument):
     """"""

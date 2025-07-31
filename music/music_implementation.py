@@ -71,7 +71,7 @@ class BellNote(ReleasableNote):
 
     def release(self, player: PlayerInterface):
         """Release all BellNotes."""
-        player.bells.release()
+        player.bells.release(self.pitches)
 
 @dataclass(frozen=True)
 class DrumNote(BaseNote):
