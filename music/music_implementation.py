@@ -293,22 +293,25 @@ def _play_measure(measure: Measure):
 
     def _wait(duration: float):
         """Wait for duration, and also 'play' any waiting release."""
-        nonlocal release_note, release_dur, release_start
-        if release_dur:
-            assert release_dur <= duration  # ???
-            player.wait(release_dur, time.time() - release_start)
+        nonlocal release_note, release_start
+        if release_note:
+            assert release_note.release_time <= duration  # ???
+            player.wait(
+                release_note.release_time, 
+                time.time() - release_start
+            )
             release_note.release(player)  # type: ignore
-            release_note, release_dur, release_start = None, 0.0, 0.0
+            release_note, release_start = None, 0.0
         player.wait(duration, time.time() - start)
 
     start = time.time()
     beat = 0.0 
-    release_note, release_dur, release_start = None, 0.0, 0.0
+    release_note, release_start = None, 0.0
     for element in measure.elements:
         assert isinstance(element, (BaseNote, NoteGroup))
         element.play(player)
         if isinstance(element, ReleasableNote):
-            release_dur = element.release_time
+            release_note = element
             release_start = time.time()
         if element.duration:
             _wait(element.duration * player.pace)
