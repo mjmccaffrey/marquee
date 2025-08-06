@@ -18,7 +18,7 @@ class BaseMode(ABC):
 
     @abstractmethod
     def button_action(self, button: ButtonInterface):
-        """"""        
+        """Respond to button being pressed."""
 
     @abstractmethod
     def execute(self):
@@ -61,7 +61,7 @@ class AutoMode(BaseMode):
         )
     
     def button_action(self, button: ButtonInterface):
-        """"""        
+        """Respond to button being pressed."""
 
     def execute(self):
         """Return next mode in sequence."""

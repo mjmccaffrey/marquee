@@ -55,7 +55,7 @@ class SelectMode(Mode):
         self.previous_desired_mode = -1
 
     def button_action(self, button: Button):
-        """Respond to the button press."""
+        """Respond to button being pressed."""
         assert self.desired_mode is not None
         b = self.player.buttons
         match button:
@@ -117,6 +117,8 @@ class PlayMode(Mode):
                 self.player.click()
                 if self.player.auto_mode is None:
                     new_mode = self.mode_index(self.player.current_mode, -1)
+                else:
+                    print("Ignoring back button in auto mode.")
             case b.remote_d | b.body_back:
                 self.player.click()
                 if self.player.auto_mode is None:

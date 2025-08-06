@@ -69,7 +69,7 @@ class Executor():
             create_player: Callable,
             setup_devices: Callable,
         ):
-        """"""
+        """Init the (single) executor."""
         self.create_player = create_player
         self.setup_devices = setup_devices
         self.mode_ids: dict[str, int] = {}

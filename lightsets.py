@@ -13,7 +13,7 @@ from relays import NumatoUSBRelayModule
 
 @dataclass
 class LightSet:
-    """"""
+    """Supports all of the light-related devices."""
     relays: NumatoUSBRelayModule
     dimmers: list[ShellyDimmer]
     brightness_factor: float
@@ -160,7 +160,7 @@ class LightSet:
             self,
             updates: list[tuple[DimmerChannel, int, float]],
     ):
-        """"""
+        """Set each dimmer channel to brightness at transition rate."""
         commands = [
             c.make_set_command(
                 brightness=b,

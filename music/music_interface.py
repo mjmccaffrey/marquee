@@ -7,7 +7,7 @@ from definitions import SpecialParams
 from music.music_implementation import (
     Element, Measure, Part, Section, Sequence, 
     _dimmer, _dimmer_sequence, _dimmer_sequence_flip,
-    _light, _play_measures, _prepare_measures, _set_player
+    _light, _play_measures, _expand_sequence_measures, _set_player
 )
 from player_interface import PlayerInterface
 
@@ -17,8 +17,8 @@ def set_player(the_player: PlayerInterface):
 
 def play(*measures: Measure, tempo: int):
     """Process and then play a series of measures."""
-    _prepare_measures(measures)
-    _play_measures(*measures, tempo=tempo)
+    _expand_sequence_measures(measures)
+    _play_measures(measures, tempo=tempo)
 
 def measure(*elements: Element, beats: int = 4) -> Measure:
     """Produce Measure."""
@@ -32,7 +32,7 @@ def section(
     *parts: Part,
     beats: int = 4,
     tempo: int = 60,
-):
+) -> Section:
     """Produce Section."""
     return Section(
         parts, 

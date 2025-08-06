@@ -57,7 +57,8 @@ class PlayerInterface(ABC):
         self, 
         seconds: tuple[float, ...] | float | None, elapsed: float = 0,
     ):
-        """"""
+        """Wait seconds after adjusting for
+           speed_factor and time already elapsed."""
 
     @abstractmethod
     def click(self):

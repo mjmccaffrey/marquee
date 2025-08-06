@@ -133,7 +133,7 @@ class Player(PlayerInterface):
         self.wait(post_delay)
 
     def wait(self, seconds: float | None, elapsed: float = 0):
-        """Wait the specified seconds after adjusting for
+        """Wait seconds after adjusting for
            speed_factor and time already elapsed."""
         if (self.auto_mode is not None and
             self.auto_mode.trigger_time < time.time()
@@ -148,21 +148,14 @@ class Player(PlayerInterface):
                 return
         Button.wait(duration)
 
-    def _flip_extra_relays(self, *indices: int):
-        """"""
-        def flip(s):
-            return '0' if s == '1' else '1'
-        assert all(0 <= i < len(self.lights.extra_pattern) for i in indices)
+    def click(self):
+        """Click the specified otherwise unused light relays."""
+
         extra = ''.join(
-            flip(e) if i in indices else e
-            for i, e in enumerate(self.lights.extra_pattern)
+            '0' if e == '1' else '1'
+            for e in self.lights.extra_pattern
         )
         self.lights.set_relays(
             light_pattern=self.lights.relay_pattern, 
             extra_pattern=extra,
         )
-
-    def click(self):
-        """Generate a small click sound by flipping
-           an otherwise unused relay."""
-        self._flip_extra_relays(0, 1, 2, 3)

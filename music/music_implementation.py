@@ -54,11 +54,12 @@ class ActionNote(BaseNote):
             action()
 
 @dataclass(frozen=True)
-class ReleasableNote(BaseNote):
-    """ """
+class ReleasableNote(BaseNote, ABC):
+    """Note that requires releasing after playing."""
 
     def add_to_release_queue(self, duration: float):
-        """"""
+        """Add note to release queue immediately after 
+           concrete class plays it."""
         player.release_queue.append(
             (time.time() + duration, self)
         )
@@ -174,7 +175,7 @@ class Section(Element):
 
     def play(self, tempo: int = 0):
         """Play already-generated measures comprising Section."""
-        _play_measures(*self.measures, tempo = tempo or self.tempo)
+        _play_measures(self.measures, tempo = tempo or self.tempo)
 
     @staticmethod
     def _apply_beats(beats: int, parts: tuple[Part, ...]):
@@ -194,7 +195,7 @@ class Section(Element):
             Make all parts the same length.
             Merge parts into single sequence of Measures."""
         for part in parts:
-            _prepare_measures(part.measures)
+            _expand_sequence_measures(part.measures)
         _make_parts_equal_length(parts)
         concurrent_measures = zip(*(part.measures for part in parts))
         return tuple(
@@ -255,10 +256,6 @@ class Section(Element):
         if rest_accumulated:
             elements_out.append(Rest(rest_accumulated))
         return Measure(tuple(elements_out), beats=beats)
-
-def _prepare_measures(measures: tuple[Measure, ...]):
-    """"""
-    _expand_sequence_measures(measures)
 
 def _expand_sequence_measures(measures: tuple[Measure, ...]):
     """Populate SequenceMeasures with ActionNotes."""
@@ -336,7 +333,7 @@ def _play_measure(measure: Measure):
     _wait((measure.beats - beat) * player.pace)
     assert not player.release_queue
 
-def _play_measures(*measures: Measure, tempo: int):
+def _play_measures(measures: tuple[Measure, ...], tempo: int):
     """Play a series of measures, which must be ready to play."""
     player.pace = 60 / tempo
     for measure in measures:

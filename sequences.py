@@ -95,7 +95,7 @@ def rotate(pattern="1"+"0"*(LIGHT_COUNT-1), clockwise=True) -> Iterator[str]:
         yield rotated_pattern
 
 def rotate_sides(pattern="1", clockwise=True) -> Iterator[str]:
-    """ """
+    """Rotate lights 1 side at a time."""
     sequence = LIGHTS_BY_SIDE if clockwise else reversed(LIGHTS_BY_SIDE)
     opp = opposite(pattern)
     for lights in sequence:
@@ -190,14 +190,14 @@ def random_flip(*, light_pattern) -> Iterator[str]:
         yield ''.join(e for e in lights)
 
 def random_once_each() -> Iterator[list[int]]:
-    """Return random light index until all light indexes 
-       have been returned exactly once."""
+    """Yield random light index until all 
+       have been yielded exactly once."""
     indices = [i for i in range(LIGHT_COUNT)]
     random.shuffle(indices)
     while indices:
         yield [indices.pop()]
 
 def random_each() -> Iterator[list[int]]:
-    """"""
+    """"Yield indefinitely a single random sequence of light indexes."""
     for index in itertools.cycle(random_once_each()):
         yield index

@@ -40,7 +40,7 @@ class RotateReversible(PlayMode):
         self.preset_devices(dimmers=True)
 
     def execute(self):
-        """Display a single pattern.
+        """Display pattern, set next pattern, and exit.
            Called repeatedly until the mode is changed."""
         self.player.lights.set_relays(self.pattern)
         self.player.wait(self.pace)
@@ -72,7 +72,7 @@ class RotateRewind(PlayMode):
             pace *= 1.1
 
     def execute(self):
-        """"""
+        """Perform RotateRewind indefinitely."""
         values = [
             (pattern, pace)
             for pattern, pace  in zip(
@@ -112,7 +112,7 @@ class RandomFade(PlayMode):
         return new
     
     def execute(self):
-        """"""
+        """Perform RandomFade indefinitely."""
         for channel in self.player.lights.dimmer_channels:
             channel.next_update = 0
         while True:
@@ -135,7 +135,7 @@ class EvenOddFade(PlayMode):
         self.preset_devices(relays=True)
 
     def execute(self):
-        """"""
+        """Perform EvenOddFade indefinitely."""
         self.player.lights.set_dimmers(ALL_LOW) 
         delay = 0.5
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
@@ -163,7 +163,7 @@ class RapidFade(PlayMode):
         self.preset_devices(relays=True)
  
     def execute(self):
-        """"""
+        """Perform RapidFade indefinitely."""
         self.player.lights.set_relays(ALL_ON)
         while True:
             self.player.lights.set_dimmers(ALL_HIGH, force_update=True)
@@ -209,7 +209,7 @@ class SilentFadeBuild(PlayMode):
         self.preset_devices(relays=True)
  
     def execute(self):
-        """"""
+        """Perform SilentFadeBuild indefinitely."""
         self.player.lights.set_relays(ALL_ON)
         while True:
             for rows in (False, True):
