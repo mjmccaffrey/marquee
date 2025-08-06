@@ -26,7 +26,7 @@ class BellTest(PlayMusicMode):
     def execute(self):
         """Perform bell test."""
         for pitch in range(8):
-            self.player.bells.play({pitch})
+            self.player.bells.play({pitch}, release=True)
             self.player.wait(0.5)
         
 @dataclass(kw_only=True)
