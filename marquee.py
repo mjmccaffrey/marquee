@@ -36,11 +36,12 @@ marquee
                         Sequence
             sequences
 """
-from arguments import display_help, process_arguments
-from definitions import Shutdown
-from executors import Executor, setup_devices
 import os
-from players import Player
+
+from argument import display_help, process_arguments
+from button import Shutdown
+from executor import Executor, setup_devices
+from player import Player
 from register_modes import register_modes
 
 def main():

@@ -1,14 +1,13 @@
 """Marquee Lighted Sign Project - register_modes"""
 
-from basemode import AutoMode
-from configuration import LIGHT_COUNT
-from definitions import DimmerParams, MirrorParams
-from executors import Executor
-from modes import SelectMode
-from custom_modes import (
+from specialparams import DimmerParams, MirrorParams
+from executor import Executor
+from modes.automode import AutoMode
+from modes.custom_modes import (
     BellTest, BuildBrightness, EvenOddFade, FillBulbs, RotateReversible, 
     RandomFade, RapidFade, RotateRewind, SilentFadeBuild,
 )
+from modes.select_modes import SelectMode
 from sequences import (
     all_on, 
     all_off,

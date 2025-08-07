@@ -7,14 +7,14 @@ import itertools
 import time
 from typing import Any, ClassVar
 
-from definitions import (
-    ActionParams, DimmerParams, SpecialParams,
-)
 from instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 
     ReleaseableInstrument, RestInstrument,
 )
-from player_interface import PlayerInterface
+from playerinterface import PlayerInterface
+from specialparams import (
+    ActionParams, DimmerParams, SpecialParams,
+)
 
 def _set_player(the_player: PlayerInterface):
     """Set the Player object used throughout this module."""

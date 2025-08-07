@@ -3,14 +3,14 @@
 from collections.abc import Callable
 from typing import Any
 
-from definitions import SpecialParams
-from music.music_implementation import (
+from .music_implementation import (
     Element, Measure, Part, Section, Sequence, 
     _dimmer, _dimmer_sequence, _dimmer_sequence_flip,
     _light, _play_measures, _set_player,
     _expand_sequence_measures, _validate_measures
 )
-from player_interface import PlayerInterface
+from playerinterface import PlayerInterface
+from specialparams import SpecialParams
 
 def set_player(the_player: PlayerInterface):
     """Set the Player object used throughout this module."""

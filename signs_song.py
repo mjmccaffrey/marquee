@@ -1,17 +1,15 @@
-"""Marquee Lighted Sign Project - signs_song"""
+"""Marquee Lighted Sign Project - signssong"""
 
 import time
 
 from configuration import ALL_OFF, ALL_LOW, ALL_ON
-from modes import PlayMusicMode
+from modes.play_modes import PlayMusicMode
 from music import (
+    act_part, bell_part, drum_part, sequence_part,
     dimmer_sequence_flip, section, sequence,
 )
-from music import(
-    act_part, bell_part, drum_part, sequence_part
-)
 from sequences import all_on, blink_all, random_each
-from definitions import ActionParams, DimmerParams
+from specialparams import ActionParams, DimmerParams
 
 class SignsSong(PlayMusicMode):
     """Signs song."""

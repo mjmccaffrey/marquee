@@ -4,10 +4,8 @@ from abc import ABC, abstractmethod
 from collections.abc import Collection
 import random
 
-from configuration import LIGHT_COUNT
 from relays import RelayModuleInterface
 from sequences import opposite
-
 
 class Instrument(ABC):
     """Base class for an instrument."""

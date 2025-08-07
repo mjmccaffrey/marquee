@@ -1,12 +1,12 @@
-"""Marquee Lighted Sign Project - dimmers"""
+"""Marquee Lighted Sign Project - dimmer"""
 
 from abc import ABC
 import asyncio
 from dataclasses import dataclass
-import requests
 import time
 
 import aiohttp
+import requests
 
 TRANSITION_DEFAULT = 0.5
 TRANSITION_MINIMUM = 0.5
