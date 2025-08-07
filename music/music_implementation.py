@@ -11,7 +11,8 @@ from definitions import (
     ActionParams, DimmerParams, SpecialParams,
 )
 from instruments import (
-    Instrument, ActionInstrument, BellSet, DrumSet, RestInstrument,
+    Instrument, ActionInstrument, BellSet, DrumSet, 
+    ReleaseableInstrument, RestInstrument,
 )
 from player_interface import PlayerInterface
 
@@ -48,6 +49,10 @@ class ActionNote(BaseNote):
     instrument: ClassVar[type[Instrument]] = ActionInstrument
     actions: tuple[Callable, ...]
 
+    def __post_init__(self):
+        """Validate."""
+        assert self.actions
+
     def play(self, player: PlayerInterface):
         """Play single ActionNote."""
         for action in self.actions:
@@ -57,23 +62,28 @@ class ActionNote(BaseNote):
 class ReleasableNote(BaseNote, ABC):
     """Note that requires releasing after playing."""
 
-    def add_to_release_queue(self, duration: float):
+    def add_to_release_queue(self):
         """Add note to release queue immediately after 
            concrete class plays it."""
+        assert isinstance(self.instrument, ReleaseableInstrument)
         player.release_queue.append(
-            (time.time() + duration, self)
+            (time.time() + self.instrument.release_time, self)
         )
 
 @dataclass(frozen=True)
 class BellNote(ReleasableNote):
     """Note to strike or release 1 or more bells."""
-    instrument: ClassVar[type[Instrument]] = BellSet
+    instrument: ClassVar[type[ReleaseableInstrument]] = BellSet
     pitches: set[int]
+
+    def __post_init__(self):
+        """Validate."""
+        assert self.pitches
 
     def play(self, player: PlayerInterface):
         """Play single BellNote."""
         player.bells.play(self.pitches)
-        self.add_to_release_queue(BellSet.strike_time)
+        self.add_to_release_queue()
 
     def release(self, player: PlayerInterface):
         """Release all BellNotes."""
@@ -86,6 +96,10 @@ class DrumNote(BaseNote):
     accent: int
     pitches: set
     
+    def __post_init__(self):
+        """Validate."""
+        assert self.pitches
+
     def play(self, player: PlayerInterface):
         """Play single DrumNote."""
         player.drums.play(self.accent, self.pitches)
@@ -95,6 +109,11 @@ class NoteGroup(Element):
     """Contains notes to play concurrently."""
     notes: tuple[BaseNote, ...]
     duration: float = 0.0
+
+    def __post_init__(self):
+        """Validate."""
+        assert self.notes
+        assert all(n.duration == 0.0 for n in self.notes)
 
     def play(self, player: PlayerInterface):
         """Play all notes in group."""
@@ -106,6 +125,10 @@ class Measure(Element):
     """Musical measure containing notes."""
     elements: tuple[Element, ...]
     beats: int
+
+    def __post_init__(self):
+        """Validate."""
+        assert self.elements
 
 @dataclass(frozen=True)
 class SequenceMeasure(Measure):
@@ -142,7 +165,8 @@ class Part(Element):
     default_accent: int = 0
 
     def __post_init__(self):
-        """Process measures."""
+        """Validate and process measures."""
+        assert self.measures
         if self.default_accent:
             self._apply_accent(self.default_accent, self.measures)
 
@@ -168,7 +192,8 @@ class Section(Element):
     measures: tuple[Measure, ...] = field(init=False)
 
     def __post_init__(self):
-        """Process parts so they are ready to play."""
+        """Validate and process parts so they are ready to play."""
+        assert self.parts
         if self.beats is not None:
             self._apply_beats(self.beats, self.parts)
         object.__setattr__(self, 'measures', self._prepare_parts(self.parts))
@@ -196,6 +221,7 @@ class Section(Element):
             Merge parts into single sequence of Measures."""
         for part in parts:
             _expand_sequence_measures(part.measures)
+            _validate_measures(part.measures)
         _make_parts_equal_length(parts)
         concurrent_measures = zip(*(part.measures for part in parts))
         return tuple(
@@ -276,6 +302,19 @@ def _expand_sequence_measures(measures: tuple[Measure, ...]):
             for _ in range(measure.count)
         )
         object.__setattr__(measure, 'elements', elements)
+
+def _validate_measures(measures: tuple[Measure, ...]):
+    """Confirm that measures are ready to play."""
+    assert all(
+        isinstance(element, BaseNote)
+        for measure in measures
+        for element in measure.elements
+    )
+    assert all(
+        sum(note.duration) <= measure.beats  # type: ignore
+        for measure in measures
+        for note in measure.elements
+    )
 
 @staticmethod
 def _make_parts_equal_length(parts: tuple[Part, ...]):

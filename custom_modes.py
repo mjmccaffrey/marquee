@@ -4,6 +4,7 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 import itertools
 import random
+
 from sequences import lights_in_groups, opposite, rotate
 import time
 
@@ -26,9 +27,11 @@ class BellTest(PlayMusicMode):
     def execute(self):
         """Perform bell test."""
         for pitch in range(8):
-            self.player.bells.play({pitch}, release=True)
+            self.player.bells.play({pitch})
+            self.player.wait(self.player.bells.release_time)
+            self.player.bells.release({pitch})
             self.player.wait(0.5)
-        
+
 @dataclass(kw_only=True)
 class RotateReversible(PlayMode):
     """Rotate a pattern, reversing direction in response to a button press."""
@@ -156,7 +159,8 @@ class EvenOddFade(PlayMode):
 
 @dataclass(kw_only=True)
 class RapidFade(PlayMode):
-    """"""
+    """Test of achieving a very fast fade by giving the channel
+       2 different set commands in rapid succession."""
 
     def __post_init__(self):
         """Initialize."""
@@ -177,7 +181,6 @@ class RapidFade(PlayMode):
                 self.player.wait(0.25, elapsed = time.time() - start)
             assert previous is not None
             previous.set(brightness=40, transition=TRANSITION_MINIMUM)
-            # self.player.wait(10)
 
 @dataclass(kw_only=True)
 class BuildBrightness(PlayMode):
@@ -202,7 +205,7 @@ class BuildBrightness(PlayMode):
 
 @dataclass(kw_only=True)
 class SilentFadeBuild(PlayMode):
-    """"""
+    """Alternately build rows / columns from top / bottom / left / right."""
 
     def __post_init__(self):
         """Initialize."""

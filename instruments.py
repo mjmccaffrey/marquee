@@ -3,7 +3,6 @@
 from abc import ABC, abstractmethod
 from collections.abc import Collection
 import random
-import time
 
 from configuration import LIGHT_COUNT
 from relays import RelayModuleInterface
@@ -29,7 +28,7 @@ class RestInstrument(Instrument, ABC):
     """Conceptual instrument that executes rests."""
 
 class RelayInstrument(Instrument, ABC):
-    """Instrument that uses relays."""
+    """Abstract instrument that uses relays."""
     def __init__(self, relays: RelayModuleInterface):
         super().__init__()
         self.relays = relays
@@ -52,10 +51,14 @@ class RelayInstrument(Instrument, ABC):
             selected = set(candidates)
         return selected
 
-class BellSet(RelayInstrument):
+class ReleaseableInstrument(Instrument, ABC):
+    """Abstract instrument that has releaseable notes."""
+    release_time: float  # Abstract
+
+class BellSet(RelayInstrument, ReleaseableInstrument):
     """Set of bells."""
-    strike_time = 0.09
     pitch_levels = 8
+    release_time = 0.09
 
     def __init__(self, relays: RelayModuleInterface):
         super().__init__(relays)
@@ -69,14 +72,10 @@ class BellSet(RelayInstrument):
         self.relays.set_state_of_devices(pattern)
         self.pattern = pattern
 
-    def play(self, pitches: set[int], release: bool = False):
-        """Play specified pitches.
-           If release, sleep (NOTE: not player.wait) and then release."""
+    def play(self, pitches: set[int]):
+        """Play specified pitches."""
         print("play", pitches)
         self._update_relays('1', pitches)
-        if release:
-            time.sleep(self.strike_time)
-            self.release(pitches)
 
     def release(self, pitches: set[int]):
         """Release specified pitches."""
