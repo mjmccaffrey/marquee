@@ -74,12 +74,10 @@ class BellSet(RelayInstrument, ReleaseableInstrument):
 
     def play(self, pitches: set[int]):
         """Play specified pitches."""
-        print("play", pitches)
         self._update_relays('1', pitches)
 
     def release(self, pitches: set[int]):
         """Release specified pitches."""
-        print("release", pitches)
         self._update_relays('0', pitches)
 
 class DrumSet(RelayInstrument):

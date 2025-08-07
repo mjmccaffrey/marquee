@@ -107,18 +107,19 @@ class PlayMode(Mode):
         match button:
             case b.remote_a:  # | b.body_back:
                 if self.player.auto_mode is not None:
-                    print("Exiting auto mode.")
-                    self.player.auto_mode = None
+                    self.player.auto_mode.exit()
                 new_mode = 0
             case b.remote_c:
                 self.player.click()
+                if self.player.auto_mode is not None:
+                    self.player.auto_mode.exit()
                 new_mode = self.player.mode_ids['section_1']
             case b.remote_b:
                 self.player.click()
                 if self.player.auto_mode is None:
                     new_mode = self.mode_index(self.player.current_mode, -1)
                 else:
-                    print("Ignoring back button in auto mode.")
+                    print("Back button ignored in auto mode.")
             case b.remote_d | b.body_back:
                 self.player.click()
                 if self.player.auto_mode is None:

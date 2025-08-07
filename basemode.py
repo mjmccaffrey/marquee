@@ -76,3 +76,8 @@ class AutoMode(BaseMode):
         print(f"Next auto mode is {mode.name} "
               f"for {mode.duration} seconds.")
         return(mode.index)
+
+    def exit(self):
+        """Exit auto mode."""
+        print("Exiting auto mode.")
+        self.player.auto_mode = None
