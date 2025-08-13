@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - dimmer"""
+"""Marquee Lighted Sign Project - dimmers"""
 
 from abc import ABC
 import asyncio

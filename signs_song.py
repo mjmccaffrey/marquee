@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - signssong"""
+"""Marquee Lighted Sign Project - signs_song"""
 
 import time
 
