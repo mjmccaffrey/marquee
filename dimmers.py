@@ -141,6 +141,7 @@ class DimmerChannel:
         self.id = id
         self.brightness = brightness
         self.next_update: float = 0
+        self.set()  # Ensure on==true
 
     def __str__(self):
         return (f"dimmer {self.dimmer.index} channel {self.index}")
@@ -180,7 +181,6 @@ class DimmerChannel:
             brightness: int | None = None, 
             offset: int | None = None,
             transition: float | None = None, 
-            wait: bool = False,
     ):
         """Set the dimmer channel per requested values and state."""
         command = self.make_set_command(
@@ -188,6 +188,7 @@ class DimmerChannel:
             offset=offset,
             transition=transition,
         )
+        print(command)
         try:
             start = time.time()
             self.dimmer.session.get(
@@ -201,10 +202,6 @@ class DimmerChannel:
         else:
             if (b := command.params.get('brightness')) is not None:
                 self.brightness = b
-        if wait:
-            assert transition is not None
-            print("WAIT")
-            time.sleep(transition)
 
 @dataclass
 class _DimmerCommand:

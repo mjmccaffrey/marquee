@@ -1,3 +1,4 @@
+Marquee Lighted Sign Project - configuration
 
 * **Ethernet Devices**
     * Raspberry Pi Zero 2
@@ -29,9 +30,11 @@ SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250409R0868", SYMLINK+="marquee_bells"
 * **Dependencies**
     * pip install aiohttp --break-system-packages
 * **Bells**
-*   c   d   e
-*   b   a   G
-*   D   E
+* * >   c   d   e
+* * >   b   a   G
+* * >   D   E
+
+_
 * **Auto Start**
     [Unit]
     Description=Marquee
