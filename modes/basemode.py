@@ -34,8 +34,11 @@ class BaseMode(ModeInterface, ABC):
             self.player.lights.set_relays(ALL_ON)
 
     @staticmethod
-    def wrap_value[T: (float, int)](
-        lower: T, upper: T, current: T, delta: T,
+    def wrap_value(
+        lower: int,
+        upper: int, 
+        current: int, 
+        delta: int,
     ):
         """"""
         value = current + delta % (upper - lower + 1)
