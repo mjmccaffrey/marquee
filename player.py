@@ -50,7 +50,7 @@ class Player(PlayerInterface):
             'PREVIOUS_MODE': self.current_mode,
         }
         return {
-            k: vars[v] if v in vars else v
+            k: vars[v] if isinstance(v, str) and v in vars else v
             for k, v in kwargs.items()
         }
 
