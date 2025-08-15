@@ -13,7 +13,8 @@ from configuration import (
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from instruments import BellSet, DrumSet
 from lightset import LightSet
-from modes.basemode import ModeConstructor, ModeInterface
+from modes.basemode import ModeInterface
+from modes.modeconstructor import ModeConstructor
 from modes.play_modes import PlaySequenceMode
 from specialparams import SpecialParams
 from relays import NumatoRL160001, NumatoSSR80001

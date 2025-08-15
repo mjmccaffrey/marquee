@@ -9,7 +9,7 @@ from buttoninterface import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import LightSet
 from modes.automode import AutoMode
-from modes.basemode import ModeConstructor
+from modes.modeconstructor import ModeConstructor
 from specialparams import SpecialParams
 
 @dataclass
