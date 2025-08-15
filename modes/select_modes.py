@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - select_modes"""
 
 from abc import ABC
-from basemode import BaseMode
+from .basemode import BaseMode
 from button import Button
 from configuration import ALL_OFF, LIGHT_COUNT
 from dataclasses import dataclass

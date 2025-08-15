@@ -7,7 +7,7 @@ import time
 from typing import ClassVar
 
 from buttoninterface import ButtonInterface
-from modeinterface import ModeInterface
+from .modeinterface import ModeInterface
 
 @dataclass
 class AutoModeEntry:

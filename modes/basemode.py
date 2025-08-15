@@ -6,7 +6,7 @@ from typing import Any, Type
 
 from configuration import ALL_HIGH, ALL_ON
 from dataclasses import dataclass
-from modeinterface import ModeInterface
+from .modeinterface import ModeInterface
 from playerinterface import PlayerInterface
 from specialparams import MirrorParams, SpecialParams
 

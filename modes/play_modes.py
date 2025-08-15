@@ -2,7 +2,7 @@
 
 from collections.abc import Callable
 
-from basemode import BaseMode
+from .basemode import BaseMode
 from button import Button
 from dataclasses import dataclass
 from dimmers import TRANSITION_DEFAULT
