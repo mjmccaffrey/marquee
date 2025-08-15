@@ -2,19 +2,11 @@
 
 from abc import ABC
 from dataclasses import dataclass
-from typing import Any, Type
 
 from configuration import ALL_HIGH, ALL_ON
-from dataclasses import dataclass
 from .modeinterface import ModeInterface
 from playerinterface import PlayerInterface
 from specialparams import MirrorParams, SpecialParams
-
-@dataclass
-class ModeConstructor:
-    name: str
-    mode_class: Type
-    kwargs: dict[str, Any]
 
 @dataclass
 class BaseMode(ModeInterface, ABC):
