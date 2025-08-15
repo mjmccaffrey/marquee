@@ -1,12 +1,13 @@
 """Marquee Lighted Sign Project - select_modes"""
 
 from abc import ABC
+from dataclasses import dataclass
+import time
+
 from .basemode import BaseMode
 from button import Button
 from configuration import ALL_OFF, LIGHT_COUNT
-from dataclasses import dataclass
 from sequences import rotate_build_flip
-import time
 
 @dataclass(kw_only=True)
 class SelectMode(BaseMode, ABC):

@@ -1,10 +1,10 @@
 """Marquee Lighted Sign Project - play_modes"""
 
 from collections.abc import Callable
+from dataclasses import dataclass
 
 from .basemode import BaseMode
 from button import Button
-from dataclasses import dataclass
 from dimmers import TRANSITION_DEFAULT
 from music import set_player
 from playerinterface import PlayerInterface

@@ -11,7 +11,7 @@ from configuration import (
     LIGHT_COUNT, LIGHTS_BY_ROW,
 )
 from dimmers import TRANSITION_MINIMUM
-from play_modes import PlayMusicMode, PlayMode
+from .play_modes import PlayMusicMode, PlayMode
 from sequences import lights_in_groups, opposite, rotate
 from specialparams import DimmerParams
 
