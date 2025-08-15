@@ -107,7 +107,7 @@ class Executor():
         """Register the mode IDs and everything needed to create an instance."""
         assert name not in self.mode_ids, "Duplicate mode name"
         if index is None:
-            index = len(self.modes)
+            index = max(self.modes) + 1
         if not hidden:
             self.mode_menu.append((index, name))
             self.mode_ids[str(index)] = index
