@@ -34,12 +34,9 @@ class NumatoUSBRelayModule(RelayModuleInterface):
                 timeout=2,
             )
         except serial.serialutil.SerialException as e:  # type: ignore
-            print(1)
-            print(f"Failed to open '{self.port_address}'")
-            print(2)
-            print(f"Error: {e}")
-            print(3)
-            raise
+            print(f"*** Failed to open '{self.port_address}' ***")
+            print(f"*** Error: {e} ***")
+            raise OSError from None
         if device_mapping:
             assert len(device_mapping) == self.relay_count
             self.device_mapping = device_mapping
