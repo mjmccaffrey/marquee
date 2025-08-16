@@ -143,6 +143,9 @@ class DimmerChannel:
             print(f"*** Failed to reach '{self.ip_address}' ***")
             print(f"*** Error: {e} ***")
             raise OSError from None
+        except Exception as e:
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print(e)
             
     def __str__(self):
         return (f"dimmer {self.dimmer.index} channel {self.index}")
