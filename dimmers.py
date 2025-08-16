@@ -137,8 +137,13 @@ class DimmerChannel:
         self.id = id
         self.brightness = brightness
         self.next_update: float = 0
-        self.set()  # Ensure on==true
-
+        try:
+            self.set()  # Ensure on==true
+        except requests.exceptions.Timeout as e:
+            print(f"*** Failed to reach '{self.ip_address}' ***")
+            print(f"*** Error: {e} ***")
+            raise OSError from None
+            
     def __str__(self):
         return (f"dimmer {self.dimmer.index} channel {self.index}")
     
@@ -185,19 +190,14 @@ class DimmerChannel:
             transition=transition,
         )
         print(command)
-        try:
-            response = self.dimmer.session.get(
-                url=command.url,
-                params=command.params,
-                timeout=1.0,
-            )
-            response.raise_for_status()
-        except requests.exceptions.Timeout as e:
-            print(time.time(), self.ip_address, id, e)
-            raise
-        else:
-            if (b := command.params.get('brightness')) is not None:
-                self.brightness = b
+        response = self.dimmer.session.get(
+            url=command.url,
+            params=command.params,
+            timeout=1.0,
+        )
+        response.raise_for_status()
+        if (b := command.params.get('brightness')) is not None:
+            self.brightness = b
 
 @dataclass
 class _DimmerCommand:
