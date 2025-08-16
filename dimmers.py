@@ -52,15 +52,10 @@ class ShellyDimmer(ABC):
 
     def _get_status(self) -> list[tuple[int, dict]]:
         """ Fetch status parameters for all channels. """
-        try:
-            result = self.session.get(
-                url=f'http://{self.ip_address}/rpc/Shelly.GetStatus',
-                timeout=1.0,
-            )
-        # !!! Check for result != 200
-        except requests.Timeout as err:
-            print(err)
-            raise
+        result = self.session.get(
+            url=f'http://{self.ip_address}/rpc/Shelly.GetStatus',
+            timeout=1.0,
+        )
         json = result.json()
         return [
             (id, json[f'light:{id}'])
@@ -70,20 +65,14 @@ class ShellyDimmer(ABC):
     @classmethod
     async def _execute_single_command(cls, command: "_DimmerCommand") -> aiohttp.ClientResponse:
         """ Send individual command as part of asynchonous batch. """
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    url=command.url,
-                    params=command.params,
-                ) as response:
-                    response = await response.json()
-        except TimeoutError as err:
-            # !!! catch timeout, check for != 200
-            print(err)
-            raise
-        else:
-            if (b := command.params.get('brightness')) is not None:
-                command.channel.brightness = b
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                url=command.url,
+                params=command.params,
+            ) as response:
+                response = await response.json()
+        if (b := command.params.get('brightness')) is not None:
+            command.channel.brightness = b
         return response
     
     @classmethod
