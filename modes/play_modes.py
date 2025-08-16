@@ -27,7 +27,7 @@ class PlayMode(BaseMode):
             case b.remote_a | b.body_back:
                 if self.player.auto_mode is not None:
                     self.player.auto_mode.exit()
-                new_mode = self.player.mode_ids['select_mode']
+                new_mode = 0  # select_mode
             case b.remote_c:
                 self.player.click()
                 if self.player.auto_mode is not None:

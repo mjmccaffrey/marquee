@@ -89,7 +89,7 @@ class BrightnessSelectMode(SelectMode):
         self.player.lights.brightness_factor = self.desired / LIGHT_COUNT
         new = super().execute()
         if new is not None:  # Selection was made.
-            new = self.player.mode_ids['select_mode']
+            new = 0  # select_mode
         return new
 
 @dataclass(kw_only=True)

@@ -27,11 +27,16 @@ class NumatoUSBRelayModule(RelayModuleInterface):
            maps device indices to relay indices.
            Establish connection to relay module via serial port."""
         self.port_address = port_address
-        self._serial_port = serial.Serial(
-            self.port_address, 
-            timeout=2,
-        )
         print(f"Initializing {self}")
+        try:
+            self._serial_port = serial.Serial(
+                self.port_address, 
+                timeout=2,
+            )
+        except serial.serialutil.SerialException as e:  # type: ignore
+            print(f"Failed to open '<{self.port_address}'")
+            print(f"Error: {e}")
+            raise RuntimeError(e)
         if device_mapping:
             assert len(device_mapping) == self.relay_count
             self.device_mapping = device_mapping
