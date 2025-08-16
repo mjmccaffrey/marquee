@@ -25,11 +25,7 @@ class ShellyDimmer(ABC):
         self.index = index
         self.ip_address = ip_address
         print(f"Initializing {self}")
-        try:
-            self.session = requests.Session()
-        except requests.Timeout as err:
-            print(err)
-            raise
+        self.session = requests.Session()
         self.channels: list[DimmerChannel] = [
             DimmerChannel(
                 dimmer=self,
@@ -190,15 +186,15 @@ class DimmerChannel:
         )
         print(command)
         try:
-            start = time.time()
-            self.dimmer.session.get(
+            response = self.dimmer.session.get(
                 url=command.url,
                 params=command.params,
                 timeout=1.0,
             )
-            # !!! Check for result != 200
+            response.raise_for_status()
         except requests.exceptions.Timeout as e:
             print(time.time(), self.ip_address, id, e)
+            raise
         else:
             if (b := command.params.get('brightness')) is not None:
                 self.brightness = b
