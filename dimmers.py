@@ -26,15 +26,20 @@ class ShellyDimmer(ABC):
         self.ip_address = ip_address
         print(f"Initializing {self}")
         self.session = requests.Session()
-        self.channels: list[DimmerChannel] = [
-            DimmerChannel(
-                dimmer=self,
-                index=self.index * 2 + id,
-                id=id, 
-                brightness=status['brightness'],
-            ) 
-            for id, status in self._get_status()
-        ]
+        try:
+            self.channels: list[DimmerChannel] = [
+                DimmerChannel(
+                    dimmer=self,
+                    index=self.index * 2 + id,
+                    id=id, 
+                    brightness=status['brightness'],
+                ) 
+                for id, status in self._get_status()
+            ]
+        except requests.exceptions.Timeout as e:
+            print(f"*** Failed to reach '{self.ip_address}' ***")
+            print(f"*** Error: {e} ***")
+            raise OSError from None
 
     def __str__(self):
         return f"{type(self).__name__} {self.index} @ {self.ip_address}"
@@ -137,15 +142,7 @@ class DimmerChannel:
         self.id = id
         self.brightness = brightness
         self.next_update: float = 0
-        try:
-            self.set()  # Ensure on==true
-        except requests.exceptions.Timeout as e:
-            print(f"*** Failed to reach '{self.ip_address}' ***")
-            print(f"*** Error: {e} ***")
-            raise OSError from None
-        except Exception as e:
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            print(e)
+        self.set()  # Ensure on==true
             
     def __str__(self):
         return (f"dimmer {self.dimmer.index} channel {self.index}")
