@@ -39,7 +39,7 @@ class NumatoUSBRelayModule(RelayModuleInterface):
             print(2)
             print(f"Error: {e}")
             print(3)
-            raise RuntimeError from None
+            raise
         if device_mapping:
             assert len(device_mapping) == self.relay_count
             self.device_mapping = device_mapping
