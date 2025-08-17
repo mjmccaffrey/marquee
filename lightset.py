@@ -2,7 +2,7 @@
 
 import asyncio
 from dataclasses import dataclass
-
+from typing import assert_type
 from configuration import EXTRA_COUNT, LIGHT_COUNT
 from dimmers import (
     ShellyDimmer, DimmerChannel,
