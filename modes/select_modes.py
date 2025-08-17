@@ -59,7 +59,7 @@ class SelectMode(BaseMode, ABC):
         if self.desired != self.previous_desired:
             # Not last pass.
             # Show user what desired mode number is currently selected.
-            print(f"Desired is {self.special}")
+            print(f"Desired is {self.desired}")
             self.player.lights.set_relays(ALL_OFF, special=self.special)
             time.sleep(0.5)
             self.player.play_sequence(
@@ -110,9 +110,10 @@ class ModeSelectMode(SelectMode):
                 if self.player.current_mode == SELECT_BRIGHTNESS else
             self.player.current_mode
         )
+        assert previous is not None
         assert self.player.current_mode is not None
         super().setup(
             lower=1, 
             upper=max(self.player.modes),
-            previous=self.player.current_mode,
+            previous=previous,
         )
