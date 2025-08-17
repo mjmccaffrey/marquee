@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - select_modes"""
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import time
 
@@ -13,6 +13,7 @@ from sequences import rotate_build_flip
 class SelectMode(BaseMode, ABC):
     """Supports the selection modes."""
 
+    @abstractmethod
     def __post_init__(self):
         """Initialize."""
         self.preset_devices(dimmers=True)
