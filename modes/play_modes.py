@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 from .basemode import BaseMode
 from button import Button
+from configuration import SELECT_MODE
 from dimmers import TRANSITION_DEFAULT
 from music import set_player
 from playerinterface import PlayerInterface
@@ -21,13 +22,14 @@ class PlayMode(BaseMode):
 
     def button_action(self, button: Button):
         """Respond to the button press."""
+        assert self.player.current_mode is not None
         new_mode = None
         b = self.player.buttons
         match button:
             case b.remote_a | b.body_back:
                 if self.player.auto_mode is not None:
                     self.player.auto_mode.exit()
-                new_mode = 0  # select_mode
+                new_mode = SELECT_MODE
             case b.remote_c:
                 self.player.click()
                 if self.player.auto_mode is not None:

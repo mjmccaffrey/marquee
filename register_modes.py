@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - register_modes"""
 
-from specialparams import DimmerParams, MirrorParams
+from configuration import SELECT_MODE, SELECT_BRIGHTNESS
 from executor import Executor
 from modes.automode import AutoMode
 from modes.custom_modes import (
@@ -18,11 +18,14 @@ from sequences import (
     rotate_sides,
 )
 from signs_song import SignsSong
+from specialparams import DimmerParams, MirrorParams
 
 def register_modes(exec: Executor):
     """Register all modes."""
-    exec.add_mode("select_mode", ModeSelectMode, hidden=True)
-    exec.add_mode("select_brightness", BrightnessSelectMode, index=-1, hidden=True)
+    exec.add_mode("select_mode", ModeSelectMode, 
+        index=SELECT_MODE, hidden=True)
+    exec.add_mode("select_brightness", BrightnessSelectMode, 
+        index=SELECT_BRIGHTNESS, hidden=True)
     # exec.add_sequence_mode("all_on", all_on)
     # exec.add_sequence_mode("all_off", all_off)
     # exec.add_sequence_mode("even_on", even_on)

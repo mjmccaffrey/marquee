@@ -6,7 +6,9 @@ import time
 
 from .basemode import BaseMode
 from button import Button
-from configuration import ALL_OFF, LIGHT_COUNT
+from configuration import (
+    ALL_OFF, LIGHT_COUNT, SELECT_BRIGHTNESS, SELECT_MODE
+)
 from sequences import rotate_build_flip
 
 @dataclass(kw_only=True)
@@ -45,7 +47,8 @@ class SelectMode(BaseMode, ABC):
             case b.remote_b:
                 self.desired = self.update_desired(-1)
             case b.remote_c:
-                new = -1  # select_brightness
+                new = SELECT_BRIGHTNESS
+                self.player.remembered_mode = self.previous
             case _:
                 raise ValueError("Unrecognized button.")
         return new
@@ -56,6 +59,7 @@ class SelectMode(BaseMode, ABC):
         if self.desired != self.previous_desired:
             # Not last pass.
             # Show user what desired mode number is currently selected.
+            print(f"Desired is {self.special}")
             self.player.lights.set_relays(ALL_OFF, special=self.special)
             time.sleep(0.5)
             self.player.play_sequence(
@@ -91,7 +95,7 @@ class BrightnessSelectMode(SelectMode):
         self.player.lights.set_dimmers(brightnesses=[100] * LIGHT_COUNT)
         new = super().execute()
         if new is not None:  # Selection was made.
-            new = 0  # select_mode
+            new = SELECT_MODE
         return new
 
 @dataclass(kw_only=True)
@@ -101,11 +105,11 @@ class ModeSelectMode(SelectMode):
     def __post_init__(self):
         """"""
         super().__post_init__()
-        if self.player.current_mode == -1:  # select_brightness
-            previous = self.player.remembered_mode
-        else:
-            previous = self.player.current_mode
-            self.player.remembered_mode = previous
+        previous = (
+            self.player.remembered_mode
+                if self.player.current_mode == SELECT_BRIGHTNESS else
+            self.player.current_mode
+        )
         assert self.player.current_mode is not None
         super().setup(
             lower=1, 
