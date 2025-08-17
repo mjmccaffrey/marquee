@@ -45,7 +45,7 @@ class SelectMode(BaseMode, ABC):
             case b.remote_b:
                 self.desired = self.update_desired(-1)
             case b.remote_c:
-                new = self.player.mode_ids['select_brightness']
+                new = -1  # select_brightness
             case _:
                 raise ValueError("Unrecognized button.")
         return new
