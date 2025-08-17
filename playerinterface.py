@@ -22,7 +22,8 @@ class PlayerInterface(ABC):
     lights: LightSet
     speed_factor: float
     auto_mode: AutoMode | None = field(init=False)
-    current_mode: int = field(init=False)
+    current_mode: int | None = field(init=False)
+    remembered_mode: int | None = field(init=False)
     pace: float = field(init=False)
     release_queue: list[tuple[float, Any]] = field(init=False)
 

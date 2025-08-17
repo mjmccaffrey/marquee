@@ -25,7 +25,8 @@ class Player(PlayerInterface):
         """Initialize."""
         print("Initializing player")
         self.auto_mode = None
-        self.current_mode = -1
+        self.current_mode = None
+        self.remembered_mode = None
         self.pace = 0.0
         self.release_queue = []
 

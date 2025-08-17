@@ -117,8 +117,9 @@ class LightSet:
             transitions: list[float] | float = TRANSITION_DEFAULT,
             force_update: bool = False,
         ):
-        """ Set the dimmers per the supplied pattern or brightnesses,
-            and transition times. """
+        """Set the dimmers per the supplied pattern or brightnesses,
+           and transition times.  If pattern, apply bulb_adjustments.
+           For both pattern and brightnesses, apply brightness_factor."""
         assert pattern is None or len(pattern) == LIGHT_COUNT
         assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
         if pattern is not None:
@@ -128,12 +129,16 @@ class LightSet:
                 'A': 100, 'F': 23,
             }
             brightnesses = [
-                int(bulb_adjustments[p] * self.brightness_factor)
+                bulb_adjustments[p]
                 for p in pattern
             ]
         if isinstance(transitions, float):
             transitions = [transitions] * LIGHT_COUNT
         assert brightnesses is not None
+        brightnesses = [
+            int(b * self.brightness_factor)
+            for b in brightnesses
+        ]
         assert isinstance(transitions, list)
         if force_update:
             updates = [t for t in zip(self.dimmer_channels, brightnesses, transitions)]

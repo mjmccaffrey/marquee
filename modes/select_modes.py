@@ -88,6 +88,7 @@ class BrightnessSelectMode(SelectMode):
         """Set current brightness. Return select_mode if 
            final brightness selected, else None."""
         self.player.lights.brightness_factor = self.desired / LIGHT_COUNT
+        self.player.lights.set_dimmers(brightnesses=[100] * LIGHT_COUNT)
         new = super().execute()
         if new is not None:  # Selection was made.
             new = 0  # select_mode
@@ -100,6 +101,12 @@ class ModeSelectMode(SelectMode):
     def __post_init__(self):
         """"""
         super().__post_init__()
+        if self.player.current_mode == -1:  # select_brightness
+            previous = self.player.remembered_mode
+        else:
+            previous = self.player.current_mode
+            self.player.remembered_mode = previous
+        assert self.player.current_mode is not None
         super().setup(
             lower=1, 
             upper=max(self.player.modes),
