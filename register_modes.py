@@ -7,7 +7,7 @@ from modes.custom_modes import (
     BellTest, BuildBrightness, EvenOddFade, FillBulbs, RotateReversible, 
     RandomFade, RapidFade, RotateRewind, SilentFadeBuild,
 )
-from modes.select_modes import SelectMode
+from modes.select_modes import BrightnessSelectMode, ModeSelectMode
 from sequences import (
     all_on, 
     all_off,
@@ -21,8 +21,8 @@ from signs_song import SignsSong
 
 def register_modes(exec: Executor):
     """Register all modes."""
-    exec.add_mode("select_mode", SelectMode, hidden=True)
-    exec.add_mode("select_brightness", SelectMode, index=-1, hidden=True)
+    exec.add_mode("select_mode", ModeSelectMode, hidden=True)
+    exec.add_mode("select_brightness", BrightnessSelectMode, index=-1, hidden=True)
     # exec.add_sequence_mode("all_on", all_on)
     # exec.add_sequence_mode("all_off", all_off)
     # exec.add_sequence_mode("even_on", even_on)
