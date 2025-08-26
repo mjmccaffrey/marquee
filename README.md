@@ -1,15 +1,27 @@
-**Marquee semi-retro lighted sign project**
+**Marquee animated sign project**
 
-I have wanted to make this project for a while, and our son's graduation from the University Alabama was the excuse I needed.<br/><br/>
-While the Raspberry Pi and other electronics are relatively modern, the incandescent bulbs and ceramic lamp holders give it a retro feel, as do the mechanical relays, whose clicks resonate in the wooden cabinet.<br/>
+I had wanted to make this project for a while, and our son's graduation from the University Alabama was the excuse I needed.<br/><br/>
+While the Raspberry Pi and other electronics are relatively modern, the incandescent bulbs and ceramic lamp holders give it a retro feel, as do the mechanical relays, whose clicks resonate in the wooden cabinet.  Adding the mechanical bells allowed me to include another project in my backlog.<br/>
 
-<b>Version 3.0.0 represents a substantial amount of hardware and software work, including the following:
+<b>Version 4.0.0, which [I presented at PyOhio 2025](https://www.youtube.com/watch?v=-3euk5EPddU), includes the following:</b>
+* Upgraded to 12 lights, including a new front face and new aesthetically pleasing light fixtures.
+* Added musical bells, with supporting relay board and power supplies.
+* Added the Signs performance, as shown in the above video.
+* Added auto mode, allowing a selection of modes to be cycled through automatically.
+
+<figure>
+<figcaption>Version 4</figcaption>
+<img src="readme/marquee_v4_front.jpg" height=600>
+<img src="readme/marquee_v4_back.jpg" height=600>
+</figure>
+
+Version 3.0.0 represents a substantial amount of hardware and software work, including the following:
 * Added dimmers, allowing independent control of each bulb's brightness.
 * Added new Dimmer, Executor and Mode classes.
 * Added a 4-button remote control and receiver.
-* Revamped the wiring and electrical components.</b>
+* Revamped the wiring and electrical components.
 
-<b>Version 3 demo video</b>
+Version 3 demo video
 [![](readme/marquee_v3_front.jpg)](https://www.youtube.com/watch?v=Xw9Ktnp-iGw)
 
 <figure>
