@@ -32,7 +32,8 @@ class BaseMode(ModeInterface, ABC):
         current: int, 
         delta: int,
     ):
-        """"""
+        """Return current + delta, wrapping the value
+           within the inclusive range lower..upper."""
         value = current + delta % (upper - lower + 1)
         if (dif := value - upper) > 0:
             value = lower + dif - 1

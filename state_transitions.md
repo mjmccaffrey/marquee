@@ -21,6 +21,6 @@
 | Bright Sel | Back    | Change selected to next brightness                        |
 | Bright Sel | A       | Change selected to next brightness                        |
 | Bright Sel | B       | Change selected to previous brightness                    |
-| Bright Sel | C       | Change to Select mode                                     |
+| Bright Sel | C       | None                                                      |
 | Bright Sel | D       | Change selected to next brightness                        |
 | Bright Sel | Timeout | Change brightness to selected,<br>Change to previous mode |
