@@ -26,7 +26,7 @@ class SelectMode(BaseMode, ABC):
         upper: int,
         previous: int,
     ):
-        """"""
+        """Supports modes that allow the user to select a value."""
         self.lower: int = lower
         self.upper: int = upper
         self.previous: int = previous
@@ -34,8 +34,12 @@ class SelectMode(BaseMode, ABC):
         self.previous_desired: int | None = None
 
     def update_desired(self, delta: int) -> int:
-        """"""
+        """Update the current selection, wrapping within the bounds."""
         return self.wrap_value(self.lower, self.upper, self.desired, delta)
+
+    @abstractmethod
+    def c_button_pressed(self):
+        """Respond to C button press."""
 
     def button_action(self, button: Button):
         """Respond to button being pressed."""
@@ -47,8 +51,7 @@ class SelectMode(BaseMode, ABC):
             case b.remote_b:
                 self.desired = self.update_desired(-1)
             case b.remote_c:
-                new = SELECT_BRIGHTNESS
-                self.player.remembered_mode = self.previous
+                self.c_button_pressed()
             case _:
                 raise ValueError("Unrecognized button.")
         return new
@@ -80,7 +83,7 @@ class BrightnessSelectMode(SelectMode):
     """Allows user to select maximum brightness."""
 
     def __post_init__(self):
-        """"""
+        """Initialize."""
         super().__post_init__()
         super().setup(
             lower=1, 
@@ -98,12 +101,16 @@ class BrightnessSelectMode(SelectMode):
             new = SELECT_MODE
         return new
 
+    def c_button_pressed(self):
+        """Respond to C button press."""
+        print("C button ignored in brightness select mode.")
+
 @dataclass(kw_only=True)
 class ModeSelectMode(SelectMode):
     """Allows user to select mode."""
 
     def __post_init__(self):
-        """"""
+        """Initialize."""
         super().__post_init__()
         previous = (
             self.player.remembered_mode
@@ -117,3 +124,8 @@ class ModeSelectMode(SelectMode):
             upper=max(self.player.modes),
             previous=previous,
         )
+
+    def c_button_pressed(self):
+        """Respond to C button press."""
+        self.desired = SELECT_BRIGHTNESS
+        self.player.remembered_mode = self.previous

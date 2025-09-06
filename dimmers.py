@@ -69,6 +69,7 @@ class ShellyDimmer(ABC):
             async with session.get(
                 url=command.url,
                 params=command.params,
+                raise_for_status=True,
             ) as response:
                 response = await response.json()
         if (b := command.params.get('brightness')) is not None:
