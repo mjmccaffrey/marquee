@@ -59,7 +59,7 @@ class SelectMode(BaseMode, ABC):
     def execute(self):
         """Return user's final selection if made, otherwise None."""
         new = None
-        if self.desired != self.previous_desired:
+        if self.desired != self.previous_desired and self.desired > 0:
             # Not last pass.
             # Show user what desired mode number is currently selected.
             print(f"Desired is {self.desired}")
