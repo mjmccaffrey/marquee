@@ -32,7 +32,7 @@ def setup_devices(brightness_factor: float):
             ShellyProDimmer2PM(i, ip)
             for i, ip in enumerate(DIMMER_ADDRESSES)
         ],
-        brightness_factor=brightness_factor,
+        brightness_factor_init=brightness_factor,
     )
     buttons = ButtonSet(
         body_back = Button(

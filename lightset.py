@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - lightset"""
 
 import asyncio
-from dataclasses import dataclass
+from dataclasses import dataclass, InitVar
 from typing import assert_type
 from configuration import EXTRA_COUNT, LIGHT_COUNT
 from dimmers import (
@@ -16,9 +16,9 @@ class LightSet:
     """Supports all of the light-related devices."""
     relays: NumatoUSBRelayModule
     dimmers: list[ShellyDimmer]
-    brightness_factor: float
+    brightness_factor_init: InitVar[float]
 
-    def __post_init__(self):
+    def __post_init__(self, brightness_factor_init: float):
         """Initialize."""
         # channel[i] maps to light[i], 0 <= i < LIGHT_COUNT
         self.dimmer_channels: list[DimmerChannel] = [
@@ -30,6 +30,16 @@ class LightSet:
         full_pattern = self.relays.get_state_of_devices()
         self.relay_pattern = full_pattern[:LIGHT_COUNT]
         self.extra_pattern = full_pattern[LIGHT_COUNT:]
+        self.brightness_factor = brightness_factor_init
+
+    @property
+    def brightness_factor(self):
+        return self._brightness_factor
+    
+    @brightness_factor.setter
+    def brightness_factor(self, value):
+        self._brightness_factor = value
+        print("Brightness factor is now ", self._brightness_factor)
 
     def _updates_needed(
         self, 
@@ -52,10 +62,11 @@ class LightSet:
             light_pattern: list | str, 
             special: DimmerParams,
     ):
-        """Set dimmers per the specified pattern and special."""
+        """Set dimmers per the specified pattern and special.
+           Adjust for brightness_factor."""
         bright_values: dict[int, int] = {
-            0: int(special.brightness_off * self.brightness_factor), 
-            1: int(special.brightness_on * self.brightness_factor),
+            0: int(special.brightness_off * self._brightness_factor), 
+            1: int(special.brightness_on * self._brightness_factor),
         }
         assert special.transition_off is not None
         assert special.transition_on is not None
@@ -119,7 +130,7 @@ class LightSet:
         ):
         """Set the dimmers per the supplied pattern or brightnesses,
            and transition times.  If pattern, apply bulb_adjustments.
-           For both pattern and brightnesses, apply brightness_factor."""
+           Adjust for brightness_factor."""
         assert pattern is None or len(pattern) == LIGHT_COUNT
         assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
         if pattern is not None:
@@ -136,7 +147,7 @@ class LightSet:
             transitions = [transitions] * LIGHT_COUNT
         assert brightnesses is not None
         brightnesses = [
-            int(b * self.brightness_factor)
+            int(b * self._brightness_factor)
             for b in brightnesses
         ]
         assert isinstance(transitions, list)
@@ -144,7 +155,7 @@ class LightSet:
             updates = [t for t in zip(self.dimmer_channels, brightnesses, transitions)]
         else:
             updates = self._updates_needed(brightnesses, transitions)
-        self.execute_dimmer_commands(updates)
+        self._execute_dimmer_commands(updates)
 
     def set_dimmer_subset(
             self,
@@ -153,8 +164,10 @@ class LightSet:
             transition: float,
     ):
         """Set lights (indexes) / dimmer channels 
-           to brightness with transition."""
-        self.execute_dimmer_commands([
+           to brightness with transition.
+           Adjust for brightness_factor."""
+        brightness = int(brightness * self._brightness_factor)
+        self._execute_dimmer_commands([
             (   self.dimmer_channels[light], 
                 brightness, 
                 transition,
@@ -162,7 +175,7 @@ class LightSet:
             for light in lights
         ])
 
-    def execute_dimmer_commands(
+    def _execute_dimmer_commands(
             self,
             updates: list[tuple[DimmerChannel, int, float]],
     ):
