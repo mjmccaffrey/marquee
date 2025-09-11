@@ -19,7 +19,7 @@ from modes.play_modes import PlaySequenceMode
 from specialparams import SpecialParams
 from relays import NumatoRL160001, NumatoSSR80001
 
-class Exit(Exception):
+class SigTerm(Exception):
     """Triggered to cleanly exit the application."""
 
 def setup_devices(brightness_factor: float):
@@ -188,4 +188,4 @@ class Executor():
     def sigterm_received(self, signal_number, stack_frame):
         """Callback for SIGTERM received."""
         print(f"SIGTERM received")
-        raise Exit
+        raise SigTerm
