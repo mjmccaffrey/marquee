@@ -56,13 +56,14 @@ def main():
         else:
             try:
                 exec.execute(**args)
+            except KeyboardInterrupt:
+                open('goodbye', 'rw')
             except Shutdown:
                 print("Shutting down.")
                 os.system("sudo shutdown --halt")
     finally:
         try:
             exec.close()
-            open('goodbye', 'rw')
         except Exception:
             pass
 
