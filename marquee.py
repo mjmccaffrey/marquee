@@ -57,7 +57,7 @@ def main():
             try:
                 exec.execute(**args)
             except KeyboardInterrupt:
-                open('goodbye', 'rw')
+                open('goodbye', 'w')
             except Shutdown:
                 print("Shutting down.")
                 os.system("sudo shutdown --halt")
