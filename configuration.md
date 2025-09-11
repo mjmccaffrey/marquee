@@ -36,15 +36,17 @@ SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250409R0868", SYMLINK+="marquee_bells"
 
 _
 * **Auto Start**
-    [Unit]
-    Description=Marquee
-    After=multi-user.target
+* /etc/systemd/system/marquee.service
 
-    [Service]
-    Type=idle
-    ExecStart=/usr/bin/python /home/mjmccaffrey/marquee/marquee.py mode 1
-    WorkingDirectory=/home/mjmccaffrey/marquee
-    User=mjmccaffrey
+        [Unit]
+        Description=Marquee
+        After=multi-user.target
 
-    [Install]
-    WantedBy=multi-user.target
+        [Service]
+        Type=idle
+        ExecStart=/usr/bin/python /home/mjmccaffrey/marquee/marquee.py mode 1
+        WorkingDirectory=/home/mjmccaffrey/marquee
+        User=mjmccaffrey
+
+        [Install]
+        WantedBy=multi-user.target

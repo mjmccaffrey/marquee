@@ -62,6 +62,7 @@ def main():
     finally:
         try:
             exec.close()
+            open('goodbye', 'rw')
         except Exception:
             pass
 
