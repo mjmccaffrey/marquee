@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - executor"""
 
 from collections.abc import Callable
-from signal import SIGUSR1  # type: ignore
+import signal
 
 from gpiozero import Button as _Button  # type: ignore
 
@@ -18,6 +18,9 @@ from modes.modeconstructor import ModeConstructor
 from modes.play_modes import PlaySequenceMode
 from specialparams import SpecialParams
 from relays import NumatoRL160001, NumatoSSR80001
+
+class Exit(Exception):
+    """Triggered to cleanly exit the application."""
 
 def setup_devices(brightness_factor: float):
     bells = BellSet(
@@ -39,7 +42,7 @@ def setup_devices(brightness_factor: float):
             "body_back",
             _Button(pin=26, bounce_time=0.10, hold_time=10), 
             support_hold=True,
-            signal_number=SIGUSR1,
+            signal_number=signal.SIGUSR1,  # type: ignore
         ),
         remote_a = Button(
             "remote_a",
@@ -142,6 +145,7 @@ class Executor():
             brightness_pattern: str | None = None,
         ):
         """Effects the command-line specified command, mode or pattern(s)."""
+        signal.signal(signal.SIGTERM, self.sigterm_received)
         self.bells, self.buttons, self.drums, self.lights = (
             setup_devices(brightness_factor)
         )
@@ -180,3 +184,8 @@ class Executor():
             Button.wait(TRANSITION_DEFAULT)
         if light_pattern is not None:
             self.lights.set_relays(light_pattern)
+
+    def sigterm_received(self, signal_number, stack_frame):
+        """Callback for SIGTERM received."""
+        print(f"SIGTERM received")
+        raise Exit

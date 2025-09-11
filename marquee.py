@@ -40,7 +40,7 @@ import os
 
 from argument import display_help, process_arguments
 from button import Shutdown
-from executor import Executor, setup_devices
+from executor import Executor, Exit, setup_devices
 from player import Player
 from register_modes import register_modes
 
@@ -56,7 +56,7 @@ def main():
         else:
             try:
                 exec.execute(**args)
-            except KeyboardInterrupt:
+            except Exit:
                 open('goodbye', 'w')
             except Shutdown:
                 print("Shutting down.")
