@@ -6,7 +6,7 @@ from itertools import cycle
 import time
 from typing import ClassVar
 
-from buttoninterface import ButtonInterface
+from button_misc import ButtonProtocol
 from .modeinterface import ModeInterface
 
 @dataclass
@@ -51,7 +51,7 @@ class AutoMode(ModeInterface):
             duration=duration or cls.default_duration,
         )
     
-    def button_action(self, button: ButtonInterface):
+    def button_action(self, button: ButtonProtocol):
         """Respond to button being pressed."""
 
     def execute(self):

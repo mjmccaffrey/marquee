@@ -2,8 +2,7 @@
 
 import asyncio
 from dataclasses import dataclass, InitVar
-from typing import assert_type
-from configuration import EXTRA_COUNT, LIGHT_COUNT
+from configuration import BULB_ADJUSTMENTS, EXTRA_COUNT, LIGHT_COUNT
 from dimmers import (
     ShellyDimmer, DimmerChannel,
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,
@@ -134,13 +133,8 @@ class LightSet:
         assert pattern is None or len(pattern) == LIGHT_COUNT
         assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
         if pattern is not None:
-            bulb_adjustments = {
-                '0': 0, '1': 15, '2': 20, '3': 30, '4': 40,
-                '5': 50, '6': 60, '7': 70, '8':80, '9': 90,
-                'A': 100, 'F': 23,
-            }
             brightnesses = [
-                bulb_adjustments[p]
+                BULB_ADJUSTMENTS[p]
                 for p in pattern
             ]
         if isinstance(transitions, float):

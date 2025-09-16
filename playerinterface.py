@@ -5,7 +5,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import Any
 
-from buttoninterface import ButtonSet
+from button_misc import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import LightSet
 from modes.automode import AutoMode

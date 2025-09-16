@@ -6,7 +6,7 @@ import signal
 from gpiozero import Button as _Button  # type: ignore
 
 from button import Button
-from buttoninterface import ButtonSet
+from button_misc import ButtonSet
 from configuration import (
     ALL_RELAYS, ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT,
 )
@@ -87,7 +87,7 @@ class Executor():
     def close(self):
         """Close dependencies."""
         self.player.close()
-        # !!! close devices
+        print(f"Executor {self} closed. - !!! close devices")
 
     def command_calibrate_dimmers(self):
         """Calibrate dimmers."""
@@ -187,5 +187,5 @@ class Executor():
 
     def sigterm_received(self, signal_number, stack_frame):
         """Callback for SIGTERM received."""
-        print(f"SIGTERM received")
+        print(f"SIGTERM received.")
         raise SigTerm

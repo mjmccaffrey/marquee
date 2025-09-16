@@ -32,17 +32,7 @@ class Player(PlayerInterface):
 
     def close(self):
         """Clean up."""
-        try:
-            # for button in self.buttons:
-            #   button.close()
-            pass
-        except Exception as e:
-            print(e)
-        try:
-            # !!! self.lights.close()
-            pass
-        except Exception as e:
-            print(e)
+        print(f"Player {self} closed.")
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""

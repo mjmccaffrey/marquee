@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Collection
 import random
 
-from relays import RelayModuleInterface
+from relays import RelayModule
 from sequences import opposite
 
 class Instrument(ABC):
@@ -14,6 +14,10 @@ class Instrument(ABC):
 
     def __init__(self):
         super().__init__()
+
+    def close(self):
+        """Close."""
+        print(f"Instrument {self} closed.")
 
     @abstractmethod
     def play(self):
@@ -27,13 +31,18 @@ class RestInstrument(Instrument, ABC):
 
 class RelayInstrument(Instrument, ABC):
     """Abstract instrument that uses relays."""
-    def __init__(self, relays: RelayModuleInterface):
+    def __init__(self, relays: RelayModule):
         super().__init__()
         self.relays = relays
         self.count = self.relays.relay_count
         self.relays.set_state_of_devices("0" * self.count)
         self.pattern = self.relays.get_state_of_devices()
         assert self.pattern == "0" * self.count
+
+    def close(self):
+        """Close."""
+        self.relays.set_state_of_devices("0" * self.count)
+        super().close()
 
     def select_relays(self, state: str, count: int) -> set[int]:
         """Randomly select count relays in state."""
@@ -58,7 +67,7 @@ class BellSet(RelayInstrument, ReleaseableInstrument):
     pitch_levels = 8
     release_time = 0.09
 
-    def __init__(self, relays: RelayModuleInterface):
+    def __init__(self, relays: RelayModule):
         super().__init__(relays)
 
     def _update_relays(self, state: str, relays: Collection[int]):
@@ -89,7 +98,7 @@ class DrumSet(RelayInstrument):
         0: '0', 1: '1',
     }
 
-    def __init__(self, relays: RelayModuleInterface):
+    def __init__(self, relays: RelayModule):
         super().__init__(relays)
 
     def play(self, accent: int, pitches: set[int]):

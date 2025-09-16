@@ -1,26 +1,28 @@
 """Marquee Lighted Sign Project - relays"""
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from collections.abc import Mapping, Sequence
-from typing import ClassVar
+from typing import ClassVar, Protocol
 
 import serial  # type: ignore
 
-class RelayModuleInterface(ABC):
-    """Interface for any relay module."""
+class RelayModule(Protocol):
+    """Protocol for any relay module."""
     
-    relay_count: ClassVar[int]  # Abstract
+    relay_count: ClassVar[int]
 
-    @abstractmethod
     def set_state_of_devices(self, device_pattern: Sequence):
         """Set state of each relay per device_pattern."""
+        ...
 
-    @abstractmethod
     def get_state_of_devices(self) -> str:
         """Get state of each relay, output device pattern."""
+        ...
 
-class NumatoUSBRelayModule(RelayModuleInterface):
+class NumatoUSBRelayModule(ABC):
     """Supports Numato USB Relay Modules."""
+
+    relay_count: ClassVar[int]
 
     def __init__(self, port_address: str, device_mapping: Mapping[int, int] = {}):
         """Create the object, where device_mapping
@@ -63,6 +65,7 @@ class NumatoUSBRelayModule(RelayModuleInterface):
     def close(self):
         """Clean up."""
         self._serial_port.close()
+        print(f"Relay module {self} closed.")
 
     def set_state_of_devices(self, device_pattern: Sequence):
         """Set the physical relays per device_pattern."""
@@ -117,9 +120,9 @@ class NumatoUSBRelayModule(RelayModuleInterface):
 class NumatoRL160001(NumatoUSBRelayModule):
     """Supports the Numato RL160001 16 Channel USB 
        Mechanical Relay Module."""
-    relay_count = 16
+    relay_count: ClassVar = 16
 
 class NumatoSSR80001(NumatoUSBRelayModule):
     """Supports the Numato SSR80001 8 Channel USB 
        Solid State Relay Module."""
-    relay_count = 8
+    relay_count: ClassVar = 8

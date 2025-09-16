@@ -49,6 +49,7 @@ class ShellyDimmer(ABC):
     
     def close(self):
         """Clean up."""
+        print(f"Dimmer {self} closed.")
 
     def _get_status(self) -> list[tuple[int, dict]]:
         """ Fetch status parameters for all channels. """

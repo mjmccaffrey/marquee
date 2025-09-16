@@ -7,7 +7,7 @@ from typing import ClassVar
 
 from gpiozero import Button as _Button  # type: ignore
 
-from buttoninterface import ButtonInterface
+from button_misc import ButtonProtocol
 
 class ButtonPressed(Exception):
     """Button pressed base exception."""
@@ -22,7 +22,7 @@ class Shutdown(Exception):
     """Triggered to clean up and shut down the system."""
 
 @dataclass
-class Button(ButtonInterface):
+class Button(ButtonProtocol):
     """Supports physical buttons on remote and sign."""
 
     _buttons: ClassVar[list["Button"]] = []
@@ -73,6 +73,7 @@ class Button(ButtonInterface):
     def close(self):
         """Clean up."""
         self.button.close()
+        print(f"Button {self} closed.")
 
     def button_held(self):
         """Callback for button hold."""
