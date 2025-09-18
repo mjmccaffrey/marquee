@@ -16,7 +16,7 @@ class SelectMode(BaseMode, ABC):
     """Supports the selection modes."""
 
     @abstractmethod
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices(dimmers=True)
 
@@ -25,7 +25,7 @@ class SelectMode(BaseMode, ABC):
         lower: int,
         upper: int,
         previous: int,
-    ):
+    ) -> None:
         """Supports modes that allow the user to select a value."""
         self.lower: int = lower
         self.upper: int = upper
@@ -38,10 +38,10 @@ class SelectMode(BaseMode, ABC):
         return self.wrap_value(self.lower, self.upper, self.desired, delta)
 
     @abstractmethod
-    def c_button_pressed(self):
+    def c_button_pressed(self) -> None:
         """Respond to C button press."""
 
-    def button_action(self, button: Button):
+    def button_action(self, button: Button) -> None:
         """Respond to button being pressed."""
         new = None
         b = self.player.buttons
@@ -56,7 +56,7 @@ class SelectMode(BaseMode, ABC):
                 raise ValueError("Unrecognized button.")
         return new
 
-    def execute(self):
+    def execute(self) -> int | None:
         """Return user's final selection if made, otherwise None."""
         new = None
         if self.desired != self.previous_desired and self.desired > 0:
@@ -82,7 +82,7 @@ class SelectMode(BaseMode, ABC):
 class BrightnessSelectMode(SelectMode):
     """Allows user to select maximum brightness."""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         super().__post_init__()
         super().setup(
@@ -91,7 +91,7 @@ class BrightnessSelectMode(SelectMode):
             previous=6,
         )
 
-    def execute(self):
+    def execute(self) -> int | None:
         """Set current brightness. Return select_mode if 
            final brightness selected, else None."""
         self.player.lights.brightness_factor = self.desired / LIGHT_COUNT
@@ -103,7 +103,7 @@ class BrightnessSelectMode(SelectMode):
             new = SELECT_MODE
         return new
 
-    def c_button_pressed(self):
+    def c_button_pressed(self) -> None:
         """Respond to C button press."""
         print("C button ignored in brightness select mode.")
 
@@ -111,7 +111,7 @@ class BrightnessSelectMode(SelectMode):
 class ModeSelectMode(SelectMode):
     """Allows user to select mode."""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         super().__post_init__()
         previous = (
@@ -127,7 +127,7 @@ class ModeSelectMode(SelectMode):
             previous=previous,
         )
 
-    def c_button_pressed(self):
+    def c_button_pressed(self) -> None:
         """Respond to C button press."""
         self.desired = SELECT_BRIGHTNESS
         self.player.remembered_mode = self.previous

@@ -11,7 +11,7 @@ class RelayModule(Protocol):
     
     relay_count: ClassVar[int]
 
-    def set_state_of_devices(self, device_pattern: Sequence):
+    def set_state_of_devices(self, device_pattern: Sequence) -> None:
         """Set state of each relay per device_pattern."""
         ...
 
@@ -24,7 +24,9 @@ class NumatoUSBRelayModule(ABC):
 
     relay_count: ClassVar[int]
 
-    def __init__(self, port_address: str, device_mapping: Mapping[int, int] = {}):
+    def __init__(
+        self, port_address: str, device_mapping: Mapping[int, int] = {}
+    ) -> None:
         """Create the object, where device_mapping
            maps device indices to relay indices.
            Establish connection to relay module via serial port."""
@@ -58,16 +60,16 @@ class NumatoUSBRelayModule(ABC):
             v: k for k, v in self._device_to_bit.items()
         }
 
-    def __str__(self):
+    def __str__(self) -> str:
         """__str__."""
         return f"{type(self).__name__} @ {self.port_address}"
     
-    def close(self):
+    def close(self) -> None:
         """Clean up."""
         self._serial_port.close()
         print(f"Relay module {self} closed.")
 
-    def set_state_of_devices(self, device_pattern: Sequence):
+    def set_state_of_devices(self, device_pattern: Sequence) -> None:
         """Set the physical relays per device_pattern."""
         assert len(device_pattern) == self.device_count
         relay_pattern_hex = self._devices_to_relays(device_pattern)
@@ -78,14 +80,14 @@ class NumatoUSBRelayModule(ABC):
         relays = self._get_relays()
         return self._relays_to_devices(relays)
 
-    def _send_command(self, command: str):
+    def _send_command(self, command: str) -> None:
         """Send command and read resulting echo."""
         self._serial_port.reset_input_buffer()
         command_b = bytes(command + '\r', 'utf-8')
         self._serial_port.write(command_b)
         self._serial_port.read(len(command_b) + 1)
 
-    def _set_relays(self, relay_pattern_hex: str):
+    def _set_relays(self, relay_pattern_hex: str) -> None:
         """Send command to relay board to set all relays."""
         self._send_command(f"relay writeall {relay_pattern_hex}")
 

@@ -7,7 +7,7 @@ from configuration import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
 from modes.play_modes import PlayMusicMode
 from music import (
     dimmer, dimmer_sequence, light, measure, part, play,
-    section, sequence,
+    section, Section, sequence,
 )
 from music import(
     act, act_part, drum_part,
@@ -20,11 +20,11 @@ from specialparams import ActionParams, DimmerParams
 class Demo(PlayMusicMode):
     """Version 3 demo."""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices(dimmers=True, relays=True)
 
-    def execute(self):
+    def execute(self) -> None:
         """Execute version 3 demo."""
         sections = [
             self.pre(),
@@ -39,7 +39,7 @@ class Demo(PlayMusicMode):
             section.play()
         sys.exit()
 
-    def pre(self):
+    def pre(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             sequence_part(
@@ -66,7 +66,7 @@ class Demo(PlayMusicMode):
             tempo=90,
         )
 
-    def alternate(self):
+    def alternate(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             sequence_part(
@@ -80,7 +80,7 @@ class Demo(PlayMusicMode):
             tempo=75,
         )
 
-    def rotate(self):
+    def rotate(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             sequence_part(
@@ -99,7 +99,7 @@ class Demo(PlayMusicMode):
             tempo=75,
         )
 
-    def triplett_a(self):
+    def triplett_a(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             drum_part(
@@ -116,7 +116,7 @@ class Demo(PlayMusicMode):
             tempo=80,
         )
 
-    def triplett_b(self):
+    def triplett_b(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             drum_part(
@@ -132,7 +132,7 @@ class Demo(PlayMusicMode):
             tempo=80,
         )
 
-    def rotate_fast(self):
+    def rotate_fast(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         # light(ALL_ON, DimmerParams(transition_on=6))()
         rotations = 11
@@ -153,7 +153,7 @@ class Demo(PlayMusicMode):
             tempo=675,
         )
 
-    def dim(self):
+    def dim(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             part(
@@ -168,7 +168,7 @@ class Demo(PlayMusicMode):
             tempo=60,
         )
 
-    def future_intro(self):
+    def future_intro(self) -> None:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         play(
             measure(

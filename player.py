@@ -21,7 +21,7 @@ class AutoModeDue(Exception):
 class Player(PlayerInterface):
     """Executes one mode at a time."""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         print("Initializing player")
         self.auto_mode = None
@@ -30,7 +30,7 @@ class Player(PlayerInterface):
         self.pace = 0.0
         self.release_queue = []
 
-    def close(self):
+    def close(self) -> None:
         """Clean up."""
         print(f"Player {self} closed.")
 
@@ -45,7 +45,7 @@ class Player(PlayerInterface):
             for k, v in kwargs.items()
         }
 
-    def execute(self, starting_mode_index: int):
+    def execute(self, starting_mode_index: int) -> None:
         """Play the specified mode and all subsequently selected modes."""
         new_mode = starting_mode_index
         while True:
@@ -61,7 +61,7 @@ class Player(PlayerInterface):
             print(f"Executing mode {self.current_mode} {mode.name}")
             new_mode = self._play_mode_until_changed(mode_instance)
 
-    def _play_mode_until_changed(self, mode: ModeInterface):
+    def _play_mode_until_changed(self, mode: ModeInterface) -> None:
         """Play the specified mode until another mode is selected,
            either by the user or automatically.
            Shut down the system if the (body_back) button is held."""
@@ -91,7 +91,7 @@ class Player(PlayerInterface):
             stop: int | None = None, 
             post_delay: float | None = 0.0,
             special: SpecialParams | None = None,
-        ):
+        ) -> None:
         """Execute sequence count times, with pace seconds in between.
            If stop is specified, end the sequence 
            just before the nth pattern.
@@ -120,7 +120,7 @@ class Player(PlayerInterface):
                 self.wait(p, after - before)
         self.wait(post_delay)
 
-    def wait(self, seconds: float | None, elapsed: float = 0):
+    def wait(self, seconds: float | None, elapsed: float = 0) -> None:
         """Wait seconds after adjusting for
            speed_factor and time already elapsed."""
         if (self.auto_mode is not None and
@@ -136,7 +136,7 @@ class Player(PlayerInterface):
                 return
         Button.wait(duration)
 
-    def click(self):
+    def click(self) -> None:
         """Click the specified otherwise unused light relays."""
 
         extra = ''.join(

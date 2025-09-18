@@ -14,7 +14,7 @@ def opposite(pattern: Sequence) -> str:
     """Return pattern or element with the state(s) flipped."""
     return "".join("1" if str(p) == "0" else "0" for p in pattern)
 
-def pp(p: Sequence):
+def pp(p: Sequence) -> None:
     """Pretty print pattern p."""
     print(
         f"  {p[0]} {p[1]} {p[2]}\n"

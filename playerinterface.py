@@ -28,7 +28,7 @@ class PlayerInterface(ABC):
     release_queue: list[tuple[float, Any]] = field(init=False)
 
     @abstractmethod
-    def close(self):
+    def close(self) -> None:
         """Clean up."""
 
     @abstractmethod
@@ -36,7 +36,7 @@ class PlayerInterface(ABC):
         """Replace variables with current runtime values."""
 
     @abstractmethod
-    def execute(self, starting_mode_index: int):
+    def execute(self, starting_mode_index: int) -> None:
         """Play the specified mode and all subsequently selected modes."""
 
     @abstractmethod
@@ -48,7 +48,7 @@ class PlayerInterface(ABC):
             stop: int | None = None, 
             post_delay: float | None = 0.0, 
             special: SpecialParams | None = None,
-        ):
+        ) -> None:
         """Execute sequence count times, with pace seconds in between.
            If stop is specified, end the sequence 
            just before the nth pattern.
@@ -58,11 +58,11 @@ class PlayerInterface(ABC):
     def wait(
         self, 
         seconds: tuple[float, ...] | float | None, elapsed: float = 0,
-    ):
+    ) -> None:
         """Wait seconds after adjusting for
            speed_factor and time already elapsed."""
 
     @abstractmethod
-    def click(self):
+    def click(self) -> None:
         """Generate a small click sound by flipping
            an otherwise unused relay."""

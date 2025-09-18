@@ -24,7 +24,7 @@ class AutoMode(ModeInterface):
     mode_iter: Iterator[AutoModeEntry] = field(init=False)
     trigger_time: float = field(init=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.mode_iter = cycle(self.modes)
 
@@ -33,13 +33,13 @@ class AutoMode(ModeInterface):
         cls, 
         default_duration: float,
         mode_lookup: dict[str, int],
-    ):
+    ) -> None:
         """Prepare for classmethod add to be called."""
         cls.default_duration = default_duration
         cls.mode_lookup = mode_lookup
 
     @classmethod
-    def add(cls, name: str, duration: float | None = None):
+    def add(cls, name: str, duration: float | None = None) -> AutoModeEntry:
         """Add mode with name."""
         try:
             index = cls.mode_lookup[name]
@@ -51,15 +51,15 @@ class AutoMode(ModeInterface):
             duration=duration or cls.default_duration,
         )
     
-    def button_action(self, button: ButtonProtocol):
+    def button_action(self, button: ButtonProtocol) -> None:
         """Respond to button being pressed."""
 
-    def execute(self):
-        """Return next mode in sequence."""
+    def execute(self) -> int:
+        """Return index of next mode in sequence."""
         return self.next_mode()
 
-    def next_mode(self):
-        """Set up next mode in sequence."""
+    def next_mode(self) -> int:
+        """Set up next mode in sequence. Return mode index."""
         mode = next(self.mode_iter)
         self.trigger_time = (
             time.time() + mode.duration
@@ -68,7 +68,7 @@ class AutoMode(ModeInterface):
               f"for {mode.duration} seconds.")
         return(mode.index)
 
-    def exit(self):
+    def exit(self) -> None:
         """Exit auto mode."""
         print("Exiting auto mode.")
         self.player.auto_mode = None

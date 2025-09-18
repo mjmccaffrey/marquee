@@ -22,7 +22,9 @@ from relays import NumatoRL160001, NumatoSSR80001
 class SigTerm(Exception):
     """Triggered to cleanly exit the application."""
 
-def setup_devices(brightness_factor: float):
+def setup_devices(
+        brightness_factor: float
+    ) -> tuple[BellSet, ButtonSet, DrumSet, LightSet]:
     bells = BellSet(
         relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
     )
@@ -72,7 +74,7 @@ class Executor():
             self,
             create_player: Callable,
             setup_devices: Callable,
-        ):
+        ) -> None:
         """Init the (single) executor."""
         self.create_player = create_player
         self.setup_devices = setup_devices
@@ -84,16 +86,16 @@ class Executor():
             'off': self.command_off,
         }
 
-    def close(self):
+    def close(self) -> None:
         """Close dependencies."""
         self.player.close()
         print(f"Executor {self} closed. - !!! close devices")
 
-    def command_calibrate_dimmers(self):
+    def command_calibrate_dimmers(self) -> None:
         """Calibrate dimmers."""
         ShellyDimmer.calibrate_all()
 
-    def command_off(self):
+    def command_off(self) -> None:
         """Turn off all relays and potentially other devices."""
         self.lights.set_relays(ALL_OFF, '0' * EXTRA_COUNT)
         print("Marquee hardware is now partially shut down.")
@@ -106,7 +108,7 @@ class Executor():
             index: int | None = None,
             hidden: bool = False,
             **kwargs,
-    ):
+    ) -> None:
         """Register the mode IDs and everything needed to create an instance."""
         assert name not in self.mode_ids, "Duplicate mode name"
         if index is None:
@@ -124,7 +126,7 @@ class Executor():
             pace: tuple[float, ...] | float | None = None,
             special: SpecialParams | None = None,
             **kwargs,
-        ):
+        ) -> None:
         """Create a Mode object from a sequence and parameters, and register it."""
         self.add_mode(
             name, 
@@ -143,7 +145,7 @@ class Executor():
             speed_factor: float = 1.0,
             light_pattern: str | None = None, 
             brightness_pattern: str | None = None,
-        ):
+        ) -> None:
         """Effects the command-line specified command, mode or pattern(s)."""
         signal.signal(signal.SIGTERM, self.sigterm_received)
         self.bells, self.buttons, self.drums, self.lights = (
@@ -160,7 +162,7 @@ class Executor():
         """Effects the command-line specified command."""
         self.commands[command]()
 
-    def execute_mode(self, mode_index: int, speed_factor: float):
+    def execute_mode(self, mode_index: int, speed_factor: float) -> None:
         """Effects the command-line specified mode."""
         self.player = self.create_player(
             self.modes, 
@@ -177,7 +179,7 @@ class Executor():
         self, 
         light_pattern: str | None, 
         brightness_pattern: str | None,
-    ):
+    ) -> None:
         """Effects the command-line specified pattern(s)."""
         if brightness_pattern is not None:
             self.lights.set_dimmers(brightness_pattern)
@@ -185,7 +187,7 @@ class Executor():
         if light_pattern is not None:
             self.lights.set_relays(light_pattern)
 
-    def sigterm_received(self, signal_number, stack_frame):
+    def sigterm_received(self, signal_number, stack_frame) -> None:
         """Callback for SIGTERM received."""
         print(f"SIGTERM received.")
         raise SigTerm

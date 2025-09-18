@@ -40,7 +40,7 @@ def _interpret_symbols(
 ) -> tuple[float, set, int, bool]:
     """Return duration, pitches, accent, and is_rest
        from a single set of symbols. """
-    def interpret(symbols: str):
+    def interpret(symbols: str) -> tuple[float, set, int, bool]:
         symbols = symbols.replace(' ', '')
         if not symbols:
             raise ValueError("Invalid (empty) symbol.")
@@ -85,7 +85,7 @@ def _interpret_notation(
     beats: int = 4,
 ) -> tuple[Measure, ...]:
     """Return measures from notation using create_note."""
-    def create_measure(measure):
+    def create_measure(measure) -> Measure:
         return Measure(
             tuple(
                 create_note(symbols)
@@ -127,7 +127,7 @@ def act_part(
         beats=4,
     ) -> Part:
     """Produce act part from notation."""
-    def func(symbols: str):
+    def func(symbols: str) -> ActionNote | Rest:
         return act(symbols, lambda: next(acts), pre_call_actions=True)
     acts = iter(actions)
     return part(
@@ -201,7 +201,7 @@ def sequence_part(
     ) -> Part:
     """Produce sequence part from notation."""
 
-    def sequence_gen():
+    def sequence_gen() -> Iterator[Sequence]:
         """Return each sequence in order."""
         for sequence in sequences:
             for _ in range(sequence.measures):

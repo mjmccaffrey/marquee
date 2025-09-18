@@ -44,7 +44,7 @@ from executor import Executor, SigTerm, setup_devices
 from player import Player
 from register_modes import register_modes
 
-def main():
+def main() -> None:
     """Execute Marquee application."""
     try:
         exec = Executor(Player, setup_devices)

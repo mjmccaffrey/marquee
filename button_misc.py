@@ -7,24 +7,24 @@ class ButtonProtocol(Protocol):
     """Button protocol."""
 
     @classmethod
-    def reset(cls):
+    def reset(cls) -> None:
         """Prepare for a button press."""
         ...
 
     @classmethod
-    def wait(cls, seconds: float | None):
+    def wait(cls, seconds: float | None) -> None:
         """Wait until seconds have elapsed or any button is pressed."""
         ...
     
-    def close(self):
+    def close(self) -> None:
         """Clean up."""
         ...
 
-    def button_pressed(self):
+    def button_pressed(self) -> None:
         """Callback for button press."""
         ...
 
-    def virtual_button_pressed(self):
+    def virtual_button_pressed(self) -> None:
         """Callback for virtual button press."""
         ...
 

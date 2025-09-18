@@ -52,7 +52,7 @@ def str_to_bool(arg: str) -> bool:
 def display_help(
     mode_menu: list[tuple[int, str]], 
     commands: dict[str, Callable],
-):
+) -> None:
     """"Display the command-line syntax."""
     print()
     print("Usage:")

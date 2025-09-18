@@ -12,15 +12,15 @@ class Instrument(ABC):
     accent_levels = 0
     pitch_levels = 0
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
-    def close(self):
+    def close(self) -> None:
         """Close."""
         print(f"Instrument {self} closed.")
 
     @abstractmethod
-    def play(self):
+    def play(self) -> None:
         """Play specified pitches."""
 
 class ActionInstrument(Instrument, ABC):
@@ -31,7 +31,7 @@ class RestInstrument(Instrument, ABC):
 
 class RelayInstrument(Instrument, ABC):
     """Abstract instrument that uses relays."""
-    def __init__(self, relays: RelayModule):
+    def __init__(self, relays: RelayModule) -> None:
         super().__init__()
         self.relays = relays
         self.count = self.relays.relay_count
@@ -39,7 +39,7 @@ class RelayInstrument(Instrument, ABC):
         self.pattern = self.relays.get_state_of_devices()
         assert self.pattern == "0" * self.count
 
-    def close(self):
+    def close(self) -> None:
         """Close."""
         self.relays.set_state_of_devices("0" * self.count)
         super().close()
@@ -67,10 +67,10 @@ class BellSet(RelayInstrument, ReleaseableInstrument):
     pitch_levels = 8
     release_time = 0.09
 
-    def __init__(self, relays: RelayModule):
+    def __init__(self, relays: RelayModule) -> None:
         super().__init__(relays)
 
-    def _update_relays(self, state: str, relays: Collection[int]):
+    def _update_relays(self, state: str, relays: Collection[int]) -> None:
         """Set relays to state."""
         pattern = [
             state if i in relays else p
@@ -79,11 +79,11 @@ class BellSet(RelayInstrument, ReleaseableInstrument):
         self.relays.set_state_of_devices(pattern)
         self.pattern = pattern
 
-    def play(self, pitches: set[int]):
+    def play(self, pitches: set[int]) -> None:
         """Play specified pitches."""
         self._update_relays('1', pitches)
 
-    def release(self, pitches: set[int]):
+    def release(self, pitches: set[int]) -> None:
         """Release specified pitches."""
         self._update_relays('0', pitches)
 
@@ -98,10 +98,10 @@ class DrumSet(RelayInstrument):
         0: '0', 1: '1',
     }
 
-    def __init__(self, relays: RelayModule):
+    def __init__(self, relays: RelayModule) -> None:
         super().__init__(relays)
 
-    def play(self, accent: int, pitches: set[int]):
+    def play(self, accent: int, pitches: set[int]) -> None:
         """Play specified pitches."""
         new_pattern = self.pattern
         desired_count = self.accent_to_relay_count[accent]
@@ -115,6 +115,6 @@ class DrumSet(RelayInstrument):
         self.relays.set_state_of_devices(new_pattern)
         self.pattern = new_pattern
 
-    def mirror(self, pattern: str):
+    def mirror(self, pattern: str) -> None:
         self.relays.set_state_of_devices(pattern)
         self.pattern = pattern

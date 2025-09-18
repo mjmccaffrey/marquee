@@ -6,7 +6,7 @@ from configuration import ALL_OFF, ALL_LOW, ALL_ON
 from modes.play_modes import PlayMusicMode
 from music import (
     act_part, bell_part, drum_part, sequence_part,
-    dimmer_sequence_flip, section, sequence,
+    dimmer_sequence_flip, section, Section, sequence,
 )
 from sequences import all_on, blink_all, random_each
 from specialparams import ActionParams, DimmerParams
@@ -14,7 +14,7 @@ from specialparams import ActionParams, DimmerParams
 class SignsSong(PlayMusicMode):
     """Signs song."""
 
-    def execute(self):
+    def execute(self) -> None:
         """Perform Signs song."""
         self.player.lights.set_dimmers(ALL_LOW, force_update=True)
         time.sleep(0.75)
@@ -29,7 +29,7 @@ class SignsSong(PlayMusicMode):
             section.play(tempo=75)
         self.player.wait(None)
 
-    def intro(self):
+    def intro(self) -> Section:
         """Signs song intro."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
@@ -91,7 +91,7 @@ class SignsSong(PlayMusicMode):
             ),
         )
 
-    def refrain(self, play_thru: int):
+    def refrain(self, play_thru: int) -> Section:
         """Signs song refrain."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
@@ -117,7 +117,7 @@ class SignsSong(PlayMusicMode):
             ),
         )
  
-    def transition (self):
+    def transition (self) -> Section:
         """Signs song transition."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(

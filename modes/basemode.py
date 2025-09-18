@@ -14,15 +14,17 @@ class BaseMode(ModeInterface, ABC):
     player: PlayerInterface
     special: SpecialParams | None = None
 
-    def preset_devices(self, dimmers: bool = False, relays: bool = False):
+    def preset_devices(
+        self, dimmers: bool = False, relays: bool = False
+    ) -> None:
         """Preset the dimmers and relays as specified."""
         if isinstance(self.special, MirrorParams):
             self.special.func = self.player.drums.mirror
         if dimmers:
-            print("Presetting DIMMERS")
+            # print("Presetting DIMMERS")
             self.player.lights.set_dimmers(ALL_HIGH, force_update=True)
         if relays:
-            print("Presetting RELAYS")
+            # print("Presetting RELAYS")
             self.player.lights.set_relays(ALL_ON)
 
     @staticmethod
@@ -31,7 +33,7 @@ class BaseMode(ModeInterface, ABC):
         upper: int, 
         current: int, 
         delta: int,
-    ):
+    ) -> int:
         """Return current + delta, wrapping the value
            within the inclusive range lower..upper."""
         value = current + delta % (upper - lower + 1)

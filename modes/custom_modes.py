@@ -19,11 +19,11 @@ from specialparams import DimmerParams
 class BellTest(PlayMusicMode):
     """Test all bells."""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices()
 
-    def execute(self):
+    def execute(self) -> None:
         """Perform bell test."""
         for pitch in range(8):
             self.player.bells.play({pitch})
@@ -37,11 +37,11 @@ class RotateReversible(PlayMode):
     pace: float
     pattern: str
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices(dimmers=True)
 
-    def execute(self):
+    def execute(self) -> None:
         """Display pattern, set next pattern, and exit.
            Called repeatedly until the mode is changed."""
         self.player.lights.set_relays(self.pattern)
@@ -58,7 +58,7 @@ class RotateRewind(PlayMode):
     start_pace: float = 0.1
     special: DimmerParams | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices(
             dimmers=(self.special is None),
@@ -73,7 +73,7 @@ class RotateRewind(PlayMode):
             yield pace
             pace *= 1.1
 
-    def execute(self):
+    def execute(self) -> None:
         """Perform RotateRewind indefinitely."""
         values = [
             (pattern, pace)
@@ -97,7 +97,7 @@ class RandomFade(PlayMode):
        with either a random or specified transition time."""
     transition: float = -1
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices(relays=True)
 
@@ -113,7 +113,7 @@ class RandomFade(PlayMode):
             new = random.randrange(101)
         return new
     
-    def execute(self):
+    def execute(self) -> None:
         """Perform RandomFade indefinitely."""
         for channel in self.player.lights.dimmer_channels:
             channel.next_update = 0
@@ -132,11 +132,11 @@ class EvenOddFade(PlayMode):
     """Fade every-other bulb."""
     pace: float
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices(relays=True)
 
-    def execute(self):
+    def execute(self) -> None:
         """Perform EvenOddFade indefinitely."""
         self.player.lights.set_dimmers(ALL_LOW) 
         delay = 0.5
@@ -161,11 +161,11 @@ class RapidFade(PlayMode):
     """Test of achieving a very fast fade by giving the channel
        2 different set commands in rapid succession."""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices(relays=True)
  
-    def execute(self):
+    def execute(self) -> None:
         """Perform RapidFade indefinitely."""
         self.player.lights.set_relays(ALL_ON)
         while True:
@@ -186,11 +186,11 @@ class BuildBrightness(PlayMode):
     """Brightness change rate test."""
     equal_trans: bool
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices(relays=True)
 
-    def execute(self):
+    def execute(self) -> None:
         self.player.lights.set_dimmers(ALL_LOW)
         brightnesss = [(i + 1) * 10 for i in range(LIGHT_COUNT)]
         transitions = (
@@ -206,11 +206,11 @@ class BuildBrightness(PlayMode):
 class SilentFadeBuild(PlayMode):
     """Alternately build rows / columns from top / bottom / left / right."""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices(relays=True)
  
-    def execute(self):
+    def execute(self) -> None:
         """Perform SilentFadeBuild indefinitely."""
         self.player.lights.set_relays(ALL_ON)
         while True:
@@ -231,13 +231,13 @@ class SilentFadeBuild(PlayMode):
 class FillBulbs(PlayMode):
     """Gag to fill sign with electricity."""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.player.lights.set_dimmers(ALL_LOW)
         self.player.wait(0.5)
         self.preset_devices(relays=True)
  
-    def execute(self):
+    def execute(self) -> None:
         """Bulb juice flows down from the top center."""
         for lights in LIGHTS_BY_ROW:
             self.player.lights.set_dimmer_subset(

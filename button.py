@@ -34,7 +34,7 @@ class Button(ButtonProtocol):
     signal_number: int | None = None
 
     @classmethod
-    def reset(cls):
+    def reset(cls) -> None:
         """Prepare for a button press."""
         # print("Button.reset()")
         cls.which_button_pressed: Button | None = None
@@ -42,14 +42,14 @@ class Button(ButtonProtocol):
         cls.pressed_event = threading.Event()
 
     @classmethod
-    def wait(cls, seconds: float | None):
+    def wait(cls, seconds: float | None) -> None:
         """Wait until seconds have elapsed or any button is pressed."""
         if cls.pressed_event.wait(seconds):
             raise PhysicalButtonPressed(
                 cls.which_button_pressed, cls.button_was_held,
             )
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         if not Button._buttons:
             print(f"Initializing buttons")
@@ -70,16 +70,16 @@ class Button(ButtonProtocol):
     def __str__(self) -> str:
         return self.name
 
-    def close(self):
+    def close(self) -> None:
         """Clean up."""
         self.button.close()
         print(f"Button {self} closed.")
 
-    def button_held(self):
+    def button_held(self) -> None:
         """Callback for button hold."""
         self.button_pressed(held=True)
 
-    def button_pressed(self, held: bool = False):
+    def button_pressed(self, held: bool = False) -> None:
         """Callback for button press."""
         if held:
             print(f"Button <{self}> held")
@@ -89,7 +89,7 @@ class Button(ButtonProtocol):
         Button.which_button_pressed = self
         Button.pressed_event.set()
 
-    def virtual_button_pressed(self, signal_number, stack_frame):
+    def virtual_button_pressed(self, signal_number, stack_frame) -> None:
         """Callback for virtual button press."""
         print(f"Virtual button <{self}> pressed")
         raise VirtualButtonPressed(self)

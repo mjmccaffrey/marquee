@@ -12,11 +12,11 @@ from .music_implementation import (
 from playerinterface import PlayerInterface
 from specialparams import SpecialParams
 
-def set_player(the_player: PlayerInterface):
+def set_player(the_player: PlayerInterface) -> None:
     """Set the Player object used throughout this module."""
     _set_player(the_player)
 
-def play(*measures: Measure, tempo: int):
+def play(*measures: Measure, tempo: int) -> None:
     """Process and then play a series of measures."""
     _expand_sequence_measures(measures)
     _validate_measures(measures)

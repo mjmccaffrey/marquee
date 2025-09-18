@@ -15,12 +15,12 @@ from specialparams import DimmerParams, SpecialParams
 class PlayMode(BaseMode):
     """Base for custom modes."""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices()
         self.direction = +1
 
-    def button_action(self, button: Button):
+    def button_action(self, button: Button) -> int | None:
         """Respond to the button press."""
         assert self.player.current_mode is not None
         new_mode = None
@@ -63,7 +63,7 @@ class PlaySequenceMode(PlayMode):
         post_delay: float | None = 0.0,
         special: SpecialParams | None = None,
         **kwargs,
-    ):
+    ) -> None:
         """Initialize."""
         super().__init__(player, name, special)
         self.sequence = sequence
@@ -85,7 +85,7 @@ class PlaySequenceMode(PlayMode):
             relays = isinstance(special, DimmerParams),
         )
 
-    def play_sequence_once(self):
+    def play_sequence_once(self) -> None:
         """Play established sequence once."""
         self.player.replace_kwarg_values(self.kwargs)
         self.player.play_sequence(
@@ -96,7 +96,7 @@ class PlaySequenceMode(PlayMode):
             special=self.special,
         )
 
-    def execute(self):
+    def execute(self) -> None:
         """Play the mode."""
         while True:
             self.play_sequence_once()
@@ -105,7 +105,7 @@ class PlaySequenceMode(PlayMode):
 class PlayMusicMode(PlayMode):
     """Base for playing music."""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize."""
         # self.preset_devices(
         #     dimmers = not isinstance(self.special, DimmerParams),

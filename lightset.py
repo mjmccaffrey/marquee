@@ -17,7 +17,7 @@ class LightSet:
     dimmers: list[ShellyDimmer]
     brightness_factor_init: InitVar[float]
 
-    def __post_init__(self, brightness_factor_init: float):
+    def __post_init__(self, brightness_factor_init: float) -> None:
         """Initialize."""
         # channel[i] maps to light[i], 0 <= i < LIGHT_COUNT
         self.dimmer_channels: list[DimmerChannel] = [
@@ -32,11 +32,11 @@ class LightSet:
         self.brightness_factor = brightness_factor_init
 
     @property
-    def brightness_factor(self):
+    def brightness_factor(self) -> float:
         return self._brightness_factor
     
     @brightness_factor.setter
-    def brightness_factor(self, value):
+    def brightness_factor(self, value) -> None:
         self._brightness_factor = value
         print("Brightness factor is now ", self._brightness_factor)
 
@@ -60,7 +60,7 @@ class LightSet:
             self,
             light_pattern: list | str, 
             special: DimmerParams,
-    ):
+    ) -> None:
         """Set dimmers per the specified pattern and special.
            Adjust for brightness_factor."""
         bright_values: dict[int, int] = {
@@ -99,7 +99,7 @@ class LightSet:
             light_pattern: str,
             extra_pattern: str | None = None,
             special: SpecialParams | None = None,
-        ):
+        ) -> None:
         """Set all lights and extra relays per supplied patterns and special.
            Set light_pattern property, always as string
            rather than list."""
@@ -126,7 +126,7 @@ class LightSet:
             brightnesses: list[int] | None = None,
             transitions: list[float] | float = TRANSITION_DEFAULT,
             force_update: bool = False,
-        ):
+        ) -> None:
         """Set the dimmers per the supplied pattern or brightnesses,
            and transition times.  If pattern, apply bulb_adjustments.
            Adjust for brightness_factor."""
@@ -156,7 +156,7 @@ class LightSet:
             lights: list[int],
             brightness: int,
             transition: float,
-    ):
+    ) -> None:
         """Set lights (indexes) / dimmer channels 
            to brightness with transition.
            Adjust for brightness_factor."""
@@ -172,7 +172,7 @@ class LightSet:
     def _execute_dimmer_commands(
             self,
             updates: list[tuple[DimmerChannel, int, float]],
-    ):
+    ) -> None:
         """Set each dimmer channel to brightness at transition rate."""
         commands = [
             c.make_set_command(
@@ -191,7 +191,7 @@ class LightSet:
         return self._relay_pattern
     
     @relay_pattern.setter
-    def relay_pattern(self, value):
+    def relay_pattern(self, value) -> None:
         """Update the active light pattern."""
         self._relay_pattern = value
 

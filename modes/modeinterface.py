@@ -13,9 +13,9 @@ class ModeInterface(ABC):
     name: str
 
     @abstractmethod
-    def button_action(self, button: ButtonProtocol):
+    def button_action(self, button: ButtonProtocol) -> None:
         """Respond to button being pressed."""
 
     @abstractmethod
-    def execute(self):
+    def execute(self) -> None:
         """Play the mode."""

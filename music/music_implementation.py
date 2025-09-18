@@ -16,7 +16,7 @@ from specialparams import (
     ActionParams, DimmerParams, SpecialParams,
 )
 
-def _set_player(the_player: PlayerInterface):
+def _set_player(the_player: PlayerInterface) -> None:
     """Set the Player object used throughout this module."""
     global player
     player = the_player
@@ -32,7 +32,7 @@ class BaseNote(Element, ABC):
     duration: float
 
     @abstractmethod
-    def play(self, player: PlayerInterface):
+    def play(self, player: PlayerInterface) -> None:
         """Play single BaseNote (abstract)."""
 
 @dataclass(frozen=True)
@@ -40,7 +40,7 @@ class Rest(BaseNote):
     """Musical rest."""
     instrument: ClassVar[type[Instrument]] = RestInstrument
 
-    def play(self, player: PlayerInterface):
+    def play(self, player: PlayerInterface) -> None:
         """Play single rest (do nothing)."""
 
 @dataclass(frozen=True)
@@ -49,11 +49,11 @@ class ActionNote(BaseNote):
     instrument: ClassVar[type[Instrument]] = ActionInstrument
     actions: tuple[Callable, ...]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate."""
         assert self.actions
 
-    def play(self, player: PlayerInterface):
+    def play(self, player: PlayerInterface) -> None:
         """Play single ActionNote."""
         for action in self.actions:
             action()
@@ -62,7 +62,7 @@ class ActionNote(BaseNote):
 class ReleasableNote(BaseNote, ABC):
     """Note that requires releasing after playing."""
 
-    def add_to_release_queue(self):
+    def add_to_release_queue(self) -> None:
         """Add note to release queue immediately after 
            concrete class plays it."""
         assert isinstance(self.instrument, ReleaseableInstrument)
@@ -76,16 +76,16 @@ class BellNote(ReleasableNote):
     instrument: ClassVar[type[ReleaseableInstrument]] = BellSet
     pitches: set[int]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate."""
         assert self.pitches
 
-    def play(self, player: PlayerInterface):
+    def play(self, player: PlayerInterface) -> None:
         """Play single BellNote."""
         player.bells.play(self.pitches)
         self.add_to_release_queue()
 
-    def release(self, player: PlayerInterface):
+    def release(self, player: PlayerInterface) -> None:
         """Release all BellNotes."""
         player.bells.release(self.pitches)
 
@@ -96,11 +96,11 @@ class DrumNote(BaseNote):
     accent: int
     pitches: set
     
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate."""
         assert self.pitches
 
-    def play(self, player: PlayerInterface):
+    def play(self, player: PlayerInterface) -> None:
         """Play single DrumNote."""
         player.drums.play(self.accent, self.pitches)
 
@@ -110,12 +110,12 @@ class NoteGroup(Element):
     notes: tuple[BaseNote, ...]
     duration: float = 0.0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate."""
         assert self.notes
         assert all(n.duration == 0.0 for n in self.notes)
 
-    def play(self, player: PlayerInterface):
+    def play(self, player: PlayerInterface) -> None:
         """Play all notes in group."""
         for note in self.notes:
             note.play(player)
@@ -126,7 +126,7 @@ class Measure(Element):
     elements: tuple[Element, ...]
     beats: int
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate."""
         assert self.elements
 
@@ -141,7 +141,7 @@ class SequenceMeasure(Measure):
     beats: int
     patterns: Iterator = field(init=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Create iterator."""
         object.__setattr__(self, 'patterns', itertools.cycle(self.sequence(**self.kwargs)))
 
@@ -154,7 +154,7 @@ class Sequence(Element):
     kwargs: dict[str, Any]
     iter: Iterator = field(init=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Create iterator."""
         object.__setattr__(self, 'iter', itertools.cycle(self.sequence(**self.kwargs)))
 
@@ -164,14 +164,14 @@ class Part(Element):
     measures: tuple[Measure, ...]
     default_accent: int = 0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate and process measures."""
         assert self.measures
         if self.default_accent:
             self._apply_accent(self.default_accent, self.measures)
 
     @staticmethod
-    def _apply_accent(accent: int, measures: tuple[Measure, ...]):
+    def _apply_accent(accent: int, measures: tuple[Measure, ...]) -> None:
         """Apply default accent (drums only)."""
         for measure in measures:
             elements = tuple(
@@ -191,19 +191,19 @@ class Section(Element):
     tempo: int
     measures: tuple[Measure, ...] = field(init=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate and process parts so they are ready to play."""
         assert self.parts
         if self.beats is not None:
             self._apply_beats(self.beats, self.parts)
         object.__setattr__(self, 'measures', self._prepare_parts(self.parts))
 
-    def play(self, tempo: int = 0):
+    def play(self, tempo: int = 0) -> None:
         """Play already-generated measures comprising Section."""
         _play_measures(self.measures, tempo = tempo or self.tempo)
 
     @staticmethod
-    def _apply_beats(beats: int, parts: tuple[Part, ...]):
+    def _apply_beats(beats: int, parts: tuple[Part, ...]) -> None:
         """Apply default # of beats to all measures in the Section."""
         for part in parts:
             measures = tuple(
@@ -283,7 +283,7 @@ class Section(Element):
             elements_out.append(Rest(rest_accumulated))
         return Measure(tuple(elements_out), beats=beats)
 
-def _expand_sequence_measures(measures: tuple[Measure, ...]):
+def _expand_sequence_measures(measures: tuple[Measure, ...]) -> None:
     """Populate SequenceMeasures with ActionNotes."""
     for measure in measures:
         if not isinstance(measure, SequenceMeasure):
@@ -303,7 +303,7 @@ def _expand_sequence_measures(measures: tuple[Measure, ...]):
         )
         object.__setattr__(measure, 'elements', elements)
 
-def _validate_measures(measures: tuple[Measure, ...]):
+def _validate_measures(measures: tuple[Measure, ...]) -> None:
     """Confirm that measures are ready to play."""
     assert all(
         isinstance(element, BaseNote)
@@ -317,7 +317,7 @@ def _validate_measures(measures: tuple[Measure, ...]):
     )
 
 @staticmethod
-def _make_parts_equal_length(parts: tuple[Part, ...]):
+def _make_parts_equal_length(parts: tuple[Part, ...]) -> None:
     # Make all parts have the same # of measures
     longest = max(len(part.measures) for part in parts)
     for part in parts:
@@ -329,10 +329,10 @@ def _make_parts_equal_length(parts: tuple[Part, ...]):
             )
             object.__setattr__(part, 'measures', measures)
 
-def _play_measure(measure: Measure):
+def _play_measure(measure: Measure) -> None:
     """Play all notes in measure."""
 
-    def _wait(duration: float):
+    def _wait(duration: float) -> None:
         """Wait for duration, and also release any due notes."""
         print(f"WAIT {duration}")
         while True:
@@ -372,7 +372,7 @@ def _play_measure(measure: Measure):
     _wait((measure.beats - beat) * player.pace)
     assert not player.release_queue
 
-def _play_measures(measures: tuple[Measure, ...], tempo: int):
+def _play_measures(measures: tuple[Measure, ...], tempo: int) -> None:
     """Play a series of measures, which must be ready to play."""
     player.pace = 60 / tempo
     for measure in measures:

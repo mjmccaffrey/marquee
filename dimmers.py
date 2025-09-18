@@ -19,7 +19,7 @@ class ShellyDimmer(ABC):
 
     _dimmers: list["ShellyDimmer"] = []
 
-    def __init__(self, index: int, ip_address: str):
+    def __init__(self, index: int, ip_address: str) -> None:
         """Create the dimmer instance."""
         self._dimmers.append(self)
         self.index = index
@@ -41,13 +41,13 @@ class ShellyDimmer(ABC):
             print(f"*** Error: {e} ***")
             raise OSError from None
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{type(self).__name__} {self.index} @ {self.ip_address}"
     
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<{self}>"
     
-    def close(self):
+    def close(self) -> None:
         """Clean up."""
         print(f"Dimmer {self} closed.")
 
@@ -92,7 +92,7 @@ class ShellyDimmer(ABC):
         return [task.result() for task in tasks]
 
     @classmethod
-    def calibrate_all(cls):
+    def calibrate_all(cls) -> None:
         """ Execute calibration on all dimmers on each successive channel. """
         print("Calibrating dimmers")
         # Set all lights all the way on.
@@ -125,7 +125,7 @@ class DimmerChannel:
             index: int,
             id: int, 
             brightness: int,
-        ):
+        ) -> None:
         """Create the dimmer channel instance."""
         self.dimmer = dimmer
         self.index = index
@@ -135,10 +135,10 @@ class DimmerChannel:
         self.next_update: float = 0
         self.set()  # Ensure on==true
             
-    def __str__(self):
+    def __str__(self) -> str:
         return (f"dimmer {self.dimmer.index} channel {self.index}")
     
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<{self}>"
     
     def make_set_command(
@@ -173,7 +173,7 @@ class DimmerChannel:
             brightness: int | None = None, 
             offset: int | None = None,
             transition: float | None = None, 
-    ):
+    ) -> None:
         """Set the dimmer channel per requested values and state."""
         command = self.make_set_command(
             brightness=brightness,
