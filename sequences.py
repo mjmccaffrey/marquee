@@ -10,9 +10,11 @@ from configuration import (
     LIGHTS_BY_SIDE, LIGHTS_BOTTOM, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_TOP
 )
 
+
 def opposite(pattern: Sequence) -> str:
     """Return pattern or element with the state(s) flipped."""
     return "".join("1" if str(p) == "0" else "0" for p in pattern)
+
 
 def pp(p: Sequence) -> None:
     """Pretty print pattern p."""
@@ -24,13 +26,16 @@ def pp(p: Sequence) -> None:
         f"  {p[8]} {p[7]} {p[6]}\n"
     )
 
+
 def all_on() -> Iterator[str]:
     """All lights on."""
     yield ALL_ON
 
+
 def all_off() -> Iterator[str]:
     """All lights off."""
     yield ALL_OFF
+
 
 def blink_all(on_first=True) -> Iterator[str]:
     """All lights on and then off."""
@@ -41,18 +46,22 @@ def blink_all(on_first=True) -> Iterator[str]:
         yield next(all_off())
         yield next(all_on())
 
+
 def even_on() -> Iterator[str]:
     """Even-numbered lights on; others off."""
     yield ''.join('1' if y % 2 else '0' for y in range(LIGHT_COUNT))
+
 
 def even_off() -> Iterator[str]:
     """Even-numbered lights off; others on."""
     yield opposite(next(even_on()))
 
+
 def blink_alternate() -> Iterator[str]:
     """Every other light on and then off."""
     yield next(even_on())
     yield next(even_off())
+
 
 def each_row(pattern="1") -> Iterator[str]:
     """Each row, starting at the top."""
@@ -62,6 +71,7 @@ def each_row(pattern="1") -> Iterator[str]:
             pattern if i in row else opp
             for i in range(LIGHT_COUNT)
         )
+
 
 def lights_in_groups(rows=True, from_top_left=True) -> Iterator[list[int]]:
     """Return lights in each group section."""
@@ -73,7 +83,8 @@ def lights_in_groups(rows=True, from_top_left=True) -> Iterator[list[int]]:
         groups = reversed(groups)
     for group in groups:
         yield group
-    
+
+
 def build(pattern="1", rows=True, from_top_left=True) -> Iterator[str]:
     """Successive rows or cols on / off."""
     assert len(pattern) == 1
@@ -82,6 +93,7 @@ def build(pattern="1", rows=True, from_top_left=True) -> Iterator[str]:
         for light in group:
             lights[light] = pattern
         yield ''.join(l for l in lights)
+
 
 def rotate(pattern="1"+"0"*(LIGHT_COUNT-1), clockwise=True) -> Iterator[str]:
     """Rotate a pattern of lights counter/clockwise.
@@ -94,6 +106,7 @@ def rotate(pattern="1"+"0"*(LIGHT_COUNT-1), clockwise=True) -> Iterator[str]:
         rotated_pattern = pattern[i:] + pattern[:i]
         yield rotated_pattern
 
+
 def rotate_sides(pattern="1", clockwise=True) -> Iterator[str]:
     """Rotate lights 1 side at a time."""
     sequence = LIGHTS_BY_SIDE if clockwise else reversed(LIGHTS_BY_SIDE)
@@ -103,6 +116,7 @@ def rotate_sides(pattern="1", clockwise=True) -> Iterator[str]:
             pattern if i in lights else opp
             for i in range(LIGHT_COUNT)
         )
+
 
 def opposite_corner_pairs() -> Iterator[str]:
     """Alternate the lights in 2 diagonally-opposite corners
@@ -125,6 +139,7 @@ def opposite_corner_pairs() -> Iterator[str]:
         yield pattern
         yield ALL_ON
 
+
 def rotate_build(clockwise=True) -> Iterator[str]:
     """Successive lights on, rotating around."""
     if clockwise:
@@ -135,6 +150,7 @@ def rotate_build(clockwise=True) -> Iterator[str]:
     for l in light_range:
         lights[l] = '1'
         yield ''.join(e for e in lights)
+
 
 def rotate_build_flip(*, count: int, clockwise=True) -> Iterator[str]:
     """Successive lights on / off, rotating around."""
@@ -148,12 +164,13 @@ def rotate_build_flip(*, count: int, clockwise=True) -> Iterator[str]:
         lights[i] = opposite(lights[i])
         yield ''.join(e for e in lights)
 
+
 def center_alternate() -> Iterator[str]:
     """Alternate the top and bottom center lights."""
     yield "010000000000"
     yield "000000010000"
 
-@staticmethod
+
 def _random_light_gen() -> Iterator[int]:
     """Generate random light indexes 
        that never immediately repeat."""
@@ -163,6 +180,7 @@ def _random_light_gen() -> Iterator[int]:
         while new == old:
             new = random.randrange(LIGHT_COUNT)
         yield new
+
 
 def random_flip_start_blank(*, pattern: str = "1") -> Iterator[str]:
     """Random light on / off, never immediately repeating a light.
@@ -178,6 +196,7 @@ def random_flip_start_blank(*, pattern: str = "1") -> Iterator[str]:
             opp * (LIGHT_COUNT - index - 1)
         )
 
+
 def random_flip(*, light_pattern) -> Iterator[str]:
     """Random light on / off, never immediately repeating a light.
        Pass in current / starting state of lights.
@@ -189,6 +208,7 @@ def random_flip(*, light_pattern) -> Iterator[str]:
         lights[index] = opposite(lights[index])
         yield ''.join(e for e in lights)
 
+
 def random_once_each() -> Iterator[list[int]]:
     """Yield random light index until all 
        have been yielded exactly once."""
@@ -197,7 +217,9 @@ def random_once_each() -> Iterator[list[int]]:
     while indices:
         yield [indices.pop()]
 
+
 def random_each() -> Iterator[list[int]]:
     """"Yield indefinitely a single random sequence of light indexes."""
     for index in itertools.cycle(random_once_each()):
         yield index
+

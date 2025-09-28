@@ -3,14 +3,15 @@
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Callable
 
 from button_misc import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import LightSet
-from modes.automode import AutoMode
+from modes.background_modes import BackgroundMode
 from modes.modeconstructor import ModeConstructor
 from specialparams import SpecialParams
+
 
 @dataclass
 class PlayerInterface(ABC):
@@ -21,15 +22,19 @@ class PlayerInterface(ABC):
     drums: DrumSet
     lights: LightSet
     speed_factor: float
-    auto_mode: AutoMode | None = field(init=False)
     current_mode: int | None = field(init=False)
     remembered_mode: int | None = field(init=False)
     pace: float = field(init=False)
-    release_queue: list[tuple[float, Any]] = field(init=False)
+    bg_mode_instances: dict = field(init=False)
+    event_queue: list = field(init=False)
 
     @abstractmethod
     def close(self) -> None:
         """Clean up."""
+
+    @abstractmethod
+    def add_event(self, time: float, func: Callable):
+        """Add event to queue; func will be called at time."""
 
     @abstractmethod
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
@@ -66,3 +71,4 @@ class PlayerInterface(ABC):
     def click(self) -> None:
         """Generate a small click sound by flipping
            an otherwise unused relay."""
+

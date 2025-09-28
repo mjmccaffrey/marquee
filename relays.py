@@ -6,6 +6,7 @@ from typing import ClassVar, Protocol
 
 import serial  # type: ignore
 
+
 class RelayModule(Protocol):
     """Protocol for any relay module."""
     
@@ -18,6 +19,7 @@ class RelayModule(Protocol):
     def get_state_of_devices(self) -> str:
         """Get state of each relay, output device pattern."""
         ...
+
 
 class NumatoUSBRelayModule(ABC):
     """Supports Numato USB Relay Modules."""
@@ -119,12 +121,15 @@ class NumatoUSBRelayModule(ABC):
         )
         return device_pattern
 
+
 class NumatoRL160001(NumatoUSBRelayModule):
     """Supports the Numato RL160001 16 Channel USB 
        Mechanical Relay Module."""
     relay_count: ClassVar = 16
 
+
 class NumatoSSR80001(NumatoUSBRelayModule):
     """Supports the Numato SSR80001 8 Channel USB 
        Solid State Relay Module."""
     relay_count: ClassVar = 8
+

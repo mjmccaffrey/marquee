@@ -11,6 +11,7 @@ from music import (
 from sequences import all_on, blink_all, random_each
 from specialparams import ActionParams, DimmerParams
 
+
 class SignsSong(PlayMusicMode):
     """Signs song."""
 
@@ -136,3 +137,4 @@ class SignsSong(PlayMusicMode):
                 ),
             ),
         )
+

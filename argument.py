@@ -8,6 +8,7 @@ from argparse import (
 )
 from configuration import LIGHT_COUNT
 
+
 class ArgumentParserImproved(ArgumentParser):
     """
     Causes parse_args to not exit, regardless of the error.
@@ -38,6 +39,7 @@ class ArgumentParserImproved(ArgumentParser):
         """ Do not exit when certain other errors occur. """
         raise ValueError(f"Argparse error:{status}:{message}")
 
+
 def str_to_bool(arg: str) -> bool:
     """ Map English words to booleans. """
     values = {
@@ -48,6 +50,7 @@ def str_to_bool(arg: str) -> bool:
         return values[arg.lower()]
     except KeyError:
         raise ValueError()
+
 
 def display_help(
     mode_menu: list[tuple[int, str]], 
@@ -81,6 +84,7 @@ def display_help(
         print(f'  {command}')
     print()
 
+
 def validate_brightness_factor(arg: str) -> float:
     """ Return arg as float if it is a valid brightness factor,
         otherwise raise exception. """
@@ -92,6 +96,7 @@ def validate_brightness_factor(arg: str) -> float:
         raise ValueError(f"Invalid brightness factor: {arg}")
     else:
         return value
+
 
 def validate_speed_factor(arg: str) -> float:
     """ Return arg as float if it is a valid speed factor,
@@ -105,6 +110,7 @@ def validate_speed_factor(arg: str) -> float:
     else:
         return value
     
+
 def validate_light_pattern(arg: str) -> str:
     """ Return arg if it is a valid light pattern, 
         otherwise raise exception. """
@@ -114,6 +120,7 @@ def validate_light_pattern(arg: str) -> str:
     ): 
         raise ValueError(f"Invalid light pattern: {arg}")
     return arg
+
 
 def validate_brightness_pattern(arg: str) -> str:
     """ Return normalized arg if it is a valid brightness pattern, 
@@ -125,6 +132,7 @@ def validate_brightness_pattern(arg: str) -> str:
     ): 
         raise ValueError(f"Invalid brightness pattern: {arg}")
     return arg_normalized
+
 
 def parse_arguments(
     mode_ids: dict[str, int], 
@@ -155,6 +163,7 @@ def parse_arguments(
         return top_p.parse_args()
     except (ArgumentError, ArgumentTypeError, ValueError) as err:
         raise ValueError()
+
 
 def process_arguments(
     mode_ids: dict[str, int], 
@@ -195,3 +204,4 @@ def process_arguments(
     else:
         raise Exception("Unexpected error processing command line")
     return args
+

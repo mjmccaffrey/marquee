@@ -1,37 +1,36 @@
 """Marquee Lighted Sign Project - register_modes"""
 
-from configuration import SELECT_MODE, SELECT_BRIGHTNESS, LIGHT_COUNT
+from configuration import (
+    MODE_DEFAULT, MODE_SELECT_MODE, MODE_SELECT_BRIGHTNESS, LIGHT_COUNT,
+)
 from executor import Executor
-from modes.automode import AutoMode
+from modes.background_modes import SequenceBGMode
 from modes.custom_modes import (
     BellTest, BuildBrightness, EvenOddFade, FillBulbs, RotateReversible, 
     RandomFade, RapidFade, RotateRewind, SilentFadeBuild,
 )
 from modes.select_modes import BrightnessSelectMode, ModeSelectMode
 from sequences import (
-    all_on, 
-    all_off,
-    blink_all,
-    blink_alternate,
-    even_on,
-    even_off,
-    opposite_corner_pairs,
-    rotate,
-    random_flip,
-    rotate_sides,
+    all_on, all_off, blink_all, blink_alternate, even_on, even_off,
+    opposite_corner_pairs, rotate, random_flip, rotate_sides,
 )
 from signs_song import SignsSong
 from specialparams import DimmerParams, MirrorParams
+
 
 def register_modes(exec: Executor) -> None:
     """Register all modes."""
     register_special_modes()
     register_relay_modes()
+    # register_interactive_modes()
     register_silent_modes()
+    register_test_modes()
     # register_pyohio_2025_presentation_modes()
 
+def register_dimmer_modes():
+    """"""
     exec.add_mode("rapid_fade", RapidFade)
-    exec.add_sequence_mode("blink_alternate_fade",
+    exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, pace=4, 
         special=DimmerParams(
             transition_on=1.0,
@@ -78,9 +77,6 @@ def register_modes(exec: Executor) -> None:
     exec.add_mode("even_odd_fade", EvenOddFade, pace=0.5)
     # exec.add_mode("random_fade_steady", RandomFade, transition=2)
 
-    # exec.add_mode("build_brightness_equal", BuildBrightness, equal_trans=True)
-    # exec.add_mode("build_brightness_unequal", BuildBrightness, equal_trans=False)
-
     exec.add_mode("rotate_reversible_1", 
         RotateReversible, pace=0.35, 
         pattern = "1" + "0" * (LIGHT_COUNT - 1))
@@ -102,20 +98,22 @@ def register_modes(exec: Executor) -> None:
     )
 
 
-    exec.add_mode("bell_test", BellTest)
-
-
 def register_special_modes() -> None:
     """"""
     exec.add_mode("select_mode", ModeSelectMode, 
-        index=SELECT_MODE, hidden=True)
+        index=MODE_SELECT_MODE, hidden=True,
+    )
     exec.add_mode("select_brightness", BrightnessSelectMode, 
-        index=SELECT_BRIGHTNESS, hidden=True)
+        index=MODE_SELECT_BRIGHTNESS, hidden=True,
+    )
+    exec.add_sequence_mode("all_off", all_off,
+        index=MODE_DEFAULT,
+    )
+
 
 def register_relay_modes() -> None:
     """"""
     exec.add_sequence_mode("all_on", all_on)
-    exec.add_sequence_mode("all_off", all_off)
     exec.add_sequence_mode("even_on", even_on)
     exec.add_sequence_mode("even_off", even_off)
     exec.add_sequence_mode("blink_all", blink_all, pace=1)
@@ -126,6 +124,7 @@ def register_relay_modes() -> None:
     exec.add_sequence_mode("random_flip", random_flip, 
         pace=0.5, light_pattern='LIGHT_PATTERN',
     )
+
 
 def register_silent_modes() -> None:
     """"""
@@ -171,19 +170,31 @@ def register_silent_modes() -> None:
     exec.add_mode("silent_random_steady_trans", RandomFade, transition=0.5)
     exec.add_mode("silent_random_random_trans", RandomFade)
 
-    AutoMode.init(default_duration=60, mode_lookup=exec.mode_ids)
-    exec.add_mode("silent_variety_group", AutoMode,
+    SequenceBGMode.init(
+        default_duration=60, 
+        modes=exec.modes,
+        mode_ids=exec.mode_ids,
+    )
+    exec.add_mode("silent_variety_group", SequenceBGMode,
         modes=[
-            AutoMode.add("silent_blink_alternate_slow"),
-            AutoMode.add("silent_random_flip_medium"),
-            AutoMode.add("silent_random_flip_fast", 15.0),
-            AutoMode.add("silent_blink_all_slowwww"),
-            AutoMode.add("silent_fade_build"),
-            AutoMode.add("silent_rotate_slight_fade"),
-            AutoMode.add("silent_random_steady_trans"),
-            AutoMode.add("silent_random_random_trans"),
+            SequenceBGMode.add("silent_blink_alternate_slow"),
+            SequenceBGMode.add("silent_random_flip_medium"),
+            SequenceBGMode.add("silent_random_flip_fast", 15.0),
+            SequenceBGMode.add("silent_blink_all_slowwww"),
+            SequenceBGMode.add("silent_fade_build"),
+            SequenceBGMode.add("silent_rotate_slight_fade"),
+            SequenceBGMode.add("silent_random_steady_trans"),
+            SequenceBGMode.add("silent_random_random_trans"),
         ],
     )
+
+
+def register_test_modes() -> None:
+    """"""
+    exec.add_mode("build_brightness_equal", BuildBrightness, equal_trans=True)
+    exec.add_mode("build_brightness_unequal", BuildBrightness, equal_trans=False)
+    exec.add_mode("bell_test", BellTest)
+
 
 def register_pyohio_2025_presentation_modes() -> None:
     """PyOhio 2025 presentation."""
@@ -216,3 +227,4 @@ def register_pyohio_2025_presentation_modes() -> None:
     exec.add_sequence_mode("section_3", all_off)
     exec.add_mode("signs", SignsSong, special=DimmerParams())
     exec.add_sequence_mode("section_4", all_off)
+

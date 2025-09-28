@@ -2,23 +2,22 @@
 
 from collections.abc import Callable, Iterator
 
-from .music_implementation import (
+from .music_elements import (
     ActionNote, BaseNote, BellNote, DrumNote,
-    Measure, Part, Rest,
-    Sequence, SequenceMeasure,
+    Measure, Part, Rest, Sequence, SequenceMeasure,
 )
 from .music_interface import light, part
 from specialparams import SpecialParams
 
-note_duration: dict[str, float] = {
+note_duration_map: dict[str, float] = {
     '𝅝': 4,     '𝅗𝅥': 2,      '♩': 1,
     '♪': 0.5,   '𝅘𝅥𝅯': 0.25,  '𝅘𝅥𝅰': 0.125,
 }
-rest_duration: dict[str, float] = {
+rest_duration_map: dict[str, float] = {
     '𝄻': 4,    '𝄼': 2,      '𝄽': 1,
     '𝄾': 0.5,   '𝄿': 0.25,  '𝅀': 0.125,
 }
-symbol_duration = note_duration | rest_duration
+symbol_duration_map = note_duration_map | rest_duration_map
 bell_pitch_map = {
         'e': 7, 'd': 6,
         'c': 5, 'b': 4,
@@ -32,6 +31,7 @@ drum_accent_map = {
 drum_pitch_map = {
     'h': 0, 'l': 1,
 }
+
 
 def _interpret_symbols(
     symbols: str, 
@@ -55,29 +55,31 @@ def _interpret_symbols(
             pitches = {pitch_map[symbols[0]]} | pitches
         else:
             if any(
-                s not in symbol_duration 
+                s not in symbol_duration_map 
                 for s in symbols
             ):
                 raise ValueError(f"Invalid symbol in '{symbols}'.")
             if any(
-                s1 in rest_duration and s2 in note_duration 
+                s1 in rest_duration_map and s2 in note_duration_map 
                 for s1 in symbols for s2 in symbols
             ):
                 raise ValueError("Cannot mix note and rest symbols.")
-            is_rest: bool = symbols[0] in rest_duration
+            is_rest: bool = symbols[0] in rest_duration_map
             duration = sum(
-                (rest_duration if is_rest else note_duration)[s]
+                (rest_duration_map if is_rest else note_duration_map)[s]
                 for s in symbols
             )
             pitches, accent = set(), 0
         return duration, pitches, accent, is_rest
     return interpret(symbols)
 
+
 def _each_notation_measure(notation: str) -> Iterator[str]:
     """Yield non-empty measures of notation."""
     for measure in notation.split('|'):
         if measure.replace(' ', ''):
             yield measure
+
 
 def _interpret_notation(
     create_note: Callable[[str], BaseNote],
@@ -98,12 +100,14 @@ def _interpret_notation(
         for measure in _each_notation_measure(notation)
     )
 
+
 def rest(symbols: str) -> Rest:
     """Validate symbols and return Rest."""
     duration, pitches, accent, is_rest = _interpret_symbols(symbols)
     if pitches or accent:
         raise ValueError("Rest cannot have pitch or accent.")
     return Rest(duration)
+
 
 def act(
         symbols: str, 
@@ -121,6 +125,7 @@ def act(
         actions = tuple(action() for action in actions)
     return ActionNote(duration, actions)
 
+
 def act_part(
         notation: str, 
         *actions: Callable,
@@ -133,6 +138,7 @@ def act_part(
     return part(
         *_interpret_notation(func, notation, beats)
     )
+
 
 def bell(symbols: str) -> BellNote | Rest:
     """Validate symbols and return BellNote or Rest."""
@@ -148,11 +154,13 @@ def bell(symbols: str) -> BellNote | Rest:
         raise ValueError("Bell note must have at least one pitch.")
     return BellNote(duration, pitches=pitches)
 
+
 def bell_part(notation: str, beats=4) -> Part:
     """Produce bell part from notation."""
     return part(
         *_interpret_notation(bell, notation, beats)
     )
+
 
 def drum(symbols: str) -> DrumNote | Rest:
     """Validate symbols and return DrumNote or Rest."""
@@ -167,12 +175,14 @@ def drum(symbols: str) -> DrumNote | Rest:
         raise ValueError("Drum note must have at least one pitch.")
     return DrumNote(duration, accent, pitches)
 
+
 def drum_part(notation: str, accent: str = '', beats=4) -> "Part":
     """Produce drum part from notation."""
     return part(
         *_interpret_notation(drum, notation, beats),
         accent=drum_accent_map[accent],
     )
+
 
 def sequence_measure(
     symbols: str,
@@ -193,6 +203,7 @@ def sequence_measure(
         count=count, 
         special=special,
     )
+
 
 def sequence_part(
         notation: str, 
@@ -227,3 +238,4 @@ def sequence_part(
         assert len(measure_tuple) == 1
         measures.append(measure_tuple[0])
     return part(*measures)
+

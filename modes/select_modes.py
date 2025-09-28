@@ -4,15 +4,16 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import time
 
-from .basemode import BaseMode
+from .foregroundmode import ForegroundMode
 from button import Button
 from configuration import (
     ALL_OFF, LIGHT_COUNT, SELECT_BRIGHTNESS, SELECT_MODE
 )
 from sequences import rotate_build_flip
 
+
 @dataclass(kw_only=True)
-class SelectMode(BaseMode, ABC):
+class SelectMode(ForegroundMode, ABC):
     """Supports the selection modes."""
 
     @abstractmethod
@@ -78,6 +79,7 @@ class SelectMode(BaseMode, ABC):
             new = self.desired
         return new
 
+
 @dataclass(kw_only=True)
 class BrightnessSelectMode(SelectMode):
     """Allows user to select maximum brightness."""
@@ -107,6 +109,7 @@ class BrightnessSelectMode(SelectMode):
         """Respond to C button press."""
         print("C button ignored in brightness select mode.")
 
+
 @dataclass(kw_only=True)
 class ModeSelectMode(SelectMode):
     """Allows user to select mode."""
@@ -131,3 +134,4 @@ class ModeSelectMode(SelectMode):
         """Respond to C button press."""
         self.desired = SELECT_BRIGHTNESS
         self.player.remembered_mode = self.previous
+

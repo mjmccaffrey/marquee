@@ -7,6 +7,7 @@ import random
 from relays import RelayModule
 from sequences import opposite
 
+
 class Instrument(ABC):
     """Base class for an instrument."""
     accent_levels = 0
@@ -23,11 +24,14 @@ class Instrument(ABC):
     def play(self) -> None:
         """Play specified pitches."""
 
+
 class ActionInstrument(Instrument, ABC):
     """Conceptual instrument that executes arbitrary actions."""
 
+
 class RestInstrument(Instrument, ABC):
     """Conceptual instrument that executes rests."""
+
 
 class RelayInstrument(Instrument, ABC):
     """Abstract instrument that uses relays."""
@@ -58,9 +62,11 @@ class RelayInstrument(Instrument, ABC):
             selected = set(candidates)
         return selected
 
+
 class ReleaseableInstrument(Instrument, ABC):
     """Abstract instrument that has releaseable notes."""
     release_time: float  # Abstract
+
 
 class BellSet(RelayInstrument, ReleaseableInstrument):
     """Set of bells."""
@@ -86,6 +92,7 @@ class BellSet(RelayInstrument, ReleaseableInstrument):
     def release(self, pitches: set[int]) -> None:
         """Release specified pitches."""
         self._update_relays('0', pitches)
+
 
 class DrumSet(RelayInstrument):
     """Set of drums."""
@@ -118,3 +125,4 @@ class DrumSet(RelayInstrument):
     def mirror(self, pattern: str) -> None:
         self.relays.set_state_of_devices(pattern)
         self.pattern = pattern
+

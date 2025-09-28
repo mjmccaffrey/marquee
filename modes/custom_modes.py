@@ -15,6 +15,7 @@ from .play_modes import PlayMusicMode, PlayMode
 from sequences import lights_in_groups, opposite, rotate
 from specialparams import DimmerParams
 
+
 @dataclass(kw_only=True)
 class BellTest(PlayMusicMode):
     """Test all bells."""
@@ -25,11 +26,12 @@ class BellTest(PlayMusicMode):
 
     def execute(self) -> None:
         """Perform bell test."""
-        for pitch in range(8):
+        for pitch in range(self.player.bells.pitch_levels):
             self.player.bells.play({pitch})
             self.player.wait(self.player.bells.release_time)
             self.player.bells.release({pitch})
             self.player.wait(0.5)
+
 
 @dataclass(kw_only=True)
 class RotateReversible(PlayMode):
@@ -49,6 +51,7 @@ class RotateReversible(PlayMode):
         self.pattern = (
             self.pattern[self.direction:] + self.pattern[:self.direction]
         )
+
 
 @dataclass(kw_only=True)
 class RotateRewind(PlayMode):
@@ -91,6 +94,7 @@ class RotateRewind(PlayMode):
             )
             self.player.wait(pace, time.time() - start)
 
+
 @dataclass(kw_only=True)
 class RandomFade(PlayMode):
     """Change brightness of random bulb to a random level,
@@ -127,6 +131,7 @@ class RandomFade(PlayMode):
                     channel.next_update = now + tran
             self.player.wait(0.1)
 
+
 @dataclass(kw_only=True)
 class EvenOddFade(PlayMode):
     """Fade every-other bulb."""
@@ -156,6 +161,7 @@ class EvenOddFade(PlayMode):
             )
             self.player.wait(delay, time.time() - start)
 
+
 @dataclass(kw_only=True)
 class RapidFade(PlayMode):
     """Test of achieving a very fast fade by giving the channel
@@ -181,6 +187,7 @@ class RapidFade(PlayMode):
             assert previous is not None
             previous.set(brightness=40, transition=TRANSITION_MINIMUM)
 
+
 @dataclass(kw_only=True)
 class BuildBrightness(PlayMode):
     """Brightness change rate test."""
@@ -201,6 +208,7 @@ class BuildBrightness(PlayMode):
         for dimmer, brightness, transition in zip(self.player.lights.dimmer_channels, brightnesss, transitions):
             dimmer.set(brightness=brightness, transition=transition)
         self.player.wait(4)
+
 
 @dataclass(kw_only=True)
 class SilentFadeBuild(PlayMode):
@@ -227,6 +235,7 @@ class SilentFadeBuild(PlayMode):
                     self.player.wait(1.0)
                 self.player.wait(1.0)
 
+
 @dataclass(kw_only=True)
 class FillBulbs(PlayMode):
     """Gag to fill sign with electricity."""
@@ -252,3 +261,4 @@ class FillBulbs(PlayMode):
             self.player.wait(1.5)
             self.player.bells.play({7})
         self.player.wait(None)
+

@@ -12,6 +12,7 @@ TRANSITION_DEFAULT = 0.5
 TRANSITION_MINIMUM = 0.5
 TRANSITION_MAXIMUM = 10800.0
 
+
 class ShellyDimmer(ABC):
     """Supports Shelly Dimmers."""
 
@@ -117,6 +118,7 @@ class ShellyDimmer(ABC):
             time.sleep(150)
         print("Calibration complete")
 
+
 class DimmerChannel:
     """ Models a single dimmer channel (light). """
     def __init__(
@@ -189,13 +191,16 @@ class DimmerChannel:
         if (b := command.params.get('brightness')) is not None:
             self.brightness = b
 
+
 @dataclass
 class _DimmerCommand:
     """ Parameters for giving command to dimmer. """
     channel: DimmerChannel
     url: str
     params: dict
-    
+
+
 class ShellyProDimmer2PM(ShellyDimmer):
     """Supports the Shelly Pro Dimmer 2PM."""
     channel_count = 2
+

@@ -9,6 +9,7 @@ from gpiozero import Button as _Button  # type: ignore
 
 from button_misc import ButtonProtocol
 
+
 class ButtonPressed(Exception):
     """Button pressed base exception."""
 
@@ -20,6 +21,7 @@ class VirtualButtonPressed(ButtonPressed):
 
 class Shutdown(Exception):
     """Triggered to clean up and shut down the system."""
+
 
 @dataclass
 class Button(ButtonProtocol):
@@ -93,3 +95,4 @@ class Button(ButtonProtocol):
         """Callback for virtual button press."""
         print(f"Virtual button <{self}> pressed")
         raise VirtualButtonPressed(self)
+

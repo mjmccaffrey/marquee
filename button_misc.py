@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from typing import Protocol
 
+
 class ButtonProtocol(Protocol):
     """Button protocol."""
 
@@ -27,6 +28,7 @@ class ButtonProtocol(Protocol):
     def virtual_button_pressed(self) -> None:
         """Callback for virtual button press."""
         ...
+
 
 @dataclass
 class ButtonSet:

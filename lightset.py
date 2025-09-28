@@ -2,6 +2,7 @@
 
 import asyncio
 from dataclasses import dataclass, InitVar
+
 from configuration import BULB_ADJUSTMENTS, EXTRA_COUNT, LIGHT_COUNT
 from dimmers import (
     ShellyDimmer, DimmerChannel,
@@ -9,6 +10,7 @@ from dimmers import (
 )
 from relays import NumatoUSBRelayModule
 from specialparams import DimmerParams, MirrorParams, SpecialParams
+
 
 @dataclass
 class LightSet:
@@ -202,3 +204,4 @@ class LightSet:
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
+

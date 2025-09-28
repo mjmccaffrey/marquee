@@ -3,7 +3,7 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from .basemode import BaseMode
+from .basemode import ForegroundMode
 from button import Button
 from configuration import SELECT_MODE
 from dimmers import TRANSITION_DEFAULT
@@ -11,8 +11,9 @@ from music import set_player
 from playerinterface import PlayerInterface
 from specialparams import DimmerParams, SpecialParams
 
+
 @dataclass
-class PlayMode(BaseMode):
+class PlayMode(ForegroundMode):
     """Base for custom modes."""
 
     def __post_init__(self) -> None:
@@ -50,6 +51,7 @@ class PlayMode(BaseMode):
             case _:
                 raise ValueError("Unrecognized button.")
         return new_mode
+
 
 class PlaySequenceMode(PlayMode):
     """Supports all sequence-based modes."""
@@ -101,6 +103,7 @@ class PlaySequenceMode(PlayMode):
         while True:
             self.play_sequence_once()
 
+
 @dataclass
 class PlayMusicMode(PlayMode):
     """Base for playing music."""
@@ -112,3 +115,4 @@ class PlayMusicMode(PlayMode):
         #     relays = isinstance(self.special, DimmerParams),
         # )
         set_player(self.player)
+

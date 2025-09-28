@@ -11,7 +11,7 @@ marquee
             LightSet
                 Dimmers
                 Relays
-            AutoMode
+            SequenceBGMode
             SelectMode
             PlayMode
             PlaySequenceMode
@@ -21,6 +21,8 @@ marquee
                     RelayInstrument
                         BellSet
                         DrumSet
+                    Releaseable Instrument
+                        BellSet
                     RestInstrument
                 Section
                     Part
@@ -43,6 +45,7 @@ from button import Shutdown
 from executor import Executor, SigTerm, setup_devices
 from player import Player
 from register_modes import register_modes
+
 
 def main() -> None:
     """Execute Marquee application."""
@@ -67,5 +70,7 @@ def main() -> None:
         except Exception:
             pass
 
+
 if __name__ == "__main__":
     main()
+

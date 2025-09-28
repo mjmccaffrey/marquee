@@ -1,10 +1,11 @@
 """Marquee Lighted Sign Project - modeinterface"""
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from button_misc import ButtonProtocol
+
 
 @dataclass
 class ModeInterface(ABC):
@@ -19,3 +20,4 @@ class ModeInterface(ABC):
     @abstractmethod
     def execute(self) -> None:
         """Play the mode."""
+

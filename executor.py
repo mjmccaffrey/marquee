@@ -13,18 +13,21 @@ from configuration import (
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
 from instruments import BellSet, DrumSet
 from lightset import LightSet
-from modes.basemode import ModeInterface
+from modes.modeinterface import ModeInterface
 from modes.modeconstructor import ModeConstructor
 from modes.play_modes import PlaySequenceMode
 from specialparams import SpecialParams
 from relays import NumatoRL160001, NumatoSSR80001
 
+
 class SigTerm(Exception):
     """Triggered to cleanly exit the application."""
 
+
 def setup_devices(
-        brightness_factor: float
-    ) -> tuple[BellSet, ButtonSet, DrumSet, LightSet]:
+    brightness_factor: float
+) -> tuple[BellSet, ButtonSet, DrumSet, LightSet]:
+    """Create and return objects for all physical devices."""
     bells = BellSet(
         relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
     )
@@ -64,6 +67,7 @@ def setup_devices(
         ),
     )
     return bells, buttons, drums, lights
+
 
 class Executor():
     """Executes patterns and commands specified on the command line.
@@ -191,3 +195,4 @@ class Executor():
         """Callback for SIGTERM received."""
         print(f"SIGTERM received.")
         raise SigTerm
+

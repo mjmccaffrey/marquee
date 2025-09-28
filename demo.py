@@ -16,6 +16,7 @@ from music import(
 from sequences import *
 from specialparams import ActionParams, DimmerParams
 
+
 @dataclass
 class Demo(PlayMusicMode):
     """Version 3 demo."""
@@ -199,3 +200,4 @@ class Demo(PlayMusicMode):
             ),
             tempo = 90,
         )
+

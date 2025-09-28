@@ -3,18 +3,22 @@
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
+
 @dataclass
 class SpecialParams:
     """Base class for special parameters."""
+
 
 @dataclass
 class ActionParams(SpecialParams):
     """Parameters for an arbitrary action."""
     action: Callable
 
+
 @dataclass
 class BellParams(SpecialParams):
     """Parameters to ring bells."""
+
 
 @dataclass
 class DimmerParams(SpecialParams):
@@ -26,8 +30,9 @@ class DimmerParams(SpecialParams):
     transition_on: float = 0.5
     transition_off: float = 0.5
 
+
 @dataclass
 class MirrorParams(SpecialParams):
     """Parameters to mirror lights with another relay board."""
     func: Callable[[str], None] = field(init=False)
-    
+

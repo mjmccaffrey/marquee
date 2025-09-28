@@ -2,20 +2,28 @@
 
 from collections.abc import Iterable
 from dataclasses import dataclass
+from heapq import heappop, heappush
+from enum import Enum
 import itertools
 import time
-from typing import Any
+from typing import Any, Callable
 
 from button import Button, ButtonPressed, Shutdown
-from modes.automode import AutoMode
-from modes.basemode import BaseMode
+from modes.background_modes import BackgroundMode
+from modes.foregroundmode import ForegroundMode
 from modes.modeinterface import ModeInterface
 from specialparams import ActionParams, DimmerParams, SpecialParams
-
 from playerinterface import PlayerInterface
 
-class AutoModeDue(Exception):
-    """Automatic mode change due exception."""
+
+class EventType(Enum):
+    Background = 1
+    ReleaseNote = 2
+
+
+class BackgroundModeDue(Exception):
+    """Background mode run due exception."""
+
 
 @dataclass
 class Player(PlayerInterface):
@@ -24,15 +32,20 @@ class Player(PlayerInterface):
     def __post_init__(self) -> None:
         """Initialize."""
         print("Initializing player")
-        self.auto_mode = None
         self.current_mode = None
         self.remembered_mode = None
         self.pace = 0.0
-        self.release_queue = []
+        self.bg_mode_instances: dict[str, BackgroundMode] = {}
+        self.event_queue: list[tuple[float, EventType, Callable]] = []
 
     def close(self) -> None:
         """Clean up."""
         print(f"Player {self} closed.")
+
+    def add_event(self, time: float, etype: EventType, func: Callable):
+        """Add event to queue; func will be called at time."""
+        heappush(self.event_queue, (time, etype, func))
+        print(f"Event {time}, {etype}, {func} added to queue.")
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""
@@ -46,22 +59,28 @@ class Player(PlayerInterface):
         }
 
     def execute(self, starting_mode_index: int) -> None:
-        """Play the specified mode and all subsequently selected modes."""
+        """Play starting_mode and all subsequent modes."""
         new_mode = starting_mode_index
         while True:
+            assert new_mode is not None
             mode = self.modes[new_mode]
-            mode_instance = mode.mode_class(
-                player=self, 
-                name=mode.name, 
-                **self.replace_kwarg_values(mode.kwargs),
-            )
-            if isinstance(mode_instance, AutoMode):
-                self.auto_mode = mode_instance
+            if mode.name in self.bg_mode_instances:
+                print(f"Using existing {mode.name} instance.")
+                mode_instance = self.bg_mode_instances[mode.name]
+            else:
+                mode_instance = mode.mode_class(
+                    player=self, 
+                    name=mode.name, 
+                    **self.replace_kwarg_values(mode.kwargs),
+                )
+                if isinstance(mode_instance, BackgroundMode):
+                    print(f"Creating {mode.name} instance.")
+                    self.bg_mode_instances[mode.name] = mode_instance
             self.current_mode = new_mode
             print(f"Executing mode {self.current_mode} {mode.name}")
             new_mode = self._play_mode_until_changed(mode_instance)
 
-    def _play_mode_until_changed(self, mode: ModeInterface) -> None:
+    def _play_mode_until_changed(self, mode: ModeInterface) -> int | None:
         """Play the specified mode until another mode is selected,
            either by the user or automatically.
            Shut down the system if the (body_back) button is held."""
@@ -70,17 +89,15 @@ class Player(PlayerInterface):
             try:
                 new_mode = mode.execute()
             except ButtonPressed as press:
-                # print("ButtonPressed caught")
                 button, held = press.args
                 if held:
                     raise Shutdown("Button was held.")
                 Button.reset()
-                assert isinstance(mode, BaseMode)
+                assert isinstance(mode, ModeInterface)
                 new_mode = mode.button_action(button)
-            except AutoModeDue:
-                print("AutoModeDue caught")
-                assert self.auto_mode is not None
-                new_mode = self.auto_mode.next_mode()
+            except BackgroundModeDue as due:
+                print("BackgroundModeDue caught")
+                new_mode, = due.args
         return new_mode
 
     def play_sequence(
@@ -120,13 +137,25 @@ class Player(PlayerInterface):
                 self.wait(p, after - before)
         self.wait(post_delay)
 
+    def dispatch_event(self, event: tuple[float, EventType, Callable]):
+        """"""
+        time, etype, func = event
+        match etype:
+            case EventType.ReleaseNote:
+                func()
+            case EventType.Background:
+                raise BackgroundModeDue(func())
+            case _:
+                raise ValueError(etype)
+
     def wait(self, seconds: float | None, elapsed: float = 0) -> None:
         """Wait seconds after adjusting for
            speed_factor and time already elapsed."""
-        if (self.auto_mode is not None and
-            self.auto_mode.trigger_time < time.time()
+        if (
+            self.event_queue and
+            self.event_queue[0][0] < time.time()
         ):
-            raise AutoModeDue
+            self.dispatch_event(heappop(self.event_queue))
         if seconds is None:
             duration = None
         else:
@@ -147,3 +176,4 @@ class Player(PlayerInterface):
             light_pattern=self.lights.relay_pattern, 
             extra_pattern=extra,
         )
+
