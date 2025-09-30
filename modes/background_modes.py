@@ -10,7 +10,7 @@ from typing import Callable, ClassVar, NoReturn
 
 from configuration import ModeIndex
 from button_misc import ButtonProtocol
-from modeconstructor import ModeConstructor
+from .modeconstructor import ModeConstructor
 from modeinterface import ModeInterface
 from playerinterface import PlayerInterface
 
