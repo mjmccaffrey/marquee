@@ -163,46 +163,19 @@ def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
 
 def play_measure(measure: Measure) -> None:
     """Play all notes in measure."""
-
-    def wait_and_release(duration: float) -> None:
-        """Wait for duration, while also releasing any notes 
-           that come due during the wait."""
-        print(f"WAIT {duration}")
-        while True:
-            now = time.time()
-            elapsed = now - start
-            remaining = duration - elapsed
-            end = now + remaining
-            if now > end:
-                break
-            if player.release_queue:
-                when_next_release = player.release_queue[0][0]
-                if when_next_release < now:
-                    _, release_note = player.release_queue.pop(0)
-                    print(f"RELEASING {release_note}")
-                    release_note.release(player)  # type: ignore
-                elif when_next_release < end:
-                    print(f"WAITING for {player.release_queue[0]}")
-                    player.wait(when_next_release - now)
-            else:
-                print(f"WAITING {remaining}")
-                player.wait(remaining)
-
-    # Play all notes in measure
     start = time.time()
     beat = 0.0 
     for element in measure.elements:
         assert isinstance(element, (BaseNote, NoteGroup))
         element.play(player)
         if element.duration:
-            wait_and_release(element.duration * player.pace)
+            player.wait(element.duration, time.time() - start)
             start = time.time()
         beat += element.duration
         if beat > measure.beats:
             raise ValueError("Too many actual beats in measure.")
-        
     # Play implied rests at end of measure
-    wait_and_release((measure.beats - beat) * player.pace)
+    player.wait(measure.beats - beat, time.time() - start)
 
 
 def play_measures(measures: tuple[Measure, ...], tempo: int) -> None:

@@ -3,18 +3,20 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from .basemode import ForegroundMode
+from .background_modes import SequenceBGMode
+from .foregroundmode import ForegroundMode
 from button import Button
-from configuration import SELECT_MODE
+from configuration import ModeIndex
 from dimmers import TRANSITION_DEFAULT
 from music import set_player
-from playerinterface import PlayerInterface
+from player import Player
 from specialparams import DimmerParams, SpecialParams
 
 
 @dataclass
 class PlayMode(ForegroundMode):
     """Base for custom modes."""
+    player: Player
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -23,31 +25,28 @@ class PlayMode(ForegroundMode):
 
     def button_action(self, button: Button) -> int | None:
         """Respond to the button press."""
+
+        # If in sequence mode, exit it.
+        index = self.player.find_bg_mode(SequenceBGMode)
+        if index is not None:
+            self.player.terminate_bg_mode(index)
+            return ModeIndex.DEFAULT
+
         assert self.player.current_mode is not None
         new_mode = None
         b = self.player.buttons
         match button:
             case b.remote_a | b.body_back:
-                if self.player.auto_mode is not None:
-                    self.player.auto_mode.exit()
-                new_mode = SELECT_MODE
+                new_mode = ModeIndex.SELECT_MODE
             case b.remote_c:
                 self.player.click()
-                if self.player.auto_mode is not None:
-                    self.player.auto_mode.exit()
                 new_mode = self.player.mode_ids['section_1']
             case b.remote_b:
                 self.player.click()
-                if self.player.auto_mode is None:
-                    new_mode = self.mode_index(self.player.current_mode, -1)
-                else:
-                    print("Back button ignored in auto mode.")
+                new_mode = self.mode_index(self.player.current_mode, -1)
             case b.remote_d:
                 self.player.click()
-                if self.player.auto_mode is None:
-                    new_mode = self.mode_index(self.player.current_mode, +1)
-                else:
-                    new_mode = self.player.auto_mode.next_mode()
+                new_mode = self.mode_index(self.player.current_mode, +1)
             case _:
                 raise ValueError("Unrecognized button.")
         return new_mode
@@ -57,7 +56,7 @@ class PlaySequenceMode(PlayMode):
     """Supports all sequence-based modes."""
     def __init__(
         self,
-        player: PlayerInterface,
+        player: Player,
         name: str,
         sequence: Callable,
         pace: tuple[float, ...] | float | None = None,

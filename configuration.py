@@ -1,5 +1,7 @@
 """Marquee Lighted Sign Project - configuration"""
 
+from enum import IntEnum
+
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
     [ 11,         3, ],
@@ -56,6 +58,10 @@ SYLVANIA_40_INCANDESCENT_FROSTED_GLOBE = {
     'A': 100, 'F': 23,
 }
 BULB_ADJUSTMENTS = SYLVANIA_40_INCANDESCENT_FROSTED_GLOBE
-MODE_SELECT_MODE = 0
-MODE_DEFAULT = 1
-MODE_SELECT_BRIGHTNESS = -99
+
+
+class ModeIndex(IntEnum):
+    SELECT_BRIGHTNESS = -99
+    SELECT_MODE = 0
+    DEFAULT = 1
+

@@ -2,32 +2,22 @@
 
 from collections.abc import Iterable
 from dataclasses import dataclass
-from heapq import heappop, heappush
-from enum import Enum
 import itertools
 import time
-from typing import Any, Callable
+from typing import Any
 
 from button import Button, ButtonPressed, Shutdown
-from modes.background_modes import BackgroundMode
-from modes.foregroundmode import ForegroundMode
+from event import PriorityQueue
+from modes.background_modes import BackgroundMode, BackgroundModeDue
 from modes.modeinterface import ModeInterface
 from specialparams import ActionParams, DimmerParams, SpecialParams
 from playerinterface import PlayerInterface
 
 
-class EventType(Enum):
-    Background = 1
-    ReleaseNote = 2
-
-
-class BackgroundModeDue(Exception):
-    """Background mode run due exception."""
-
-
 @dataclass
 class Player(PlayerInterface):
     """Executes one mode at a time."""
+    event_queue: PriorityQueue
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -35,17 +25,29 @@ class Player(PlayerInterface):
         self.current_mode = None
         self.remembered_mode = None
         self.pace = 0.0
-        self.bg_mode_instances: dict[str, BackgroundMode] = {}
-        self.event_queue: list[tuple[float, EventType, Callable]] = []
+        self.bg_mode_instances: dict[int, BackgroundMode] = {}
+        self.event_queue = PriorityQueue()
 
     def close(self) -> None:
         """Clean up."""
         print(f"Player {self} closed.")
 
-    def add_event(self, time: float, etype: EventType, func: Callable):
-        """Add event to queue; func will be called at time."""
-        heappush(self.event_queue, (time, etype, func))
-        print(f"Event {time}, {etype}, {func} added to queue.")
+    def find_bg_mode(
+        self, 
+        mtype: type[BackgroundMode],
+    ) -> int | None:
+        """Return index of first (presumably only) active bg mode of type mtype."""
+        for index in range(len(self.bg_mode_instances)):
+            if isinstance(self.bg_mode_instances[index], mtype):
+                return index
+        return None
+
+    def terminate_bg_mode(self, bg_mode_index: int) -> None:
+        """Remove mode from the background mode instance list.
+           Remove any associated events from the event queue."""
+        mode = self.bg_mode_instances[bg_mode_index]
+        del self.bg_mode_instances[bg_mode_index]
+        self.event_queue.delete_owned_by(mode)
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""
@@ -64,9 +66,9 @@ class Player(PlayerInterface):
         while True:
             assert new_mode is not None
             mode = self.modes[new_mode]
-            if mode.name in self.bg_mode_instances:
+            if new_mode in self.bg_mode_instances:
                 print(f"Using existing {mode.name} instance.")
-                mode_instance = self.bg_mode_instances[mode.name]
+                mode_instance = self.bg_mode_instances[new_mode]
             else:
                 mode_instance = mode.mode_class(
                     player=self, 
@@ -75,7 +77,7 @@ class Player(PlayerInterface):
                 )
                 if isinstance(mode_instance, BackgroundMode):
                     print(f"Creating {mode.name} instance.")
-                    self.bg_mode_instances[mode.name] = mode_instance
+                    self.bg_mode_instances[new_mode] = mode_instance
             self.current_mode = new_mode
             print(f"Executing mode {self.current_mode} {mode.name}")
             new_mode = self._play_mode_until_changed(mode_instance)
@@ -137,37 +139,8 @@ class Player(PlayerInterface):
                 self.wait(p, after - before)
         self.wait(post_delay)
 
-    def dispatch_event(self, event: tuple[float, EventType, Callable]):
-        """"""
-        time, etype, func = event
-        match etype:
-            case EventType.ReleaseNote:
-                func()
-            case EventType.Background:
-                raise BackgroundModeDue(func())
-            case _:
-                raise ValueError(etype)
-
-    def wait(self, seconds: float | None, elapsed: float = 0) -> None:
-        """Wait seconds after adjusting for
-           speed_factor and time already elapsed."""
-        if (
-            self.event_queue and
-            self.event_queue[0][0] < time.time()
-        ):
-            self.dispatch_event(heappop(self.event_queue))
-        if seconds is None:
-            duration = None
-        else:
-            duration = seconds * self.speed_factor - elapsed
-            if duration <= 0:
-                # print("!!!!!", seconds, elapsed, duration)
-                return
-        Button.wait(duration)
-
     def click(self) -> None:
         """Click the specified otherwise unused light relays."""
-
         extra = ''.join(
             '0' if e == '1' else '1'
             for e in self.lights.extra_pattern
@@ -176,4 +149,44 @@ class Player(PlayerInterface):
             light_pattern=self.lights.relay_pattern, 
             extra_pattern=extra,
         )
+
+    def wait(self, seconds: float | None, elapsed: float = 0) -> None:
+        """Wait seconds, after adjusting for
+           speed_factor and time already elapsed.
+           If seconds is None, wait indefinitely.
+           During this time, trigger any events that come due; 
+           any button press will terminate waiting."""
+        print(f"Wait {seconds}, {elapsed}")
+        if seconds is not None:
+            seconds *= self.speed_factor
+        while True:
+            now = time.time()
+            if seconds is not None:
+                remaining = seconds - elapsed
+                end = now + remaining
+                if now > end:
+                    break
+            if self.event_queue:
+                event = self.event_queue.peek()
+                if event.time_due < now:
+                    print(f"Running {event}")
+                    self.event_queue.pop()
+                    event.action()
+                elif seconds is None:
+                    print(f"Waiting for {event} or button push")
+                    duration = None
+                elif event.time_due < end:
+                    print(f"Waiting for {event} or button push")
+                    duration = event.time_due - now
+                else:
+                    print(f"Waiting for remaining {remaining} or button push; queue not empty")
+                    duration = remaining
+            else:
+                if seconds is None:
+                    print(f"Waiting for button push")
+                    duration = None
+                else:
+                    print(f"Waiting for remaining {remaining} or button push; queue empty")
+                    duration = remaining
+            Button.wait(duration)
 

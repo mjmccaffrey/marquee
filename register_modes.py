@@ -1,8 +1,6 @@
 """Marquee Lighted Sign Project - register_modes"""
 
-from configuration import (
-    MODE_DEFAULT, MODE_SELECT_MODE, MODE_SELECT_BRIGHTNESS, LIGHT_COUNT,
-)
+from configuration import ModeIndex, LIGHT_COUNT
 from executor import Executor
 from modes.background_modes import SequenceBGMode
 from modes.custom_modes import (
@@ -101,13 +99,13 @@ def register_dimmer_modes():
 def register_special_modes() -> None:
     """"""
     exec.add_mode("select_mode", ModeSelectMode, 
-        index=MODE_SELECT_MODE, hidden=True,
+        index=ModeIndex.SELECT_MODE, hidden=True,
     )
     exec.add_mode("select_brightness", BrightnessSelectMode, 
-        index=MODE_SELECT_BRIGHTNESS, hidden=True,
+        index=ModeIndex.SELECT_BRIGHTNESS, hidden=True,
     )
     exec.add_sequence_mode("all_off", all_off,
-        index=MODE_DEFAULT,
+        index=ModeIndex.DEFAULT,
     )
 
 

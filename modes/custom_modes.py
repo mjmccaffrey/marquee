@@ -262,3 +262,25 @@ class FillBulbs(PlayMode):
             self.player.bells.play({7})
         self.player.wait(None)
 
+
+@dataclass(kw_only=True)
+class HourlyChime(PlayMode):
+    """Chime and light the hour."""
+
+    def __post_init__(self) -> None:
+        """Initialize."""
+        self.player.lights.set_dimmers(ALL_HIGH)
+        self.player.wait(0.5)
+        self.preset_devices(relays=True)
+ 
+    def execute(self) -> None:
+        """Chime and light the hour."""
+        self.player.wait(1.0)
+        for hour in range(time.gmtime().tm_hour):
+            self.player.lights.set_relays(
+                str('1' if i <= hour else '0' for i in range(LIGHT_COUNT))
+            )
+            self.player.bells.play({7})
+            self.player.wait(1.5)
+        self.player.wait(5.0)
+

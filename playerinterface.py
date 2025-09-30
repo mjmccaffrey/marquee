@@ -26,7 +26,7 @@ class PlayerInterface(ABC):
     remembered_mode: int | None = field(init=False)
     pace: float = field(init=False)
     bg_mode_instances: dict = field(init=False)
-    event_queue: list = field(init=False)
+    event_queue: object = field(init=False)
 
     @abstractmethod
     def close(self) -> None:
