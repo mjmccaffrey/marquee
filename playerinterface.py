@@ -8,7 +8,6 @@ from typing import Any, Callable
 from button_misc import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import LightSet
-from modes.background_modes import BackgroundMode
 from modes.modeconstructor import ModeConstructor
 from specialparams import SpecialParams
 
