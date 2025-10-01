@@ -20,27 +20,6 @@ def _set_player(the_player: PlayerInterface) -> None:
     player = the_player
 
 
-def apply_accent(accent: int, measures: tuple[Measure, ...]) -> None:
-    """Apply default accent (drums only)."""
-    for measure in measures:
-        elements = tuple(
-            replace(element, accent=accent)
-                if (        isinstance(element, DrumNote) 
-                    and not element.accent) else
-            element
-            for element in measure.elements
-        )
-        object.__setattr__(measure, 'elements', elements)
-
-
-def apply_beats(beats: int, parts: tuple[Part, ...]) -> None:
-    """Apply default # of beats to all measures in the Section."""
-    for part in parts:
-        measures = tuple(
-            replace(measure, beats=beats)
-            for measure in part.measures
-        )
-        object.__setattr__(part, 'measures', measures)
 
 
 def prepare_parts(parts: tuple[Part, ...]) -> tuple[Measure, ...]:

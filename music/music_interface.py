@@ -8,7 +8,7 @@ from .music_elements import (
 )
 from .music_implementation import (
     _dimmer, _dimmer_sequence, _dimmer_sequence_flip, _light, _set_player,
-    expand_sequence_measures, play_measures, validate_measures
+    expand_sequence_measures, play_measures, prepare_parts, validate_measures
 )
 from playerinterface import PlayerInterface
 from specialparams import SpecialParams
@@ -46,6 +46,8 @@ def section(
         parts, 
         beats=beats,
         tempo=tempo,
+        prepare_parts=prepare_parts,
+        play_measures=play_measures,
     )
 
 

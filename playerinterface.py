@@ -32,8 +32,8 @@ class PlayerInterface(ABC):
         """Clean up."""
 
     @abstractmethod
-    def add_event(self, time: float, func: Callable):
-        """Add event to queue; func will be called at time."""
+    def add_event(self, time_due: float, owner: object, action: Callable) -> None:
+        """Add event to queue."""
 
     @abstractmethod
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:

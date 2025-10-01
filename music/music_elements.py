@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterator
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 import itertools
 import time
 from typing import Any, ClassVar
@@ -10,9 +10,6 @@ from typing import Any, ClassVar
 from instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 
     ReleaseableInstrument, RestInstrument,
-)
-from .music_implementation import (
-    apply_accent, apply_beats, play_measures, prepare_parts
 )
 from playerinterface import PlayerInterface
 from specialparams import SpecialParams
@@ -63,12 +60,17 @@ class ActionNote(BaseNote):
 class ReleasableNote(BaseNote, ABC):
     """Note that requires releasing after playing."""
 
-    def add_to_release_queue(self, player: PlayerInterface) -> None:
-        """Add note to release queue immediately after 
-           concrete class plays it."""
+    @abstractmethod
+    def release(self, player: PlayerInterface) -> None:
+        """Release BellNote."""
+
+    def schedule_release(self, player: PlayerInterface) -> None:
+        """Schedule release of played note."""
         assert isinstance(self.instrument, ReleaseableInstrument)
-        player.release_queue.append(
-            (time.time() + self.instrument.release_time, self)
+        player.add_event(
+            time_due = time.time() + self.instrument.release_time,
+            owner = self,
+            action = lambda: self.release(player),
         )
 
 
@@ -83,12 +85,12 @@ class BellNote(ReleasableNote):
         assert self.pitches
 
     def play(self, player: PlayerInterface) -> None:
-        """Play single BellNote."""
+        """Play BellNote."""
         player.bells.play(self.pitches)
-        self.add_to_release_queue(player)
+        self.schedule_release(player)
 
     def release(self, player: PlayerInterface) -> None:
-        """Release all BellNotes."""
+        """Release BellNote."""
         player.bells.release(self.pitches)
 
 
@@ -184,7 +186,19 @@ class Part(Element):
         """Validate and process measures."""
         assert self.measures
         if self.default_accent:
-            apply_accent(self.default_accent, self.measures)
+            self.apply_accent()
+
+    def apply_accent(self) -> None:
+        """Apply default accent (drums only)."""
+        for measure in self.measures:
+            elements = tuple(
+                replace(element, accent=self.default_accent)
+                    if (        isinstance(element, DrumNote) 
+                        and not element.accent) else
+                element
+                for element in measure.elements
+            )
+            object.__setattr__(measure, 'elements', elements)
 
 
 @dataclass(frozen=True)
@@ -193,20 +207,31 @@ class Section(Element):
     parts: tuple[Part, ...]
     beats: int
     tempo: int
+    prepare_parts: Callable[[tuple[Part, ...]], tuple[Measure, ...]]
+    play_measures: Callable[[tuple[Measure, ...], int], None]
     measures: tuple[Measure, ...] = field(init=False)
 
     def __post_init__(self) -> None:
         """Validate and process parts so they are ready to play."""
         assert self.parts
         if self.beats is not None:
-            apply_beats(self.beats, self.parts)
+            self.apply_beats()
         object.__setattr__(
             self, 
             'measures', 
-            prepare_parts(self.parts),
+            self.prepare_parts(self.parts),
         )
+
+    def apply_beats(self) -> None:
+        """Apply default # of beats to all measures in the Section."""
+        for part in self.parts:
+            measures = tuple(
+                replace(measure, beats=self.beats)
+                for measure in part.measures
+            )
+            object.__setattr__(part, 'measures', measures)
 
     def play(self, tempo: int = 0) -> None:
         """Play already-generated measures comprising Section."""
-        play_measures(self.measures, tempo = tempo or self.tempo)
+        self.play_measures(self.measures, tempo or self.tempo)
 

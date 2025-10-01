@@ -4,10 +4,10 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 import itertools
 import time
-from typing import Any
+from typing import Any, Callable
 
 from button import Button, ButtonPressed, Shutdown
-from event import PriorityQueue
+from event import Event, PriorityQueue
 from modes.background_modes import BackgroundMode, BackgroundModeDue
 from modes.modeinterface import ModeInterface
 from specialparams import ActionParams, DimmerParams, SpecialParams
@@ -31,6 +31,16 @@ class Player(PlayerInterface):
     def close(self) -> None:
         """Clean up."""
         print(f"Player {self} closed.")
+
+    def add_event(self, time_due: float, owner: object, action: Callable) -> None:
+        """Add event to queue."""
+        self.event_queue.push(
+            Event(
+                time_due=time_due,
+                owner=owner,
+                action=action,
+            )
+        )
 
     def find_bg_mode(
         self, 

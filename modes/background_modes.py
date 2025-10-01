@@ -94,8 +94,9 @@ class SequenceBGMode(BackgroundMode):
             f"for {self.mode_on_deck.time} seconds."
         )
         self.player.add_event(
-            time() + self.mode_on_deck.time, 
-            self.execute,
+            time_due = time() + self.mode_on_deck.time, 
+            owner = self,
+            action = self.execute,
         )
         new_mode = self.mode_on_deck.index
         self.mode_on_deck = next(self.mode_iter)
@@ -136,5 +137,9 @@ class TimeBGMode(BackgroundMode, ABC):
     @abstractmethod
     def schedule_next_event(self):
         """"""
-        self.player.add_event(self.next_trigger_time(), self.event_execute)
+        self.player.add_event(
+            time_due = self.next_trigger_time(), 
+            owner = self,
+            action = self.event_execute,
+        )
 
