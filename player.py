@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - player"""
 
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import itertools
 import time
 from typing import Any, Callable
@@ -17,7 +17,7 @@ from playerinterface import PlayerInterface
 @dataclass
 class Player(PlayerInterface):
     """Executes one mode at a time."""
-    event_queue: PriorityQueue
+    event_queue: PriorityQueue = field(init=False)
 
     def __post_init__(self) -> None:
         """Initialize."""
