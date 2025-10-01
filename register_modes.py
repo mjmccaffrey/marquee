@@ -18,14 +18,14 @@ from specialparams import DimmerParams, MirrorParams
 
 def register_modes(exec: Executor) -> None:
     """Register all modes."""
-    register_special_modes()
-    register_relay_modes()
-    # register_interactive_modes()
-    register_silent_modes()
-    register_test_modes()
-    # register_pyohio_2025_presentation_modes()
+    register_special_modes(exec)
+    register_relay_modes(exec)
+    # register_interactive_modes(exec)
+    register_silent_modes(exec)
+    register_test_modes(exec)
+    # register_pyohio_2025_presentation_modes(exec)
 
-def register_dimmer_modes():
+def register_dimmer_modes(exec: Executor):
     """"""
     exec.add_mode("rapid_fade", RapidFade)
     exec.add_sequence_mode("blink_alternate_medium",
@@ -96,7 +96,7 @@ def register_dimmer_modes():
     )
 
 
-def register_special_modes() -> None:
+def register_special_modes(exec: Executor) -> None:
     """"""
     exec.add_mode("select_mode", ModeSelectMode, 
         index=ModeIndex.SELECT_MODE, hidden=True,
@@ -109,7 +109,7 @@ def register_special_modes() -> None:
     )
 
 
-def register_relay_modes() -> None:
+def register_relay_modes(exec: Executor) -> None:
     """"""
     exec.add_sequence_mode("all_on", all_on)
     exec.add_sequence_mode("even_on", even_on)
@@ -124,7 +124,7 @@ def register_relay_modes() -> None:
     )
 
 
-def register_silent_modes() -> None:
+def register_silent_modes(exec: Executor) -> None:
     """"""
     exec.add_sequence_mode("silent_blink_alternate_slow",
         blink_alternate, pace=10, 
@@ -187,14 +187,14 @@ def register_silent_modes() -> None:
     )
 
 
-def register_test_modes() -> None:
+def register_test_modes(exec: Executor) -> None:
     """"""
     exec.add_mode("build_brightness_equal", BuildBrightness, equal_trans=True)
     exec.add_mode("build_brightness_unequal", BuildBrightness, equal_trans=False)
     exec.add_mode("bell_test", BellTest)
 
 
-def register_pyohio_2025_presentation_modes() -> None:
+def register_pyohio_2025_presentation_modes(exec: Executor) -> None:
     """PyOhio 2025 presentation."""
     exec.add_sequence_mode("section_1", all_off)
     exec.add_mode("fill_bulbs", FillBulbs)
