@@ -6,9 +6,7 @@ import time
 
 from .foregroundmode import ForegroundMode
 from button import Button
-from configuration import (
-    ALL_OFF, LIGHT_COUNT, SELECT_BRIGHTNESS, SELECT_MODE
-)
+from configuration import ALL_OFF, LIGHT_COUNT, ModeIndex
 from sequences import rotate_build_flip
 
 
@@ -102,7 +100,7 @@ class BrightnessSelectMode(SelectMode):
         self.player.lights.set_dimmers(brightnesses=[100] * LIGHT_COUNT)
         new = super().execute()
         if new is not None:  # Selection was made.
-            new = SELECT_MODE
+            new = ModeIndex.SELECT_MODE
         return new
 
     def c_button_pressed(self) -> None:
@@ -119,7 +117,7 @@ class ModeSelectMode(SelectMode):
         super().__post_init__()
         previous = (
             self.player.remembered_mode
-                if self.player.current_mode == SELECT_BRIGHTNESS else
+                if self.player.current_mode == ModeIndex.SELECT_BRIGHTNESS else
             self.player.current_mode
         )
         assert previous is not None
@@ -132,6 +130,6 @@ class ModeSelectMode(SelectMode):
 
     def c_button_pressed(self) -> None:
         """Respond to C button press."""
-        self.desired = SELECT_BRIGHTNESS
+        self.desired = ModeIndex.SELECT_BRIGHTNESS
         self.player.remembered_mode = self.previous
 
