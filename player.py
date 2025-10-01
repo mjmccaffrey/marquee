@@ -167,14 +167,16 @@ class Player(PlayerInterface):
            During this time, trigger any events that come due; 
            any button press will terminate waiting."""
         print(f"Wait {seconds}, {elapsed}")
+        start = time.time()
         if seconds is not None:
             seconds *= self.speed_factor
         while True:
             now = time.time()
             if seconds is not None:
-                remaining = seconds - elapsed
+                remaining = start + seconds - elapsed - now
                 end = now + remaining
                 if now > end:
+                    print(f"break {now} > {end}")
                     break
             if self.event_queue:
                 event = self.event_queue.peek()
