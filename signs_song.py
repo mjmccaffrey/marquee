@@ -3,7 +3,7 @@
 import time
 
 from configuration import ALL_OFF, ALL_LOW, ALL_ON
-from modes.play_modes import PlayMusicMode
+from modes.playmusicmode import PlayMusicMode
 from music import (
     act_part, bell_part, drum_part, sequence_part,
     dimmer_sequence_flip, section, Section, sequence,
