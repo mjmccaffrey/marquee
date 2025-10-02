@@ -141,10 +141,7 @@ class Player(PlayerInterface):
                 if isinstance(special, ActionParams):
                     special.action(lights)
                 else:
-                    self.lights.set_relays(
-                        lights, 
-                        special=special,
-                    )
+                    self.lights.set_relays(lights, special=special)
                 after = time.time()
                 self.wait(p, after - before)
         self.wait(post_delay)

@@ -2,7 +2,7 @@
 
 import time
 
-from configuration import ALL_OFF, ALL_LOW, ALL_ON
+from lightset_misc import ALL_OFF, ALL_LOW, ALL_ON
 from modes.playmusicmode import PlayMusicMode
 from music import (
     act_part, bell_part, drum_part, sequence_part,

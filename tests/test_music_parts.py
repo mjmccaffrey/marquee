@@ -1,7 +1,7 @@
 
 # from typing import Any, Callable
 
-# from configuration import *
+# from lightset_misc import *
 # from music import *
 # from notation import *
 # from sequences import *

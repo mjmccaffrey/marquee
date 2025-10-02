@@ -3,11 +3,11 @@
 import asyncio
 from dataclasses import dataclass, InitVar
 
-from configuration import BULB_ADJUSTMENTS, EXTRA_COUNT, LIGHT_COUNT
 from dimmers import (
     ShellyDimmer, DimmerChannel,
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,
 )
+from lightset_misc import EXTRA_COUNT, LIGHT_COUNT
 from relays import NumatoUSBRelayModule
 from specialparams import DimmerParams, MirrorParams, SpecialParams
 
@@ -17,6 +17,7 @@ class LightSet:
     """Supports all of the light-related devices."""
     relays: NumatoUSBRelayModule
     dimmers: list[ShellyDimmer]
+    bulb_adjustments: dict[str, int]
     brightness_factor_init: InitVar[float]
 
     def __post_init__(self, brightness_factor_init: float) -> None:
@@ -136,7 +137,7 @@ class LightSet:
         assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
         if pattern is not None:
             brightnesses = [
-                BULB_ADJUSTMENTS[p]
+                self.bulb_adjustments[p]
                 for p in pattern
             ]
         if isinstance(transitions, float):

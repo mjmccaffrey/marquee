@@ -1,6 +1,4 @@
-"""Marquee Lighted Sign Project - configuration"""
-
-from enum import IntEnum
+"""Marquee Lighted Sign Project - lightset_misc"""
 
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
@@ -44,24 +42,3 @@ ALL_HIGH = HIGH * LIGHT_COUNT
 ALL_LOW = LOW * LIGHT_COUNT
 ALL_ON = ON * LIGHT_COUNT
 ALL_OFF = OFF * LIGHT_COUNT
-DIMMER_ADDRESSES = [
-    '192.168.64.111',
-    '192.168.64.112',
-    '192.168.64.113',
-    '192.168.64.114',
-    '192.168.64.115',
-    '192.168.64.116',
-]
-SYLVANIA_40_INCANDESCENT_FROSTED_GLOBE = {
-    '0': 0, '1': 15, '2': 20, '3': 30, '4': 40,
-    '5': 50, '6': 60, '7': 70, '8':80, '9': 90,
-    'A': 100, 'F': 23,
-}
-BULB_ADJUSTMENTS = SYLVANIA_40_INCANDESCENT_FROSTED_GLOBE
-
-
-class ModeIndex(IntEnum):
-    SELECT_BRIGHTNESS = -99
-    SELECT_MODE = 0
-    DEFAULT = 1
-

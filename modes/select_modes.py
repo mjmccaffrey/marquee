@@ -5,8 +5,9 @@ from dataclasses import dataclass
 import time
 
 from .foregroundmode import ForegroundMode
+from .mode_misc import ModeIndex
 from button import Button
-from configuration import ALL_OFF, LIGHT_COUNT, ModeIndex
+from lightset_misc import ALL_OFF, LIGHT_COUNT
 from sequences import rotate_build_flip
 
 

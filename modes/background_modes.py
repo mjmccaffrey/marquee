@@ -8,9 +8,8 @@ from itertools import cycle
 from time import gmtime, time
 from typing import Callable, ClassVar, NoReturn
 
-from configuration import ModeIndex
 from button_misc import ButtonProtocol
-from .modeconstructor import ModeConstructor
+from .mode_misc import ModeConstructor, ModeIndex
 from .modeinterface import ModeInterface
 from playerinterface import PlayerInterface
 

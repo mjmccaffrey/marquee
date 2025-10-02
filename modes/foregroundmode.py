@@ -3,7 +3,7 @@
 from abc import ABC
 from dataclasses import dataclass
 
-from configuration import ALL_HIGH, ALL_ON
+from lightset_misc import ALL_HIGH, ALL_ON
 from .modeinterface import ModeInterface
 from playerinterface import PlayerInterface
 from specialparams import MirrorParams, SpecialParams

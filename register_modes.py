@@ -1,12 +1,13 @@
 """Marquee Lighted Sign Project - register_modes"""
 
-from configuration import ModeIndex, LIGHT_COUNT
 from executor import Executor
+from lightset_misc import LIGHT_COUNT
 from modes.background_modes import SequenceBGMode
 from modes.custom_modes import (
     BellTest, BuildBrightness, EvenOddFade, FillBulbs, RotateReversible, 
     RandomFade, RapidFade, RotateRewind, SilentFadeBuild,
 )
+from modes.mode_misc import ModeIndex
 from modes.select_modes import BrightnessSelectMode, ModeSelectMode
 from sequences import (
     all_on, all_off, blink_all, blink_alternate, even_on, even_off,
