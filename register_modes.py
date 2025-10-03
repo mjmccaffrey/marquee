@@ -11,7 +11,7 @@ from modes.mode_misc import ModeIndex
 from modes.select_modes import BrightnessSelectMode, ModeSelectMode
 from sequences import (
     all_on, all_off, blink_all, blink_alternate, even_on, even_off,
-    opposite_corner_pairs, rotate, random_flip, rotate_sides,
+    rotate, random_flip, rotate_sides,
 )
 from signs_song import SignsSong
 from specialparams import DimmerParams, MirrorParams
@@ -59,15 +59,6 @@ def register_dimmer_modes(exec: Executor):
         )
     )
 
-
-    exec.add_sequence_mode("corner_rotate_fade", 
-        opposite_corner_pairs, pace=5,
-        special=DimmerParams(
-            concurrent=True,
-            brightness_on = 90,
-            brightness_off = 10,
-        )
-    )
 
     exec.add_sequence_mode("center_rotate_fade", rotate, 
         pace=0.5, pattern = "010" * 4,

@@ -9,6 +9,7 @@ from lightset_misc import ALL_OFF, EXTRA_COUNT
 from modes.modeinterface import ModeInterface
 from modes.mode_misc import ModeConstructor
 from modes.playsequencemode import PlaySequenceMode
+from playerinterface import PlayerInterface
 from setup_devices import setup_devices
 from specialparams import SpecialParams
 
@@ -17,7 +18,7 @@ class SigTerm(Exception):
     """Triggered to cleanly exit the application."""
 
 
-class Executor():
+class Executor:
     """Executes patterns and commands specified on the command line.
        If a mode is specified, creates and turns control over 
        to a Player object."""
@@ -116,7 +117,7 @@ class Executor():
 
     def execute_mode(self, mode_index: int, speed_factor: float) -> None:
         """Effects the command-line specified mode."""
-        self.player = self.create_player(
+        self.player: PlayerInterface = self.create_player(
             self.modes, 
             self.mode_ids,
             self.bells,

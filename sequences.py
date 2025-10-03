@@ -6,8 +6,7 @@ import random
 
 from lightset_misc import (
     ALL_OFF, ALL_ON, LIGHT_COUNT, 
-    LIGHTS_BY_COL, LIGHTS_BY_ROW, LIGHTS_CLOCKWISE, 
-    LIGHTS_BY_SIDE, LIGHTS_BOTTOM, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_TOP
+    LIGHTS_BY_COL, LIGHTS_BY_ROW, LIGHTS_BY_SIDE, LIGHTS_CLOCKWISE, 
 )
 
 
@@ -116,28 +115,6 @@ def rotate_sides(pattern="1", clockwise=True) -> Iterator[str]:
             pattern if i in lights else opp
             for i in range(LIGHT_COUNT)
         )
-
-
-def opposite_corner_pairs() -> Iterator[str]:
-    """Alternate the lights in 2 diagonally-opposite corners
-       with the other 2 diagonally-opposite corners."""
-    corners_clockwise = [
-        (LIGHTS_TOP[0], LIGHTS_LEFT[-1]),
-        (LIGHTS_TOP[-1], LIGHTS_RIGHT[0]),
-        (LIGHTS_BOTTOM[0], LIGHTS_RIGHT[-1]),
-        (LIGHTS_BOTTOM[-1], LIGHTS_LEFT[0]),
-    ]
-    opposite_corners = [
-        corners_clockwise[0] + corners_clockwise[2],
-        corners_clockwise[1] + corners_clockwise[3],
-    ]
-    for lights in opposite_corners:
-        pattern = ''.join(
-            "0" if i in lights else "1"
-            for i in range(LIGHT_COUNT)
-        )
-        yield pattern
-        yield ALL_ON
 
 
 def rotate_build(clockwise=True) -> Iterator[str]:
