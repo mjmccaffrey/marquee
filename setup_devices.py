@@ -1,5 +1,7 @@
 """Marquee Lighted Sign Project - setup_devices"""
 
+import signal
+
 from gpiozero import Button as _Button  # type: ignore
 
 from button import Button
