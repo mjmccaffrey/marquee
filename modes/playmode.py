@@ -6,7 +6,7 @@ from .background_modes import SequenceBGMode
 from .foregroundmode import ForegroundMode
 from button import Button
 from dimmers import TRANSITION_DEFAULT
-from mode_misc import ModeIndex
+from modes.mode_misc import ModeIndex
 from player import Player
 
 
