@@ -75,7 +75,7 @@ class SelectMode(ForegroundMode, ABC):
             #     pace=0.20, 
             #     special=self.special,
             # ).play()
-            time.sleep(4.0)
+            self.player.wait(4.0)
             self.previous_desired = self.desired
         else:
             # Last pass.
