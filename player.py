@@ -103,6 +103,7 @@ class Player(PlayerInterface):
                     raise Shutdown("Button was held.")
                 Button.reset()
                 assert isinstance(mode, ModeInterface)
+                print(f"Button {button} pressed in mode {mode.name}")
                 new_mode = mode.button_action(button)
             except BackgroundModeDue as due:
                 print("BackgroundModeDue caught")
