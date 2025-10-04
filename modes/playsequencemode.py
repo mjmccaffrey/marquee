@@ -43,7 +43,7 @@ class PlaySequenceMode(PlayMode):
         )
 
     def play(self) -> None:
-        """Execute sequence count times, with pace seconds in between.
+        """Execute sequence with pace seconds between steps.
            If stop is specified, end the sequence 
            just before the nth pattern."""
         pace_iter = (

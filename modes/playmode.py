@@ -22,7 +22,6 @@ class PlayMode(ForegroundMode):
 
     def button_action(self, button: Button) -> int | None:
         """Respond to the button press."""
-        print("PLAYMODE BUTTON ACTION")
         # If in sequence mode, exit it.
         index = self.player.find_bg_mode(SequenceBGMode)
         if index is not None:
