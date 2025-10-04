@@ -68,13 +68,13 @@ class SelectMode(ForegroundMode, ABC):
             print(f"Desired is {self.desired} {self.player.modes[self.desired].name}")
             self.player.lights.set_relays(ALL_OFF, special=self.special)
             time.sleep(0.5)
-            PlaySequenceMode(
-                player=self.player,
-                name="SelectMode sequence player",
-                sequence=lambda: rotate_build_flip(count=self.desired),
-                pace=0.20, 
-                special=self.special,
-            ).play()
+            # PlaySequenceMode(
+            #     player=self.player,
+            #     name="SelectMode sequence player",
+            #     sequence=lambda: rotate_build_flip(count=self.desired),
+            #     pace=0.20, 
+            #     special=self.special,
+            # ).play()
             time.sleep(4.0)
             self.previous_desired = self.desired
         else:
