@@ -1,8 +1,6 @@
 """Marquee Lighted Sign Project - player"""
 
-from collections.abc import Iterable
 from dataclasses import dataclass, field
-import itertools
 import time
 from typing import Any, Callable
 
@@ -10,7 +8,6 @@ from button import Button, ButtonPressed, Shutdown
 from event import Event, PriorityQueue
 from modes.background_modes import BackgroundMode, BackgroundModeDue
 from modes.modeinterface import ModeInterface
-from specialparams import ActionParams, DimmerParams, SpecialParams
 from playerinterface import PlayerInterface
 
 
@@ -111,40 +108,6 @@ class Player(PlayerInterface):
                 print("BackgroundModeDue caught")
                 new_mode, = due.args
         return new_mode
-
-    def play_sequence(
-            self, 
-            sequence: Iterable, 
-            count: int = 1, 
-            pace: Iterable[float | None] | float | None = None,
-            stop: int | None = None, 
-            post_delay: float | None = 0.0,
-            special: SpecialParams | None = None,
-        ) -> None:
-        """Execute sequence count times, with pace seconds in between.
-           If stop is specified, end the sequence 
-           just before the nth pattern.
-           Pause for post_delay seconds before exiting."""
-        if isinstance(pace, Iterable):
-            pace_iter = itertools.cycle(pace)
-        else:
-            pace_iter = itertools.repeat(pace)
-        for _ in range(count):
-            for i, lights in enumerate(sequence):
-                if stop is not None and i == stop:
-                    break
-                p = next(pace_iter)
-                before = time.time()
-                if p is not None:
-                    if isinstance(special, DimmerParams):
-                        special.speed_factor = self.speed_factor
-                if isinstance(special, ActionParams):
-                    special.action(lights)
-                else:
-                    self.lights.set_relays(lights, special=special)
-                after = time.time()
-                self.wait(p, after - before)
-        self.wait(post_delay)
 
     def click(self) -> None:
         """Click the specified otherwise unused light relays."""

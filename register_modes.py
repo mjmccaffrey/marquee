@@ -194,7 +194,7 @@ def register_pyohio_2025_presentation_modes(exec: Executor) -> None:
         special=MirrorParams(),
     )
     exec.add_sequence_mode("10_rotate", rotate, 
-        pattern="110111110111", pace=1.0, stop=3, post_delay=None,
+        pattern="110111110111", pace=1.0, stop=3,
         special=MirrorParams(),
     )
     exec.add_sequence_mode("12_on", all_on,

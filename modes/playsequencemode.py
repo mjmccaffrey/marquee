@@ -1,11 +1,14 @@
 """Marquee Lighted Sign Project - playsequencemode"""
 
 from collections.abc import Callable
+from itertools import cycle, repeat
+import time
+from typing import Iterable
 
 from .playmode import PlayMode
 from dimmers import TRANSITION_DEFAULT
 from player import Player
-from specialparams import DimmerParams, SpecialParams
+from specialparams import ActionParams, DimmerParams, SpecialParams
 
 class PlaySequenceMode(PlayMode):
     """Supports all sequence-based modes."""
@@ -13,10 +16,9 @@ class PlaySequenceMode(PlayMode):
         self,
         player: Player,
         name: str,
-        sequence: Callable,
+        sequence: Callable[[], Iterable],
         pace: tuple[float, ...] | float | None = None,
         stop: int | None = None,
-        post_delay: float | None = 0.0,
         special: SpecialParams | None = None,
         **kwargs,
     ) -> None:
@@ -25,7 +27,6 @@ class PlaySequenceMode(PlayMode):
         self.sequence = sequence
         self.pace = pace
         self.stop = stop
-        self.post_delay = post_delay
         self.kwargs = kwargs
         if isinstance(special, DimmerParams):
             default_trans = (
@@ -41,19 +42,33 @@ class PlaySequenceMode(PlayMode):
             relays = isinstance(special, DimmerParams),
         )
 
-    def play_sequence_once(self) -> None:
-        """Play established sequence once."""
-        self.player.replace_kwarg_values(self.kwargs)
-        self.player.play_sequence(
-            sequence=self.sequence(**self.kwargs),
-            pace=self.pace,
-            stop=self.stop,
-            post_delay=self.post_delay,
-            special=self.special,
+    def play(self) -> None:
+        """Execute sequence count times, with pace seconds in between.
+           If stop is specified, end the sequence 
+           just before the nth pattern."""
+        pace_iter = (
+            cycle(self.pace) 
+                if isinstance(self.pace, Iterable) else
+            repeat(self.pace)
         )
+        for i, lights in enumerate(self.sequence(**self.kwargs)):
+            if self.stop is not None and i == self.stop:
+                break
+            p = next(pace_iter)
+            before = time.time()
+            if p is not None:
+                if isinstance(self.special, DimmerParams):
+                    self.special.speed_factor = self.player.speed_factor
+            if isinstance(self.special, ActionParams):
+                self.special.action(lights)
+            else:
+                self.player.lights.set_relays(lights, special=self.special)
+            after = time.time()
+            self.player.wait(p, after - before)
 
     def execute(self) -> None:
-        """Play the mode."""
+        """Update any kwarg special parameters. Play sequence. Repeat."""
         while True:
-            self.play_sequence_once()
+            self.player.replace_kwarg_values(self.kwargs)
+            self.play()
 

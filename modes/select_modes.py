@@ -6,14 +6,17 @@ import time
 
 from .foregroundmode import ForegroundMode
 from .mode_misc import ModeIndex
+from .playsequencemode import PlaySequenceMode
 from button import Button
 from lightset_misc import ALL_OFF, LIGHT_COUNT
+from player import Player
 from sequences import rotate_build_flip
 
 
 @dataclass(kw_only=True)
 class SelectMode(ForegroundMode, ABC):
     """Supports the selection modes."""
+    player: Player
 
     @abstractmethod
     def __post_init__(self) -> None:
@@ -62,14 +65,17 @@ class SelectMode(ForegroundMode, ABC):
         if self.desired != self.previous_desired and self.desired > 0:
             # Not last pass.
             # Show user what desired mode number is currently selected.
-            print(f"Desired is {self.desired}")
+            print(f"Desired is {self.desired} {self.player.modes[self.desired].name}")
             self.player.lights.set_relays(ALL_OFF, special=self.special)
             time.sleep(0.5)
-            self.player.play_sequence(
-                rotate_build_flip(count=self.desired),
-                pace=0.20, post_delay=4.0,
+            PlaySequenceMode(
+                player=self.player,
+                name="SelectMode sequence player",
+                sequence=lambda: rotate_build_flip(count=self.desired),
+                pace=0.20, 
                 special=self.special,
-            )
+            ).play()
+            time.sleep(4.0)
             self.previous_desired = self.desired
         else:
             # Last pass.
