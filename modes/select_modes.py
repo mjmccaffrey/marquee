@@ -21,7 +21,7 @@ class SelectMode(ForegroundMode, ABC):
     @abstractmethod
     def __post_init__(self) -> None:
         """Initialize."""
-        self.preset_devices(dimmers=True)
+        # Do not self.preset_devices(dimmers=True)
 
     def setup(
         self,
@@ -72,7 +72,7 @@ class SelectMode(ForegroundMode, ABC):
                 player=self.player,
                 name="SelectMode sequence player",
                 sequence=lambda: rotate_build_flip(count=self.desired),
-                pace=0.20, 
+                delay=0.20, 
                 special=self.special,
             ).play()
             self.player.wait(4.0)

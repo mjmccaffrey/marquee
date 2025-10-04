@@ -17,7 +17,7 @@ class PlayMode(ForegroundMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        self.preset_devices()
+        # Do not self.preset_devices()
         self.direction = +1
 
     def button_action(self, button: Button) -> int | None:

@@ -76,7 +76,7 @@ class Executor:
             self,
             name: str, 
             sequence: Callable,
-            pace: tuple[float, ...] | float | None = None,
+            delay: tuple[float, ...] | float | None = None,
             special: SpecialParams | None = None,
             **kwargs,
         ) -> None:
@@ -85,7 +85,7 @@ class Executor:
             name, 
             PlaySequenceMode,
             sequence=sequence,
-            pace=pace,
+            delay=delay,
             special=special,
             **kwargs,
         )

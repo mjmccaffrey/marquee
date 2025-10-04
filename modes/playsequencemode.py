@@ -17,7 +17,7 @@ class PlaySequenceMode(PlayMode):
         player: Player,
         name: str,
         sequence: Callable[[], Iterable],
-        pace: tuple[float, ...] | float | None = None,
+        delay: tuple[float, ...] | float | None = None,
         stop: int | None = None,
         special: SpecialParams | None = None,
         **kwargs,
@@ -25,12 +25,12 @@ class PlaySequenceMode(PlayMode):
         """Initialize."""
         super().__init__(player, name, special)
         self.sequence = sequence
-        self.pace = pace
+        self.delay = delay
         self.stop = stop
         self.kwargs = kwargs
         if isinstance(special, DimmerParams):
             default_trans = (
-                pace if isinstance(pace, float) else
+                delay if isinstance(delay, float) else
                 TRANSITION_DEFAULT
             )
             if special.transition_off is None:
@@ -43,13 +43,13 @@ class PlaySequenceMode(PlayMode):
         )
 
     def play(self) -> None:
-        """Execute sequence with pace seconds between steps.
+        """Execute sequence with delay seconds between steps.
            If stop is specified, end the sequence 
            just before the nth pattern."""
         pace_iter = (
-            cycle(self.pace) 
-                if isinstance(self.pace, Iterable) else
-            repeat(self.pace)
+            cycle(self.delay) 
+                if isinstance(self.delay, Iterable) else
+            repeat(self.delay)
         )
         for i, lights in enumerate(self.sequence(**self.kwargs)):
             if self.stop is not None and i == self.stop:

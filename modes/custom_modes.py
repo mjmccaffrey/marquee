@@ -41,7 +41,7 @@ class BellTest(PlayMusicMode):
 @dataclass(kw_only=True)
 class RotateReversible(PlayMode):
     """Rotate a pattern, reversing direction in response to a button press."""
-    pace: float
+    delay: float
     pattern: str
 
     def __post_init__(self) -> None:
@@ -52,7 +52,7 @@ class RotateReversible(PlayMode):
         """Display pattern, set next pattern, and exit.
            Called repeatedly until the mode is changed."""
         self.player.lights.set_relays(self.pattern)
-        self.player.wait(self.pace)
+        self.player.wait(self.delay)
         self.pattern = (
             self.pattern[self.direction:] + self.pattern[:self.direction]
         )
@@ -140,7 +140,7 @@ class RandomFade(PlayMode):
 @dataclass(kw_only=True)
 class EvenOddFade(PlayMode):
     """Fade every-other bulb."""
-    pace: float
+    delay: float
 
     def __post_init__(self) -> None:
         """Initialize."""
