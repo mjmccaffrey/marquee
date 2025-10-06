@@ -11,32 +11,35 @@ marquee
             LightSet
                 Dimmers
                 Relays
+            TimeBGMode
             SequenceBGMode
             SelectMode
+                BrightnessSelectMode
+                ModeSelectMode
             PlayMode
-            PlaySequenceMode
-            PlayMusicMode
-                Instrument
-                    ActionInstrument
-                    RelayInstrument
-                        BellSet
-                        DrumSet
-                    Releaseable Instrument
-                        BellSet
-                    RestInstrument
-                Section
-                    Part
-                        Measure
-                            Element
-                                BaseNote
-                                    ActionNote
-                                    BellNote
-                                    DrumNote
-                                    Rest
-                                NoteGroup
-                        SequenceMeasure
-                        Sequence
-            sequences
+                PlaySequenceMode
+                    sequences
+                PlayMusicMode
+            Instrument
+                ActionInstrument
+                RelayInstrument
+                    BellSet
+                    DrumSet
+                Releaseable Instrument
+                    BellSet
+                RestInstrument
+            Section
+                Part
+                    Measure
+                        Element
+                            BaseNote
+                                ActionNote
+                                BellNote
+                                DrumNote
+                                Rest
+                            NoteGroup
+                    SequenceMeasure
+                    Sequence
 """
 import os
 
