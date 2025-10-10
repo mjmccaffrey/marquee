@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any
 
-from button_misc import ButtonProtocol
+from button_misc import ButtonInterface
 
 
 @dataclass
@@ -14,7 +14,7 @@ class ModeInterface(ABC):
     name: str
 
     @abstractmethod
-    def button_action(self, button: ButtonProtocol) -> None:
+    def button_action(self, button: ButtonInterface) -> None:
         """Respond to button being pressed."""
 
     @abstractmethod

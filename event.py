@@ -30,6 +30,7 @@ class PriorityQueue:
 
     def peek(self) -> Event:
         """Return next event without removing from queue."""
+        assert self.queue, "Cannot peek into empty queue."
         return self.queue[0]
 
     def pop(self) -> Event:

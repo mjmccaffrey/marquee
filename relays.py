@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - relays"""
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections.abc import Mapping, Sequence
 from typing import ClassVar, Protocol
 
@@ -21,13 +21,17 @@ class RelayModule(Protocol):
         ...
 
 
-class NumatoUSBRelayModule(ABC):
+class NumatoUSBRelayModule(RelayModule, ABC):
     """Supports Numato USB Relay Modules."""
 
-    relay_count: ClassVar[int]
+    def __init_subclass__(cls, relay_count: int) -> None:
+        """"""
+        cls.relay_count = relay_count
 
     def __init__(
-        self, port_address: str, device_mapping: Mapping[int, int] = {}
+        self, 
+        port_address: str, 
+        device_mapping: Mapping[int, int] = {},
     ) -> None:
         """Create the object, where device_mapping
            maps device indices to relay indices.
@@ -40,8 +44,10 @@ class NumatoUSBRelayModule(ABC):
                 timeout=2,
             )
         except serial.serialutil.SerialException as e:  # type: ignore
+            print()
             print(f"*** Failed to open '{self.port_address}' ***")
             print(f"*** Error: {e} ***")
+            print()
             raise OSError from None
         if device_mapping:
             assert len(device_mapping) == self.relay_count
@@ -63,7 +69,6 @@ class NumatoUSBRelayModule(ABC):
         }
 
     def __str__(self) -> str:
-        """__str__."""
         return f"{type(self).__name__} @ {self.port_address}"
     
     def close(self) -> None:
@@ -122,14 +127,12 @@ class NumatoUSBRelayModule(ABC):
         return device_pattern
 
 
-class NumatoRL160001(NumatoUSBRelayModule):
+class NumatoRL160001(NumatoUSBRelayModule, relay_count=16):
     """Supports the Numato RL160001 16 Channel USB 
        Mechanical Relay Module."""
-    relay_count: ClassVar = 16
 
 
-class NumatoSSR80001(NumatoUSBRelayModule):
+class NumatoSSR80001(NumatoUSBRelayModule, relay_count=8):
     """Supports the Numato SSR80001 8 Channel USB 
        Solid State Relay Module."""
-    relay_count: ClassVar = 8
 

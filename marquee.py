@@ -45,10 +45,10 @@ import os
 
 from argument import display_help, process_arguments
 from button import Shutdown
-from executor import Executor, SigTerm, setup_devices
+from executor import Executor, SigTerm
 from player import Player
 from register_modes import register_modes
-
+from setup_devices import setup_devices
 
 def main() -> None:
     """Execute Marquee application."""

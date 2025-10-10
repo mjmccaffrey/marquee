@@ -2,15 +2,18 @@
 
 from collections.abc import Callable
 import signal
+import time
 
 from button import Button
-from dimmers import ShellyDimmer, TRANSITION_DEFAULT
-from lightset_misc import ALL_OFF, EXTRA_COUNT
+from button_misc import ButtonSet
+from dimmers import TRANSITION_DEFAULT
+from instruments import BellSet, DrumSet
+from lightset import LightSet
+from lightset_misc import ALL_OFF, ALL_ON, EXTRA_COUNT
 from modes.modeinterface import ModeInterface
 from modes.mode_misc import ModeConstructor
 from modes.playsequencemode import PlaySequenceMode
 from playerinterface import PlayerInterface
-from setup_devices import setup_devices
 from specialparams import SpecialParams
 
 
@@ -25,8 +28,11 @@ class Executor:
 
     def __init__(
             self,
-            create_player: Callable,
-            setup_devices: Callable,
+            create_player: Callable[..., PlayerInterface],
+            setup_devices: Callable[
+                [float], 
+                tuple[BellSet, ButtonSet, DrumSet, LightSet]
+            ],
         ) -> None:
         """Init the (single) executor."""
         self.create_player = create_player
@@ -34,7 +40,7 @@ class Executor:
         self.mode_ids: dict[str, int] = {}
         self.mode_menu: list[tuple[int, str]] = []
         self.modes: dict[int, ModeConstructor] = {}
-        self.commands: dict[str, Callable] = {
+        self.commands: dict[str, Callable[[], None]] = {
             'calibrate_dimmers': self.command_calibrate_dimmers,
             'off': self.command_off,
         }
@@ -43,16 +49,6 @@ class Executor:
         """Close dependencies."""
         self.player.close()
         print(f"Executor {self} closed. - !!! close devices")
-
-    def command_calibrate_dimmers(self) -> None:
-        """Calibrate dimmers."""
-        ShellyDimmer.calibrate_all()
-
-    def command_off(self) -> None:
-        """Turn off all relays and potentially other devices."""
-        self.lights.set_relays(ALL_OFF, '0' * EXTRA_COUNT)
-        print("Marquee hardware is now partially shut down.")
-        print()
 
     def add_mode(
             self, 
@@ -102,7 +98,7 @@ class Executor:
         """Effects the command-line specified command, mode or pattern(s)."""
         signal.signal(signal.SIGTERM, self.sigterm_received)
         self.bells, self.buttons, self.drums, self.lights = (
-            setup_devices(brightness_factor)
+            self.setup_devices(brightness_factor)
         )
         if command is not None:
             self.execute_command(command)
@@ -139,6 +135,31 @@ class Executor:
             Button.wait(TRANSITION_DEFAULT)
         if light_pattern is not None:
             self.lights.set_relays(light_pattern)
+
+    def command_calibrate_dimmers(self) -> None:
+        """Execute calibration on all dimmers on each successive channel."""
+        print("Calibrating dimmers")
+        # Set all light relays on
+        self.lights.set_relays(ALL_ON)
+        # Set all light dimmers to high
+        for dimmer in self.lights.dimmers:
+            for channel in dimmer.channels:
+                channel.set(brightness=100)
+        time.sleep(3)
+        max_channel = max(d.channel_count for d in self.lights.dimmers)
+        for id in range(max_channel):
+            print(f"Calibrating channel {id}")
+            for dimmer in self.lights.dimmers:
+                if id < dimmer.channel_count:
+                    dimmer.channels[id].calibrate()
+            time.sleep(150)
+        print("Calibration should be complete")
+
+    def command_off(self) -> None:
+        """Turn off all relays and potentially other devices."""
+        self.lights.set_relays(ALL_OFF, '0' * EXTRA_COUNT)
+        print("Marquee hardware is now partially shut down.")
+        print()
 
     def sigterm_received(self, signal_number, stack_frame) -> None:
         """Callback for SIGTERM received."""

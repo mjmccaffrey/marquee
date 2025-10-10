@@ -3,7 +3,7 @@
 from abc import ABC
 import asyncio
 from dataclasses import dataclass
-import time
+from typing import ClassVar
 
 import aiohttp
 import requests
@@ -13,16 +13,21 @@ TRANSITION_MINIMUM = 0.5
 TRANSITION_MAXIMUM = 10800.0
 
 
+@dataclass
+class _DimmerCommand:
+    """ Parameters for giving command to dimmer. """
+    channel: 'DimmerChannel'
+    url: str
+    params: dict
+
+
 class ShellyDimmer(ABC):
     """Supports Shelly Dimmers."""
 
-    channel_count: int  # Abstract
-
-    _dimmers: list["ShellyDimmer"] = []
+    channel_count: ClassVar[int]
 
     def __init__(self, index: int, ip_address: str) -> None:
         """Create the dimmer instance."""
-        self._dimmers.append(self)
         self.index = index
         self.ip_address = ip_address
         print(f"Initializing {self}")
@@ -41,6 +46,10 @@ class ShellyDimmer(ABC):
             print(f"*** Failed to reach '{self.ip_address}' ***")
             print(f"*** Error: {e} ***")
             raise OSError from None
+
+    def __init_subclass__(cls, channel_count: int) -> None:
+        """"""
+        cls.channel_count = channel_count
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.index} @ {self.ip_address}"
@@ -92,32 +101,6 @@ class ShellyDimmer(ABC):
             ]
         return [task.result() for task in tasks]
 
-    @classmethod
-    def calibrate_all(cls) -> None:
-        """ Execute calibration on all dimmers on each successive channel. """
-        print("Calibrating dimmers")
-        # Set all lights all the way on.
-        for dimmer in cls._dimmers:
-            for channel in dimmer.channels:
-                channel.set(
-                    brightness=100,
-                )
-        time.sleep(5)
-        for id in range(max(d.channel_count for d in cls._dimmers)):
-            print(f"Calibrating channel {id}")
-            commands = [
-                _DimmerCommand(
-                    channel=dimmer.channels[id], 
-                    url=f'http://{dimmer.ip_address}/rpc/Light.Calibrate',
-                    params={'id':id},
-                )
-                for dimmer in cls._dimmers
-                if id < dimmer.channel_count
-            ]
-            asyncio.run(cls.execute_multiple_commands(commands))
-            time.sleep(150)
-        print("Calibration complete")
-
 
 class DimmerChannel:
     """ Models a single dimmer channel (light). """
@@ -143,6 +126,20 @@ class DimmerChannel:
     def __repr__(self) -> str:
         return f"<{self}>"
     
+    def calibrate(self) -> None:
+        """Initiate dimmer channel calibration."""
+        command = _DimmerCommand(
+            channel = self,
+            url=f'http://{self.ip_address}/rpc/Light.Calibrate',
+            params={'id':self.id},
+        )
+        response = self.dimmer.session.get(
+            url=command.url,
+            params=command.params,
+            timeout=1.0,
+        )
+        response.raise_for_status()
+
     def make_set_command(
         self, 
         brightness: int | None = None, 
@@ -192,15 +189,6 @@ class DimmerChannel:
             self.brightness = b
 
 
-@dataclass
-class _DimmerCommand:
-    """ Parameters for giving command to dimmer. """
-    channel: DimmerChannel
-    url: str
-    params: dict
-
-
-class ShellyProDimmer2PM(ShellyDimmer):
+class ShellyProDimmer2PM(ShellyDimmer, channel_count=2):
     """Supports the Shelly Pro Dimmer 2PM."""
-    channel_count = 2
 

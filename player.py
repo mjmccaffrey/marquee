@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 import time
-from typing import Any, Callable
+from typing import Any, Callable, NoReturn
 
 from button import Button, ButtonPressed, Shutdown
 from event import Event, PriorityQueue
@@ -121,7 +121,11 @@ class Player(PlayerInterface):
             extra_pattern=extra,
         )
 
-    def wait(self, seconds: float | None, elapsed: float = 0) -> None:
+    def wait(
+        self, 
+        seconds: float | None, 
+        elapsed: float = 0.0,
+    ) -> None | NoReturn:
         """Wait seconds, after adjusting for
            speed_factor and time already elapsed.
            If seconds is None, wait indefinitely.
@@ -145,10 +149,7 @@ class Player(PlayerInterface):
                     print(f"Running {event}")
                     self.event_queue.pop()
                     event.action()
-                elif seconds is None:
-                    print(f"Waiting for {event} or button push")
-                    duration = None
-                elif event.time_due < end:
+                elif seconds is None or event.time_due < end:
                     print(f"Waiting for {event} or button push")
                     duration = event.time_due - now
                 else:

@@ -8,7 +8,7 @@ from itertools import cycle
 from time import gmtime, time
 from typing import Callable, ClassVar, NoReturn
 
-from button_misc import ButtonProtocol
+from button_misc import ButtonInterface
 from .mode_misc import ModeConstructor, ModeIndex
 from .modeinterface import ModeInterface
 from playerinterface import PlayerInterface
@@ -26,7 +26,7 @@ class BackgroundModeDue(Exception):
 
 @dataclass
 class BackgroundMode(ModeInterface, ABC):
-    """"""
+    """Base for all background modes."""
     player: PlayerInterface
     execute_count: int = field(init=False)
     modes: ClassVar[dict[int, ModeConstructor]]
@@ -43,7 +43,7 @@ class BackgroundMode(ModeInterface, ABC):
         cls.modes = modes
         cls.mode_ids = mode_ids
 
-    def button_action(self, button: ButtonProtocol) -> None:
+    def button_action(self, button: ButtonInterface) -> None:
         """Respond to button being pressed."""
         raise ValueError(f"Button {button} action in background mode.")
 
@@ -135,7 +135,7 @@ class TimeBGMode(BackgroundMode, ABC):
 
     @abstractmethod
     def schedule_next_event(self):
-        """"""
+        """Schedule next (future) event for this background mode."""
         self.player.add_event(
             time_due = self.next_trigger_time(), 
             owner = self,

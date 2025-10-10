@@ -1,11 +1,11 @@
-"""Marquee Lighted Sign Project - buttonprotocol"""
+"""Marquee Lighted Sign Project - button_misc"""
 
 from dataclasses import dataclass
 from typing import Protocol
 
 
-class ButtonProtocol(Protocol):
-    """Button protocol."""
+class ButtonInterface(Protocol):
+    """Button interface."""
 
     @classmethod
     def reset(cls) -> None:
@@ -21,11 +21,11 @@ class ButtonProtocol(Protocol):
         """Clean up."""
         ...
 
-    def button_pressed(self) -> None:
+    def button_pressed(self, held: bool = False) -> None:
         """Callback for button press."""
         ...
 
-    def virtual_button_pressed(self) -> None:
+    def virtual_button_pressed(self, signal_number, stack_frame) -> None:
         """Callback for virtual button press."""
         ...
 
@@ -33,8 +33,9 @@ class ButtonProtocol(Protocol):
 @dataclass
 class ButtonSet:
     """Every button."""
-    body_back: ButtonProtocol
-    remote_a: ButtonProtocol
-    remote_b: ButtonProtocol
-    remote_c: ButtonProtocol
-    remote_d: ButtonProtocol
+    body_back: ButtonInterface
+    remote_a: ButtonInterface
+    remote_b: ButtonInterface
+    remote_c: ButtonInterface
+    remote_d: ButtonInterface
+

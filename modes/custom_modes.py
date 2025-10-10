@@ -2,7 +2,6 @@
 
 from collections.abc import Iterator
 from dataclasses import dataclass
-from enum import IntEnum
 import itertools
 import random
 import time
@@ -12,13 +11,11 @@ from lightset_misc import (
     ALL_HIGH, ALL_LOW, ALL_ON, 
     LIGHT_COUNT, LIGHTS_BY_ROW,
 )
-from music.music_notation import bell_pitch_map
+from music.music_notation import Bell
 from .playmode import PlayMode
 from .playmusicmode import PlayMusicMode
 from sequences import lights_in_groups, opposite, rotate
 from specialparams import DimmerParams
-
-Bell = IntEnum('Bell', bell_pitch_map)
 
 
 @dataclass(kw_only=True)
@@ -284,7 +281,7 @@ class HourlyChime(PlayMode):
             self.player.lights.set_relays(
                 str('1' if i <= hour else '0' for i in range(LIGHT_COUNT))
             )
-            self.player.bells.play({Bell.e})  # type: ignore
+            self.player.bells.play({Bell.e})
             self.player.wait(1.5)
         self.player.wait(5.0)
 

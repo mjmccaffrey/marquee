@@ -26,6 +26,12 @@ SYLVANIA_40_INCANDESCENT_FROSTED_GLOBE = {
     'A': 100, 'F': 23,
 }
 
+HALCO_11_INCANDESCENT_S14_TRANSPARENT_AMBER = {
+    '0': 0, '1': 15, '2': 20, '3': 30, '4': 40,
+    '5': 50, '6': 60, '7': 70, '8':80, '9': 90,
+    'A': 100, 'F': 23,
+}  # ??
+
 def setup_devices(
     brightness_factor: float
 ) -> tuple[BellSet, ButtonSet, DrumSet, LightSet]:
