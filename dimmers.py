@@ -118,7 +118,7 @@ class DimmerChannel:
         self.id = id
         self.brightness = brightness
         self.next_update: float = 0
-        self.set()  # Ensure on==true
+        # !!!!!! self.set()  # Ensure on==true
             
     def __str__(self) -> str:
         return (f"dimmer {self.dimmer.index} channel {self.index}")
