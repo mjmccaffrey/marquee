@@ -25,7 +25,7 @@ class Bell(IntEnum):
     a = 3;  G = 2
     # F#
     E = 1;  D = 0
-bell_pitch_map = {k: int(v) for k, v in Bell.__members__}
+bell_pitch_map = {k: int(v) for k, v in Bell.__members__.items()}
 drum_accent_map = {
     '': 0, '-': 1, '>': 2, '^': 3,
 }
