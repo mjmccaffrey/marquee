@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - modeinterface"""
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 from button_misc import ButtonInterface

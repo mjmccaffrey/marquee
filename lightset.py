@@ -8,14 +8,14 @@ from dimmers import (
     TRANSITION_DEFAULT, TRANSITION_MINIMUM,
 )
 from lightset_misc import EXTRA_COUNT, LIGHT_COUNT
-from relays import NumatoUSBRelayModule
+from relays import RelayModule
 from specialparams import DimmerParams, MirrorParams, SpecialParams
 
 
 @dataclass
 class LightSet:
     """Supports all of the light-related devices."""
-    relays: NumatoUSBRelayModule
+    relays: RelayModule
     dimmers: list[ShellyDimmer]
     bulb_adjustments: dict[str, int]
     brightness_factor_init: InitVar[float]

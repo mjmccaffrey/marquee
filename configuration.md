@@ -11,6 +11,9 @@ Marquee Lighted Sign Project - configuration
 
     * Laptop
         * 192.168.64.105
+
+        * 192.168.64.110
+
     * Shelly ProDimmer2PM FCE8C0D8ED98| 1.4.4| 679fcca9
         * 192.168.64.111
     * Shelly ProDimmer2PM 2CBCBB9F5470| 1.4.4| 679fcca9

@@ -3,7 +3,7 @@
 from abc import ABC
 import asyncio
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, Protocol
 
 import aiohttp
 import requests
@@ -13,15 +13,24 @@ TRANSITION_MINIMUM = 0.5
 TRANSITION_MAXIMUM = 10800.0
 
 
-@dataclass
-class _DimmerCommand:
-    """ Parameters for giving command to dimmer. """
-    channel: 'DimmerChannel'
-    url: str
-    params: dict
+class DimmerModule(Protocol):
+    """Protocol for any dimmer module."""
+    
+    channel_count: ClassVar[int]
+
+    def close(self) -> None:
+        """Clean up."""
+        ...
+
+    @staticmethod
+    async def execute_multiple_commands(
+        commands: list["_DimmerCommand"]
+    ) -> list[aiohttp.ClientResponse]:
+        """Send multiple commands asynchronously."""
+        ...
 
 
-class ShellyDimmer(ABC):
+class ShellyDimmer(DimmerModule, ABC):
     """Supports Shelly Dimmers."""
 
     channel_count: ClassVar[int]
@@ -73,8 +82,8 @@ class ShellyDimmer(ABC):
             for id in range(self.channel_count)
         ]      
     
-    @classmethod
-    async def _execute_single_command(cls, command: "_DimmerCommand") -> aiohttp.ClientResponse:
+    @staticmethod
+    async def _execute_single_command(command: "_DimmerCommand") -> aiohttp.ClientResponse:
         """ Send individual command as part of asynchonous batch. """
         async with aiohttp.ClientSession() as session:
             async with session.get(
@@ -87,15 +96,15 @@ class ShellyDimmer(ABC):
             command.channel.brightness = b
         return response
     
-    @classmethod
+    @staticmethod
     async def execute_multiple_commands(
-        cls, commands: list["_DimmerCommand"]
+        commands: list["_DimmerCommand"]
     ) -> list[aiohttp.ClientResponse]:
         """Send multiple commands asynchronously."""
         async with asyncio.TaskGroup() as tg:
             tasks = [
                 tg.create_task(
-                    cls._execute_single_command(command)
+                    ShellyDimmer._execute_single_command(command)
                 )
                 for command in commands
             ]
@@ -191,4 +200,12 @@ class DimmerChannel:
 
 class ShellyProDimmer2PM(ShellyDimmer, channel_count=2):
     """Supports the Shelly Pro Dimmer 2PM."""
+
+
+@dataclass
+class _DimmerCommand:
+    """ Parameters for giving command to dimmer. """
+    channel: 'DimmerChannel'
+    url: str
+    params: dict
 
