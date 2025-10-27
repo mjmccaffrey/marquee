@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - register_modes"""
 
-from executor import Executor
+import 
 from lightset_misc import LIGHT_COUNT
 from modes.background_modes import SequenceBGMode
 from modes.custom_modes import (
