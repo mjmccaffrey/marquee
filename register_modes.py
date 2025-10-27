@@ -4,7 +4,7 @@ from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes.background_modes import SequenceBGMode
 from modes.custom_modes import (
-    BellTest, BuildBrightness, EvenOddFade, FillBulbs, RotateReversible, 
+    BellTest, EvenOddFade, FillBulbs, RotateReversible, 
     RandomFade, RapidFade, RotateRewind, SilentFadeBuild,
 )
 from modes.mode_misc import ModeIndex
@@ -181,8 +181,6 @@ def register_silent_modes(exec: Executor) -> None:
 
 def register_test_modes(exec: Executor) -> None:
     """"""
-    exec.add_mode("build_brightness_equal", BuildBrightness, equal_trans=True)
-    exec.add_mode("build_brightness_unequal", BuildBrightness, equal_trans=False)
     exec.add_mode("bell_test", BellTest)
 
 

@@ -9,8 +9,8 @@ from time import gmtime, time
 from typing import Callable, ClassVar, NoReturn
 
 from button_misc import ButtonInterface
-from .mode_misc import ModeConstructor, ModeIndex
-from .modeinterface import ModeInterface
+from .basemode import BaseMode
+from .mode_misc import ChangeMode, ModeConstructor, ModeIndex
 from playerinterface import PlayerInterface
 
 
@@ -20,15 +20,10 @@ class ModeEntry:
     time: float
 
 
-class BackgroundModeDue(Exception):
-    """Background mode run due exception."""
-
-
 @dataclass
-class BackgroundMode(ModeInterface, ABC):
-    """Base for all background modes."""
-    player: PlayerInterface
-    execute_count: int = field(init=False)
+class BackgroundMode(BaseMode, ABC):
+    """Base for all background modes.
+       Background modes should not play anything directly."""
     modes: ClassVar[dict[int, ModeConstructor]]
     mode_ids: ClassVar[dict[str, int]]
     trigger_time: float = field(init=False)
@@ -92,10 +87,9 @@ class SequenceBGMode(BackgroundMode):
             f"{self.modes[self.mode_on_deck.index]} "
             f"for {self.mode_on_deck.time} seconds."
         )
-        self.player.add_event(
-            time_due = time() + self.mode_on_deck.time, 
-            owner = self,
-            action = self.execute,
+        self.schedule(
+            action=self.execute,
+            due=time() + self.mode_on_deck.time, 
         )
         new_mode = self.mode_on_deck.index
         self.mode_on_deck = next(self.mode_iter)
@@ -125,7 +119,7 @@ class TimeBGMode(BackgroundMode, ABC):
 
     def event_execute(self) -> NoReturn:
         """Schedule next event, raise event with foreground mode index."""
-        raise BackgroundModeDue(self.execute(), False)
+        raise ChangeMode(self.execute(), False)
 
     def execute(self, is_initial_mode: bool = True) -> int:
         """Return index of desired mode.
@@ -136,9 +130,8 @@ class TimeBGMode(BackgroundMode, ABC):
     @abstractmethod
     def schedule_next_event(self):
         """Schedule next (future) event for this background mode."""
-        self.player.add_event(
-            time_due = self.next_trigger_time(), 
-            owner = self,
-            action = self.event_execute,
+        self.schedule(
+            action=self.event_execute,
+            due=self.next_trigger_time(), 
         )
 

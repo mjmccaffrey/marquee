@@ -4,15 +4,13 @@ from abc import ABC
 from dataclasses import dataclass
 
 from lightset_misc import ALL_HIGH, ALL_ON
-from .modeinterface import ModeInterface
-from playerinterface import PlayerInterface
+from .basemode import BaseMode
 from specialparams import MirrorParams, SpecialParams
 
 
 @dataclass
-class ForegroundMode(ModeInterface, ABC):
+class ForegroundMode(BaseMode, ABC):
     """Base for all Playing and Select modes."""
-    player: PlayerInterface
     special: SpecialParams | None = None
 
     def preset_devices(
@@ -20,13 +18,13 @@ class ForegroundMode(ModeInterface, ABC):
     ) -> None:
         """Preset the dimmers and relays as specified."""
         if isinstance(self.special, MirrorParams):
-            self.special.func = self.player.drums.mirror
+            self.special.func = self.drums.mirror
         if dimmers:
             # print("Presetting DIMMERS")
-            self.player.lights.set_dimmers(ALL_HIGH, force_update=True)
+            self.lights.set_dimmers(ALL_HIGH, force_update=True)
         if relays:
             # print("Presetting RELAYS")
-            self.player.lights.set_relays(ALL_ON)
+            self.lights.set_relays(ALL_ON)
 
     @staticmethod
     def wrap_value(

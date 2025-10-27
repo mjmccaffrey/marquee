@@ -28,12 +28,18 @@ class BellTest(PlayMusicMode):
 
     def execute(self) -> None:
         """Perform bell test."""
-        for pitch in range(self.player.bells.pitch_levels):
-            self.player.bells.play({pitch})
-            self.player.wait(self.player.bells.release_time)
-            self.player.bells.release({pitch})
-            self.player.wait(0.5)
-
+        start = time.time()
+        for pitch in range(self.bells.pitch_levels):
+            due = start + 0.5 * pitch
+            self.schedule(
+                action = lambda: self.bells.play({pitch}),
+                due = due,
+            )
+            self.schedule(
+                action = lambda: self.bells.release({pitch}),
+                due = due + self.bells.release_time,
+            )
+            
 
 @dataclass(kw_only=True)
 class RotateReversible(PlayMode):
@@ -48,8 +54,10 @@ class RotateReversible(PlayMode):
     def execute(self) -> None:
         """Display pattern, set next pattern, and exit.
            Called repeatedly until the mode is changed."""
-        self.player.lights.set_relays(self.pattern)
-        self.player.wait(self.delay)
+        self.schedule(
+            lambda: self.lights.set_relays(self.pattern),
+            time.time() + self.delay
+        )
         self.pattern = (
             self.pattern[self.direction:] + self.pattern[:self.direction]
         )
@@ -88,13 +96,15 @@ class RotateRewind(PlayMode):
             )
         ]
         values.extend(reversed(values[1:-1]))
-        for pattern, pace in itertools.cycle(values):
-            start = time.time()
-            self.player.lights.set_relays(
-                pattern, 
-                special=self.special,
+        start = time.time()
+        for index, (pattern, pace) in enumerate(itertools.cycle(values)):
+            self.schedule(
+                lambda: self.lights.set_relays(
+                    pattern, 
+                    special=self.special,
+                ),
+                start + index * pace
             )
-            self.player.wait(pace, time.time() - start)
 
 
 @dataclass(kw_only=True)
@@ -121,17 +131,23 @@ class RandomFade(PlayMode):
     
     def execute(self) -> None:
         """Perform RandomFade indefinitely."""
-        for channel in self.player.lights.dimmer_channels:
+        for channel in self.lights.dimmer_channels:
             channel.next_update = 0
+        due = time.time()
         while True:
-            for channel in self.player.lights.dimmer_channels:
-                if channel.next_update < (now := time.time()):
-                    channel.set(
-                        transition = (tran := self._new_transition()),
-                        brightness = self._new_brightness(channel.brightness)
+            for channel in self.lights.dimmer_channels:
+                now = time.time()
+                if channel.next_update < now:
+                    transition = self._new_transition()
+                    self.schedule(
+                        lambda: channel.set(
+                            transition = transition,
+                            brightness = self._new_brightness(channel.brightness),
+                        ),
+                        due,
                     )
-                    channel.next_update = now + tran
-            self.player.wait(0.1)
+                    due += 0.1
+                    channel.next_update = now + transition
 
 
 @dataclass(kw_only=True)
@@ -145,23 +161,27 @@ class EvenOddFade(PlayMode):
 
     def execute(self) -> None:
         """Perform EvenOddFade indefinitely."""
-        self.player.lights.set_dimmers(ALL_LOW) 
+        self.lights.set_dimmers(ALL_LOW) 
         delay = 0.5
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
         even_on = opposite(odd_on)
+        due = time.time()
         for pattern in itertools.cycle((even_on, odd_on)):
             start = time.time()
-            self.player.lights.set_relays(
-                pattern, 
-                special=DimmerParams(
-                    concurrent=True,
-                    brightness_on = 90,
-                    brightness_off = 10,
-                    transition_on=delay,
-                    transition_off=delay,
-                )
+            self.schedule(
+                lambda: self.lights.set_relays(
+                    pattern, 
+                    special=DimmerParams(
+                        concurrent=True,
+                        brightness_on = 90,
+                        brightness_off = 10,
+                        transition_on=delay,
+                        transition_off=delay,
+                    )
+                ),
+                due,
             )
-            self.player.wait(delay, time.time() - start)
+            due += delay
 
 
 @dataclass(kw_only=True)
@@ -175,41 +195,34 @@ class RapidFade(PlayMode):
  
     def execute(self) -> None:
         """Perform RapidFade indefinitely."""
-        self.player.lights.set_relays(ALL_ON)
+        self.lights.set_relays(ALL_ON)
+        due = time.time()
         while True:
-            self.player.lights.set_dimmers(ALL_HIGH, force_update=True)
+            self.lights.set_dimmers(ALL_HIGH, force_update=True)
             previous = None
-            for channel in self.player.lights.dimmer_channels:
-                start = time.time()
-                channel.set(brightness=0, transition=TRANSITION_MINIMUM)
+            for channel in self.lights.dimmer_channels:
+                self.schedule(
+                    lambda: channel.set(brightness=0, transition=TRANSITION_MINIMUM),
+                    due,
+                )
                 if previous:
-                    previous.set(brightness=40, transition=TRANSITION_MINIMUM)
+                    self.schedule(
+                        lambda: previous.set(  # type: ignore
+                            brightness=40, 
+                            transition=TRANSITION_MINIMUM,
+                        ),
+                        due,
+                    ),
                 previous = channel
-                self.player.wait(0.25, elapsed = time.time() - start)
+                due += 0.25
             assert previous is not None
-            previous.set(brightness=40, transition=TRANSITION_MINIMUM)
-
-
-@dataclass(kw_only=True)
-class BuildBrightness(PlayMode):
-    """Brightness change rate test."""
-    equal_trans: bool
-
-    def __post_init__(self) -> None:
-        """Initialize."""
-        self.preset_devices(relays=True)
-
-    def execute(self) -> None:
-        self.player.lights.set_dimmers(ALL_LOW)
-        brightnesss = [(i + 1) * 10 for i in range(LIGHT_COUNT)]
-        transitions = (
-            [0.5] * LIGHT_COUNT
-                if self.equal_trans else
-            [(i + 1) * 2 for i in range(LIGHT_COUNT)]
-        )
-        for dimmer, brightness, transition in zip(self.player.lights.dimmer_channels, brightnesss, transitions):
-            dimmer.set(brightness=brightness, transition=transition)
-        self.player.wait(4)
+            self.schedule(
+                lambda: previous.set(  # type: ignore
+                    brightness=40, 
+                    transition=TRANSITION_MINIMUM,
+                ),
+                due,
+            )
 
 
 @dataclass(kw_only=True)
@@ -222,7 +235,8 @@ class SilentFadeBuild(PlayMode):
  
     def execute(self) -> None:
         """Perform SilentFadeBuild indefinitely."""
-        self.player.lights.set_relays(ALL_ON)
+        self.lights.set_relays(ALL_ON)
+        due = time.time()
         while True:
             for rows in (False, True):
                 for from_top_left, brightness in (
@@ -230,12 +244,15 @@ class SilentFadeBuild(PlayMode):
                     (False, 100), (True, 0),
                 ):
                     for lights in lights_in_groups(rows, from_top_left):
-                        self.player.lights.set_dimmer_subset(
-                            lights, brightness, 1.0
+                        self.schedule(
+                            lambda: self.lights.set_dimmer_subset(
+                                lights, brightness, 1.0
+                            ),
+                            due,
                         )
-                        self.player.wait(0.5)
-                    self.player.wait(1.0)
-                self.player.wait(1.0)
+                        due += 0.5
+                    due += 1.0
+                due += 1.0
 
 
 @dataclass(kw_only=True)
@@ -244,25 +261,21 @@ class FillBulbs(PlayMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        self.player.lights.set_dimmers(ALL_LOW)
-        self.player.wait(0.5)
+        self.lights.set_dimmers(ALL_LOW)
+        self.wait(0.5)
         self.preset_devices(relays=True)
  
     def execute(self) -> None:
         """Bulb juice flows down from the top center."""
         for lights in LIGHTS_BY_ROW:
-            self.player.lights.set_dimmer_subset(
-                lights, 30, 2.0,
-            )
-            self.player.wait(1.0)
-        self.player.wait(1.0)
+            self.lights.set_dimmer_subset(lights, 30, 2.0)
+            self.wait(1.0)
+        self.wait(1.0)
         for lights in reversed(LIGHTS_BY_ROW):
-            self.player.lights.set_dimmer_subset(
-                lights, 100, 1.5,
-            )
-            self.player.wait(1.5)
-            self.player.bells.play({7})
-        self.player.wait(None)
+            self.lights.set_dimmer_subset(lights, 100, 1.5)
+            self.wait(1.5)
+            self.bells.play({7})
+        self.wait(None)
 
 
 @dataclass(kw_only=True)
@@ -270,18 +283,18 @@ class HourlyChime(PlayMode):
     """Chime and light the hour."""
     def __post_init__(self) -> None:
         """Initialize."""
-        self.player.lights.set_dimmers(ALL_HIGH)
-        self.player.wait(0.5)
+        self.lights.set_dimmers(ALL_HIGH)
+        self.wait(0.5)
         self.preset_devices(relays=True)
  
     def execute(self) -> None:
         """Chime and light the hour."""
-        self.player.wait(1.0)
+        self.wait(1.0)
         for hour in range(time.gmtime().tm_hour):
-            self.player.lights.set_relays(
+            self.lights.set_relays(
                 str('1' if i <= hour else '0' for i in range(LIGHT_COUNT))
             )
-            self.player.bells.play({Bell.e})
-            self.player.wait(1.5)
-        self.player.wait(5.0)
+            self.bells.play({Bell.e})
+            self.wait(1.5)
+        self.wait(5.0)
 

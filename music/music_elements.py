@@ -7,6 +7,7 @@ import itertools
 import time
 from typing import Any, ClassVar
 
+from event import Event
 from instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 
     ReleaseableInstrument, RestInstrument,
@@ -67,10 +68,12 @@ class ReleasableNote(BaseNote, ABC):
     def schedule_release(self, player: PlayerInterface) -> None:
         """Schedule release of played note."""
         assert isinstance(self.instrument, ReleaseableInstrument)
-        player.add_event(
-            time_due = time.time() + self.instrument.release_time,
-            owner = self,
-            action = lambda: self.release(player),
+        player.event_queue.push(
+            Event(
+                action = lambda: self.release(player),
+                due = time.time() + self.instrument.release_time,
+                owner = self,
+            )
         )
 
 

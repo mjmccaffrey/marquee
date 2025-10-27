@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from typing import Callable, NoReturn
 
 from button_misc import ButtonSet
+from event import PriorityQueue
 from instruments import BellSet, DrumSet
 from lightset import LightSet
 from modes.mode_misc import ModeConstructor
@@ -23,15 +24,11 @@ class PlayerInterface(ABC):
     remembered_mode: int | None = field(init=False)
     pace: float = field(init=False)
     bg_mode_instances: dict = field(init=False)
-    event_queue: object = field(init=False)
+    event_queue: PriorityQueue = field(init=False)
 
     @abstractmethod
     def close(self) -> None:
         """Clean up."""
-
-    @abstractmethod
-    def add_event(self, time_due: float, owner: object, action: Callable) -> None:
-        """Add event to queue."""
 
     @abstractmethod
     def execute(self, starting_mode_index: int) -> None:

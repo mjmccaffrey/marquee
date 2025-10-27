@@ -51,20 +51,25 @@ class PlaySequenceMode(PlayMode):
                 if isinstance(self.delay, Iterable) else
             repeat(self.delay)
         )
+        start = time.time()
         for i, lights in enumerate(self.sequence(**self.kwargs)):
             if self.stop is not None and i == self.stop:
                 break
-            p = next(pace_iter)
-            before = time.time()
-            if p is not None:
-                if isinstance(self.special, DimmerParams):
-                    self.special.speed_factor = self.player.speed_factor
+            pace = next(pace_iter)
+
+            # if pace is not None:
+            if isinstance(self.special, DimmerParams):
+                self.special.speed_factor = self.player.speed_factor
+
             if isinstance(self.special, ActionParams):
-                self.special.action(lights)
+                fn = lambda: self.special.action(lights)  # type: ignore
             else:
-                self.player.lights.set_relays(lights, special=self.special)
-            after = time.time()
-            self.player.wait(p, after - before)
+                fn = lambda: (
+                    self.lights.set_relays(lights, special=self.special)
+                )
+            self.schedule(action=fn, due = start + i * (pace or 0))
+            if pace is None:
+                break
 
     def execute(self) -> None:
         """Update any kwarg special parameters. Play sequence. Repeat."""

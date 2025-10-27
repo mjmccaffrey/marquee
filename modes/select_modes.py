@@ -47,7 +47,7 @@ class SelectMode(ForegroundMode, ABC):
     def button_action(self, button: Button) -> None:
         """Respond to button being pressed."""
         new = None
-        b = self.player.buttons
+        b = self.buttons
         match button:
             case b.body_back | b.remote_a | b.remote_d:
                 self.desired = self.update_desired(+1)
@@ -66,7 +66,7 @@ class SelectMode(ForegroundMode, ABC):
             # Not last pass.
             # Show user what desired mode number is currently selected.
             print(f"Desired is {self.desired} {self.player.modes[self.desired].name}")
-            self.player.lights.set_relays(ALL_OFF, special=self.special)
+            self.lights.set_relays(ALL_OFF, special=self.special)
             time.sleep(0.5)
             PlaySequenceMode(
                 player=self.player,
@@ -75,7 +75,7 @@ class SelectMode(ForegroundMode, ABC):
                 delay=0.20, 
                 special=self.special,
             ).play()
-            self.player.wait(4.0)
+            self.wait(4.0)
             self.previous_desired = self.desired
         else:
             # Last pass.
@@ -101,10 +101,10 @@ class BrightnessSelectMode(SelectMode):
     def execute(self) -> int | None:
         """Set current brightness. Return select_mode if 
            final brightness selected, else None."""
-        self.player.lights.brightness_factor = self.desired / LIGHT_COUNT
+        self.lights.brightness_factor = self.desired / LIGHT_COUNT
         # * make brightness_factor a property that outputs new value
         # * all methods must honor brightness_factor
-        self.player.lights.set_dimmers(brightnesses=[100] * LIGHT_COUNT)
+        self.lights.set_dimmers(brightnesses=[100] * LIGHT_COUNT)
         new = super().execute()
         if new is not None:  # Selection was made.
             new = ModeIndex.SELECT_MODE
@@ -138,5 +138,5 @@ class ModeSelectMode(SelectMode):
     def c_button_pressed(self) -> None:
         """Respond to C button press."""
         self.desired = ModeIndex.SELECT_BRIGHTNESS
-        self.player.remembered_mode = self.previous
+        selfremembered_mode = self.previous
 

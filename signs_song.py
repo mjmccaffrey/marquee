@@ -17,9 +17,9 @@ class SignsSong(PlayMusicMode):
 
     def execute(self) -> None:
         """Perform Signs song."""
-        self.player.lights.set_dimmers(ALL_LOW, force_update=True)
+        self.lights.set_dimmers(ALL_LOW, force_update=True)
         time.sleep(0.75)
-        self.player.lights.set_relays(ALL_ON)
+        self.lights.set_relays(ALL_ON)
         sections = [
             self.intro(),
             self.refrain(1),
@@ -87,8 +87,8 @@ class SignsSong(PlayMusicMode):
             ),
             act_part(
                     '  𝄻  |  ' * 10 + '  ♩ ♩  |  ',
-                    lambda: self.player.lights.set_relays(ALL_OFF),
-                    lambda: self.player.lights.set_relays(ALL_ON, special=DimmerParams()),
+                    lambda: self.lights.set_relays(ALL_OFF),
+                    lambda: self.lights.set_relays(ALL_ON, special=DimmerParams()),
             ),
         )
 

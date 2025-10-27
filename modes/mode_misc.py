@@ -5,6 +5,10 @@ from enum import IntEnum
 from typing import Any, Type
 
 
+class ChangeMode(Exception):
+    """Change mode exception."""
+
+
 @dataclass
 class ModeConstructor:
     name: str

@@ -1,9 +1,11 @@
 """Marquee Lighted Sign Project - music_implementation"""
 
 from dataclasses import replace
+from itertools import chain
 import time
 from typing import Any, Callable, Iterator
 
+from event import Event
 from .music_elements import (
     ActionNote, BaseNote, DrumNote, Element, Measure, NoteGroup,
     Part, Rest, SequenceMeasure,
@@ -140,28 +142,50 @@ def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
             object.__setattr__(part, 'measures', measures)
 
 
-def play_measure(measure: Measure) -> None:
-    """Play all notes in measure."""
-    start = time.time()
+def events_in_measure(measure: Measure, start: float) -> list[Event]:
+    """Return events for all notes in measure."""
     beat = 0.0 
+    result = []
     for element in measure.elements:
         assert isinstance(element, (BaseNote, NoteGroup))
-        element.play(player)
-        if element.duration:
-            player.wait(element.duration, time.time() - start)
-            start = time.time()
+        result.append(
+            Event(
+                action = lambda: element.play(player),  # type: ignore
+                owner = player,
+                due = start + beat
+            )
+        )
+        # if element.duration:
+        #     player.wait(element.duration, time.time() - start)
+        #     start = time.time()
         beat += element.duration
         if beat > measure.beats:
             raise ValueError("Too many actual beats in measure.")
-    # Play implied rests at end of measure
-    player.wait(measure.beats - beat, time.time() - start)
+    # # Play implied rests at end of measure
+    # player.wait(measure.beats - beat, time.time() - start)
+    return result
 
-
-def play_measures(measures: tuple[Measure, ...], tempo: int) -> None:
-    """Play a series of measures, which must be ready to play."""
+def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Event]:
+    """Return events for all notes in all measures."""
+    start = time.time()
     player.pace = 60 / tempo
-    for measure in measures:
-        play_measure(measure)
+    duration = player.pace * measures[0].beats
+    events_by_measure = chain(
+        events_in_measure(measure, start + index * duration)
+        for index, measure in enumerate(measures)
+    )
+    events_combined = [
+        event
+        for measure in events_by_measure
+        for event in measure
+    ]
+    return events_combined
+
+
+def play_measures(measures: tuple[Measure, ...], tempo: int):
+    """Convert measures to events, add to event queue."""
+    events = events_in_measures(measures, tempo)
+    player.event_queue.bulk_add(events)
 
 
 def _dimmer(pattern: str) -> Callable:

@@ -2,12 +2,13 @@
 
 from dataclasses import dataclass, field
 import time
-from typing import Any, Callable, NoReturn
+from typing import Any, NoReturn
 
 from button import Button, ButtonPressed, Shutdown
-from event import Event, PriorityQueue
-from modes.background_modes import BackgroundMode, BackgroundModeDue
+from event import PriorityQueue
+from modes.background_modes import BackgroundMode
 from modes.modeinterface import ModeInterface
+from modes.mode_misc import ChangeMode
 from playerinterface import PlayerInterface
 
 
@@ -29,15 +30,16 @@ class Player(PlayerInterface):
         """Clean up."""
         print(f"Player {self} closed.")
 
-    def add_event(self, time_due: float, owner: object, action: Callable) -> None:
-        """Add event to queue."""
-        self.event_queue.push(
-            Event(
-                time_due=time_due,
-                owner=owner,
-                action=action,
-            )
-        )
+    # DELETE
+    # def add_event(self, due: float, owner: object, action: Callable) -> None:
+    #     """Add event to queue."""
+    #     self.event_queue.push(
+    #         Event(
+    #             due=due,
+    #             owner=owner,
+    #             action=action,
+    #         )
+    #     )
 
     def find_bg_mode(
         self, 
@@ -105,8 +107,8 @@ class Player(PlayerInterface):
                 assert isinstance(mode, ModeInterface)
                 print(f"Button {button} pressed in mode {mode.name}")
                 new_mode = mode.button_action(button)
-            except BackgroundModeDue as due:
-                print("BackgroundModeDue caught")
+            except ChangeMode as due:
+                print("ChangeMode caught")
                 new_mode, = due.args
         return new_mode
 
@@ -145,13 +147,13 @@ class Player(PlayerInterface):
                     break
             if self.event_queue:
                 event = self.event_queue.peek()
-                if event.time_due < now:
+                if event.due < now:
                     print(f"Running {event}")
                     self.event_queue.pop()
                     event.action()
-                elif seconds is None or event.time_due < end:
+                elif seconds is None or event.due < end:
                     print(f"Waiting for {event} or button push")
-                    duration = event.time_due - now
+                    duration = event.due - now
                 else:
                     print(f"Waiting for remaining {remaining} or button push; queue not empty")
                     duration = remaining

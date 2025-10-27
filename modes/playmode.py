@@ -29,7 +29,7 @@ class PlayMode(ForegroundMode):
 
         assert self.player.current_mode is not None
         new_mode = None
-        b = self.player.buttons
+        b = self.buttons
         match button:
             case b.remote_a | b.body_back:
                 new_mode = ModeIndex.SELECT_MODE
