@@ -2,16 +2,36 @@
 
 from abc import ABC
 from dataclasses import dataclass
+from typing import Callable
 
+from event import Event
 from lightset_misc import ALL_HIGH, ALL_ON
-from .basemode import BaseMode
+from .modeinterface import ModeInterface
+from playerinterface import PlayerInterface
 from specialparams import MirrorParams, SpecialParams
 
-
 @dataclass
-class ForegroundMode(BaseMode, ABC):
+class ForegroundMode(ModeInterface, ABC):
     """Base for all Playing and Select modes."""
+    player: PlayerInterface
     special: SpecialParams | None = None
+
+    def __post_init__(self) -> None:
+        """Duplicate resource attributes for convenience."""
+        self.bells = self.player.bells
+        self.buttons = self.player.buttons
+        self.drums = self.player.drums
+        self.lights = self.player.lights
+
+    def schedule(self, action: Callable, due: float):
+        """"""
+        self.player.event_queue.push(
+            Event(
+                action=action,
+                due=due,
+                owner=self,
+            )
+        )
 
     def preset_devices(
         self, dimmers: bool = False, relays: bool = False
