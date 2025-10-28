@@ -9,9 +9,8 @@ from time import gmtime, time
 from typing import Callable, ClassVar, NoReturn
 
 from button_misc import ButtonInterface
-from .modeinterface import ModeInterface
+from .basemode import BaseMode
 from .mode_misc import ChangeMode, ModeConstructor, ModeIndex
-from playerinterface import PlayerInterface
 
 
 @dataclass
@@ -21,7 +20,7 @@ class ModeEntry:
 
 
 @dataclass
-class BackgroundMode(ModeInterface, ABC):
+class BackgroundMode(BaseMode, ABC):
     """Base for all background modes.
        Background modes should not play anything directly."""
     modes: ClassVar[dict[int, ModeConstructor]]

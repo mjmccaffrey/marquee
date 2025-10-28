@@ -75,7 +75,7 @@ class SelectMode(ForegroundMode, ABC):
                 delay=0.20, 
                 special=self.special,
             ).play()
-            self.wait(4.0)
+            self.player.wait(4.0)
             self.previous_desired = self.desired
         else:
             # Last pass.

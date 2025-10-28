@@ -262,20 +262,20 @@ class FillBulbs(PlayMode):
     def __post_init__(self) -> None:
         """Initialize."""
         self.lights.set_dimmers(ALL_LOW)
-        self.wait(0.5)
+        self.player.wait(0.5)
         self.preset_devices(relays=True)
  
     def execute(self) -> None:
         """Bulb juice flows down from the top center."""
         for lights in LIGHTS_BY_ROW:
             self.lights.set_dimmer_subset(lights, 30, 2.0)
-            self.wait(1.0)
-        self.wait(1.0)
+            self.player.wait(1.0)
+        self.player.wait(1.0)
         for lights in reversed(LIGHTS_BY_ROW):
             self.lights.set_dimmer_subset(lights, 100, 1.5)
-            self.wait(1.5)
+            self.player.wait(1.5)
             self.bells.play({7})
-        self.wait(None)
+        self.player.wait(None)
 
 
 @dataclass(kw_only=True)
@@ -284,17 +284,17 @@ class HourlyChime(PlayMode):
     def __post_init__(self) -> None:
         """Initialize."""
         self.lights.set_dimmers(ALL_HIGH)
-        self.wait(0.5)
+        self.player.wait(0.5)
         self.preset_devices(relays=True)
  
     def execute(self) -> None:
         """Chime and light the hour."""
-        self.wait(1.0)
+        self.player.wait(1.0)
         for hour in range(time.gmtime().tm_hour):
             self.lights.set_relays(
                 str('1' if i <= hour else '0' for i in range(LIGHT_COUNT))
             )
             self.bells.play({Bell.e})
-            self.wait(1.5)
-        self.wait(5.0)
+            self.player.wait(1.5)
+        self.player.wait(5.0)
 
