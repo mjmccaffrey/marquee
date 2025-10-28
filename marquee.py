@@ -11,18 +11,15 @@ marquee
             LightSet
                 Dimmers
                 Relays
-            BaseMode
-                BackgroundMode
-                    TimeBGMode
-                    SequenceBGMode
-                ForegroundMode
-                    SelectMode
-                        BrightnessSelectMode
-                        ModeSelectMode
-                    PlayMode
-                        PlaySequenceMode
-                            sequences
-                        PlayMusicMode
+            TimeBGMode
+            SequenceBGMode
+            SelectMode
+                BrightnessSelectMode
+                ModeSelectMode
+            PlayMode
+                PlaySequenceMode
+                    sequences
+                PlayMusicMode
             Instrument
                 ActionInstrument
                 RelayInstrument
