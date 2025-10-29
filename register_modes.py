@@ -2,7 +2,7 @@
 
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
-from modes.background_modes import SequenceBGMode
+from modes.background_modes import SequenceBGMode, ModeEntry
 from modes.custom_modes import (
     BellTest, EvenOddFade, FillBulbs, RotateReversible, 
     RandomFade, RapidFade, RotateRewind, SilentFadeBuild,
@@ -160,21 +160,16 @@ def register_silent_modes(exec: Executor) -> None:
     exec.add_mode("silent_random_steady_trans", RandomFade, transition=0.5)
     exec.add_mode("silent_random_random_trans", RandomFade)
 
-    SequenceBGMode.init(
-        default_duration=60, 
-        modes=exec.modes,
-        mode_ids=exec.mode_ids,
-    )
     exec.add_mode("silent_variety_group", SequenceBGMode,
-        modes=[
-            SequenceBGMode.add("silent_blink_alternate_slow"),
-            SequenceBGMode.add("silent_random_flip_medium"),
-            SequenceBGMode.add("silent_random_flip_fast", 15.0),
-            SequenceBGMode.add("silent_blink_all_slowwww"),
-            SequenceBGMode.add("silent_fade_build"),
-            SequenceBGMode.add("silent_rotate_slight_fade"),
-            SequenceBGMode.add("silent_random_steady_trans"),
-            SequenceBGMode.add("silent_random_random_trans"),
+        sequence = [
+            ModeEntry("silent_blink_alternate_slow", 60),
+            ModeEntry("silent_random_flip_medium", 60),
+            ModeEntry("silent_random_flip_fast", 15),
+            ModeEntry("silent_blink_all_slowwww", 60),
+            ModeEntry("silent_fade_build", 60),
+            ModeEntry("silent_rotate_slight_fade", 60),
+            ModeEntry("silent_random_steady_trans", 60),
+            ModeEntry("silent_random_random_trans", 60),
         ],
     )
 

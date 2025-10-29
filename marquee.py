@@ -3,46 +3,45 @@
 marquee
     arguments
     Executor
-        Player
-            BellSet
-            ButtonSet
-                Buttons
-            DrumSet
-            LightSet
-                Dimmers
-                Relays
-            BaseMode
-                BackgroundMode
-                    TimeBGMode
-                    SequenceBGMode
-                ForegroundMode
-                    SelectMode
-                        BrightnessSelectMode
-                        ModeSelectMode
-                    PlayMode
-                        PlaySequenceMode
-                            sequences
-                        PlayMusicMode
-            Instrument
-                ActionInstrument
-                RelayInstrument
-                    BellSet
-                    DrumSet
-                Releaseable Instrument
-                    BellSet
-                RestInstrument
-            Section
-                Part
-                    Measure
-                        Element
-                            BaseNote
-                                ActionNote
-                                BellNote
-                                DrumNote
-                                Rest
-                            NoteGroup
-                    SequenceMeasure
-                    Sequence
+    Player
+        BellSet
+        ButtonSet
+            Buttons
+        DrumSet
+        LightSet
+            Dimmers
+            Relays
+        BaseMode
+            BackgroundMode
+                TimeBGMode
+                SequenceBGMode
+            ForegroundMode
+                SelectMode
+                    BrightnessSelectMode
+                    ModeSelectMode
+                PlayMode
+                    PlaySequenceMode
+                    PlayMusicMode
+        Instrument
+            ActionInstrument
+            RelayInstrument
+                BellSet
+                DrumSet
+            Releaseable Instrument
+                BellSet
+            RestInstrument
+        Section
+            Part
+                Measure
+                    Element
+                        BaseNote
+                            ActionNote
+                            BellNote
+                            DrumNote
+                            Rest
+                        NoteGroup
+                SequenceMeasure
+                Sequence
 """
 import os
 

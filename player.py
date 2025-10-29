@@ -30,17 +30,6 @@ class Player(PlayerInterface):
         """Clean up."""
         print(f"Player {self} closed.")
 
-    # DELETE
-    # def add_event(self, due: float, owner: object, action: Callable) -> None:
-    #     """Add event to queue."""
-    #     self.event_queue.push(
-    #         Event(
-    #             due=due,
-    #             owner=owner,
-    #             action=action,
-    #         )
-    #     )
-
     def find_bg_mode(
         self, 
         mtype: type[BackgroundMode],
@@ -79,6 +68,8 @@ class Player(PlayerInterface):
                 print(f"Using existing {mode.name} instance.")
                 mode_instance = self.bg_mode_instances[new_mode]
             else:
+
+
                 mode_instance = mode.mode_class(
                     player=self, 
                     name=mode.name, 
@@ -87,6 +78,8 @@ class Player(PlayerInterface):
                 if isinstance(mode_instance, BackgroundMode):
                     print(f"Creating {mode.name} instance.")
                     self.bg_mode_instances[new_mode] = mode_instance
+
+
             self.current_mode = new_mode
             print(f"Executing mode {self.current_mode} {mode.name}")
             new_mode = self._play_mode_until_changed(mode_instance)
@@ -97,8 +90,10 @@ class Player(PlayerInterface):
            Shut down the system if the (body_back) button is held."""
         new_mode = None
         while new_mode is None:
+            print(f"{new_mode=}")
             try:
                 new_mode = mode.execute()
+                self.wait()
             except ButtonPressed as press:
                 button, held = press.args
                 if held:
@@ -107,9 +102,9 @@ class Player(PlayerInterface):
                 assert isinstance(mode, ModeInterface)
                 print(f"Button {button} pressed in mode {mode.name}")
                 new_mode = mode.button_action(button)
-            except ChangeMode as due:
+            except ChangeMode as change_mode:
                 print("ChangeMode caught")
-                new_mode, = due.args
+                new_mode, = change_mode.args
         return new_mode
 
     def click(self) -> None:
@@ -125,7 +120,7 @@ class Player(PlayerInterface):
 
     def wait(
         self, 
-        seconds: float | None, 
+        seconds: float | None = None, 
         elapsed: float = 0.0,
     ) -> None | NoReturn:
         """Wait seconds, after adjusting for
@@ -148,7 +143,7 @@ class Player(PlayerInterface):
             if self.event_queue:
                 event = self.event_queue.peek()
                 if event.due < now:
-                    print(f"Running {event}")
+                    print(f"Running {event} {now - event.due} late")
                     self.event_queue.pop()
                     event.action()
                 elif seconds is None or event.due < end:

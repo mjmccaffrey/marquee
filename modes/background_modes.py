@@ -15,8 +15,9 @@ from .mode_misc import ChangeMode, ModeConstructor, ModeIndex
 
 @dataclass
 class ModeEntry:
-    index: int
-    time: float
+    name: str
+    seconds: float
+    index: int = field(init=False)
 
 
 @dataclass
@@ -25,17 +26,6 @@ class BackgroundMode(BaseMode, ABC):
        Background modes should not play anything directly."""
     modes: ClassVar[dict[int, ModeConstructor]]
     mode_ids: ClassVar[dict[str, int]]
-    trigger_time: float = field(init=False)
-
-    @classmethod
-    def init(
-        cls, 
-        modes: dict[int, ModeConstructor],
-        mode_ids: dict[str, int],
-    ) -> None:
-        """Prepare for classmethod add to be called."""
-        cls.modes = modes
-        cls.mode_ids = mode_ids
 
     def button_action(self, button: ButtonInterface) -> None:
         """Respond to button being pressed."""
@@ -49,46 +39,34 @@ class BackgroundMode(BaseMode, ABC):
 @dataclass
 class SequenceBGMode(BackgroundMode):
     """Play sequence of foreground modes."""
-    default_duration: ClassVar[float]
     mode_sequence: list[ModeEntry]
     mode_iter: Iterator[ModeEntry] = field(init=False)
     mode_on_deck: ModeEntry = field(init=False)
-
-    @classmethod
-    def init(
-        cls, 
-        default_duration: float,
-        modes: dict[int, ModeConstructor],
-        mode_ids: dict[str, int],
-    ) -> None:
-        """Prepare for classmethod add to be called."""
-        super().init(modes, mode_ids)
-        cls.default_duration = default_duration
-
-    @classmethod
-    def add(cls, name: str, duration: float | None = None) -> ModeEntry:
-        """Add mode with name to place in the sequence."""
-        try:
-            index = cls.mode_ids[name]
-        except LookupError:
-            raise ValueError(f"Mode {name} not defined.")
-        return ModeEntry(index, time = duration or cls.default_duration)
 
     def __post_init__(self) -> None:
         """Initialize."""
         self.mode_iter = cycle(self.mode_sequence)
         self.mode_on_deck = next(self.mode_iter)
+        self.validate_mode_sequence()
+
+    def validate_mode_sequence(self) -> None:
+        """Validate each ModeIndex in sequence."""
+        for entry in self.mode_sequence:
+            try:
+                entry.index = self.mode_ids[entry.name]
+            except LookupError:
+                raise ValueError(f"Mode {entry.name} not defined.")
 
     def execute(self) -> int:
         """Return index of next mode in sequence. Schedule next next mode."""
         print(
             f"Next mode in sequence is "
             f"{self.modes[self.mode_on_deck.index]} "
-            f"for {self.mode_on_deck.time} seconds."
+            f"for {self.mode_on_deck.seconds} seconds."
         )
         self.schedule(
             action=self.execute,
-            due=time() + self.mode_on_deck.time, 
+            due=time() + self.mode_on_deck.seconds, 
         )
         new_mode = self.mode_on_deck.index
         self.mode_on_deck = next(self.mode_iter)
