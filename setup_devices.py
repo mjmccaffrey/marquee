@@ -13,7 +13,7 @@ from lightset_misc import ALL_RELAYS
 from relays import NumatoRL160001, NumatoSSR80001
 
 DIMMER_ADDRESSES = [
-    '192.168.64.111',
+    '192.168.64.112',
     '192.168.64.112',
     '192.168.64.113',
     '192.168.64.114',
