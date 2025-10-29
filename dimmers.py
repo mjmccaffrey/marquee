@@ -188,6 +188,7 @@ class DimmerChannel:
             offset=offset,
             transition=transition,
         )
+        print(f"{command=}")
         response = self.dimmer.session.get(
             url=command.url,
             params=command.params,
