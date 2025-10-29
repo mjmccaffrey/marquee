@@ -5,6 +5,7 @@ from itertools import cycle, repeat
 import time
 from typing import Iterable
 
+from .foregroundmode import ForegroundMode
 from .playmode import PlayMode
 from dimmers import TRANSITION_DEFAULT
 from player import Player
@@ -23,7 +24,8 @@ class PlaySequenceMode(PlayMode):
         **kwargs,
     ) -> None:
         """Initialize."""
-        super().__init__(player, name, special)
+        ForegroundMode.__post_init__(self) # !!
+        PlayMode.__post_init__(self) # !!
         self.sequence = sequence
         self.delay = delay
         self.stop = stop

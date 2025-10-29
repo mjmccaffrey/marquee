@@ -16,7 +16,6 @@ class PlayMode(ForegroundMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        super().__init__(self.player, self.name, self.special)
         # Do not self.preset_devices()
         self.direction = +1
 
