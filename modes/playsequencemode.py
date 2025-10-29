@@ -24,8 +24,8 @@ class PlaySequenceMode(PlayMode):
         **kwargs,
     ) -> None:
         """Initialize."""
-        ForegroundMode.__post_init__(self) # !!
-        PlayMode.__post_init__(self) # !!
+        ForegroundMode.__post_init__(self) # !!!
+        super().__init__(player, name, special)
         self.sequence = sequence
         self.delay = delay
         self.stop = stop
