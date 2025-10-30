@@ -21,6 +21,7 @@ class SelectMode(ForegroundMode, ABC):
     @abstractmethod
     def __post_init__(self) -> None:
         """Initialize."""
+        ForegroundMode.__post_init__(self) # !!!
         # Do not self.preset_devices(dimmers=True)
 
     def setup(
