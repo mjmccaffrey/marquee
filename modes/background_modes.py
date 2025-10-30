@@ -17,7 +17,7 @@ from .mode_misc import ChangeMode, ModeConstructor, ModeIndex
 class ModeEntry:
     name: str
     seconds: float
-    index: int = field(init=False)
+    index: int = -1
 
 
 @dataclass
