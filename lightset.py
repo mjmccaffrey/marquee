@@ -119,6 +119,7 @@ class LightSet:
                 extra_pattern = ''.join(str(e) for e in extra_pattern)
             full_pattern = light_pattern + extra_pattern
             self.relays.set_state_of_devices(full_pattern)
+            print(f"Relays set to {full_pattern}")
             if isinstance(special, MirrorParams):
                 special.func(full_pattern)
             self.extra_pattern = extra_pattern
