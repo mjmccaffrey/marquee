@@ -73,6 +73,7 @@ class PlaySequenceMode(PlayMode):
             self.schedule(action=fn, due = start + i * (delay or 0))
             if delay is None:
                 break
+        print("Exiting playsequencemode.play")
 
     def execute(self) -> None:
         """Update any kwarg special parameters. Play sequence. Repeat."""
