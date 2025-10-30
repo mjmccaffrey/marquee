@@ -40,11 +40,11 @@ class PriorityQueue:
     def pop(self) -> Event:
         """Remove and return next event from queue."""
         event = heappop(self._queue)
-        print(f"Event {event.owner} {event.due} removed from queue.")
+        print(f"Event {event.due} removed from queue.")
         return event
 
     def push(self, event: Event) -> None:
         """Add event to queue."""
         heappush(self._queue, event)
-        print(f"Event {event.owner} {event.due} added to queue.")
+        print(f"Event {event.due} added to queue.")
 
