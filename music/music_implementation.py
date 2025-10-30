@@ -151,7 +151,7 @@ def events_in_measure(measure: Measure, start: float) -> list[Event]:
         result.append(
             Event(
                 action = lambda: element.play(player),  # type: ignore
-                owner = player,
+                owner = "player",
                 due = start + beat
             )
         )
