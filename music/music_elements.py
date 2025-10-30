@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field, replace
+from functools import partial
 import itertools
 import time
 from typing import Any, ClassVar
@@ -70,7 +71,7 @@ class ReleasableNote(BaseNote, ABC):
         assert isinstance(self.instrument, ReleaseableInstrument)
         player.event_queue.push(
             Event(
-                action = lambda: self.release(player),
+                action = partial(self.release, player),
                 due = time.time() + self.instrument.release_time,
                 owner = self,
             )

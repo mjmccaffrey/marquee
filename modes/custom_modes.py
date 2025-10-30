@@ -2,6 +2,7 @@
 
 from collections.abc import Iterator
 from dataclasses import dataclass
+from functools import partial
 import itertools
 import random
 import time
@@ -32,12 +33,12 @@ class BellTest(PlayMusicMode):
         for pitch in range(self.bells.pitch_levels):
             due = start + 0.5 * pitch
             self.schedule(
-                action = lambda: self.bells.play({pitch}),
+                action = partial(self.bells.play, {pitch}),
                 due = due,
                 name = f"BellTest play {pitch}",
             )
             self.schedule(
-                action = lambda: self.bells.release({pitch}),
+                action = partial(self.bells.release, {pitch}),
                 due = due + self.bells.release_time,
                 name = f"BellTest release {pitch}",
             )
@@ -57,7 +58,7 @@ class RotateReversible(PlayMode):
         """Display pattern, set next pattern, and exit.
            Called repeatedly until the mode is changed."""
         self.schedule(
-            lambda: self.lights.set_relays(self.pattern),
+            partial(self.lights.set_relays, self.pattern),
             time.time() + self.delay,
             name=f"RotateReversible set_relays {self.pattern}",
 
@@ -103,10 +104,7 @@ class RotateRewind(PlayMode):
         start = time.time()
         for index, (pattern, pace) in enumerate(itertools.cycle(values)):
             self.schedule(
-                lambda: self.lights.set_relays(
-                    pattern, 
-                    special=self.special,
-                ),
+                partial(self.lights.set_relays, pattern, special=self.special),
                 start + index * pace,
                 name=f"RotateRewind set_relays {pattern}",
             )
@@ -145,9 +143,10 @@ class RandomFade(PlayMode):
                 if channel.next_update < now:
                     transition = self._new_transition()
                     self.schedule(
-                        lambda: channel.set(
-                            transition = transition,
-                            brightness = self._new_brightness(channel.brightness),
+                        partial(
+                            channel.set,
+                            transition=transition,
+                            brightness=self._new_brightness(channel.brightness),
                         ),
                         due,
                         name=f"RandomFade set channel {channel.id}",
@@ -175,7 +174,8 @@ class EvenOddFade(PlayMode):
         for pattern in itertools.cycle((even_on, odd_on)):
             start = time.time()
             self.schedule(
-                lambda: self.lights.set_relays(
+                partial(
+                    self.lights.set_relays,
                     pattern, 
                     special=DimmerParams(
                         concurrent=True,
@@ -208,12 +208,17 @@ class RapidFade(PlayMode):
             previous = None
             for channel in self.lights.dimmer_channels:
                 self.schedule(
-                    lambda: channel.set(brightness=0, transition=TRANSITION_MINIMUM),
+                    partial(
+                        channel.set,
+                        brightness=0, 
+                        transition=TRANSITION_MINIMUM,
+                    ),
                     due,
                 )
-                if previous:
-                    self.schedule(
-                        lambda: previous.set(  # type: ignore
+                if previous is not None:
+                    self.schedule(  # type: ignore
+                        partial(
+                            previous.set,
                             brightness=40, 
                             transition=TRANSITION_MINIMUM,
                         ),
@@ -223,7 +228,8 @@ class RapidFade(PlayMode):
                 due += 0.25
             assert previous is not None
             self.schedule(
-                lambda: previous.set(  # type: ignore
+                partial(
+                    previous.set,
                     brightness=40, 
                     transition=TRANSITION_MINIMUM,
                 ),
@@ -251,7 +257,8 @@ class SilentFadeBuild(PlayMode):
                 ):
                     for lights in lights_in_groups(rows, from_top_left):
                         self.schedule(
-                            lambda: self.lights.set_dimmer_subset(
+                            partial(
+                                self.lights.set_dimmer_subset,
                                 lights, brightness, 1.0
                             ),
                             due,

@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - playsequencemode"""
 
 from collections.abc import Callable
+from functools import partial
 import itertools
 import time
 from typing import Iterable
@@ -69,16 +70,21 @@ class PlaySequenceMode(PlayMode):
                 self.special.speed_factor = self.player.speed_factor
 
             if isinstance(self.special, ActionParams):
-                fn = lambda: self.special.action(lights)  # type: ignore
+                action = partial(
+                        self.special.action,
+                        lights,
+                )
             else:
-                fn = lambda: (
-                    self.lights.set_relays(lights, special=self.special)
+                action = partial(
+                    self.lights.set_relays,
+                    lights, 
+                    special=self.special,
                 )
             if delay is None:
                 print("Exiting playsequencemode.play, delay is None")
                 return
             self.schedule(
-                action = fn, 
+                action = action,
                 due = start + i * delay,
                 name = f"PlaySequenceMode execute {i} {lights}",
             )

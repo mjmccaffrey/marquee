@@ -2,6 +2,7 @@
 
 from dataclasses import replace
 from itertools import chain
+from functools import partial
 import time
 from typing import Any, Callable, Iterator
 
@@ -150,7 +151,7 @@ def events_in_measure(measure: Measure, start: float) -> list[Event]:
         assert isinstance(element, (BaseNote, NoteGroup))
         result.append(
             Event(
-                action = lambda: element.play(player),  # type: ignore
+                action = partial(element.play, player),
                 owner = player,
                 due = start + beat
             )
