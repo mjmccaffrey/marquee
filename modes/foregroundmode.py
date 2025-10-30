@@ -18,7 +18,7 @@ class ForegroundMode(BaseMode, ABC):
         self.buttons = self.player.buttons
         self.drums = self.player.drums
         self.lights = self.player.lights
-        print("*****", self.lights)
+        print("*****")
 
     def preset_devices(
         self, dimmers: bool = False, relays: bool = False
