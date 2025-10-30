@@ -144,12 +144,12 @@ class Player(PlayerInterface):
                 remaining = start + seconds - elapsed - now
                 end = now + remaining
                 if now > end:
-                    print(f"break {now} > {end}")
+                    print(f"exiting wait {now} > {end}")
                     break
             if self.event_queue:
                 event = self.event_queue.peek()
                 if event.due < now:
-                    print(f"Running {event} {now - event.due} late")
+                    print(f"Running {event.due} {now - event.due} late")
                     self.event_queue.pop()
                     event.action()
                     continue
