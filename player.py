@@ -26,6 +26,12 @@ class Player(PlayerInterface):
         self.bg_mode_instances: dict[int, BackgroundMode] = {}
         self.event_queue = PriorityQueue()
 
+    def __repr__(self) -> str:
+        return "Player repr"
+    
+    def __str__(self) -> str:
+        return "Player str"
+    
     def close(self) -> None:
         """Clean up."""
         print(f"Player {self} closed.")
@@ -146,6 +152,7 @@ class Player(PlayerInterface):
                     print(f"Running {event} {now - event.due} late")
                     self.event_queue.pop()
                     event.action()
+                    continue
                 elif seconds is None or event.due < end:
                     print(f"Waiting for {event} or button push")
                     duration = event.due - now
