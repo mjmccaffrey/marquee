@@ -48,6 +48,7 @@ class PlaySequenceMode(PlayMode):
         """Execute sequence with delay seconds between steps.
            If stop is specified, end the sequence 
            just before the nth pattern."""
+        print(f"PLAYING {self.name}")
         pace_iter = (
             cycle(self.delay) 
                 if isinstance(self.delay, Iterable) else
