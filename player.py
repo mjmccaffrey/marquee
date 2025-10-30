@@ -141,7 +141,7 @@ class Player(PlayerInterface):
             if self.event_queue:
                 event = self.event_queue.peek()
                 if event.due < now:
-                    print(f"Running {event.due} {now - event.due} late")
+                    print(f"Running {event} {now - event.due} late")
                     self.event_queue.pop()
                     return event, 0
                 elif seconds is None or event.due < end:
@@ -173,6 +173,7 @@ class Player(PlayerInterface):
             event, duration = next_operation()
             if event is not None:
                 event.action()
+                print("Action executed")
             else:
                 Button.wait(duration)
 

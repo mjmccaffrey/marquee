@@ -13,10 +13,10 @@ class Event:
     name: str = ''
 
     def __repr__(self) -> str:
-        return f"<{self.name} {self.due}>"
+        return f"<{self}>"
     
     def __str__(self) -> str:
-        return self.name
+        return f"{self.name} {self.due}"
 
 @dataclass
 class PriorityQueue:

@@ -80,7 +80,7 @@ class PlaySequenceMode(PlayMode):
             self.schedule(
                 action = fn, 
                 due = start + i * delay,
-                name = f"PlaySequenceMode play {i} {lights}",
+                name = f"PlaySequenceMode execute {i} {lights}",
             )
         if self.repeat: 
             self.schedule(
