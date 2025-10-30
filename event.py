@@ -7,9 +7,9 @@ from typing import Callable
 @dataclass(order=True)
 class Event:
     """Scheduled event."""
-    action: Callable
-    owner: object 
     due: float
+    owner: object 
+    action: Callable
 
 @dataclass
 class PriorityQueue:
