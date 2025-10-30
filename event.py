@@ -4,12 +4,19 @@ from dataclasses import dataclass, field
 from heapq import heapify, heappop, heappush
 from typing import Callable
 
-@dataclass(order=True)
+@dataclass(order=True, repr=False)
 class Event:
     """Scheduled event."""
     due: float
     owner: object 
     action: Callable
+    name: str = ''
+
+    def __repr__(self) -> str:
+        return f"<{self.name} {self.due}>"
+    
+    def __str__(self) -> str:
+        return self.name
 
 @dataclass
 class PriorityQueue:
@@ -40,11 +47,11 @@ class PriorityQueue:
     def pop(self) -> Event:
         """Remove and return next event from queue."""
         event = heappop(self._queue)
-        print(f"Event {event.due} removed from queue.")
+        print(f"Event {event} removed from queue.")
         return event
 
     def push(self, event: Event) -> None:
         """Add event to queue."""
         heappush(self._queue, event)
-        print(f"Event {event.due} added to queue.")
+        print(f"Event {event} added to queue.")
 

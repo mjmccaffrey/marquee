@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - playsequencemode"""
 
 from collections.abc import Callable
-from itertools import cycle, repeat
+import itertools
 import time
 from typing import Iterable
 
@@ -20,6 +20,7 @@ class PlaySequenceMode(PlayMode):
         sequence: Callable[[], Iterable],
         delay: tuple[float, ...] | float | None = None,
         stop: int | None = None,
+        repeat: bool = True,
         special: SpecialParams | None = None,
         **kwargs,
     ) -> None:
@@ -29,6 +30,7 @@ class PlaySequenceMode(PlayMode):
         self.sequence = sequence
         self.delay = delay
         self.stop = stop
+        self.repeat = repeat
         self.kwargs = kwargs
         if isinstance(special, DimmerParams):
             default_trans = (
@@ -44,15 +46,17 @@ class PlaySequenceMode(PlayMode):
             relays = isinstance(special, DimmerParams),
         )
 
-    def play(self) -> None:
+    def execute(self) -> None:
         """Execute sequence with delay seconds between steps.
            If stop is specified, end the sequence 
            just before the nth pattern."""
+        print("Enter playsequencemode.execute")
+        self.player.replace_kwarg_values(self.kwargs)
         print(f"PLAYING {self.name}")
         delay_iter = (
-            cycle(self.delay) 
+            itertools.cycle(self.delay) 
                 if isinstance(self.delay, Iterable) else
-            repeat(self.delay)
+            itertools.repeat(self.delay)
         )
         start = time.time()
         for i, lights in enumerate(self.sequence(**self.kwargs)):
@@ -70,17 +74,19 @@ class PlaySequenceMode(PlayMode):
                 fn = lambda: (
                     self.lights.set_relays(lights, special=self.special)
                 )
-            self.schedule(action=fn, due = start + i * (delay or 0))
             if delay is None:
-                break
-        print("Exiting playsequencemode.play")
-
-    def execute(self) -> None:
-        """Update any kwarg special parameters. Play sequence. Repeat."""
-        print("Enter playsequencemode.execute")
-        while True:
-            self.player.replace_kwarg_values(self.kwargs)
-            self.play()
-            if self.delay is None:
-                break
+                print("Exiting playsequencemode.play, delay is None")
+                return
+            self.schedule(
+                action = fn, 
+                due = start + i * delay,
+                name = f"PlaySequenceMode play {i} {lights}",
+            )
+        if self.repeat: 
+            self.schedule(
+            action = self.execute,
+            due = start + (i + 1) * delay,
+            name = "PlaySequenceMode continue",
+        )
+        print("Exiting playsequencemode.play at bottom")
 

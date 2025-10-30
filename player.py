@@ -5,7 +5,7 @@ import time
 from typing import Any, NoReturn
 
 from button import Button, ButtonPressed, Shutdown
-from event import PriorityQueue
+from event import Event, PriorityQueue
 from modes.background_modes import BackgroundMode
 from modes.modeinterface import ModeInterface
 from modes.mode_misc import ChangeMode
@@ -65,7 +65,8 @@ class Player(PlayerInterface):
         }
 
     def execute(self, starting_mode_index: int) -> None:
-        """Play starting_mode and all subsequent modes."""
+        """Play starting_mode and all subsequent modes,
+           instantiating each mode as needed."""
         new_mode = starting_mode_index
         while True:
             assert new_mode is not None
@@ -74,8 +75,6 @@ class Player(PlayerInterface):
                 print(f"Using existing {mode.name} instance.")
                 mode_instance = self.bg_mode_instances[new_mode]
             else:
-
-
                 mode_instance = mode.mode_class(
                     player=self, 
                     name=mode.name, 
@@ -84,8 +83,6 @@ class Player(PlayerInterface):
                 if isinstance(mode_instance, BackgroundMode):
                     print(f"Creating {mode.name} instance.")
                     self.bg_mode_instances[new_mode] = mode_instance
-
-
             self.current_mode = new_mode
             print(f"Executing mode {self.current_mode} {mode.name}")
             new_mode = self._play_mode_until_changed(mode_instance)
@@ -134,6 +131,33 @@ class Player(PlayerInterface):
            If seconds is None, wait indefinitely.
            During this time, trigger any events that come due; 
            any button press will terminate waiting."""
+        now: float
+        remaining: float
+        start: float
+        end: float
+
+        def next_operation() -> tuple[Event | None, float | None]:
+            """"""
+            if self.event_queue:
+                event = self.event_queue.peek()
+                if event.due < now:
+                    print(f"Running {event.due} {now - event.due} late")
+                    self.event_queue.pop()
+                    return event, 0
+                elif seconds is None or event.due < end:
+                    print(f"Waiting for {event} or button push")
+                    return None, event.due - now
+                else:
+                    print(f"Waiting for remaining {remaining} or button push; queue not empty")
+                    return None, remaining
+            else:
+                if seconds is None:
+                    print(f"Waiting for button push")
+                    return None, None
+                else:
+                    print(f"Waiting for remaining {remaining} or button push; queue empty")
+                    return None, remaining
+
         print(f"Wait {seconds}, {elapsed}")
         start = time.time()
         if seconds is not None:
@@ -144,27 +168,11 @@ class Player(PlayerInterface):
                 remaining = start + seconds - elapsed - now
                 end = now + remaining
                 if now > end:
-                    print(f"exiting wait {now} > {end}")
+                    print(f"Exiting wait {now - end} late")
                     break
-            if self.event_queue:
-                event = self.event_queue.peek()
-                if event.due < now:
-                    print(f"Running {event.due} {now - event.due} late")
-                    self.event_queue.pop()
-                    event.action()
-                    continue
-                elif seconds is None or event.due < end:
-                    print(f"Waiting for {event} or button push")
-                    duration = event.due - now
-                else:
-                    print(f"Waiting for remaining {remaining} or button push; queue not empty")
-                    duration = remaining
+            event, duration = next_operation()
+            if event is not None:
+                event.action()
             else:
-                if seconds is None:
-                    print(f"Waiting for button push")
-                    duration = None
-                else:
-                    print(f"Waiting for remaining {remaining} or button push; queue empty")
-                    duration = remaining
-            Button.wait(duration)
+                Button.wait(duration)
 

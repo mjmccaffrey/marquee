@@ -34,10 +34,12 @@ class BellTest(PlayMusicMode):
             self.schedule(
                 action = lambda: self.bells.play({pitch}),
                 due = due,
+                name = f"BellTest play {pitch}",
             )
             self.schedule(
                 action = lambda: self.bells.release({pitch}),
                 due = due + self.bells.release_time,
+                name = f"BellTest release {pitch}",
             )
             
 
@@ -56,7 +58,9 @@ class RotateReversible(PlayMode):
            Called repeatedly until the mode is changed."""
         self.schedule(
             lambda: self.lights.set_relays(self.pattern),
-            time.time() + self.delay
+            time.time() + self.delay,
+            name=f"RotateReversible set_relays {self.pattern}",
+
         )
         self.pattern = (
             self.pattern[self.direction:] + self.pattern[:self.direction]
@@ -103,7 +107,8 @@ class RotateRewind(PlayMode):
                     pattern, 
                     special=self.special,
                 ),
-                start + index * pace
+                start + index * pace,
+                name=f"RotateRewind set_relays {pattern}",
             )
 
 
@@ -145,6 +150,7 @@ class RandomFade(PlayMode):
                             brightness = self._new_brightness(channel.brightness),
                         ),
                         due,
+                        name=f"RandomFade set channel {channel.id}",
                     )
                     due += 0.1
                     channel.next_update = now + transition

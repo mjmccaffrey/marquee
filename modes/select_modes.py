@@ -74,8 +74,9 @@ class SelectMode(ForegroundMode, ABC):
                 name="SelectMode sequence player",
                 sequence=lambda: rotate_build_flip(count=self.desired),
                 delay=0.20, 
+                repeat=False,
                 special=self.special,
-            ).play()
+            ).execute()
             self.player.wait(4.0)
             self.previous_desired = self.desired
         else:
