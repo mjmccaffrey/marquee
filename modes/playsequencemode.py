@@ -49,7 +49,7 @@ class PlaySequenceMode(PlayMode):
            If stop is specified, end the sequence 
            just before the nth pattern."""
         print(f"PLAYING {self.name}")
-        pace_iter = (
+        delay_iter = (
             cycle(self.delay) 
                 if isinstance(self.delay, Iterable) else
             repeat(self.delay)
@@ -58,7 +58,7 @@ class PlaySequenceMode(PlayMode):
         for i, lights in enumerate(self.sequence(**self.kwargs)):
             if self.stop is not None and i == self.stop:
                 break
-            pace = next(pace_iter)
+            delay = next(delay_iter)
 
             # if pace is not None:
             if isinstance(self.special, DimmerParams):
@@ -70,13 +70,16 @@ class PlaySequenceMode(PlayMode):
                 fn = lambda: (
                     self.lights.set_relays(lights, special=self.special)
                 )
-            self.schedule(action=fn, due = start + i * (pace or 0))
-            if pace is None:
+            self.schedule(action=fn, due = start + i * (delay or 0))
+            if delay is None:
                 break
 
     def execute(self) -> None:
         """Update any kwarg special parameters. Play sequence. Repeat."""
+        print("Enter playsequencemode.execute")
         while True:
             self.player.replace_kwarg_values(self.kwargs)
             self.play()
+            if self.delay is None:
+                break
 

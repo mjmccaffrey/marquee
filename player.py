@@ -12,7 +12,7 @@ from modes.mode_misc import ChangeMode
 from playerinterface import PlayerInterface
 
 
-@dataclass
+@dataclass(repr=False)
 class Player(PlayerInterface):
     """Executes one mode at a time."""
     event_queue: PriorityQueue = field(init=False)
