@@ -139,7 +139,7 @@ def register_silent_modes(exec: Executor) -> None:
         light_pattern='LIGHT_PATTERN',
     )
     exec.add_sequence_mode("silent_blink_all_slowwww", 
-        blink_all, delay=10,
+        blink_all, delay=4.0,
         special=DimmerParams(
             transition_on=4.0,
             transition_off=4.0,
