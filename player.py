@@ -7,6 +7,7 @@ from typing import Any, NoReturn
 from button import Button, ButtonPressed, Shutdown
 from event import Event, PriorityQueue
 from modes.background_modes import BackgroundMode
+from modes.foregroundmode import ForegroundMode
 from modes.modeinterface import ModeInterface
 from modes.mode_misc import ChangeMode
 from playerinterface import PlayerInterface
@@ -36,23 +37,6 @@ class Player(PlayerInterface):
         """Clean up."""
         print(f"Player {self} closed.")
 
-    def find_bg_mode(
-        self, 
-        mtype: type[BackgroundMode],
-    ) -> int | None:
-        """Return index of first (presumably only) active bg mode of type mtype."""
-        for index in range(len(self.bg_mode_instances)):
-            if isinstance(self.bg_mode_instances[index], mtype):
-                return index
-        return None
-
-    def terminate_bg_mode(self, bg_mode_index: int) -> None:
-        """Remove mode from the background mode instance list.
-           Remove any associated events from the event queue."""
-        mode = self.bg_mode_instances[bg_mode_index]
-        del self.bg_mode_instances[bg_mode_index]
-        self.event_queue.delete_owned_by(mode)
-
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""
         vars = {
@@ -66,7 +50,7 @@ class Player(PlayerInterface):
 
     def execute(self, starting_mode_index: int) -> None:
         """Play starting_mode and all subsequent modes,
-           instantiating each mode as needed."""
+           instantiating and cleaning up each mode as needed."""
         new_mode = starting_mode_index
         while True:
             assert new_mode is not None
@@ -86,6 +70,9 @@ class Player(PlayerInterface):
             self.current_mode = new_mode
             print(f"Executing mode {self.current_mode} {mode.name}")
             new_mode = self._play_mode_until_changed(mode_instance)
+            if isinstance(mode_instance, ForegroundMode):
+                mode_instance.close()
+
 
     def _play_mode_until_changed(self, mode: ModeInterface) -> int | None:
         """Play the specified mode until another mode is selected,
@@ -128,16 +115,18 @@ class Player(PlayerInterface):
     ) -> None | NoReturn:
         """Wait seconds, after adjusting for
            speed_factor and time already elapsed.
-           If seconds is None, wait indefinitely.
-           During this time, trigger any events that come due; 
+           If seconds is None, wait indefinitely (in this case,
+           the current mode instance will never be returned to).
+           While waiting, trigger any events that come due; 
            any button press will terminate waiting."""
         now: float
         remaining: float
         start: float
         end: float
 
-        def next_operation() -> tuple[Event | None, float | None]:
-            """"""
+        def next_event_or_wait() -> tuple[Event | None, float | None]:
+            """Return the next event if it is due, 
+               otherwise return seconds to wait."""
             if self.event_queue:
                 event = self.event_queue.peek()
                 if event.due < now:
@@ -159,9 +148,9 @@ class Player(PlayerInterface):
                     return None, remaining
 
         print(f"Wait {seconds}, {elapsed}")
-        start = time.time()
         if seconds is not None:
             seconds *= self.speed_factor
+        start = time.time()
         while True:
             now = time.time()
             if seconds is not None:
@@ -170,7 +159,7 @@ class Player(PlayerInterface):
                 if now > end:
                     print(f"Exiting wait {now - end} late")
                     break
-            event, duration = next_operation()
+            event, duration = next_event_or_wait()
             if event is not None:
                 event.action()
                 print("Action executed")

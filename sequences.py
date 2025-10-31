@@ -10,6 +10,8 @@ from lightset_misc import (
 )
 
 
+MAX_YIELDS = 20
+
 def opposite(pattern: Sequence) -> str:
     """Return pattern or element with the state(s) flipped."""
     return "".join("1" if str(p) == "0" else "0" for p in pattern)
@@ -161,11 +163,10 @@ def _random_light_gen() -> Iterator[int]:
 
 def random_flip_start_blank(*, pattern: str = "1") -> Iterator[str]:
     """Random light on / off, never immediately repeating a light.
-       Starts with setting all lights to the opposite of pattern.
-       This sequence does not end on its own."""
+       Starts with setting all lights to the opposite of pattern."""
     opp = opposite(pattern)
     random_gen = _random_light_gen()
-    while True:
+    for _ in range(MAX_YIELDS):
         index = next(random_gen)
         yield ''.join(
             opp * index +
@@ -176,11 +177,10 @@ def random_flip_start_blank(*, pattern: str = "1") -> Iterator[str]:
 
 def random_flip(*, light_pattern) -> Iterator[str]:
     """Random light on / off, never immediately repeating a light.
-       Pass in current / starting state of lights.
-       This sequence does not end on its own."""
+       Pass in current / starting state of lights."""
     lights = list(light_pattern)
     random_gen = _random_light_gen()
-    while True:
+    for _ in range(MAX_YIELDS):
         index = next(random_gen)
         lights[index] = opposite(lights[index])
         yield ''.join(e for e in lights)

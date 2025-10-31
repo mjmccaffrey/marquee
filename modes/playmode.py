@@ -24,7 +24,7 @@ class PlayMode(ForegroundMode):
         # If in sequence mode, exit it.
         index = self.player.find_bg_mode(SequenceBGMode)
         if index is not None:
-            self.player.terminate_bg_mode(index)
+            # del from bg_mode
             return ModeIndex.DEFAULT
 
         assert self.player.current_mode is not None

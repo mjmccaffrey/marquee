@@ -13,6 +13,10 @@ class BaseMode(ModeInterface, ABC):
     """Base for both foreground and background modes."""
     player: PlayerInterface
 
+    def close(self):
+        """Remove any remaining scheduled events owned by self."""
+        self.player.event_queue.delete_owned_by(self)
+
     def schedule(self, action: Callable, due: float, name: str = '') -> None:
         """Schedule a new event."""
         self.player.event_queue.push(
