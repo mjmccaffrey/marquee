@@ -48,7 +48,7 @@ def register_dimmer_modes(exec: Executor):
         blink_all, delay=10,
         special=DimmerParams(
             brightness_on=100,
-            brightness_off=3,
+            brightness_off=5,
             concurrent=False,
         )
     )
@@ -141,8 +141,8 @@ def register_silent_modes(exec: Executor) -> None:
     exec.add_sequence_mode("silent_blink_all_slowwww", 
         blink_all, delay=10,
         special=DimmerParams(
-            transition_on=5.0,
-            transition_off=5.0,
+            transition_on=4.0,
+            transition_off=4.0,
             brightness_on=100,
             brightness_off=10,
         )
