@@ -48,7 +48,8 @@ def register_dimmer_modes(exec: Executor):
         blink_all, delay=10,
         special=DimmerParams(
             brightness_on=100,
-            brightness_off=10,
+            brightness_off=5,
+            concurrent=False,
         )
     )
     exec.add_sequence_mode("blink_all_fade_stealth", 
