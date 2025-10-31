@@ -48,7 +48,7 @@ def register_dimmer_modes(exec: Executor):
         blink_all, delay=10,
         special=DimmerParams(
             brightness_on=100,
-            brightness_off=5,
+            brightness_off=3,
             concurrent=False,
         )
     )
