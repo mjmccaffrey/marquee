@@ -129,6 +129,7 @@ def register_silent_modes(exec: Executor) -> None:
         special=DimmerParams(
             transition_on=2.0,
             transition_off=2.0,
+            concurrent=False,
         ),
         light_pattern='LIGHT_PATTERN',
     )
