@@ -84,6 +84,7 @@ class SelectMode(ForegroundMode, ABC):
             # Time elapsed without a button being pressed.
             # Return the selection.
             new = self.desired
+        print(f"SelectMode.execute returning {new}")
         return new
 
 

@@ -81,6 +81,7 @@ class Player(PlayerInterface):
             else:
                 self.fg_mode_history.append(mode.index)
             new_mode_index = self._play_mode_until_changed(mode_instance)
+            print(f"{new_mode_index=}")
             if isinstance(mode_instance, ForegroundMode):
                 self.delete_mode_instance(fg_instance=mode_instance)
 
