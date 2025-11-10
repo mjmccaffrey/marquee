@@ -81,14 +81,14 @@ class PlaySequenceMode(PlayMode):
                     lights, 
                     special=self.special,
                 )
+            self.schedule(
+                action = action,
+                due = start + (0 if delay is None else i * delay),
+                name = f"PlaySequenceMode execute {i} {lights}",
+            )
             if delay is None:
                 print("Exiting playsequencemode.play, delay is None")
                 return
-            self.schedule(
-                action = action,
-                due = start + i * delay,
-                name = f"PlaySequenceMode execute {i} {lights}",
-            )
         if self.repeat: 
             self.schedule(
             action = self.execute,
