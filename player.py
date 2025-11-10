@@ -106,7 +106,7 @@ class Player(PlayerInterface):
             print(f"{new_mode=}")
             try:
                 new_mode = mode.execute()
-                self.wait()
+                # self.wait()  !!!!!!!!!!!!!!!!!
             except ButtonPressed as press:
                 button, held = press.args
                 if held:
