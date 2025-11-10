@@ -27,10 +27,6 @@ class BackgroundMode(BaseMode, ABC):
     modes: ClassVar[dict[int, ModeConstructor]]
     mode_ids: ClassVar[dict[str, int]]
 
-    def button_action(self, button: ButtonInterface) -> None:
-        """Respond to button being pressed."""
-        raise ValueError(f"Button {button} action in background mode.")
-
     @abstractmethod
     def execute(self) -> int:
         """Return index of next mode."""
@@ -50,7 +46,7 @@ class SequenceBGMode(BackgroundMode):
         self.validate_mode_sequence()
 
     def validate_mode_sequence(self) -> None:
-        """Validate each ModeIndex in sequence."""
+        """Validate each mode in sequence."""
         for entry in self.mode_sequence:
             try:
                 entry.index = self.mode_ids[entry.name]
@@ -73,7 +69,12 @@ class SequenceBGMode(BackgroundMode):
         self.mode_on_deck = next(self.mode_iter)
         return new_mode
     
-def on_the_hour():
+    def button_action(self, button: ButtonInterface) -> int | None:
+        """Close the instance in response to any button press."""
+        self.player.delete_mode_instance(bg_index=self.index)
+
+    
+def trigger_on_the_hour():
     """Trigger every hour, on the hour."""
     now = gmtime()
     hour = now.tm_hour + 1
@@ -84,15 +85,23 @@ def on_the_hour():
 @dataclass
 class TimeBGMode(BackgroundMode, ABC):
     """Play a foreground mode upon a time trigger."""
-    mode_name: str
+    fg_mode_name: str
     next_trigger_time: Callable[[], float]
+    fg_mode_index: int = field(init=False)
+
+
+
+    """Background time mode will assert that a background sequence mode is instantiated,
+      and will call it upon exit."""
+
+
 
     def __post_init__(self):
         """Schedule first event."""
         try:
-            self.mode_index = self.mode_ids[self.mode_name]
+            self.fg_mode_index = self.mode_ids[self.fg_mode_name]
         except LookupError:
-            raise ValueError(f"Mode {self.mode_name} not defined.")
+            raise ValueError(f"Mode {self.fg_mode_name} not defined.")
         self.schedule_next_event()
 
     def event_execute(self) -> NoReturn:
@@ -103,7 +112,7 @@ class TimeBGMode(BackgroundMode, ABC):
         """Return index of desired mode.
            If mode was specified on command line, return default mode."""
         self.schedule_next_event()
-        return ModeIndex.DEFAULT if is_initial_mode else self.mode_index
+        return ModeIndex.DEFAULT if is_initial_mode else self.fg_mode_index
 
     @abstractmethod
     def schedule_next_event(self):

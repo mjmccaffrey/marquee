@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import IntEnum
-from typing import Any, Type
+from typing import Any
 
 
 class ChangeMode(Exception):
@@ -11,8 +11,9 @@ class ChangeMode(Exception):
 
 @dataclass
 class ModeConstructor:
+    index: int
     name: str
-    mode_class: Type
+    cls: type
     kwargs: dict[str, Any]
 
 

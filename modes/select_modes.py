@@ -47,7 +47,6 @@ class SelectMode(ForegroundMode, ABC):
 
     def button_action(self, button: Button) -> None:
         """Respond to button being pressed."""
-        new = None
         b = self.buttons
         match button:
             case b.body_back | b.remote_a | b.remote_d:
@@ -58,7 +57,7 @@ class SelectMode(ForegroundMode, ABC):
                 self.c_button_pressed()
             case _:
                 raise ValueError("Unrecognized button.")
-        return new
+        return None
 
     def execute(self) -> int | None:
         """Return user's final selection if made, otherwise None."""
@@ -71,6 +70,7 @@ class SelectMode(ForegroundMode, ABC):
             time.sleep(0.5)
             PlaySequenceMode(
                 player=self.player,
+                index=999999,
                 name="SelectMode sequence player",
                 sequence=lambda: rotate_build_flip(count=self.desired),
                 delay=0.20, 
@@ -124,13 +124,12 @@ class ModeSelectMode(SelectMode):
     def __post_init__(self) -> None:
         """Initialize."""
         super().__post_init__()
-        previous = (
-            self.player.remembered_mode
-                if self.player.current_mode == ModeIndex.SELECT_BRIGHTNESS else
-            self.player.current_mode
+
+        # Find most recent normal mode.
+        previous = next(
+            i for i in reversed(self.player.fg_mode_history) if i > 0
         )
-        assert previous is not None
-        assert self.player.current_mode is not None
+
         super().setup(
             lower=1, 
             upper=max(self.player.modes),
@@ -140,5 +139,4 @@ class ModeSelectMode(SelectMode):
     def c_button_pressed(self) -> None:
         """Respond to C button press."""
         self.desired = ModeIndex.SELECT_BRIGHTNESS
-        selfremembered_mode = self.previous
 

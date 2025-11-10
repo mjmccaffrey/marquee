@@ -11,10 +11,11 @@ from button_misc import ButtonInterface
 class ModeInterface(ABC):
     """Mode interface."""
     player: Any
+    index: int
     name: str
 
     @abstractmethod
-    def button_action(self, button: ButtonInterface) -> None:
+    def button_action(self, button: ButtonInterface) -> int | None:
         """Respond to button being pressed."""
 
     @abstractmethod

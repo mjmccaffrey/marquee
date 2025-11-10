@@ -15,15 +15,13 @@ from playerinterface import PlayerInterface
 
 @dataclass(repr=False)
 class Player(PlayerInterface):
-    """Executes one mode at a time."""
+    """Executes one mode at a time. Contains the event queue."""
     event_queue: PriorityQueue = field(init=False)
 
     def __post_init__(self) -> None:
         """Initialize."""
         print("Initializing player")
-        self.current_mode = None
-        self.remembered_mode = None
-        self.pace = 0.0
+        self.fg_mode_history: list[int] = []
         self.bg_mode_instances: dict[int, BackgroundMode] = {}
         self.event_queue = PriorityQueue()
 
@@ -41,43 +39,67 @@ class Player(PlayerInterface):
         """Replace variables with current runtime values."""
         vars = {
             'LIGHT_PATTERN': self.lights.relay_pattern,
-            'PREVIOUS_MODE': self.current_mode,
+            # 'PREVIOUS_MODE': self.current_mode,
         }
         return {
             k: vars[v] if isinstance(v, str) and v in vars else v
             for k, v in kwargs.items()
         }
 
+    def delete_mode_instance(
+        self, 
+        bg_index: int | None = None,
+        fg_instance: ForegroundMode | None = None,
+    ) -> None:
+        """Delete foreground or background mode instance and scheduled events."""
+        assert (bg_index is None) ^ (fg_instance is None)
+        if bg_index is not None:
+            instance = self.bg_mode_instances.pop(bg_index)
+        else:
+            instance = fg_instance
+        self.event_queue.delete_owned_by(instance)
+
     def execute(self, starting_mode_index: int) -> None:
         """Play starting_mode and all subsequent modes,
            instantiating and cleaning up each mode as needed."""
-        new_mode = starting_mode_index
+        new_mode_index = starting_mode_index
         while True:
-            assert new_mode is not None
-            mode = self.modes[new_mode]
-            if new_mode in self.bg_mode_instances:
-                print(f"Using existing {mode.name} instance.")
-                mode_instance = self.bg_mode_instances[new_mode]
-            else:
-                mode_instance = mode.mode_class(
-                    player=self, 
-                    name=mode.name, 
-                    **self.replace_kwarg_values(mode.kwargs),
-                )
-                if isinstance(mode_instance, BackgroundMode):
-                    print(f"Creating {mode.name} instance.")
-                    self.bg_mode_instances[new_mode] = mode_instance
-            self.current_mode = new_mode
-            print(f"Executing mode {self.current_mode} {mode.name}")
-            new_mode = self._play_mode_until_changed(mode_instance)
-            if isinstance(mode_instance, ForegroundMode):
-                mode_instance.close()
+            assert new_mode_index is not None
+            mode = self.modes[new_mode_index]
 
+            if mode.index in self.bg_mode_instances:
+                self.delete_mode_instance(bg_index=mode.index)
+
+            mode_instance = mode.cls(
+                player=self,
+                index=mode.index,
+                name=mode.name, 
+                **self.replace_kwarg_values(mode.kwargs),
+            )
+            if isinstance(mode_instance, BackgroundMode):
+                self.bg_mode_instances[mode.index] = mode_instance
+            else:
+                self.fg_mode_history.append(mode.index)
+            new_mode_index = self._play_mode_until_changed(mode_instance)
+            if isinstance(mode_instance, ForegroundMode):
+                self.delete_mode_instance(fg_instance=mode_instance)
+
+    def _notify_button_action(
+        self, 
+        current_mode: ModeInterface, 
+        button: Button
+    ) -> int | None:
+        """Notify all background modes, and foreground mode, 
+           of button action."""
+        for mode in self.bg_mode_instances.values():
+            mode.button_action(button)
+        return current_mode.button_action(button)
 
     def _play_mode_until_changed(self, mode: ModeInterface) -> int | None:
         """Play the specified mode until another mode is selected,
            either by the user or automatically.
            Shut down the system if the (body_back) button is held."""
+        print(f"Executing mode {mode.index} {mode.name}")
         new_mode = None
         while new_mode is None:
             print(f"{new_mode=}")
@@ -89,9 +111,8 @@ class Player(PlayerInterface):
                 if held:
                     raise Shutdown("Button was held.")
                 Button.reset()
-                assert isinstance(mode, ModeInterface)
                 print(f"Button {button} pressed in mode {mode.name}")
-                new_mode = mode.button_action(button)
+                new_mode = self._notify_button_action(mode, button)
             except ChangeMode as change_mode:
                 print("ChangeMode caught")
                 new_mode, = change_mode.args

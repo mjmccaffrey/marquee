@@ -23,8 +23,6 @@ def _set_player(the_player: PlayerInterface) -> None:
     player = the_player
 
 
-
-
 def prepare_parts(parts: tuple[Part, ...]) -> tuple[Measure, ...]:
     """Expand SequenceMeasures.
        Make all parts the same length.
@@ -169,8 +167,8 @@ def events_in_measure(measure: Measure, start: float) -> list[Event]:
 def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Event]:
     """Return events for all notes in all measures."""
     start = time.time()
-    player.pace = 60 / tempo
-    duration = player.pace * measures[0].beats
+    pace = 60 / tempo
+    duration = pace * measures[0].beats
     events_by_measure = chain(
         events_in_measure(measure, start + index * duration)
         for index, measure in enumerate(measures)

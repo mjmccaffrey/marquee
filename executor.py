@@ -53,7 +53,7 @@ class Executor:
     def add_mode(
             self, 
             name: str,
-            mode_class: type[ModeInterface],
+            cls: type[ModeInterface],
             index: int | None = None,
             hidden: bool = False,
             **kwargs,
@@ -66,7 +66,7 @@ class Executor:
             self.mode_menu.append((index, name))
             self.mode_ids[str(index)] = index
             self.mode_ids[name] = index
-        self.modes[index] = ModeConstructor(name, mode_class, kwargs)
+        self.modes[index] = ModeConstructor(index, name, cls, kwargs)
 
     def add_sequence_mode(
             self,
