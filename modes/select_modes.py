@@ -61,6 +61,7 @@ class SelectMode(ForegroundMode, ABC):
 
     def execute(self) -> int | None:
         """Return user's final selection if made, otherwise None."""
+        print(f"SelectMode.execute {self.previous=} {self.desired=}")
         new = None
         if self.desired != self.previous_desired and self.desired > 0:
             # Not last pass.
