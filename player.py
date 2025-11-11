@@ -11,8 +11,6 @@ from modes.foregroundmode import ForegroundMode
 from modes.modeinterface import ModeInterface
 from playerinterface import PlayerInterface
 
-type Mode = BackgroundMode | ForegroundMode
-
 class ChangeMode(Exception):
     """Change mode exception."""
 
@@ -43,7 +41,7 @@ class Player(PlayerInterface):
         print(f"Changing to mode {mode_index}")
         raise ChangeMode(mode_index)
     
-    def create_mode_instance(self, mode_index: int) -> Mode:
+    def create_mode_instance(self, mode_index: int) -> BackgroundMode | ForegroundMode:
         """Create instance of mode_index, cleanup old mode instance."""
         mode = self.modes[mode_index]
         if mode.index in self.bg_mode_instances:
@@ -75,7 +73,7 @@ class Player(PlayerInterface):
 
     def execute(self, starting_mode_index: int) -> None:
         """Execute modes until shutdown."""
-        mode: Mode | None = None
+        mode: BackgroundMode | ForegroundMode | None = None
         new_mode_index: int | None = starting_mode_index
         while True:
             try:
