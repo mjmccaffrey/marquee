@@ -4,11 +4,6 @@ from dataclasses import dataclass
 from enum import IntEnum
 from typing import Any
 
-
-class ChangeMode(Exception):
-    """Change mode exception."""
-
-
 @dataclass
 class ModeConstructor:
     index: int
@@ -16,9 +11,7 @@ class ModeConstructor:
     cls: type
     kwargs: dict[str, Any]
 
-
 class ModeIndex(IntEnum):
     SELECT_BRIGHTNESS = -99
     SELECT_MODE = 0
     DEFAULT = 1
-

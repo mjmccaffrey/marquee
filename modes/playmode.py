@@ -28,13 +28,13 @@ class PlayMode(ForegroundMode):
             case b.remote_a | b.body_back:
                 new_mode = ModeIndex.SELECT_MODE
             case b.remote_c:
-                self.player.click()
+                self.lights.click()
                 new_mode = self.player.mode_ids['section_1']
             case b.remote_b:
-                self.player.click()
+                self.lights.click()
                 new_mode = self.mode_index(current_mode, -1)
             case b.remote_d:
-                self.player.click()
+                self.lights.click()
                 new_mode = self.mode_index(current_mode, +1)
             case _:
                 raise ValueError("Unrecognized button.")

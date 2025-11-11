@@ -9,9 +9,12 @@ from event import Event, PriorityQueue
 from modes.background_modes import BackgroundMode
 from modes.foregroundmode import ForegroundMode
 from modes.modeinterface import ModeInterface
-from modes.mode_misc import ChangeMode
 from playerinterface import PlayerInterface
 
+type Mode = BackgroundMode | ForegroundMode
+
+class ChangeMode(Exception):
+    """Change mode exception."""
 
 @dataclass(repr=False)
 class Player(PlayerInterface):
@@ -35,16 +38,27 @@ class Player(PlayerInterface):
         """Clean up."""
         print(f"Player {self} closed.")
 
-    def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
-        """Replace variables with current runtime values."""
-        vars = {
-            'LIGHT_PATTERN': self.lights.relay_pattern,
-            # 'PREVIOUS_MODE': self.current_mode,
-        }
-        return {
-            k: vars[v] if isinstance(v, str) and v in vars else v
-            for k, v in kwargs.items()
-        }
+    def change_mode(self, mode_index: int) -> NoReturn:
+        """Change active mode to mode_index."""
+        print(f"Changing to mode {mode_index}")
+        raise ChangeMode(mode_index)
+    
+    def create_mode_instance(self, mode_index: int) -> Mode:
+        """Create instance of mode_index, cleanup old mode instance."""
+        mode = self.modes[mode_index]
+        if mode.index in self.bg_mode_instances:
+            self.delete_mode_instance(bg_index=mode.index)
+        mode_instance = mode.cls(
+            player=self,
+            index=mode.index,
+            name=mode.name, 
+            **self.replace_kwarg_values(mode.kwargs),
+        )
+        if isinstance(mode_instance, BackgroundMode):
+            self.bg_mode_instances[mode.index] = mode_instance
+        else:
+            self.fg_mode_history.append(mode.index)
+        return mode_instance
 
     def delete_mode_instance(
         self, 
@@ -60,30 +74,31 @@ class Player(PlayerInterface):
         self.event_queue.delete_owned_by(instance)
 
     def execute(self, starting_mode_index: int) -> None:
-        """Play starting_mode and all subsequent modes,
-           instantiating and cleaning up each mode as needed."""
-        new_mode_index = starting_mode_index
+        """Execute modes until shutdown."""
+        mode: Mode | None = None
+        new_mode_index: int | None = starting_mode_index
         while True:
-            assert new_mode_index is not None
-            mode = self.modes[new_mode_index]
-
-            if mode.index in self.bg_mode_instances:
-                self.delete_mode_instance(bg_index=mode.index)
-
-            mode_instance = mode.cls(
-                player=self,
-                index=mode.index,
-                name=mode.name, 
-                **self.replace_kwarg_values(mode.kwargs),
-            )
-            if isinstance(mode_instance, BackgroundMode):
-                self.bg_mode_instances[mode.index] = mode_instance
-            else:
-                self.fg_mode_history.append(mode.index)
-            new_mode_index = self._play_mode_until_changed(mode_instance)
-            print(f"{new_mode_index=}")
-            if isinstance(mode_instance, ForegroundMode):
-                self.delete_mode_instance(fg_instance=mode_instance)
+            try:
+                if new_mode_index is not None:
+                    if mode is not None and isinstance(mode, ForegroundMode):
+                        self.delete_mode_instance(fg_instance=mode)
+                    mode = self.create_mode_instance(new_mode_index)
+                    new_mode_index = None
+                assert mode is not None
+                print(f"Executing mode {mode.index} {mode.name}")
+                mode.execute()
+                self.wait()
+            except ButtonPressed as press:
+                button, held = press.args
+                if held:
+                    raise Shutdown("Button was held.")
+                Button.reset()
+                assert mode is not None
+                print(f"Button {button} pressed in mode {mode.name}")
+                new_mode_index = self._notify_button_action(mode, button)
+            except ChangeMode as change_mode:
+                print("ChangeMode caught")
+                new_mode_index, = change_mode.args
 
     def _notify_button_action(
         self, 
@@ -96,39 +111,16 @@ class Player(PlayerInterface):
             mode.button_action(button)
         return current_mode.button_action(button)
 
-    def _play_mode_until_changed(self, mode: ModeInterface) -> int | None:
-        """Play the specified mode until another mode is selected,
-           either by the user or automatically.
-           Shut down the system if the (body_back) button is held."""
-        print(f"Executing mode {mode.index} {mode.name}")
-        new_mode = None
-        while new_mode is None:
-            print(f"{new_mode=}")
-            try:
-                new_mode = mode.execute()
-                # self.wait()  !!!!!!!!!!!!!!!!!
-            except ButtonPressed as press:
-                button, held = press.args
-                if held:
-                    raise Shutdown("Button was held.")
-                Button.reset()
-                print(f"Button {button} pressed in mode {mode.name}")
-                new_mode = self._notify_button_action(mode, button)
-            except ChangeMode as change_mode:
-                print("ChangeMode caught")
-                new_mode, = change_mode.args
-        return new_mode
-
-    def click(self) -> None:
-        """Click the specified otherwise unused light relays."""
-        extra = ''.join(
-            '0' if e == '1' else '1'
-            for e in self.lights.extra_pattern
-        )
-        self.lights.set_relays(
-            light_pattern=self.lights.relay_pattern, 
-            extra_pattern=extra,
-        )
+    def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
+        """Replace variables with current runtime values."""
+        vars = {
+            'LIGHT_PATTERN': self.lights.relay_pattern,
+            # 'PREVIOUS_MODE': self.current_mode,
+        }
+        return {
+            k: vars[v] if isinstance(v, str) and v in vars else v
+            for k, v in kwargs.items()
+        }
 
     def wait(
         self, 

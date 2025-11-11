@@ -30,6 +30,11 @@ class PlayerInterface(ABC):
         """Clean up."""
 
     @abstractmethod
+    def change_mode(self, mode_index: int) -> NoReturn:
+        """Change active mode to mode_index."""
+        raise  # Pylance work-around
+
+    @abstractmethod
     def delete_mode_instance(
         self, 
         bg_index: int | None = None,

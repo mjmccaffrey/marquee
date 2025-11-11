@@ -208,3 +208,14 @@ class LightSet:
             for channel in dimmer.channels
         ]
 
+    def click(self) -> None:
+        """Click the specified otherwise unused light relays."""
+        extra = ''.join(
+            '0' if e == '1' else '1'
+            for e in self.extra_pattern
+        )
+        self.set_relays(
+            light_pattern=self.relay_pattern, 
+            extra_pattern=extra,
+        )
+

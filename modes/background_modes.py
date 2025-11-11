@@ -10,7 +10,7 @@ from typing import Callable, ClassVar, NoReturn
 
 from button_misc import ButtonInterface
 from .basemode import BaseMode
-from .mode_misc import ChangeMode, ModeConstructor, ModeIndex
+from .mode_misc import ModeConstructor, ModeIndex
 
 
 @dataclass
@@ -89,12 +89,8 @@ class TimeBGMode(BackgroundMode, ABC):
     next_trigger_time: Callable[[], float]
     fg_mode_index: int = field(init=False)
 
-
-
     """Background time mode will assert that a background sequence mode is instantiated,
       and will call it upon exit."""
-
-
 
     def __post_init__(self):
         """Schedule first event."""
@@ -106,7 +102,7 @@ class TimeBGMode(BackgroundMode, ABC):
 
     def event_execute(self) -> NoReturn:
         """Schedule next event, raise event with foreground mode index."""
-        raise ChangeMode(self.execute(), False)
+        self.player.change_mode(self.execute())
 
     def execute(self, is_initial_mode: bool = True) -> int:
         """Return index of desired mode.
