@@ -181,7 +181,6 @@ class Player(PlayerInterface):
             event, duration = next_event_or_wait()
             if event is not None:
                 event.action()
-                print("Action executed")
             else:
                 Button.wait(duration)
 

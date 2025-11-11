@@ -54,9 +54,7 @@ class PlaySequenceMode(PlayMode):
         """Execute sequence with delay seconds between steps.
            If stop is specified, end the sequence 
            just before the nth pattern."""
-        print("Enter playsequencemode.execute")
         self.player.replace_kwarg_values(self.kwargs)
-        print(f"PLAYING {self.name}")
         if self.pre_delay:
             time.sleep(self.pre_delay)  # !!!!
         delay_iter = (
