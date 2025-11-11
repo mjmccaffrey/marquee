@@ -130,7 +130,6 @@ class Player(PlayerInterface):
     def _wait(
         self, 
         seconds: float | None = None, 
-        elapsed: float = 0.0,
     ) -> None | NoReturn:
         """Wait seconds, after adjusting for
            speed_factor and time already elapsed.
@@ -166,14 +165,14 @@ class Player(PlayerInterface):
                     print(f"Waiting for remaining {remaining} or button push; queue empty")
                     return None, remaining
 
-        print(f"Wait {seconds}, {elapsed}")
+        print(f"Wait {seconds}")
         if seconds is not None:
             seconds *= self.speed_factor
         start = time.time()
         while True:
             now = time.time()
             if seconds is not None:
-                remaining = start + seconds - elapsed - now
+                remaining = start + seconds - now
                 end = now + remaining
                 if now > end:
                     print(f"Exiting wait {now - end} late")
