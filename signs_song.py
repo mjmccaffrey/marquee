@@ -18,7 +18,7 @@ class SignsSong(PlayMusicMode):
     def execute(self) -> None:
         """Perform Signs song."""
         self.lights.set_dimmers(ALL_LOW, force_update=True)
-        time.sleep(0.75)
+        # time.sleep(0.75) !!!
         self.lights.set_relays(ALL_ON)
         sections = [
             self.intro(),

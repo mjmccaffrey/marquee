@@ -67,12 +67,12 @@ class SelectMode(ForegroundMode, ABC):
             # Show user what desired mode number is currently selected.
             print(f"Desired is {self.desired} {self.player.modes[self.desired].name}")
             self.lights.set_relays(ALL_OFF, special=self.special)
-            # time.sleep(0.5)
             PlaySequenceMode(
                 player=self.player,
                 index=999999,
                 name="SelectMode sequence player",
                 sequence=lambda: rotate_build_flip(count=self.desired),
+                pre_delay = 0.5,
                 delay=0.20, 
                 repeat=False,
                 special=self.special,

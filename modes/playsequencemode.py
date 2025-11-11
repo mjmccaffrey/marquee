@@ -20,6 +20,7 @@ class PlaySequenceMode(PlayMode):
         index: int,
         name: str,
         sequence: Callable[[], Iterable],
+        pre_delay: float = 0.0,
         delay: tuple[float, ...] | float | None = None,
         stop: int | None = None,
         repeat: bool = True,
@@ -30,6 +31,7 @@ class PlaySequenceMode(PlayMode):
         super().__init__(player, index, name, special)
         ForegroundMode.__post_init__(self) # !!!
         self.sequence = sequence
+        self.pre_delay = pre_delay
         self.delay = delay
         self.stop = stop
         self.repeat = repeat
@@ -55,6 +57,8 @@ class PlaySequenceMode(PlayMode):
         print("Enter playsequencemode.execute")
         self.player.replace_kwarg_values(self.kwargs)
         print(f"PLAYING {self.name}")
+        if self.pre_delay:
+            time.sleep(self.pre_delay)  # !!!!
         delay_iter = (
             itertools.cycle(self.delay) 
                 if isinstance(self.delay, Iterable) else
