@@ -59,16 +59,15 @@ class SelectMode(ForegroundMode, ABC):
                 raise ValueError("Unrecognized button.")
         return None
 
-    def execute(self) -> int | None:
+    def execute(self) -> None:
         """Return user's final selection if made, otherwise None."""
         print(f"SelectMode.execute {self.previous=} {self.desired=}")
-        new = None
         if self.desired != self.previous_desired and self.desired > 0:
             # Not last pass.
             # Show user what desired mode number is currently selected.
             print(f"Desired is {self.desired} {self.player.modes[self.desired].name}")
             self.lights.set_relays(ALL_OFF, special=self.special)
-            time.sleep(0.5)
+            # time.sleep(0.5)
             PlaySequenceMode(
                 player=self.player,
                 index=999999,
@@ -78,15 +77,13 @@ class SelectMode(ForegroundMode, ABC):
                 repeat=False,
                 special=self.special,
             ).execute()
-            self.player.wait(4.0)
             self.previous_desired = self.desired
+            self.schedule(self.execute, due=time.time() + 4.0)
         else:
             # Last pass.
             # Time elapsed without a button being pressed.
             # Return the selection.
-            new = self.desired
-        print(f"SelectMode.execute returning {new}")
-        return new
+            self.player.change_mode(self.desired)
 
 
 @dataclass(kw_only=True)

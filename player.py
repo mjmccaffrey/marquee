@@ -85,7 +85,7 @@ class Player(PlayerInterface):
                 assert mode is not None
                 print(f"Executing mode {mode.index} {mode.name}")
                 mode.execute()
-                self.wait()
+                self._wait()
             except ButtonPressed as press:
                 button, held = press.args
                 if held:
@@ -121,6 +121,13 @@ class Player(PlayerInterface):
         }
 
     def wait(
+        self, 
+        seconds: float | None = None, 
+        elapsed: float = 0.0,
+    ) -> NoReturn:
+        raise NotImplementedError
+    
+    def _wait(
         self, 
         seconds: float | None = None, 
         elapsed: float = 0.0,
