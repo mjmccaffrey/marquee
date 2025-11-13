@@ -2,7 +2,6 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-import time
 
 from .foregroundmode import ForegroundMode
 from .mode_misc import ModeIndex
@@ -62,7 +61,10 @@ class SelectMode(ForegroundMode, ABC):
     def execute(self) -> None:
         """Return user's final selection if made, otherwise None."""
         print(f"SelectMode.execute {self.previous=} {self.desired=}")
-        if self.desired != self.previous_desired and self.desired > 0:
+        if (
+                self.desired != self.previous_desired 
+            and self.desired > 0  # WHY ???
+        ):
             # Not last pass.
             # Show user what desired mode number is currently selected.
             print(f"Desired is {self.desired} {self.player.modes[self.desired].name}")
@@ -78,11 +80,11 @@ class SelectMode(ForegroundMode, ABC):
                 special=self.special,
             ).execute()
             self.previous_desired = self.desired
-            self.schedule(self.execute, due=time.time() + 4.0)
+            self.schedule(self.execute, due=4.0)
         else:
             # Last pass.
             # Time elapsed without a button being pressed.
-            # Return the selection.
+            # Change the mode.
             self.player.change_mode(self.desired)
 
 

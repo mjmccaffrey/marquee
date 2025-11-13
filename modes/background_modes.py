@@ -62,7 +62,7 @@ class SequenceBGMode(BackgroundMode):
         )
         self.schedule(
             action=self.execute,
-            due=time() + self.mode_on_deck.seconds,
+            due=self.mode_on_deck.seconds,
             name="SequenceBGMode execute", 
         )
         new_mode = self.mode_on_deck.index

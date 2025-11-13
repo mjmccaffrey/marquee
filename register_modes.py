@@ -4,8 +4,8 @@ from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes.background_modes import SequenceBGMode, ModeEntry
 from modes.custom_modes import (
-    BellTest, EvenOddFade, FillBulbs, RotateReversible, 
-    RandomFade, RapidFade, RotateRewind, SilentFadeBuild,
+    BellTest, EvenOddFade, RotateReversible, 
+    RandomFade, RotateRewind, SilentFadeBuild,
 )
 from modes.mode_misc import ModeIndex
 from modes.select_modes import BrightnessSelectMode, ModeSelectMode
@@ -28,7 +28,6 @@ def register_modes(exec: Executor) -> None:
 
 def register_dimmer_modes(exec: Executor):
     """"""
-    exec.add_mode("rapid_fade", RapidFade)
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=4, 
         special=DimmerParams(
@@ -184,7 +183,6 @@ def register_test_modes(exec: Executor) -> None:
 def register_pyohio_2025_presentation_modes(exec: Executor) -> None:
     """PyOhio 2025 presentation."""
     exec.add_sequence_mode("section_1", all_off)
-    exec.add_mode("fill_bulbs", FillBulbs)
     exec.add_sequence_mode("10_on", lambda: iter(["101111101111"]),
         special=MirrorParams(),
     )

@@ -3,12 +3,10 @@
 from collections.abc import Callable
 from functools import partial
 import itertools
-import time
 from typing import Iterable
 
 from .foregroundmode import ForegroundMode
 from .playmode import PlayMode
-from dimmers import TRANSITION_DEFAULT
 from player import Player
 from specialparams import ActionParams, DimmerParams, SpecialParams
 
@@ -39,7 +37,7 @@ class PlaySequenceMode(PlayMode):
         if isinstance(special, DimmerParams):
             default_trans = (
                 delay if isinstance(delay, float) else
-                TRANSITION_DEFAULT
+                self.lights.TRANSITION_DEFAULT
             )
             if special.transition_off is None:
                 special.transition_off = default_trans
@@ -50,25 +48,29 @@ class PlaySequenceMode(PlayMode):
             relays = isinstance(special, DimmerParams),
         )
 
-    def execute(self) -> None:
+    def execute(self, pre_delay_done=False) -> None:
         """Execute sequence with delay seconds between steps.
            If stop is specified, end the sequence 
            just before the nth pattern."""
+        if self.pre_delay and not pre_delay_done:
+            self.schedule(
+                action = partial(self.execute, pre_delay_done=True),
+                due = self.pre_delay,
+                name = "PlaySequenceMode execute after pre_delay",
+            )
+            return
         self.player.replace_kwarg_values(self.kwargs)
-        if self.pre_delay:
-            time.sleep(self.pre_delay)  # !!!!
         delay_iter = (
             itertools.cycle(self.delay) 
                 if isinstance(self.delay, Iterable) else
             itertools.repeat(self.delay)
         )
-        start = time.time()
         for i, lights in enumerate(self.sequence(**self.kwargs)):
             if self.stop is not None and i == self.stop:
                 break
             delay = next(delay_iter)
 
-            # if pace is not None:
+            # if pace is not None: ????
             if isinstance(self.special, DimmerParams):
                 self.special.speed_factor = self.player.speed_factor
 
@@ -85,7 +87,7 @@ class PlaySequenceMode(PlayMode):
                 )
             self.schedule(
                 action = action,
-                due = start + (0 if delay is None else i * delay),
+                due = 0 if delay is None else i * delay,
                 name = f"PlaySequenceMode execute {i} {lights}",
             )
             if delay is None:
@@ -94,7 +96,7 @@ class PlaySequenceMode(PlayMode):
         if self.repeat: 
             self.schedule(
             action = self.execute,
-            due = start + (i + 1) * delay,
+            due = (i + 1) * delay,
             name = "PlaySequenceMode continue",
         )
         print("Exiting playsequencemode.play at bottom")

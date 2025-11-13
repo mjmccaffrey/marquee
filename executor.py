@@ -6,7 +6,6 @@ import time
 
 from button import Button
 from button_misc import ButtonSet
-from dimmers import TRANSITION_DEFAULT
 from instruments import BellSet, DrumSet
 from lightset import LightSet
 from lightset_misc import ALL_OFF, ALL_ON, EXTRA_COUNT
@@ -132,7 +131,7 @@ class Executor:
         """Effects the command-line specified pattern(s)."""
         if brightness_pattern is not None:
             self.lights.set_dimmers(brightness_pattern)
-            Button.wait(TRANSITION_DEFAULT)
+            Button.wait(self.lights.TRANSITION_DEFAULT)
         if light_pattern is not None:
             self.lights.set_relays(light_pattern)
 

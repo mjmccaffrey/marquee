@@ -7,10 +7,8 @@ import itertools
 import random
 import time
 
-from dimmers import TRANSITION_MINIMUM
 from lightset_misc import (
-    ALL_HIGH, ALL_LOW, ALL_ON, 
-    LIGHT_COUNT, LIGHTS_BY_ROW,
+    ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT,
 )
 from music.music_notation import Bell
 from .playmode import PlayMode
@@ -29,9 +27,8 @@ class BellTest(PlayMusicMode):
 
     def execute(self) -> None:
         """Perform bell test."""
-        start = time.time()
         for pitch in range(self.bells.pitch_levels):
-            due = start + 0.5 * pitch
+            due = 0.5 * pitch
             self.schedule(
                 action = partial(self.bells.play, {pitch}),
                 due = due,
@@ -59,7 +56,7 @@ class RotateReversible(PlayMode):
            Called repeatedly until the mode is changed."""
         self.schedule(
             partial(self.lights.set_relays, self.pattern),
-            time.time() + self.delay,
+            self.delay,
             name=f"RotateReversible set_relays {self.pattern}",
 
         )
@@ -101,11 +98,10 @@ class RotateRewind(PlayMode):
             )
         ]
         values.extend(reversed(values[1:-1]))
-        start = time.time()
         for index, (pattern, pace) in enumerate(itertools.cycle(values)):
             self.schedule(
                 partial(self.lights.set_relays, pattern, special=self.special),
-                start + index * pace,
+                index * pace,
                 name=f"RotateRewind set_relays {pattern}",
             )
 
@@ -122,7 +118,9 @@ class RandomFade(PlayMode):
 
     def _new_transition(self) -> float:
         if self.transition == -1:
-            return random.uniform(TRANSITION_MINIMUM, 5.0 * self.player.speed_factor)
+            return random.uniform(
+                self.player.lights.TRANSITION_MINIMUM, 5.0 * self.player.speed_factor
+            )
         else:
             return self.transition
 
@@ -134,13 +132,15 @@ class RandomFade(PlayMode):
     
     def execute(self) -> None:
         """Perform RandomFade indefinitely."""
-        for channel in self.lights.dimmer_channels:
-            channel.next_update = 0
-        due = time.time()
+        next_update = {
+            channel: 0.0
+            for channel in self.lights.dimmer_channels
+        }
+        due = 0.0
         while True:
             for channel in self.lights.dimmer_channels:
                 now = time.time()
-                if channel.next_update < now:
+                if next_update[channel] < now:
                     transition = self._new_transition()
                     self.schedule(
                         partial(
@@ -152,7 +152,7 @@ class RandomFade(PlayMode):
                         name=f"RandomFade set channel {channel.id}",
                     )
                     due += 0.1
-                    channel.next_update = now + transition
+                    update = now + transition
 
 
 @dataclass(kw_only=True)
@@ -170,9 +170,8 @@ class EvenOddFade(PlayMode):
         delay = 0.5
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
         even_on = opposite(odd_on)
-        due = time.time()
+        due = 0.0
         for pattern in itertools.cycle((even_on, odd_on)):
-            start = time.time()
             self.schedule(
                 partial(
                     self.lights.set_relays,
@@ -191,53 +190,6 @@ class EvenOddFade(PlayMode):
 
 
 @dataclass(kw_only=True)
-class RapidFade(PlayMode):
-    """Test of achieving a very fast fade by giving the channel
-       2 different set commands in rapid succession."""
-
-    def __post_init__(self) -> None:
-        """Initialize."""
-        self.preset_devices(relays=True)
- 
-    def execute(self) -> None:
-        """Perform RapidFade indefinitely."""
-        self.lights.set_relays(ALL_ON)
-        due = time.time()
-        while True:
-            self.lights.set_dimmers(ALL_HIGH, force_update=True)
-            previous = None
-            for channel in self.lights.dimmer_channels:
-                self.schedule(
-                    partial(
-                        channel.set,
-                        brightness=0, 
-                        transition=TRANSITION_MINIMUM,
-                    ),
-                    due,
-                )
-                if previous is not None:
-                    self.schedule(  # type: ignore
-                        partial(
-                            previous.set,
-                            brightness=40, 
-                            transition=TRANSITION_MINIMUM,
-                        ),
-                        due,
-                    ),
-                previous = channel
-                due += 0.25
-            assert previous is not None
-            self.schedule(
-                partial(
-                    previous.set,
-                    brightness=40, 
-                    transition=TRANSITION_MINIMUM,
-                ),
-                due,
-            )
-
-
-@dataclass(kw_only=True)
 class SilentFadeBuild(PlayMode):
     """Alternately build rows / columns from top / bottom / left / right."""
 
@@ -248,7 +200,7 @@ class SilentFadeBuild(PlayMode):
     def execute(self) -> None:
         """Perform SilentFadeBuild indefinitely."""
         self.lights.set_relays(ALL_ON)
-        due = time.time()
+        due = 0.0
         while True:
             for rows in (False, True):
                 for from_top_left, brightness in (
@@ -266,29 +218,6 @@ class SilentFadeBuild(PlayMode):
                         due += 0.5
                     due += 1.0
                 due += 1.0
-
-
-@dataclass(kw_only=True)
-class FillBulbs(PlayMode):
-    """Gag to fill sign with electricity."""
-
-    def __post_init__(self) -> None:
-        """Initialize."""
-        self.lights.set_dimmers(ALL_LOW)
-        self.player.wait(0.5)
-        self.preset_devices(relays=True)
- 
-    def execute(self) -> None:
-        """Bulb juice flows down from the top center."""
-        for lights in LIGHTS_BY_ROW:
-            self.lights.set_dimmer_subset(lights, 30, 2.0)
-            self.player.wait(1.0)
-        self.player.wait(1.0)
-        for lights in reversed(LIGHTS_BY_ROW):
-            self.lights.set_dimmer_subset(lights, 100, 1.5)
-            self.player.wait(1.5)
-            self.bells.play({7})
-        self.player.wait(None)
 
 
 @dataclass(kw_only=True)

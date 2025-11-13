@@ -6,7 +6,7 @@ from gpiozero import Button as _Button  # type: ignore
 
 from button import Button
 from button_misc import ButtonSet
-from dimmers import ShellyProDimmer2PM
+from shelly import ShellyProDimmer2PM
 from instruments import BellSet, DrumSet
 from lightset import LightSet
 from lightset_misc import ALL_RELAYS

@@ -3,10 +3,7 @@
 import asyncio
 from dataclasses import dataclass, InitVar
 
-from dimmers import (
-    ShellyDimmer, DimmerChannel,
-    TRANSITION_DEFAULT, TRANSITION_MINIMUM,
-)
+from lightcontroller import LightController, LightChannel
 from lightset_misc import EXTRA_COUNT, LIGHT_COUNT
 from relays import RelayModule
 from specialparams import DimmerParams, MirrorParams, SpecialParams
@@ -16,14 +13,17 @@ from specialparams import DimmerParams, MirrorParams, SpecialParams
 class LightSet:
     """Supports all of the light-related devices."""
     relays: RelayModule
-    dimmers: list[ShellyDimmer]
+    dimmers: list[LightController]
     bulb_adjustments: dict[str, int]
     brightness_factor_init: InitVar[float]
 
     def __post_init__(self, brightness_factor_init: float) -> None:
         """Initialize."""
+        self.TRANSITION_DEFAULT = self.dimmers[0].TRANSITION_DEFAULT
+        self.TRANSITION_MINIMUM = self.dimmers[0].TRANSITION_MINIMUM
+        self.TRANSITION_MAXIMUM = self.dimmers[0].TRANSITION_MAXIMUM
         # channel[i] maps to light[i], 0 <= i < LIGHT_COUNT
-        self.dimmer_channels: list[DimmerChannel] = [
+        self.dimmer_channels: list[LightChannel] = [
             channel
             for dimmer in self.dimmers
             for channel in dimmer.channels
@@ -47,7 +47,7 @@ class LightSet:
         self, 
         brightnesses: list[int], 
         transitions: list[float],
-    ) -> list[tuple[DimmerChannel, int, float]]:
+    ) -> list[tuple[LightChannel, int, float]]:
         """Return delta between current state and desired state."""
         return [
             (c, b, t)
@@ -73,9 +73,9 @@ class LightSet:
         assert special.transition_off is not None
         assert special.transition_on is not None
         trans_values: dict[int, float] = {
-            0: max(TRANSITION_MINIMUM, 
+            0: max(self.TRANSITION_MINIMUM, 
                    special.transition_off * special.speed_factor), 
-            1: max(TRANSITION_MINIMUM, 
+            1: max(self.TRANSITION_MINIMUM, 
                    special.transition_on * special.speed_factor),
         }
         light_pattern = [int(p) for p in light_pattern]
@@ -127,7 +127,7 @@ class LightSet:
             self, 
             pattern: str | None = None,
             brightnesses: list[int] | None = None,
-            transitions: list[float] | float = TRANSITION_DEFAULT,
+            transitions: list[float] | float = 0.0,
             force_update: bool = False,
         ) -> None:
         """Set the dimmers per the supplied pattern or brightnesses,
@@ -135,6 +135,8 @@ class LightSet:
            Adjust for brightness_factor."""
         assert pattern is None or len(pattern) == LIGHT_COUNT
         assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
+        if not transitions:
+            transitions = self.TRANSITION_DEFAULT
         if pattern is not None:
             brightnesses = [
                 self.bulb_adjustments[p]
@@ -174,7 +176,7 @@ class LightSet:
 
     def _execute_dimmer_commands(
             self,
-            updates: list[tuple[DimmerChannel, int, float]],
+            updates: list[tuple[LightChannel, int, float]],
     ) -> None:
         """Set each dimmer channel to brightness at transition rate."""
         commands = [
@@ -184,7 +186,7 @@ class LightSet:
             )
             for c, b, t in updates
         ]
-        asyncio.run(ShellyDimmer.execute_multiple_commands(commands))
+        self.dimmers[0].execute_commands(commands)
         for command in commands:
             command.channel.brightness = command.params['brightness']
 
