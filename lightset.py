@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - lightset"""
 
-import asyncio
+from collections.abc import Sequence
 from dataclasses import dataclass, InitVar
 
 from lightcontroller import LightController, LightChannel
@@ -13,10 +13,10 @@ from specialparams import DimmerParams, MirrorParams, SpecialParams
 class LightSet:
     """Supports all of the light-related devices."""
     relays: RelayModule
-    dimmers: list[LightController]
+    dimmers: Sequence[LightController]
+    hue: LightController
     bulb_adjustments: dict[str, int]
     brightness_factor_init: InitVar[float]
-
     def __post_init__(self, brightness_factor_init: float) -> None:
         """Initialize."""
         self.TRANSITION_DEFAULT = self.dimmers[0].TRANSITION_DEFAULT
