@@ -30,7 +30,7 @@ class Executor:
             create_player: Callable[..., PlayerInterface],
             setup_devices: Callable[
                 [float], 
-                tuple[BellSet, ButtonSet, DrumSet, LightSet]
+                tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet]
             ],
         ) -> None:
         """Init the (single) executor."""
@@ -96,7 +96,7 @@ class Executor:
         ) -> None:
         """Effects the command-line specified command, mode or pattern(s)."""
         signal.signal(signal.SIGTERM, self.sigterm_received)
-        self.bells, self.buttons, self.drums, self.lights = (
+        self.bells, self.buttons, self.drums, self.lights, self.secondary = (
             self.setup_devices(brightness_factor)
         )
         if command is not None:
@@ -131,7 +131,7 @@ class Executor:
         """Effects the command-line specified pattern(s)."""
         if brightness_pattern is not None:
             self.lights.set_dimmers(brightness_pattern)
-            Button.wait(self.lights.TRANSITION_DEFAULT)
+            Button.wait(self.lights.controller.transition_default)
         if light_pattern is not None:
             self.lights.set_relays(light_pattern)
 

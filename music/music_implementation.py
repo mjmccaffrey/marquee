@@ -202,7 +202,7 @@ def _dimmer_sequence(brightness: int, transition: float) -> Callable:
 def _dimmer_sequence_flip(transition: float) -> Callable:
     """Return callable to flip state of specified dimmers."""
     def func(lights: list[int]):
-        brightness = 0 if player.lights.dimmer_brightnesses()[lights[0]] else 100
+        brightness = 0 if player.lights.controller.brightnesses()[lights[0]] else 100
         player.lights.set_dimmer_subset(lights, brightness, transition)
     return func
 

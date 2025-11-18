@@ -37,7 +37,7 @@ class PlaySequenceMode(PlayMode):
         if isinstance(special, DimmerParams):
             default_trans = (
                 delay if isinstance(delay, float) else
-                self.lights.TRANSITION_DEFAULT
+                self.lights.controller.transition_default
             )
             if special.transition_off is None:
                 special.transition_off = default_trans

@@ -125,7 +125,7 @@ class Player(PlayerInterface):
         seconds: float | None = None, 
         elapsed: float = 0.0,
     ) -> NoReturn:
-        raise NotImplementedError
+        raise NotImplementedError()
     
     def _wait(
         self, 

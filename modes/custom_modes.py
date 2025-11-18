@@ -119,7 +119,8 @@ class RandomFade(PlayMode):
     def _new_transition(self) -> float:
         if self.transition == -1:
             return random.uniform(
-                self.player.lights.TRANSITION_MINIMUM, 5.0 * self.player.speed_factor
+                self.player.lights.controller.transition_minimum, 
+                5.0 * self.player.speed_factor
             )
         else:
             return self.transition

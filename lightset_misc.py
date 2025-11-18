@@ -1,4 +1,5 @@
 """Marquee Lighted Sign Project - lightset_misc"""
+"""Everything here applies to the primary LightSet."""
 
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],

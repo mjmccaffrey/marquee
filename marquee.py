@@ -8,8 +8,15 @@ marquee
         ButtonSet
             Buttons
         DrumSet
+        LightController
+            HueBridge
+            ShellyDimmer
+        LightChannel
+            HueChannel
+            ShellyChannel
         LightSet
-            Dimmers
+            LightController
+            LightChannel
             Relays
         BaseMode
             BackgroundMode
