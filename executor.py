@@ -40,7 +40,7 @@ class Executor:
         self.mode_menu: list[tuple[int, str]] = []
         self.modes: dict[int, ModeConstructor] = {}
         self.commands: dict[str, Callable[[], None]] = {
-            'calibrate_dimmers': self.command_calibrate_dimmers,
+            'calibrate_channels': self.command_calibrate_channels,
             'off': self.command_off,
         }
 
@@ -130,25 +130,25 @@ class Executor:
     ) -> None:
         """Effects the command-line specified pattern(s)."""
         if brightness_pattern is not None:
-            self.lights.set_dimmers(brightness_pattern)
+            self.lights.set_channels(brightness_pattern)
             Button.wait(self.lights.controller.transition_default)
         if light_pattern is not None:
             self.lights.set_relays(light_pattern)
 
-    def command_calibrate_dimmers(self) -> None:
-        """Execute calibration on all dimmers on each successive channel."""
-        print("Calibrating dimmers")
+    def command_calibrate_channels(self) -> None:
+        """Execute calibration on all channels on each successive channel."""
+        print("Calibrating channels")
         # Set all light relays on
         self.lights.set_relays(ALL_ON)
-        # Set all light dimmers to high
-        for dimmer in self.lights.dimmers:
+        # Set all light channels to high
+        for dimmer in self.lights.channels:
             for channel in dimmer.channels:
                 channel.set(brightness=100)
         time.sleep(3)
-        max_channel = max(d.channel_count for d in self.lights.dimmers)
+        max_channel = max(d.channel_count for d in self.lights.channels)
         for id in range(max_channel):
             print(f"Calibrating channel {id}")
-            for dimmer in self.lights.dimmers:
+            for dimmer in self.lights.channels:
                 if id < dimmer.channel_count:
                     dimmer.channels[id].calibrate()
             time.sleep(150)

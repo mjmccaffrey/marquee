@@ -1,11 +1,14 @@
 """Marquee Lighted Sign Project - lightset"""
 
 from dataclasses import dataclass, InitVar
+from collections.abc import Sequence
 
 from bulb import SmartBulb
-from lightcontroller import LightController, LightChannel, Color
+from lightcontroller import (
+    ChannelUpdate, Color, LightController, LightChannel,
+)
 from relays import RelayModule
-from specialparams import DimmerParams, MirrorParams, SpecialParams
+from specialparams import ChannelParams, MirrorParams, SpecialParams
 
 
 @dataclass
@@ -22,22 +25,14 @@ class LightSet:
         self.light_count = len(self.light_relays)
 
         # channel[i] maps to light[i], 0 <= i < light_count
-        self.dimmer_channels: list[LightChannel] = [
+        self.channels: list[LightChannel] = [
             channel
             for channel in self.controller.channels
         ]
-
-
-        assert len(self.dimmer_channels) == self.light_count
+        assert len(self.channels) == self.light_count
         full_pattern = self.relays.get_state_of_devices()
         self.relay_pattern = full_pattern[:self.light_count]
-
-
-
         self.extra_pattern = full_pattern[self.light_count:]
-
-
-
         self.brightness_factor = brightness_factor_init
 
     @property
@@ -49,28 +44,10 @@ class LightSet:
         self._brightness_factor = value
         print("Brightness factor is ", self._brightness_factor)
 
-    def _updates_needed(
-        self, 
-        brightnesses: list[int], 
-        transitions: list[float],
-        colors: list['Color | None'],
-    ) -> list[tuple[LightChannel, int, float, 'Color | None']]:
-        """Return delta between current state and desired state."""
-        return [
-            (chan, b, t, c)
-            for chan, b, t, c in zip(
-                self.dimmer_channels,
-                brightnesses,
-                transitions,
-                colors,
-            )
-            if chan.brightness != b and chan.color != c
-        ]
-
     def _set_channels_instead_of_relays(
             self,
             light_pattern: list | str, 
-            special: DimmerParams,
+            special: ChannelParams,
     ) -> None:
         """Set channels per the specified pattern and special.
            Adjust for brightness_factor."""
@@ -78,32 +55,34 @@ class LightSet:
             0: int(special.brightness_off * self._brightness_factor), 
             1: int(special.brightness_on * self._brightness_factor),
         }
-        assert special.transition_off is not None
-        assert special.transition_on is not None
         trans_values: dict[int, float] = {
             0: max(self.controller.transition_minimum, 
                    special.transition_off * special.speed_factor), 
             1: max(self.controller.transition_minimum, 
                    special.transition_on * special.speed_factor),
         }
+        color_values: dict[int, Color | None] = {
+            0: special.color_off,
+            1: special.color_on,
+        }
         light_pattern = [int(p) for p in light_pattern]
-        brightnesses=[
+        brightnesses = tuple(
             bright_values[p]
             for p in light_pattern
-        ]
-        transitions=[
+        )
+        transitions = tuple(
             trans_values[p]
             for p in light_pattern
-        ]
-        if special.concurrent:
-            self.set_dimmers(
-                brightnesses=brightnesses, 
-                transitions=transitions,
-            )
-        else:
-            updates = self._updates_needed(brightnesses, transitions)
-            for c, b, t in updates:
-                c.set(brightness=b, transition=t)
+        )
+        colors = tuple(
+            color_values[p]
+            for p in light_pattern
+        )
+        self.set_channels(
+            brightnesses=brightnesses, 
+            transitions=transitions,
+            colors=colors,
+        )
             
     def set_relays(
             self, 
@@ -121,8 +100,8 @@ class LightSet:
              or len(extra_pattern) == len(self.extra_pattern)
         )
         light_pattern = ''.join(str(e) for e in light_pattern)
-        if isinstance(special, DimmerParams):
-            self._set_dimmers_instead_of_relays(light_pattern, special)
+        if isinstance(special, ChannelParams):
+            self._set_channels_instead_of_relays(light_pattern, special)
         else:
             if extra_pattern is None:
                 extra_pattern = self.extra_pattern
@@ -140,72 +119,66 @@ class LightSet:
             self.extra_pattern = extra_pattern
             self.relay_pattern = light_pattern
 
+    def set_channels_from_pattern(
+            self, 
+            pattern: str,
+    ):
+        """Set the channels per the supplied pattern and transition times.
+           Apply bulb_adjustments.  Adjust for brightness_factor."""
+        assert len(pattern) == self.light_count
+        updates = [
+            ChannelUpdate(
+                channel=c,
+                brightness=self.controller.bulb_model.adjustments[p],
+                transition=None,
+                color=None,
+            )
+            for c, p in zip(self.channels, pattern)
+        ]
+
     def set_channels(
             self, 
-            pattern: str | None = None,
-            brightnesses: list[int] | None = None,
-            transitions: list[float] | float = 0.0,
+            brightnesses: Sequence[int | None] | int | None = None,
+            transitions: Sequence[float | None] | float | None = None,
+            colors: Sequence[Color | None] | Color | None = None,
+            channel_indexes: Sequence[int] | None = None,
             force_update: bool = False,
         ) -> None:
-        """Set the dimmers per the supplied pattern or brightnesses,
-           and transition times.  If pattern, apply bulb_adjustments.
+        """Set the channels per the supplied brightnesses, 
+           transition times and colors.  
+           Specify a subset of channels via channel_indexes.
+           Force all specified channels to update with force_update.
            Adjust for brightness_factor."""
-        assert pattern is None or len(pattern) == self.light_count
-        assert not (pattern and brightnesses), "Specify either pattern or brightnesses."
-        if not transitions:
-            transitions = self.controller.transition_default
-        if pattern is not None:
-            brightnesses = [
-                self.controller.bulb_model.adjustments[p]
-                for p in pattern
+        
+        def normalize(param) -> list:
+            """"""
+            match param:
+                case list():
+                    assert len(param) == self.light_count
+                    _param = param
+                # case None:
+                #     _param = [default] * self.light_count
+                case _:
+                    _param = [param] * self.light_count
+            return _param
+        
+        _channel_indexes = (
+            [i for i in range(self.light_count)]
+                if channel_indexes is None else
+            channel_indexes
+        )
+        _channels = [self.channels[i] for i in _channel_indexes]
+        _brightnesses = normalize(brightnesses)
+        if _brightnesses[0] is not None:
+            _brightnesses = [
+                int(b * self._brightness_factor)
+                for b in _brightnesses
             ]
-        if isinstance(transitions, float):
-            transitions = [transitions] * self.light_count
-        assert brightnesses is not None
-        brightnesses = [
-            int(b * self._brightness_factor)
-            for b in brightnesses
-        ]
-        assert isinstance(transitions, list)
-        if force_update:
-            updates = [t for t in zip(self.dimmer_channels, brightnesses, transitions)]
-        else:
-            updates = self._updates_needed(brightnesses, transitions)
-        self._execute_dimmer_commands(updates)
+        _transitions = normalize(transitions)
+        _colors = normalize(colors)
 
-    def set_channel_subset(
-            self,
-            lights: list[int],
-            brightness: int,
-            transition: float,
-    ) -> None:
-        """Set lights (indexes) / dimmer channels 
-           to brightness with transition.
-           Adjust for brightness_factor."""
-        brightness = int(brightness * self._brightness_factor)
-        self._execute_dimmer_commands([
-            (   self.dimmer_channels[light], 
-                brightness, 
-                transition,
-            )
-            for light in lights
-        ])
-
-    def _execute_channel_commands(
-            self,
-            updates: list[tuple[LightChannel, int, float]],
-    ) -> None:
-        """Set each dimmer channel to brightness at transition rate."""
-        commands = [
-            c.make_set_command(
-                brightness=b,
-                transition=t,
-            )
-            for c, b, t in updates
-        ]
-        self.controller.execute_commands(commands)
-        for command in commands:
-            command.channel.brightness = command.params['brightness']
+        updates = list(zip(_channels, _brightnesses, _transitions, _colors))
+        self.controller.set_channels(updates, force_update)
 
     @property
     def relay_pattern(self) -> str:

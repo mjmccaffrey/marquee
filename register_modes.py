@@ -14,7 +14,7 @@ from sequences import (
     rotate, random_flip, rotate_sides,
 )
 from signs_song import SignsSong
-from specialparams import DimmerParams, MirrorParams
+from specialparams import ChannelParams, MirrorParams
 
 
 def register_modes(exec: Executor) -> None:
@@ -26,26 +26,26 @@ def register_modes(exec: Executor) -> None:
     register_test_modes(exec)
     # register_pyohio_2025_presentation_modes(exec)
 
-def register_dimmer_modes(exec: Executor):
+def register_channel_modes(exec: Executor):
     """"""
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=4, 
-        special=DimmerParams(
+        special=ChannelParams(
             transition_on=1.0,
             transition_off=3.0,
         )
     )
     exec.add_sequence_mode("random_flip_fade_medium", random_flip, delay=2.0,
-        special=DimmerParams(),
+        special=ChannelParams(),
         light_pattern='LIGHT_PATTERN',
     )
     exec.add_sequence_mode("blink_all_fade_fast", 
         blink_all, delay=0.5,
-        special=DimmerParams()
+        special=ChannelParams()
     )
     exec.add_sequence_mode("blink_all_fade_slowwww", 
         blink_all, delay=10,
-        special=DimmerParams(
+        special=ChannelParams(
             brightness_on=100,
             brightness_off=5,
             concurrent=False,
@@ -53,7 +53,7 @@ def register_dimmer_modes(exec: Executor):
     )
     exec.add_sequence_mode("blink_all_fade_stealth", 
         blink_all, delay=(1, 60),
-        special=DimmerParams(
+        special=ChannelParams(
             transition_on=2,
             transition_off=2,
         )
@@ -76,7 +76,7 @@ def register_dimmer_modes(exec: Executor):
 
     exec.add_sequence_mode("rotate_sides", rotate_sides, delay=1.0, pattern='1', clockwise=True)
     exec.add_sequence_mode("rotate_sides_silent", rotate_sides, delay=2.0, pattern='0', clockwise=False,
-        special=DimmerParams(
+        special=ChannelParams(
             brightness_on = 90,
             brightness_off = 10,
             transition_on=1.0,
@@ -120,13 +120,13 @@ def register_silent_modes(exec: Executor) -> None:
     """"""
     exec.add_sequence_mode("silent_blink_alternate_slow",
         blink_alternate, delay=10, 
-        special=DimmerParams(
+        special=ChannelParams(
             transition_on=2.0,
             transition_off=3.0,
         )
     )
     exec.add_sequence_mode("silent_random_flip_medium", random_flip, delay=2.0,
-        special=DimmerParams(
+        special=ChannelParams(
             transition_on=2.0,
             transition_off=2.0,
             concurrent=False,
@@ -134,12 +134,12 @@ def register_silent_modes(exec: Executor) -> None:
         light_pattern='LIGHT_PATTERN',
     )
     exec.add_sequence_mode("silent_random_flip_fast", random_flip, delay=0.25,
-        special=DimmerParams(),
+        special=ChannelParams(),
         light_pattern='LIGHT_PATTERN',
     )
     exec.add_sequence_mode("silent_blink_all_slowwww", 
         blink_all, delay=4.0,
-        special=DimmerParams(
+        special=ChannelParams(
             transition_on=4.0,
             transition_off=4.0,
             brightness_on=100,
@@ -151,7 +151,7 @@ def register_silent_modes(exec: Executor) -> None:
     )
     exec.add_sequence_mode("silent_rotate_slight_fade",
         rotate, delay=0.5, 
-        special=DimmerParams(
+        special=ChannelParams(
             concurrent=False,
             brightness_on = 100,
             brightness_off = 20,
@@ -201,13 +201,13 @@ def register_pyohio_2025_presentation_modes(exec: Executor) -> None:
     exec.add_mode("12_random_random_trans", RandomFade)
     exec.add_sequence_mode("blink_all_fade_sequential",
         blink_all, delay=1,
-        special=DimmerParams(concurrent=False),
+        special=ChannelParams(concurrent=False),
     )
     exec.add_sequence_mode("blink_all_fade_consecutive", 
         blink_all, delay=1,
-        special=DimmerParams(concurrent=True),
+        special=ChannelParams(concurrent=True),
     )
     exec.add_sequence_mode("section_3", all_off)
-    exec.add_mode("signs", SignsSong, special=DimmerParams())
+    exec.add_mode("signs", SignsSong, special=ChannelParams())
     exec.add_sequence_mode("section_4", all_off)
 

@@ -8,7 +8,7 @@ from typing import Iterable
 from .foregroundmode import ForegroundMode
 from .playmode import PlayMode
 from player import Player
-from specialparams import ActionParams, DimmerParams, SpecialParams
+from specialparams import ActionParams, ChannelParams, SpecialParams
 
 class PlaySequenceMode(PlayMode):
     """Supports all sequence-based modes."""
@@ -34,7 +34,7 @@ class PlaySequenceMode(PlayMode):
         self.stop = stop
         self.repeat = repeat
         self.kwargs = kwargs
-        if isinstance(special, DimmerParams):
+        if isinstance(special, ChannelParams):
             default_trans = (
                 delay if isinstance(delay, float) else
                 self.lights.controller.transition_default
@@ -44,8 +44,8 @@ class PlaySequenceMode(PlayMode):
             if special.transition_on is None:
                 special.transition_on = default_trans
         self.preset_devices(
-            dimmers = not isinstance(special, DimmerParams),
-            relays = isinstance(special, DimmerParams),
+            channels = not isinstance(special, ChannelParams),
+            relays = isinstance(special, ChannelParams),
         )
 
     def execute(self, pre_delay_done=False) -> None:
@@ -71,7 +71,7 @@ class PlaySequenceMode(PlayMode):
             delay = next(delay_iter)
 
             # if pace is not None: ????
-            if isinstance(self.special, DimmerParams):
+            if isinstance(self.special, ChannelParams):
                 self.special.speed_factor = self.player.speed_factor
 
             if isinstance(self.special, ActionParams):

@@ -54,7 +54,7 @@ def setup_devices(
         channel_count= len(HUE_BULB_IDS),
         application_key = HUE_APPLICATION_KEY,
     )
-    shelly_dimmer = ShellyProDimmer2PM(i, ip, Sylvania_G25_Frosted_40)
+    shelly_channel = ShellyProDimmer2PM(i, ip, Sylvania_G25_Frosted_40)
     primary = LightSet(
         relays=relays,
         light_relays={i for i in range(LIGHT_COUNT)},
@@ -66,7 +66,7 @@ def setup_devices(
         relays=relays,
         light_relays={11},
         click_relays={2, 3, 10},
-        controller=shelly_dimmer,
+        controller=shelly_channel,
         brightness_factor_init=1.0,
     )
     buttons = ButtonSet(

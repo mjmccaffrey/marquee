@@ -7,7 +7,7 @@ from .music_elements import (
     Element, Measure, Part, Section, Sequence, 
 )
 from .music_implementation import (
-    _dimmer, _dimmer_sequence, _dimmer_sequence_flip, _light, _set_player,
+    _channel, _channel_sequence, _channel_sequence_flip, _light, _set_player,
     expand_sequence_measures, play_measures, prepare_parts, validate_measures
 )
 from playerinterface import PlayerInterface
@@ -64,17 +64,17 @@ def sequence(
 
 def dimmer(pattern: str) -> Callable:
     """Return callable to effect dimmer pattern."""
-    return _dimmer(pattern)
+    return _channel(pattern)
 
 
 def dimmer_sequence(brightness: int, transition: float) -> Callable:
-    """Return callable to effect state of specified dimmers."""
-    return _dimmer_sequence(brightness, transition)
+    """Return callable to effect state of specified channels."""
+    return _channel_sequence(brightness, transition)
 
 
 def dimmer_sequence_flip(transition: float) -> Callable:
-    """Return callable to flip state of specified dimmers."""
-    return _dimmer_sequence_flip(transition)
+    """Return callable to flip state of specified channels."""
+    return _channel_sequence_flip(transition)
 
 
 def light(

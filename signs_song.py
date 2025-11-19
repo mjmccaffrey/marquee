@@ -9,7 +9,7 @@ from music import (
     dimmer_sequence_flip, section, Section, sequence,
 )
 from sequences import all_on, blink_all, random_each
-from specialparams import ActionParams, DimmerParams
+from specialparams import ActionParams, ChannelParams
 
 
 class SignsSong(PlayMusicMode):
@@ -17,7 +17,7 @@ class SignsSong(PlayMusicMode):
 
     def execute(self) -> None:
         """Perform Signs song."""
-        self.lights.set_dimmers(ALL_LOW, force_update=True)
+        self.lights.set_channels(ALL_LOW, force_update=True)
         # time.sleep(0.75) !!!
         self.lights.set_relays(ALL_ON)
         sections = [
@@ -88,7 +88,7 @@ class SignsSong(PlayMusicMode):
             act_part(
                     '  𝄻  |  ' * 10 + '  ♩ ♩  |  ',
                     lambda: self.lights.set_relays(ALL_OFF),
-                    lambda: self.lights.set_relays(ALL_ON, special=DimmerParams()),
+                    lambda: self.lights.set_relays(ALL_ON, special=ChannelParams()),
             ),
         )
 
@@ -110,7 +110,7 @@ class SignsSong(PlayMusicMode):
                 '  ♪ ♪ ♩  | 𝅝  | 𝅝  | 𝅝  | ',
                 sequence(blink_all),
                 sequence(blink_all, on_first=False,
-                    special=DimmerParams(
+                    special=ChannelParams(
                         transition_off=3.5,
                         transition_on=3.5,
                     )
@@ -133,7 +133,7 @@ class SignsSong(PlayMusicMode):
                 '  𝅝  ',
                 sequence(
                     all_on,
-                    special=DimmerParams(transition_on=3.5),
+                    special=ChannelParams(transition_on=3.5),
                 ),
             ),
         )

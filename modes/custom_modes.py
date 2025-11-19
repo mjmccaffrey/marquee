@@ -14,7 +14,7 @@ from music.music_notation import Bell
 from .playmode import PlayMode
 from .playmusicmode import PlayMusicMode
 from sequences import lights_in_groups, opposite, rotate
-from specialparams import DimmerParams
+from specialparams import ChannelParams
 
 
 @dataclass(kw_only=True)
@@ -49,7 +49,7 @@ class RotateReversible(PlayMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        self.preset_devices(dimmers=True)
+        self.preset_devices(channels=True)
 
     def execute(self) -> None:
         """Display pattern, set next pattern, and exit.
@@ -71,12 +71,12 @@ class RotateRewind(PlayMode):
     pattern: str = "1" + "0" * (LIGHT_COUNT - 1)
     clockwise: bool = True
     start_pace: float = 0.1
-    special: DimmerParams | None = None
+    special: ChannelParams | None = None
 
     def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices(
-            dimmers=(self.special is None),
+            channels=(self.special is None),
             relays=(self.special is not None),
         )
 
@@ -167,7 +167,7 @@ class EvenOddFade(PlayMode):
 
     def execute(self) -> None:
         """Perform EvenOddFade indefinitely."""
-        self.lights.set_dimmers(ALL_LOW) 
+        self.lights.set_channels(ALL_LOW) 
         delay = 0.5
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
         even_on = opposite(odd_on)
@@ -177,7 +177,7 @@ class EvenOddFade(PlayMode):
                 partial(
                     self.lights.set_relays,
                     pattern, 
-                    special=DimmerParams(
+                    special=ChannelParams(
                         concurrent=True,
                         brightness_on = 90,
                         brightness_off = 10,
@@ -211,7 +211,7 @@ class SilentFadeBuild(PlayMode):
                     for lights in lights_in_groups(rows, from_top_left):
                         self.schedule(
                             partial(
-                                self.lights.set_dimmer_subset,
+                                self.lights.set_channel_subset,
                                 lights, brightness, 1.0
                             ),
                             due,
@@ -226,7 +226,7 @@ class HourlyChime(PlayMode):
     """Chime and light the hour."""
     def __post_init__(self) -> None:
         """Initialize."""
-        self.lights.set_dimmers(ALL_HIGH)
+        self.lights.set_channels(ALL_HIGH)
         self.player.wait(0.5)
         self.preset_devices(relays=True)
  

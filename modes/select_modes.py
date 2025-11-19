@@ -21,7 +21,7 @@ class SelectMode(ForegroundMode, ABC):
     def __post_init__(self) -> None:
         """Initialize."""
         ForegroundMode.__post_init__(self) # !!!
-        # Do not self.preset_devices(dimmers=True)
+        # Do not self.preset_devices(channels=True)
 
     def setup(
         self,
@@ -107,7 +107,7 @@ class BrightnessSelectMode(SelectMode):
         self.lights.brightness_factor = self.desired / LIGHT_COUNT
         # * make brightness_factor a property that outputs new value
         # * all methods must honor brightness_factor
-        self.lights.set_dimmers(brightnesses=[100] * LIGHT_COUNT)
+        self.lights.set_channels(brightnesses=[100] * LIGHT_COUNT)
         new = super().execute()
         if new is not None:  # Selection was made.
             new = ModeIndex.SELECT_MODE

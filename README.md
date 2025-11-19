@@ -4,7 +4,7 @@ I have wanted to make this project for a while, and our son's graduation from th
 While the Raspberry Pi and other electronics are relatively modern, the incandescent bulbs and ceramic lamp holders give it a retro feel, as do the mechanical relays, whose clicks resonate in the wooden cabinet.<br/>
 
 <b>Version 3.0.0 represents a substantial amount of hardware and software work, including the following:
-* Added dimmers, allowing independent control of each bulb's brightness.
+* Added channels, allowing independent control of each bulb's brightness.
 * Added new Dimmer, Executor and Mode classes.
 * Added a 4-button remote control and receiver.
 * Revamped the wiring and electrical components.</b>
@@ -18,7 +18,7 @@ While the Raspberry Pi and other electronics are relatively modern, the incandes
 </figure>
 
 <b>Version 3.0.0 represents a substantial amount of hardware and software work, including the following:
-* Added dimmers, allowing independent control of each bulb's brightness.
+* Added channels, allowing independent control of each bulb's brightness.
 * Added new Dimmer, Executor and Mode classes.
 * Added a 4-button remote control and receiver.
 * Revamped the wiring and electrical components.</b>

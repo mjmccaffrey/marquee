@@ -14,7 +14,7 @@ from music import(
     rest, sequence_measure, sequence_part
 )
 from sequences import *
-from specialparams import ActionParams, DimmerParams
+from specialparams import ActionParams, ChannelParams
 
 
 @dataclass
@@ -23,7 +23,7 @@ class Demo(PlayMusicMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        self.preset_devices(dimmers=True, relays=True)
+        self.preset_devices(channels=True, relays=True)
 
     def execute(self) -> None:
         """Execute version 3 demo."""
@@ -49,7 +49,7 @@ class Demo(PlayMusicMode):
                 '  𝅝 | 𝄻  ',
                 sequence(
                     rotate, 4,
-                    special=DimmerParams(
+                    special=ChannelParams(
                         concurrent=False,
                         brightness_on = 100,
                         brightness_off = 40,
@@ -57,7 +57,7 @@ class Demo(PlayMusicMode):
                 ),
                 sequence(
                     blink_all,
-                    special=DimmerParams(
+                    special=ChannelParams(
                         transition_off=2,
                         transition_on=2,
                     ),
@@ -111,7 +111,7 @@ class Demo(PlayMusicMode):
             act_part(
                 "  𝄽 𝄽 | ♩ 𝄽 | ♩ 𝄽  ",
                 light(ALL_OFF),
-                light(ALL_ON, DimmerParams()),
+                light(ALL_ON, ChannelParams()),
             ),
             beats=2,
             tempo=80,
@@ -135,7 +135,7 @@ class Demo(PlayMusicMode):
 
     def rotate_fast(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        # light(ALL_ON, DimmerParams(transition_on=6))()
+        # light(ALL_ON, ChannelParams(transition_on=6))()
         rotations = 11
         pattern = [
             p
@@ -159,12 +159,12 @@ class Demo(PlayMusicMode):
         return section(
             part(
                 measure(
-                    act('♩', light(ALL_ON), light(ALL_ON, DimmerParams()))
+                    act('♩', light(ALL_ON), light(ALL_ON, ChannelParams()))
                 )
             ),
             sequence_part(
                 '  𝄻  | ♩ ♩ ♩ ♩ ',
-                # sequence(build_rows, special=DimmerParams(transition_off=2), pattern='0'),
+                # sequence(build_rows, special=ChannelParams(transition_off=2), pattern='0'),
             ),
             tempo=60,
         )

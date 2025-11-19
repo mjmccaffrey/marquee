@@ -13,7 +13,7 @@ from .music_elements import (
 )
 from playerinterface import PlayerInterface
 from specialparams import (
-    ActionParams, DimmerParams, SpecialParams,
+    ActionParams, ChannelParams, SpecialParams,
 )
 
 
@@ -187,23 +187,23 @@ def play_measures(measures: tuple[Measure, ...], tempo: int):
     player.event_queue.bulk_add(events)
 
 
-def _dimmer(pattern: str) -> Callable:
+def _channel(pattern: str) -> Callable:
     """Return callable to effect dimmer pattern."""
-    return lambda: player.lights.set_dimmers(pattern)
+    return lambda: player.lights.set_channels(pattern)
 
 
-def _dimmer_sequence(brightness: int, transition: float) -> Callable:
-    """Return callable to effect state of specified dimmers."""
+def _channel_sequence(brightness: int, transition: float) -> Callable:
+    """Return callable to effect state of specified channels."""
     def func(lights: list[int]):
-        player.lights.set_dimmer_subset(lights, brightness, transition)
+        player.lights.set_channel_subset(lights, brightness, transition)
     return func
 
 
-def _dimmer_sequence_flip(transition: float) -> Callable:
-    """Return callable to flip state of specified dimmers."""
+def _channel_sequence_flip(transition: float) -> Callable:
+    """Return callable to flip state of specified channels."""
     def func(lights: list[int]):
         brightness = 0 if player.lights.controller.brightnesses()[lights[0]] else 100
-        player.lights.set_dimmer_subset(lights, brightness, transition)
+        player.lights.set_channel_subset(lights, brightness, transition)
     return func
 
 
@@ -212,7 +212,7 @@ def _light(
     special: SpecialParams | None = None,
 ) -> Callable:
     """Return callable to effect light pattern."""
-    if isinstance(special, DimmerParams):
+    if isinstance(special, ChannelParams):
         if special.transition_off is None:
             special.transition_off = TRANSITION_DEFAULT
         if special.transition_on is None:
