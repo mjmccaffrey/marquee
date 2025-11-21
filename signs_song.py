@@ -23,7 +23,7 @@ class SignsSong(PlayMusicMode):
         sections = [
             self.intro(),
             self.refrain(1),
-            self.transition(),
+            self.trans(),
             self.refrain(2),
         ]
         for section in sections:
@@ -111,15 +111,15 @@ class SignsSong(PlayMusicMode):
                 sequence(blink_all),
                 sequence(blink_all, on_first=False,
                     special=ChannelParams(
-                        transition_off=3.5,
-                        transition_on=3.5,
+                        trans_off=3.5,
+                        trans_on=3.5,
                     )
                 ),
             ),
         )
  
-    def transition (self) -> Section:
-        """Signs song transition."""
+    def trans (self) -> Section:
+        """Signs song trans."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             drum_part(
@@ -133,7 +133,7 @@ class SignsSong(PlayMusicMode):
                 '  𝅝  ',
                 sequence(
                     all_on,
-                    special=ChannelParams(transition_on=3.5),
+                    special=ChannelParams(trans_on=3.5),
                 ),
             ),
         )

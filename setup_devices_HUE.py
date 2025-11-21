@@ -7,7 +7,7 @@ from gpiozero import Button as _Button  # type: ignore
 from bulb import Hue_BR30_Enhanced_Color, Sylvania_G25_Frosted_40
 from button import Button
 from button_misc import ButtonSet
-from hue import HueBridge
+# from hue import HueBridge
 from shelly import ShellyProDimmer2PM
 from instruments import BellSet, DrumSet
 from lightset import LightSet
@@ -47,6 +47,7 @@ def setup_devices(
     relays = NumatoRL160001(
         "/dev/marquee_lights", ALL_RELAYS,
     )  # /dev/ttyACM2
+
     hue_bridge = HueBridge(
         index = 0,
         ip_address = HUE_IP_ADDRESS,
@@ -55,6 +56,7 @@ def setup_devices(
         application_key = HUE_APPLICATION_KEY,
     )
     shelly_channel = ShellyProDimmer2PM(i, ip, Sylvania_G25_Frosted_40)
+
     primary = LightSet(
         relays=relays,
         light_relays={i for i in range(LIGHT_COUNT)},

@@ -58,8 +58,8 @@ class Demo(PlayMusicMode):
                 sequence(
                     blink_all,
                     special=ChannelParams(
-                        transition_off=2,
-                        transition_on=2,
+                        trans_off=2,
+                        trans_on=2,
                     ),
                     on_first=True,
                 ),
@@ -135,7 +135,7 @@ class Demo(PlayMusicMode):
 
     def rotate_fast(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        # light(ALL_ON, ChannelParams(transition_on=6))()
+        # light(ALL_ON, ChannelParams(trans_on=6))()
         rotations = 11
         pattern = [
             p
@@ -164,7 +164,7 @@ class Demo(PlayMusicMode):
             ),
             sequence_part(
                 '  𝄻  | ♩ ♩ ♩ ♩ ',
-                # sequence(build_rows, special=ChannelParams(transition_off=2), pattern='0'),
+                # sequence(build_rows, special=ChannelParams(trans_off=2), pattern='0'),
             ),
             tempo=60,
         )

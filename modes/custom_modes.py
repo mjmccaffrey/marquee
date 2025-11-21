@@ -109,21 +109,21 @@ class RotateRewind(PlayMode):
 @dataclass(kw_only=True)
 class RandomFade(PlayMode):
     """Change brightness of random bulb to a random level,
-       with either a random or specified transition time."""
-    transition: float = -1
+       with either a random or specified trans time."""
+    trans: float = -1
 
     def __post_init__(self) -> None:
         """Initialize."""
         self.preset_devices(relays=True)
 
-    def _new_transition(self) -> float:
-        if self.transition == -1:
+    def _new_trans(self) -> float:
+        if self.trans == -1:
             return random.uniform(
-                self.player.lights.controller.transition_minimum, 
+                self.player.lights.trans_min, 
                 5.0 * self.player.speed_factor
             )
         else:
-            return self.transition
+            return self.trans
 
     def _new_brightness(self, old) -> int:
         new = old
@@ -142,18 +142,18 @@ class RandomFade(PlayMode):
             for channel in self.lights.dimmer_channels:
                 now = time.time()
                 if next_update[channel] < now:
-                    transition = self._new_transition()
+                    trans = self._new_trans()
                     self.schedule(
                         partial(
                             channel.set,
-                            transition=transition,
+                            trans=trans,
                             brightness=self._new_brightness(channel.brightness),
                         ),
                         due,
                         name=f"RandomFade set channel {channel.id}",
                     )
                     due += 0.1
-                    update = now + transition
+                    update = now + trans
 
 
 @dataclass(kw_only=True)
@@ -167,7 +167,7 @@ class EvenOddFade(PlayMode):
 
     def execute(self) -> None:
         """Perform EvenOddFade indefinitely."""
-        self.lights.set_channels(ALL_LOW) 
+        self.lights.set_channels(brightnesses=0) 
         delay = 0.5
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
         even_on = opposite(odd_on)
@@ -181,8 +181,8 @@ class EvenOddFade(PlayMode):
                         concurrent=True,
                         brightness_on = 90,
                         brightness_off = 10,
-                        transition_on=delay,
-                        transition_off=delay,
+                        trans_on=delay,
+                        trans_off=delay,
                     )
                 ),
                 due,
@@ -226,7 +226,7 @@ class HourlyChime(PlayMode):
     """Chime and light the hour."""
     def __post_init__(self) -> None:
         """Initialize."""
-        self.lights.set_channels(ALL_HIGH)
+        self.lights.set_channels(brightnesses=100)
         self.player.wait(0.5)
         self.preset_devices(relays=True)
  

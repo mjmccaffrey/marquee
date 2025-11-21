@@ -37,12 +37,12 @@ class PlaySequenceMode(PlayMode):
         if isinstance(special, ChannelParams):
             default_trans = (
                 delay if isinstance(delay, float) else
-                self.lights.controller.transition_default
+                self.lights.trans_def
             )
-            if special.transition_off is None:
-                special.transition_off = default_trans
-            if special.transition_on is None:
-                special.transition_on = default_trans
+            if special.trans_off is None:
+                special.trans_off = default_trans
+            if special.trans_on is None:
+                special.trans_on = default_trans
         self.preset_devices(
             channels = not isinstance(special, ChannelParams),
             relays = isinstance(special, ChannelParams),

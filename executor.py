@@ -8,11 +8,12 @@ from button import Button
 from button_misc import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import LightSet
-from lightset_misc import ALL_OFF, ALL_ON, EXTRA_COUNT
+from lightset_misc import ALL_HIGH, ALL_OFF, ALL_ON, EXTRA_COUNT
 from modes.modeinterface import ModeInterface
 from modes.mode_misc import ModeConstructor
 from modes.playsequencemode import PlaySequenceMode
 from playerinterface import PlayerInterface
+from shelly import ShellyController
 from specialparams import SpecialParams
 
 
@@ -130,25 +131,29 @@ class Executor:
     ) -> None:
         """Effects the command-line specified pattern(s)."""
         if brightness_pattern is not None:
-            self.lights.set_channels(brightness_pattern)
-            Button.wait(self.lights.controller.transition_default)
+            self.lights.set_channels_from_pattern(brightness_pattern)
+            Button.wait(self.lights.controller.trans_def)
         if light_pattern is not None:
             self.lights.set_relays(light_pattern)
 
     def command_calibrate_channels(self) -> None:
         """Execute calibration on all channels on each successive channel."""
+        assert isinstance(self.lights.controller, ShellyController)
         print("Calibrating channels")
         # Set all light relays on
         self.lights.set_relays(ALL_ON)
         # Set all light channels to high
-        for dimmer in self.lights.channels:
-            for channel in dimmer.channels:
-                channel.set(brightness=100)
+        self.lights.set_channels(
+            brightnesses=100,
+            force_update=True,
+        )
         time.sleep(3)
-        max_channel = max(d.channel_count for d in self.lights.channels)
+        max_channel = max(
+            d.channel_count for d in self.lights.controller.dimmers
+        )
         for id in range(max_channel):
             print(f"Calibrating channel {id}")
-            for dimmer in self.lights.channels:
+            for dimmer in self.lights.controller.dimmers:
                 if id < dimmer.channel_count:
                     dimmer.channels[id].calibrate()
             time.sleep(150)

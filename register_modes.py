@@ -31,8 +31,8 @@ def register_channel_modes(exec: Executor):
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=4, 
         special=ChannelParams(
-            transition_on=1.0,
-            transition_off=3.0,
+            trans_on=1.0,
+            trans_off=3.0,
         )
     )
     exec.add_sequence_mode("random_flip_fade_medium", random_flip, delay=2.0,
@@ -54,8 +54,8 @@ def register_channel_modes(exec: Executor):
     exec.add_sequence_mode("blink_all_fade_stealth", 
         blink_all, delay=(1, 60),
         special=ChannelParams(
-            transition_on=2,
-            transition_off=2,
+            trans_on=2,
+            trans_off=2,
         )
     )
 
@@ -65,7 +65,7 @@ def register_channel_modes(exec: Executor):
     )
 
     exec.add_mode("even_odd_fade", EvenOddFade, delay=0.5)
-    # exec.add_mode("random_fade_steady", RandomFade, transition=2)
+    # exec.add_mode("random_fade_steady", RandomFade, trans=2)
 
     exec.add_mode("rotate_reversible_1", 
         RotateReversible, delay=0.35, 
@@ -79,8 +79,8 @@ def register_channel_modes(exec: Executor):
         special=ChannelParams(
             brightness_on = 90,
             brightness_off = 10,
-            transition_on=1.0,
-            transition_off=1.0,
+            trans_on=1.0,
+            trans_off=1.0,
         )
     )
     exec.add_mode("rotate_rewind_1", RotateRewind, 
@@ -121,14 +121,14 @@ def register_silent_modes(exec: Executor) -> None:
     exec.add_sequence_mode("silent_blink_alternate_slow",
         blink_alternate, delay=10, 
         special=ChannelParams(
-            transition_on=2.0,
-            transition_off=3.0,
+            trans_on=2.0,
+            trans_off=3.0,
         )
     )
     exec.add_sequence_mode("silent_random_flip_medium", random_flip, delay=2.0,
         special=ChannelParams(
-            transition_on=2.0,
-            transition_off=2.0,
+            trans_on=2.0,
+            trans_off=2.0,
             concurrent=False,
         ),
         light_pattern='LIGHT_PATTERN',
@@ -140,8 +140,8 @@ def register_silent_modes(exec: Executor) -> None:
     exec.add_sequence_mode("silent_blink_all_slowwww", 
         blink_all, delay=4.0,
         special=ChannelParams(
-            transition_on=4.0,
-            transition_off=4.0,
+            trans_on=4.0,
+            trans_off=4.0,
             brightness_on=100,
             brightness_off=10,
         )
@@ -158,7 +158,7 @@ def register_silent_modes(exec: Executor) -> None:
         ),
         pattern='110000000000',
     )
-    exec.add_mode("silent_random_steady_trans", RandomFade, transition=0.5)
+    exec.add_mode("silent_random_steady_trans", RandomFade, trans=0.5)
     exec.add_mode("silent_random_random_trans", RandomFade)
 
     exec.add_mode("silent_variety_group", SequenceBGMode,

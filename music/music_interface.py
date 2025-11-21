@@ -67,14 +67,14 @@ def dimmer(pattern: str) -> Callable:
     return _channel(pattern)
 
 
-def dimmer_sequence(brightness: int, transition: float) -> Callable:
+def dimmer_sequence(brightness: int, trans: float) -> Callable:
     """Return callable to effect state of specified channels."""
-    return _channel_sequence(brightness, transition)
+    return _channel_sequence(brightness, trans)
 
 
-def dimmer_sequence_flip(transition: float) -> Callable:
+def dimmer_sequence_flip(trans: float) -> Callable:
     """Return callable to flip state of specified channels."""
-    return _channel_sequence_flip(transition)
+    return _channel_sequence_flip(trans)
 
 
 def light(

@@ -28,7 +28,7 @@ class ForegroundMode(BaseMode, ABC):
             self.special.func = self.drums.mirror
         if channels:
             # print("Presetting DIMMERS")
-            self.lights.set_channels(ALL_HIGH, force_update=True)
+            self.lights.set_channels(brightnesses=100, force_update=True)
         if relays:
             # print("Presetting RELAYS")
             self.lights.set_relays(ALL_ON)

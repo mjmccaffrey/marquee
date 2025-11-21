@@ -192,18 +192,18 @@ def _channel(pattern: str) -> Callable:
     return lambda: player.lights.set_channels(pattern)
 
 
-def _channel_sequence(brightness: int, transition: float) -> Callable:
+def _channel_sequence(brightness: int, trans: float) -> Callable:
     """Return callable to effect state of specified channels."""
     def func(lights: list[int]):
-        player.lights.set_channel_subset(lights, brightness, transition)
+        player.lights.set_channel_subset(lights, brightness, trans)
     return func
 
 
-def _channel_sequence_flip(transition: float) -> Callable:
+def _channel_sequence_flip(trans: float) -> Callable:
     """Return callable to flip state of specified channels."""
     def func(lights: list[int]):
-        brightness = 0 if player.lights.controller.brightnesses()[lights[0]] else 100
-        player.lights.set_channel_subset(lights, brightness, transition)
+        brightness = 0 if player.lights.brightnesses()[lights[0]] else 100
+        player.lights.set_channel_subset(lights, brightness, trans)
     return func
 
 
@@ -213,10 +213,10 @@ def _light(
 ) -> Callable:
     """Return callable to effect light pattern."""
     if isinstance(special, ChannelParams):
-        if special.transition_off is None:
-            special.transition_off = TRANSITION_DEFAULT
-        if special.transition_on is None:
-            special.transition_on = TRANSITION_DEFAULT
+        if special.trans_off is None:
+            special.trans_off = trans_def
+        if special.trans_on is None:
+            special.trans_on = trans_def
     if isinstance(special, ActionParams):
         result = lambda: special.action(pattern)
     else:
