@@ -5,6 +5,7 @@ from functools import partial
 import itertools
 from typing import Iterable
 
+from lightset_misc import ALL_ON
 from .foregroundmode import ForegroundMode
 from .playmode import PlayMode
 from player import Player
@@ -43,10 +44,14 @@ class PlaySequenceMode(PlayMode):
                 special.trans_off = default_trans
             if special.trans_on is None:
                 special.trans_on = default_trans
-        self.preset_devices(
-            dimmers = not isinstance(special, ChannelParams),
-            relays = isinstance(special, ChannelParams),
+        # self.preset_devices(
+        #     dimmers = not isinstance(special, ChannelParams),
+        #     relays = isinstance(special, ChannelParams),
+        # )
+        self.lights.set_channels(
+            brightness=0, on=True, force_update=True,
         )
+        self.lights.set_relays(ALL_ON)
 
     def execute(self, pre_delay_done=False) -> None:
         """Execute sequence with delay seconds between steps.
