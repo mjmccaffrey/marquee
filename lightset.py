@@ -96,7 +96,7 @@ class LightSet:
             brightness=_brightness, 
             transition=_transitions,
             color=_colors,
-            on=True,
+            # on=True,
         )
             
     def set_relays(
