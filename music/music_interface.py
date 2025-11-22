@@ -6,10 +6,10 @@ from typing import Any
 from .music_elements import (
     Element, Measure, Part, Section, Sequence, 
 )
-from .music_implementation import (
-    _channel, _channel_sequence, _channel_sequence_flip, _light, _set_player,
-    expand_sequence_measures, play_measures, prepare_parts, validate_measures
-)
+# from .music_implementation import (
+#     _channel, _channel_sequence, _channel_sequence_flip, _light, _set_player,
+#     expand_sequence_measures, play_measures, prepare_parts, validate_measures
+# )
 from playerinterface import PlayerInterface
 from specialparams import SpecialParams
 
