@@ -19,7 +19,7 @@ class PlayerInterface(ABC):
     buttons: ButtonSet
     drums: DrumSet
     lights: LightSet
-    top: LightSet
+    # top: LightSet
     speed_factor: float
     pace: float = field(init=False)
     fg_mode_history: list[int] = field(init=False)
