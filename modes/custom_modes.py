@@ -134,26 +134,27 @@ class RandomFade(PlayMode):
     def execute(self) -> None:
         """Perform RandomFade indefinitely."""
         next_update = {
-            channel: 0.0
-            for channel in self.lights.dimmer_channels
+            light: 0.0
+            for light in range(self.lights.light_count)
         }
         due = 0.0
         while True:
-            for channel in self.lights.dimmer_channels:
+            for light in range(self.lights.light_count):
                 now = time.time()
-                if next_update[channel] < now:
+                if next_update[light] < now:
+                    brightnesses = self.lights.brightnesses()
                     trans = self._new_trans()
                     self.schedule(
                         partial(
-                            channel.set,
-                            trans=trans,
-                            brightness=self._new_brightness(channel.brightness),
+                            self.lights.set_channels,
+                            transition=trans,
+                            brightness=self._new_brightness(brightnesses[light]),
+                            channel_indexes = [light],
                         ),
                         due,
-                        name=f"RandomFade set channel {channel.id}",
+                        name=f"RandomFade set channel {light}",
                     )
                     due += 0.1
-                    update = now + trans
 
 
 @dataclass(kw_only=True)
@@ -167,7 +168,7 @@ class EvenOddFade(PlayMode):
 
     def execute(self) -> None:
         """Perform EvenOddFade indefinitely."""
-        self.lights.set_channels(brightnesses=0) 
+        self.lights.set_channels(brightness=0) 
         delay = 0.5
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
         even_on = opposite(odd_on)
@@ -211,8 +212,10 @@ class SilentFadeBuild(PlayMode):
                     for lights in lights_in_groups(rows, from_top_left):
                         self.schedule(
                             partial(
-                                self.lights.set_channel_subset,
-                                lights, brightness, 1.0
+                                self.lights.set_channels,
+                                brightness=brightness,
+                                transition=1.0,
+                                channel_indexes=lights,
                             ),
                             due,
                         )
@@ -226,7 +229,7 @@ class HourlyChime(PlayMode):
     """Chime and light the hour."""
     def __post_init__(self) -> None:
         """Initialize."""
-        self.lights.set_channels(brightnesses=100)
+        self.lights.set_channels(brightness=100)
         self.player.wait(0.5)
         self.preset_devices(relays=True)
  

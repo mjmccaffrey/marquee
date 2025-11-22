@@ -187,9 +187,9 @@ def play_measures(measures: tuple[Measure, ...], tempo: int):
     player.event_queue.bulk_add(events)
 
 
-def _channel(pattern: str) -> Callable:
+def _dimmer(brightness: list[int]) -> Callable:
     """Return callable to effect dimmer pattern."""
-    return lambda: player.lights.set_channels(pattern)
+    return lambda: player.lights.set_channels(brightness=brightness)
 
 
 def _channel_sequence(brightness: int, trans: float) -> Callable:

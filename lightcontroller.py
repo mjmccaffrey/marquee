@@ -14,6 +14,7 @@ class LightController(ABC):
     """ABC for any light controller."""
 
     bulb_compatibility: ClassVar[type[Bulb]]
+    channel_count: ClassVar[int]
     trans_def: ClassVar[float]
     trans_min: ClassVar[float]
     trans_max: ClassVar[float]
@@ -21,10 +22,9 @@ class LightController(ABC):
     index: int
     ip_address: str
     bulb_model: Bulb
-    channel_count: int
     channel_first_index: InitVar[int]
     session: requests.Session = field(init=False)
-    channels: list['LightChannel'] = field(init=False)
+    channels: Sequence['LightChannel'] = field(init=False)
 
     def __init_subclass__(cls, bulb_compatibility: type[Bulb]) -> None:
         cls.bulb_compatibility = bulb_compatibility
@@ -51,26 +51,13 @@ class LightController(ABC):
         """Effect updates, optionally forcing the updates 
            regardless of believed state."""
 
-    @abstractmethod
-    def set_channel(
-        self, 
-        channel: 'LightChannel',
-        brightness: int | None,
-        transition: float | None,
-        color: 'Color | None',
-        on: bool | None,
-    ) -> None:
-        """Build and send command via requests.
-           Does not check current state."""
-
 @dataclass
 class LightChannel(ABC):
     """Protocol for any controller channel (light)."""
 
     index: int
     id: int
-    ip_address: str
-    session: requests.Session
+    controller: LightController
     brightness: int # = field(init=False)
     color: 'Color | None' # = field(init=False)
     on: bool # = field(init=False)
@@ -78,6 +65,21 @@ class LightChannel(ABC):
     @abstractmethod
     def calibrate(self) -> None:
         """Initiate channel calibration."""
+
+    @abstractmethod
+    def _make_set_command(self, update: 'ChannelUpdate') -> 'ChannelCommand':
+        """Produce dimmer API parameters from provided update."""
+
+    @abstractmethod
+    def _set(
+        self, 
+        brightness: int | None,
+        transition: float | None,
+        color: 'Color | None',
+        on: bool | None,
+    ) -> None:
+        """Build and send command via requests.
+           Does not check current state."""
 
     def update_state(self, update: 'ChannelUpdate'):
         """Once the command has been sent without error,
@@ -115,7 +117,7 @@ class ChannelUpdate:
     on: bool | None
 
 @dataclass
-class _ChannelCommand:
+class ChannelCommand:
     """ Parameters for giving command to dimmer. """
     channel: 'LightChannel'
     url: str

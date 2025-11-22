@@ -9,23 +9,26 @@ from typing import ClassVar
 import aiohttp
 import requests
 
-from bulb import Bulb, DimBulb
+from bulb import DimBulb
 from lightcontroller import (
-    ChannelUpdate, _ChannelCommand, Color,
+    ChannelUpdate, ChannelCommand, Color,
     LightController, LightChannel,
 )
 
 @dataclass
-class ShellyController(LightController, bulb_compatibility=DimBulb):
+class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
     """Virtual consolidated controller."""
 
     trans_def: ClassVar[float] = 0.5
     trans_min: ClassVar[float] = 0.5
     trans_max: ClassVar[float] = 10800.0
 
-    dimmers: Sequence['ShellyController']
+    channel_count: int = field(init=False)
+    dimmers: Sequence['ShellyDimmer']
+    channel_first_index: None = None
+    index: None = None
     ip_address: None = None
-    channels: list["ShellyChannel"] = field(init=False)
+    # channels: list["ShellyChannel"] = field(init=False)
 
     def __post_init__(self, channel_first_index: int) -> None:
         """Initialize."""
@@ -36,10 +39,7 @@ class ShellyController(LightController, bulb_compatibility=DimBulb):
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
-
-    def __init_subclass__(cls, bulb_compatibility: type[Bulb]) -> None:
-        """"""
-        cls.bulb_compatibility = bulb_compatibility
+        self.channel_count = len(self.channels)
 
     def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool):
         """Effect updates, optionally forcing the updates 
@@ -49,38 +49,12 @@ class ShellyController(LightController, bulb_compatibility=DimBulb):
         filtered_updates = updates
         asyncio.run(self._execute_commands(filtered_updates))
 
-    def set_channel(
-        self, 
-        channel: 'ShellyChannel',
-        brightness: int | None,
-        transition: float | None,
-        color: Color | None,
-        on: bool | None,
-    ) -> None:
-        """Build and send command via requests.
-           Does not check current state."""
-        update = ChannelUpdate(
-            channel=channel,
-            brightness=brightness,
-            trans=transition,
-            color=color,
-            on=on,
-        )
-        command = self._make_set_command(update)
-        response = self.session.get(
-            url=command.url,
-            params=command.params,
-            timeout=1.0,
-        )
-        response.raise_for_status()
-        channel.update_state(update)
-
     async def _execute_command(
         self, 
         update: 'ChannelUpdate'
     ) -> aiohttp.ClientResponse:
         """ Send individual command as part of asynchonous batch. """
-        command = self._make_set_command(update)
+        command = update.channel._make_set_command(update)
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 url=command.url,
@@ -91,29 +65,6 @@ class ShellyController(LightController, bulb_compatibility=DimBulb):
         update.channel.update_state(update)
         return response
     
-    def _make_set_command(self, update: ChannelUpdate) -> '_ChannelCommand':
-        """Produce dimmer API parameters from provided update."""
-        assert update.color is None
-        _trans = (
-            self.trans_min
-                if update.trans is None else
-            update.trans
-        )
-        params = (
-            ({'id': update.channel.id}) |
-            ({'brightness': update.brightness} 
-                if update.brightness is not None else {}) |
-            ({'trans_duration': _trans}
-                if update.brightness is not None else {}) |
-            ({'on': str(update.on).lower()}
-                if update.on is not None else {})
-        )
-        return _ChannelCommand(
-            channel = update.channel,
-            url=f'http://{update.channel.ip_address}/rpc/Light.Set',
-            params=params,
-        )
-
     async def _execute_commands(
         self,
         updates: Sequence['ChannelUpdate'],
@@ -143,8 +94,7 @@ class ShellyDimmer(LightController, ABC, bulb_compatibility=DimBulb):
                 ShellyChannel(
                     index=channel_first_index + id,
                     id=id, 
-                    ip_address=self.ip_address,
-                    session=self.session,
+                    controller=self,
                     brightness=status['brightness'],
                     color=None,
                     on=status['output']
@@ -156,9 +106,9 @@ class ShellyDimmer(LightController, ABC, bulb_compatibility=DimBulb):
             print(f"*** Error: {e} ***")
             raise OSError from None
 
-    def __init_subclass__(cls, bulb_compatibility: type[Bulb]) -> None:
+    def __init_subclass__(cls, channel_count: int) -> None:
         """"""
-        cls.bulb_compatibility = bulb_compatibility
+        cls.channel_count = channel_count
 
     def _get_state_of_channels(self) -> list[tuple[int, dict]]:
         """ Fetch status parameters for all channels. """
@@ -172,16 +122,9 @@ class ShellyDimmer(LightController, ABC, bulb_compatibility=DimBulb):
             for id in range(self.channel_count)
         ]      
     
-    def set_channel(
-        self, 
-        channel: LightChannel,
-        brightness: int | None,
-        transition: float | None,
-        color: Color | None,
-        on: bool | None,
-    ) -> None:
-        """Build and send command via requests.
-           Does not check current state."""
+    def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool):
+        """Effect updates, optionally forcing the updates 
+           regardless of believed state."""
         raise NotImplementedError()
 
 
@@ -191,17 +134,65 @@ class ShellyChannel(LightChannel):
 
     def calibrate(self) -> None:
         """Initiate channel calibration."""
-        command = _ChannelCommand(
+        command = ChannelCommand(
             channel = self,
-            url=f'http://{self.ip_address}/rpc/Light.Calibrate',
+            url=f'http://{self.controller.ip_address}/rpc/Light.Calibrate',
             params={'id':self.id},
         )
-        response = self.session.get(
+        response = self.controller.session.get(
             url=command.url,
             params=command.params,
             timeout=1.0,
         )
         response.raise_for_status()
+
+    def _make_set_command(self, update: ChannelUpdate) -> 'ChannelCommand':
+        """Produce dimmer API parameters from provided update."""
+        assert update.color is None
+        _trans = (
+            self.controller.trans_min
+                if update.trans is None else
+            update.trans
+        )
+        params = (
+            ({'id': update.channel.id}) |
+            ({'brightness': update.brightness} 
+                if update.brightness is not None else {}) |
+            ({'trans_duration': _trans}
+                if update.brightness is not None else {}) |
+            ({'on': str(update.on).lower()}
+                if update.on is not None else {})
+        )
+        return ChannelCommand(
+            channel = update.channel,
+            url=f'http://{update.channel.controller.ip_address}/rpc/Light.Set',
+            params=params,
+        )
+
+    def _set(
+        self, 
+        brightness: int | None,
+        transition: float | None,
+        color: Color | None,
+        on: bool | None,
+    ) -> None:
+        """Build and send command via requests.
+           Does not check current state."""
+        update = ChannelUpdate(
+            channel=self,
+            brightness=brightness,
+            trans=transition,
+            color=color,
+            on=on,
+        )
+        command = self._make_set_command(update)
+        response = self.controller.session.get(
+            url=command.url,
+            params=command.params,
+            timeout=1.0,
+        )
+        response.raise_for_status()
+        self.update_state(update)
 
     def update_state(self, update: ChannelUpdate):
         """Once the command has been sent without error,

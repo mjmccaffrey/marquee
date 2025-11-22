@@ -80,22 +80,22 @@ class LightSet:
             1: special.color_on,
         }
         light_pattern = [int(p) for p in light_pattern]
-        brightnesses = tuple(
+        _brightness = tuple(
             bright_values[p]
             for p in light_pattern
         )
-        trans = tuple(
+        _transitions = tuple(
             trans_values[p]
             for p in light_pattern
         )
-        colors = tuple(
+        _colors = tuple(
             color_values[p]
             for p in light_pattern
         )
         self.set_channels(
-            brightnesses=brightnesses, 
-            transitions=trans,
-            colors=colors,
+            brightness=_brightness, 
+            transition=_transitions,
+            color=_colors,
             on=True,
         )
             
@@ -134,48 +134,20 @@ class LightSet:
             self.extra_pattern = extra_pattern
             self.relay_pattern = light_pattern
 
-    def set_channels_from_pattern(
-            self, 
-            pattern: str,
-    ):
-        """Set the channels per the supplied pattern and trans times.
-           Apply bulb_adjustments.  Adjust for brightness_factor."""
-        assert len(pattern) == self.light_count
-        updates = [
-            ChannelUpdate(
-                channel=c,
-                brightness=self.controller.bulb_model.adjustments[p],
-                trans=None,
-                color=None,
-                on=True,
-            )
-            for c, p in zip(self.channels, pattern)
-        ]
-
     def set_channels(
             self, 
-            brightnesses: Sequence[int | None] | int | None = None,
-            transitions: Sequence[float | None] | float | None = None,
-            colors: Sequence[Color | None] | Color | None = None,
-            on: Sequence[bool | None] | bool | None = None,
+            brightness: Sequence[int | None] | str | int | None = None,
+            transition: Sequence[float | None] | float | None = None,
+            color: Sequence[Color | None] | Color | None = None,
+            on: Sequence[int | bool | str | None] | bool | int | None = None,
             channel_indexes: Sequence[int] | None = None,
             force_update: bool = False,
         ) -> None:
-        """Set the channels per the supplied brightnesses, 
+        """Set the channels per the supplied brightness, 
            trans times and colors.  
            Specify a subset of channels via channel_indexes.
            Force all specified channels to update with force_update.
            Adjust for brightness_factor."""
-        
-        def normalize(param: Any) -> list[Any]:
-            """"""
-            match param:
-                case list():
-                    assert len(param) == self.light_count
-                    _param = param
-                case _:
-                    _param = [param] * self.light_count
-            return _param
         
         _channel_indexes = (
             [i for i in range(self.light_count)]
@@ -183,15 +155,10 @@ class LightSet:
             channel_indexes
         )
         _channels = [self.channels[i] for i in _channel_indexes]
-        _brightnesses = normalize(brightnesses)
-        if _brightnesses[0] is not None:
-            _brightnesses = [
-                int(b * self._brightness_factor)
-                for b in _brightnesses
-            ]
-        _transitions = normalize(transitions)
-        _colors = normalize(colors)
-        _ons = normalize(on)
+        _brightnesses = self.convert_brightness(brightness)
+        _transitions = self.convert_transition(transition)
+        _colors = self.convert_color(color)
+        _on = self.convert_on(on)
         updates = [
             ChannelUpdate(
                 channel=ch,
@@ -201,7 +168,7 @@ class LightSet:
                 on=on,
             )
             for ch, br, tr, co, on in zip(
-                _channels, _brightnesses, _transitions, _colors, _ons,
+                _channels, _brightnesses, _transitions, _colors, _on,
             )
         ]
         self.controller.update_channels(updates, force_update)
@@ -215,9 +182,7 @@ class LightSet:
         on: bool | None = None,
     ) -> None:
         """"""
-        self.controller.set_channel(
-            channel, brightness, transition, color, on,
-        )
+        channel._set(brightness, transition, color, on)
 
     @property
     def relay_pattern(self) -> str:
@@ -241,3 +206,71 @@ class LightSet:
             extra_pattern=extra,
         )
 
+    def convert_brightness(
+        self,
+        brightness: Sequence[int | None] | str | int | None,
+    ) -> list[int | None]:
+        """"""
+        match brightness:
+            case str():
+                result = [
+                    self.controller.bulb_model.adjustments[b]
+                    for b in brightness
+                ]
+            case Sequence():
+                result = list(brightness)
+            case _:
+                result = [brightness] * self.light_count
+        result = [
+            int(b * self._brightness_factor)
+            if b is not None else None
+            for b in result
+        ]
+        return result  # type: ignore
+    
+    def convert_transition(
+        self,
+        transition: Sequence[float | None] | float | None = None,
+    ) -> list[float | None]:
+        """"""
+        match transition:
+            case Sequence():
+                result = list(transition)
+            case _:
+                result = [transition] * self.light_count
+        return result  # type: ignore
+    
+    def convert_color(
+        self,
+        color: Sequence[Color | None] | Color | None = None,
+    ) -> list[Color | None]:
+        """"""
+        match color:
+            case Sequence():
+                result = list(color)
+            case _:
+                result = [color] * self.light_count
+        return result
+    
+    def convert_on(
+        self,
+        on: Sequence[int | bool | str | None] | bool | int | None = None,
+    ) -> list[bool | None]:
+        """"""
+        match on:
+            case str():
+                result = [
+                    False if o == "0" else True
+                    for o in on
+                ]
+            case Sequence():
+                result = [
+                    bool(o) if o is not None else None
+                    for o in on
+                ]
+            case _:
+                result = [
+                    bool(on) if bool is not None else None
+                ] * self.light_count
+        return result  # type: ignore
+    
