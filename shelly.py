@@ -38,8 +38,6 @@ class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
-        for channel in self.channels:
-            channel.controller = self
         self.channel_count = len(self.channels)
 
     def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool):
@@ -56,7 +54,11 @@ class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
     ) -> aiohttp.ClientResponse:
         """ Send individual command as part of asynchonous batch. """
         command = update.channel._make_set_command(update)
-        print(command)
+        print(
+            command.channel.controller.ip_address,
+            command.channel.index,
+            command.url
+        )
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 url=command.url,
@@ -84,6 +86,10 @@ class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
 class ShellyDimmer(LightController, ABC, bulb_compatibility=DimBulb):
     """Set up Shelly dimmer and channels.
        Everything else handled by parent controller and child channels."""
+
+    trans_def: ClassVar[float] = 0.5
+    trans_min: ClassVar[float] = 0.5
+    trans_max: ClassVar[float] = 10800.0
 
     def __post_init__(self) -> None:
         """Initialize."""

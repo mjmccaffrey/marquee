@@ -171,8 +171,6 @@ class LightSet:
                 _channels, _brightnesses, _transitions, _colors, _on,
             )
         ]
-        for u in updates:
-            print(u)
         self.controller.update_channels(updates, force_update)
 
     def set_channel(
