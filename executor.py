@@ -41,7 +41,7 @@ class Executor:
         self.mode_menu: list[tuple[int, str]] = []
         self.modes: dict[int, ModeConstructor] = {}
         self.commands: dict[str, Callable[[], None]] = {
-            'calibrate_channels': self.command_calibrate_channels,
+            'calibrate': self.command_calibrate,
             'off': self.command_off,
         }
 

@@ -52,7 +52,6 @@ class PlaySequenceMode(PlayMode):
         """Execute sequence with delay seconds between steps.
            If stop is specified, end the sequence 
            just before the nth pattern."""
-        print(self.lights.brightnesses())
         if self.pre_delay and not pre_delay_done:
             self.schedule(
                 action = partial(self.execute, pre_delay_done=True),

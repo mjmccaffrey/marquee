@@ -27,12 +27,12 @@ class ForegroundMode(BaseMode, ABC):
         if isinstance(self.special, MirrorParams):
             self.special.func = self.drums.mirror
         if dimmers:
-            # print("Presetting DIMMERS")
+            print("***** Presetting DIMMERS *****")
             self.lights.set_channels(
                 brightness=100, on=True, force_update=True,
             )
         if relays:
-            # print("Presetting RELAYS")
+            print("***** Presetting RELAYS *****")
             self.lights.set_relays(ALL_ON)
 
     @staticmethod
