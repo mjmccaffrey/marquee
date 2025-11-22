@@ -21,14 +21,16 @@ class ForegroundMode(BaseMode, ABC):
         print("*****")
 
     def preset_devices(
-        self, channels: bool = False, relays: bool = False
+        self, dimmers: bool = False, relays: bool = False
     ) -> None:
         """Preset the channels and relays as specified."""
         if isinstance(self.special, MirrorParams):
             self.special.func = self.drums.mirror
-        if channels:
+        if dimmers:
             # print("Presetting DIMMERS")
-            self.lights.set_channels(brightness=100, force_update=True)
+            self.lights.set_channels(
+                brightness=100, on=True, force_update=True,
+            )
         if relays:
             # print("Presetting RELAYS")
             self.lights.set_relays(ALL_ON)

@@ -270,7 +270,7 @@ class LightSet:
                 ]
             case _:
                 result = [
-                    bool(on) if bool is not None else None
+                    bool(on) if on is not None else None
                 ] * self.light_count
         return result  # type: ignore
     
