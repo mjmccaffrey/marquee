@@ -28,7 +28,6 @@ class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
     channel_first_index: None = None
     index: None = None
     ip_address: None = None
-    # channels: list["ShellyChannel"] = field(init=False)
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -39,6 +38,8 @@ class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
             for dimmer in self.dimmers
             for channel in dimmer.channels
         ]
+        for channel in self.channels:
+            channel.controller = self
         self.channel_count = len(self.channels)
 
     def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool):
@@ -82,8 +83,6 @@ class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
 class ShellyDimmer(LightController, ABC, bulb_compatibility=DimBulb):
     """Set up Shelly dimmer and channels.
        Everything else handled by parent controller and child channels."""
-
-    # channels: list["ShellyChannel"] = field(init=False)
 
     def __post_init__(self) -> None:
         """Initialize."""
