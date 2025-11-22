@@ -48,7 +48,7 @@ def setup_devices(
     )  # /dev/ttyACM2
     primary = LightSet(
         relays=relays,
-        light_relays={11},
+        light_relays={1, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16,},
         click_relays={2, 3, 10},
         controller=ShellyConsolidatedController(
             bulb_model=Sylvania_G25_Frosted_40,
