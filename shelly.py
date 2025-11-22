@@ -30,7 +30,7 @@ class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
     ip_address: None = None
     # channels: list["ShellyChannel"] = field(init=False)
 
-    def __post_init__(self, channel_first_index: int) -> None:
+    def __post_init__(self) -> None:
         """Initialize."""
         print(f"Initializing {self}")
         self.session = requests.Session()
@@ -85,14 +85,14 @@ class ShellyDimmer(LightController, ABC, bulb_compatibility=DimBulb):
 
     # channels: list["ShellyChannel"] = field(init=False)
 
-    def __post_init__(self, channel_first_index) -> None:
+    def __post_init__(self) -> None:
         """Initialize."""
         print(f"Initializing {self}")
         self.session = requests.Session()
         try:
             self.channels = [
                 ShellyChannel(
-                    index=channel_first_index + id,
+                    index=self.channel_first_index + id,
                     id=id, 
                     controller=self,
                     brightness=status['brightness'],

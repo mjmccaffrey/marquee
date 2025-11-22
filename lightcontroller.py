@@ -22,14 +22,14 @@ class LightController(ABC):
     index: int
     ip_address: str
     bulb_model: Bulb
-    channel_first_index: InitVar[int]
+    channel_first_index: int
     session: requests.Session = field(init=False)
     channels: Sequence['LightChannel'] = field(init=False)
 
     def __init_subclass__(cls, bulb_compatibility: type[Bulb]) -> None:
         cls.bulb_compatibility = bulb_compatibility
 
-    def __post_init__(self, channel_first_index: int) -> None:
+    def __post_init__(self) -> None:
         """Ensure bulb compatibility"""
         if not isinstance(self.bulb_model, type(self.bulb_compatibility)):
             raise TypeError(
