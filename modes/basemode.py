@@ -19,7 +19,7 @@ class BaseMode(ModeInterface, ABC):
             assume it is relative to now."""
         if due < 10 * 365 * 24 * 60 * 60:  # 10 years
             due += time.time()
-        print(f"****** SCHEDULED {name}")
+        # print(f"****** SCHEDULED {name}")
         self.player.event_queue.push(
             Event(
                 action=action,
