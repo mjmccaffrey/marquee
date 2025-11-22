@@ -15,7 +15,7 @@ from lightcontroller import (
     LightController, LightChannel,
 )
 
-@dataclass
+@dataclass(kw_only=True)
 class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
     """Virtual consolidated controller."""
 
@@ -78,7 +78,7 @@ class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
         return [task.result() for task in tasks]
 
 
-@dataclass
+@dataclass(kw_only=True)
 class ShellyDimmer(LightController, ABC, bulb_compatibility=DimBulb):
     """Set up Shelly dimmer and channels.
        Everything else handled by parent controller and child channels."""
@@ -128,7 +128,7 @@ class ShellyDimmer(LightController, ABC, bulb_compatibility=DimBulb):
         raise NotImplementedError()
 
 
-@dataclass
+@dataclass(kw_only=True)
 class ShellyChannel(LightChannel):
     """ Models a single Shelly dimmer channel (light). """
 
@@ -203,7 +203,7 @@ class ShellyChannel(LightChannel):
                 setattr(self, attr, value)
 
 
-@dataclass
+@dataclass(kw_only=True)
 class ShellyProDimmer2PM(ShellyDimmer, channel_count=2):
     """Supports the Shelly Pro Dimmer 2PM."""
 

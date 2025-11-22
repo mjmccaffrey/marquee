@@ -9,7 +9,7 @@ import requests
 
 from bulb import Bulb
 
-@dataclass
+@dataclass(kw_only=True)
 class LightController(ABC):
     """ABC for any light controller."""
 
@@ -51,7 +51,7 @@ class LightController(ABC):
         """Effect updates, optionally forcing the updates 
            regardless of believed state."""
 
-@dataclass
+@dataclass(kw_only=True)
 class LightChannel(ABC):
     """Protocol for any controller channel (light)."""
 
