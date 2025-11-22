@@ -44,7 +44,7 @@ class PlaySequenceMode(PlayMode):
             if special.trans_on is None:
                 special.trans_on = default_trans
         self.preset_devices(
-            channels = not isinstance(special, ChannelParams),
+            dimmers = not isinstance(special, ChannelParams),
             relays = isinstance(special, ChannelParams),
         )
 
