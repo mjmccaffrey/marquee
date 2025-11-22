@@ -136,8 +136,8 @@ class Executor:
         if light_pattern is not None:
             self.lights.set_relays(light_pattern)
 
-    def command_calibrate_channels(self) -> None:
-        """Execute calibration on all channels on each successive channel."""
+    def command_calibrate(self) -> None:
+        """Execute calibration on each successive channel."""
         assert isinstance(self.lights.controller, ShellyConsolidatedController)
         print("Calibrating channels")
         # Set all light relays on
