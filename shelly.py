@@ -11,15 +11,14 @@ import requests
 
 from bulb import DimBulb
 from lightcontroller import (
-    ChannelUpdate, ChannelCommand, Color,
-    LightController, LightChannel,
+    channel_state_attrs, ChannelUpdate, ChannelCommand, 
+    Color, LightController, LightChannel,
 )
 
 @dataclass(kw_only=True)
-class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
+class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
     """Virtual consolidated controller."""
 
-    trans_def: ClassVar[float] = 0.5
     trans_min: ClassVar[float] = 0.5
     trans_max: ClassVar[float] = 10800.0
 
@@ -40,19 +39,14 @@ class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
         ]
         self.channel_count = len(self.channels)
 
-    def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool):
-        """Effect updates, optionally forcing the updates 
-           regardless of believed state."""
-        
-        # FORCE IS CURRENTLY IGNORED !!!!!
-        filtered_updates = updates
-        asyncio.run(self._execute_commands(filtered_updates))
+    def effect_updates, make_updates, make_and_execute_commands
+        asyncio.run(self._execute_commands(updates))
 
     async def _execute_command(
         self, 
         update: 'ChannelUpdate'
     ) -> aiohttp.ClientResponse:
-        """ Send individual command as part of asynchonous batch. """
+        """Send individual command as part of asynchonous batch."""
         command = update.channel._make_set_command(update)
         print(
             command.channel.index,
@@ -84,11 +78,10 @@ class ShellyConsolidatedController(LightController, bulb_compatibility=DimBulb):
 
 
 @dataclass(kw_only=True)
-class ShellyDimmer(LightController, ABC, bulb_compatibility=DimBulb):
+class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
     """Set up Shelly dimmer and channels.
        Everything else handled by parent controller and child channels."""
 
-    trans_def: ClassVar[float] = 0.5
     trans_min: ClassVar[float] = 0.5
     trans_max: ClassVar[float] = 10800.0
 
@@ -114,11 +107,11 @@ class ShellyDimmer(LightController, ABC, bulb_compatibility=DimBulb):
             raise OSError from None
 
     def __init_subclass__(cls, channel_count: int) -> None:
-        """"""
+        """Set channel count for concrete subclasses."""
         cls.channel_count = channel_count
 
     def _get_state_of_channels(self) -> list[tuple[int, dict]]:
-        """ Fetch status parameters for all channels. """
+        """Fetch status parameters for all channels."""
         result = self.session.get(
             url=f'http://{self.ip_address}/rpc/Shelly.GetStatus',
             timeout=1.0,
@@ -200,14 +193,6 @@ class ShellyChannel(LightChannel):
         )
         response.raise_for_status()
         self.update_state(update)
-
-    def update_state(self, update: ChannelUpdate):
-        """Once the command has been sent without error,
-           update the tracked state accordingly."""
-        for attr in ('brightness', 'color', 'on'):
-            value = getattr(update, attr)
-            if value is not None:
-                setattr(self, attr, value)
 
 
 @dataclass(kw_only=True)

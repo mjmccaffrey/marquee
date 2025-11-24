@@ -131,8 +131,11 @@ class Executor:
     ) -> None:
         """Effects the command-line specified pattern(s)."""
         if brightness_pattern is not None:
-            self.lights.set_channels(brightness_pattern)
-            Button.wait(self.lights.controller.trans_def)
+            self.lights.set_channels(
+                brightness=brightness_pattern,
+                transition=self.lights.trans_min,
+            )
+            Button.wait(self.lights.trans_min)
         if light_pattern is not None:
             self.lights.set_relays(light_pattern)
 
@@ -145,7 +148,7 @@ class Executor:
         # Set all light channels to high
         self.lights.set_channels(
             brightness=100,
-            force_update=True,
+            force=True,
         )
         time.sleep(3)
         max_channel = max(

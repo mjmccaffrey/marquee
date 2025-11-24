@@ -30,7 +30,6 @@ class LightSet:
 
         # channel[i] maps to light[i], 0 <= i < light_count
         self.channels = self.controller.channels
-        self.trans_def = self.controller.trans_def
         self.trans_min = self.controller.trans_min
         self.trans_max = self.controller.trans_max
         self.bulb_adjustents = self.controller.bulb_model.adjustments
@@ -124,7 +123,7 @@ class LightSet:
                 extra_pattern = ''.join(str(e) for e in extra_pattern)
             full_pattern = light_pattern + extra_pattern
             if (
-                    isinstance(self.controller.bulb_compatibility, SmartBulb)
+                    isinstance(self.controller.bulb_comp, SmartBulb)
                 and not smart_bulb_override
             ):
                 raise TypeError("Light relay change request refused.")
@@ -141,12 +140,12 @@ class LightSet:
             color: Sequence[Color | None] | Color | None = None,
             on: Sequence[int | bool | str | None] | bool | int | None = None,
             channel_indexes: Sequence[int] | None = None,
-            force_update: bool = False,
+            force: bool = False,
         ) -> None:
         """Set the channels per the supplied brightness, 
            trans times and colors.  
            Specify a subset of channels via channel_indexes.
-           Force all specified channels to update with force_update.
+           Force all specified channels to update with force.
            Adjust for brightness_factor."""
         
         _channel_indexes = (
@@ -171,7 +170,7 @@ class LightSet:
                 _channels, _brightnesses, _transitions, _colors, _on,
             )
         ]
-        self.controller.update_channels(updates, force_update)
+        self.controller.update_channels(updates, force)
 
     def set_channel(
         self,

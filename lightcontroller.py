@@ -13,9 +13,8 @@ from bulb import Bulb
 class LightController(ABC):
     """ABC for any light controller."""
 
-    bulb_compatibility: ClassVar[type[Bulb]]
+    bulb_comp: ClassVar[type[Bulb]]
     channel_count: ClassVar[int]
-    trans_def: ClassVar[float]
     trans_min: ClassVar[float]
     trans_max: ClassVar[float]
 
@@ -26,12 +25,12 @@ class LightController(ABC):
     session: requests.Session = field(init=False)
     channels: Sequence['LightChannel'] = field(init=False)
 
-    def __init_subclass__(cls, bulb_compatibility: type[Bulb]) -> None:
-        cls.bulb_compatibility = bulb_compatibility
+    def __init_subclass__(cls, bulb_comp: type[Bulb]) -> None:
+        cls.bulb_comp = bulb_comp
 
     def __post_init__(self) -> None:
         """Ensure bulb compatibility"""
-        if not isinstance(self.bulb_model, type(self.bulb_compatibility)):
+        if not isinstance(self.bulb_model, type(self.bulb_comp)):
             raise TypeError(
                 f"Incompatible bulb model {self.bulb_model} "
                 f"for controller {type(self).__name__}."
@@ -81,9 +80,32 @@ class LightChannel(ABC):
         """Build and send command via requests.
            Does not check current state."""
 
+    def update_needed(self, update: 'ChannelUpdate'):
+        """Return False if all desired states match
+           current states, else True."""
+        return any(
+            (value := getattr(update, attr)) is not None and
+            value != getattr(self, attr)
+            for attr in channel_state_attrs
+        )
+
+    def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool):
+        """Effect updates, optionally forcing the updates 
+           regardless of believed state."""
+        if not force:
+            updates = [
+                update 
+                for update in updates
+                if update.channel.update_needed(update)
+            ]
+
     def update_state(self, update: 'ChannelUpdate'):
         """Once the command has been sent without error,
            update the tracked state accordingly."""
+        for attr in channel_state_attrs:
+            value = getattr(update, attr)
+            if value is not None:
+                setattr(self, attr, value)
 
 
 @dataclass
@@ -106,6 +128,8 @@ class XY(Color):
     """ XY color. """
     x: float
     y: float
+
+channel_state_attrs = ('brightness', 'color', 'on')
 
 @dataclass
 class ChannelUpdate:

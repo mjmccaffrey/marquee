@@ -20,7 +20,7 @@ class ForegroundMode(BaseMode, ABC):
         self.lights = self.player.lights
         print("*****")
 
-    def preset_devices(
+    def _OLD_preset_devices(
         self, dimmers: bool = False, relays: bool = False
     ) -> None:
         """Preset the channels and relays as specified."""
@@ -29,7 +29,7 @@ class ForegroundMode(BaseMode, ABC):
         if dimmers:
             print("***** Presetting DIMMERS *****")
             self.lights.set_channels(
-                brightness=100, on=True, force_update=True,
+                brightness=100, on=True, force=True,
             )
         if relays:
             print("***** Presetting RELAYS *****")

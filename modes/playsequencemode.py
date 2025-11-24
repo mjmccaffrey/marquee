@@ -36,22 +36,10 @@ class PlaySequenceMode(PlayMode):
         self.repeat = repeat
         self.kwargs = kwargs
         if isinstance(special, ChannelParams):
-            default_trans = (
-                delay if isinstance(delay, float) else
-                self.lights.trans_def
-            )
-            if special.trans_off is None:
-                special.trans_off = default_trans
-            if special.trans_on is None:
-                special.trans_on = default_trans
-        # self.preset_devices(
-        #     dimmers = not isinstance(special, ChannelParams),
-        #     relays = isinstance(special, ChannelParams),
-        # )
-        self.lights.set_channels(
-            brightness=0, on=True, force_update=True,
-        )
-        self.lights.set_relays(ALL_ON)
+            self.lights.set_relays(ALL_ON)
+            self.lights.set_channels(brightness=0, on=True, force=True)
+        else:
+            self.lights.set_channels(brightness=100, on=True, force=True)
 
     def execute(self, pre_delay_done=False) -> None:
         """Execute sequence with delay seconds between steps.

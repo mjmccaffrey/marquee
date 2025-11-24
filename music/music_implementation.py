@@ -212,11 +212,6 @@ def _light(
     special: SpecialParams | None = None,
 ) -> Callable:
     """Return callable to effect light pattern."""
-    if isinstance(special, ChannelParams):
-        if special.trans_off is None:
-            special.trans_off = trans_def
-        if special.trans_on is None:
-            special.trans_on = trans_def
     if isinstance(special, ActionParams):
         result = lambda: special.action(pattern)
     else:
