@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - lightcontroller"""
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass, field
 from collections.abc import Sequence
 from typing import ClassVar
 
@@ -45,10 +45,21 @@ class LightController(ABC):
     def close(self) -> None:
         """Clean up."""
 
-    @abstractmethod
     def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool):
         """Effect updates, optionally forcing the updates 
            regardless of believed state."""
+        if not force:
+            updates = [
+                update 
+                for update in updates
+                if update.channel.update_needed(update)
+            ]
+        self.execute_updates(updates=updates)
+
+    @abstractmethod
+    def execute_updates(self, updates: Sequence['ChannelUpdate']) -> None:
+        """Build and send commands via aiohttp asynchronously."""
+
 
 @dataclass(kw_only=True)
 class LightChannel(ABC):
@@ -57,9 +68,9 @@ class LightChannel(ABC):
     index: int
     id: int
     controller: LightController
-    brightness: int # = field(init=False)
-    color: 'Color | None' # = field(init=False)
-    on: bool # = field(init=False)
+    brightness: int
+    color: 'Color | None'
+    on: bool
 
     @abstractmethod
     def calibrate(self) -> None:
@@ -88,16 +99,6 @@ class LightChannel(ABC):
             value != getattr(self, attr)
             for attr in channel_state_attrs
         )
-
-    def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool):
-        """Effect updates, optionally forcing the updates 
-           regardless of believed state."""
-        if not force:
-            updates = [
-                update 
-                for update in updates
-                if update.channel.update_needed(update)
-            ]
 
     def update_state(self, update: 'ChannelUpdate'):
         """Once the command has been sent without error,

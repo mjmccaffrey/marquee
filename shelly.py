@@ -11,7 +11,7 @@ import requests
 
 from bulb import DimBulb
 from lightcontroller import (
-    channel_state_attrs, ChannelUpdate, ChannelCommand, 
+    ChannelUpdate, ChannelCommand, 
     Color, LightController, LightChannel,
 )
 
@@ -23,7 +23,7 @@ class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
     trans_max: ClassVar[float] = 10800.0
 
     channel_count: int = field(init=False)
-    dimmers: Sequence['ShellyDimmer']
+    dimmers: Sequence[LightController]
     channel_first_index: None = None
     index: None = None
     ip_address: None = None
@@ -39,14 +39,28 @@ class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
         ]
         self.channel_count = len(self.channels)
 
-    def effect_updates, make_updates, make_and_execute_commands
+    def execute_updates(self, updates: Sequence['ChannelUpdate']) -> None:
+        """Build and send commands via aiohttp asynchronously."""
         asyncio.run(self._execute_commands(updates))
+
+    async def _execute_commands(
+        self,
+        updates: Sequence['ChannelUpdate'],
+    ) -> list[aiohttp.ClientResponse]:
+        """Execute multiple commands asynchronously."""
+        async with asyncio.TaskGroup() as tg:
+            tasks = [
+                tg.create_task(self._execute_command(update))
+                for update in updates
+            ]
+        return [task.result() for task in tasks]
 
     async def _execute_command(
         self, 
         update: 'ChannelUpdate'
     ) -> aiohttp.ClientResponse:
-        """Send individual command as part of asynchonous batch."""
+        """Send individual command as part of asynchonous batch.
+           Update channel state."""
         command = update.channel._make_set_command(update)
         print(
             command.channel.index,
@@ -64,19 +78,7 @@ class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
         update.channel.update_state(update)
         return response
     
-    async def _execute_commands(
-        self,
-        updates: Sequence['ChannelUpdate'],
-    ) -> list[aiohttp.ClientResponse]:
-        """Execute multiple commands asynchronously."""
-        async with asyncio.TaskGroup() as tg:
-            tasks = [
-                tg.create_task(self._execute_command(update))
-                for update in updates
-            ]
-        return [task.result() for task in tasks]
-
-
+    
 @dataclass(kw_only=True)
 class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
     """Set up Shelly dimmer and channels.
@@ -122,9 +124,8 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
             for id in range(self.channel_count)
         ]      
     
-    def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool):
-        """Effect updates, optionally forcing the updates 
-           regardless of believed state."""
+    def execute_updates(self, updates: Sequence['ChannelUpdate']) -> None:
+        """Build and send commands via aiohttp asynchronously."""
         raise NotImplementedError()
 
 
@@ -165,7 +166,7 @@ class ShellyChannel(LightChannel):
         )
         return ChannelCommand(
             channel = update.channel,
-            url=f'http://{update.channel.controller.ip_address}/rpc/Light.Set',
+            url=f'http://{self.controller.ip_address}/rpc/Light.Set',
             params=params,
         )
 

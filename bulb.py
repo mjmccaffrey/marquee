@@ -17,20 +17,21 @@ class Bulb:
     wattage_reference: float
     adjustments: dict[str, int] = field(default_factory=default_adjustments)
 
-@dataclass
 class DimBulb(Bulb):
     """Base for incandescents, basic dimmable LED bulbs, etc."""
 
-@dataclass
 class SmartBulb(Bulb):
-    """Base for Hue bulbs, etc."""
+    """Base for smart bulbs such as Hue."""
+
+class HueBulb(SmartBulb):
+    """Hue bulbs."""
 
 Halco_S14_Transparent_Colored = DimBulb(
     wattage_actual=11,
     wattage_reference=11,
 )
 
-Hue_BR30_Enhanced_Color = SmartBulb(
+Hue_BR30_Enhanced_Color = HueBulb(
     wattage_actual=12.5,
     wattage_reference=85,
 )

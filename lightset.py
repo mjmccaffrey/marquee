@@ -5,7 +5,6 @@
 
 from collections.abc import Sequence
 from dataclasses import dataclass, InitVar
-from typing import Any
 
 from bulb import SmartBulb
 from lightcontroller import (
@@ -100,38 +99,37 @@ class LightSet:
             
     def set_relays(
             self, 
-            light_pattern: str,
-            extra_pattern: str | None = None,
+            light_pattern: str | Sequence[int | bool] | bool | int,
+            extra_pattern: str | Sequence[int | bool] | bool | int | None = None,
             special: SpecialParams | None = None,
             smart_bulb_override: bool = False,
         ) -> None:
         """Set all lights and extra relays per supplied patterns and special.
            Set light_pattern property, always as string
            rather than list."""
-        assert len(light_pattern) == self.light_count
-        assert (
-                extra_pattern is None
-             or len(extra_pattern) == len(self.extra_pattern)
-        )
-        light_pattern = ''.join(str(e) for e in light_pattern)
+        _light = self.convert_relay(light_pattern)
+        _extra = self.convert_relay(extra_pattern)
+        if _extra is None:
+            _extra = self.extra_pattern
+        assert isinstance(_light, str)  # I do not understand
+        assert isinstance(_extra, str)  # why these are necessary.
         if isinstance(special, ChannelParams):
-            self._set_channels_instead_of_relays(light_pattern, special)
-        else:
-            if extra_pattern is None:
-                extra_pattern = self.extra_pattern
-            else:
-                extra_pattern = ''.join(str(e) for e in extra_pattern)
-            full_pattern = light_pattern + extra_pattern
-            if (
-                    isinstance(self.controller.bulb_comp, SmartBulb)
-                and not smart_bulb_override
-            ):
-                raise TypeError("Light relay change request refused.")
-            self.relays.set_state_of_devices(full_pattern)
-            if isinstance(special, MirrorParams):
-                special.func(full_pattern)
-            self.extra_pattern = extra_pattern
-            self.relay_pattern = light_pattern
+            self._set_channels_instead_of_relays(_light, special)
+            return
+        _full = _light + _extra
+        if (
+            _light != self.relay_pattern and
+            isinstance(self.controller.bulb_comp, SmartBulb) and 
+            not smart_bulb_override
+        ):
+            raise TypeError(
+                "Light relay change request refused - smart bulbs in use."
+            )
+        self.relays.set_state_of_devices(_full)
+        if isinstance(special, MirrorParams):
+            special.func(_full)
+        self.extra_pattern = _extra
+        self.relay_pattern = _light
 
     def set_channels(
             self, 
@@ -220,6 +218,8 @@ class LightSet:
                 result = list(brightness)
             case _:
                 result = [brightness] * self.light_count
+
+        ERROR FOR --relay=
         result = [
             int(b * self._brightness_factor)
             if b is not None else None
@@ -229,7 +229,7 @@ class LightSet:
     
     def convert_transition(
         self,
-        transition: Sequence[float | None] | float | None = None,
+        transition: Sequence[float | None] | float | None,
     ) -> list[float | None]:
         """"""
         match transition:
@@ -241,7 +241,7 @@ class LightSet:
     
     def convert_color(
         self,
-        color: Sequence[Color | None] | Color | None = None,
+        color: Sequence[Color | None] | Color | None,
     ) -> list[Color | None]:
         """"""
         match color:
@@ -253,7 +253,7 @@ class LightSet:
     
     def convert_on(
         self,
-        on: Sequence[int | bool | str | None] | bool | int | None = None,
+        on: Sequence[int | bool | str | None] | bool | int | None,
     ) -> list[bool | None]:
         """"""
         match on:
@@ -272,4 +272,20 @@ class LightSet:
                     bool(on) if on is not None else None
                 ] * self.light_count
         return result  # type: ignore
+    
+    def convert_relay(
+        self, 
+        pattern: str | Sequence[int | bool] | int | bool | None,
+    ) -> str | None:
+        """"""
+        match pattern:
+            case str():
+                result = pattern
+            case Sequence():
+                result = ''.join("1" if e else "0" for e in pattern)
+            case None:
+                result = None
+            case _:
+                result = ("1" if pattern else "0") * self.light_count
+        return result
     

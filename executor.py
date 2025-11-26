@@ -8,7 +8,7 @@ from button import Button
 from button_misc import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import LightSet
-from lightset_misc import ALL_OFF, ALL_ON, EXTRA_COUNT
+from lightset_misc import ALL_ON
 from modes.modeinterface import ModeInterface
 from modes.mode_misc import ModeConstructor
 from modes.playsequencemode import PlaySequenceMode
@@ -164,7 +164,8 @@ class Executor:
 
     def command_off(self) -> None:
         """Turn off all relays and potentially other devices."""
-        self.lights.set_relays(ALL_OFF, '0' * EXTRA_COUNT)
+        for d in (self.bells, self.drums, self.lights):
+            d.relays.set_state_of_devices('0' * d.relays.relay_count)
         print("Marquee hardware is now partially shut down.")
         print()
 
