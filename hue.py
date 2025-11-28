@@ -45,8 +45,8 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 id=id,
                 controller=self,
                 brightness=lights[id]['dimming']['brightness'],
-                color=lights['color']['xy'],
-                on=lights['on']['on'],
+                color=lights[id]['color']['xy'],
+                on=lights[id]['on']['on'],
             )
             for i, id in enumerate(self.bulb_ids)
         ]
