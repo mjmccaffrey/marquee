@@ -1,17 +1,25 @@
 """Marquee Lighted Sign Project - color"""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+type Color = XY | RGB
 
 @dataclass
-class Color:
-    """Color specification."""
+class XY:
+    """XY color."""
+    x: float
+    y: float
+    brightness: float
 
 @dataclass
-class RGB(Color):
-    """ RGB color. """
+class RGB:
+    """RGB color."""
     red: int
     green: int
     blue: int
+    x: float = field(init=False)
+    y: float = field(init=False)
+    brightness: float = field(init=False)
 
     def __post_init__(self) -> None:
         """INCOMPLETE"""
@@ -44,11 +52,4 @@ class RGB(Color):
 RED = RGB(255, 0, 0)
 GREEN = RGB(0, 255, 0)
 BLUE = RGB(0, 0, 255)
-
-@dataclass
-class XY(Color):
-    """ XY color. """
-    x: float
-    y: float
-
 
