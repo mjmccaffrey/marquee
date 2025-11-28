@@ -48,7 +48,7 @@ class LightSet:
         self._brightness_factor = value
         print("Brightness factor is ", self._brightness_factor)
 
-    def brightnesses(self) -> list[int]:
+    def brightnesses(self) -> list[int | float]:
         """Return each channel's brightness."""
         return [
             channel.brightness
@@ -94,7 +94,7 @@ class LightSet:
             brightness=_brightness, 
             transition=_transitions,
             color=_colors,
-            # on=True,
+            on=True,
         )
             
     def set_relays(
@@ -219,7 +219,6 @@ class LightSet:
             case _:
                 result = [brightness] * self.light_count
 
-        ERROR FOR --relay=
         result = [
             int(b * self._brightness_factor)
             if b is not None else None

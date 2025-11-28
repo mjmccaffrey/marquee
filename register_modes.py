@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - register_modes"""
 
+from color import RED, GREEN, BLUE
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes.background_modes import SequenceBGMode, ModeEntry
@@ -20,6 +21,7 @@ from specialparams import ChannelParams, MirrorParams
 def register_modes(exec: Executor) -> None:
     """Register all modes."""
     register_special_modes(exec)
+    register_color_modes(exec)
     register_relay_modes(exec)
     # register_interactive_modes(exec)
     register_silent_modes(exec)
@@ -100,6 +102,18 @@ def register_special_modes(exec: Executor) -> None:
         index=ModeIndex.DEFAULT,
     )
 
+
+def register_color_modes(exec: Executor) -> None:
+    """"""
+    exec.add_sequence_mode(
+        "all_red", 
+        all_on,
+        special=ChannelParams(
+            color_on=RED,
+            color_off=BLUE,
+        )
+    )
+    
 
 def register_relay_modes(exec: Executor) -> None:
     """"""

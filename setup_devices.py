@@ -4,9 +4,10 @@ import signal
 
 from gpiozero import Button as _Button  # type: ignore
 
-from bulb import Sylvania_G25_Frosted_40
+from bulb import Hue_BR30_Enhanced_Color
 from button import Button
 from button_misc import ButtonSet
+from hue import HueBridge
 from shelly import ShellyConsolidatedController, ShellyProDimmer2PM
 from instruments import BellSet, DrumSet
 from lightset import LightSet
@@ -22,15 +23,21 @@ SHELLY_IP_ADDRESSES = [
     '192.168.64.116',
 ]
 
-HUE_APPLICATION_KEY = 'bWM1gTUsjVOLVyxC7zqwVuymvsziOIIikKy7RKmC'
+HUE_APPLICATION_KEY = 'mfJOX8GVxgxLFK1JSCJvqrtOY8YEqWCdrBPfgNXP'
 HUE_IP_ADDRESS = '192.168.51.168'
 HUE_BULB_IDS = [
-    'a6233fab-9dfb-494f-b802-2d05b24e79bf',
-    'a64ae2fb-b60d-4e4a-9c72-391cf6824ce0',
-    'a65c68e2-ea8c-4016-a21a-6b85a728f784',
-    'b6a92e92-ed7f-4ea4-8942-2bb1388cb888',
-    'f4d943f2-6f03-4485-9242-dde71b146840',
-    'fda76dea-1fa0-45e5-9084-59bbf1546574',
+    "ca051ade-5842-4c15-aacf-b1e795feb1ad",
+    "7f053a5d-0283-4dd6-80b3-b4d8e83cf4f0",
+    "afe4c0e3-ab80-40b2-966a-b0069ee50880",
+    "3456c84d-9189-4369-b022-1eed24eedb58",
+    "1367f291-d54c-41a5-90a5-6ec40616779c",
+    "6da5e687-1eb4-404d-8f6e-7badc2c2b6d6",
+    "7d42575e-f864-48e8-99f9-88905008ab07",
+    "de84afc5-e39a-4b2e-aa15-b67a211ff4da",
+    "6591a827-379b-417d-b165-a10cdadb81a1",
+    "934abf75-d5f9-402d-a6cd-b1b82812ef2f",
+    "8af80fb4-9daf-4762-bd54-bdc221690db0",
+    "e2cfe6e2-845e-489a-8434-8d90ac74f74a",
 ]
 
 def setup_devices(
@@ -50,17 +57,10 @@ def setup_devices(
         relays=relays,
         light_relays={1, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16,},
         click_relays={2, 3, 10},
-        controller=ShellyConsolidatedController(
-            bulb_model=Sylvania_G25_Frosted_40,
-            dimmers=[
-                ShellyProDimmer2PM(
-                    index=i,
-                    ip_address=ip,
-                    bulb_model=Sylvania_G25_Frosted_40,
-                    channel_first_index=i * 2
-                )
-                for i, ip in enumerate(SHELLY_IP_ADDRESSES)
-            ],
+        controller=HueBridge(
+            ip_address=HUE_IP_ADDRESS,
+            bulb_model=Hue_BR30_Enhanced_Color,
+            bulb_ids=HUE_BULB_IDS,
         ),
         brightness_factor_init=1.0,
     )

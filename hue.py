@@ -1,18 +1,16 @@
 """Marquee Lighted Sign Project - hue"""
 
-from abc import ABC
-import asyncio
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import ClassVar
 
-import aiohttp
 import requests
 
 from bulb import HueBulb
+from color import Color
 from lightcontroller import (
     ChannelUpdate, ChannelCommand, 
-    Color, LightController, LightChannel,
+    LightController, LightChannel,
 )
 
 @dataclass(kw_only=True)
@@ -31,16 +29,23 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         """Initialize."""
         print(f"Initializing {self}")
         self.session = requests.Session()
+        try:
+            lights = self._get_state_of_channels()
+        except requests.exceptions.Timeout as e:
+            print(f"*** Failed to reach '{self.ip_address}' ***")
+            print(f"*** Error: {e} ***")
+            raise OSError from None
+
         self.channels = [
-            # HueChannel(
-            #     index=i,
-            #     id=id,
-            #     controller=self,
-            #     brightness=,
-            #     color=on,
-            #     on=,
-            # )
-            # for i, id in enumerate(bulb_ids)
+            HueChannel(
+                index=i,
+                id=id,
+                controller=self,
+                brightness=lights['dimming']['brightness'],
+                color=lights['color']['xy'],
+                on=lights['on']['on'],
+            )
+            for i, id in enumerate(self.bulb_ids)
         ]
         self.channel_count = len(self.channels)
 
@@ -56,48 +61,27 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             for light in json['data']
         }
     
-    async def _execute_command(
-        self, 
-        update: 'ChannelUpdate'
-    ) -> aiohttp.ClientResponse:
-        """Send individual command as part of asynchonous batch.
-           Update channel state."""
-        command = update.channel._make_set_command(update)
-        print(
-            command.channel.index,
-            command.channel.controller.ip_address,
-            command.url,
-            command.params
-        )
-    
-    
-            self.channels = [
-                HueChannel(
-                    index=id,
-                    id=id, 
-                    controller=self,
-                    brightness=status['brightness'],
-                    color=None,
-                    on=status['output']
-                ) 
-                for id, status in self._get_state_of_channels()
-            ]
-        except requests.exceptions.Timeout as e:
-            print(f"*** Failed to reach '{self.ip_address}' ***")
-            print(f"*** Error: {e} ***")
-            raise OSError from None
-
     def __init_subclass__(cls, channel_count: int) -> None:
         """Set channel count for concrete subclasses."""
         cls.channel_count = channel_count
 
     def execute_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands."""
-        PUT
+        for update in updates:
+            command = update.channel._make_set_command(update)
+            response = self.session.put(
+                url=command.url,
+                json=command.params,
+                timeout=1.0,
+            )
+            response.raise_for_status()
+
 
 @dataclass(kw_only=True)
 class HueChannel(LightChannel):
     """ Models a single Hue channel (light). """
+
+    brightness: float
 
     def calibrate(self) -> None:
         """Initiate channel calibration."""
@@ -142,7 +126,7 @@ class HueChannel(LightChannel):
             on=on,
         )
         command = self._make_set_command(update)
-        response = self.controller.session.get(
+        response = self.controller.session.put(
             url=command.url,
             params=command.params,
             timeout=1.0,

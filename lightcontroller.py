@@ -8,6 +8,7 @@ from typing import ClassVar
 import requests
 
 from bulb import Bulb
+from color import Color
 
 @dataclass(kw_only=True)
 class LightController(ABC):
@@ -66,11 +67,13 @@ class LightChannel(ABC):
     """Protocol for any controller channel (light)."""
 
     index: int
-    id: int
+    id: str
     controller: LightController
-    brightness: int
-    color: 'Color | None'
+    brightness: int | float
+    color: Color | None
     on: bool
+
+    state_attrs = ('brightness', 'color', 'on')
 
     @abstractmethod
     def calibrate(self) -> None:
@@ -85,7 +88,7 @@ class LightChannel(ABC):
         self, 
         brightness: int | None,
         transition: float | None,
-        color: 'Color | None',
+        color: Color | None,
         on: bool | None,
     ) -> None:
         """Build and send command via requests.
@@ -97,40 +100,17 @@ class LightChannel(ABC):
         return any(
             (value := getattr(update, attr)) is not None and
             value != getattr(self, attr)
-            for attr in channel_state_attrs
+            for attr in self.state_attrs
         )
 
     def update_state(self, update: 'ChannelUpdate'):
         """Once the command has been sent without error,
            update the tracked state accordingly."""
-        for attr in channel_state_attrs:
+        for attr in self.state_attrs:
             value = getattr(update, attr)
             if value is not None:
                 setattr(self, attr, value)
 
-
-@dataclass
-class Color:
-    """Color specification."""
-
-@dataclass
-class RGB(Color):
-    """ RGB color. """
-    red: int
-    green: int
-    blue: int
-
-    def __post_init__(self) -> None:
-        """"""
-        # _xy = CONVERT RGB TO XY
-
-@dataclass
-class XY(Color):
-    """ XY color. """
-    x: float
-    y: float
-
-channel_state_attrs = ('brightness', 'color', 'on')
 
 @dataclass
 class ChannelUpdate:

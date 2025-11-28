@@ -95,7 +95,7 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
             self.channels = [
                 ShellyChannel(
                     index=self.channel_first_index + id,
-                    id=id, 
+                    id=str(id), 
                     controller=self,
                     brightness=status['brightness'],
                     color=None,
@@ -133,12 +133,14 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
 class ShellyChannel(LightChannel):
     """ Models a single Shelly dimmer channel (light). """
 
+    brightness: int
+
     def calibrate(self) -> None:
         """Initiate channel calibration."""
         command = ChannelCommand(
             channel = self,
             url=f'http://{self.controller.ip_address}/rpc/Light.Calibrate',
-            params={'id':self.id},
+            params={'id': self.id},
         )
         response = self.controller.session.get(
             url=command.url,
