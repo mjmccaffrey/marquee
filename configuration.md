@@ -26,6 +26,9 @@ Marquee Lighted Sign Project - configuration
         * 192.168.64.115
     * Shelly ProDimmer2PM A0DD6C9F72D0| 1.4.4| 679fcca9
         * 192.168.64.116
+    * Hue Bridge
+        * 192.168.64.121
+
 * **USB Ports**
 SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250501R0027", SYMLINK+="marquee_lights"
 SUBSYSTEM=="tty", ATTRS{serial}=="NLRL260501R0296", SYMLINK+="marquee_drums"
