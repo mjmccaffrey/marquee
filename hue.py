@@ -7,7 +7,7 @@ from typing import ClassVar
 import requests
 
 from bulb import HueBulb
-from color import Color
+from color import RGB, XY
 from lightcontroller import (
     ChannelUpdate, ChannelCommand, 
     LightController, LightChannel,
@@ -125,7 +125,7 @@ class HueChannel(LightChannel):
         self, 
         brightness: int | None,
         transition: float | None,
-        color: Color | None,
+        color: RGB | XY | None,
         on: bool | None,
     ) -> None:
         """Build and send command via requests.

@@ -8,7 +8,7 @@ from typing import ClassVar
 import requests
 
 from bulb import Bulb
-from color import Color
+from color import RGB, XY
 
 @dataclass(kw_only=True)
 class LightController(ABC):
@@ -70,7 +70,7 @@ class LightChannel(ABC):
     id: str
     controller: LightController
     brightness: int | float
-    color: Color | None
+    color: RGB | XY | None
     on: bool
 
     state_attrs = ('brightness', 'color', 'on')
@@ -88,7 +88,7 @@ class LightChannel(ABC):
         self, 
         brightness: int | None,
         transition: float | None,
-        color: Color | None,
+        color: RGB | XY | None,
         on: bool | None,
     ) -> None:
         """Build and send command via requests.
@@ -118,7 +118,7 @@ class ChannelUpdate:
     channel: LightChannel
     brightness: int | None
     trans: float | None
-    color: Color | None
+    color: RGB | XY | None
     on: bool | None
 
 @dataclass

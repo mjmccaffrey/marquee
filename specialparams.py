@@ -3,7 +3,7 @@
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
-from lightcontroller import Color
+from lightcontroller import RGB, XY
 
 
 @dataclass
@@ -24,8 +24,8 @@ class ChannelParams(SpecialParams):
     """Parameters for using channels rather than relays."""
     brightness_on: int = 100
     brightness_off: int = 0
-    color_on: Color | None = None
-    color_off: Color | None = None
+    color_on: RGB | XY | None = None
+    color_off: RGB | XY | None = None
     concurrent: bool = True
     speed_factor: float = 1.0
     trans_on: float = 0.5

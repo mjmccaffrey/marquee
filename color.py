@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 
-type Color = XY | RGB
+# type Color = XY | RGB
 
 @dataclass
 class XY:

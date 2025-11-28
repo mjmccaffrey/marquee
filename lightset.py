@@ -8,7 +8,7 @@ from dataclasses import dataclass, InitVar
 
 from bulb import SmartBulb
 from lightcontroller import (
-    ChannelUpdate, Color, LightController, LightChannel,
+    ChannelUpdate, RGB, XY, LightController, LightChannel,
 )
 from relays import RelayModule
 from specialparams import ChannelParams, MirrorParams, SpecialParams
@@ -76,7 +76,7 @@ class LightSet:
             1: max(self.trans_min, 
                    special.trans_on * special.speed_factor),
         }
-        color_values: dict[int, Color | None] = {
+        color_values: dict[int, RGB | XY | None] = {
             0: special.color_off,
             1: special.color_on,
         }
@@ -138,7 +138,7 @@ class LightSet:
             self, 
             brightness: Sequence[int | None] | str | int | None = None,
             transition: Sequence[float | None] | float | None = None,
-            color: Sequence[Color | None] | Color | None = None,
+            color: Sequence[RGB | XY | None] | RGB | XY | None = None,
             on: Sequence[int | bool | str | None] | bool | int | None = None,
             channel_indexes: Sequence[int] | None = None,
             force: bool = False,
@@ -178,7 +178,7 @@ class LightSet:
         channel: LightChannel,
         brightness: int | None = None,
         transition: float | None = None,
-        color: Color | None = None,
+        color: RGB | XY | None = None,
         on: bool | None = None,
     ) -> None:
         """"""
@@ -243,8 +243,8 @@ class LightSet:
     
     def convert_color(
         self,
-        color: Sequence[Color | None] | Color | None,
-    ) -> list[Color | None]:
+        color: Sequence[RGB | XY | None] | RGB | XY | None,
+    ) -> list[RGB | XY | None]:
         """"""
         match color:
             case Sequence():
