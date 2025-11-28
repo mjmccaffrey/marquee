@@ -55,7 +55,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
     def _get_state_of_channels(self) -> dict[str, dict]:
         """Fetch status parameters for all channels."""
         result = self.session.get(
-            url=f'https://{self.ip_address}/resource/light',
+            url=f'https://{self.ip_address}/clip/v2/resource/light',
             timeout=1.0,
         )
         result.raise_for_status()
@@ -109,7 +109,7 @@ class HueChannel(LightChannel):
         )
         return ChannelCommand(
             channel = update.channel,
-            url=f'http://{self.controller.ip_address}/resource/light/{self.id}',
+            url=f'http://{self.controller.ip_address}/clip/v2/resource/light/{self.id}',
             params=params,
         )
 
