@@ -20,6 +20,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
     trans_min: ClassVar[float] = 0.5
     trans_max: ClassVar[float] = 10800.0
 
+    application_key: str
     bulb_ids: Sequence[str]
     channel_count: int = field(init=False)
     channel_first_index: None = None
@@ -29,6 +30,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         """Initialize."""
         print(f"Initializing {self}")
         self.session = requests.Session()
+        self.session.headers = {'hue-application-key': self.application_key}
         self.session.verify = False
         try:
             lights = self._get_state_of_channels()
