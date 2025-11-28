@@ -78,6 +78,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 json=command.params,
                 timeout=1.0,
             )
+            print(command)
             response.raise_for_status()
 
 
