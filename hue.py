@@ -29,6 +29,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         """Initialize."""
         print(f"Initializing {self}")
         self.session = requests.Session()
+        self.session.verify = False
         try:
             lights = self._get_state_of_channels()
         except requests.exceptions.Timeout as e:
