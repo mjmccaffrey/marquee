@@ -103,7 +103,6 @@ class HueChannel(LightChannel):
             update.trans
         )
         params = (
-            ({'id': update.channel.id}) |
             # ({'dimming': {'brightness': update.brightness}} 
             #     if update.brightness is not None else {}) |
             # ({'trans_duration': _trans}
