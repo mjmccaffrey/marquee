@@ -112,7 +112,7 @@ class HueChannel(LightChannel):
         )
         return ChannelCommand(
             channel = update.channel,
-            url=f'http://{self.controller.ip_address}/clip/v2/resource/light/{self.id}',
+            url=f'https://{self.controller.ip_address}/clip/v2/resource/light/{self.id}',
             params=params,
         )
 
