@@ -126,6 +126,17 @@ def register_color_modes(exec: Executor) -> None:
             trans_off=3.0,
         )
     )
+    exec.add_sequence_mode("blue_green_blink_alternate_slow",
+        blink_alternate, delay=5, 
+        special=ChannelParams(
+            brightness_off=25,
+            brightness_on=100,
+            color_off=BLUE,
+            color_on=GREEN,
+            trans_on=2.0,
+            trans_off=3.0,
+        )
+    )
     
 
 def register_relay_modes(exec: Executor) -> None:
