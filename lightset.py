@@ -39,6 +39,9 @@ class LightSet:
         self.extra_pattern = full_pattern[self.light_count:]
         self.brightness_factor = brightness_factor_init
 
+        if isinstance(self.controller.bulb_comp, SmartBulb):
+            self.set_relays(True, smart_bulb_override=True)
+
     @property
     def brightness_factor(self) -> float:
         return self._brightness_factor
