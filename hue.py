@@ -56,6 +56,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             url=f'https://{self.ip_address}/resource/light',
             timeout=1.0,
         )
+        result.raise_for_status()
         json = result.json()
         return {
             light['id']: light
