@@ -109,7 +109,9 @@ def register_color_modes(exec: Executor) -> None:
         "all_red", 
         all_on,
         special=ChannelParams(
+            brightness_on=100,
             color_on=RED,
+            brightness_off=100,
             color_off=BLUE,
         )
     )

@@ -106,8 +106,8 @@ class HueChannel(LightChannel):
             ({'id': update.channel.id}) |
             ({'dimming': {'brightness': update.brightness}} 
                 if update.brightness is not None else {}) |
-            ({'trans_duration': _trans}
-                if update.brightness is not None else {}) |
+            # ({'trans_duration': _trans}
+            #     if update.brightness is not None else {}) |
             ({'on': {'on': str(update.on).lower()}}
                 if update.on is not None else {})
         )
