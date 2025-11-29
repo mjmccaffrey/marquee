@@ -1,10 +1,13 @@
 """Marquee Lighted Sign Project - color"""
 
+from enum import Enum
+
 class Color:
     """Base for colors."""
     x: float
     y: float
     brightness: float
+
 
 class XY(Color):
     """XY color."""
@@ -27,14 +30,16 @@ class RGB(Color):
         self.red = red
         self.green = green
         self.blue = blue
-        self.x, self.y, self.brightness = self.convert_rgb_to_xy()
+        self.x, self.y, self.brightness = self.convert_rgb_to_xy_INCOMPLETE()
 
-    def convert_rgb_to_xy(self) -> tuple[float, float, float]:
+    def convert_rgb_to_xy_INCOMPLETE(self) -> tuple[float, float, float]:
         """Convert RGB to XY."""
         # https://developers.meethue.com/develop/application-design-guidance/
         # color-conversion-formulas-rgb-to-xy-and-back/
 
         red, green, blue = self.red, self.green, self.blue
+        if not(red + green + blue):
+            return 0.0, 0.0, 0.0
         red = (
             pow((red + 0.055) / 1.055, 2.4) 
             if red > 0.04045 else 
@@ -59,7 +64,13 @@ class RGB(Color):
         return x, y, brightness
 
 
-RED = RGB(255, 0, 0)
-GREEN = RGB(0, 255, 0)
-BLUE = RGB(0, 0, 255)
+class Colors(Color, Enum):
+    BLACK = RGB(0, 0, 0)
+    BLUE = RGB(0, 0, 255)
+    CYAN = RGB(0, 255, 255)
+    GREEN = RGB(0, 255, 0)
+    MAGENTA = RGB(255, 0, 255)
+    RED = RGB(255, 0, 0)
+    WHITE = RGB(255, 255, 255)
+    YELLOW = RGB(255, 255, 0)
 

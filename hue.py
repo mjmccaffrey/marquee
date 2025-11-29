@@ -18,8 +18,8 @@ from lightcontroller import (
 class HueBridge(LightController, bulb_comp=HueBulb):
     """Hue bridge controller."""
 
-    trans_min: ClassVar[float] = 0.5
-    trans_max: ClassVar[float] = 10800.0
+    trans_min: ClassVar[float] = 0.5  # ?????????
+    trans_max: ClassVar[float] = 10800.0  # ?????????
 
     application_key: str
     bulb_ids: Sequence[str]
@@ -40,7 +40,6 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             print(f"*** Failed to reach '{self.ip_address}' ***")
             print(f"*** Error: {e} ***")
             raise OSError from None
-
         self.channels = [
             HueChannel(
                 index=i,
@@ -99,23 +98,21 @@ class HueChannel(LightChannel):
 
     def _make_set_command(self, update: ChannelUpdate) -> 'ChannelCommand':
         """Produce dimmer API parameters from provided update."""
-        _trans = (
+        transition = (
             self.controller.trans_min
                 if update.trans is None else
             update.trans
-        )
+        ) * 1000
         params = (
+            ({'color': {'xy': {
+                    'x': update.color.x,
+                    'y': update.color.y,}}}
+                if update.color is not None else {}) | 
             ({'dimming': {'brightness': update.brightness}} 
                 if update.brightness is not None else {}) |
-            # ({'trans_duration': _trans}
-            #     if update.brightness is not None else {}) |
-            ({'color': 
-                {'xy': 
-                    {'x': update.color.x,
-                     'y': update.color.y}}}
-                if update.color is not None else {}) | 
             ({'on': {'on': update.on}}
-                if update.on is not None else {})
+                if update.on is not None else {}) |
+            {'dynamics': {'duration': transition}}
         )
         return ChannelCommand(
             channel = update.channel,

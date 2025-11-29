@@ -26,9 +26,9 @@ class ChannelParams(SpecialParams):
     color_on: Color | None = None
     color_off: Color | None = None
     concurrent: bool = True
-    speed_factor: float = 1.0
-    trans_on: float = 0.5
-    trans_off: float = 0.5
+    speed_factor: float = 1.0  # ?????
+    trans_on: float = 0.5  # ?????
+    trans_off: float = 0.5  # ?????
 
 @dataclass
 class MirrorParams(SpecialParams):

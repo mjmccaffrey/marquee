@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - register_modes"""
 
-from color import RED, GREEN, BLUE
+from color import Colors
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes.background_modes import SequenceBGMode, ModeEntry
@@ -110,31 +110,20 @@ def register_color_modes(exec: Executor) -> None:
         all_on,
         special=ChannelParams(
             brightness_on=100,
-            color_on=RED,
+            color_on=Colors.RED,
             brightness_off=100,
-            color_off=BLUE,
+            color_off=Colors.BLUE,
         )
     )
     exec.add_sequence_mode("red_blue_blink_alternate_slow",
-        blink_alternate, delay=10, 
-        special=ChannelParams(
-            brightness_off=50,
-            brightness_on=100,
-            color_off=BLUE,
-            color_on=RED,
-            trans_on=2.0,
-            trans_off=3.0,
-        )
-    )
-    exec.add_sequence_mode("blue_green_blink_alternate_slow",
         blink_alternate, delay=5, 
         special=ChannelParams(
-            brightness_off=25,
+            brightness_off=100,
             brightness_on=100,
-            color_off=BLUE,
-            color_on=GREEN,
-            trans_on=2.0,
-            trans_off=3.0,
+            color_off=Colors.YELLOW,
+            color_on=Colors.RED,
+            trans_on=0.0,
+            trans_off=0.0,
         )
     )
     

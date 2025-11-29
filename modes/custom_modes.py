@@ -7,6 +7,7 @@ import itertools
 import random
 import time
 
+from color import XY
 from lightset_misc import (
     ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT,
 )
@@ -197,7 +198,7 @@ class SilentFadeBuild(PlayMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        self.preset_devices(relays=True)
+        self.player.lights.set_channels(brightness=0)
  
     def execute(self) -> None:
         """Perform SilentFadeBuild indefinitely."""
@@ -215,6 +216,7 @@ class SilentFadeBuild(PlayMode):
                                 self.lights.set_channels,
                                 brightness=brightness,
                                 transition=1.0,
+                                color=XY(random.random(), random.random(), random.random() * 100),
                                 channel_indexes=lights,
                             ),
                             due,
