@@ -5,9 +5,10 @@ from dataclasses import dataclass, field
 from typing import ClassVar
 
 import requests
+import urllib3
 
 from bulb import HueBulb
-from color import RGB, XY
+from color import Color
 from lightcontroller import (
     ChannelUpdate, ChannelCommand, 
     LightController, LightChannel,
@@ -32,6 +33,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         self.session = requests.Session()
         self.session.headers = {'hue-application-key': self.application_key}
         self.session.verify = False
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         try:
             lights = self._get_state_of_channels()
         except requests.exceptions.Timeout as e:
@@ -125,7 +127,7 @@ class HueChannel(LightChannel):
         self, 
         brightness: int | None,
         transition: float | None,
-        color: RGB | XY | None,
+        color: Color | None,
         on: bool | None,
     ) -> None:
         """Build and send command via requests.

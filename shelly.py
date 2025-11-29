@@ -10,9 +10,10 @@ import aiohttp
 import requests
 
 from bulb import DimBulb
+from color import Color
 from lightcontroller import (
     ChannelUpdate, ChannelCommand, 
-    RGB, XY, LightController, LightChannel,
+    LightController, LightChannel,
 )
 
 @dataclass(kw_only=True)
@@ -176,7 +177,7 @@ class ShellyChannel(LightChannel):
         self, 
         brightness: int | None,
         transition: float | None,
-        color: RGB | XY | None,
+        color: Color | None,
         on: bool | None,
     ) -> None:
         """Build and send command via requests.
