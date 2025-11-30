@@ -15,12 +15,16 @@ from sequences import (
     rotate, random_flip, rotate_sides,
 )
 from signs_song import SignsSong
+from christmas import ChristmasSongs
 from specialparams import ChannelParams, MirrorParams
 
 
 def register_modes(exec: Executor) -> None:
     """Register all modes."""
     register_special_modes(exec)
+
+    exec.add_mode("christmas", ChristmasSongs)
+
     register_color_modes(exec)
     register_relay_modes(exec)
     # register_interactive_modes(exec)
