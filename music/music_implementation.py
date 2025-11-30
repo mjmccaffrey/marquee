@@ -195,7 +195,8 @@ def _dimmer(brightness: list[int]) -> Callable:
 def _channel_sequence(brightness: int, trans: float) -> Callable:
     """Return callable to effect state of specified channels."""
     def func(lights: list[int]):
-        player.lights.set_channel_subset(lights, brightness, trans)
+        pass
+        # player.lights.set_channel_subset(lights, brightness, trans)
     return func
 
 
@@ -203,7 +204,7 @@ def _channel_sequence_flip(trans: float) -> Callable:
     """Return callable to flip state of specified channels."""
     def func(lights: list[int]):
         brightness = 0 if player.lights.brightnesses()[lights[0]] else 100
-        player.lights.set_channel_subset(lights, brightness, trans)
+        # player.lights.set_channel_subset(lights, brightness, trans)
     return func
 
 
