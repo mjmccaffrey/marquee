@@ -103,6 +103,7 @@ class HueChannel(LightChannel):
                 if update.trans is None else
             update.trans
         ) * 1000
+        print("!!!!! COLOR: ", update.color)
         params = (
             ({'color': {'xy': {
                     'x': update.color.x,
