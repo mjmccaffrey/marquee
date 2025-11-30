@@ -18,7 +18,8 @@ from sequences import (
     random_flip,
     rotate_sides,
 )
-from signs_song import SignsSong
+# from signs_song import SignsSong
+from christmas import ChristmasSongs
 
 def register_modes(exec: Executor):
     """Register all operating modes."""
@@ -186,7 +187,8 @@ def register_modes(exec: Executor):
         special=DimmerParams(concurrent=True),
     )
     exec.add_sequence_mode("section_3", all_off)
-    exec.add_mode("signs", SignsSong, special=DimmerParams())
+    # exec.add_mode("signs", SignsSong, special=DimmerParams())
+    exec.add_mode("christmas", ChristmasSongs)
     exec.add_sequence_mode("section_4", all_off)
 
     # ********** SILENT SIGN **********
