@@ -1,7 +1,5 @@
 """Marquee Lighted Sign Project - signs_song"""
 
-import time
-
 from lightset_misc import ALL_OFF, ALL_LOW, ALL_ON
 from modes.playmode import PlayMode
 from music import (
@@ -18,10 +16,8 @@ class ChristmasSongs(PlayMode):
 
     def execute(self) -> None:
         """Perform Christmas songs."""
-        # self.lights.set_channels(brightness=0, force=True)
         set_player(self.player)
-        # time.sleep(0.75) !!!
-        songs = [
+        songs: list[Section] = [
             self.jingle_bells(),
         ]
         for song in songs:

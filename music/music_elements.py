@@ -68,7 +68,7 @@ class ReleasableNote(BaseNote, ABC):
 
     def schedule_release(self, player: PlayerInterface) -> None:
         """Schedule release of played note."""
-        assert isinstance(self.instrument, ReleaseableInstrument)
+        assert issubclass(self.instrument, ReleaseableInstrument)
         player.event_queue.push(
             Event(
                 action = partial(self.release, player),
