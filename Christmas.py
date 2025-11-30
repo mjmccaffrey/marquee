@@ -12,7 +12,6 @@ from music import (
 from sequences import all_on, blink_all, random_each
 from specialparams import ActionParams, ChannelParams
 
-
 class ChristmasSongs(PlayMode):
     """Christmas songs."""
 
