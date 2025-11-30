@@ -202,7 +202,6 @@ class SilentFadeBuild(PlayMode):
  
     def execute(self) -> None:
         """Perform SilentFadeBuild indefinitely."""
-        self.lights.set_relays(ALL_ON)
         due = 0.0
         while True:
             for rows in (False, True):
