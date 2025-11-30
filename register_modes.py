@@ -121,7 +121,7 @@ def register_color_modes(exec: Executor) -> None:
             brightness_off=100,
             brightness_on=100,
             color_off=Colors.YELLOW,
-            color_on=Colors.RED,
+            color_on=Colors.BLUE,
             trans_on=0.0,
             trans_off=0.0,
         )
