@@ -98,7 +98,7 @@ class HueChannel(LightChannel):
 
     def _make_set_command(self, update: ChannelUpdate) -> 'ChannelCommand':
         """Produce dimmer API parameters from provided update."""
-        transition = (
+        transition = int(
             self.controller.trans_min
                 if update.trans is None else
             update.trans
