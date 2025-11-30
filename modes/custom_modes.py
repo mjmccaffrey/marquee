@@ -212,7 +212,7 @@ class SilentFadeBuild(PlayMode):
                     for lights in lights_in_groups(rows, from_top_left):
                         self.schedule(
                             partial(
-                                self.lights.set_channels,
+                                self.player.lights.set_channels,
                                 brightness=brightness,
                                 transition=1.0,
                                 color=XY(random.random(), random.random(), random.random() * 100),
