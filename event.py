@@ -9,7 +9,7 @@ class Event:
     """Scheduled event."""
     due: float
     owner: object 
-    action: Callable
+    action: Callable = field(compare=False)
     name: str = ''
 
     def __repr__(self) -> str:
