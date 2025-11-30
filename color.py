@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - color"""
 
-from enum import Enum
+from types import SimpleNamespace
 
 class Color:
     """Base for colors."""
@@ -64,13 +64,13 @@ class RGB(Color):
         return x, y, brightness
 
 
-class Colors(Color, Enum):
-    BLACK = RGB(0, 0, 0)
-    BLUE = RGB(0, 0, 255)
-    CYAN = RGB(0, 255, 255)
-    GREEN = RGB(0, 255, 0)
-    MAGENTA = RGB(255, 0, 255)
-    RED = RGB(255, 0, 0)
-    WHITE = RGB(255, 255, 255)
-    YELLOW = RGB(255, 255, 0)
-
+Colors = SimpleNamespace(
+    BLACK=RGB(0, 0, 0),
+    BLUE=RGB(0, 0, 255),
+    CYAN=RGB(0, 255, 255),
+    GREEN=RGB(0, 255, 0),
+    MAGENTA=RGB(255, 0, 255),
+    RED=RGB(255, 0, 0),
+    WHITE=RGB(255, 255, 255),
+    YELLOW=RGB(255, 255, 0),
+)
