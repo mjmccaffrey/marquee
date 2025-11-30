@@ -2,7 +2,6 @@
 
 from dataclasses import dataclass
 
-from .background_modes import SequenceBGMode
 from .foregroundmode import ForegroundMode
 from button import Button
 from modes.mode_misc import ModeIndex
