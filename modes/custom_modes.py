@@ -13,33 +13,32 @@ from lightset_misc import (
 )
 from music.music_notation import Bell
 from .playmode import PlayMode
-from .playmusicmode import PlayMusicMode
 from sequences import lights_in_groups, opposite, rotate
 from specialparams import ChannelParams
 
 
-@dataclass(kw_only=True)
-class BellTest(PlayMusicMode):
-    """Test all bells."""
+# @dataclass(kw_only=True)
+# class BellTest(PlayMusicMode):
+#     """Test all bells."""
 
-    def __post_init__(self) -> None:
-        """Initialize."""
-        self.preset_devices()
+#     def __post_init__(self) -> None:
+#         """Initialize."""
+#         self.preset_devices()
 
-    def execute(self) -> None:
-        """Perform bell test."""
-        for pitch in range(self.bells.pitch_levels):
-            due = 0.5 * pitch
-            self.schedule(
-                action = partial(self.bells.play, {pitch}),
-                due = due,
-                name = f"BellTest play {pitch}",
-            )
-            self.schedule(
-                action = partial(self.bells.release, {pitch}),
-                due = due + self.bells.release_time,
-                name = f"BellTest release {pitch}",
-            )
+#     def execute(self) -> None:
+#         """Perform bell test."""
+#         for pitch in range(self.bells.pitch_levels):
+#             due = 0.5 * pitch
+#             self.schedule(
+#                 action = partial(self.bells.play, {pitch}),
+#                 due = due,
+#                 name = f"BellTest play {pitch}",
+#             )
+#             self.schedule(
+#                 action = partial(self.bells.release, {pitch}),
+#                 due = due + self.bells.release_time,
+#                 name = f"BellTest release {pitch}",
+#             )
             
 
 @dataclass(kw_only=True)
