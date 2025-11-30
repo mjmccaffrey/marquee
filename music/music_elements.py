@@ -237,5 +237,6 @@ class Section(Element):
 
     def play(self, tempo: int = 0) -> None:
         """Play already-generated measures comprising Section."""
+        print("SECTION.PLAY")
         self.play_measures(self.measures, tempo or self.tempo)
 
