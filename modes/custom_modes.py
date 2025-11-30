@@ -203,26 +203,30 @@ class SilentFadeBuild(PlayMode):
     def execute(self) -> None:
         """Perform SilentFadeBuild indefinitely."""
         due = 0.0
-        while True:
-            for rows in (False, True):
-                for from_top_left, brightness in (
-                    (True, 100), (False, 0),
-                    (False, 100), (True, 0),
-                ):
-                    for lights in lights_in_groups(rows, from_top_left):
-                        self.schedule(
-                            partial(
-                                self.player.lights.set_channels,
-                                brightness=brightness,
-                                transition=1.0,
-                                color=XY(random.random(), random.random(), random.random() * 100),
-                                channel_indexes=lights,
-                            ),
-                            due,
-                        )
-                        due += 0.5
-                    due += 1.0
+        for rows in (False, True):
+            for from_top_left, brightness in (
+                (True, 100), (False, 0),
+                (False, 100), (True, 0),
+            ):
+                for lights in lights_in_groups(rows, from_top_left):
+                    self.schedule(
+                        partial(
+                            self.player.lights.set_channels,
+                            brightness=brightness,
+                            transition=1.0,
+                            color=XY(random.random(), random.random(), random.random() * 100),
+                            channel_indexes=lights,
+                        ),
+                        due,
+                    )
+                    due += 0.5
                 due += 1.0
+            due += 1.0
+        self.schedule(
+            self.execute,
+            due,
+            name="SilentFadeBuild repeat",
+        )
 
 
 @dataclass(kw_only=True)
