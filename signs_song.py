@@ -3,7 +3,7 @@
 import time
 
 from lightset_misc import ALL_OFF, ALL_LOW, ALL_ON
-from modes.playmusicmode import PlayMusicMode
+from modes.playmode import PlayMode
 from music import (
     act_part, bell_part, drum_part, sequence_part,
     dimmer_sequence_flip, section, Section, sequence,
@@ -12,7 +12,7 @@ from sequences import all_on, blink_all, random_each
 from specialparams import ActionParams, ChannelParams
 
 
-class SignsSong(PlayMusicMode):
+class SignsSong(PlayMode):
     """Signs song."""
 
     def execute(self) -> None:
