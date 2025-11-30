@@ -18,7 +18,7 @@ class ChristmasSongs(PlayMode):
 
     def execute(self) -> None:
         """Perform Christmas songs."""
-        self.lights.set_channels(brightness=0, force=True)
+        # self.lights.set_channels(brightness=0, force=True)
         set_player(self.player)
         # time.sleep(0.75) !!!
         songs = [
