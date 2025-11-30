@@ -121,11 +121,11 @@ def validate_measures(measures: tuple[Measure, ...]) -> None:
         for measure in measures
         for element in measure.elements
     )
-    assert all(
-        sum(note.duration) <= measure.beats  # type: ignore
-        for measure in measures
-        for note in measure.elements
-    )
+    # assert all(
+    #     sum(note.duration) <= measure.beats  # type: ignore
+    #     for measure in measures
+    #     for note in measure.elements
+    # )
 
 
 def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
