@@ -79,10 +79,10 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 json=command.params,
                 timeout=1.0,
             )
-            print('*********')
-            print(command.url)
-            print(command.params)
-            print('*********')
+            # print('*********')
+            # print(command.url)
+            # print(command.params)
+            # print('*********')
             response.raise_for_status()
 
 
@@ -103,7 +103,6 @@ class HueChannel(LightChannel):
                 if update.trans is None else
             update.trans
         ) * 1000
-        print("!!!!! COLOR: ", update.color)
         params = (
             ({'color': {'xy': {
                     'x': update.color.x,

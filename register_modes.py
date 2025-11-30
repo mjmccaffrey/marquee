@@ -5,7 +5,7 @@ from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes.background_modes import SequenceBGMode, ModeEntry
 from modes.custom_modes import (
-    BellTest, EvenOddFade, RotateReversible, 
+    EvenOddFade, RotateReversible, 
     RandomFade, RotateRewind, SilentFadeBuild,
 )
 from modes.mode_misc import ModeIndex
@@ -204,7 +204,7 @@ def register_silent_modes(exec: Executor) -> None:
 
 def register_test_modes(exec: Executor) -> None:
     """"""
-    exec.add_mode("bell_test", BellTest)
+    # exec.add_mode("bell_test", BellTest)
 
 
 def register_pyohio_2025_presentation_modes(exec: Executor) -> None:

@@ -40,8 +40,11 @@ class LightSet:
         self.extra_pattern = full_pattern[self.light_count:]
         self.brightness_factor = brightness_factor_init
 
-        if isinstance(self.controller.bulb_comp, SmartBulb):
-            self.set_relays(True, smart_bulb_override=True)
+        if issubclass(self.controller.bulb_comp, SmartBulb):
+            self.set_relays(light_pattern=True, smart_bulb_override=True)
+            print("***** Smart bulbs in use - light relays preset to ON. *****")
+        else:
+            print("***** Standard bulbs in use. *****")  
 
     @property
     def brightness_factor(self) -> float:
