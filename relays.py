@@ -9,6 +9,8 @@ import serial  # type: ignore
 class RelayModuleInterface(ABC):
     """Interface for any relay module."""
     
+    relay_count: ClassVar[int]  # Abstract
+
     @abstractmethod
     def set_state_of_devices(self, device_pattern: Sequence):
         """Set state of each relay per device_pattern."""
