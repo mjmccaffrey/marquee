@@ -18,7 +18,7 @@ class ChristmasSongs(PlayMusicMode):
             self.jingle_bells(),
         ]
         for song in songs:
-            song.play(tempo=75)
+            song.play(tempo=120)
 
     def jingle_bells(self) -> Section:
         """Jingle Bells."""
