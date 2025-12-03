@@ -2,6 +2,8 @@
 
 from dataclasses import dataclass, field
 
+import rgbxy
+
 def default_adjustments() -> dict[str, int]:
     """Return default brightness adjustments."""
     return {
@@ -10,7 +12,7 @@ def default_adjustments() -> dict[str, int]:
         'A': 100, 'F': 25,
     }
 
-@dataclass
+@dataclass(kw_only=True)
 class Bulb:
     """ABC for any light bulb."""
     wattage_actual: float
@@ -23,19 +25,20 @@ class DimBulb(Bulb):
 class SmartBulb(Bulb):
     """Base for smart bulbs such as Hue."""
 
+@dataclass(kw_only=True)
 class HueBulb(SmartBulb):
     """Hue bulbs."""
-
+    gamut: rgbxy.Gamut
+    
 Halco_S14_Transparent_Colored = DimBulb(
     wattage_actual=11,
     wattage_reference=11,
 )
-
 Hue_BR30_Enhanced_Color = HueBulb(
     wattage_actual=12.5,
     wattage_reference=85,
+    gamut = rgbxy.GamutC,
 )
-
 Sylvania_G25_Frosted_40 = DimBulb(
     wattage_actual=40,
     wattage_reference=40,

@@ -21,7 +21,6 @@ class SelectMode(ForegroundMode, ABC):
     def __post_init__(self) -> None:
         """Initialize."""
         ForegroundMode.__post_init__(self) # !!!
-        # Do not self.preset_devices(channels=True)
 
     def setup(
         self,
@@ -61,9 +60,10 @@ class SelectMode(ForegroundMode, ABC):
     def execute(self) -> None:
         """Return user's final selection if made, otherwise None."""
         print(f"SelectMode.execute {self.previous=} {self.desired=}")
-        if (
+        if (    # The desired mode was not changed last go-around.
                 self.desired != self.previous_desired 
-            and self.desired > 0  # WHY ???
+                # If special mode, change mode immediately.
+            and self.desired > 0 
         ):
             # Not last pass.
             # Show user what desired mode number is currently selected.

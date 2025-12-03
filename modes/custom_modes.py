@@ -7,7 +7,7 @@ import itertools
 import random
 import time
 
-from color import XY
+from hue import HueBridge
 from lightset_misc import (
     ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT,
 )
@@ -208,12 +208,13 @@ class SilentFadeBuild(PlayMode):
                 (False, 100), (True, 0),
             ):
                 for lights in lights_in_groups(rows, from_top_left):
+                    assert isinstance(self.player.lights.controller, HueBridge)
                     self.schedule(
                         partial(
                             self.player.lights.set_channels,
                             brightness=brightness,
                             transition=1.0,
-                            color=XY(random.random(), random.random(), random.random() * 100),
+                            color=self.player.lights.controller.random_color(),
                             channel_indexes=lights,
                         ),
                         due,

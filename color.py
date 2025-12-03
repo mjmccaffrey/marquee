@@ -6,17 +6,17 @@ class Color:
     """Base for colors."""
     x: float
     y: float
-    brightness: float
+    # brightness: float
 
 
 class XY(Color):
     """XY color."""
 
-    def __init__(self, x: float, y: float, brightness: float) -> None:
+    def __init__(self, x: float, y: float) -> None:
         """Initialize."""
         self.x = x
         self.y = y
-        self.brightness = brightness
+        # self.brightness = brightness
 
 
 class RGB(Color):
@@ -30,7 +30,7 @@ class RGB(Color):
         self.red = red
         self.green = green
         self.blue = blue
-        self.x, self.y, self.brightness = self.convert_rgb_to_xy_INCOMPLETE()
+        # self.x, self.y, self.brightness = self.convert_rgb_to_xy_INCOMPLETE()
 
     def convert_rgb_to_xy_INCOMPLETE(self) -> tuple[float, float, float]:
         """Convert RGB to XY."""
@@ -62,7 +62,6 @@ class RGB(Color):
         y = _y / (_x + _y + _z)
         brightness = _y
         return x, y, brightness
-
 
 Colors = SimpleNamespace(
     BLACK=RGB(0, 0, 0),
