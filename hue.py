@@ -60,7 +60,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         """Fetch status parameters for all channels."""
         result = self.session.get(
             url=f'https://{self.ip_address}/clip/v2/resource/light',
-            timeout=1.0,
+            timeout=2.0,
         )
         result.raise_for_status()
         json = result.json()
@@ -80,7 +80,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             response = self.session.put(
                 url=command.url,
                 json=command.params,
-                timeout=1.0,
+                timeout=2.0,
             )
             # print('*********')
             # print(command.url)
@@ -146,7 +146,7 @@ class HueChannel(LightChannel):
         response = self.controller.session.put(
             url=command.url,
             params=command.params,
-            timeout=1.0,
+            timeout=2.0,
         )
         response.raise_for_status()
         self.update_state(update)
