@@ -148,11 +148,11 @@ class Player(PlayerInterface):
             if self.event_queue:
                 event = self.event_queue.peek()
                 if event.due < now:
-                    print(f"Running {event} {now - event.due} late")
+                    # print(f"Running {event} {now - event.due} late")
                     self.event_queue.pop()
                     return event, 0
                 elif seconds is None or event.due < end:
-                    print(f"Waiting for {event} or button push")
+                    # print(f"Waiting for {event} or button push")
                     return None, event.due - now
                 else:
                     print(f"Waiting for remaining {remaining} or button push; queue not empty")

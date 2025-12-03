@@ -204,8 +204,8 @@ class SilentFadeBuild(PlayMode):
         due = 0.0
         for rows in (False, True):
             for from_top_left, brightness in (
-                (True, 100), (False, 0),
-                (False, 100), (True, 0),
+                (True, random.randrange(50, 101)), (False, random.randrange(0, 49)),
+                (False, random.randrange(50, 101)), (True, random.randrange(0, 49)),
             ):
                 for lights in lights_in_groups(rows, from_top_left):
                     assert isinstance(self.player.lights.controller, HueBridge)
