@@ -64,7 +64,7 @@ class Game:
 
         old = entity.coordinate
         self.lights.set_channels(
-            color=Colors.BLUE,
+            color=XY(0.0, 0.0),
             channel_indexes=[old],
         )
 
