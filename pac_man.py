@@ -18,10 +18,11 @@ class PacMan(Character):
     """"""
     color: RGB = Colors.YELLOW
 
-    def execute(self, current_location: Location):
+    def execute(self):
         """Take turn."""
 
         print("PAC-MAN EXECUTE")
+        print(self.game.board[self.coordinate])
         # TEST: NO MOMENTUM
         keystrokes = {'l': 'left', 'r': 'right', 'u': 'up', 'd': 'down'}
         direction = input("move:").lower()
@@ -30,7 +31,7 @@ class PacMan(Character):
                 dest = None
             case key if key in keystrokes:
                 dest = getattr(
-                    current_location,
+                    self.game.board[self.coordinate],
                     keystrokes[key],
                 )
             case _:
