@@ -16,7 +16,7 @@ class Dot(Entity):
 @dataclass(kw_only=True)
 class PacMan(Character):
     """"""
-    color: RGB = Colors.YELLOW
+    color: RGB = RGB(252, 234, 63)
 
     def execute(self):
         """Take turn."""
@@ -64,12 +64,12 @@ class PacManGame(PlayMode):
     def setup(self) -> None:
         """"""
         board_12 = {
-            0: Location(right=1, down=11),
+            0: Location(left=11, right=1, down=11),
             1: Location(left=0, right=2),
-            2: Location(left=1, down=3),
-            3: Location(left=2, right=4, down=4),
+            2: Location(left=1, right=3, down=3),
+            3: Location(left=2, down=4),
             4: Location(up=3, down=5),
-            5: Location(up=4, left=6),
+            5: Location(up=4, down=6, left=6),
             6: Location(left=7, right=5, up=5),
             7: Location(left=8, right=6),
             8: Location(left=9, right=7, up=9),
