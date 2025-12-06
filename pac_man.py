@@ -22,7 +22,6 @@ class PacMan(Character):
         """Take turn."""
 
         print("PAC-MAN EXECUTE")
-        print(self.game.board[self.coordinate])
         # TEST: NO MOMENTUM
         keystrokes = {'l': 'left', 'r': 'right', 'u': 'up', 'd': 'down'}
         direction = input("move:").lower()

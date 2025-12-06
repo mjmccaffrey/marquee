@@ -82,10 +82,10 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 json=command.params,
                 timeout=2.0,
             )
-            # print('*********')
-            # print(command.url)
-            # print(command.params)
-            # print('*********')
+            print('*********')
+            print(command.url)
+            print(command.params)
+            print('*********')
             response.raise_for_status()
 
     def random_color(self):
