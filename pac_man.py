@@ -78,18 +78,18 @@ class PacManGame(PlayMode):
         }
         controller = self.player.lights.controller
         assert isinstance(controller, HueBridge)
-        game = Game(
+        self.game = Game(
             converter=controller.converter,
             lights=self.player.lights,
             schedule=self.schedule,
             board=board_12,
         )
-        game.create(entity_type=PacMan, coordinate=7)
+        self.game.create(entity_type=PacMan, coordinate=7)
         for l in board_12.keys() - {7}:
-            game.create(entity_type=Dot, coordinate=l)
+            self.game.create(entity_type=Dot, coordinate=l)
 
     def execute(self) -> None:
         """"""
         self.setup()
-        self.execute()        
+        self.game.execute()        
 
