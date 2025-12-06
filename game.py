@@ -61,6 +61,14 @@ class Game:
 
     def move(self, entity: Entity, coordinate: int):
         """Move entity to coordinate."""
+
+        old = entity.coordinate
+        self.lights.set_channels(
+            brightness=100,
+            color=XY(0, 0),
+            channel_indexes=[old],
+        )
+
         self.board[entity.coordinate].entity = None
         entity.coordinate = coordinate
         self._place(entity=entity)
