@@ -6,7 +6,7 @@ from lightset_misc import LIGHT_COUNT
 from modes.background_modes import SequenceBGMode, ModeEntry
 from modes.custom_modes import (
     EvenOddFade, RotateReversible, 
-    RandomFade, RotateRewind, SilentFadeBuild,
+    RandomFade, SilentFadeBuild,
 )
 from modes.mode_misc import ModeIndex
 from modes.select_modes import BrightnessSelectMode, ModeSelectMode
@@ -88,9 +88,6 @@ def register_channel_modes(exec: Executor):
             trans_on=1.0,
             trans_off=1.0,
         )
-    )
-    exec.add_mode("rotate_rewind_1", RotateRewind, 
-        pattern="100000100000", special=MirrorParams(),
     )
 
 

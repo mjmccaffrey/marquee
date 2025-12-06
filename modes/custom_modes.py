@@ -1,6 +1,5 @@
 """Marquee Lighted Sign Project - custom_modes"""
 
-from collections.abc import Iterator
 from dataclasses import dataclass
 from functools import partial
 import itertools
@@ -63,47 +62,6 @@ class RotateReversible(PlayMode):
         self.pattern = (
             self.pattern[self.direction:] + self.pattern[:self.direction]
         )
-
-
-@dataclass(kw_only=True)
-class RotateRewind(PlayMode):
-    """Rotate a pattern at a decreasing speed, and then rewind."""
-    pattern: str = "1" + "0" * (LIGHT_COUNT - 1)
-    clockwise: bool = True
-    start_pace: float = 0.1
-    special: ChannelParams | None = None
-
-    def __post_init__(self) -> None:
-        """Initialize."""
-        self.preset_devices(
-            channels=(self.special is None),
-            relays=(self.special is not None),
-        )
-
-    @staticmethod
-    def _spin_pace(start: float) -> Iterator[float]:
-        """Return a series of spin pace values."""
-        pace = start
-        while pace < 1.75:
-            yield pace
-            pace *= 1.1
-
-    def execute(self) -> None:
-        """Perform RotateRewind indefinitely."""
-        values = [
-            (pattern, pace)
-            for pattern, pace  in zip(
-                itertools.cycle(rotate(self.pattern, self.clockwise)),
-                self._spin_pace(self.start_pace),
-            )
-        ]
-        values.extend(reversed(values[1:-1]))
-        for index, (pattern, pace) in enumerate(itertools.cycle(values)):
-            self.schedule(
-                partial(self.lights.set_relays, pattern, special=self.special),
-                index * pace,
-                name=f"RotateRewind set_relays {pattern}",
-            )
 
 
 @dataclass(kw_only=True)

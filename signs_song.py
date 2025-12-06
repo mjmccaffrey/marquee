@@ -1,7 +1,5 @@
 """Marquee Lighted Sign Project - signs_song"""
 
-import time
-
 from lightset_misc import ALL_OFF, ALL_LOW, ALL_ON
 from modes.playmode import PlayMode
 from music import (

@@ -63,13 +63,13 @@ class RGB(Color):
         brightness = _y
         return x, y, brightness
 
-Colors = SimpleNamespace(
-    BLACK=RGB(0, 0, 0),
-    BLUE=RGB(0, 0, 255),
-    CYAN=RGB(0, 255, 255),
-    GREEN=RGB(0, 255, 0),
-    MAGENTA=RGB(255, 0, 255),
-    RED=RGB(255, 0, 0),
-    WHITE=RGB(255, 255, 255),
-    YELLOW=RGB(255, 255, 0),
-)
+class Colors:
+    BLACK=RGB(0, 0, 0)
+    BLUE=RGB(0, 0, 255)
+    CYAN=RGB(0, 255, 255)
+    GREEN=RGB(0, 255, 0)
+    MAGENTA=RGB(255, 0, 255)
+    RED=RGB(255, 0, 0)
+    WHITE=RGB(255, 255, 255)
+    YELLOW=RGB(255, 255, 0)
+

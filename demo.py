@@ -4,25 +4,26 @@ from dataclasses import dataclass
 import sys
 
 from lightset_misc import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
-from modes.playmusicmode import PlayMusicMode
 from music import (
     dimmer, dimmer_sequence, light, measure, part, play,
-    section, Section, sequence,
+    section, Section, sequence, set_player
 )
 from music import(
     act, act_part, drum_part,
     rest, sequence_measure, sequence_part
 )
+from modes.playmode import PlayMode
 from sequences import *
 from specialparams import ActionParams, ChannelParams
 
 
 @dataclass
-class Demo(PlayMusicMode):
+class Demo(PlayMode):
     """Version 3 demo."""
 
     def __post_init__(self) -> None:
         """Initialize."""
+        set_player(self.player)
         self.preset_devices(channels=True, relays=True)
 
     def execute(self) -> None:
