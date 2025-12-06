@@ -75,7 +75,7 @@ class PacManGame(PlayMode):
         }
 
         game = Game(
-            lights=self.lights,
+            lights=self.player.lights,
             schedule=self.schedule,
             board=board_12,
         )
