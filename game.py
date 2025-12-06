@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
-from color import Color, RGB, XY
+from color import Color, Colors, RGB, XY
 from lightset import LightSet
 import rgbxy
 
@@ -64,7 +64,7 @@ class Game:
 
         old = entity.coordinate
         self.lights.set_channels(
-            on=False,
+            color=Colors.BLUE,
             channel_indexes=[old],
         )
 

@@ -63,7 +63,6 @@ class RGB(Color):
         return x, y, brightness
 
 class Colors:
-    BLACK=RGB(0, 0, 0)
     BLUE=RGB(0, 0, 255)
     CYAN=RGB(0, 255, 255)
     GREEN=RGB(0, 255, 0)
