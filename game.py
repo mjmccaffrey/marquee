@@ -49,7 +49,6 @@ class Game:
         """Play the game."""
         for character in self.characters:
             character.execute()
-        self.schedule(self.execute, 1.0, 'Game tick')
 
     def create(self, entity_type: type[Entity], coordinate: int):
         """Create entity. Convert color. Place on board."""

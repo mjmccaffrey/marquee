@@ -21,6 +21,7 @@ class PacMan(Character):
     def execute(self, current_location: Location):
         """Take turn."""
 
+        print("PAC-MAN EXECUTE")
         # TEST: NO MOMENTUM
         keystrokes = {'l': 'left', 'r': 'right', 'u': 'up', 'd': 'down'}
         direction = input("move:").lower()
@@ -36,6 +37,7 @@ class PacMan(Character):
                 raise ValueError(direction)
         if dest is not None:
             self._move(dest)
+        self.game.schedule(self.game.execute, 1.0, 'Game tick')
 
     def _move(self, destination: int) -> None:
         """"""
