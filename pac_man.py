@@ -4,6 +4,7 @@ from color import Colors, RGB
 from dataclasses import dataclass
 
 from game import Character, Entity, Game, Location
+from hue import HueBridge
 from modes.playmode import PlayMode
 
 @dataclass(kw_only=True)
@@ -73,8 +74,10 @@ class PacManGame(PlayMode):
             10: Location(up=11, down=9),
             11: Location(right=0, up=0, down=10),
         }
-
+        controller = self.player.lights.controller
+        assert isinstance(controller, HueBridge)
         game = Game(
+            converter=controller.converter,
             lights=self.player.lights,
             schedule=self.schedule,
             board=board_12,

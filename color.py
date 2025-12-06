@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - color"""
 
-from types import SimpleNamespace
+import rgbxy
 
 class Color:
     """Base for colors."""
@@ -30,7 +30,6 @@ class RGB(Color):
         self.red = red
         self.green = green
         self.blue = blue
-        # self.x, self.y, self.brightness = self.convert_rgb_to_xy_INCOMPLETE()
 
     def convert_rgb_to_xy_INCOMPLETE(self) -> tuple[float, float, float]:
         """Convert RGB to XY."""

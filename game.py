@@ -4,14 +4,15 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
-from color import RGB
+from color import Color, RGB, XY
 from lightset import LightSet
+import rgbxy
 
 
 @dataclass(kw_only=True)
 class Entity(ABC):
     """Entities are always displayed."""
-    color: RGB
+    color: Color
     game: 'Game'
     coordinate: int
 
@@ -37,6 +38,7 @@ class Location:
 @dataclass(kw_only=True)
 class Game:
     """"""
+    converter: rgbxy.Converter
     lights: LightSet
     schedule: Callable[[Callable, float, str], None]
     board: dict[int, Location]
@@ -50,8 +52,10 @@ class Game:
         self.schedule(self.execute, 1.0, 'Game tick')
 
     def create(self, entity_type: type[Entity], coordinate: int):
-        """"""
+        """Create entity. Convert color. Place on board."""
         entity = entity_type(game=self, coordinate=coordinate)  # type: ignore
+        if isinstance(c := entity.color, RGB):
+            entity.color = XY(*self.converter.rgb_to_xy(c.red, c.green, c.blue))
         if isinstance(entity, Character):
             self.characters.append(entity)
         self._place(entity=entity)
