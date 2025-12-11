@@ -9,6 +9,8 @@ Marquee Lighted Sign Project - configuration
             * sudo nmcli con mod "Wired connection 1" ipv4.address "192.168.64.101/24"
             * sudo nmcli con mod "Wired connection 1" ipv4.method manual
 
+    * AP
+        * 192.168.64.104
     * Laptop
         * 192.168.64.105
 
@@ -28,6 +30,8 @@ Marquee Lighted Sign Project - configuration
         * 192.168.64.116
     * Hue Bridge
         * 192.168.64.121
+    * DHCP Pool
+        * 192.168.64.130 - 149
 
 * **USB Ports**
 SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250501R0027", SYMLINK+="marquee_lights"

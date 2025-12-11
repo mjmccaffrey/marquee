@@ -14,7 +14,7 @@ from sequences import (
     all_on, all_off, blink_all, blink_alternate, even_on, even_off,
     rotate, random_flip, rotate_sides,
 )
-from pac_man import PacManGame
+from pacman import PacManGame
 from signs_song import SignsSong
 from christmas import ChristmasSongs
 from specialparams import ChannelParams, MirrorParams

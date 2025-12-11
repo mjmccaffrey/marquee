@@ -185,7 +185,8 @@ class LightSet:
         color: Color | None = None,
         on: bool | None = None,
     ) -> None:
-        """"""
+        """Build and send command via requests.
+           Does not check current state."""
         channel._set(brightness, transition, color, on)
 
     @property

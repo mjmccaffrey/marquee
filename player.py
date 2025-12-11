@@ -120,66 +120,17 @@ class Player(PlayerInterface):
             for k, v in kwargs.items()
         }
 
-    def wait(
-        self, 
-        seconds: float | None = None, 
-        elapsed: float = 0.0,
-    ) -> NoReturn:
-        raise NotImplementedError()
-    
     def _wait(
         self, 
         seconds: float | None = None, 
     ) -> None | NoReturn:
-        """Wait seconds, after adjusting for
-           speed_factor and time already elapsed.
+        """Wait seconds, adjusted for speed_factor.
            If seconds is None, wait indefinitely (in this case,
            the current mode instance will never be returned to).
            While waiting, trigger any events that come due; 
            any button press will terminate waiting."""
-        now: float
-        remaining: float
-        start: float
-        end: float
 
-        def next_event_or_wait() -> tuple[Event | None, float | None]:
-            """Return the next event if it is due, 
-               otherwise return seconds to wait."""
-            if self.event_queue:
-                event = self.event_queue.peek()
-                if event.due < now:
-                    # print(f"Running {event} {now - event.due} late")
-                    self.event_queue.pop()
-                    return event, 0
-                elif seconds is None or event.due < end:
-                    # print(f"Waiting for {event} or button push")
-                    return None, event.due - now
-                else:
-                    print(f"Waiting for remaining {remaining} or button push; queue not empty")
-                    return None, remaining
-            else:
-                if seconds is None:
-                    print(f"Waiting for button push")
-                    return None, None
-                else:
-                    print(f"Waiting for remaining {remaining} or button push; queue empty")
-                    return None, remaining
-
-        print(f"Wait {seconds}")
         if seconds is not None:
             seconds *= self.speed_factor
-        start = time.time()
-        while True:
-            now = time.time()
-            if seconds is not None:
-                remaining = start + seconds - now
-                end = now + remaining
-                if now > end:
-                    print(f"Exiting wait {now - end} late")
-                    break
-            event, duration = next_event_or_wait()
-            if event is not None:
-                event.action()
-            else:
-                Button.wait(duration)
+        self.event_queue.wait(seconds, Button.wait)
 

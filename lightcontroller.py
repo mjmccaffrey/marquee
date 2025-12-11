@@ -46,7 +46,7 @@ class LightController(ABC):
     def close(self) -> None:
         """Clean up."""
 
-    def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool):
+    def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool = False):
         """Effect updates, optionally forcing the updates 
            regardless of believed state."""
         if not force:
@@ -116,10 +116,10 @@ class LightChannel(ABC):
 class ChannelUpdate:
     """"""
     channel: LightChannel
-    brightness: int | None
-    trans: float | None
-    color: Color | None
-    on: bool | None
+    brightness: int | None = None
+    trans: float | None = None
+    color: Color | None = None
+    on: bool | None = None
 
 @dataclass
 class ChannelCommand:
