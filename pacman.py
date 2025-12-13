@@ -1,7 +1,8 @@
 """Marquee Lighted Sign Project - pac_man"""
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass
+from typing import ClassVar
 
 from color import Color, Colors, RGB
 from lightgame import (
@@ -21,11 +22,11 @@ class Dot(Entity):
 @dataclass(kw_only=True)
 class PacMan(Character):
     """"""
-    color: RGB = RGB(252, 234, 63)
-    draw_priority: int = 1
-    turn_priority: int = 1
+    color: ClassVar[Color] = RGB(252, 234, 63)
+    draw_priority: ClassVar[int] = 1
+    turn_priority: ClassVar[int] = 1
 
-    def execute(self, game: LightGame):
+    def execute_turn(self, game: LightGame):
         """Take turn."""
 
         def _move_to(coord: int) -> None:
@@ -33,7 +34,7 @@ class PacMan(Character):
             if Dot in game.board[coord]:
                 # Eat dot
                 del game.board[coord][Dot]
-            game.move(self, coord)
+            game.move_entity(self, coord)
 
         # TEST
         keystrokes = {'l': 'left', 'r': 'right', 'u': 'up', 'd': 'down'}
@@ -53,15 +54,24 @@ class PacMan(Character):
             _move_to(dest)
 
 
-@abstractmethod
 @dataclass(kw_only=True)
 class Ghost(Character, ABC):
     """"""
-    draw_priority: int = 2
-    turn_priority: int = 2
+    draw_priority: ClassVar[int] = 2
+    turn_priority: ClassVar[int] = 2
 
-    def execute(self):
-        """Take turn."""
+
+@dataclass(kw_only=True)
+class Pinky(Ghost):
+    """"""
+    color: ClassVar[Color] = RGB(252, 234, 63)
+
+
+@dataclass(kw_only=True)
+class Blinky(Ghost):
+    """"""
+    color: ClassVar[Color] = RGB(252, 234, 63)
+
 
 class PacManGame(PlayMode):
     """"""
@@ -107,14 +117,12 @@ class PacManGame(PlayMode):
             light_updates=self.light_updates,
         )
         self.pacman = self.game.create_entity(etype=PacMan, name="Pac-Man")
-        self.game.place(self.pacman, 7)
-        self.pinky = self.game.create_entity(etype=PacMan, name="Pac-Man")
-        self.blinky = self.game.create_entity(etype=PacMan, name="Pac-Man")
-        # self.game.create_entity(etype=Ghost, name="Pinky", color=, coord=1)
-        # self.game.create_entity(etype=Ghost, name="Blinky", color=, coord=1)
+        self.game.place_entity(self.pacman, 7)
+        self.pinky = self.game.create_entity(etype=Pinky, name="Pinky")
+        self.blinky = self.game.create_entity(etype=Blinky, name="Blinky")
         for d in self.maze_12.keys() - {7}:
-            dot = self.game.create_entity(etype=Dot, name=f"dot{d}")
-            self.game.place(dot, d)
+            dot = self.game.create_entity(etype=Dot, name=f"dot_{d}")
+            self.game.place_entity(dot, d)
 
     def state_logic(self) -> None:
         """"""
@@ -164,6 +172,5 @@ class PacManGame(PlayMode):
     def execute(self) -> None:
         """"""
         self.setup(level=0)
-        self.game.execute()        
-
+        self.game.execute_round()        
 

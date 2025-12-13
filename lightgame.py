@@ -20,7 +20,7 @@ class StateLogicCallback(Protocol):
         ...
 
 @dataclass(kw_only=True)
-class Entity():
+class Entity(ABC):
     """"""
     name: ClassVar[str]
     color: ClassVar[Color]
@@ -34,7 +34,7 @@ class Character(Entity, ABC):
     turn_priority: ClassVar[int]
 
     @abstractmethod
-    def execute(self) -> None:
+    def execute_turn(self) -> None:
         """Take turn."""
 
 
@@ -45,9 +45,9 @@ class Square:
     up: int | None = None
     down: int | None = None
 
-type Board = dict[int, EntityGroup]
-type EntityGroup = dict[type, Entity]
-type Maze = dict[int, Square]
+Board = dict[int, 'EntityGroup']
+EntityGroup = dict[type, Entity]
+Maze = dict[int, Square]
 
 @dataclass(kw_only=True)
 class LightGame:
@@ -64,31 +64,30 @@ class LightGame:
         self.board: Board = {coord: {} for coord in self.maze}
         self.characters: list[Character] = []
 
-    def execute(self):
-        """Execute one game turn."""
-        self.execute_one_game_round()
+    def execute_round(self):
+        """Execute one game round."""
+        self.execute_one_round()
         self.schedule(
-            action=self.execute,
+            action=self.execute_round,
             due=1.0,
             name='game round',
         )
         
-    def execute_one_game_round(self):
+    def execute_one_round(self):
         """Execute one game round."""
         old_board = self.board.copy()
         for character in self.characters:
-            character.execute()
+            character.execute_turn()
         delta_board = self.compare_boards(old_board)
         updates = self.light_updates(delta_board)
         self.lights.controller.update_channels(updates)
 
     def compare_boards(self, old_board: Board) -> Board:
         """Return a partial board with delta of old and new."""
+        entities = zip(self.board.values(), old_board.values())
         return {
             i: new
-            for i, (new, old) in enumerate(
-                zip(self.board.values(), old_board.values())
-            )
+            for i, (new, old) in enumerate(entities)               
             if new != old
         }
 
@@ -104,12 +103,12 @@ class LightGame:
             self.characters.sort(key = lambda c: c.turn_priority)
         return entity
 
-    def move(self, entity: Entity, coord: int):
+    def move_entity(self, entity: Entity, coord: int):
         """Move entity to coordinate."""
         del self.board[entity.coord][type(entity)]
-        self.place(entity, coord)
+        self.place_entity(entity, coord)
 
-    def place(self, entity: Entity, coord: int):
+    def place_entity(self, entity: Entity, coord: int):
         """Place entity on board at coord."""
         entity.coord = coord
         self.board[entity.coord][type(entity)] = entity
