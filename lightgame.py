@@ -1,29 +1,37 @@
-"""Marquee Lighted Sign Project - game"""
+"""Marquee Lighted Sign Project - lightgame"""
 
 from abc import ABC, abstractmethod
-from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from typing import ClassVar, Protocol
 
 from color import Color, RGB, XY
-from lightcontroller import LightChannel, ChannelUpdate
+from lightcontroller import ChannelUpdate
 from lightset import LightSet
+from modes.basemode import ScheduleCallback
 import rgbxy
 
 
+class LightUpdateCallback(Protocol):
+    def __call__(self, delta: 'Board') -> list[ChannelUpdate]:
+        ...
+
+class StateLogicCallback(Protocol):
+    def __call__(self) -> None:
+        ...
+
 @dataclass(kw_only=True)
-class Entity(ABC):
+class Entity():
     """"""
-    game: 'Game'
-    name: str
-    color: Color
+    name: ClassVar[str]
+    color: ClassVar[Color]
+    draw_priority: ClassVar[int]
     coord: int
-    draw_priority: int
 
 
 @dataclass(kw_only=True)
 class Character(Entity, ABC):
     """Characters can move and appear mid-level."""
-    turn_priority: int
+    turn_priority: ClassVar[int]
 
     @abstractmethod
     def execute(self) -> None:
@@ -37,36 +45,60 @@ class Square:
     up: int | None = None
     down: int | None = None
 
-type EntitiesOnSquare = dict[type, Entity]
+type Board = dict[int, EntityGroup]
+type EntityGroup = dict[type, Entity]
+type Maze = dict[int, Square]
 
 @dataclass(kw_only=True)
-class Game:
-    """"""
+class LightGame:
+    """Play a game with the lights."""
     converter: rgbxy.Converter
     lights: LightSet
-    maze: dict[int, Square]
-    schedule: Callable[[Callable, float, str], None]
-    state_logic: Callable[[], None]
-    board: dict[int, EntitiesOnSquare] = field(init=False)
-    characters: list[Character] = field(init=False)
+    maze: Maze
+    schedule: ScheduleCallback
+    state_logic: StateLogicCallback
+    light_updates: LightUpdateCallback
 
     def __post_init__(self):
         """Initialize board and characters."""
-        self.board = {coord: {} for coord in self.maze}
-        self.characters = []
+        self.board: Board = {coord: {} for coord in self.maze}
+        self.characters: list[Character] = []
 
     def execute(self):
         """Execute one game turn."""
-        # saved_board = self.board.copy()
+        self.execute_one_game_round()
+        self.schedule(
+            action=self.execute,
+            due=1.0,
+            name='game round',
+        )
+        
+    def execute_one_game_round(self):
+        """Execute one game round."""
+        old_board = self.board.copy()
         for character in self.characters:
             character.execute()
-        # SEND ENTIRE BOARD TO SET_CHANNELS AND LET IT DO A DIFF?
+        delta_board = self.compare_boards(old_board)
+        updates = self.light_updates(delta_board)
+        self.lights.controller.update_channels(updates)
+
+    def compare_boards(self, old_board: Board) -> Board:
+        """Return a partial board with delta of old and new."""
+        return {
+            i: new
+            for i, (new, old) in enumerate(
+                zip(self.board.values(), old_board.values())
+            )
+            if new != old
+        }
 
     def create_entity(self, etype: type[Entity], name: str) -> Entity:
         """Create entity. Convert color. Place on board."""
         entity = etype(game=self, name=name, coord=coord)  # type: ignore
         if isinstance(c := entity.color, RGB):
-            entity.color = XY(*self.converter.rgb_to_xy(c.red, c.green, c.blue))
+            entity.color = XY(  # type: ignore instance assigning to ClassVar
+                *self.converter.rgb_to_xy(c.red, c.green, c.blue)
+            )
         if isinstance(entity, Character):
             self.characters.append(entity)
             self.characters.sort(key = lambda c: c.turn_priority)
@@ -78,19 +110,7 @@ class Game:
         self.place(entity, coord)
 
     def place(self, entity: Entity, coord: int):
-        """"""
+        """Place entity on board at coord."""
         entity.coord = coord
         self.board[entity.coord][type(entity)] = entity
-
-    def draw_board(self):
-        """Leave it to lightset to determine what actual changes
-           to the lights are needed."""
-        potential_updates = [
-            self.desired_light_state(square, channel)
-            for channel, square in zip(
-                self.lights.channels,
-                self.board.values(),
-            )
-        ]
-        self.lights.controller.update_channels(potential_updates)
 

@@ -148,7 +148,7 @@ class LightSet:
             force: bool = False,
         ) -> None:
         """Set the channels per the supplied brightness, 
-           trans times and colors.  
+           trans times and colors. 
            Specify a subset of channels via channel_indexes.
            Force all specified channels to update with force.
            Adjust for brightness_factor."""

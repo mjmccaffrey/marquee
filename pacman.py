@@ -4,7 +4,9 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from color import Color, Colors, RGB
-from game import Character, Entity, EntitiesOnSquare, Game, Square
+from lightgame import (
+    Board, Character, Entity, EntityGroup, LightGame, Maze, Square,
+)
 from hue import HueBridge
 from lightcontroller import LightChannel, ChannelUpdate
 from modes.playmode import PlayMode
@@ -23,8 +25,15 @@ class PacMan(Character):
     draw_priority: int = 1
     turn_priority: int = 1
 
-    def execute(self):
+    def execute(self, game: LightGame):
         """Take turn."""
+
+        def _move_to(coord: int) -> None:
+            """"""
+            if Dot in game.board[coord]:
+                # Eat dot
+                del game.board[coord][Dot]
+            game.move(self, coord)
 
         # TEST
         keystrokes = {'l': 'left', 'r': 'right', 'u': 'up', 'd': 'down'}
@@ -34,22 +43,14 @@ class PacMan(Character):
                 dest = None
             case key if key in keystrokes:
                 dest = getattr(
-                    self.game.maze[self.coord],
+                    game.maze[self.coord],
                     keystrokes[key],
                 )
             case _:
                 # raise ValueError(direction)
                 pass
         if dest is not None:
-            self._move_to(dest)
-        self.game.schedule(self.game.execute, 1.0, 'Game tick')
-
-    def _move_to(self, coord: int) -> None:
-        """"""
-        if Dot in self.game.board[coord]:
-            # Eat dot
-            del self.game.board[coord][Dot]
-        self.game.move(self, coord)
+            _move_to(dest)
 
 
 @abstractmethod
@@ -65,7 +66,7 @@ class Ghost(Character, ABC):
 class PacManGame(PlayMode):
     """"""
 
-    maze_base = {
+    maze_base: Maze = {
         0: Square(left=11, right=1, down=11),
         1: Square(left=0, right=2),
         2: Square(left=1, right=3, down=3),
@@ -77,11 +78,11 @@ class PacManGame(PlayMode):
         9: Square(right=8, up=10, down=8),
         11: Square(right=0, up=0, down=10),
     }
-    maze_12 = maze_base | {
+    maze_12: Maze = maze_base | {
         4: Square(up=3, down=5),
         10: Square(up=11, down=9),
     }
-    maze_15 = maze_base | {
+    maze_15: Maze = maze_base | {
         4: Square(left=14, up=3, down=5),
         10: Square(right=12, up=11, down=9),
         12: Square(left=10, right=11),
@@ -97,12 +98,13 @@ class PacManGame(PlayMode):
         """Level 3 - add bypass."""
         controller = self.player.lights.controller
         assert isinstance(controller, HueBridge)
-        self.game = Game(
+        self.game = LightGame(
             converter=controller.converter,
             lights=self.player.lights,
             maze=self.maze_12,
             schedule=self.schedule,
             state_logic=self.state_logic,
+            light_updates=self.light_updates,
         )
         self.pacman = self.game.create_entity(etype=PacMan, name="Pac-Man")
         self.game.place(self.pacman, 7)
@@ -123,7 +125,7 @@ class PacManGame(PlayMode):
         ):
             pass
 
-    def desired_square_color(self, entities: EntitiesOnSquare) -> Color:
+    def desired_square_color(self, entities: EntityGroup) -> Color:
         """"""
         if any(
             ghost in self.game.board[self.pacman.coord]
@@ -136,7 +138,7 @@ class PacManGame(PlayMode):
 
     def desired_light_state(
             self, 
-            entities: EntitiesOnSquare, 
+            entities: EntityGroup, 
             channel: LightChannel,
         ) -> ChannelUpdate:
         """"""
@@ -150,6 +152,14 @@ class PacManGame(PlayMode):
             on=True,
         )
 
+    def light_updates(self, delta: Board) -> list[ChannelUpdate]:
+        """"""
+        return [
+            self.desired_light_state(
+                entities=e, channel=self.player.lights.channels[i],
+            )
+            for i, e in delta.items()
+        ]
 
     def execute(self) -> None:
         """"""
