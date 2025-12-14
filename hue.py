@@ -1,5 +1,5 @@
-1: https://192.168.64.121/clip/v2/resource/light/ca051ade-5842-4c15-aacf-b1e795feb1ad?on=on&dynamics=duration
-2: on state not being saved
+# 1: https://192.168.64.121/clip/v2/resource/light/ca051ade-5842-4c15-aacf-b1e795feb1ad?on=on&dynamics=duration
+# 2: on state not being saved
 
 """Marquee Lighted Sign Project - hue"""
 
