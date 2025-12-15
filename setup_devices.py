@@ -8,7 +8,7 @@ from bulb import Hue_BR30_Enhanced_Color
 from button import Button
 from button_misc import ButtonSet
 from hue import HueBridge
-from shelly import ShellyConsolidatedController, ShellyProDimmer2PM
+# from shelly import ShellyConsolidatedController, ShellyProDimmer2PM
 from instruments import BellSet, DrumSet
 from lightset import LightSet
 from lightset_misc import ALL_RELAYS
@@ -24,7 +24,7 @@ SHELLY_IP_ADDRESSES = [
 ]
 
 HUE_APPLICATION_KEY = open('hue.key').read()
-HUE_IP_ADDRESS = '192.168.64.121.130'
+HUE_IP_ADDRESS = '192.168.64.130'
 HUE_BULB_IDS = [
     "ca051ade-5842-4c15-aacf-b1e795feb1ad",
     "7f053a5d-0283-4dd6-80b3-b4d8e83cf4f0",
