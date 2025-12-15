@@ -30,6 +30,8 @@ Marquee Lighted Sign Project - configuration
         * 192.168.64.116
     * Hue Bridge
         * 192.168.64.121
+    * Hue Bridge Pro
+        * 192.168.64.130
     * DHCP Pool
         * 192.168.64.130 - 149
 
