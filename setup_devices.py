@@ -26,18 +26,18 @@ SHELLY_IP_ADDRESSES = [
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'
 HUE_BULB_IDS = [
-    "ca051ade-5842-4c15-aacf-b1e795feb1ad",
-    "7f053a5d-0283-4dd6-80b3-b4d8e83cf4f0",
-    "afe4c0e3-ab80-40b2-966a-b0069ee50880",
-    "3456c84d-9189-4369-b022-1eed24eedb58",
-    "1367f291-d54c-41a5-90a5-6ec40616779c",
-    "6da5e687-1eb4-404d-8f6e-7badc2c2b6d6",
-    "7d42575e-f864-48e8-99f9-88905008ab07",
-    "de84afc5-e39a-4b2e-aa15-b67a211ff4da",
-    "6591a827-379b-417d-b165-a10cdadb81a1",
-    "934abf75-d5f9-402d-a6cd-b1b82812ef2f",
-    "8af80fb4-9daf-4762-bd54-bdc221690db0",
-    "e2cfe6e2-845e-489a-8434-8d90ac74f74a",
+    "be70ec73-1aca-41a8-afaa-3e9dab07c27a",
+    "3d3132d3-528c-4e15-bba7-f587e1442ef2",
+    "35c48818-a97b-4b67-bbc8-22a68e6be153",
+    "79d6cc75-8eaa-450a-be32-6bc14695b11a",
+    "1e5bbfc7-f3f1-47e1-bba9-18e70588f1e3",
+    "b0338b37-5ed1-4ec2-b4be-5f9157ba62af",
+    "5e78cc1c-023d-4e29-80b3-379740a17cfb",
+    "8939cef6-ed91-45b3-b656-1d14de4af4dc",
+    "707de5cb-f986-4e79-89f0-16086f1fe56e",
+    "90a20fd0-3aef-4a57-b93d-393c0956baa1",
+    "6e3c6e43-7e01-40d5-a650-acbc391b716d",
+    "108dee49-9e5c-4879-83be-1c6f361a89aa",
 ]
 
 def setup_devices(
