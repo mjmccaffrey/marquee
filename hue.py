@@ -43,7 +43,8 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         try:
             lights = self._get_state_of_channels()
             print()
-            print(lights)
+            for id in lights:
+                print(id)
             print()
         except requests.exceptions.Timeout as e:
             print(f"*** Failed to reach '{self.ip_address}' ***")
@@ -65,7 +66,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
     def _get_state_of_channels(self) -> dict[str, dict]:
         """Fetch status parameters for all channels."""
         result = self.session.get(
-            url=f'https://{self.ip_address}/clip/v2/resource/device',
+            url=f'https://{self.ip_address}/clip/v2/resource/light',
             timeout=2.0,
         )
         result.raise_for_status()
