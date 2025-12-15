@@ -23,7 +23,7 @@ SHELLY_IP_ADDRESSES = [
     '192.168.64.116',
 ]
 
-HUE_APPLICATION_KEY = open('hue.key').read()
+HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'
 HUE_BULB_IDS = [
     "ca051ade-5842-4c15-aacf-b1e795feb1ad",
