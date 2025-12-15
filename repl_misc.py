@@ -13,7 +13,7 @@ def setup():
 def test():
     # Light relays turned on during LightSet init.
     time.sleep(5)
-    start = time.time()
+    start = time.time() 
     for _ in range(10):
         lights.set_channels(on=True, force=True)
         lights.set_channels(on=False, force=True)
