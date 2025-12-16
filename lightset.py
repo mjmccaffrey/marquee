@@ -30,8 +30,6 @@ class LightSet:
         """Initialize."""
         self.light_count = len(self.light_relays)
 
-        assert len(self.controller.channels) == self.light_count
-
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
         self.trans_max = self.controller.trans_max
@@ -48,6 +46,7 @@ class LightSet:
             time.sleep(5.0)  # Enough time for controller to see all bulbs.
 
         self.controller = self.controller_type(**self.controller_kwargs)
+        assert len(self.controller.channels) == self.light_count
 
     @property
     def brightness_factor(self) -> float:
