@@ -24,6 +24,7 @@ class Entity(ABC):
     """"""
     color: ClassVar[Color]
     draw_priority: ClassVar[int]
+    game: 'LightGame'
     name: str
     coord: int = field(init=False)
 
@@ -32,7 +33,6 @@ class Entity(ABC):
 class Character(Entity, ABC):
     """Characters can move and appear mid-level."""
     turn_priority: ClassVar[int]
-    game: 'LightGame'
  
     @abstractmethod
     def execute_turn(self) -> None:
