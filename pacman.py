@@ -26,15 +26,15 @@ class PacMan(Character):
     draw_priority: ClassVar[int] = 1
     turn_priority: ClassVar[int] = 1
 
-    def execute_turn(self, game: LightGame):
+    def execute_turn(self):
         """Take turn."""
 
         def _move_to(coord: int) -> None:
             """"""
-            if Dot in game.board[coord]:
+            if Dot in self.game.board[coord]:
                 # Eat dot
-                del game.board[coord][Dot]
-            game.move_entity(self, coord)
+                del self.game.board[coord][Dot]
+            self.game.move_entity(self, coord)
 
         # TEST
         keystrokes = {'l': 'left', 'r': 'right', 'u': 'up', 'd': 'down'}
@@ -44,7 +44,7 @@ class PacMan(Character):
                 dest = None
             case key if key in keystrokes:
                 dest = getattr(
-                    game.maze[self.coord],
+                    self.game.maze[self.coord],
                     keystrokes[key],
                 )
             case _:

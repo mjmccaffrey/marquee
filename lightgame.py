@@ -31,6 +31,7 @@ class Entity(ABC):
 @dataclass(kw_only=True)
 class Character(Entity, ABC):
     """Characters can move and appear mid-level."""
+    game: 'LightGame'
     turn_priority: ClassVar[int]
 
     @abstractmethod
