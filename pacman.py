@@ -141,7 +141,7 @@ class PacManGame(PlayMode):
         """"""
         if any(
             ghost in self.game.board[self.pacman.coord]
-            for ghost in (self.pinky, self.blinky)
+            for ghost in (Pinky, Blinky)
         ):
             return Colors.RED
         if len(list(e for e in entities if isinstance(e, Ghost))) > 1:
