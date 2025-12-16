@@ -146,7 +146,9 @@ class PacManGame(PlayMode):
             return Colors.RED
         if len(list(e for e in entities if isinstance(e, Ghost))) > 1:
             return Colors.BLUE
-        return sorted(entities, key=lambda e: e.draw_priority)[0].color
+        return sorted(
+            entities, key=lambda e: e.draw_priority, reverse=True,
+        )[0].color
 
     def desired_light_state(
             self, 
