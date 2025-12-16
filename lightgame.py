@@ -93,7 +93,7 @@ class LightGame:
 
     def create_entity(self, etype: type[Entity], name: str) -> Entity:
         """Create entity. Convert color. Place on board."""
-        entity = etype(game=self, name=name, coord=coord)  # type: ignore
+        entity = etype(game=self, name=name)  # type: ignore
         if isinstance(c := entity.color, RGB):
             entity.color = XY(  # type: ignore instance assigning to ClassVar
                 *self.converter.rgb_to_xy(c.red, c.green, c.blue)
