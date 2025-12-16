@@ -50,6 +50,7 @@ class PacMan(Character):
                 )
             case _:
                 # raise ValueError(direction)
+                dest = None
                 pass
         if dest is not None:
             _move_to(dest)
