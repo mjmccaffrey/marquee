@@ -84,7 +84,7 @@ class LightSet:
         _full = _light + _extra
         if (
             _light != self.relay_pattern and
-            isinstance(self.controller.bulb_comp, SmartBulb) and 
+            issubclass(self.controller_type.bulb_comp, SmartBulb) and 
             not smart_bulb_override
         ):
             raise TypeError(
