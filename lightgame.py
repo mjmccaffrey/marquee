@@ -79,7 +79,10 @@ class LightGame:
 
         print("BEFORE COPY:")
         self.print_board(self.board)
-        old_board = self.board.copy()
+        old_board = {
+            k: v.copy()
+            for k, v in self.board.items()
+        }
         
         for character in self.characters:
             character.execute_turn()
