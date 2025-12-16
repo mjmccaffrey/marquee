@@ -57,7 +57,8 @@ def setup_devices(
         relays=relays,
         light_relays={1, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16,},
         click_relays={2, 3, 10},
-        controller=HueBridge(
+        controller_type=HueBridge,
+        controller_kwargs=dict(
             application_key=HUE_APPLICATION_KEY,
             ip_address=HUE_IP_ADDRESS,
             bulb_model=Hue_BR30_Enhanced_Color,

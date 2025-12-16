@@ -42,10 +42,11 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         self.converter = rgbxy.Converter(self.bulb_model.gamut)
         try:
             lights = self._get_state_of_channels()
-            print()
-            for id in lights:
-                print(id)
-            print()
+            print(f"Received status for {len(lights)} lights.")
+            # print()
+            # for id in lights:
+            #     print(id)
+            # print()
         except requests.exceptions.Timeout as e:
             print(f"*** Failed to reach '{self.ip_address}' ***")
             print(f"*** Error: {e} ***")

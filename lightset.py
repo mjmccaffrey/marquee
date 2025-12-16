@@ -5,6 +5,7 @@
 
 from collections.abc import Sequence
 from dataclasses import dataclass, InitVar
+import time
 
 from bulb import SmartBulb
 from color import Color
@@ -21,30 +22,32 @@ class LightSet:
     relays: RelayModule
     light_relays: set[int]
     click_relays: set[int]
-    controller: LightController
+    controller_type: type[LightController]
+    controller_kwargs: dict
     brightness_factor_init: InitVar[float]
 
     def __post_init__(self, brightness_factor_init: float) -> None:
         """Initialize."""
         self.light_count = len(self.light_relays)
 
-        # channel[i] maps to light[i], 0 <= i < light_count
+        if issubclass(self.controller_type.bulb_comp, SmartBulb):
+            print("***** Smart bulbs in use - setting light relays ON. *****")
+            self.set_relays(light_pattern=True, smart_bulb_override=True)
+            time.sleep(5.0)  # Enough time for controller to see all bulbs.
+
+        self.controller = self.controller_type(**self.controller_kwargs)
+
+        assert len(self.controller.channels) == self.light_count
+
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
         self.trans_max = self.controller.trans_max
         self.bulb_adjustents = self.controller.bulb_model.adjustments
 
-        assert len(self.channels) == self.light_count
         full_pattern = self.relays.get_state_of_devices()
         self.relay_pattern = full_pattern[:self.light_count]
         self.extra_pattern = full_pattern[self.light_count:]
         self.brightness_factor = brightness_factor_init
-
-        if issubclass(self.controller.bulb_comp, SmartBulb):
-            self.set_relays(light_pattern=True, smart_bulb_override=True)
-            print("***** Smart bulbs in use - light relays preset to ON. *****")
-        else:
-            print("***** Standard bulbs in use. *****")  
 
     @property
     def brightness_factor(self) -> float:
@@ -62,48 +65,6 @@ class LightSet:
             for channel in self.channels
         ]
 
-
-    def _set_channels_instead_of_relays(
-            self,
-            light_pattern: list | str, 
-            special: ChannelParams,
-    ) -> None:
-        """Set channels per the specified pattern and special.
-           Adjust for brightness_factor."""
-        bright_values: dict[int, int] = {
-            0: int(special.brightness_off * self._brightness_factor), 
-            1: int(special.brightness_on * self._brightness_factor),
-        }
-        trans_values: dict[int, float] = {
-            0: max(self.trans_min, 
-                   special.trans_off * special.speed_factor), 
-            1: max(self.trans_min, 
-                   special.trans_on * special.speed_factor),
-        }
-        color_values: dict[int, Color | None] = {
-            0: special.color_off,
-            1: special.color_on,
-        }
-        light_pattern = [int(p) for p in light_pattern]
-        _brightness = tuple(
-            bright_values[p]
-            for p in light_pattern
-        )
-        _transitions = tuple(
-            trans_values[p]
-            for p in light_pattern
-        )
-        _colors = tuple(
-            color_values[p]
-            for p in light_pattern
-        )
-        self.set_channels(
-            brightness=_brightness, 
-            transition=_transitions,
-            color=_colors,
-            on=True,
-        )
-            
     def set_relays(
             self, 
             light_pattern: str | Sequence[int | bool] | bool | int,
@@ -189,6 +150,47 @@ class LightSet:
            Does not check current state."""
         channel._set(brightness, transition, color, on)
 
+    def _set_channels_instead_of_relays(
+            self,
+            light_pattern: list | str, 
+            special: ChannelParams,
+    ) -> None:
+        """Set channels per the specified pattern and special.
+           Adjust for brightness_factor."""
+        bright_values: dict[int, int] = {
+            0: int(special.brightness_off * self._brightness_factor), 
+            1: int(special.brightness_on * self._brightness_factor),
+        }
+        trans_values: dict[int, float] = {
+            0: max(self.trans_min, 
+                   special.trans_off * special.speed_factor), 
+            1: max(self.trans_min, 
+                   special.trans_on * special.speed_factor),
+        }
+        color_values: dict[int, Color | None] = {
+            0: special.color_off,
+            1: special.color_on,
+        }
+        light_pattern = [int(p) for p in light_pattern]
+        _brightness = tuple(
+            bright_values[p]
+            for p in light_pattern
+        )
+        _transitions = tuple(
+            trans_values[p]
+            for p in light_pattern
+        )
+        _colors = tuple(
+            color_values[p]
+            for p in light_pattern
+        )
+        self.set_channels(
+            brightness=_brightness, 
+            transition=_transitions,
+            color=_colors,
+            on=True,
+        )
+            
     @property
     def relay_pattern(self) -> str:
         """Return the active light pattern."""
