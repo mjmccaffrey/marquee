@@ -22,9 +22,9 @@ class StateLogicCallback(Protocol):
 @dataclass(kw_only=True)
 class Entity(ABC):
     """"""
-    name: ClassVar[str]
     color: ClassVar[Color]
     draw_priority: ClassVar[int]
+    name: str
     coord: int
 
 
