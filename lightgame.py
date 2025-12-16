@@ -92,6 +92,8 @@ class LightGame:
             for i, (new, old) in enumerate(entities)               
             if new != old
         }
+        pprint(old_board)
+        pprint(self.board)
         pprint(result)
         return result
 
