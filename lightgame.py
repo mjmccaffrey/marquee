@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from pprint import pprint
 from typing import ClassVar, Protocol
 
 from color import Color, RGB, XY
@@ -86,11 +87,13 @@ class LightGame:
     def compare_boards(self, old_board: Board) -> Board:
         """Return a partial board with delta of old and new."""
         entities = zip(self.board.values(), old_board.values())
-        return {
+        result = {
             i: new
             for i, (new, old) in enumerate(entities)               
             if new != old
         }
+        pprint(result)
+        return result
 
     def create_entity(self, etype: type[Entity], name: str) -> Entity:
         """Create entity. Convert color. Place on board."""
