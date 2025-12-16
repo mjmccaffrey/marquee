@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - lightgame"""
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import ClassVar, Protocol
 
 from color import Color, RGB, XY
@@ -25,15 +25,15 @@ class Entity(ABC):
     color: ClassVar[Color]
     draw_priority: ClassVar[int]
     name: str
-    coord: int
+    coord: int = field(init=False)
 
 
 @dataclass(kw_only=True)
 class Character(Entity, ABC):
     """Characters can move and appear mid-level."""
-    game: 'LightGame'
     turn_priority: ClassVar[int]
-
+    game: 'LightGame'
+ 
     @abstractmethod
     def execute_turn(self) -> None:
         """Take turn."""
