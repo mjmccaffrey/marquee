@@ -29,12 +29,6 @@ class LightSet:
     def __post_init__(self, brightness_factor_init: float) -> None:
         """Initialize."""
         self.light_count = len(self.light_relays)
-
-        self.channels = self.controller.channels
-        self.trans_min = self.controller.trans_min
-        self.trans_max = self.controller.trans_max
-        self.bulb_adjustents = self.controller.bulb_model.adjustments
-
         full_pattern = self.relays.get_state_of_devices()
         self.relay_pattern = full_pattern[:self.light_count]
         self.extra_pattern = full_pattern[self.light_count:]
@@ -47,6 +41,10 @@ class LightSet:
 
         self.controller = self.controller_type(**self.controller_kwargs)
         assert len(self.controller.channels) == self.light_count
+        self.channels = self.controller.channels
+        self.trans_min = self.controller.trans_min
+        self.trans_max = self.controller.trans_max
+        self.bulb_adjustents = self.controller.bulb_model.adjustments
 
     @property
     def brightness_factor(self) -> float:
