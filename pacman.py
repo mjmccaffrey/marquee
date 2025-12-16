@@ -60,6 +60,8 @@ class Ghost(Character, ABC):
     draw_priority: ClassVar[int] = 2
     turn_priority: ClassVar[int] = 2
 
+    def execute_turn(self) -> None:
+        """"""
 
 @dataclass(kw_only=True)
 class Pinky(Ghost):
