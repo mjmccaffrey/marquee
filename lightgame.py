@@ -2,7 +2,6 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from pprint import pprint
 from typing import ClassVar, Protocol
 
 from color import Color, RGB, XY
@@ -77,7 +76,11 @@ class LightGame:
         
     def execute_one_round(self):
         """Execute one game round."""
+
+        print("BEFORE COPY:")
+        self.print_board(self.board)
         old_board = self.board.copy()
+        
         for character in self.characters:
             character.execute_turn()
         delta_board = self.compare_boards(old_board)
