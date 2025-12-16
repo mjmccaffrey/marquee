@@ -2,6 +2,7 @@
 
 from abc import ABC
 from dataclasses import dataclass
+from pprint import pprint
 from typing import ClassVar
 
 from color import Color, Colors, RGB
@@ -133,7 +134,7 @@ class PacManGame(PlayMode):
             ghost in self.game.board[self.pacman.coord]
             for ghost in (self.pinky, self.blinky)
         ):
-            pass
+            print("COLLISION")
 
     def desired_square_color(self, entities: EntityGroup) -> Color:
         """"""
@@ -164,12 +165,14 @@ class PacManGame(PlayMode):
 
     def light_updates(self, delta: Board) -> list[ChannelUpdate]:
         """"""
-        return [
+        result = [
             self.desired_light_state(
                 entities=e, channel=self.player.lights.channels[i],
             )
             for i, e in delta.items()
         ]
+        pprint(result)
+        return result
 
     def execute(self) -> None:
         """"""
