@@ -30,13 +30,6 @@ class LightSet:
         """Initialize."""
         self.light_count = len(self.light_relays)
 
-        if issubclass(self.controller_type.bulb_comp, SmartBulb):
-            print("***** Smart bulbs in use - setting light relays ON. *****")
-            self.set_relays(light_pattern=True, smart_bulb_override=True)
-            time.sleep(5.0)  # Enough time for controller to see all bulbs.
-
-        self.controller = self.controller_type(**self.controller_kwargs)
-
         assert len(self.controller.channels) == self.light_count
 
         self.channels = self.controller.channels
@@ -48,6 +41,13 @@ class LightSet:
         self.relay_pattern = full_pattern[:self.light_count]
         self.extra_pattern = full_pattern[self.light_count:]
         self.brightness_factor = brightness_factor_init
+
+        if issubclass(self.controller_type.bulb_comp, SmartBulb):
+            print("***** Smart bulbs in use - setting light relays ON. *****")
+            self.set_relays(light_pattern=True, smart_bulb_override=True)
+            time.sleep(5.0)  # Enough time for controller to see all bulbs.
+
+        self.controller = self.controller_type(**self.controller_kwargs)
 
     @property
     def brightness_factor(self) -> float:
