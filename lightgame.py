@@ -84,6 +84,12 @@ class LightGame:
         updates = self.light_updates(delta_board)
         self.lights.controller.update_channels(updates)
 
+    def print_board(self, board: Board) -> None:
+        for i in board:
+            print(i)
+            for e in board[i].values():
+                print("  ", e.name)
+
     def compare_boards(self, old_board: Board) -> Board:
         """Return a partial board with delta of old and new."""
         entities = zip(self.board.values(), old_board.values())
@@ -92,9 +98,12 @@ class LightGame:
             for i, (new, old) in enumerate(entities)               
             if new != old
         }
-        pprint(old_board)
-        pprint(self.board)
-        pprint(result)
+        print("OLD:")
+        self.print_board(old_board)
+        print("NEW:")
+        self.print_board(self.board)
+        print("DELTA:")
+        self.print_board(result)
         return result
 
     def create_entity(self, etype: type[Entity], name: str) -> Entity:
