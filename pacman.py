@@ -15,14 +15,14 @@ from lightcontroller import LightChannel, ChannelUpdate
 from modes.playmode import PlayMode
 
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, repr=False)
 class Dot(Entity):
     """"""
     color: RGB = Colors.WHITE
     draw_priority: int = 10
 
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, repr=False)
 class PacMan(Character):
     """"""
     color: ClassVar[Color] = RGB(252, 234, 63)
@@ -58,7 +58,7 @@ class PacMan(Character):
             _move_to(dest)
 
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, repr=False)
 class Ghost(Character, ABC):
     """"""
     draw_priority: ClassVar[int] = 2
@@ -68,13 +68,13 @@ class Ghost(Character, ABC):
         """"""
 
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, repr=False)
 class Pinky(Ghost):
     """"""
     color: ClassVar[Color] = RGB(252, 234, 63)
 
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, repr=False)
 class Blinky(Ghost):
     """"""
     color: ClassVar[Color] = RGB(252, 234, 63)

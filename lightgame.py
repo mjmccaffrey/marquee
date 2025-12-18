@@ -19,7 +19,7 @@ class StateLogicCallback(Protocol):
         ...
 
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, repr=False)
 class Entity(ABC):
     """"""
     color: ClassVar[Color]
@@ -28,8 +28,11 @@ class Entity(ABC):
     name: str
     coord: int = field(init=False)
 
+    def __repr__(self):
+        return self.name
 
-@dataclass(kw_only=True)
+
+@dataclass(kw_only=True, repr=False)
 class Character(Entity, ABC):
     """Characters can move and appear mid-level."""
     turn_priority: ClassVar[int]
