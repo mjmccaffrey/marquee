@@ -102,6 +102,8 @@ class LightGame:
     def compare_boards(self, old_board: Board) -> Board:
         """Return a partial board with delta of old and new."""
         entities = zip(self.board.values(), old_board.values())
+        for e in entities:
+            print(e)
         result = {
             i: new
             for i, (new, old) in enumerate(entities)               
