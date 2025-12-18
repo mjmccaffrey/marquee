@@ -92,10 +92,12 @@ class LightGame:
         self.lights.controller.update_channels(updates)
 
     def print_board(self, board: Board) -> None:
+        print("*****")
         for i in board:
             print(i)
             for e in board[i].values():
                 print("  ", e.name)
+        print("*****")
 
     def compare_boards(self, old_board: Board) -> Board:
         """Return a partial board with delta of old and new."""
