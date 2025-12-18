@@ -154,6 +154,7 @@ class PacManGame(PlayMode):
         s = sorted(
             entities, key=lambda e: e.draw_priority, reverse=True,
         )
+        print("SORTED ENTITIES:")
         pprint(s)
         return s[0].color
 
@@ -181,6 +182,7 @@ class PacManGame(PlayMode):
             )
             for i, e in delta.items()
         ]
+        print("LIGHT UPDATES:")
         pprint(result)
         return result
 
