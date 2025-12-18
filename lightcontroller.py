@@ -10,7 +10,7 @@ import requests
 from bulb import Bulb
 from color import Color
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, repr=False)
 class LightController(ABC):
     """ABC for any light controller."""
 
@@ -64,7 +64,7 @@ class LightController(ABC):
         """Build and send commands via aiohttp asynchronously."""
 
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, repr=False)
 class LightChannel(ABC):
     """Protocol for any controller channel (light)."""
 
@@ -77,6 +77,9 @@ class LightChannel(ABC):
 
     state_attrs = ('brightness', 'color', 'on')
 
+    def __repr__(self):
+        return f"Channel {self.index}"
+    
     @abstractmethod
     def calibrate(self) -> None:
         """Initiate channel calibration."""
