@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pprint import pprint
 from typing import ClassVar
 
+from bulb import HueBulb
 from color import Color, Colors, RGB
 from lightgame import (
     Board, Character, Entity, EntityGroup, LightGame, Maze, Square,
@@ -12,6 +13,7 @@ from lightgame import (
 from hue import HueBridge
 from lightcontroller import LightChannel, ChannelUpdate
 from modes.playmode import PlayMode
+
 
 @dataclass(kw_only=True)
 class Dot(Entity):
@@ -65,6 +67,7 @@ class Ghost(Character, ABC):
     def execute_turn(self) -> None:
         """"""
 
+
 @dataclass(kw_only=True)
 class Pinky(Ghost):
     """"""
@@ -112,8 +115,10 @@ class PacManGame(PlayMode):
         """Level 3 - add bypass."""
         controller = self.player.lights.controller
         assert isinstance(controller, HueBridge)
+        bulb = controller.bulb_model
+        assert isinstance(bulb, HueBulb)
+        RGB.adjust_incomplete_colors(bulb.gamut)
         self.game = LightGame(
-            converter=controller.converter,
             lights=self.player.lights,
             maze=self.maze_12,
             schedule=self.schedule,

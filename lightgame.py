@@ -4,11 +4,10 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import ClassVar, Protocol
 
-from color import Color, RGB, XY
+from color import Color
 from lightcontroller import ChannelUpdate
 from lightset import LightSet
 from modes.basemode import ScheduleCallback
-import rgbxy
 
 
 class LightUpdateCallback(Protocol):
@@ -18,6 +17,7 @@ class LightUpdateCallback(Protocol):
 class StateLogicCallback(Protocol):
     def __call__(self) -> None:
         ...
+
 
 @dataclass(kw_only=True)
 class Entity(ABC):
@@ -46,14 +46,15 @@ class Square:
     up: int | None = None
     down: int | None = None
 
+
 Board = dict[int, 'EntityGroup']
 EntityGroup = dict[type, Entity]
 Maze = dict[int, Square]
 
+
 @dataclass(kw_only=True)
 class LightGame:
     """Play a game with the lights."""
-    converter: rgbxy.Converter
     lights: LightSet
     maze: Maze
     schedule: ScheduleCallback
@@ -115,10 +116,6 @@ class LightGame:
     def create_entity(self, etype: type[Entity], name: str) -> Entity:
         """Create entity. Convert color. Place on board."""
         entity = etype(game=self, name=name)  # type: ignore
-        if isinstance(c := entity.color, RGB):
-            entity.color = XY(  # type: ignore instance assigning to ClassVar
-                *self.converter.rgb_to_xy(c.red, c.green, c.blue)
-            )
         if isinstance(entity, Character):
             self.characters.append(entity)
             self.characters.sort(key = lambda c: c.turn_priority)

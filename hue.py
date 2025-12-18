@@ -8,11 +8,10 @@ from dataclasses import dataclass, field
 from typing import ClassVar
 
 import requests
-import rgbxy
 import urllib3
 
 from bulb import HueBulb
-from color import Color, XY
+from color import Color
 from lightcontroller import (
     ChannelUpdate, ChannelCommand, 
     LightController, LightChannel,
@@ -39,7 +38,6 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         self.session.verify = False
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         assert isinstance(self.bulb_model, HueBulb)
-        self.converter = rgbxy.Converter(self.bulb_model.gamut)
         try:
             lights = self._get_state_of_channels()
             print(f"Received status for {len(lights)} lights.")
@@ -95,9 +93,6 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             # print(command.params)
             # print('*********')
             response.raise_for_status()
-
-    def random_color(self):
-        return XY(*self.converter.get_random_xy_color())
 
 
 @dataclass(kw_only=True)

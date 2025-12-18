@@ -26,7 +26,6 @@ def board_1() -> Board:
 
 def game_1():
     return LightGame(
-        converter=None,  # type: ignore
         lights=None,  # type: ignore
         maze = {
             i: Square()
