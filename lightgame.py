@@ -69,6 +69,13 @@ class LightGame:
         self.board: Board = {coord: {} for coord in self.maze}
         self.characters: list[Character] = []
 
+    def start(self):
+        """"""
+        input()
+        self.update_lights(self.board)
+        input()
+        self.execute_round()
+
     def execute_round(self):
         """Execute one game round."""
         self.execute_one_round()
@@ -91,7 +98,11 @@ class LightGame:
         for character in self.characters:
             character.execute_turn()
         delta_board = self.compare_boards(old_board)
-        updates = self.light_updates(delta_board)
+        self.update_lights(delta_board)
+
+    def update_lights(self, board: Board):
+        """"""
+        updates = self.light_updates(board)
         self.lights.controller.update_channels(updates)
 
     def print_board(self, board: Board) -> None:

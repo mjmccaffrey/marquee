@@ -187,5 +187,5 @@ class PacManGame(PlayMode):
     def execute(self) -> None:
         """"""
         self.setup(level=0)
-        self.game.execute_round()        
+        self.game.start()
 
