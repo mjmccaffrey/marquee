@@ -154,7 +154,7 @@ class PacManGame(PlayMode):
         s = sorted(
             entities, key=lambda e: e.draw_priority, reverse=True,
         )
-        # pprint(s)
+        pprint(s)
         return s[0].color
 
     def desired_light_state(
@@ -167,7 +167,7 @@ class PacManGame(PlayMode):
             return ChannelUpdate(channel=channel, on=False)
         return ChannelUpdate(
             channel=channel,
-            brightness=100,
+            brightness=50,
             trans=0,
             color=self.desired_square_color(entities),
             on=True,
@@ -181,7 +181,7 @@ class PacManGame(PlayMode):
             )
             for i, e in delta.items()
         ]
-        # pprint(result)
+        pprint(result)
         return result
 
     def execute(self) -> None:

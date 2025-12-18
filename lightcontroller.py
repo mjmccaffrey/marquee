@@ -55,6 +55,8 @@ class LightController(ABC):
                 for update in updates
                 if update.channel.update_needed(update)
             ]
+            for u in updates:
+                print(u)
         self.execute_updates(updates=updates)
 
     @abstractmethod

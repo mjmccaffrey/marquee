@@ -88,13 +88,10 @@ class LightGame:
     def execute_one_round(self):
         """Execute one game round."""
 
-        print("BEFORE COPY:")
-        self.print_board(self.board)
         old_board = {
             k: v.copy()
             for k, v in self.board.items()
         }
-        
         for character in self.characters:
             character.execute_turn()
         delta_board = self.compare_boards(old_board)
