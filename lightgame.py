@@ -96,7 +96,7 @@ class LightGame:
 
     def print_board(self, board: Board) -> None:
         print("*****")
-        for i in board:
+        for i in sorted(board):
             print(i)
             for e in board[i].values():
                 print("  ", e.name)
@@ -104,13 +104,12 @@ class LightGame:
 
     def compare_boards(self, old_board: Board) -> Board:
         """Return a partial board with delta of old and new."""
-        entities = zip(self.board.values(), old_board.values())
-        for e in entities:
-            print(e)
+        # for e in entities:
+        #     print(e)
         result = {
-            i: new
-            for i, (new, old) in enumerate(entities)               
-            if new != old
+            i: self.board[i]
+            for i in self.board.keys()
+            if old_board[i] != self.board[i]
         }
         print("OLD:")
         self.print_board(old_board)
