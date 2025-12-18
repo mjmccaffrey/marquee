@@ -17,7 +17,7 @@ from lightcontroller import (
     LightController, LightChannel,
 )
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, repr=False)
 class HueBridge(LightController, bulb_comp=HueBulb):
     """Hue bridge controller."""
 
@@ -95,7 +95,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             response.raise_for_status()
 
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, repr=False)
 class HueChannel(LightChannel):
     """ Models a single Hue channel (light). """
 
