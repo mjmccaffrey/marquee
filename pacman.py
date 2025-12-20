@@ -13,6 +13,7 @@ from lightgame import (
 from hue import HueBridge
 from lightcontroller import LightChannel, ChannelUpdate
 from modes.playmode import PlayMode
+from repl_misc import light_states
 
 
 @dataclass(kw_only=True, repr=False)
@@ -51,9 +52,8 @@ class PacMan(Character):
                     keystrokes[key],
                 )
             case _:
-                # raise ValueError(direction)
                 dest = None
-                pass
+                light_states(self.game.lights)
         if dest is not None:
             _move_to(dest)
 
@@ -151,13 +151,11 @@ class PacManGame(PlayMode):
             return Colors.RED
         if len(list(e for e in entities if isinstance(e, Ghost))) > 1:
             return Colors.BLUE
-        s = sorted(
+        s: list[type[Entity]] = sorted(
             entities, key=lambda e: e.draw_priority, reverse=True,
         )
-        print("SORTED ENTITIES:")
-        pprint(s)
         return s[0].color
-
+    
     def desired_light_state(
             self, 
             entities: EntityGroup, 

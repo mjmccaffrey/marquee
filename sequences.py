@@ -17,17 +17,6 @@ def opposite(pattern: Sequence) -> str:
     return "".join("1" if str(p) == "0" else "0" for p in pattern)
 
 
-def pp(p: Sequence) -> None:
-    """Pretty print pattern p."""
-    print(
-        f"  {p[0]} {p[1]} {p[2]}\n"
-        f"{p[11]}       {p[3]}\n"
-        f"{p[10]}       {p[4]}\n"
-        f"{p[9]}       {p[5]}\n"
-        f"  {p[8]} {p[7]} {p[6]}\n"
-    )
-
-
 def all_on() -> Iterator[str]:
     """All lights on."""
     yield ALL_ON

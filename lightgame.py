@@ -51,7 +51,7 @@ class Square:
 
 
 Board = dict[int, 'EntityGroup']
-EntityGroup = dict[type, Entity]
+EntityGroup = dict[type[Entity], Entity]
 Maze = dict[int, Square]
 
 
@@ -66,14 +66,13 @@ class LightGame:
 
     def __post_init__(self):
         """Initialize board and characters."""
-        self.board: Board = {coord: {} for coord in self.maze}
+        self.board: Board = {coord: {} for coord in sorted(self.maze)}
+        assert all(c == i for i, c in enumerate(self.board))
         self.characters: list[Character] = []
 
     def start(self):
         """"""
-        input()
         self.update_lights(self.board)
-        input()
         self.execute_round()
 
     def execute_round(self):
@@ -104,7 +103,7 @@ class LightGame:
 
     def print_board(self, board: Board) -> None:
         print("*****")
-        for i in sorted(board):
+        for i in board:
             print(i)
             for e in board[i].values():
                 print("  ", e.name)
