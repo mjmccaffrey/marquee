@@ -169,7 +169,7 @@ class PacManGame(PlayMode):
                 entities, key=lambda e: e.draw_priority, reverse=True,
             )
             for e in s:
-                print(e.name, e.brightness, e.color)
+                print(e.brightness, e.color)
             brightness, color = s[0].brightness, s[0].color
         return ChannelUpdate(
             channel=channel,

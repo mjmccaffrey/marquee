@@ -52,6 +52,10 @@ class RGB(Color):
         else:
             self._adjust_incomplete_color(rgb=self, gamut=gamut)
 
+    def __repr__(self):
+        """"""
+        return f"RGB({self.red}, {self.green}, {self.blue})"
+
 
 class Colors:
     """Create an instance for gamut-adjusted constants.
