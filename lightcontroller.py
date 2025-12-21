@@ -49,6 +49,11 @@ class LightController(ABC):
     def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool = False):
         """Effect updates, optionally forcing the updates 
            regardless of believed state."""
+
+        print("UPDATES PROPOSED:")
+        for u in updates:
+            print("  ", u)
+
         if force:
             updates_to_send = updates
         else:
