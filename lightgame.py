@@ -26,7 +26,7 @@ class Entity(ABC):
     draw_priority: ClassVar[int]
     game: 'LightGame'
     name: str
-    brightness: int = 100
+    brightness: int
     coord: int = field(init=False)
 
     def __repr__(self):

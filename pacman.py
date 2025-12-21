@@ -19,8 +19,8 @@ from repl_misc import light_states
 @dataclass(kw_only=True, repr=False)
 class Dot(Entity):
     """"""
-    brightness = 50
     color: RGB = Colors.WHITE
+    brightness: int = 80
     draw_priority: int = 1
 
 
@@ -28,6 +28,7 @@ class Dot(Entity):
 class PacMan(Character):
     """"""
     color: ClassVar[Color] = RGB(252, 234, 63)
+    brightness: int = 80
     draw_priority: ClassVar[int] = 3
     turn_priority: ClassVar[int] = 1
 
@@ -65,6 +66,7 @@ class PacMan(Character):
 @dataclass(kw_only=True, repr=False)
 class Ghost(Character, ABC):
     """"""
+    brightness: int = 80
     draw_priority: ClassVar[int] = 2
     turn_priority: ClassVar[int] = 2
 
@@ -166,8 +168,8 @@ class PacManGame(PlayMode):
             brightness, color = Pinky.brightness, Colors.BLUE
         else:
             # Other
-            s: list[type[Entity]] = sorted(
-                entities, key=lambda e: e.draw_priority, reverse=True,
+            s: list[Entity] = sorted(
+                entities.values(), key=lambda e: e.draw_priority, reverse=True,
             )
             for e in s:
                 print(e.brightness, e.color)
