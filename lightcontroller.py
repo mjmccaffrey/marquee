@@ -111,6 +111,7 @@ class LightChannel(ABC):
     def update_state(self, update: 'ChannelUpdate'):
         """Once the command has been sent without error,
            update the tracked state accordingly."""
+        print("UPDATE STATE")
         for attr in self.STATE_ATTRS:
             value = getattr(update, attr)
             print(f"UPDATE STATE {attr} == {value}")
