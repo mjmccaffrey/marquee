@@ -19,6 +19,7 @@ from repl_misc import light_states
 @dataclass(kw_only=True, repr=False)
 class Dot(Entity):
     """"""
+    brightness = 50
     color: RGB = Colors.WHITE
     draw_priority: int = 1
 
