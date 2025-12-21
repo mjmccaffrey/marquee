@@ -40,14 +40,14 @@ class PacMan(Character):
             dest = self.game.board[coord]
             if Dot in dest:
                 dest[Dot].brightness -= 65
-                print(f"BRIGHTNESS AT {coord} IS NOW {dest[Dot].brightness}")
+                # print(f"BRIGHTNESS AT {coord} IS NOW {dest[Dot].brightness}")
                 if dest[Dot].brightness <= 0:
                     del dest[Dot]
             self.game.move_entity(self, coord)
 
         # TEST
         keystrokes = {'l': 'left', 'r': 'right', 'u': 'up', 'd': 'down'}
-        direction = input("move:").lower()
+        direction = input(f"move {self.game.tick}:").lower()
         match direction:
             case '.':
                 dest = None
@@ -78,14 +78,17 @@ class Ghost(Character, ABC):
 @dataclass(kw_only=True, repr=False)
 class Pinky(Ghost):
     """"""
-    color: ClassVar[Color] = RGB(252, 234, 63)
+    color: ClassVar[Color] = Colors.MAGENTA
 
     def execute_turn(self) -> None:
         """"""
         if self.game.tick < 10:
             return
         if self.coord is None:
-            if not self.game.board[1]:
+            if not any(
+                issubclass(e, Character)
+                for e in self.game.board[1]
+            ):
                 self.game.place_entity(self, 1)
         else:
             self.game.place_entity(self, self.coord + 1)
@@ -93,7 +96,7 @@ class Pinky(Ghost):
 @dataclass(kw_only=True, repr=False)
 class Blinky(Ghost):
     """"""
-    color: ClassVar[Color] = RGB(252, 234, 63)
+    color: ClassVar[Color] = Colors.GREEN
 
 
 class PacManGame(PlayMode):
