@@ -38,6 +38,7 @@ class PacMan(Character):
             dest = self.game.board[coord]
             if Dot in dest:
                 dest[Dot].brightness -= 50
+                print(f"BRIGHTNESS AT {coord} IS NOW {dest[Dot].brightness}")
                 if dest[Dot].brightness <= 0:
                     del dest[Dot]
             self.game.move_entity(self, coord)
