@@ -113,7 +113,9 @@ class LightChannel(ABC):
            update the tracked state accordingly."""
         for attr in self.STATE_ATTRS:
             value = getattr(update, attr)
+            print(f"UPDATE STATE {attr} == {value}")
             if value is not None:
+                print(f"UPDATE STATE {attr} = {value}")
                 setattr(self, attr, value)
 
 
