@@ -93,6 +93,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             # print(command.params)
             # print('*********')
             response.raise_for_status()
+            update.channel.update_state(update)
 
 
 @dataclass(kw_only=True, repr=False)
@@ -138,7 +139,6 @@ class HueChannel(LightChannel):
     ) -> None:
         """Build and send command via requests.
            Does not check current state."""
-        print("***HUE _SET ***")
         update = ChannelUpdate(
             channel=self,
             brightness=brightness,
@@ -154,5 +154,4 @@ class HueChannel(LightChannel):
         )
         response.raise_for_status()
         self.update_state(update)
-        print("***HUE _SET EXIT ***")
 

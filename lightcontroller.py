@@ -49,16 +49,18 @@ class LightController(ABC):
     def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool = False):
         """Effect updates, optionally forcing the updates 
            regardless of believed state."""
-        if not force:
-            updates = [
+        if force:
+            updates_to_send = updates
+        else:
+            updates_to_send = [
                 update 
                 for update in updates
                 if update.channel.update_needed(update)
             ]
             print("UPDATE_CHANNELS:")
-            for u in updates:
+            for u in updates_to_send:
                 print("  ", u)
-        self.execute_updates(updates=updates)
+        self.execute_updates(updates=updates_to_send)
 
     @abstractmethod
     def execute_updates(self, updates: Sequence['ChannelUpdate']) -> None:
@@ -113,12 +115,12 @@ class LightChannel(ABC):
         """Once the command has been sent without error,
            update the tracked state accordingly."""
         print("UPDATE STATE")
-        for attr in self.STATE_ATTRS:
-            value = getattr(update, attr)
-            print(f"UPDATE STATE {attr} == {value}")
-            if value is not None:
-                print(f"UPDATE STATE {attr} = {value}")
-                setattr(self, attr, value)
+        if update.brightness is not None:
+            self.brightness = update.brightness
+        if update.color is not None:
+            self.color = update.color
+        if update.on is not None:
+            self.on = update.on
 
 
 @dataclass
