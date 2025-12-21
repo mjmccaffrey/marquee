@@ -20,14 +20,14 @@ from repl_misc import light_states
 class Dot(Entity):
     """"""
     color: RGB = Colors.WHITE
-    draw_priority: int = 10
+    draw_priority: int = 1
 
 
 @dataclass(kw_only=True, repr=False)
 class PacMan(Character):
     """"""
     color: ClassVar[Color] = RGB(252, 234, 63)
-    draw_priority: ClassVar[int] = 1
+    draw_priority: ClassVar[int] = 3
     turn_priority: ClassVar[int] = 1
 
     def execute_turn(self):
