@@ -118,12 +118,12 @@ class LightGame:
             for i in self.board.keys()
             if old_board[i] != self.board[i]
         }
-        print("OLD:")
-        self.print_board(old_board)
-        print("NEW:")
-        self.print_board(self.board)
-        print("DELTA:")
-        self.print_board(result)
+        # print("OLD:")
+        # self.print_board(old_board)
+        # print("NEW:")
+        # self.print_board(self.board)
+        # print("DELTA:")
+        # self.print_board(result)
         return result
 
     def create_entity(self, etype: type[Entity], name: str) -> Entity:

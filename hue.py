@@ -41,10 +41,6 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         try:
             lights = self._get_state_of_channels()
             print(f"Received status for {len(lights)} lights.")
-            # print()
-            # for id in lights:
-            #     print(id)
-            # print()
         except requests.exceptions.Timeout as e:
             print(f"*** Failed to reach '{self.ip_address}' ***")
             print(f"*** Error: {e} ***")

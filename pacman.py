@@ -180,8 +180,8 @@ class PacManGame(PlayMode):
             )
             for i, e in delta.items()
         ]
-        print("LIGHT UPDATES:")
-        pprint(result)
+        # print("LIGHT UPDATES:")
+        # pprint(result)
         return result
 
     def execute(self) -> None:
