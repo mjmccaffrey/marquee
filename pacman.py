@@ -52,6 +52,7 @@ class PacMan(Character):
             case '.':
                 dest = None
             case key if key in keystrokes:
+                assert self.coord is not None
                 dest = getattr(
                     self.game.maze[self.coord],
                     keystrokes[key],
@@ -79,6 +80,15 @@ class Pinky(Ghost):
     """"""
     color: ClassVar[Color] = RGB(252, 234, 63)
 
+    def execute_turn(self) -> None:
+        """"""
+        if self.game.tick < 10:
+            return
+        if self.coord is None:
+            if not self.game.board[1]:
+                self.game.place_entity(self, 1)
+        else:
+            self.game.place_entity(self, self.coord + 1)
 
 @dataclass(kw_only=True, repr=False)
 class Blinky(Ghost):
@@ -142,6 +152,7 @@ class PacManGame(PlayMode):
     def state_logic(self) -> None:
         """"""
         # If ghost and Pac-Man on same square, game is over etc.
+        assert self.pacman.coord is not None
         if any(
             ghost in self.game.board[self.pacman.coord]
             for ghost in (Pinky, Blinky)
@@ -157,6 +168,7 @@ class PacManGame(PlayMode):
         # Nothing
         if not entities:
             return ChannelUpdate(channel=channel, on=False)
+        assert self.pacman.coord is not None
         if any(
             ghost in self.game.board[self.pacman.coord]
             for ghost in (Pinky, Blinky)

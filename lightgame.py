@@ -27,7 +27,7 @@ class Entity(ABC):
     game: 'LightGame'
     name: str
     brightness: int
-    coord: int = field(init=False)
+    coord: int | None = None
 
     def __repr__(self):
         return self.name
@@ -73,6 +73,7 @@ class LightGame:
 
     def start(self):
         """"""
+        self.tick: int = 0
         self.update_lights(self.board)
         self.execute_round()
 
@@ -87,7 +88,7 @@ class LightGame:
         
     def execute_one_round(self):
         """Execute a game round."""
-
+        self.tick += 1
         old_board = {
             k: v.copy()
             for k, v in self.board.items()
@@ -138,11 +139,13 @@ class LightGame:
 
     def move_entity(self, entity: Entity, coord: int):
         """Move entity to coordinate."""
+        assert entity.coord is not None
         del self.board[entity.coord][type(entity)]
         self.place_entity(entity, coord)
 
     def place_entity(self, entity: Entity, coord: int):
-        """Place entity on board at coord."""
+        """Place entity on board at coord, with wrapping."""
+        coord = coord % len(self.board)
         entity.coord = coord
         self.board[entity.coord][type(entity)] = entity
 
