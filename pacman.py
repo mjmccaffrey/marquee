@@ -176,8 +176,8 @@ class PacManGame(PlayMode):
         if not entities:
             return ChannelUpdate(channel=channel, on=False)
         assert self.pacman.coord is not None
-        if any(
-            ghost in self.game.board[self.pacman.coord]
+        if PacMan in entities and any(
+            ghost in entities
             for ghost in (Pinky, Blinky)
         ):
             # Pac-Man and Ghost
