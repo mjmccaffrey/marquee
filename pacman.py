@@ -151,19 +151,24 @@ class PacManGame(PlayMode):
             channel: LightChannel,
         ) -> ChannelUpdate:
         """"""
+        # Nothing
         if not entities:
             return ChannelUpdate(channel=channel, on=False)
         if any(
             ghost in self.game.board[self.pacman.coord]
             for ghost in (Pinky, Blinky)
         ):
+            # Pac-Man and Ghost
             brightness, color = Pinky.brightness, Colors.RED
-        if len(list(e for e in entities if isinstance(e, Ghost))) > 1:
+        elif len(list(e for e in entities if isinstance(e, Ghost))) > 1:
+            # 2 Ghosts
             brightness, color = Pinky.brightness, Colors.BLUE
-        s: list[type[Entity]] = sorted(
-            entities, key=lambda e: e.draw_priority, reverse=True,
-        )
-        brightness, color = s[0].brightness, s[0].color
+        else:
+            # Other
+            s: list[type[Entity]] = sorted(
+                entities, key=lambda e: e.draw_priority, reverse=True,
+            )
+            brightness, color = s[0].brightness, s[0].color
         return ChannelUpdate(
             channel=channel,
             brightness=brightness,
