@@ -91,7 +91,7 @@ class Pinky(Ghost):
             ):
                 self.game.place_entity(self, 1)
         else:
-            self.game.place_entity(self, self.coord + 1)
+            self.game.move_entity(self, self.coord + 1)
 
 @dataclass(kw_only=True, repr=False)
 class Blinky(Ghost):

@@ -138,7 +138,8 @@ class LightGame:
         return entity
 
     def move_entity(self, entity: Entity, coord: int):
-        """Move entity to coordinate."""
+        """Move entity to coord, with wrapping."""
+        coord = coord % len(self.board)
         assert entity.coord is not None
         del self.board[entity.coord][type(entity)]
         self.place_entity(entity, coord)
