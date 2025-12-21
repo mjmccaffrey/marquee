@@ -36,6 +36,5 @@ def ppp(p: Sequence) -> None:
 
 def light_states(lights: LightSet) -> None:
     """"""
-    for channel in lights.channels:
-        pprint(channel.state_attrs)
-        
+    for i, c in enumerate(lights.channels):
+        print(f"{i} {c.brightness} {c.color} {c.on}")

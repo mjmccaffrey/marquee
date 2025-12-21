@@ -75,7 +75,7 @@ class LightChannel(ABC):
     color: Color | None
     on: bool
 
-    state_attrs = ('brightness', 'color', 'on')
+    STATE_ATTRS = ('brightness', 'color', 'on')
 
     def __repr__(self):
         return f"Channel {self.index}"
@@ -105,13 +105,13 @@ class LightChannel(ABC):
         return any(
             (value := getattr(update, attr)) is not None and
             value != getattr(self, attr)
-            for attr in self.state_attrs
+            for attr in self.STATE_ATTRS
         )
 
     def update_state(self, update: 'ChannelUpdate'):
         """Once the command has been sent without error,
            update the tracked state accordingly."""
-        for attr in self.state_attrs:
+        for attr in self.STATE_ATTRS:
             value = getattr(update, attr)
             if value is not None:
                 setattr(self, attr, value)
