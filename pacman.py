@@ -70,19 +70,12 @@ class Ghost(Character, ABC):
     brightness: int = 80
     draw_priority: ClassVar[int] = 2
     turn_priority: ClassVar[int] = 2
+    sleep_ticks: int
+    direction: int
 
     def execute_turn(self) -> None:
         """"""
-
-
-@dataclass(kw_only=True, repr=False)
-class Pinky(Ghost):
-    """"""
-    color: ClassVar[Color] = Colors.MAGENTA
-
-    def execute_turn(self) -> None:
-        """"""
-        if self.game.tick < 10:
+        if self.game.tick < self.sleep_ticks:
             return
         if self.coord is None:
             if not any(
@@ -91,12 +84,23 @@ class Pinky(Ghost):
             ):
                 self.game.place_entity(self, 1)
         else:
-            self.game.move_entity(self, self.coord + 1)
+            self.game.move_entity(self, self.coord + self.direction)
+
+
+@dataclass(kw_only=True, repr=False)
+class Pinky(Ghost):
+    """"""
+    color: ClassVar[Color] = Colors.MAGENTA
+    sleep_ticks: int = 10
+    direction: int = +1
+
 
 @dataclass(kw_only=True, repr=False)
 class Blinky(Ghost):
     """"""
     color: ClassVar[Color] = Colors.GREEN
+    sleep_ticks: int = 15
+    direction: int = -1
 
 
 class PacManGame(PlayMode):
