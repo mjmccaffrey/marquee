@@ -26,6 +26,7 @@ class Entity(ABC):
     draw_priority: ClassVar[int]
     game: 'LightGame'
     name: str
+    brightness: int = 100
     coord: int = field(init=False)
 
     def __repr__(self):
@@ -76,7 +77,7 @@ class LightGame:
         self.execute_round()
 
     def execute_round(self):
-        """Execute one game round."""
+        """Execute a game round, schedule next one."""
         self.execute_one_round()
         self.schedule(
             action=self.execute_round,
@@ -85,7 +86,7 @@ class LightGame:
         )
         
     def execute_one_round(self):
-        """Execute one game round."""
+        """Execute a game round."""
 
         old_board = {
             k: v.copy()
@@ -93,6 +94,7 @@ class LightGame:
         }
         for character in self.characters:
             character.execute_turn()
+        self.state_logic()
         delta_board = self.compare_boards(old_board)
         self.update_lights(delta_board)
 

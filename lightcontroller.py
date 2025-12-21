@@ -78,7 +78,6 @@ class LightChannel(ABC):
     color: Color | None
     on: bool
 
-    STATE_ATTRS = ('brightness', 'color', 'on')
 
     def __repr__(self):
         return f"Channel {self.index}"
@@ -105,10 +104,10 @@ class LightChannel(ABC):
     def update_needed(self, update: 'ChannelUpdate'):
         """Return False if all desired states match
            current states, else True."""
-        return any(
-            (value := getattr(update, attr)) is not None and
-            value != getattr(self, attr)
-            for attr in self.STATE_ATTRS
+        return (
+            self.brightness != update.brightness or
+            self.color != update.color or
+            self.on != update.on
         )
 
     def update_state(self, update: 'ChannelUpdate'):
@@ -131,6 +130,7 @@ class ChannelUpdate:
     trans: float | None = None
     color: Color | None = None
     on: bool | None = None
+
 
 @dataclass
 class ChannelCommand:

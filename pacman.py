@@ -35,9 +35,11 @@ class PacMan(Character):
 
         def _move_to(coord: int) -> None:
             """"""
-            if Dot in self.game.board[coord]:
-                # Eat dot
-                del self.game.board[coord][Dot]
+            dest = self.game.board[coord]
+            if Dot in dest:
+                dest[Dot].brightness -= 50
+                if dest[Dot].brightness <= 0:
+                    del dest[Dot]
             self.game.move_entity(self, coord)
 
         # TEST
@@ -141,20 +143,6 @@ class PacManGame(PlayMode):
             for ghost in (self.pinky, self.blinky)
         ):
             print("COLLISION")
-
-    def desired_square_color(self, entities: EntityGroup) -> Color:
-        """"""
-        if any(
-            ghost in self.game.board[self.pacman.coord]
-            for ghost in (Pinky, Blinky)
-        ):
-            return Colors.RED
-        if len(list(e for e in entities if isinstance(e, Ghost))) > 1:
-            return Colors.BLUE
-        s: list[type[Entity]] = sorted(
-            entities, key=lambda e: e.draw_priority, reverse=True,
-        )
-        return s[0].color
     
     def desired_light_state(
             self, 
@@ -164,11 +152,22 @@ class PacManGame(PlayMode):
         """"""
         if not entities:
             return ChannelUpdate(channel=channel, on=False)
+        if any(
+            ghost in self.game.board[self.pacman.coord]
+            for ghost in (Pinky, Blinky)
+        ):
+            brightness, color = Pinky.brightness, Colors.RED
+        if len(list(e for e in entities if isinstance(e, Ghost))) > 1:
+            brightness, color = Pinky.brightness, Colors.BLUE
+        s: list[type[Entity]] = sorted(
+            entities, key=lambda e: e.draw_priority, reverse=True,
+        )
+        brightness, color = s[0].brightness, s[0].color
         return ChannelUpdate(
             channel=channel,
-            brightness=50,
+            brightness=brightness,
             trans=0,
-            color=self.desired_square_color(entities),
+            color=color,
             on=True,
         )
 
