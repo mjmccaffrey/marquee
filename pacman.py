@@ -140,7 +140,7 @@ class PacManGame(PlayMode):
         # If ghost and Pac-Man on same square, game is over etc.
         if any(
             ghost in self.game.board[self.pacman.coord]
-            for ghost in (self.pinky, self.blinky)
+            for ghost in (Pinky, Blinky)
         ):
             print("COLLISION")
     
