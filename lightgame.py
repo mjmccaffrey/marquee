@@ -30,6 +30,7 @@ class Entity(ABC):
     coord: int | None = None
 
     def __repr__(self):
+        """"""
         return self.name
 
 
