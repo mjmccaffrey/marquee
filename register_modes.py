@@ -18,7 +18,6 @@ from sequences import (
     random_flip,
     rotate_sides,
 )
-# from signs_song import SignsSong
 from christmas import ChristmasSongs
 
 def register_modes(exec: Executor):
@@ -122,6 +121,13 @@ def register_modes(exec: Executor):
             transition_off=3.0,
         )
     )
+    exec.add_sequence_mode("silent_random_flip_slow", random_flip, pace=3.0,
+        special=DimmerParams(
+            transition_on=3.0,
+            transition_off=3.0,
+        ),
+        light_pattern='LIGHT_PATTERN',
+    )
     exec.add_sequence_mode("silent_random_flip_medium", random_flip, pace=2.0,
         special=DimmerParams(
             transition_on=2.0,
@@ -187,7 +193,6 @@ def register_modes(exec: Executor):
         special=DimmerParams(concurrent=True),
     )
     exec.add_sequence_mode("section_3", all_off)
-    # exec.add_mode("signs", SignsSong, special=DimmerParams())
     exec.add_mode("christmas", ChristmasSongs)
     exec.add_sequence_mode("section_4", all_off)
 
