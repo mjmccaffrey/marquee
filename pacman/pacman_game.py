@@ -1,106 +1,14 @@
-"""Marquee Lighted Sign Project - pac_man"""
-
-from abc import ABC
-from dataclasses import dataclass
-from pprint import pprint
-from typing import ClassVar
+"""Marquee Lighted Sign Project - pac_man game"""
 
 from bulb import HueBulb
-from color import Color, Colors, RGB
+from color import Colors, RGB
+from .pacman_entities import Dot, Ghost, PacMan, Pinky, Blinky
 from lightgame import (
-    Board, Character, Entity, EntityGroup, LightGame, Maze, Square,
+    Board, Entity, EntityGroup, LightGame, Maze, Square,
 )
 from hue import HueBridge
 from lightcontroller import LightChannel, ChannelUpdate
 from modes.playmode import PlayMode
-from repl_misc import light_states
-
-
-@dataclass(kw_only=True, repr=False)
-class Dot(Entity):
-    """"""
-    color: RGB = Colors.WHITE
-    brightness: int = 80
-    draw_priority: int = 1
-
-
-@dataclass(kw_only=True, repr=False)
-class PacMan(Character):
-    """"""
-    color: ClassVar[Color] = RGB(252, 234, 63)
-    brightness: int = 80
-    draw_priority: ClassVar[int] = 3
-    turn_priority: ClassVar[int] = 1
-
-    def execute_turn(self):
-        """Take turn."""
-
-        def _move_to(coord: int) -> None:
-            """"""
-            dest = self.game.board[coord]
-            if Dot in dest:
-                dest[Dot].brightness -= 65
-                # print(f"BRIGHTNESS AT {coord} IS NOW {dest[Dot].brightness}")
-                if dest[Dot].brightness <= 0:
-                    del dest[Dot]
-            self.game.move_entity(self, coord)
-
-        # TEST
-        keystrokes = {'l': 'left', 'r': 'right', 'u': 'up', 'd': 'down'}
-        direction = input(f"move {self.game.tick}:").lower()
-        match direction:
-            case '.':
-                dest = None
-            case key if key in keystrokes:
-                assert self.coord is not None
-                dest = getattr(
-                    self.game.maze[self.coord],
-                    keystrokes[key],
-                )
-            case _:
-                dest = None
-                light_states(self.game.lights)
-        if dest is not None:
-            _move_to(dest)
-
-
-@dataclass(kw_only=True, repr=False)
-class Ghost(Character, ABC):
-    """"""
-    brightness: int = 80
-    draw_priority: ClassVar[int] = 2
-    turn_priority: ClassVar[int] = 2
-    sleep_ticks: int
-    direction: int
-
-    def execute_turn(self) -> None:
-        """"""
-        if self.game.tick < self.sleep_ticks:
-            return
-        if self.coord is None:
-            if not any(
-                issubclass(e, Character)
-                for e in self.game.board[1]
-            ):
-                self.game.place_entity(self, 1)
-        else:
-            self.game.move_entity(self, self.coord + self.direction)
-
-
-@dataclass(kw_only=True, repr=False)
-class Pinky(Ghost):
-    """"""
-    color: ClassVar[Color] = Colors.MAGENTA
-    sleep_ticks: int = 10
-    direction: int = +1
-
-
-@dataclass(kw_only=True, repr=False)
-class Blinky(Ghost):
-    """"""
-    color: ClassVar[Color] = Colors.GREEN
-    sleep_ticks: int = 15
-    direction: int = -1
 
 
 class PacManGame(PlayMode):
@@ -148,10 +56,10 @@ class PacManGame(PlayMode):
             state_logic=self.state_logic,
             light_updates=self.light_updates,
         )
-        self.pacman = self.game.create_entity(etype=PacMan, name="Pac-Man")
+        self.pacman = self.game.create_entity(etype=PacMan, name="pacman")
         self.game.place_entity(self.pacman, 7)
-        self.pinky = self.game.create_entity(etype=Pinky, name="Pinky")
-        self.blinky = self.game.create_entity(etype=Blinky, name="Blinky")
+        self.pinky = self.game.create_entity(etype=Pinky, name="pinky")
+        self.blinky = self.game.create_entity(etype=Blinky, name="blinky")
         for d in self.maze_12.keys() - {7}:
             dot = self.game.create_entity(etype=Dot, name=f"dot_{d}")
             self.game.place_entity(dot, d)
@@ -188,11 +96,11 @@ class PacManGame(PlayMode):
         else:
             # Other
             s: list[Entity] = sorted(
-                entities.values(), key=lambda e: e.draw_priority, reverse=True,
+                entities.values(), key=lambda e: e.draw_priority,
             )
-            for e in s:
-                print(e.brightness, e.color)
-            brightness, color = s[0].brightness, s[0].color
+            # for e in s:
+            #     print(e.brightness, e.color)
+            brightness, color = s[-1].brightness, s[-1].color
         return ChannelUpdate(
             channel=channel,
             brightness=brightness,

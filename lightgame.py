@@ -70,7 +70,8 @@ class LightGame:
         """Initialize board and characters."""
         self.board: Board = {coord: {} for coord in sorted(self.maze)}
         assert all(c == i for i, c in enumerate(self.board))
-        self.characters: list[Character] = []
+        self.characters_by_name: dict[str, Character] = {}
+        self.characters_turn_order: list[Character] = []
 
     def start(self):
         """"""
@@ -94,7 +95,7 @@ class LightGame:
             k: v.copy()
             for k, v in self.board.items()
         }
-        for character in self.characters:
+        for character in self.characters_turn_order:
             character.execute_turn()
         self.state_logic()
         delta_board = self.compare_boards(old_board)
@@ -134,8 +135,9 @@ class LightGame:
         """Create entity. Convert color. Place on board."""
         entity = etype(game=self, name=name)  # type: ignore
         if isinstance(entity, Character):
-            self.characters.append(entity)
-            self.characters.sort(key = lambda c: c.turn_priority)
+            self.characters_by_name[name] = entity
+            self.characters_turn_order.append(entity)
+            self.characters_turn_order.sort(key = lambda c: c.turn_priority)
         return entity
 
     def move_entity(self, entity: Entity, coord: int):
