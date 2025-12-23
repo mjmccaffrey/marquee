@@ -107,7 +107,7 @@ class ChristmasSongs(PlayMusicMode):
                 ' G♩ a♩ G♩ 𝄽 |'
                 #Or replace the last a with F#
         ),
-        beats=2,
-        tempo=60,
+        beats=4,
+        tempo=90,
     )
 
