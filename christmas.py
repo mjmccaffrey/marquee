@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - signs_song"""
+"""Marquee Lighted Sign Project - christmas"""
 
 from modes import PlayMusicMode
 from music import (

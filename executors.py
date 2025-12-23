@@ -2,6 +2,7 @@
 
 from collections.abc import Callable
 from signal import SIGUSR1  # type: ignore
+import time
 
 from gpiozero import Button as _Button  # type: ignore
 
@@ -9,7 +10,7 @@ from basemode import BaseMode
 from buttons import Button
 from buttonsets import ButtonSet
 from configuration import (
-    ALL_RELAYS, ALL_OFF, DIMMER_ADDRESSES, EXTRA_COUNT,
+    ALL_RELAYS, ALL_OFF, ALL_ON, DIMMER_ADDRESSES, EXTRA_COUNT,
 )
 from definitions import SpecialParams, ModeConstructor
 from dimmers import ShellyDimmer, ShellyProDimmer2PM, TRANSITION_DEFAULT
@@ -87,6 +88,8 @@ class Executor():
 
     def command_calibrate_dimmers(self):
         """Calibrate dimmers."""
+        self.lights.set_relays(ALL_ON, '0' * EXTRA_COUNT)
+        time.sleep(1.0)
         ShellyDimmer.calibrate_all()
 
     def command_off(self):
