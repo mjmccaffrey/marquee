@@ -20,7 +20,7 @@ class ChristmasSongs(PlayMusicMode):
             self.deck_the_halls(),
         ]
         for song in songs:
-            song.play(tempo=120)
+            song.play()
 
     def jingle_bells(self) -> Section:
         """Jingle Bells."""
@@ -51,6 +51,7 @@ class ChristmasSongs(PlayMusicMode):
                 # one horse open  sleigh
                 '  d♩ d♩    c♩ a♩ | G♩ 𝄽 𝄽 𝄽  |'
             ),
+            tempo=120,
         )
 
     def jolly_old(self) -> Section:
@@ -83,6 +84,8 @@ class ChristmasSongs(PlayMusicMode):
                 # Tell me if you    can
                 '  a♪ G♪   a♪ b♪  | G♩ 𝄽           |'
             ),
+            beats=2,
+            tempo=60,
         )
     
 
@@ -104,5 +107,7 @@ class ChristmasSongs(PlayMusicMode):
                 ' G♩ a♩ G♩ 𝄽 |'
                 #Or replace the last a with F#
         ),
+        beats=2,
+        tempo=60,
     )
 
