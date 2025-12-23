@@ -16,6 +16,8 @@ class ChristmasSongs(PlayMusicMode):
         # set_player(self.player)
         songs: list[Section] = [
             self.jingle_bells(),
+            self.jolly_old(),
+            self.deck_the_halls(),
         ]
         for song in songs:
             song.play(tempo=120)
@@ -79,7 +81,8 @@ class ChristmasSongs(PlayMusicMode):
                 '  e♪ e♪   e♪ e♪     | D♪ D♪   G♩ |'
                 
                 # Tell me if you    can
-                '  a♪ G♪   a♪ b♪  | G♩ 𝄽           |'            ),
+                '  a♪ G♪   a♪ b♪  | G♩ 𝄽           |'
+            ),
         )
     
 
@@ -100,4 +103,6 @@ class ChristmasSongs(PlayMusicMode):
                 # la la la
                 ' G♩ a♩ G♩ 𝄽 |'
                 #Or replace the last a with F#
-        )
+        ),
+    )
+
