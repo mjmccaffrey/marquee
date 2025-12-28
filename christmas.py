@@ -31,7 +31,7 @@ class ChristmasSongs(PlayMusicMode):
                 '  b♩ b♩   b♩ 𝄽  | b♩ b♩   b♩ 𝄽  |'
                 
                 #  Jingle all the   way 
-                '  b♩ d♩   G♩ 𝄾 a♪  | b♩ 𝄽 𝄽 𝄽   |'
+                '  b♩ d♩   Gb♩ 𝄾 a♪  | b♩ 𝄽 𝄽 𝄽   |'
                 
                 # Oh what fun it    is to ride in a 
                 ' c♩ c♩   c♩ 𝄾 c♪ |  c♩ b♩ b♩    b♪ b♪ |'
@@ -43,13 +43,13 @@ class ChristmasSongs(PlayMusicMode):
                 '  b♩ b♩   b♩ 𝄽  | b♩ b♩   b♩ 𝄽  |'
                 
                 #  Jingle all the   way 
-                '  b♩ d♩   G♩ 𝄾 a♪  | b♩ 𝄽 𝄽 𝄽   |'
+                '  b♩ d♩   Gb♩ 𝄾 a♪  | b♩ 𝄽 𝄽 𝄽   |'
                 
                 # Oh what fun it    is to ride in a 
                 ' c♩ c♩   c♩ 𝄾 c♪ |  c♩ b♩ b♩    b♪ b♪ |'
 
                 # one horse open  sleigh
-                '  d♩ d♩    c♩ a♩ | G♩ 𝄽 𝄽 𝄽  |'
+                '  d♩ d♩    c♩ a♩ | Gbd♩ 𝄽 𝄽 𝄽  |'
             ),
             tempo=120,
         )
@@ -98,13 +98,13 @@ class ChristmasSongs(PlayMusicMode):
                 ' d♩ 𝄾 c♪ b♩ a♩ |'
                 
                 # Boughs of Holly
-                ' G♩ a♩ b♩ G♩ |'
+                ' Gb♩ a♩ b♩ Gb♩ |'
 
                 # Fa la la la la, la 
                 ' a♪ b♪ c♪ a♪ b♩ 𝄾 a♪ | ' 
                 
                 # la la la
-                ' G♩ a♩ G♩ 𝄽 |'
+                ' Gb♩ a♩ Gbd♩ 𝄽 |'
                 #Or replace the last a with F#
         ),
         beats=4,
