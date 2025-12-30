@@ -80,7 +80,7 @@ class SelectMode(ForegroundMode, ABC):
                 special=self.special,
             ).execute()
             self.previous_desired = self.desired
-            self.schedule(self.execute, due=4.0)
+            self.schedule(self.execute, due_rel=4.0)
         else:
             # Last pass.
             # Time elapsed without a button being pressed.

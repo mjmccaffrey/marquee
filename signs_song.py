@@ -26,7 +26,6 @@ class SignsSong(PlayMode):
         ]
         for section in sections:
             section.play(tempo=75)
-        self.player.wait(None)
 
     def intro(self) -> Section:
         """Signs song intro."""

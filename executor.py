@@ -30,7 +30,7 @@ class Executor:
             self,
             create_player: Callable[..., PlayerInterface],
             setup_devices: Callable[
-                [float], 
+                [float, float], 
                 tuple[BellSet, ButtonSet, DrumSet, LightSet]
             ],
         ) -> None:
@@ -98,7 +98,7 @@ class Executor:
         """Effects the command-line specified command, mode or pattern(s)."""
         signal.signal(signal.SIGTERM, self.sigterm_received)
         self.bells, self.buttons, self.drums, self.lights = (
-            self.setup_devices(brightness_factor)
+            self.setup_devices(brightness_factor, speed_factor)
         )
         if command is not None:
             self.execute_command(command)

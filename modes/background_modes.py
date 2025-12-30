@@ -62,8 +62,7 @@ class SequenceBGMode(BackgroundMode):
         )
         self.schedule(
             action=self.execute,
-            due=self.mode_on_deck.seconds,
-            name="SequenceBGMode execute", 
+            due_rel=self.mode_on_deck.seconds,
         )
         new_mode = self.mode_on_deck.index
         self.mode_on_deck = next(self.mode_iter)
@@ -115,7 +114,6 @@ class TimeBGMode(BackgroundMode, ABC):
         """Schedule next (future) event for this background mode."""
         self.schedule(
             action=self.event_execute,
-            due=self.next_trigger_time(), 
-            name="TimeBGMode event_execute",
+            due_abs=self.next_trigger_time(), 
         )
 

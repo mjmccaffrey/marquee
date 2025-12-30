@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import sys
+import time
 
 from lightset_misc import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
 from music import (
@@ -24,7 +25,10 @@ class Demo(PlayMode):
     def __post_init__(self) -> None:
         """Initialize."""
         set_player(self.player)
-        self.preset_devices(channels=True, relays=True)
+
+        self.lights.set_channels(brightness=100, on=True, force=True)
+        time.sleep(0.5)
+        self.lights.set_relays(ALL_ON)
 
     def execute(self) -> None:
         """Execute version 3 demo."""

@@ -48,7 +48,7 @@ class PlaySequenceMode(PlayMode):
         if self.pre_delay and not pre_delay_done:
             self.schedule(
                 action = partial(self.execute, pre_delay_done=True),
-                due = self.pre_delay,
+                due_rel = self.pre_delay,
                 name = "PlaySequenceMode execute after pre_delay",
             )
             return
@@ -63,10 +63,6 @@ class PlaySequenceMode(PlayMode):
                 break
             delay = next(delay_iter)
 
-            # if pace is not None: ????
-            if isinstance(self.special, ChannelParams):
-                self.special.speed_factor = self.player.speed_factor
-
             if isinstance(self.special, ActionParams):
                 action = partial(
                         self.special.action,
@@ -80,7 +76,7 @@ class PlaySequenceMode(PlayMode):
                 )
             self.schedule(
                 action = action,
-                due = 0 if delay is None else i * delay,
+                due_rel = 0 if delay is None else i * delay,
                 name = f"PlaySequenceMode execute {i} {lights}",
             )
             if delay is None:
@@ -89,7 +85,7 @@ class PlaySequenceMode(PlayMode):
         if self.repeat: 
             self.schedule(
             action = self.execute,
-            due = (i + 1) * delay,
+            due_rel = (i + 1) * delay,
             name = "PlaySequenceMode continue",
         )
         print("Exiting playsequencemode.play at bottom")

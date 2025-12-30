@@ -41,7 +41,8 @@ HUE_BULB_IDS = [
 ]
 
 def setup_devices(
-    brightness_factor: float
+    brightness_factor: float,
+    speed_factor: float,
 ) -> tuple[BellSet, ButtonSet, DrumSet, LightSet]:
     """Create and return objects for all physical devices."""
     bells = BellSet(
@@ -64,7 +65,8 @@ def setup_devices(
             bulb_model=Hue_BR30_Enhanced_Color,
             bulb_ids=HUE_BULB_IDS,
         ),
-        brightness_factor_init=1.0,
+        brightness_factor_init=brightness_factor,
+        speed_factor=speed_factor,
     )
     buttons = ButtonSet(
         body_back = Button(

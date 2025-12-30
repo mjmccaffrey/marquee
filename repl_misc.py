@@ -11,7 +11,7 @@ from setup_devices import setup_devices
 def setup():
     global bells, buttons, drums, lights
 
-    bells, buttons, drums, lights = setup_devices(brightness_factor=1.0)
+    bells, buttons, drums, lights = setup_devices(1.0, 1.0)
 
 
 def test():

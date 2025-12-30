@@ -77,20 +77,14 @@ class LightGame:
         """"""
         self.tick: int = 0
         self.update_lights(self.board)
-        self.execute_round()
-
-    def execute_round(self):
-        """Execute a game round, schedule next one."""
-        self.execute_one_round()
         self.schedule(
             action=self.execute_round,
-            due=1.0,
-            name='game round',
+            due_rel=1.0,
+            repeat=True,
         )
         
-    def execute_one_round(self):
+    def execute_round(self):
         """Execute a game round."""
-        self.tick += 1
         old_board = {
             k: v.copy()
             for k, v in self.board.items()
@@ -100,6 +94,7 @@ class LightGame:
         self.state_logic()
         delta_board = self.compare_boards(old_board)
         self.update_lights(delta_board)
+        self.tick += 1
 
     def update_lights(self, board: Board):
         """"""

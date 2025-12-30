@@ -6,6 +6,8 @@ import itertools
 import random
 import time
 
+from bulb import HueBulb
+from color import Colors
 from hue import HueBridge
 from lightset_misc import (
     ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT,
@@ -48,14 +50,14 @@ class RotateReversible(PlayMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        self.preset_devices(channels=True)
+        self.lights.set_channels(brightness=100, on=True, force=True)
 
     def execute(self) -> None:
         """Display pattern, set next pattern, and exit.
            Called repeatedly until the mode is changed."""
         self.schedule(
             partial(self.lights.set_relays, self.pattern),
-            self.delay,
+            due_rel=self.delay,
             name=f"RotateReversible set_relays {self.pattern}",
 
         )
@@ -72,7 +74,7 @@ class RandomFade(PlayMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        self.preset_devices(relays=True)
+        self.lights.set_relays(ALL_ON)
 
     def _new_trans(self) -> float:
         if self.trans == -1:
@@ -109,7 +111,7 @@ class RandomFade(PlayMode):
                             brightness=self._new_brightness(brightnesses[light]),
                             channel_indexes = [light],
                         ),
-                        due,
+                        due_rel=due,
                         name=f"RandomFade set channel {light}",
                     )
                     due += 0.1
@@ -122,7 +124,7 @@ class EvenOddFade(PlayMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        self.preset_devices(relays=True)
+        self.lights.set_relays(ALL_ON)
 
     def execute(self) -> None:
         """Perform EvenOddFade indefinitely."""
@@ -144,7 +146,7 @@ class EvenOddFade(PlayMode):
                         trans_off=delay,
                     )
                 ),
-                due,
+                due_rel=due,
             )
             due += delay
 
@@ -159,6 +161,13 @@ class SilentFadeBuild(PlayMode):
  
     def execute(self) -> None:
         """Perform SilentFadeBuild indefinitely."""
+        
+        controller = self.player.lights.controller
+        assert isinstance(controller, HueBridge)
+        bulb = controller.bulb_model
+        assert isinstance(bulb, HueBulb)
+        colors = Colors(bulb.gamut)
+
         due = 0.0
         for rows in (False, True):
             for from_top_left, brightness in (
@@ -172,19 +181,15 @@ class SilentFadeBuild(PlayMode):
                             self.player.lights.set_channels,
                             brightness=brightness,
                             transition=1.0,
-                            color=self.player.lights.controller.random_color(),
+                            color=colors.random(),
                             channel_indexes=lights,
                         ),
-                        due,
+                        due_rel=due,
                     )
                     due += 0.5
                 due += 1.0
             due += 1.0
-        self.schedule(
-            self.execute,
-            due,
-            name="SilentFadeBuild repeat",
-        )
+        self.schedule(self.execute, due_rel=due)
 
 
 @dataclass(kw_only=True)
@@ -192,9 +197,9 @@ class HourlyChime(PlayMode):
     """Chime and light the hour."""
     def __post_init__(self) -> None:
         """Initialize."""
-        self.lights.set_channels(brightness=100)
-        self.player.wait(0.5)
-        self.preset_devices(relays=True)
+        self.lights.set_channels(brightness=100, on=True, force=True)
+        time.sleep(0.5)
+        self.lights.set_relays(ALL_ON)
  
     def execute(self) -> None:
         """Chime and light the hour."""
