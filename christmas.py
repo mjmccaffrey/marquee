@@ -15,8 +15,8 @@ class ChristmasSongs(PlayMusicMode):
         """Perform Christmas songs."""
         # set_player(self.player)
         songs: list[Section] = [
-            self.jingle_bells(),
-            self.jolly_old(),
+            # self.jingle_bells(),
+            # self.jolly_old(),
             self.deck_the_halls(),
         ]
         for song in songs:
