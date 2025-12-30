@@ -104,10 +104,10 @@ class ChristmasSongs(PlayMusicMode):
                 ' a♪ b♪ c♪ a♪ b♩ 𝄾 a♪ | ' 
                 
                 # la la la
-                ' Gb♩ a♩ Gbd♩ 𝄽 |'
+                ' Gb♩ a♩ Gb♩ 𝄽 |'
                 #Or replace the last a with F#
         ),
         beats=4,
-        tempo=90,
+        tempo=120,
     )
 
