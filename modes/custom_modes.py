@@ -74,6 +74,7 @@ class RandomFade(PlayMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
+        super().__post_init__()
         self.lights.set_relays(ALL_ON)
 
     def _new_trans(self) -> float:
