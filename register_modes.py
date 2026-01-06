@@ -13,7 +13,7 @@ from sequences import (
     all_on, all_off, blink_all, blink_alternate, even_on, even_off,
     rotate, random_flip, rotate_sides,
 )
-from pacman.pacman_game import PacManGame
+# from pacman.pacman_game import PacManGame
 from signs_song import SignsSong
 from christmas import ChristmasSongs
 from specialparams import ChannelParams, MirrorParams
@@ -24,7 +24,7 @@ def register_modes(exec: Executor) -> None:
     register_special_modes(exec)
 
     exec.add_mode("christmas", ChristmasSongs)
-    exec.add_mode("pacman", PacManGame)
+    # exec.add_mode("pacman", PacManGame)
 
     register_color_modes(exec)
     register_relay_modes(exec)
