@@ -191,24 +191,3 @@ class SilentFadeBuild(PlayMode):
             due += 1.0
         self.schedule(self.execute, due_rel=due)
 
-
-@dataclass(kw_only=True)
-class HourlyChime(PlayMode):
-    """Chime and light the hour."""
-    def __post_init__(self) -> None:
-        """Initialize."""
-        self.lights.set_channels(brightness=100, on=True, force=True)
-        time.sleep(0.5)
-        self.lights.set_relays(ALL_ON)
- 
-    def execute(self) -> None:
-        """Chime and light the hour."""
-        self.player.wait(1.0)
-        for hour in range(time.gmtime().tm_hour):
-            self.lights.set_relays(
-                str('1' if i <= hour else '0' for i in range(LIGHT_COUNT))
-            )
-            self.bells.play({Bell.e})
-            self.player.wait(1.5)
-        self.player.wait(5.0)
-

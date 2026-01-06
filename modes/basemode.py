@@ -36,7 +36,8 @@ class BaseMode(ModeInterface, ABC):
         repeat: bool = False,
     ) -> None:
         """Schedule a new event, specifying either due_abs or due_rel.
-           If repeat, schedule next before calling action."""
+           Adjust due_rel by speed_factor.
+           If repeat, schedule next event before calling action."""
 
         def push_event():
             """Push event onto queue."""
@@ -53,8 +54,7 @@ class BaseMode(ModeInterface, ABC):
         def repeater():
             """Schedule next event. Call action."""
             nonlocal _due
-            assert due_rel is not None
-            _due += due_rel
+            _due += _due_rel
             push_event()
             action()
 
@@ -69,10 +69,12 @@ class BaseMode(ModeInterface, ABC):
         else:
             _name = name
 
-        _due = (
-            due_abs if due_abs is not None 
-            else time.time() + due_rel  # type: ignore None
-        )
+        if due_abs is not None:
+            _due = due_abs
+        else:
+            assert due_rel is not None
+            _due_rel: float = due_rel * self.player.speed_factor
+            _due = time.time() + _due_rel
         _action = repeater if repeat else action
         push_event()
 

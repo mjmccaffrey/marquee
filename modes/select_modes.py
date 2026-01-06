@@ -105,8 +105,6 @@ class BrightnessSelectMode(SelectMode):
         """Set current brightness. Return select_mode if 
            final brightness selected, else None."""
         self.lights.brightness_factor = self.desired / LIGHT_COUNT
-        # * make brightness_factor a property that outputs new value
-        # * all methods must honor brightness_factor
         self.lights.set_channels(brightness=[100] * LIGHT_COUNT)
         new = super().execute()
         if new is not None:  # Selection was made.

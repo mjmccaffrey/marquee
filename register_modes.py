@@ -3,7 +3,6 @@
 from color import Colors
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
-from modes.background_modes import SequenceBGMode, ModeEntry
 from modes.custom_modes import (
     EvenOddFade, RotateReversible, 
     RandomFade, SilentFadeBuild,
@@ -190,19 +189,6 @@ def register_silent_modes(exec: Executor) -> None:
     )
     exec.add_mode("silent_random_steady_trans", RandomFade, trans=0.5)
     exec.add_mode("silent_random_random_trans", RandomFade)
-
-    exec.add_mode("silent_variety_group", SequenceBGMode,
-        sequence = [
-            ModeEntry("silent_blink_alternate_slow", 60),
-            ModeEntry("silent_random_flip_medium", 60),
-            ModeEntry("silent_random_flip_fast", 15),
-            ModeEntry("silent_blink_all_slowwww", 60),
-            ModeEntry("silent_fade_build", 60),
-            ModeEntry("silent_rotate_slight_fade", 60),
-            ModeEntry("silent_random_steady_trans", 60),
-            ModeEntry("silent_random_random_trans", 60),
-        ],
-    )
 
 
 def register_test_modes(exec: Executor) -> None:

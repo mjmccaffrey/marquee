@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - playmode"""
 
+from abc import ABC
 from dataclasses import dataclass
 
 from .foregroundmode import ForegroundMode
@@ -9,7 +10,7 @@ from player import Player
 
 
 @dataclass
-class PlayMode(ForegroundMode):
+class PlayMode(ForegroundMode, ABC):
     """Base for custom modes."""
     player: Player
 

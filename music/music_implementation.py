@@ -149,7 +149,7 @@ def events_in_measure(measure: Measure, start: float) -> list[Event]:
         assert isinstance(element, (BaseNote, NoteGroup))
         result.append(
             Event(
-                action = partial(element.play, player),
+                action = element.play,
                 owner = player,
                 due = start + beat
             )

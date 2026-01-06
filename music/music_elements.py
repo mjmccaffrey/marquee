@@ -3,7 +3,6 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field, replace
-from functools import partial
 import itertools
 import time
 from typing import Any, ClassVar
@@ -16,6 +15,7 @@ from instruments import (
 from playerinterface import PlayerInterface
 from specialparams import SpecialParams
 
+player: PlayerInterface
 
 @dataclass(frozen=True)
 class Element(ABC):
@@ -29,7 +29,7 @@ class BaseNote(Element, ABC):
     duration: float
 
     @abstractmethod
-    def play(self, player: PlayerInterface) -> None:
+    def play(self) -> None:
         """Play single BaseNote (abstract)."""
 
 
@@ -38,7 +38,7 @@ class Rest(BaseNote):
     """Musical rest."""
     instrument: ClassVar[type[Instrument]] = RestInstrument
 
-    def play(self, player: PlayerInterface) -> None:
+    def play(self) -> None:
         """Play single rest (do nothing)."""
 
 
@@ -52,7 +52,7 @@ class ActionNote(BaseNote):
         """Validate."""
         assert self.actions
 
-    def play(self, player: PlayerInterface) -> None:
+    def play(self) -> None:
         """Play single ActionNote."""
         for action in self.actions:
             action()
@@ -63,15 +63,15 @@ class ReleasableNote(BaseNote, ABC):
     """Note that requires releasing after playing."""
 
     @abstractmethod
-    def release(self, player: PlayerInterface) -> None:
+    def release(self) -> None:
         """Release BellNote."""
 
-    def schedule_release(self, player: PlayerInterface) -> None:
+    def schedule_release(self) -> None:
         """Schedule release of played note."""
         assert issubclass(self.instrument, ReleaseableInstrument)
         player.event_queue.push(
             Event(
-                action = partial(self.release, player),
+                action = self.release,
                 due = time.time() + self.instrument.release_time,
                 owner = self,
             )
@@ -88,12 +88,12 @@ class BellNote(ReleasableNote):
         """Validate."""
         assert self.pitches
 
-    def play(self, player: PlayerInterface) -> None:
+    def play(self) -> None:
         """Play BellNote."""
         player.bells.play(self.pitches)
-        self.schedule_release(player)
+        self.schedule_release()
 
-    def release(self, player: PlayerInterface) -> None:
+    def release(self) -> None:
         """Release BellNote."""
         player.bells.release(self.pitches)
 
@@ -109,7 +109,7 @@ class DrumNote(BaseNote):
         """Validate."""
         assert self.pitches
 
-    def play(self, player: PlayerInterface) -> None:
+    def play(self) -> None:
         """Play single DrumNote."""
         player.drums.play(self.accent, self.pitches)
 
@@ -125,10 +125,10 @@ class NoteGroup(Element):
         assert self.notes
         assert all(n.duration == 0.0 for n in self.notes)
 
-    def play(self, player: PlayerInterface) -> None:
+    def play(self) -> None:
         """Play all notes in group."""
         for note in self.notes:
-            note.play(player)
+            note.play()
 
 
 @dataclass(frozen=True)

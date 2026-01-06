@@ -1,11 +1,10 @@
 """Marquee Lighted Sign Project - repl_misc"""
 
 from collections.abc import Sequence
-from pprint import pprint
 import time
 
 from lightset import LightSet
-from setup_devices import setup_devices
+from setup_devices_shelly import setup_devices
 
 
 def setup():
