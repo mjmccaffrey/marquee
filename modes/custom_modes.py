@@ -120,15 +120,17 @@ class RandomFade(PlayMode):
             current=self.brightnesses[index],
         )
         transition = self.new_transition()
+        duration = self.new_duration()
         self.lights.set_channels(
             brightness=brightness,
             transition=transition,
             channel_indexes=(index,)
         )
         self.brightnesses[index] = brightness
+
         self.schedule(
             action=partial(self.update_light, index=index),
-            due_rel=transition,
+            due_rel=(transition + duration),
             name=f"RandomFade update_light {index}",
         )
 

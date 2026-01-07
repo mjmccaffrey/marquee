@@ -74,8 +74,10 @@ class PriorityQueue:
             if self._queue:
                 event = self.peek()
                 if event.due < now:
-                    # print(f"Running {event} {now - event.due} late")
+                    print(f"Running {event} {now - event.due} late")
+                    print(f"Pre-pop, {len(self._queue)} events")
                     self._queue.pop()
+                    print(f"Post-pop, {len(self._queue)} events")
                     return event, 0
                 elif seconds is None or event.due < end:
                     # print(f"Waiting for {event} or button push")
