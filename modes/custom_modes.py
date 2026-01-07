@@ -70,8 +70,11 @@ class RotateReversible(PlayMode):
 @dataclass(kw_only=True)
 class RandomFade(PlayMode):
     """Change brightness of random bulb to a random level,
-       with either random or specified transition time."""
+       with either random or specified transition time.
+       Remain at that brightness for either trandom or 
+       specified duration."""
     transition: float | None = None
+    duration: float | None = None
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -88,6 +91,14 @@ class RandomFade(PlayMode):
                 self.player.lights.trans_min, 
                 5.0 * self.player.speed_factor
             )
+        )
+
+    def new_duration(self) -> float:
+        """Return either specified or random duration."""
+        return (
+            self.duration 
+                if self.duration is not None else
+            random.uniform(0, 8.0 * self.player.speed_factor)
         )
 
     def new_brightness(self, current: int) -> int:
