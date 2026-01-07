@@ -75,6 +75,7 @@ class BaseMode(ModeInterface, ABC):
             assert due_rel is not None
             _due_rel: float = due_rel * self.player.speed_factor
             _due = time.time() + _due_rel
+            print(f"{_due=}")
         _action = repeater if repeat else action
         push_event()
 
