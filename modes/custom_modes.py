@@ -96,7 +96,7 @@ class RandomFade(PlayMode):
 
     def new_duration(self) -> float:
         """Return either specified or random duration."""
-        return 10
+        return 5
         return (
             self.duration 
                 if self.duration is not None else
