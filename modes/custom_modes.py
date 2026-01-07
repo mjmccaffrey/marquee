@@ -113,7 +113,7 @@ class RandomFade(PlayMode):
         )
         self.brightnesses[index] = brightness
         self.schedule(
-            action=self.update_light,
+            action=partial(self.update_light, index=index),
             due_rel=transition,
         )
 
