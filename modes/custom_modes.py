@@ -2,9 +2,7 @@
 
 from dataclasses import dataclass
 from functools import partial
-import itertools
 import random
-import time
 
 from bulb import HueBulb
 from color import Colors
@@ -51,71 +49,78 @@ class RotateReversible(PlayMode):
     def __post_init__(self) -> None:
         """Initialize."""
         self.lights.set_channels(brightness=100, on=True, force=True)
+        self.pattern = self.lights.relay_pattern
 
     def execute(self) -> None:
-        """Display pattern, set next pattern, and exit.
-           Called repeatedly until the mode is changed."""
-        self.schedule(
-            partial(self.lights.set_relays, self.pattern),
-            due_rel=self.delay,
-            name=f"RotateReversible set_relays {self.pattern}",
+        """"""
+        
+        # !!!! Need button handler to swap directions.
 
-        )
         self.pattern = (
-            self.pattern[self.direction:] + self.pattern[:self.direction]
+            self.pattern[self.direction:] + 
+            self.pattern[:self.direction]
+        )
+        self.lights.set_relays(light_pattern=self.pattern)
+        self.schedule(
+            action=self.execute,
+            due_rel=self.delay,
         )
 
 
 @dataclass(kw_only=True)
 class RandomFade(PlayMode):
     """Change brightness of random bulb to a random level,
-       with either a random or specified trans time."""
-    trans: float = -1
+       with either random or specified transition time."""
+    transition: float | None = None
 
     def __post_init__(self) -> None:
         """Initialize."""
         super().__post_init__()
         self.lights.set_relays(ALL_ON)
+        self.brightnesses = self.lights.brightnesses()
 
-    def _new_trans(self) -> float:
-        if self.trans == -1:
-            return random.uniform(
+    def new_transition(self) -> float:
+        """Return either specified or random transition."""
+        return (
+            self.transition 
+                if self.transition is not None else
+            random.uniform(
                 self.player.lights.trans_min, 
                 5.0 * self.player.speed_factor
             )
-        else:
-            return self.trans
+        )
 
-    def _new_brightness(self, old) -> int:
-        new = old
-        while abs(new - old) < 20:
+    def new_brightness(self, current: int) -> int:
+        """Return random brightness significantly
+           different than current brightness."""
+        new = current
+        while abs(new - current) < 20:
             new = random.randrange(101)
+        assert isinstance(new, int)
         return new
-    
+
+    def update_light(self, index: int):
+        """Update light to random / specified values.
+           Schedule next update of light."""
+        brightness = self.new_brightness(
+            current=self.brightnesses[index],
+        )
+        transition = self.new_transition()
+        self.lights.set_channels(
+            brightness=brightness,
+            transition=transition,
+            channel_indexes=(index,)
+        )
+        self.brightnesses[index] = brightness
+        self.schedule(
+            action=self.update_light,
+            due_rel=transition,
+        )
+
     def execute(self) -> None:
-        """Perform RandomFade indefinitely."""
-        next_update = {
-            light: 0.0
-            for light in range(self.lights.light_count)
-        }
-        due = 0.0
-        while True:
-            for light in range(self.lights.light_count):
-                now = time.time()
-                if next_update[light] < now:
-                    brightnesses = self.lights.brightnesses()
-                    trans = self._new_trans()
-                    self.schedule(
-                        partial(
-                            self.lights.set_channels,
-                            transition=trans,
-                            brightness=self._new_brightness(brightnesses[light]),
-                            channel_indexes = [light],
-                        ),
-                        due_rel=due,
-                        name=f"RandomFade set channel {light}",
-                    )
-                    due += 0.1
+        """Start each bulb off on its unique journey."""
+        for light in range(self.lights.count):
+            self.update_light(light)
 
 
 @dataclass(kw_only=True)
@@ -128,28 +133,29 @@ class EvenOddFade(PlayMode):
         self.lights.set_relays(ALL_ON)
 
     def execute(self) -> None:
-        """Perform EvenOddFade indefinitely."""
+        """Schedule next 2 patterns. Schedule next execute."""
         self.lights.set_channels(brightness=0) 
-        delay = 0.5
         odd_on = ''.join('1' if i % 2 else '0' for i in range(LIGHT_COUNT))
         even_on = opposite(odd_on)
-        due = 0.0
-        for pattern in itertools.cycle((even_on, odd_on)):
+        for i, pattern in enumerate((even_on, odd_on)):
             self.schedule(
-                partial(
+                action=partial(
                     self.lights.set_relays,
                     pattern, 
                     special=ChannelParams(
                         concurrent=True,
                         brightness_on = 90,
                         brightness_off = 10,
-                        trans_on=delay,
-                        trans_off=delay,
+                        trans_on=self.delay,
+                        trans_off=self.delay,
                     )
                 ),
-                due_rel=due,
+                due_rel=(self.delay * i)
             )
-            due += delay
+        self.schedule(
+            action=self.execute,
+            due_rel=(self.delay * (i + 1))
+        )
 
 
 @dataclass(kw_only=True)
@@ -190,5 +196,5 @@ class SilentFadeBuild(PlayMode):
                     due += 0.5
                 due += 1.0
             due += 1.0
-        self.schedule(self.execute, due_rel=due)
+        self.schedule(action=self.execute, due_rel=due)
 

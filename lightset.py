@@ -28,10 +28,10 @@ class LightSet:
     def __post_init__(self, brightness_factor_init: float) -> None:
         """Initialize."""
         self._brightness_factor = brightness_factor_init
-        self.light_count = len(self.light_relays)
+        self.count = len(self.light_relays)
         full_pattern = self.relays.get_state_of_devices()
-        self.relay_pattern = full_pattern[:self.light_count]
-        self.extra_pattern = full_pattern[self.light_count:]
+        self.relay_pattern = full_pattern[:self.count]
+        self.extra_pattern = full_pattern[self.count:]
         self.using_smart_bulbs = issubclass(
             self.controller_type.bulb_comp, 
             SmartBulb,
@@ -42,7 +42,7 @@ class LightSet:
             time.sleep(5.0)  # Enough time for controller to see all bulbs.
 
         self.controller = self.controller_type(**self.controller_kwargs)
-        assert len(self.controller.channels) == self.light_count
+        assert len(self.controller.channels) == self.count
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
         self.trans_max = self.controller.trans_max
@@ -57,10 +57,10 @@ class LightSet:
         self._brightness_factor = value
         print("Brightness factor is ", self._brightness_factor)
 
-    def brightnesses(self) -> list[int | float]:
+    def brightnesses(self) -> list[int]:
         """Return each channel's brightness state."""
         return [
-            channel.brightness
+            int(channel.brightness)
             for channel in self.channels
         ]
 
@@ -118,7 +118,7 @@ class LightSet:
            Adjust for brightness_factor."""
         
         _channel_indexes = (
-            [i for i in range(self.light_count)]
+            [i for i in range(self.count)]
                 if channel_indexes is None else
             channel_indexes
         )
@@ -196,7 +196,7 @@ class LightSet:
         """Click the specified otherwise unused light relays."""
         extra = ''.join(
             ('0' if e == '1' else '1')
-            if i + self.light_count in self.click_relays else e
+            if i + self.count in self.click_relays else e
             for i, e in enumerate(self.extra_pattern)
         )
         self.set_relays(
@@ -218,7 +218,7 @@ class LightSet:
             case Sequence():
                 result = list(brightness)
             case _:
-                result = [brightness] * self.light_count
+                result = [brightness] * self.count
 
         result = [
             int(b * self._brightness_factor)
@@ -236,7 +236,7 @@ class LightSet:
             case Sequence():
                 result = list(transition)
             case _:
-                result = [transition] * self.light_count
+                result = [transition] * self.count
         return result  # type: ignore
     
     def convert_color(
@@ -248,7 +248,7 @@ class LightSet:
             case Sequence():
                 result = list(color)
             case _:
-                result = [color] * self.light_count
+                result = [color] * self.count
         return result
     
     def convert_on(
@@ -270,7 +270,7 @@ class LightSet:
             case _:
                 result = [
                     bool(on) if on is not None else None
-                ] * self.light_count
+                ] * self.count
         return result  # type: ignore
     
     def convert_relay(
@@ -286,6 +286,6 @@ class LightSet:
             case None:
                 result = None
             case _:
-                result = ("1" if pattern else "0") * self.light_count
+                result = ("1" if pattern else "0") * self.count
         return result
     
