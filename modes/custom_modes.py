@@ -84,7 +84,6 @@ class RandomFade(PlayMode):
 
     def new_transition(self) -> float:
         """Return either specified or random transition."""
-        return 2
         return (
             self.transition 
                 if self.transition is not None else
@@ -96,7 +95,6 @@ class RandomFade(PlayMode):
 
     def new_duration(self) -> float:
         """Return either specified or random duration."""
-        return 5
         return (
             self.duration 
                 if self.duration is not None else
