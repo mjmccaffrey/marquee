@@ -41,7 +41,6 @@ class BaseMode(ModeInterface, ABC):
 
         def push_event():
             """Push event onto queue."""
-            print(f"SCHEDULED {_due} {_name}")
             self.player.event_queue.push(
                 Event(
                     action=_action,
@@ -50,6 +49,7 @@ class BaseMode(ModeInterface, ABC):
                     name=_name,
                 )
             )
+            print(f"SCHEDULED {_due} {_name} {len(self.player.event_queue)}")
 
         def repeater():
             """Schedule next event. Call action."""
