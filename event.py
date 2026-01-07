@@ -103,6 +103,7 @@ class PriorityQueue:
                     break
             event, duration = next_event_or_wait()
             if event is not None:
+                print("*** NEOW RETURNED", event)
                 event.action()
             else:
                 wait_fn(duration)
