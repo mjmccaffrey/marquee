@@ -115,6 +115,7 @@ class RandomFade(PlayMode):
     def update_light(self, index: int):
         """Update light to random / specified values.
            Schedule next update of light."""
+        print("UPDATE LIGHT ", index)
         brightness = self.new_brightness(
             current=self.brightnesses[index],
         )
