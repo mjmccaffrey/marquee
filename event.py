@@ -76,7 +76,9 @@ class PriorityQueue:
                 if event.due < now:
                     print(f"Running {event} {now - event.due} late")
                     print(f"Pre-pop, {len(self._queue)} events")
-                    self._queue.pop()
+                    popped = self._queue.pop()
+                    if event != popped:
+                        print(f"{event} != {popped}")
                     print(f"Post-pop, {len(self._queue)} events")
                     return event, 0
                 elif seconds is None or event.due < end:
