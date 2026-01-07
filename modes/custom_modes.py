@@ -126,6 +126,7 @@ class RandomFade(PlayMode):
         self.schedule(
             action=partial(self.update_light, index=index),
             due_rel=transition,
+            name=f"RandomFade update_light {index}",
         )
 
     def execute(self) -> None:
