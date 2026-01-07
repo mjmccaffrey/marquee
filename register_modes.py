@@ -187,8 +187,9 @@ def register_silent_modes(exec: Executor) -> None:
         ),
         pattern='110000000000',
     )
-    exec.add_mode("silent_random_steady_trans", RandomFade, transition=0.5)
-    exec.add_mode("silent_random_random_trans", RandomFade)
+    exec.add_mode("random_bright_fixed_trans", RandomFade, transition=0.5)
+    exec.add_mode("random_bright_fixed_dur", RandomFade, duration=5.0)
+    exec.add_mode("random_random_random", RandomFade)
 
 
 def register_test_modes(exec: Executor) -> None:
