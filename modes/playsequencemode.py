@@ -28,7 +28,6 @@ class PlaySequenceMode(PlayMode):
     ) -> None:
         """Initialize."""
         super().__init__(player, index, name, special)
-        ForegroundMode.__post_init__(self) # !!!
         self.sequence = sequence
         self.pre_delay = pre_delay
         self.delay = delay

@@ -17,10 +17,10 @@ class SelectMode(ForegroundMode, ABC):
     """Supports the selection modes."""
     player: Player
 
-    @abstractmethod
-    def __post_init__(self) -> None:
-        """Initialize."""
-        ForegroundMode.__post_init__(self) # !!!
+    # @abstractmethod
+    # def __post_init__(self) -> None:
+    #     """Initialize."""
+    #     ForegroundMode.__post_init__(self) # !!!
 
     def setup(
         self,
