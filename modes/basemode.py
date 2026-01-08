@@ -49,7 +49,7 @@ class BaseMode(ModeInterface, ABC):
                     name=_name,
                 )
             )
-            print(f"SCHEDULED {_due} {_name} {len(self.player.event_queue)}")
+            # print(f"SCHEDULED {_due} {_name} {len(self.player.event_queue)}")
 
         def repeater():
             """Schedule next event. Call action."""
