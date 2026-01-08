@@ -48,6 +48,7 @@ class RotateReversible(PlayMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
+        super().__post_init__()
         self.lights.set_channels(brightness=100, on=True, force=True)
         self.pattern = self.lights.relay_pattern
 
@@ -146,6 +147,7 @@ class EvenOddFade(PlayMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
+        super().__post_init__()
         self.lights.set_relays(ALL_ON)
 
     def execute(self) -> None:

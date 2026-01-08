@@ -87,5 +87,5 @@ class PlaySequenceMode(PlayMode):
             due_rel = (i + 1) * delay,
             name = "PlaySequenceMode continue",
         )
-        print("Exiting playsequencemode.play at bottom")
+        # print("Exiting playsequencemode.play at bottom")
 
