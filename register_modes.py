@@ -33,6 +33,19 @@ def register_modes(exec: Executor) -> None:
     register_test_modes(exec)
     # register_pyohio_2025_presentation_modes(exec)
 
+def register_special_modes(exec: Executor) -> None:
+    """"""
+    exec.add_mode("select_mode", ModeSelectMode, 
+        index=ModeIndex.SELECT_MODE, hidden=True,
+    )
+    exec.add_mode("select_brightness", BrightnessSelectMode, 
+        index=ModeIndex.SELECT_BRIGHTNESS, hidden=True,
+    )
+    exec.add_sequence_mode("all_off", all_off,
+        index=ModeIndex.DEFAULT,
+    )
+
+
 def register_channel_modes(exec: Executor):
     """"""
     exec.add_sequence_mode("blink_alternate_medium",
@@ -42,7 +55,8 @@ def register_channel_modes(exec: Executor):
             trans_off=3.0,
         )
     )
-    exec.add_sequence_mode("random_flip_fade_medium", random_flip, delay=2.0,
+    exec.add_sequence_mode("random_flip_fade_medium", 
+        random_flip, delay=2.0,
         special=ChannelParams(),
         light_pattern='LIGHT_PATTERN',
     )
@@ -65,23 +79,8 @@ def register_channel_modes(exec: Executor):
             trans_off=2,
         )
     )
-
-
-    exec.add_sequence_mode("center_rotate_fade", rotate, 
-        delay=0.5, pattern = "010" * 4,
-    )
-
     exec.add_mode("even_odd_fade", EvenOddFade, delay=0.5)
     # exec.add_mode("random_fade_steady", RandomFade, trans=2)
-
-    exec.add_mode("rotate_reversible_1", 
-        RotateReversible, delay=0.35, 
-        pattern = "1" + "0" * (LIGHT_COUNT - 1))
-    exec.add_mode("rotate_reversible_2", 
-        RotateReversible, delay=0.35, 
-        pattern = "0" + "1" * (LIGHT_COUNT - 1))
-
-    exec.add_sequence_mode("rotate_sides", rotate_sides, delay=1.0, pattern='1', clockwise=True)
     exec.add_sequence_mode("rotate_sides_silent", rotate_sides, delay=2.0, pattern='0', clockwise=False,
         special=ChannelParams(
             brightness_on = 90,
@@ -92,23 +91,9 @@ def register_channel_modes(exec: Executor):
     )
 
 
-def register_special_modes(exec: Executor) -> None:
-    """"""
-    exec.add_mode("select_mode", ModeSelectMode, 
-        index=ModeIndex.SELECT_MODE, hidden=True,
-    )
-    exec.add_mode("select_brightness", BrightnessSelectMode, 
-        index=ModeIndex.SELECT_BRIGHTNESS, hidden=True,
-    )
-    exec.add_sequence_mode("all_off", all_off,
-        index=ModeIndex.DEFAULT,
-    )
-
-
 def register_color_modes(exec: Executor) -> None:
     """"""
-    exec.add_sequence_mode(
-        "all_red", 
+    exec.add_sequence_mode("all_red", 
         all_on,
         special=ChannelParams(
             brightness_on=100,
@@ -143,6 +128,13 @@ def register_relay_modes(exec: Executor) -> None:
     exec.add_sequence_mode("random_flip", random_flip, 
         delay=0.5, light_pattern='LIGHT_PATTERN',
     )
+    exec.add_sequence_mode("center_rotate_fade", rotate, 
+        delay=0.5, pattern = "010" * 4,
+    )
+    exec.add_mode("rotate_reversible_1", 
+        RotateReversible, delay=0.35, 
+        pattern = "1" + "0" * (LIGHT_COUNT - 1))
+    exec.add_sequence_mode("rotate_sides", rotate_sides, delay=1.0, pattern='1', clockwise=True)
 
 
 def register_silent_modes(exec: Executor) -> None:

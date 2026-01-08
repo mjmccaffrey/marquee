@@ -151,8 +151,8 @@ class ShellyChannel(LightChannel):
         response.raise_for_status()
 
     def _make_set_command(self, update: ChannelUpdate) -> 'ChannelCommand':
-        """Produce dimmer API parameters from provided update."""
-        assert update.color is None
+        """Produce dimmer API parameters from provided update.
+           Color is ignored."""
         _trans = (
             self.controller.trans_min
                 if update.trans is None else

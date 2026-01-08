@@ -88,8 +88,8 @@ class Executor:
 
     def execute(
             self, 
-            brightness_factor: float = 1.0,  # Must default; not provided
-            speed_factor: float = 1.0,       # with command or pattern.
+            brightness_factor: float = 1.0,  # Must default; only
+            speed_factor: float = 1.0,       # provided with mode.
             command: str | None = None, 
             mode_index: int | None = None, 
             light_pattern: str | None = None, 
