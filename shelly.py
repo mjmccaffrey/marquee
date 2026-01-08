@@ -63,12 +63,12 @@ class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
         """Send individual command as part of asynchonous batch.
            Update channel state."""
         command = update.channel._make_set_command(update)
-        print(
-            command.channel.index,
-            command.channel.controller.ip_address,
-            command.url,
-            command.params
-        )
+        # print(
+        #     command.channel.index,
+        #     command.channel.controller.ip_address,
+        #     command.url,
+        #     command.params
+        # )
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 url=command.url,
