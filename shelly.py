@@ -162,7 +162,7 @@ class ShellyChannel(LightChannel):
             ({'id': update.channel.id}) |
             ({'brightness': update.brightness} 
                 if update.brightness is not None else {}) |
-            ({'trans_duration': _trans}
+            ({'transition_duration': _trans}
                 if update.brightness is not None else {}) |
             ({'on': str(update.on).lower()}
                 if update.on is not None else {})
