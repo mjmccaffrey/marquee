@@ -125,7 +125,7 @@ def register_relay_modes(exec: Executor) -> None:
     exec.add_sequence_mode(
         "blink_alternate_emulate", 
         blink_alternate, 
-        delay=2,
+        delay=4,
         special=EmulateParams(),
     )
     exec.add_sequence_mode("rotate", rotate, 
