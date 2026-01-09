@@ -214,6 +214,8 @@ class LightSet:
         brightness: Sequence[int | None] | str | int | None,
     ) -> list[int | None]:
         """"""
+        print(f"{brightness=}")
+        print(self.controller.bulb_model.adjustments)
         match brightness:
             case str():
                 result = [
