@@ -224,7 +224,7 @@ class LightSet:
                 result = list(brightness)
             case _:
                 result = [brightness] * self.count
-
+        print(f"{result=} {self._brightness_factor=}")
         result = [
             int(b * self._brightness_factor)
             if b is not None else None
