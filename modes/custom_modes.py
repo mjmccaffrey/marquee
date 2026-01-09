@@ -4,9 +4,6 @@ from dataclasses import dataclass
 from functools import partial
 import random
 
-import rgbxy
-
-from color import Colors
 from lightset_misc import (
     ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT,
 )
@@ -182,6 +179,7 @@ class SilentFadeBuild(PlayMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
+        super().__post_init__()
         self.player.lights.set_channels(brightness=0)
  
     def execute(self) -> None:
