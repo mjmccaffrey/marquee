@@ -38,5 +38,5 @@ class MirrorParams(SpecialParams):
 @dataclass
 class EmulateParams(ChannelParams, MirrorParams):
     """Emulate relay experience when using smart bulbs."""
-    trans_on: float = 0.0
-    trans_off: float = 0.0
+    trans_on: float = 0.1
+    trans_off: float = 0.1
