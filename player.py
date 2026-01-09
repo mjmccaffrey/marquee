@@ -10,6 +10,7 @@ from modes.background_modes import BackgroundMode
 from modes.foregroundmode import ForegroundMode
 from modes.modeinterface import ModeInterface
 from playerinterface import PlayerInterface
+from specialparams import MirrorParams
 
 class ChangeMode(Exception):
     """Change mode exception."""
@@ -25,6 +26,7 @@ class Player(PlayerInterface):
         self.fg_mode_history: list[int] = []
         self.bg_mode_instances: dict[int, BackgroundMode] = {}
         self.event_queue = PriorityQueue()
+        MirrorParams.func = self.drums.mirror
 
     def __repr__(self) -> str:
         return "Player repr"

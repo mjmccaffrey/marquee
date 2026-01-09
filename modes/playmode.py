@@ -11,7 +11,7 @@ from player import Player
 
 @dataclass
 class PlayMode(ForegroundMode, ABC):
-    """Base for custom modes."""
+    """Base for most modes."""
     player: Player
 
     def __post_init__(self) -> None:

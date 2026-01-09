@@ -176,7 +176,6 @@ def process_arguments(
         parsed = parse_arguments(mode_ids, commands)
     except ValueError as err:
         raise
-    # print("Args: " + ''.join(f'{k}: {v}, ' for k, v in vars(parsed).items()))
     if parsed.operation == 'command':
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':

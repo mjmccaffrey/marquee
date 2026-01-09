@@ -1,7 +1,8 @@
 """Marquee Lighted Sign Project - specialparams"""
 
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from typing import ClassVar
 
 from color import Color
 
@@ -32,7 +33,7 @@ class ChannelParams(SpecialParams):
 @dataclass
 class MirrorParams(SpecialParams):
     """Parameters to mirror lights with another relay board."""
-    func: Callable[[str], None] = field(init=False)
+    func: ClassVar[Callable[[str], None]]
 
 @dataclass
 class EmulateParams(ChannelParams, MirrorParams):

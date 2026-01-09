@@ -14,7 +14,7 @@ from sequences import rotate_build_flip
 
 @dataclass(kw_only=True)
 class SelectMode(ForegroundMode, ABC):
-    """Supports the selection modes."""
+    """Base for the selection modes."""
     player: Player
 
     # @abstractmethod

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from lightset_misc import ALL_HIGH, ALL_ON
 from .basemode import BaseMode
-from specialparams import MirrorParams, SpecialParams
+from specialparams import SpecialParams
 
 @dataclass
 class ForegroundMode(BaseMode, ABC):
@@ -18,21 +18,6 @@ class ForegroundMode(BaseMode, ABC):
         self.buttons = self.player.buttons
         self.drums = self.player.drums
         self.lights = self.player.lights
-
-    def _OLD_preset_devices(
-        self, dimmers: bool = False, relays: bool = False
-    ) -> None:
-        """Preset the channels and relays as specified."""
-        if isinstance(self.special, MirrorParams):
-            self.special.func = self.drums.mirror
-        if dimmers:
-            print("***** Presetting DIMMERS *****")
-            self.lights.set_channels(
-                brightness=100, on=True, force=True,
-            )
-        if relays:
-            print("***** Presetting RELAYS *****")
-            self.lights.set_relays(ALL_ON)
 
     @staticmethod
     def wrap_value(

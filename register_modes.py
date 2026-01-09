@@ -16,7 +16,7 @@ from sequences import (
 # from pacman.pacman_game import PacManGame
 from signs_song import SignsSong
 from christmas import ChristmasSongs
-from specialparams import ChannelParams, MirrorParams
+from specialparams import ChannelParams, EmulateParams, MirrorParams
 
 
 def register_modes(exec: Executor) -> None:
@@ -122,6 +122,12 @@ def register_relay_modes(exec: Executor) -> None:
     exec.add_sequence_mode("even_off", even_off)
     exec.add_sequence_mode("blink_all", blink_all, delay=1)
     exec.add_sequence_mode("blink_alternate", blink_alternate, delay=1)
+    exec.add_sequence_mode(
+        "blink_alternate_emulate", 
+        blink_alternate, 
+        delay=1,
+        special=EmulateParams(),
+    )
     exec.add_sequence_mode("rotate", rotate, 
         delay=0.5, pattern="110000000000",
     )

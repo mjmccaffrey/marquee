@@ -12,7 +12,7 @@ from player import Player
 from specialparams import ActionParams, ChannelParams, SpecialParams
 
 class PlaySequenceMode(PlayMode):
-    """Supports all sequence-based modes."""
+    """Executes all sequence-based modes."""
     def __init__(
         self,
         player: Player,
@@ -87,5 +87,4 @@ class PlaySequenceMode(PlayMode):
             due_rel = (i + 1) * delay,
             name = "PlaySequenceMode continue",
         )
-        # print("Exiting playsequencemode.play at bottom")
 

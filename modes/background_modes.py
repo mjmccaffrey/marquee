@@ -14,13 +14,6 @@ from .mode_misc import ModeConstructor, ModeIndex
 
 
 @dataclass
-class ModeEntry:
-    name: str
-    seconds: float
-    index: int = -1
-
-
-@dataclass
 class BackgroundMode(BaseMode, ABC):
     """Base for all background modes.
        Background modes should not play anything directly."""

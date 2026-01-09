@@ -71,7 +71,7 @@ class LightSet:
 
     def set_relays(
             self, 
-            light_pattern: str | Sequence[int | bool] | bool | int,
+            light_pattern: str | Sequence[int | bool] | bool | int | None = None,
             extra_pattern: str | Sequence[int | bool] | bool | int | None = None,
             special: SpecialParams | None = None,
             smart_bulb_override: bool = False,
@@ -81,31 +81,24 @@ class LightSet:
            rather than list."""
         
         _light = self.convert_relay(light_pattern)
-        assert isinstance(_light, str)
+        if _light is None:
+            _light = self.relay_pattern
         _extra = self.convert_relay(extra_pattern)
         if _extra is None:
             _extra = self.extra_pattern
+        _all = _light + _extra
 
-            
         if self.smart_bulbs and not smart_bulb_override:
             special = special or EmulateParams()
             
         if isinstance(special, ChannelParams):
             self._set_channels_instead_of_relays(_light, special)
-            return
+        else:
+            self.relays.set_state_of_devices(_all)
+            self.relay_pattern, self.extra_pattern = _light, _extra
 
-        # if (
-        #     self.smart_bulbs and 
-        #     not smart_bulb_override and 
-        #     _light != self.relay_pattern
-        # ):
-        #     raise TypeError("Light relay change request refused.")
-        
-        self.relays.set_state_of_devices(_light + _extra)
         if isinstance(special, MirrorParams):
-            special.func(_light + _extra)
-        self.relay_pattern = _light
-        self.extra_pattern = _extra
+            special.func(_all)
 
     def set_channels(
             self, 
@@ -214,8 +207,6 @@ class LightSet:
         brightness: Sequence[int | None] | str | int | None,
     ) -> list[int | None]:
         """"""
-        print(f"{brightness=}")
-        print(self.controller.bulb_model.adjustments)
         match brightness:
             case str():
                 result = [
