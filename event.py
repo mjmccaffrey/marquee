@@ -54,6 +54,7 @@ class PriorityQueue:
     def push(self, event: Event) -> None:
         """Add event to queue."""
         heappush(self._queue, event)
+        print(f"queue length: {len(self._queue)}")
         # print(f"Event {event} added to queue.")
 
     def wait(
@@ -91,7 +92,7 @@ class PriorityQueue:
                     print(f"Waiting for remaining {remaining} or button push; queue empty")
                     return None, remaining
 
-        print(f"Wait {seconds}")
+        print(f"Waiting {seconds=}")
         start = time.time()
         while True:
             now = time.time()
