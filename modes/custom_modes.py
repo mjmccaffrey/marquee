@@ -4,9 +4,9 @@ from dataclasses import dataclass
 from functools import partial
 import random
 
-from bulb import HueBulb
+import rgbxy
+
 from color import Colors
-from hue import HueBridge
 from lightset_misc import (
     ALL_HIGH, ALL_LOW, ALL_ON, LIGHT_COUNT,
 )
@@ -186,13 +186,6 @@ class SilentFadeBuild(PlayMode):
  
     def execute(self) -> None:
         """Perform SilentFadeBuild indefinitely."""
-        
-        controller = self.player.lights.controller
-        assert isinstance(controller, HueBridge)
-        bulb = controller.bulb_model
-        assert isinstance(bulb, HueBulb)
-        colors = Colors(bulb.gamut)
-
         due = 0.0
         for rows in (False, True):
             for from_top_left, brightness in (
@@ -200,13 +193,12 @@ class SilentFadeBuild(PlayMode):
                 (False, random.randrange(70, 101)), (True, random.randrange(0, 40)),
             ):
                 for lights in lights_in_groups(rows, from_top_left):
-                    assert isinstance(self.player.lights.controller, HueBridge)
                     self.schedule(
                         partial(
                             self.player.lights.set_channels,
                             brightness=brightness,
                             transition=1.0,
-                            color=colors.random(),
+                            color=self.lights.colors.random(),
                             channel_indexes=lights,
                         ),
                         due_rel=due,

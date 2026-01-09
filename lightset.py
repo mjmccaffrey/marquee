@@ -7,8 +7,10 @@ from collections.abc import Sequence
 from dataclasses import dataclass, InitVar
 import time
 
+import rgbxy
+
 from bulb import SmartBulb
-from color import Color
+from color import Color, Colors
 from lightcontroller import ChannelUpdate, LightController, LightChannel
 from relays import RelayModule
 from specialparams import EmulateParams, ChannelParams, MirrorParams, SpecialParams
@@ -32,16 +34,19 @@ class LightSet:
         full_pattern = self.relays.get_state_of_devices()
         self.relay_pattern = full_pattern[:self.count]
         self.extra_pattern = full_pattern[self.count:]
-        self.using_smart_bulbs = issubclass(
+        self.smart_bulbs = issubclass(
             self.controller_type.bulb_comp, 
             SmartBulb,
         )
-        if self.using_smart_bulbs:
+
+        if self.smart_bulbs:
             print("***** Smart bulbs in use - setting light relays ON. *****")
             self.set_relays(light_pattern=True, smart_bulb_override=True)
             time.sleep(5.0)  # Enough time for controller to see all bulbs.
 
         self.controller = self.controller_type(**self.controller_kwargs)
+        self.gamut = self.controller.bulb_model.gamut
+        self.colors = Colors(self.gamut or rgbxy.GamutC)
         assert len(self.controller.channels) == self.count
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
@@ -82,7 +87,7 @@ class LightSet:
             _extra = self.extra_pattern
 
             
-        if self.using_smart_bulbs and not smart_bulb_override:
+        if self.smart_bulbs and not smart_bulb_override:
             special = special or EmulateParams()
             
         if isinstance(special, ChannelParams):
@@ -90,7 +95,7 @@ class LightSet:
             return
 
         # if (
-        #     self.using_smart_bulbs and 
+        #     self.smart_bulbs and 
         #     not smart_bulb_override and 
         #     _light != self.relay_pattern
         # ):

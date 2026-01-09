@@ -44,11 +44,8 @@ class PacManGame(PlayMode):
         """Level 1 - add Pinky."""
         """Level 2 - add Blinky."""
         """Level 3 - add bypass."""
-        controller = self.player.lights.controller
-        assert isinstance(controller, HueBridge)
-        bulb = controller.bulb_model
-        assert isinstance(bulb, HueBulb)
-        RGB.adjust_incomplete_colors(bulb.gamut)
+        assert self.lights.gamut is not None  # Color lights
+        RGB.adjust_incomplete_colors(self.lights.gamut)
         self.game = LightGame(
             lights=self.player.lights,
             maze=self.maze_12,

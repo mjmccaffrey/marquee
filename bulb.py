@@ -15,20 +15,21 @@ def default_adjustments() -> dict[str, int]:
 @dataclass(kw_only=True)
 class Bulb:
     """ABC for any light bulb."""
+    gamut: rgbxy.Gamut | None
     wattage_actual: float
     wattage_reference: float
     adjustments: dict[str, int] = field(default_factory=default_adjustments)
 
+@dataclass(kw_only=True)
 class DimBulb(Bulb):
     """Base for incandescents, basic dimmable LED bulbs, etc."""
+    gamut: None = None
 
 class SmartBulb(Bulb):
     """Base for smart bulbs such as Hue."""
 
-@dataclass(kw_only=True)
 class HueBulb(SmartBulb):
     """Hue bulbs."""
-    gamut: rgbxy.Gamut
     
 Halco_S14_Transparent_Colored = DimBulb(
     wattage_actual=11,
