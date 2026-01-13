@@ -8,7 +8,7 @@ from button_misc import ButtonSet
 from event import PriorityQueue
 from instruments import BellSet, DrumSet
 from lightset import LightSet
-from modes import ModeConstructor
+from modes.mode_misc import ModeConstructor
 
 
 @dataclass

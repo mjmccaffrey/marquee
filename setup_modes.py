@@ -7,8 +7,8 @@ from modes import (
     ChainMode, ChristmasSongs, EvenOddFade, RotateReversible, 
     RandomFade, Signs, SilentFadeBuild,
     BrightnessSelectMode, ModeSelectMode,
-    ModeIndex,
 )
+from modes.mode_misc import ModeIndex
 from sequences import (
     all_on, all_off, blink_all, blink_alternate, even_on, even_off,
     rotate, random_flip, rotate_sides,

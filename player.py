@@ -5,7 +5,9 @@ from typing import Any, NoReturn
 
 from button import Button, ButtonPressed, Shutdown
 from event import PriorityQueue
-from modes import BackgroundMode, ForegroundMode, ModeInterface
+from modes.backgroundmode import BackgroundMode
+from modes.foregroundmode import ForegroundMode
+from modes.modeinterface import ModeInterface
 from playerinterface import PlayerInterface
 from specialparams import MirrorParams
 
