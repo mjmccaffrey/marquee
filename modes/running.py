@@ -1,8 +1,8 @@
 """Marquee Lighted Sign Project - running mode"""
 
 from color import Colors, RGB
-from gamemode import Character, EntityGroup, GameMode
 from lightcontroller import LightChannel, ChannelUpdate
+from .gamemode import Character, EntityGroup, GameMode
 from .pacman_assets import maze_12
 
 
