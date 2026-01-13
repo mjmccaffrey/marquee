@@ -5,7 +5,7 @@ from itertools import cycle
 
 from button_misc import ButtonInterface
 from .backgroundmode import BackgroundMode
-from mode_misc import BGModeEntry
+from .mode_misc import BGModeEntry
 
 
 @dataclass
