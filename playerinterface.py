@@ -41,9 +41,10 @@ class PlayerInterface(ABC):
         bg_index: int | None = None,
         fg_instance: object | None = None,
     ) -> None:
-        """Delete foreground or background mode instance and scheduled events."""
+        """Delete foreground or background mode instance 
+           and any coresponding events."""
 
     @abstractmethod
     def execute(self, starting_mode_index: int) -> None:
-        """Play the specified mode and all subsequently selected modes."""
+        """Play the specified starting mode and all subsequent modes."""
 

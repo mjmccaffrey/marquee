@@ -11,7 +11,7 @@ from player import Player
 
 @dataclass
 class PerformanceMode(ForegroundMode, ABC):
-    """Base for most modes."""
+    """Base for non-administrative foreground modes."""
     player: Player
 
     def __post_init__(self) -> None:
@@ -20,7 +20,8 @@ class PerformanceMode(ForegroundMode, ABC):
         self.direction = +1
 
     def button_action(self, button: Button) -> int | None:
-        """Respond to the button press."""
+        """Respond to button being pressed.
+           Return index of new mode, if any."""
         new_mode = None
         current_mode = self.player.fg_mode_history[-1]
         b = self.buttons

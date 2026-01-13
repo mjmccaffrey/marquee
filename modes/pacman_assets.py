@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 from color import Color, Colors, RGB
 from .gamemode import Character, Entity, Maze, Square
-from utility import light_states
+from debug import light_states
 
 
 @dataclass(kw_only=True, repr=False)

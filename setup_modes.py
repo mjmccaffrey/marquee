@@ -4,12 +4,11 @@ from color import Colors
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes import (
-    ChristmasSongs, EvenOddFade, RotateReversible, 
-    RandomFade, SignsSong, SilentFadeBuild,
+    ChainMode, ChristmasSongs, EvenOddFade, RotateReversible, 
+    RandomFade, Signs, SilentFadeBuild,
     BrightnessSelectMode, ModeSelectMode,
     ModeIndex,
 )
-
 from sequences import (
     all_on, all_off, blink_all, blink_alternate, even_on, even_off,
     rotate, random_flip, rotate_sides,
@@ -46,6 +45,13 @@ def register_special_modes(exec: Executor) -> None:
 
 def register_channel_modes(exec: Executor):
     """"""
+    exec.add_mode("chainmodetest", 
+        ChainMode,
+        mode_sequence = [
+            ("blink_alternate_medium", 12),
+            ("random_flip_fade_medium", 12),
+        ],
+    )
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=4, 
         special=ChannelParams(
@@ -221,6 +227,6 @@ def register_pyohio_2025_presentation_modes(exec: Executor) -> None:
         special=ChannelParams(concurrent=True),
     )
     exec.add_sequence_mode("section_3", all_off)
-    exec.add_mode("signs", SignsSong, special=ChannelParams())
+    exec.add_mode("signs", Signs, special=ChannelParams())
     exec.add_sequence_mode("section_4", all_off)
 

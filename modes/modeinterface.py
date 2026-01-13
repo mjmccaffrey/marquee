@@ -16,7 +16,8 @@ class ModeInterface(ABC):
 
     @abstractmethod
     def button_action(self, button: ButtonInterface) -> int | None:
-        """Respond to button being pressed."""
+        """Respond to button being pressed.
+           Return index of new mode, if any."""
 
     @abstractmethod
     def execute(self) -> None:

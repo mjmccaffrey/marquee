@@ -8,13 +8,15 @@ from evenoddfade import EvenOddFade
 from pacmanmode import PacManGame
 from randomfade import RandomFade
 from rotatereversible import RotateReversible
-from modes.running import Running
+from running import Running
 from sequencemode import SequenceMode
-from signs_song import SignsSong
+from signs import Signs
 from silentfadebuild import SilentFadeBuild
 
+from chainmode import ChainMode
+
 from modeinterface import ModeInterface
-from background_modes import BackgroundMode
+from backgroundmode import BackgroundMode
 from foregroundmode import ForegroundMode
 
 from mode_misc import ModeConstructor, ModeIndex

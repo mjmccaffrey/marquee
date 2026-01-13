@@ -63,7 +63,8 @@ class Player(PlayerInterface):
         bg_index: int | None = None,
         fg_instance: ForegroundMode | None = None,
     ) -> None:
-        """Delete foreground or background mode instance and scheduled events."""
+        """Delete foreground or background mode instance 
+           and any coresponding events."""
         assert (bg_index is None) ^ (fg_instance is None)
         if bg_index is not None:
             instance = self.bg_mode_instances.pop(bg_index)
@@ -72,20 +73,23 @@ class Player(PlayerInterface):
         self.event_queue.delete_owned_by(instance)
 
     def execute(self, starting_mode_index: int) -> None:
-        """Execute modes until shutdown."""
+        """Play the specified starting mode and all subsequent modes."""
         mode: BackgroundMode | ForegroundMode | None = None
         new_mode_index: int | None = starting_mode_index
         while True:
             try:
+                # New mode
                 if new_mode_index is not None:
+                    # Delete events for old mode
                     if mode is not None and isinstance(mode, ForegroundMode):
                         self.delete_mode_instance(fg_instance=mode)
+                    # Create new mode
                     mode = self.create_mode_instance(new_mode_index)
                     new_mode_index = None
                 assert mode is not None
                 print(f"Executing mode {mode.index} {mode.name}")
                 mode.execute()
-                self._wait()
+                self.wait()
             except ButtonPressed as press:
                 button, held = press.args
                 if held:
@@ -94,9 +98,9 @@ class Player(PlayerInterface):
                 assert mode is not None
                 print(f"Button {button} pressed in mode {mode.name}")
                 new_mode_index = self._notify_button_action(mode, button)
-            except ChangeMode as change_mode:
+            except ChangeMode as cm:
                 print("ChangeMode caught")
-                new_mode_index, = change_mode.args
+                new_mode_index, = cm.args
 
     def _notify_button_action(
         self, 
@@ -104,7 +108,7 @@ class Player(PlayerInterface):
         button: Button
     ) -> int | None:
         """Notify all background modes, and foreground mode, 
-           of button action."""
+           of button action. Return foreground mode's response."""
         for mode in self.bg_mode_instances.values():
             mode.button_action(button)
         return current_mode.button_action(button)
@@ -120,7 +124,7 @@ class Player(PlayerInterface):
             for k, v in kwargs.items()
         }
 
-    def _wait(
+    def wait(
         self, 
         seconds: float | None = None, 
     ) -> None | NoReturn:

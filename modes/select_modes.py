@@ -44,7 +44,8 @@ class SelectMode(ForegroundMode, ABC):
         """Respond to C button press."""
 
     def button_action(self, button: Button) -> None:
-        """Respond to button being pressed."""
+        """Respond to button being pressed.
+           Return index of new mode, if any."""
         b = self.buttons
         match button:
             case b.body_back | b.remote_a | b.remote_d:
