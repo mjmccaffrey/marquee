@@ -8,7 +8,7 @@ from .evenoddfade import EvenOddFade
 # from .pacmanmode import PacManGame
 from .randomfade import RandomFade
 from .rotatereversible import RotateReversible
-from .running import Running
+# from .running import Running
 from .sequencemode import SequenceMode
 from .signs import Signs
 from .silentfadebuild import SilentFadeBuild
