@@ -19,8 +19,9 @@ from specialparams import ChannelParams, EmulateParams, MirrorParams
 def setup_modes(exec: Executor) -> None:
     """Register all modes."""
     register_special_modes(exec)
+    register_channel_modes(exec)
 
-    exec.add_mode("christmas", ChristmasSongs)
+    # exec.add_mode("christmas", ChristmasSongs)
     # exec.add_mode("pacman", PacManGame)
 
     register_color_modes(exec)
