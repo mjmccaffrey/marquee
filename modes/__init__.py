@@ -5,7 +5,7 @@ from .select_modes import BrightnessSelectMode, ModeSelectMode
 from .christmas import ChristmasSongs
 from .demo import Demo
 from .evenoddfade import EvenOddFade
-from .pacmanmode import PacManGame
+# from .pacmanmode import PacManGame
 from .randomfade import RandomFade
 from .rotatereversible import RotateReversible
 from .running import Running
