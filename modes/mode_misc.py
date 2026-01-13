@@ -4,6 +4,13 @@ from dataclasses import dataclass
 from enum import IntEnum
 from typing import Any
 
+
+@dataclass
+class BGModeEntry:
+    name: str
+    seconds: float
+    index: int = -1
+
 @dataclass
 class ModeConstructor:
     index: int
@@ -11,13 +18,8 @@ class ModeConstructor:
     cls: type
     kwargs: dict[str, Any]
 
-@dataclass
-class ModeEntry:
-    name: str
-    seconds: float
-    index: int = -1
-
 class ModeIndex(IntEnum):
     SELECT_BRIGHTNESS = -99
     SELECT_MODE = 0
     DEFAULT = 1
+

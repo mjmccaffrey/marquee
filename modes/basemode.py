@@ -4,23 +4,11 @@ from abc import ABC
 from dataclasses import dataclass
 import sys
 import time
-from typing import Callable, Protocol
+from typing import Callable
 
 from event import Event
 from playerinterface import PlayerInterface
 from .modeinterface import ModeInterface
-
-class ScheduleCallback(Protocol):
-    """Callback protocol for scheduling events."""
-    def __call__(
-        self, 
-        action: Callable, 
-        due_abs: float | None = None, 
-        due_rel: float | None = None,
-        name: str | None = None,
-        repeat: bool = False,
-    ) -> None:
-        ...
 
 @dataclass
 class BaseMode(ModeInterface, ABC):

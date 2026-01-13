@@ -1,14 +1,14 @@
-"""Marquee Lighted Sign Project - playmusicmode"""
+"""Marquee Lighted Sign Project - musicmode"""
 
 from abc import ABC
 from dataclasses import dataclass
 
-from .playmode import PlayMode
+from .performancemode import PerformanceMode
 from music import Measure, play, Section
 from music.music_interface import set_player
 
 @dataclass
-class PlayMusicMode(PlayMode, ABC):
+class MusicMode(PerformanceMode, ABC):
     """Mode for playing music."""
 
     def __post_init__(self):

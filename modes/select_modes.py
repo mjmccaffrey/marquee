@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from .foregroundmode import ForegroundMode
 from .mode_misc import ModeIndex
-from .playsequencemode import PlaySequenceMode
+from .sequencemode import SequenceMode
 from button import Button
 from lightset_misc import ALL_OFF, LIGHT_COUNT
 from player import Player
@@ -69,7 +69,7 @@ class SelectMode(ForegroundMode, ABC):
             # Show user what desired mode number is currently selected.
             print(f"Desired is {self.desired} {self.player.modes[self.desired].name}")
             self.lights.set_relays(ALL_OFF, special=self.special)
-            PlaySequenceMode(
+            SequenceMode(
                 player=self.player,
                 index=999999,
                 name="SelectMode sequence player",

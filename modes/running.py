@@ -1,0 +1,76 @@
+"""Marquee Lighted Sign Project - running mode"""
+
+from color import Colors, RGB
+from gamemode import Character, EntityGroup, GameMode
+from lightcontroller import LightChannel, ChannelUpdate
+from .pacman_assets import maze_12
+
+
+class Dot(Character):
+    """"""
+    brightness = 100
+    draw_priority = 1
+    turn_priority = 1
+    direction: int
+
+    def execute_turn(self) -> None:
+        """Take turn."""
+        assert self.coord is not None
+        self.game.move_entity(self, self.coord + self.direction)
+
+
+class OneTwo(Dot):
+    """Grouped dots."""
+    color = Colors.YELLOW
+    direction = +1
+
+
+class Three(Dot):
+    """Solitary dot."""
+    color = Colors.BLUE
+    direction = -1
+
+
+class Running(GameMode):
+    """"""
+
+    def __post_init__(self):
+        """Initialize board and characters."""
+        super().__post_init__()
+        assert self.lights.gamut is not None  # Color lights
+        RGB.adjust_incomplete_colors(self.lights.gamut)
+        self.one = self.create_entity(etype=OneTwo, name="one")
+        self.two = self.create_entity(etype=OneTwo, name="two")
+        self.three = self.create_entity(etype=Three, name="three")
+        self.place_entity(self.one, 0)
+        self.place_entity(self.two, 1)
+        self.place_entity(self.three, 6)
+
+    def state_logic(self) -> None:
+        """No state logic required."""
+        pass
+    
+    def desired_light_state(
+            self, 
+            entities: EntityGroup, 
+            channel: LightChannel,
+        ) -> ChannelUpdate:
+        """Return desired light state given entities on square."""
+        if not entities:
+            return ChannelUpdate(channel=channel, on=False)
+        elif len(entities) == 1:
+            brightness, color = 100, list(entities.values())[0].color
+        else:
+            brightness, color = 100, Colors.GREEN
+        return ChannelUpdate(
+            channel=channel,
+            brightness=brightness,
+            trans=0,
+            color=color,
+            on=True,
+        )
+
+    def execute(self) -> None:
+        """"""
+        self.execute()
+

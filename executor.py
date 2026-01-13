@@ -9,9 +9,7 @@ from button_misc import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import LightSet
 from lightset_misc import ALL_ON
-from modes.modeinterface import ModeInterface
-from modes.mode_misc import ModeConstructor
-from modes.playsequencemode import PlaySequenceMode
+from modes import ModeConstructor, ModeInterface, SequenceMode
 from playerinterface import PlayerInterface
 from shelly import ShellyConsolidatedController
 from specialparams import SpecialParams
@@ -79,7 +77,7 @@ class Executor:
         """Create a Mode object from a sequence and parameters, and register it."""
         self.add_mode(
             name, 
-            PlaySequenceMode,
+            SequenceMode,
             sequence=sequence,
             delay=delay,
             special=special,

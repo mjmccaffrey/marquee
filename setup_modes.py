@@ -1,25 +1,23 @@
-"""Marquee Lighted Sign Project - register_modes"""
+"""Marquee Lighted Sign Project - setup_modes"""
 
 from color import Colors
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
-from modes.custom_modes import (
-    EvenOddFade, RotateReversible, 
-    RandomFade, SilentFadeBuild,
+from modes import (
+    ChristmasSongs, EvenOddFade, RotateReversible, 
+    RandomFade, SignsSong, SilentFadeBuild,
+    BrightnessSelectMode, ModeSelectMode,
+    ModeIndex,
 )
-from modes.mode_misc import ModeIndex
-from modes.select_modes import BrightnessSelectMode, ModeSelectMode
+
 from sequences import (
     all_on, all_off, blink_all, blink_alternate, even_on, even_off,
     rotate, random_flip, rotate_sides,
 )
-# from pacman.pacman_game import PacManGame
-from signs_song import SignsSong
-from christmas import ChristmasSongs
 from specialparams import ChannelParams, EmulateParams, MirrorParams
 
 
-def register_modes(exec: Executor) -> None:
+def setup_modes(exec: Executor) -> None:
     """Register all modes."""
     register_special_modes(exec)
 

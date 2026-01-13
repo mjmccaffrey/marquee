@@ -13,13 +13,13 @@ from music import(
     act, act_part, drum_part,
     rest, sequence_measure, sequence_part
 )
-from modes.playmode import PlayMode
+from .performancemode import PerformanceMode
 from sequences import *
 from specialparams import ActionParams, ChannelParams
 
 
 @dataclass
-class Demo(PlayMode):
+class Demo(PerformanceMode):
     """Version 3 demo."""
 
     def __post_init__(self) -> None:

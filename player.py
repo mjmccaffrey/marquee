@@ -1,16 +1,14 @@
 """Marquee Lighted Sign Project - player"""
 
 from dataclasses import dataclass, field
-import time
 from typing import Any, NoReturn
 
 from button import Button, ButtonPressed, Shutdown
-from event import Event, PriorityQueue
-from modes.background_modes import BackgroundMode
-from modes.foregroundmode import ForegroundMode
-from modes.modeinterface import ModeInterface
+from event import PriorityQueue
+from modes import BackgroundMode, ForegroundMode, ModeInterface
 from playerinterface import PlayerInterface
 from specialparams import MirrorParams
+
 
 class ChangeMode(Exception):
     """Change mode exception."""

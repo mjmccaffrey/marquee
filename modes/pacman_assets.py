@@ -5,8 +5,8 @@ from typing import ClassVar
 from dataclasses import dataclass
 
 from color import Color, Colors, RGB
-from lightgame import Character, Entity
-from repl_misc import light_states
+from .gamemode import Character, Entity, Maze, Square
+from utility import light_states
 
 
 @dataclass(kw_only=True, repr=False)
@@ -96,4 +96,29 @@ class Blinky(Ghost):
     color: ClassVar[Color] = Colors.GREEN
     sleep_ticks: int = 15
     direction: int = -1
+
+
+maze_base: Maze = {
+    0: Square(left=11, right=1, down=11),
+    1: Square(left=0, right=2),
+    2: Square(left=1, right=3, down=3),
+    3: Square(left=2, up=2, down=4),       
+    5: Square(left=6, up=4, down=6),
+    6: Square(left=7, right=5, up=5),
+    7: Square(left=8, right=6),
+    8: Square(left=9, right=7, up=9),
+    9: Square(right=8, up=10, down=8),
+    11: Square(right=0, up=0, down=10),
+}
+maze_12: Maze = maze_base | {
+    4: Square(up=3, down=5),
+    10: Square(up=11, down=9),
+}
+maze_15: Maze = maze_base | {
+    4: Square(left=14, up=3, down=5),
+    10: Square(right=12, up=11, down=9),
+    12: Square(left=10, right=11),
+    13: Square(left=12, right=14),
+    14: Square(left=13, right=4),
+}
 

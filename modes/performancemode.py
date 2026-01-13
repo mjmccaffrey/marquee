@@ -1,16 +1,16 @@
-"""Marquee Lighted Sign Project - playmode"""
+"""Marquee Lighted Sign Project - performancemode"""
 
 from abc import ABC
 from dataclasses import dataclass
 
 from .foregroundmode import ForegroundMode
 from button import Button
-from modes.mode_misc import ModeIndex
+from .mode_misc import ModeIndex
 from player import Player
 
 
 @dataclass
-class PlayMode(ForegroundMode, ABC):
+class PerformanceMode(ForegroundMode, ABC):
     """Base for most modes."""
     player: Player
 

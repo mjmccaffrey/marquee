@@ -1,30 +1,21 @@
-"""Marquee Lighted Sign Project - lightgame"""
+"""Marquee Lighted Sign Project - gamemode"""
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from typing import ClassVar, Protocol
+from dataclasses import dataclass
+from typing import ClassVar, Sequence
 
 from color import Color
-from lightcontroller import ChannelUpdate
+from lightcontroller import LightChannel, ChannelUpdate
 from lightset import LightSet
-from modes.basemode import ScheduleCallback
-
-
-class LightUpdateCallback(Protocol):
-    def __call__(self, delta: 'Board') -> list[ChannelUpdate]:
-        ...
-
-class StateLogicCallback(Protocol):
-    def __call__(self) -> None:
-        ...
+from .performancemode import PerformanceMode
 
 
 @dataclass(kw_only=True, repr=False)
 class Entity(ABC):
-    """"""
+    """Non-character entities cannot move and cannot appear mid-level."""
     color: ClassVar[Color]
     draw_priority: ClassVar[int]
-    game: 'LightGame'
+    game: 'GameMode'
     name: str
     brightness: int
     coord: int | None = None
@@ -58,13 +49,10 @@ Maze = dict[int, Square]
 
 
 @dataclass(kw_only=True)
-class LightGame:
+class GameMode(PerformanceMode):
     """Play a game with the lights."""
     lights: LightSet
     maze: Maze
-    schedule: ScheduleCallback
-    state_logic: StateLogicCallback
-    light_updates: LightUpdateCallback
 
     def __post_init__(self):
         """Initialize board and characters."""
@@ -73,7 +61,7 @@ class LightGame:
         self.characters_by_name: dict[str, Character] = {}
         self.characters_turn_order: list[Character] = []
 
-    def start(self):
+    def execute(self):
         """"""
         self.tick: int = 0
         self.update_lights(self.board)
@@ -96,6 +84,27 @@ class LightGame:
         self.update_lights(delta_board)
         self.tick += 1
 
+    @abstractmethod
+    def desired_light_state(
+            self, 
+            entities: EntityGroup, 
+            channel: LightChannel,
+        ) -> ChannelUpdate:
+        """"""
+
+    @abstractmethod
+    def state_logic(self):
+        """"""
+
+    def light_updates(self, board: Board) -> list[ChannelUpdate]:
+        """"""
+        return [
+            self.desired_light_state(
+                entities=e, channel=self.player.lights.channels[i],
+            )
+            for i, e in board.items()
+        ]
+
     def update_lights(self, board: Board):
         """"""
         updates = self.light_updates(board)
@@ -111,19 +120,11 @@ class LightGame:
 
     def compare_boards(self, old_board: Board) -> Board:
         """Return a partial board with delta of old and new."""
-        # for e in entities:
-        #     print(e)
         result = {
             i: self.board[i]
             for i in self.board.keys()
             if old_board[i] != self.board[i]
         }
-        # print("OLD:")
-        # self.print_board(old_board)
-        # print("NEW:")
-        # self.print_board(self.board)
-        # print("DELTA:")
-        # self.print_board(result)
         return result
 
     def create_entity(self, etype: type[Entity], name: str) -> Entity:

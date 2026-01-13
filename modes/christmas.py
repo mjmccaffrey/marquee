@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - signs_song"""
 
 from lightset_misc import ALL_OFF, ALL_LOW, ALL_ON
-from modes.playmode import PlayMode
+from .performancemode import PerformanceMode
 from music import (
     set_player,
     act_part, bell_part, drum_part, sequence_part,
@@ -11,7 +11,7 @@ from sequences import all_on, blink_all, random_each
 from specialparams import ActionParams, ChannelParams
 
 
-class ChristmasSongs(PlayMode):
+class ChristmasSongs(PerformanceMode):
     """Christmas songs."""
 
     def execute(self) -> None:

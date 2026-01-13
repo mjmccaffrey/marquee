@@ -1,9 +1,12 @@
-"""Marquee Lighted Sign Project - repl_misc"""
+"""Marquee Lighted Sign Project - debug"""
 
 from collections.abc import Sequence
+from dataclasses import dataclass
+from functools import partial
 import time
 
 from lightset import LightSet
+from modes.musicmode import MusicMode
 from setup_devices_shelly import setup_devices
 
 
@@ -37,3 +40,27 @@ def light_states(lights: LightSet) -> None:
     """"""
     for i, c in enumerate(lights.channels):
         print(f"{i} {c.brightness} {c.color} {c.on}")
+
+
+@dataclass(kw_only=True)
+class BellTest(MusicMode):
+    """Test all bells."""
+
+    def __post_init__(self) -> None:
+        """Initialize."""
+
+    def execute(self) -> None:
+        """Perform bell test."""
+        for pitch in range(self.bells.pitch_levels):
+            due = 0.5 * pitch
+            self.schedule(
+                action = partial(self.bells.play, {pitch}),
+                due_rel = due,
+                name = f"BellTest play {pitch}",
+            )
+            self.schedule(
+                action = partial(self.bells.release, {pitch}),
+                due_rel = due + self.bells.release_time,
+                name = f"BellTest release {pitch}",
+            )
+

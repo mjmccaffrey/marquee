@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - playsequencemode"""
+"""Marquee Lighted Sign Project - sequencemode"""
 
 from collections.abc import Callable
 from functools import partial
@@ -7,11 +7,11 @@ from typing import Iterable
 
 from lightset_misc import ALL_ON
 from .foregroundmode import ForegroundMode
-from .playmode import PlayMode
+from .performancemode import PerformanceMode
 from player import Player
 from specialparams import ActionParams, ChannelParams, SpecialParams
 
-class PlaySequenceMode(PlayMode):
+class SequenceMode(PerformanceMode):
     """Executes all sequence-based modes."""
     def __init__(
         self,
@@ -48,7 +48,7 @@ class PlaySequenceMode(PlayMode):
             self.schedule(
                 action = partial(self.execute, pre_delay_done=True),
                 due_rel = self.pre_delay,
-                name = "PlaySequenceMode execute after pre_delay",
+                name = "SequenceMode execute after pre_delay",
             )
             return
         self.player.replace_kwarg_values(self.kwargs)
@@ -76,15 +76,15 @@ class PlaySequenceMode(PlayMode):
             self.schedule(
                 action = action,
                 due_rel = 0 if delay is None else i * delay,
-                name = f"PlaySequenceMode execute {i} {lights}",
+                name = f"SequenceMode execute {i} {lights}",
             )
             if delay is None:
-                print("Exiting playsequencemode.play, delay is None")
+                print("Exiting sequencemode.play, delay is None")
                 return
         if self.repeat: 
             self.schedule(
             action = self.execute,
             due_rel = (i + 1) * delay,
-            name = "PlaySequenceMode continue",
+            name = "SequenceMode continue",
         )
 

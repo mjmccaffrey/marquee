@@ -20,15 +20,15 @@ marquee
             Relays
         BaseMode
             BackgroundMode
-                TimeBGMode
                 SequenceBGMode
             ForegroundMode
                 SelectMode
                     BrightnessSelectMode
                     ModeSelectMode
-                PlayMode
-                    PlaySequenceMode
-                    PlayMusicMode
+                PerformanceMode
+                    GameMode
+                    MusicMode
+                    SequenceMode
         Instrument
             ActionInstrument
             RelayInstrument
@@ -56,14 +56,14 @@ from argument import display_help, process_arguments
 from button import Shutdown
 from executor import Executor, SigTerm
 from player import Player
-from register_modes import register_modes
+from setup_modes import setup_modes
 from setup_devices_shelly import setup_devices
 
 def main() -> None:
     """Execute Marquee application."""
     try:
         exec = Executor(Player, setup_devices)
-        register_modes(exec)
+        setup_modes(exec)
         try:
             args = process_arguments(exec.mode_ids, exec.commands)
         except ValueError:
