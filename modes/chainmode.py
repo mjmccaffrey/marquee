@@ -33,7 +33,7 @@ class ChainMode(BackgroundMode):
     def mode_index(self, name: str) -> int:
         """"""
         try:
-            return self.mode_ids[name]
+            return self.player.mode_ids[name]
         except LookupError:
             raise ValueError(f"Mode {name} not defined.")
 

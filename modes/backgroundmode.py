@@ -11,7 +11,8 @@ from .mode_misc import ModeConstructor
 @dataclass
 class BackgroundMode(BaseMode, ABC):
     """Base for all background modes.
-       Background modes should not play anything directly."""
-    modes: ClassVar[dict[int, ModeConstructor]]
-    mode_ids: ClassVar[dict[str, int]]
+       Background modes should not play 
+       any lights, instruments, etc. directly."""
+   #  modes: ClassVar[dict[int, ModeConstructor]]
+   #  mode_ids: ClassVar[dict[str, int]]
 
