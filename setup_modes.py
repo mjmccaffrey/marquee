@@ -107,15 +107,15 @@ def register_color_modes(exec: Executor) -> None:
             color_off=Colors.BLUE,
         )
     )
-    exec.add_sequence_mode("red_blue_blink_alternate_slow",
-        blink_alternate, delay=5, 
+    exec.add_sequence_mode("yellow_blue_blink_alternate_slow",
+        blink_alternate, delay=10, 
         special=ChannelParams(
             brightness_off=100,
             brightness_on=100,
             color_off=Colors.YELLOW,
             color_on=Colors.BLUE,
-            trans_on=0.0,
-            trans_off=0.0,
+            trans_on=9.5,
+            trans_off=9.5,
         )
     )
     
