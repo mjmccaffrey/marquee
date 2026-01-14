@@ -92,7 +92,7 @@ class PriorityQueue:
                     print(f"Waiting for remaining {remaining} or button push; queue empty")
                     return None, remaining
 
-        print(f"Waiting {seconds=}")
+        # print(f"Waiting {seconds=}")
         start = time.time()
         while True:
             now = time.time()

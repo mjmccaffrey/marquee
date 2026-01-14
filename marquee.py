@@ -57,7 +57,7 @@ from button import Shutdown
 from executor import Executor, SigTerm
 from player import Player
 from setup_modes import setup_modes
-from setup_devices_shelly import setup_devices
+from setup_devices_hue import setup_devices
 
 def main() -> None:
     """Execute Marquee application."""
