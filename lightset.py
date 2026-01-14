@@ -10,7 +10,7 @@ import time
 import rgbxy
 
 from bulb import SmartBulb
-from color import Color, Colors
+from color import Color, Colors, RGB
 from lightcontroller import ChannelUpdate, LightController, LightChannel
 from relays import RelayModule
 from specialparams import EmulateParams, ChannelParams, MirrorParams, SpecialParams
@@ -46,6 +46,7 @@ class LightSet:
 
         self.controller = self.controller_type(**self.controller_kwargs)
         self.gamut = self.controller.bulb_model.gamut
+        RGB.adjust_incomplete_colors(self.gamut or rgbxy.GamutC)
         self.colors = Colors(self.gamut or rgbxy.GamutC)
         assert len(self.controller.channels) == self.count
         self.channels = self.controller.channels
