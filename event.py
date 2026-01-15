@@ -17,7 +17,7 @@ class Event:
         return f"<{self}>"
     
     def __str__(self) -> str:
-        return f"{self.name} {self.due}"
+        return f"{self.owner} {self.name} {self.due}"
 
 @dataclass
 class PriorityQueue:
@@ -27,6 +27,12 @@ class PriorityQueue:
     def __len__(self) -> int:
         """Number of events in queue."""
         return len(self._queue)
+
+    def __repr__(self) -> str:
+        return f"<{self}>"
+    
+    def __str__(self) -> str:
+        return '\n'.join(str(e) for e in sorted(self._queue))
     
     def bulk_add(self, new: list[Event]):
         """"""
@@ -54,7 +60,8 @@ class PriorityQueue:
     def push(self, event: Event) -> None:
         """Add event to queue."""
         heappush(self._queue, event)
-        print(f"queue length: {len(self._queue)}")
+        print(self._queue)
+        # print(f"queue length: {len(self._queue)}")
         # print(f"Event {event} added to queue.")
 
     def wait(
