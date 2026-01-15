@@ -25,17 +25,10 @@ class ChainMode(BackgroundMode):
             BGModeEntry(
                 name,
                 seconds,
-                self.mode_index(name),
+                self.lookup_mode_index(name),
             )
             for name, seconds in self.sequence
         ]
-
-    def mode_index(self, name: str) -> int:
-        """"""
-        try:
-            return self.player.mode_ids[name]
-        except LookupError:
-            raise ValueError(f"Mode {name} not defined.")
 
     def execute(self) -> int:
         """Schedule next next mode. Change to next mode in sequence."""

@@ -4,6 +4,7 @@ from .select_modes import BrightnessSelectMode, ModeSelectMode
 
 from .christmas import ChristmasSongs
 from .demo import Demo
+from .dynamictest import DynamicTest
 from .evenoddfade import EvenOddFade
 # from .pacmanmode import PacManGame
 from .randomfade import RandomFade

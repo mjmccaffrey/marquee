@@ -6,7 +6,7 @@ import itertools
 from typing import Iterable
 
 from lightset_misc import ALL_ON
-from .foregroundmode import ForegroundMode
+from .basemode import BaseMode
 from .performancemode import PerformanceMode
 from player import Player
 from specialparams import ActionParams, ChannelParams, SpecialParams
@@ -24,6 +24,7 @@ class SequenceMode(PerformanceMode):
         stop: int | None = None,
         repeat: bool = True,
         special: SpecialParams | None = None,
+        parent: BaseMode | None = None,
         **kwargs,
     ) -> None:
         """Initialize."""
@@ -33,6 +34,7 @@ class SequenceMode(PerformanceMode):
         self.delay = delay
         self.stop = stop
         self.repeat = repeat
+        self.parent = parent
         self.kwargs = kwargs
         if isinstance(special, ChannelParams):
             self.lights.set_relays(ALL_ON)
@@ -49,6 +51,7 @@ class SequenceMode(PerformanceMode):
                 action = partial(self.execute, pre_delay_done=True),
                 due_rel = self.pre_delay,
                 name = "SequenceMode execute after pre_delay",
+                parent = self.parent,
             )
             return
         self.player.replace_kwarg_values(self.kwargs)
@@ -77,14 +80,16 @@ class SequenceMode(PerformanceMode):
                 action = action,
                 due_rel = 0 if delay is None else i * delay,
                 name = f"SequenceMode execute {i} {lights}",
+                parent = self.parent,
             )
             if delay is None:
                 print("Exiting sequencemode.play, delay is None")
                 return
         if self.repeat: 
             self.schedule(
-            action = self.execute,
-            due_rel = (i + 1) * delay,
-            name = "SequenceMode continue",
-        )
+                action = self.execute,
+                due_rel = (i + 1) * delay,
+                name = "SequenceMode continue",
+                parent = self.parent,
+            )
 

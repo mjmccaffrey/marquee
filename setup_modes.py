@@ -53,6 +53,12 @@ def register_channel_modes(exec: Executor):
             ("random_flip_fade_medium", 12),
         ],
     )
+    exec.add_sequence_mode("dynamic_test_sequence",
+        blink_alternate, delay=4, 
+    )
+    exec.add_mode(
+        "dynamic_test",
+    )
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=4, 
         special=ChannelParams(

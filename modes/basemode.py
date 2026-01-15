@@ -15,12 +15,20 @@ class BaseMode(ModeInterface, ABC):
     """Base for both foreground and background modes."""
     player: PlayerInterface
 
+    def lookup_mode_index(self, name: str) -> int:
+        """Return the index for the mode with name."""
+        try:
+            return self.player.mode_ids[name]
+        except LookupError:
+            raise ValueError(f"Mode {name} not defined.")
+
     def schedule(
         self, 
         action: Callable, 
         due_abs: float | None = None, 
         due_rel: float | None = None,
         name: str | None = None,
+        parent: 'BaseMode| None' = None,
         repeat: bool = False,
     ) -> None:
         """Schedule a new event, specifying either due_abs or due_rel.
@@ -33,7 +41,7 @@ class BaseMode(ModeInterface, ABC):
                 Event(
                     action=_action,
                     due=_due,
-                    owner=self,
+                    owner=parent or self,
                     name=_name,
                 )
             )
