@@ -11,7 +11,7 @@ from player import Player
 
 @dataclass
 class PerformanceMode(ForegroundMode, ABC):
-    """Base for non-administrative foreground modes."""
+    """Base for performance modes."""
     player: Player
 
     def __post_init__(self) -> None:

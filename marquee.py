@@ -20,12 +20,10 @@ marquee
             Relays
         BaseMode
             BackgroundMode
-                SequenceBGMode
             ForegroundMode
                 SelectMode
-                    BrightnessSelectMode
-                    ModeSelectMode
                 PerformanceMode
+                    DynamicMode
                     GameMode
                     MusicMode
                     SequenceMode

@@ -9,9 +9,9 @@ from button_misc import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import LightSet
 from lightset_misc import ALL_ON
-from modes import SequenceMode
 from modes.mode_misc import ModeConstructor
 from modes.modeinterface import ModeInterface
+from modes.sequencemode import SequenceMode
 from playerinterface import PlayerInterface
 from shelly import ShellyConsolidatedController
 from specialparams import SpecialParams

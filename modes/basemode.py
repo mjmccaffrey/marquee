@@ -10,10 +10,11 @@ from event import Event
 from playerinterface import PlayerInterface
 from .modeinterface import ModeInterface
 
-@dataclass
+@dataclass()
 class BaseMode(ModeInterface, ABC):
     """Base for both foreground and background modes."""
     player: PlayerInterface
+    parent: 'BaseMode| None' = None
 
     def lookup_mode_index(self, name: str) -> int:
         """Return the index for the mode with name."""
@@ -28,7 +29,6 @@ class BaseMode(ModeInterface, ABC):
         due_abs: float | None = None, 
         due_rel: float | None = None,
         name: str | None = None,
-        parent: 'BaseMode| None' = None,
         repeat: bool = False,
     ) -> None:
         """Schedule a new event, specifying either due_abs or due_rel.
@@ -41,7 +41,7 @@ class BaseMode(ModeInterface, ABC):
                 Event(
                     action=_action,
                     due=_due,
-                    owner=parent or self,
+                    owner=self.parent or self,
                     name=_name,
                 )
             )

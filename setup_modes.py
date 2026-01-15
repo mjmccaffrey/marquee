@@ -4,9 +4,9 @@ from color import Colors
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes import (
-    ChainMode, DynamicTest, EvenOddFade, RotateReversible, 
+    ModeChain, EvenOddFade, RotateReversible, 
     RandomFade, Signs, SilentFadeBuild,
-    BrightnessSelectMode, ModeSelectMode,
+    BrightnessSelect, ModeSelect,
 )
 from modes.mode_misc import ModeIndex
 from sequences import (
@@ -33,10 +33,10 @@ def setup_modes(exec: Executor) -> None:
 
 def register_special_modes(exec: Executor) -> None:
     """"""
-    exec.add_mode("select_mode", ModeSelectMode, 
+    exec.add_mode("select_mode", ModeSelect, 
         index=ModeIndex.SELECT_MODE, hidden=True,
     )
-    exec.add_mode("select_brightness", BrightnessSelectMode, 
+    exec.add_mode("select_brightness", BrightnessSelect, 
         index=ModeIndex.SELECT_BRIGHTNESS, hidden=True,
     )
     exec.add_sequence_mode("all_off", all_off,
@@ -46,8 +46,8 @@ def register_special_modes(exec: Executor) -> None:
 
 def register_channel_modes(exec: Executor):
     """"""
-    exec.add_mode("chainmodetest", 
-        ChainMode,
+    exec.add_mode("modechaintest", 
+        ModeChain,
         sequence = [
             ("blink_alternate_medium", 12),
             ("random_flip_fade_medium", 12),

@@ -23,12 +23,12 @@ class SequenceMode(PerformanceMode):
         delay: tuple[float, ...] | float | None = None,
         stop: int | None = None,
         repeat: bool = True,
-        special: SpecialParams | None = None,
         parent: BaseMode | None = None,
+        special: SpecialParams | None = None,
         **kwargs,
     ) -> None:
         """Initialize."""
-        super().__init__(player, index, name, special)
+        super().__init__(player, index, name, special=special)
         self.sequence = sequence
         self.pre_delay = pre_delay
         self.delay = delay
@@ -51,7 +51,6 @@ class SequenceMode(PerformanceMode):
                 action = partial(self.execute, pre_delay_done=True),
                 due_rel = self.pre_delay,
                 name = "SequenceMode execute after pre_delay",
-                parent = self.parent,
             )
             return
         self.player.replace_kwarg_values(self.kwargs)
@@ -80,7 +79,6 @@ class SequenceMode(PerformanceMode):
                 action = action,
                 due_rel = 0 if delay is None else i * delay,
                 name = f"SequenceMode execute {i} {lights}",
-                parent = self.parent,
             )
             if delay is None:
                 print("Exiting sequencemode.play, delay is None")
@@ -90,6 +88,5 @@ class SequenceMode(PerformanceMode):
                 action = self.execute,
                 due_rel = (i + 1) * delay,
                 name = "SequenceMode continue",
-                parent = self.parent,
             )
 
