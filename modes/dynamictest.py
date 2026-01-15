@@ -10,6 +10,9 @@ class DynamicTest(PerformanceMode):
     def __post_init__(self) -> None:
         """Initialize."""
         super().__post_init__()
+
+    def execute(self):
+        """"""
         index = self.lookup_mode_index(self.sequence_mode_name)
         self.mode = self.player.modes[index]
         kwargs = (
