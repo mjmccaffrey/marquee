@@ -4,7 +4,7 @@ from color import Colors
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes import (
-    ChainMode, ChristmasSongs, EvenOddFade, RotateReversible, 
+    ChainMode, DynamicTest, EvenOddFade, RotateReversible, 
     RandomFade, Signs, SilentFadeBuild,
     BrightnessSelectMode, ModeSelectMode,
 )
@@ -58,6 +58,7 @@ def register_channel_modes(exec: Executor):
     )
     exec.add_mode(
         "dynamic_test",
+        DynamicTest,  
     )
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=4, 
