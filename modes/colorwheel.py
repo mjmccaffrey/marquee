@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - colorwheel"""
 
 from color import RGB
-from performancemode import PerformanceMode
+from .performancemode import PerformanceMode
 
 class ColorWheel(PerformanceMode):
     """"""
