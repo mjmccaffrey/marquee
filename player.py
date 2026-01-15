@@ -26,7 +26,7 @@ class Player(PlayerInterface):
         self.fg_mode_history: list[int] = []
         self.bg_mode_instances: dict[int, BackgroundMode] = {}
         self.event_queue = PriorityQueue()
-        MirrorParams.func = self.drums.mirror
+        MirrorParams.mirror = self.drums.mirror
 
     def __repr__(self) -> str:
         return "Player repr"

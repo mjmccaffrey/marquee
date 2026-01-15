@@ -99,7 +99,7 @@ class LightSet:
             self.relay_pattern, self.extra_pattern = _light, _extra
 
         if isinstance(special, MirrorParams):
-            special.func(_all)
+            special.mirror(_all)
 
     def set_channels(
             self, 

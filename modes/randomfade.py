@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from functools import partial
 import random
 
+from color import XY
 from lightset_misc import ALL_ON
 from .performancemode import PerformanceMode
 
@@ -51,6 +52,10 @@ class RandomFade(PerformanceMode):
         assert isinstance(new, int)
         return new
 
+    def new_color(self) -> XY:
+        """Return random color."""
+        return self.lights.colors.random()
+
     def update_light(self, index: int):
         """Update light to random / specified values.
            Schedule next update of light."""
@@ -58,10 +63,12 @@ class RandomFade(PerformanceMode):
             current=self.brightnesses[index],
         )
         transition = self.new_transition()
+        color = self.new_color()
         duration = self.new_duration()
         self.lights.set_channels(
             brightness=brightness,
             transition=transition,
+            color=color,
             channel_indexes=(index,)
         )
         self.brightnesses[index] = brightness

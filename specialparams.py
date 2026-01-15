@@ -33,10 +33,11 @@ class ChannelParams(SpecialParams):
 @dataclass
 class MirrorParams(SpecialParams):
     """Parameters to mirror lights with another relay board."""
-    func: ClassVar[Callable[[str], None]]
+    mirror: ClassVar[Callable[[str], None]]
 
 @dataclass
 class EmulateParams(ChannelParams, MirrorParams):
     """Emulate relay experience when using smart bulbs."""
-    trans_on: float = 0.0
-    trans_off: float = 0.0
+    trans_on: ClassVar[float] = 0.0
+    trans_off: ClassVar[float] = 0.0
+
