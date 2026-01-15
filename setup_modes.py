@@ -3,11 +3,12 @@
 from color import Colors
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
-from modes import (
-    ModeChain, EvenOddFade, RotateReversible, 
-    RandomColors, RandomFade, Signs, SilentFadeBuild,
-    BrightnessSelect, ModeSelect,
-)
+from modes import *
+# (
+#     ModeChain, EvenOddFade, RotateReversible, 
+#     RandomColors, RandomFade, Signs, SilentFadeBuild,
+#     BrightnessSelect, ModeSelect,
+# )
 from modes.mode_misc import ModeIndex
 from sequences import (
     all_on, all_off, blink_all, blink_alternate, even_on, even_off,
@@ -66,6 +67,10 @@ def register_channel_modes(exec: Executor):
         "rffm_random_colors",
         RandomColors,
         sequence_mode_name="random_flip_fade_medium",
+    )
+    exec.add_mode(
+        'colorwheel',
+        ColorWheel,
     )
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=4, 

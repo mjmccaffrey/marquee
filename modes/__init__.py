@@ -6,6 +6,7 @@ from .modeselect import ModeSelect
 
 # Foreground performance modes
 from .christmas import ChristmasSongs
+from .colorwheel import ColorWheel
 from .demo import Demo
 from .evenoddfade import EvenOddFade
 # from .pacman import PacManGame
