@@ -60,7 +60,7 @@ class PriorityQueue:
     def push(self, event: Event) -> None:
         """Add event to queue."""
         heappush(self._queue, event)
-        print(self._queue)
+        print(str(self._queue) + '\n')
         # print(f"queue length: {len(self._queue)}")
         # print(f"Event {event} added to queue.")
 
