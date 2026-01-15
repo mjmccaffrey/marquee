@@ -17,7 +17,7 @@ class Event:
         return f"<{self}>"
     
     def __str__(self) -> str:
-        return f"{self.owner} {self.name} {self.due}"
+        return f"{self.name} {self.due}"
 
 @dataclass
 class PriorityQueue:
@@ -32,7 +32,9 @@ class PriorityQueue:
         return f"<{self}>"
     
     def __str__(self) -> str:
-        return '\n'.join(str(e) for e in sorted(self._queue))
+        return '\n'.join(
+            str(e) for e in sorted(self._queue)
+        )
     
     def bulk_add(self, new: list[Event]):
         """"""

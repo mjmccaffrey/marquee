@@ -93,10 +93,8 @@ class LightSet:
             special = special or EmulateParams()
             
         if isinstance(special, ChannelParams):
-            print("before:", special)
             if special.generate:
                 special = special.generate()
-            print("after:", special)
             self._set_channels_instead_of_relays(_light, special)
         else:
             self.relays.set_state_of_devices(_all)
