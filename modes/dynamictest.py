@@ -21,7 +21,9 @@ class DynamicTest(PerformanceMode):
         kwargs = (
             self.player.replace_kwarg_values(self.mode.kwargs) |
             {'parent': self} | 
-            {'special': self.generate_special}
+            {'special': 
+                ChannelParams(generate=self.generate_special)
+            }
         )
         mode_instance = self.mode.cls(
             player=self.player,
