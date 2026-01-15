@@ -53,10 +53,14 @@ def register_channel_modes(exec: Executor):
             ("random_flip_fade_medium", 12),
         ],
     )
+
+    exec.add_sequence_mode("rotaterc", rotate, 
+        delay=2.0, pattern="110000000000",
+    )
     exec.add_mode(
         "rotate_random_colors",
         RandomColors,
-        sequence_mode_name="rotate",
+        sequence_mode_name="rotaterc",
     )
     exec.add_mode(
         "rffm_random_colors",
