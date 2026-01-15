@@ -58,7 +58,8 @@ def register_channel_modes(exec: Executor):
     )
     exec.add_mode(
         "dynamic_test",
-        DynamicTest,  
+        DynamicTest,
+        sequence_mode_name="dynamic_test_sequence",
     )
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=4, 
