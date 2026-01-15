@@ -5,7 +5,7 @@ from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes import (
     ModeChain, EvenOddFade, RotateReversible, 
-    RandomFade, Signs, SilentFadeBuild,
+    RandomColors, RandomFade, Signs, SilentFadeBuild,
     BrightnessSelect, ModeSelect,
 )
 from modes.mode_misc import ModeIndex
@@ -53,13 +53,15 @@ def register_channel_modes(exec: Executor):
             ("random_flip_fade_medium", 12),
         ],
     )
-    exec.add_sequence_mode("dynamic_test_sequence",
-        blink_alternate, delay=4, 
+    exec.add_mode(
+        "rotate_random_colors",
+        RandomColors,
+        sequence_mode_name="rotate",
     )
     exec.add_mode(
-        "dynamic_test",
-        DynamicTest,
-        sequence_mode_name="dynamic_test_sequence",
+        "rffm_random_colors",
+        RandomColors,
+        sequence_mode_name="random_flip_fade_medium",
     )
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=4, 

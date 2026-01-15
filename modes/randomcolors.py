@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - dynamictest"""
 
-from dynamicmode import DynamicMode
+from .dynamicmode import DynamicMode
 from specialparams import ChannelParams
 
 
