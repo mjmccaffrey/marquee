@@ -1,8 +1,11 @@
 """Marquee Lighted Sign Project - dynamictest"""
 
+from dataclasses import dataclass
+
 from .performancemode import PerformanceMode
 from specialparams import ChannelParams
 
+@dataclass(kw_only=True)
 class DynamicTest(PerformanceMode):
     """"""
     sequence_mode_name: str
