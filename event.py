@@ -17,7 +17,7 @@ class Event:
         return f"<{self}>"
     
     def __str__(self) -> str:
-        return f"{self.name} {self.due}"
+        return f"'{self.name}' {self.owner}"
 
 @dataclass
 class PriorityQueue:
