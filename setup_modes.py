@@ -55,7 +55,7 @@ def register_channel_modes(exec: Executor):
     )
 
     exec.add_sequence_mode("rotaterc", rotate, 
-        delay=2.0, pattern="110000000000",
+        delay=2.0, pattern="100000000000",
     )
     exec.add_mode(
         "rotate_random_colors",

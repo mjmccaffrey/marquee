@@ -16,7 +16,7 @@ class RandomColors(DynamicMode):
             color_on=self.lights.colors.random(),
             color_off=self.lights.colors.random(),
             generate=self.generate_special,
-            trans_on=delay,
-            trans_off=delay,
+            trans_on=0.0,
+            trans_off=0.0,
         )
 
