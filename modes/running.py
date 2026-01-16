@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from color import Colors, RGB
 from lightcontroller import LightChannel, ChannelUpdate
-from .gamemode import Character, EntityGroup, GameMode
+from .gamemode import Character, EntityGroup, GameMode, Maze
 from .pacman_assets import maze_12
 
 
@@ -35,7 +35,7 @@ class Three(Dot):
 @dataclass(kw_only=True)
 class Running(GameMode):
     """"""
-    maze = maze_12
+    maze: Maze = maze_12
 
     def __post_init__(self):
         """Initialize board and characters."""
