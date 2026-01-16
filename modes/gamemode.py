@@ -55,6 +55,7 @@ class GameMode(PerformanceMode):
 
     def __post_init__(self):
         """Initialize board and characters."""
+        super().__post_init__()
         self.board: Board = {coord: {} for coord in sorted(self.maze)}
         assert all(c == i for i, c in enumerate(self.board))
         self.characters_by_name: dict[str, Character] = {}
