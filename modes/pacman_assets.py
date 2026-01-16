@@ -78,7 +78,7 @@ class Ghost(Character, ABC):
                 self.game.place_entity(self, 1)
         else:
             pacman = self.game.characters_by_name['pacman']
-            if pacman.coord == self.coord 
+            # if pacman.coord == self.coord 
             self.game.move_entity(self, self.coord + self.direction)
 
 

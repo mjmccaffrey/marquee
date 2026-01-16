@@ -28,7 +28,7 @@ class ColorWheel(PerformanceMode):
         )
         for i, (r, g, b) in enumerate(values):
             self.lights.set_channels(
-                brightness=int(100 / 12 * (i + 1)),
+                brightness=int(100 / 12 * ((i + self.rotation + 1) % 12)),
                 color=self.lights.colors.rgb(
                     int(r / 100 * 255),
                     int(g / 100 * 255),
