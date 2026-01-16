@@ -6,6 +6,10 @@ from .performancemode import PerformanceMode
 class ColorWheel(PerformanceMode):
     """"""
 
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        self.rotation = 1
+    
     def execute(self):
         """"""
         values = (
@@ -31,6 +35,11 @@ class ColorWheel(PerformanceMode):
                     int(b / 100 * 255),
                     self.lights.gamut,
                 ),
-                transition=0,
-                channel_indexes=[i],
+                transition=2,
+                channel_indexes=[i + self.rotation],
             )
+        self.rotation = (self.rotation + 1) % 12
+        self.schedule(
+            self.execute, due_rel=3.0,
+        )
+
