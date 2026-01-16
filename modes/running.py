@@ -21,7 +21,13 @@ class Dot(Character):
         self.game.move_entity(self, self.coord + self.direction)
 
 
-class OneTwo(Dot):
+class One(Dot):
+    """Grouped dots."""
+    color = Colors.YELLOW
+    direction = +1
+
+
+class Two(Dot):
     """Grouped dots."""
     color = Colors.YELLOW
     direction = +1
@@ -42,8 +48,8 @@ class Running(GameMode):
         super().__post_init__()
         assert self.lights.gamut is not None  # Color lights
         RGB.adjust_incomplete_colors(self.lights.gamut)
-        self.one = self.create_entity(etype=OneTwo, name="one")
-        self.two = self.create_entity(etype=OneTwo, name="two")
+        self.one = self.create_entity(etype=One, name="one")
+        self.two = self.create_entity(etype=Two, name="two")
         self.three = self.create_entity(etype=Three, name="three")
         self.place_entity(self.one, 0)
         self.place_entity(self.two, 1)
