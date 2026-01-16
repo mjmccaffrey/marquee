@@ -141,7 +141,6 @@ class GameMode(PerformanceMode):
         """Move entity to coord, with wrapping."""
         coord = coord % len(self.board)
         assert entity.coord is not None
-        print(entity, coord, entity.coord, type(entity))
         del self.board[entity.coord][type(entity)]
         self.place_entity(entity, coord)
 
