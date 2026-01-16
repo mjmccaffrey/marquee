@@ -70,6 +70,7 @@ class Colors:
 
     def __init__(self, gamut: rgbxy.Gamut) -> None:
         """Initialize."""
+        self.gamut = gamut
         self.converter = rgbxy.Converter(gamut)
         self.BLUE = RGB(0, 0, 255, gamut)
         self.CYAN = RGB(0, 255, 255, gamut)
@@ -82,4 +83,8 @@ class Colors:
     def random(self) -> XY:
         """Return random color within gamut."""
         return XY(*self.converter.get_random_xy_color())
+
+    def rgb(self, r: int, g: int, b: int) -> RGB:
+        """Return RGB instance adjusted for gamut."""
+        return RGB(r, g, b, self.gamut)
 
