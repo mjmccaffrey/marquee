@@ -13,7 +13,7 @@ from .evenoddfade import EvenOddFade
 from .randomfade import RandomFade
 from .randomcolors import RandomColors
 from .rotatereversible import RotateReversible
-# from .running import Running
+from .running import Running
 from .signs import Signs
 from .silentfadebuild import SilentFadeBuild
 
