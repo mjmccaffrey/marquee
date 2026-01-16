@@ -14,29 +14,34 @@ class Dot(Character):
     draw_priority = 1
     turn_priority = 1
     direction: int
+    speed: int
 
     def execute_turn(self) -> None:
         """Take turn."""
         assert self.coord is not None
-        self.game.move_entity(self, self.coord + self.direction)
+        if self.game.tick and not self.game.tick % self.speed:
+            self.game.move_entity(self, self.coord + self.direction)
 
 
 class One(Dot):
     """Grouped dots."""
     color = Colors.YELLOW
     direction = +1
-
+    speed = 3
 
 class Two(Dot):
     """Grouped dots."""
     color = Colors.YELLOW
     direction = +1
+    speed = 3
 
 
 class Three(Dot):
     """Solitary dot."""
     color = Colors.BLUE
     direction = -1
+    speed = 1
+
 
 @dataclass(kw_only=True)
 class Running(GameMode):
