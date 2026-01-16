@@ -29,6 +29,7 @@ class Entity(ABC):
 class Character(Entity, ABC):
     """Characters can move and appear mid-level."""
     turn_priority: ClassVar[int]
+    brightness: int = 100
  
     @abstractmethod
     def execute_turn(self) -> None:
