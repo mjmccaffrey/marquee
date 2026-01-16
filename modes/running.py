@@ -73,7 +73,3 @@ class Running(GameMode):
             on=True,
         )
 
-    def execute(self) -> None:
-        """"""
-        self.execute()
-
