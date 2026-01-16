@@ -35,11 +35,11 @@ class ColorWheel(PerformanceMode):
                     int(b / 100 * 255),
                     self.lights.gamut,
                 ),
-                transition=2,
+                transition=0.5,
                 channel_indexes=[(i + self.rotation) % 12],
             )
         self.rotation = (self.rotation + 1) % 12
         self.schedule(
-            self.execute, due_rel=3.0,
+            self.execute, due_rel=1.0,
         )
 
