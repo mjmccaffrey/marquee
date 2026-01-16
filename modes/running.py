@@ -79,7 +79,7 @@ class Running(GameMode):
         return ChannelUpdate(
             channel=channel,
             brightness=brightness,
-            trans=0,
+            trans=0.5,
             color=color,
             on=True,
         )
