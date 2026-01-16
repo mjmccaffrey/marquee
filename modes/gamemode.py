@@ -51,7 +51,6 @@ Maze = dict[int, Square]
 @dataclass(kw_only=True)
 class GameMode(PerformanceMode):
     """Play a game with the lights."""
-    lights: LightSet
     maze: Maze
 
     def __post_init__(self):
@@ -100,7 +99,7 @@ class GameMode(PerformanceMode):
         """"""
         return [
             self.desired_light_state(
-                entities=e, channel=self.player.lights.channels[i],
+                entities=e, channel=self.lights.channels[i],
             )
             for i, e in board.items()
         ]
