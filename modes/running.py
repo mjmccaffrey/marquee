@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - running mode"""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from color import Colors, RGB
 from lightcontroller import LightChannel, ChannelUpdate
@@ -35,7 +35,7 @@ class Three(Dot):
 @dataclass(kw_only=True)
 class Running(GameMode):
     """"""
-    maze: Maze = maze_12
+    maze: Maze = field(default_factory=lambda: maze_12)
 
     def __post_init__(self):
         """Initialize board and characters."""
