@@ -1,5 +1,7 @@
 """Marquee Lighted Sign Project - running mode"""
 
+from dataclasses import dataclass
+
 from color import Colors, RGB
 from lightcontroller import LightChannel, ChannelUpdate
 from .gamemode import Character, EntityGroup, GameMode
@@ -30,11 +32,11 @@ class Three(Dot):
     color = Colors.BLUE
     direction = -1
 
-
+@dataclass(kw_only=True)
 class Running(GameMode):
     """"""
     maze = maze_12
-    
+
     def __post_init__(self):
         """Initialize board and characters."""
         super().__post_init__()
