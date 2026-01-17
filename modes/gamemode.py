@@ -2,11 +2,10 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import ClassVar, Sequence
+from typing import ClassVar
 
 from color import Color
 from lightcontroller import LightChannel, ChannelUpdate
-from lightset import LightSet
 from .performancemode import PerformanceMode
 
 
@@ -53,6 +52,7 @@ Maze = dict[int, Square]
 class GameMode(PerformanceMode):
     """Play a game with the lights."""
     maze: Maze
+    ticks_per_second: int # !!! adjust by speed_factor
 
     def __post_init__(self):
         """Initialize board and characters."""
@@ -68,7 +68,7 @@ class GameMode(PerformanceMode):
         self.update_lights(self.board)
         self.schedule(
             action=self.execute_round,
-            due_rel=0.5,
+            due_rel=(1 / self.ticks_per_second), # !!!!!!!
             repeat=True,
         )
         

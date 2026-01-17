@@ -72,7 +72,7 @@ def register_channel_modes(exec: Executor):
         'colorwheel',
         ColorWheel,
     )
-    exec.add_mode('running', Running)
+    exec.add_mode('running', Running, ticks_per_second=3)
     
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=4, 

@@ -2,7 +2,7 @@
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, Self
 
 from color import Color
 
@@ -29,7 +29,7 @@ class ChannelParams(SpecialParams):
     concurrent: bool = True
     trans_on: float = 0.5  # ?????
     trans_off: float = 0.5  # ?????
-    generate: Callable[[], 'ChannelParams'] | None = None
+    generate: Callable[[], Self] | None = None
 
 @dataclass
 class MirrorParams(SpecialParams):

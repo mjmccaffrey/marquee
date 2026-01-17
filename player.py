@@ -11,6 +11,7 @@ from modes.modeinterface import ModeInterface
 from playerinterface import PlayerInterface
 from specialparams import MirrorParams
 
+type ModeInstance = BackgroundMode | ForegroundMode
 
 class ChangeMode(Exception):
     """Change mode exception."""
@@ -23,8 +24,9 @@ class Player(PlayerInterface):
     def __post_init__(self) -> None:
         """Initialize."""
         print("Initializing player")
-        self.fg_mode_history: list[int] = []
-        self.bg_mode_instances: dict[int, BackgroundMode] = {}
+        self.active_mode: ModeInstance | None = None
+        self.active_mode_history: list[int] = []
+        self.live_bg_modes: dict[int, BackgroundMode] = {}
         self.event_queue = PriorityQueue()
         MirrorParams.mirror = self.drums.mirror
 
@@ -39,81 +41,78 @@ class Player(PlayerInterface):
         print(f"Player {self} closed.")
 
     def change_mode(self, mode_index: int) -> NoReturn:
-        """Change active mode to mode_index."""
+        """Effects changing active mode to mode_index."""
         print(f"Changing to mode {mode_index}")
         raise ChangeMode(mode_index)
-    
-    def create_mode_instance(self, mode_index: int) -> BackgroundMode | ForegroundMode:
-        """Create instance of mode_index, cleanup old mode instance."""
-        mode = self.modes[mode_index]
-        if mode.index in self.bg_mode_instances:
-            self.delete_mode_instance(bg_index=mode.index)
-        mode_instance = mode.cls(
-            player=self,
-            index=mode.index,
-            name=mode.name, 
-            **self.replace_kwarg_values(mode.kwargs),
-        )
-        if isinstance(mode_instance, BackgroundMode):
-            self.bg_mode_instances[mode.index] = mode_instance
-        else:
-            self.fg_mode_history.append(mode.index)
-        return mode_instance
 
-    def delete_mode_instance(
-        self, 
-        bg_index: int | None = None,
-        fg_instance: ForegroundMode | None = None,
-    ) -> None:
-        """Delete foreground or background mode instance 
-           and any coresponding events."""
-        assert (bg_index is None) ^ (fg_instance is None)
-        if bg_index is not None:
-            instance = self.bg_mode_instances.pop(bg_index)
-        else:
-            instance = fg_instance
-        self.event_queue.delete_owned_by(instance)
+
+
+    def effect_new_active_mode(self, mode_index: int) -> None:
+        """"""
+
+        # If there is an active mode, clean it up.
+        # Note: After startup, there is always an active_mode.
+        if self.active_mode:
+            self.event_queue.delete_owned_by(self.active_mode)
+
+        # Create new mode instance
+        constructor = self.modes[mode_index]
+        new_mode = constructor.cls(
+            player=self,
+            index=constructor.index,
+            name=constructor.name, 
+            **self.replace_kwarg_values(constructor.kwargs),
+        )
+
+        # Add new instance to history list
+        self.active_mode_history.append(new_mode)
+
+        # If new mode is of type background...
+        # Note: A background mode will also be 
+        #       the active mode for a very short time.
+        if isinstance(new_mode, BackgroundMode):
+            # If bg mode of same type already present, clean it up.
+            
+            if (conflict := self.live_bg_modes.pop(new_mode.index, None)):
+                self.event_queue.delete_owned_by(conflict)
+            # Add new bg mode to bg mode list
+            self.live_bg_modes[new_mode.index] = new_mode
+
+        self.active_mode = new_mode
+
+
 
     def execute(self, starting_mode_index: int) -> None:
         """Play the specified starting mode and all subsequent modes."""
-        mode: BackgroundMode | ForegroundMode | None = None
         new_mode_index: int | None = starting_mode_index
         while True:
             try:
-                # New mode
                 if new_mode_index is not None:
-                    # Delete events for old mode
-                    if mode is not None and isinstance(mode, ForegroundMode):
-                        self.delete_mode_instance(fg_instance=mode)
-                    # Create new mode
-                    mode = self.create_mode_instance(new_mode_index)
+                    self.effect_new_active_mode(new_mode_index)
                     new_mode_index = None
-                assert mode is not None
-                print(f"Executing mode {mode.index} {mode.name}")
-                mode.execute()
+                assert self.active_mode is not None
+                print(f"Executing mode {self.active_mode}")
+                self.active_mode.execute()
                 self.wait()
             except ButtonPressed as press:
                 button, held = press.args
                 if held:
                     raise Shutdown("Button was held.")
                 Button.reset()
-                assert mode is not None
-                print(f"Button {button} pressed in mode {mode.name}")
-                new_mode_index = self._notify_button_action(mode, button)
+                assert self.active_mode is not None
+                print(f"Button {button} pressed in mode {self.active_mode}")
+                new_mode_index = self.notify_button_action(button)
             except ChangeMode as cm:
                 print("ChangeMode caught")
                 new_mode_index, = cm.args
 
-    def _notify_button_action(
-        self, 
-        current_mode: ModeInterface, 
-        button: Button
-    ) -> int | None:
-        """Notify all background modes, and foreground mode, 
-           of button action. Return foreground mode's response."""
-        for mode in self.bg_mode_instances.values():
+    def notify_button_action(self, button: Button) -> int | None:
+        """Notify all background modes, and active mode, 
+           of button action. Return active mode's response."""
+        for mode in self.live_bg_modes.values():
             mode.button_action(button)
-        return current_mode.button_action(button)
+        assert self.active_mode is not None
+        return self.active_mode.button_action(button)
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""
