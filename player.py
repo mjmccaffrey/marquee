@@ -7,11 +7,8 @@ from button import Button, ButtonPressed, Shutdown
 from event import PriorityQueue
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
-from modes.modeinterface import ModeInterface
 from playerinterface import PlayerInterface
 from specialparams import MirrorParams
-
-type ModeInstance = BackgroundMode | ForegroundMode
 
 class ChangeMode(Exception):
     """Change mode exception."""
@@ -24,7 +21,7 @@ class Player(PlayerInterface):
     def __post_init__(self) -> None:
         """Initialize."""
         print("Initializing player")
-        self.active_mode: ModeInstance | None = None
+        self.active_mode: BackgroundMode | ForegroundMode | None = None
         self.active_mode_history: list[int] = []
         self.live_bg_modes: dict[int, BackgroundMode] = {}
         self.event_queue = PriorityQueue()
@@ -51,7 +48,7 @@ class Player(PlayerInterface):
         """"""
 
         # If there is an active mode, clean it up.
-        # Note: After startup, there is always an active_mode.
+        # Note: After startup, there is always an active mode.
         if self.active_mode:
             self.event_queue.delete_owned_by(self.active_mode)
 
@@ -67,12 +64,10 @@ class Player(PlayerInterface):
         # Add new instance to history list
         self.active_mode_history.append(new_mode)
 
-        # If new mode is of type background...
-        # Note: A background mode will also be 
-        #       the active mode for a very short time.
+        # Note: A background mode will upon instatiation  
+        #       be the active mode, for a very short time.
         if isinstance(new_mode, BackgroundMode):
             # If bg mode of same type already present, clean it up.
-            
             if (conflict := self.live_bg_modes.pop(new_mode.index, None)):
                 self.event_queue.delete_owned_by(conflict)
             # Add new bg mode to bg mode list
