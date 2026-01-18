@@ -121,7 +121,7 @@ class HueChannel(LightChannel):
                 if update.on is not None else {}) |
             {'dynamics': {'duration': transition}}
         )
-        print(params['dynamics'])
+        print(params['on'], params['dynamics'])
         return ChannelCommand(
             channel = update.channel,
             url=f'https://{self.controller.ip_address}/clip/v2/resource/light/{self.id}',
