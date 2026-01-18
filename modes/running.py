@@ -74,7 +74,7 @@ class Running(GameMode):
             return ChannelUpdate(channel=channel, on=False)
         elif len(entities) == 1:
             brightness, color = 100, list(entities.values())[0].color
-        else:
+        else:   
             brightness, color = 100, Colors.GREEN
         return ChannelUpdate(
             channel=channel,
