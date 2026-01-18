@@ -12,7 +12,7 @@ from debug import light_states
 @dataclass(kw_only=True, repr=False)
 class Dot(Entity):
     """"""
-    color: RGB = Colors.WHITE
+    color: RGB = Colors.GREEN
     brightness: int = 80
     draw_priority: int = 1
 

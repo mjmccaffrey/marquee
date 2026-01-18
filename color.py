@@ -58,27 +58,44 @@ class RGB(Color):
 
 
 class Colors:
-    """Create an instance for gamut-adjusted constants.
-       Class constants are not adjusted to a gamut."""
-    BLUE = RGB(0, 0, 255)
-    CYAN = RGB(0, 255, 255)
-    GREEN = RGB(0, 255, 0)
-    MAGENTA = RGB(255, 0, 255)
+    """"""
     RED = RGB(255, 0, 0)
-    WHITE = RGB(255, 255, 255)
+    ORANGE = RGB(255, 128, 0)
     YELLOW = RGB(255, 255, 0)
+    LIME = RGB(128, 200, 0)
+    GREEN = RGB(0, 255, 0)
+    SPRING = RGB(0, 255, 128)
+    CYAN = RGB(0, 255, 255)
+    TEAL = RGB(0, 155, 255)
+    BLUE = RGB(0, 0, 255)
+    VIOLET = RGB(128, 0, 255)
+    MAGENTA = RGB(255, 0, 255)
+    ROSE = RGB(255, 0, 128)
+    # ORDERED = (
+    #     RED, ORANGE, YELLOW, LIME, GREEN, SPRING,
+    #     CYAN, TEAL, BLUE, VIOLET, MAGENTA, ROSE,
+    # )
+
+
+
 
     def __init__(self, gamut: rgbxy.Gamut) -> None:
-        """Initialize."""
+        """Create an instance for gamut-adjusted constants.
+           Class constants are not adjusted to a gamut."""
         self.gamut = gamut
         self.converter = rgbxy.Converter(gamut)
-        self.BLUE = RGB(0, 0, 255, gamut)
-        self.CYAN = RGB(0, 255, 255, gamut)
-        self.GREEN = RGB(0, 255, 0, gamut)
-        self.MAGENTA = RGB(255, 0, 255, gamut)
-        self.RED = RGB(255, 0, 0, gamut)
-        self.WHITE = RGB(255, 255, 255, gamut)
-        self.YELLOW = RGB(255, 255, 0, gamut)
+        self.RED = RGB(255, 0, 0, self.gamut)
+        self.ORANGE = RGB(255, 128, 0, self.gamut)
+        self.YELLOW = RGB(255, 255, 0, self.gamut)
+        self.LIME = RGB(128, 255, 0, self.gamut)
+        self.GREEN = RGB(0, 255, 0, self.gamut)
+        self.SPRING = RGB(0, 255, 128, self.gamut)
+        self.CYAN = RGB(0, 255, 255, self.gamut)
+        self.TEAL = RGB(0, 128, 255, self.gamut)
+        self.BLUE = RGB(0, 0, 255, self.gamut)
+        self.VIOLET = RGB(128, 0, 255, self.gamut)
+        self.MAGENTA = RGB(255, 0, 255, self.gamut)
+        self.ROSE = RGB(255, 0, 128, self.gamut)
 
     def random(self) -> XY:
         """Return random color within gamut."""
