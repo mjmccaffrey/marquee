@@ -47,5 +47,6 @@ class ModeChain(BackgroundMode):
     
     def button_action(self, button: ButtonInterface) -> None:
         """Close the instance in response to any button press."""
-        self.player.delete_mode_instance(bg_index=self.index)
+        # self.player.delete_mode_instance(bg_index=self.index)
+        # !!!!!!!!!!!!!!1
 

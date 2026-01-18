@@ -35,14 +35,14 @@ class PlayerInterface(ABC):
         """Change active mode to mode_index."""
         raise  # Pylance work-around
 
-    @abstractmethod
-    def delete_mode_instance(
-        self, 
-        bg_index: int | None = None,
-        fg_instance: object | None = None,
-    ) -> None:
-        """Delete foreground or background mode instance 
-           and any coresponding events."""
+    # @abstractmethod
+    # def delete_mode_instance(
+    #     self, 
+    #     bg_index: int | None = None,
+    #     fg_instance: object | None = None,
+    # ) -> None:
+    #     """Delete foreground or background mode instance 
+    #        and any coresponding events."""
 
     @abstractmethod
     def execute(self, starting_mode_index: int) -> None:
