@@ -21,7 +21,7 @@ from lightcontroller import (
 class HueBridge(LightController, bulb_comp=HueBulb):
     """Hue bridge controller."""
 
-    trans_min: ClassVar[float] = 0.5  # ?????????
+    trans_min: ClassVar[float] = 0.0  # ?????????
     trans_max: ClassVar[float] = 10800.0  # ?????????
 
     application_key: str
