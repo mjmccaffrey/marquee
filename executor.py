@@ -9,8 +9,9 @@ from button_misc import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import LightSet
 from lightset_misc import ALL_ON
+from modes.basemode import BaseMode
 from modes.mode_misc import ModeConstructor
-from modes.modeinterface import ModeInterface
+# from modes.modeinterface import ModeInterface
 from modes.sequencemode import SequenceMode
 from playerinterface import PlayerInterface
 from shelly import ShellyConsolidatedController
@@ -53,7 +54,7 @@ class Executor:
     def add_mode(
             self, 
             name: str,
-            cls: type[ModeInterface],
+            cls: type[BaseMode],
             index: int | None = None,
             hidden: bool = False,
             **kwargs,

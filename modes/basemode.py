@@ -1,20 +1,33 @@
 """Marquee Lighted Sign Project - basemode"""
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import sys
 import time
 from typing import Callable
 
+from button_misc import ButtonInterface
 from event import Event
 from playerinterface import PlayerInterface
-from .modeinterface import ModeInterface
+# from .modeinterface import ModeInterface
 
 @dataclass()
-class BaseMode(ModeInterface, ABC):
+class BaseMode(ABC):
     """Base for both foreground and background modes."""
     player: PlayerInterface
+    index: int
+    name: str
     parent: 'BaseMode| None' = None
+
+
+    @abstractmethod
+    def button_action(self, button: ButtonInterface) -> int | None:
+        """Respond to button being pressed.
+           Return index of new mode, if any."""
+
+    @abstractmethod
+    def execute(self) -> None:
+        """Play the mode."""
 
     def lookup_mode_index(self, name: str) -> int:
         """Return the index for the mode with name."""
