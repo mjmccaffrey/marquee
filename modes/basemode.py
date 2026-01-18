@@ -9,7 +9,7 @@ from typing import Callable
 from button_misc import ButtonInterface
 from event import Event
 from playerinterface import PlayerInterface
-# from .modeinterface import ModeInterface
+
 
 @dataclass()
 class BaseMode(ABC):
@@ -18,7 +18,6 @@ class BaseMode(ABC):
     index: int
     name: str
     parent: 'BaseMode| None' = None
-
 
     @abstractmethod
     def button_action(self, button: ButtonInterface) -> int | None:
@@ -58,7 +57,6 @@ class BaseMode(ABC):
                     name=_name,
                 )
             )
-            # print(f"SCHEDULED {_due} {_name} {len(self.player.event_queue)}")
 
         def repeater():
             """Schedule next event. Call action."""

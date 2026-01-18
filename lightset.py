@@ -40,9 +40,12 @@ class LightSet:
         )
 
         if self.smart_bulbs:
-            print("***** Smart bulbs in use - setting light relays ON. *****")
-            self.set_relays(light_pattern=True, smart_bulb_override=True)
-            time.sleep(5.0)  # Enough time for controller to see all bulbs.
+            if all(r == '1' for r in self.relay_pattern):
+                print("***** Smart bulbs in use - light relays already ON. *****")
+            else:
+                print("***** Smart bulbs in use - setting light relays ON. *****")
+                self.set_relays(light_pattern=True, smart_bulb_override=True)
+                time.sleep(5.0)  # Enough time for controller to see all bulbs.
 
         self.controller = self.controller_type(**self.controller_kwargs)
         self.gamut = self.controller.bulb_model.gamut
