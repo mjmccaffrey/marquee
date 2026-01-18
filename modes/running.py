@@ -23,24 +23,23 @@ class Dot(Character):
             self.game.move_entity(self, self.coord + self.direction)
 
 
-class One(Dot):
+class OneTwo(Dot):
     """Grouped dots."""
     color = Colors.YELLOW
     direction = +1
     speed = 3
 
-class Two(Dot):
+class One(OneTwo):
     """Grouped dots."""
-    color = Colors.YELLOW
-    direction = +1
-    speed = 3
 
+class Two(OneTwo):
+    """Grouped dots."""
 
 class Three(Dot):
     """Solitary dot."""
     color = Colors.BLUE
     direction = -1
-    speed = 1
+    speed = 2
 
 
 @dataclass(kw_only=True)
