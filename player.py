@@ -43,10 +43,6 @@ class Player(PlayerInterface):
     ) -> BackgroundMode | ForegroundMode:
         """"""
         constructor = self.modes[mode_index]
-        full_kwargs = (
-            self.replace_kwarg_values(constructor.kwargs) | 
-            extra_kwargs
-        )
         kwargs = dict(
             player=self,
             index=constructor.index,
@@ -54,7 +50,10 @@ class Player(PlayerInterface):
             modes=self.modes,
             mode_ids=self.mode_ids,
             parent=parent,
-            kwargs=full_kwargs,
+        )
+        kwargs |= (
+            self.replace_kwarg_values(constructor.kwargs) | 
+            extra_kwargs
         )
         if constructor.cls == ForegroundMode:
             kwargs |= dict(
