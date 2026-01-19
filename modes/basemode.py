@@ -8,7 +8,7 @@ from typing import Callable, NoReturn
 
 from button_misc import ButtonInterface
 from event import Event
-from mode_misc import ModeConstructor
+from .mode_misc import ModeConstructor
 from playerinterface import ChangeMode, PlayerInterface
 
 
