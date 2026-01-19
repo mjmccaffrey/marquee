@@ -4,11 +4,6 @@ from color import Colors
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes import *
-# (
-#     ModeChain, EvenOddFade, RotateReversible, 
-#     RandomColors, RandomFade, Signs, SilentFadeBuild,
-#     BrightnessSelect, ModeSelect,
-# )
 from modes.mode_misc import ModeIndex
 from sequences import (
     all_on, all_off, blink_all, blink_alternate, even_on, even_off,
@@ -38,6 +33,9 @@ def register_special_modes(exec: Executor) -> None:
         index=ModeIndex.SELECT_MODE, hidden=True,
     )
     exec.add_mode("select_brightness", BrightnessSelect, 
+        index=ModeIndex.SELECT_BRIGHTNESS, hidden=True,
+    )
+    exec.add_mode("counter", SequenceMode,
         index=ModeIndex.SELECT_BRIGHTNESS, hidden=True,
     )
     exec.add_sequence_mode("all_off", all_off,

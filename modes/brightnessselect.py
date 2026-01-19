@@ -13,7 +13,6 @@ class BrightnessSelect(SelectMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        super().__post_init__()
         super().setup(
             lower=1, 
             upper=LIGHT_COUNT,

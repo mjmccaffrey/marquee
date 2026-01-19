@@ -16,7 +16,6 @@ class PerformanceMode(ForegroundMode, ABC):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        super().__post_init__()
         self.direction = +1
 
     def button_action(self, button: Button) -> int | None:
@@ -30,7 +29,7 @@ class PerformanceMode(ForegroundMode, ABC):
                 new_mode = ModeIndex.SELECT_MODE
             case b.remote_c:
                 self.lights.click()
-                new_mode = self.player.mode_ids['section_1']
+                new_mode = self.mode_ids['section_1']
             case b.remote_b:
                 self.lights.click()
                 new_mode = self.mode_index(current_mode, -1)

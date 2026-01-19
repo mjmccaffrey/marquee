@@ -25,7 +25,7 @@ class Signs(PerformanceMode):
             self.refrain(2),
         ]
         for section in sections:
-            section.play(tempo=int(75 * self.player.speed_factor))
+            section.play(tempo=int(75 * self.speed_factor))
 
     def intro(self) -> Section:
         """Signs song intro."""

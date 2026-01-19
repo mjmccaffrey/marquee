@@ -33,7 +33,7 @@ Marquee Lighted Sign Project - configuration
     * Hue Bridge Pro
         * 192.168.64.130
     * DHCP Pool
-        * 192.168.64.130 - 149
+        * 192.168.64.140 - 159
 
 * **USB Ports**
 SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250501R0027", SYMLINK+="marquee_lights"

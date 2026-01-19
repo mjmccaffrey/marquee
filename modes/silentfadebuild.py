@@ -15,7 +15,7 @@ class SilentFadeBuild(PerformanceMode):
     def __post_init__(self) -> None:
         """Initialize."""
         super().__post_init__()
-        self.player.lights.set_channels(brightness=0)
+        self.lights.set_channels(brightness=0)
  
     def execute(self) -> None:
         """Perform SilentFadeBuild indefinitely."""
@@ -28,7 +28,7 @@ class SilentFadeBuild(PerformanceMode):
                 for lights in lights_in_groups(rows, from_top_left):
                     self.schedule(
                         partial(
-                            self.player.lights.set_channels,
+                            self.lights.set_channels,
                             brightness=brightness,
                             transition=1.0,
                             color=self.lights.colors.random(),

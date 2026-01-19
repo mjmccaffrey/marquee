@@ -19,7 +19,8 @@ class ModeConstructor:
     kwargs: dict[str, Any]
 
 class ModeIndex(IntEnum):
-    SELECT_BRIGHTNESS = -99
+    SELECT_BRIGHTNESS = -1
+    COUNTER = -2
     SELECT_MODE = 0
     DEFAULT = 1
 

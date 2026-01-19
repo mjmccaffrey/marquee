@@ -7,6 +7,7 @@ from typing import Iterable
 
 from lightset_misc import ALL_ON
 from .basemode import BaseMode
+from .mode_misc import ModeConstructor
 from .performancemode import PerformanceMode
 from player import Player
 from specialparams import ActionParams, ChannelParams, SpecialParams
@@ -18,6 +19,8 @@ class SequenceMode(PerformanceMode):
         player: Player,
         index: int,
         name: str,
+        modes: dict[int, ModeConstructor],
+        mode_ids: dict[str, int],
         sequence: Callable[[], Iterable],
         pre_delay: float = 0.0,
         delay: tuple[float, ...] | float | None = None,
@@ -28,7 +31,14 @@ class SequenceMode(PerformanceMode):
         **kwargs,
     ) -> None:
         """Initialize."""
-        super().__init__(player, index, name, special=special)
+        super().__init__(
+            player, 
+            index, 
+            name, 
+            modes, 
+            mode_ids, 
+            special=special,
+        )
         self.sequence = sequence
         self.pre_delay = pre_delay
         self.delay = delay

@@ -3,21 +3,22 @@
 from abc import ABC
 from dataclasses import dataclass
 
-from lightset_misc import ALL_HIGH, ALL_ON
+from button_misc import ButtonSet
+from instruments import BellSet, DrumSet
+from lightset import LightSet
 from .basemode import BaseMode
 from specialparams import SpecialParams
 
-@dataclass
+
+@dataclass(kw_only=True)
 class ForegroundMode(BaseMode, ABC):
     """Base for all Playing and Select modes."""
+    bells: BellSet
+    buttons: ButtonSet
+    drums: DrumSet
+    lights: LightSet
+    speed_factor: float
     special: SpecialParams | None = None
-
-    def __post_init__(self) -> None:
-        """Duplicate resource attributes for convenience."""
-        self.bells = self.player.bells
-        self.buttons = self.player.buttons
-        self.drums = self.player.drums
-        self.lights = self.player.lights
 
     @staticmethod
     def wrap_value(
@@ -37,5 +38,5 @@ class ForegroundMode(BaseMode, ABC):
 
     def mode_index(self, current: int, delta: int) -> int:
         """Return a new mode index, wrapping index in both directions."""
-        return self.wrap_value(1, max(self.player.modes), current, delta)
+        return self.wrap_value(1, max(self.modes), current, delta)
 

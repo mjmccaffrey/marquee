@@ -30,7 +30,7 @@ class ModeChain(BackgroundMode):
             for name, seconds in self.sequence
         ]
 
-    def execute(self) -> int:
+    def execute(self):
         """Schedule next next mode. Change to next mode in sequence."""
         print(
             f"Next mode in sequence is "
@@ -43,7 +43,7 @@ class ModeChain(BackgroundMode):
         )
         new_mode = self.mode_on_deck.index
         self.mode_on_deck = next(self.mode_iter)
-        self.player.change_mode(new_mode)
+        self.change_mode(new_mode)
     
     def button_action(self, button: ButtonInterface) -> None:
         """Close the instance in response to any button press."""

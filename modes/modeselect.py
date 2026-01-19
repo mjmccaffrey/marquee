@@ -12,7 +12,6 @@ class ModeSelect(SelectMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        super().__post_init__()
 
         # Find most recent normal mode.
         previous = next(
@@ -21,7 +20,7 @@ class ModeSelect(SelectMode):
 
         super().setup(
             lower=1, 
-            upper=max(self.player.modes),
+            upper=max(self.modes),
             previous=previous,
         )
 

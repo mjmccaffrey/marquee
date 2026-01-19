@@ -4,11 +4,12 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import sys
 import time
-from typing import Callable
+from typing import Callable, NoReturn
 
 from button_misc import ButtonInterface
 from event import Event
-from playerinterface import PlayerInterface
+from mode_misc import ModeConstructor
+from playerinterface import ChangeMode, PlayerInterface
 
 
 @dataclass()
@@ -17,6 +18,9 @@ class BaseMode(ABC):
     player: PlayerInterface
     index: int
     name: str
+    speed_factor: float
+    modes: dict[int, ModeConstructor]
+    mode_ids: dict[str, int]
     parent: 'BaseMode| None' = None
 
     @abstractmethod
@@ -28,10 +32,15 @@ class BaseMode(ABC):
     def execute(self) -> None:
         """Play the mode."""
 
+    def change_mode(self, mode_index: int) -> NoReturn:
+        """Effects changing active mode to mode_index."""
+        print(f"Changing to mode {mode_index}")
+        raise ChangeMode(mode_index)
+
     def lookup_mode_index(self, name: str) -> int:
         """Return the index for the mode with name."""
         try:
-            return self.player.mode_ids[name]
+            return self.mode_ids[name]
         except LookupError:
             raise ValueError(f"Mode {name} not defined.")
 
@@ -80,7 +89,7 @@ class BaseMode(ABC):
             _due = due_abs
         else:
             assert due_rel is not None
-            _due_rel: float = due_rel * self.player.speed_factor
+            _due_rel: float = due_rel * self.speed_factor
             _due = time.time() + _due_rel
         _action = repeater if repeat else action
         push_event()

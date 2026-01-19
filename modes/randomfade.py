@@ -30,8 +30,8 @@ class RandomFade(PerformanceMode):
             self.transition 
                 if self.transition is not None else
             random.uniform(
-                self.player.lights.trans_min, 
-                5.0 * self.player.speed_factor
+                self.lights.trans_min, 
+                5.0 * self.speed_factor
             )
         )
 
@@ -40,7 +40,7 @@ class RandomFade(PerformanceMode):
         return (
             self.duration 
                 if self.duration is not None else
-            random.uniform(0, 8.0 * self.player.speed_factor)
+            random.uniform(0, 8.0 * self.speed_factor)
         )
 
     def new_brightness(self, current: int) -> int:

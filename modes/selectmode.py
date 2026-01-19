@@ -4,9 +4,9 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from .foregroundmode import ForegroundMode
-from .sequencemode import SequenceMode
 from button import Button
 from lightset_misc import ALL_OFF
+from mode_misc import ModeIndex
 from player import Player
 from sequences import rotate_build_flip
 
@@ -62,17 +62,18 @@ class SelectMode(ForegroundMode, ABC):
         ):
             # Not last pass.
             # Show user what desired mode number is currently selected.
-            print(f"Desired is {self.desired} {self.player.modes[self.desired].name}")
+            print(f"Desired is {self.desired} {self.modes[self.desired].name}")
             self.lights.set_relays(ALL_OFF, special=self.special)
-            SequenceMode(
-                player=self.player,
-                index=self.index,
-                name=self.name,
-                sequence=lambda: rotate_build_flip(count=self.desired),
-                pre_delay = 0.5,
-                delay=0.20, 
-                repeat=False,
-                special=self.special,
+            self.player.create_mode_instance(
+                mode_index=ModeIndex.COUNTER,
+                parent=self,
+                extra_kwargs=dict(
+                    sequence=lambda: rotate_build_flip(count=self.desired),
+                    pre_delay=0.5,
+                    delay=0.20, 
+                    repeat=False,
+                    special=self.special,
+                ),
             ).execute()
             self.previous_desired = self.desired
             self.schedule(self.execute, due_rel=4.0)
@@ -80,5 +81,5 @@ class SelectMode(ForegroundMode, ABC):
             # Last pass.
             # Time elapsed without a button being pressed.
             # Change the mode.
-            self.player.change_mode(self.desired)
+            self.change_mode(self.desired)
 

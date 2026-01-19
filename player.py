@@ -5,13 +5,11 @@ from typing import Any, NoReturn
 
 from button import Button, ButtonPressed, Shutdown
 from event import PriorityQueue
+from modes.basemode import BaseMode
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
-from playerinterface import PlayerInterface
+from playerinterface import ChangeMode, PlayerInterface
 from specialparams import MirrorParams
-
-class ChangeMode(Exception):
-    """Change mode exception."""
 
 @dataclass(repr=False)
 class Player(PlayerInterface):
@@ -37,12 +35,36 @@ class Player(PlayerInterface):
         """Clean up."""
         print(f"Player {self} closed.")
 
-    def change_mode(self, mode_index: int) -> NoReturn:
-        """Effects changing active mode to mode_index."""
-        print(f"Changing to mode {mode_index}")
-        raise ChangeMode(mode_index)
-
-
+    def create_mode_instance(
+        self, 
+        mode_index: int,
+        extra_kwargs: dict[str, Any] = {},
+        parent: BaseMode | None = None,
+    ) -> BackgroundMode | ForegroundMode:
+        """"""
+        constructor = self.modes[mode_index]
+        full_kwargs = (
+            self.replace_kwarg_values(constructor.kwargs) | 
+            extra_kwargs
+        )
+        kwargs = dict(
+            player=self,
+            index=constructor.index,
+            name=constructor.name, 
+            modes=self.modes,
+            mode_ids=self.mode_ids,
+            parent=parent,
+            kwargs=full_kwargs,
+        )
+        if constructor.cls == ForegroundMode:
+            kwargs |= dict(
+                bells=self.bells,
+                buttons=self.buttons,
+                drums=self.drums,
+                lights=self.lights,
+                speed_factor=self.speed_factor,
+            )
+        return constructor.cls(**kwargs)
 
     def effect_new_active_mode(self, mode_index: int) -> None:
         """"""
@@ -53,16 +75,11 @@ class Player(PlayerInterface):
             self.event_queue.delete_owned_by(self.active_mode)
 
         # Create new mode instance
-        constructor = self.modes[mode_index]
-        new_mode = constructor.cls(
-            player=self,
-            index=constructor.index,
-            name=constructor.name, 
-            **self.replace_kwarg_values(constructor.kwargs),
-        )
+        new_mode = self.create_mode_instance(mode_index)
+        assert isinstance(new_mode, BackgroundMode | ForegroundMode)
 
         # Add new instance to history list
-        self.active_mode_history.append(new_mode)
+        self.active_mode_history.append(mode_index)
 
         # Note: A background mode will upon instatiation  
         #       be the active mode, for a very short time.

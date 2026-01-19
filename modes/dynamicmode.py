@@ -19,17 +19,13 @@ class DynamicMode(PerformanceMode, ABC):
         """Execute sequence_mode_name as child, with new 
            ChannelParams generated when requested by LightSet."""
         index = self.lookup_mode_index(self.sequence_mode_name)
-        self.mode = self.player.modes[index]
-        kwargs = (
-            self.player.replace_kwarg_values(self.mode.kwargs) |
-            {'special': ChannelParams(generate=self.generate_special)}
+        kwargs = dict(
+            special=ChannelParams(generate=self.generate_special)
         )
-        mode_instance = self.mode.cls(
-            player=self.player,
-            index=self.mode.index,
-            name=self.mode.name, 
+        mode_instance = self.player.create_mode_instance(
+            mode_index=index,
+            extra_kwargs=kwargs,
             parent=self,
-            **kwargs,
         )
         mode_instance.execute()
 
