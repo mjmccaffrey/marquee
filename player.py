@@ -55,7 +55,7 @@ class Player(PlayerInterface):
             self.replace_kwarg_values(constructor.kwargs) | 
             extra_kwargs
         )
-        if constructor.cls == ForegroundMode:
+        if issubclass(constructor.cls, ForegroundMode):
             kwargs |= dict(
                 bells=self.bells,
                 buttons=self.buttons,
@@ -63,7 +63,7 @@ class Player(PlayerInterface):
                 lights=self.lights,
                 speed_factor=self.speed_factor,
             )
-        return constructor.cls(**kwargs)
+        return constructor.cls(**kwargs)  # type: ignore
 
     def effect_new_active_mode(self, mode_index: int) -> None:
         """"""
