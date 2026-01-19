@@ -25,18 +25,13 @@ class PlayerInterface(ABC):
     # top: LightSet
     speed_factor: float
     pace: float = field(init=False)
-    fg_mode_history: list[int] = field(init=False)
+    active_mode_history: list[int] = field(init=False)
     bg_mode_instances: dict = field(init=False)
     event_queue: PriorityQueue = field(init=False)
 
     @abstractmethod
     def close(self) -> None:
         """Clean up."""
-
-    # @abstractmethod
-    # def change_mode(self, mode_index: int) -> NoReturn:
-    #     """Change active mode to mode_index."""
-    #     raise  # Pylance work-around
 
     @abstractmethod
     def execute(self, starting_mode_index: int) -> None:

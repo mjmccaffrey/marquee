@@ -22,7 +22,7 @@ class PerformanceMode(ForegroundMode, ABC):
         """Respond to button being pressed.
            Return index of new mode, if any."""
         new_mode = None
-        current_mode = self.player.fg_mode_history[-1]
+        current_mode = self.player.active_mode_history[-1]
         b = self.buttons
         match button:
             case b.remote_a | b.body_back:

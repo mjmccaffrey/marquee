@@ -5,6 +5,9 @@ from functools import partial
 import itertools
 from typing import Iterable
 
+from button_misc import ButtonSet
+from instruments import BellSet, DrumSet
+from lightset import LightSet
 from lightset_misc import ALL_ON
 from .basemode import BaseMode
 from .mode_misc import ModeConstructor
@@ -21,6 +24,11 @@ class SequenceMode(PerformanceMode):
         name: str,
         modes: dict[int, ModeConstructor],
         mode_ids: dict[str, int],
+        bells: BellSet,
+        buttons: ButtonSet,
+        drums: DrumSet,
+        lights: LightSet,
+        speed_factor: float,
         sequence: Callable[[], Iterable],
         pre_delay: float = 0.0,
         delay: tuple[float, ...] | float | None = None,
@@ -32,11 +40,16 @@ class SequenceMode(PerformanceMode):
     ) -> None:
         """Initialize."""
         super().__init__(
-            player, 
-            index, 
-            name, 
-            modes, 
-            mode_ids, 
+            player=player, 
+            index=index, 
+            name=name, 
+            modes=modes, 
+            mode_ids=mode_ids, 
+            speed_factor=speed_factor,
+            bells=bells,
+            buttons=buttons,
+            drums=drums,
+            lights=lights,
             special=special,
         )
         self.sequence = sequence

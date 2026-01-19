@@ -5,6 +5,7 @@ from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes import *
 from modes.mode_misc import ModeIndex
+from modes.sequencemode import SequenceMode
 from sequences import (
     all_on, all_off, blink_all, blink_alternate, even_on, even_off,
     rotate, random_flip, rotate_sides,
@@ -36,7 +37,7 @@ def register_special_modes(exec: Executor) -> None:
         index=ModeIndex.SELECT_BRIGHTNESS, hidden=True,
     )
     exec.add_mode("counter", SequenceMode,
-        index=ModeIndex.SELECT_BRIGHTNESS, hidden=True,
+        index=ModeIndex.COUNTER, hidden=True,
     )
     exec.add_sequence_mode("all_off", all_off,
         index=ModeIndex.DEFAULT,

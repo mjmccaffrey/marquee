@@ -14,8 +14,9 @@ class ModeSelect(SelectMode):
         """Initialize."""
 
         # Find most recent normal mode.
+        # !!!!! This could find a background mode !!!!!!
         previous = next(
-            i for i in reversed(self.player.fg_mode_history) if i > 0
+            i for i in reversed(self.player.active_mode_history) if i > 0
         )
 
         super().setup(
