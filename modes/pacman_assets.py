@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 from color import Color, Colors, RGB
 from .gamemode import Character, Entity, Maze, Square
-from debug import light_states
+# from debug import light_states
 
 
 @dataclass(kw_only=True, repr=False)
@@ -52,7 +52,7 @@ class PacMan(Character):
                 )
             case _:
                 dest = None
-                light_states(self.game.lights)
+                # light_states(self.game.lights)
         if dest is not None:
             _move_to(dest)
 
