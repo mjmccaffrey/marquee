@@ -85,14 +85,13 @@ class Executor:
             delay=delay,
             special=special,
         ) | kwargs
-        # !!!!! MISSING INDEX AND HIDDEN
         self.add_mode(
             name=name, 
             cls=SequenceMode,
             index=index,
             hidden=hidden,
             special=special,
-            kwargs=kwargs,
+            **kwargs,
         )
 
     def execute(
