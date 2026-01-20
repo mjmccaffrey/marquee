@@ -2,8 +2,8 @@
 
 from typing import Any, Protocol
 
-from modes.backgroundmode import BackgroundMode
-from modes.foregroundmode import ForegroundMode
+# from modes.backgroundmode import BackgroundMode
+# from modes.foregroundmode import ForegroundMode
 
 
 class ChangeMode(Exception):
@@ -16,6 +16,6 @@ class CreateModeInstance(Protocol):
         mode_index: int,
         kwargs: dict[str, Any] = {},
         parent: object | None = None,  # BaseMode
-    ) -> BackgroundMode | ForegroundMode:
+    ) -> object:  # BackgroundMode | ForegroundMode:
         ...
 

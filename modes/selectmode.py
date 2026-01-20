@@ -73,7 +73,7 @@ class SelectMode(ForegroundMode, ABC):
                     repeat=False,
                     special=self.special,
                 ),
-            ).execute()
+            ).execute()  # type: ignore !!!
             self.previous_desired = self.desired
             self.schedule(self.execute, due_rel=4.0)
         else:
