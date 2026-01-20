@@ -8,7 +8,7 @@ from button_misc import ButtonSet
 from event import PriorityQueue
 from instruments import BellSet, DrumSet
 from lightset import LightSet
-from modes.basemode import BaseMode
+# from modes.basemode import BaseMode
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
 from modes.mode_misc import ModeDefinition
@@ -54,7 +54,7 @@ class Player:
         self, 
         mode_index: int,
         kwargs: dict[str, Any] = {},
-        parent: BaseMode | None = None,
+        parent: type | None = None,  # BaseMode
     ) -> BackgroundMode | ForegroundMode:
         """"""
         if mode_index is not None:

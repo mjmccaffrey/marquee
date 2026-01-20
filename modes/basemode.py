@@ -9,7 +9,6 @@ from typing import Callable, NoReturn
 from button_misc import ButtonInterface
 from event import Event, PriorityQueue
 from .mode_misc import ModeDefinition
-from player import Player
 from playerinterface import ChangeMode, CreateModeInstance
 
 
