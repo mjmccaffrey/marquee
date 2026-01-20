@@ -24,7 +24,7 @@ class DynamicMode(PerformanceMode, ABC):
         )
         mode_instance = self.player.create_mode_instance(
             mode_index=index,
-            extra_kwargs=kwargs,
+            kwargs=kwargs,
             parent=self,
         )
         mode_instance.execute()

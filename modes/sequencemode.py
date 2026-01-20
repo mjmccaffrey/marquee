@@ -39,7 +39,7 @@ class SequenceMode(PerformanceMode):
                 name = "SequenceMode execute after pre_delay",
             )
             return
-        self.player.replace_kwarg_values(self.kwargs)
+        # self.player.replace_kwarg_values(self.kwargs)
         delay_iter = (
             itertools.cycle(self.delay) 
                 if isinstance(self.delay, Iterable) else

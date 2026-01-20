@@ -8,7 +8,7 @@ from button_misc import ButtonSet
 from event import PriorityQueue
 from instruments import BellSet, DrumSet
 from lightset import LightSet
-from modes.mode_misc import ModeConstructor
+from modes.mode_misc import ModeDefinition
 
 
 class ChangeMode(Exception):
@@ -16,7 +16,7 @@ class ChangeMode(Exception):
 
 @dataclass
 class PlayerInterface(ABC):
-    modes: dict[int, ModeConstructor]
+    modes: dict[int, ModeDefinition]
     mode_ids: dict[str, int]
     bells: BellSet
     buttons: ButtonSet

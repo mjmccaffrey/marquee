@@ -38,24 +38,25 @@ class Player(PlayerInterface):
     def create_mode_instance(
         self, 
         mode_index: int,
-        extra_kwargs: dict[str, Any] = {},
+        kwargs: dict[str, Any] = {},
         parent: BaseMode | None = None,
     ) -> BackgroundMode | ForegroundMode:
         """"""
-        constructor = self.modes[mode_index]
-        kwargs = dict(
-            player=self,
-            index=constructor.index,
-            name=constructor.name, 
-            modes=self.modes,
-            mode_ids=self.mode_ids,
-            parent=parent,
-        )
-        kwargs |= (
-            self.replace_kwarg_values(constructor.kwargs) | 
-            extra_kwargs
-        )
-        if issubclass(constructor.cls, ForegroundMode):
+        if mode_index is not None:
+            definition = self.modes[mode_index]
+            _kwargs = dict(
+                player=self,
+                index=definition.index,
+                name=definition.name, 
+                modes=self.modes,
+                mode_ids=self.mode_ids,
+                parent=parent,
+            )
+            _kwargs |= (
+                self.replace_kwarg_values(definition.kwargs) | 
+                kwargs
+            )
+        if issubclass(definition.cls, ForegroundMode):
             kwargs |= dict(
                 bells=self.bells,
                 buttons=self.buttons,
@@ -63,7 +64,7 @@ class Player(PlayerInterface):
                 lights=self.lights,
                 speed_factor=self.speed_factor,
             )
-        return constructor.cls(**kwargs)  # type: ignore
+        return definition.cls(**_kwargs)  # type: ignore
 
     def effect_new_active_mode(self, mode_index: int) -> None:
         """"""
@@ -90,8 +91,6 @@ class Player(PlayerInterface):
             self.live_bg_modes[new_mode.index] = new_mode
 
         self.active_mode = new_mode
-
-
 
     def execute(self, starting_mode_index: int) -> None:
         """Play the specified starting mode and all subsequent modes."""

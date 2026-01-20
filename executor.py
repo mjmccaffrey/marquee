@@ -11,7 +11,7 @@ from instruments import BellSet, DrumSet
 from lightset import LightSet
 from lightset_misc import ALL_ON
 from modes.basemode import BaseMode
-from modes.mode_misc import ModeConstructor
+from modes.mode_misc import ModeDefinition
 from modes.sequencemode import SequenceMode
 from playerinterface import PlayerInterface
 from shelly import ShellyConsolidatedController
@@ -40,7 +40,7 @@ class Executor:
         self.setup_devices = setup_devices
         self.mode_ids: dict[str, int] = {}
         self.mode_menu: list[tuple[int, str]] = []
-        self.modes: dict[int, ModeConstructor] = {}
+        self.modes: dict[int, ModeDefinition] = {}
         self.commands: dict[str, Callable[[], None]] = {
             'calibrate': self.command_calibrate,
             'off': self.command_off,
@@ -67,7 +67,7 @@ class Executor:
             self.mode_menu.append((index, name))
             self.mode_ids[str(index)] = index
             self.mode_ids[name] = index
-        self.modes[index] = ModeConstructor(index, name, cls, kwargs)
+        self.modes[index] = ModeDefinition(index, name, cls, kwargs)
 
     def add_sequence_mode(
             self,

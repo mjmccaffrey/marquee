@@ -8,7 +8,7 @@ from typing import Callable, NoReturn
 
 from button_misc import ButtonInterface
 from event import Event
-from .mode_misc import ModeConstructor
+from .mode_misc import ModeDefinition
 from playerinterface import ChangeMode, PlayerInterface
 
 
@@ -19,7 +19,7 @@ class BaseMode(ABC):
     index: int
     name: str
     speed_factor: float
-    modes: dict[int, ModeConstructor]
+    modes: dict[int, ModeDefinition]
     mode_ids: dict[str, int]
     parent: 'BaseMode| None' = None
 

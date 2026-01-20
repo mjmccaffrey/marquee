@@ -67,7 +67,7 @@ class SelectMode(ForegroundMode, ABC):
             self.player.create_mode_instance(
                 mode_index=ModeIndex.COUNTER,
                 parent=self,
-                extra_kwargs=dict(
+                kwargs=dict(
                     sequence=lambda: rotate_build_flip(count=self.desired),
                     pre_delay=0.5,
                     delay=0.20, 

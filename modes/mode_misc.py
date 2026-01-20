@@ -12,7 +12,7 @@ class BGModeEntry:
     index: int = -1
 
 @dataclass
-class ModeConstructor:
+class ModeDefinition:
     index: int
     name: str
     cls: type
