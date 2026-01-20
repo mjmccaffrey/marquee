@@ -54,7 +54,7 @@ class Player:
         self, 
         mode_index: int,
         kwargs: dict[str, Any] = {},
-        parent: type | None = None,  # BaseMode
+        parent: object | None = None,  # BaseMode
     ) -> BackgroundMode | ForegroundMode:
         """"""
         if mode_index is not None:
