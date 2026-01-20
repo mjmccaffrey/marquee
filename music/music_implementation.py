@@ -2,26 +2,24 @@
 
 from dataclasses import replace
 from itertools import chain
-from functools import partial
 import time
 from typing import Any, Callable, Iterator
 
 from event import Event
+from modes.musicmode import MusicMode
 from .music_elements import (
     ActionNote, BaseNote, DrumNote, Element, Measure, NoteGroup,
     Part, Rest, SequenceMeasure,
 )
-from playerinterface import PlayerInterface
 from specialparams import (
     ActionParams, ChannelParams, SpecialParams,
 )
 
 
-def _set_player(the_player: PlayerInterface) -> None:
-    """Set the Player object used throughout this module."""
-    global player
-    player = the_player
-
+def _set_mode(the_mode: MusicMode) -> None:
+    """Set the Mode object used throughout this module."""
+    global mode
+    mode = the_mode
 
 def prepare_parts(parts: tuple[Part, ...]) -> tuple[Measure, ...]:
     """Expand SequenceMeasures.
@@ -150,18 +148,18 @@ def events_in_measure(measure: Measure, start: float) -> list[Event]:
         result.append(
             Event(
                 action = element.play,
-                owner = player,
+                owner = mode,
                 due = start + beat
             )
         )
         # if element.duration:
-        #     player.wait(element.duration, time.time() - start)
+        #     mode.wait(element.duration, time.time() - start)
         #     start = time.time()
         beat += element.duration
         if beat > measure.beats:
             raise ValueError("Too many actual beats in measure.")
     # # Play implied rests at end of measure
-    # player.wait(measure.beats - beat, time.time() - start)
+    # mode.wait(measure.beats - beat, time.time() - start)
     return result
 
 def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Event]:
@@ -184,27 +182,27 @@ def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Event]
 def play_measures(measures: tuple[Measure, ...], tempo: int):
     """Convert measures to events, add to event queue."""
     events = events_in_measures(measures, tempo)
-    player.event_queue.bulk_add(events)
+    mode.event_queue.bulk_add(events)
 
 
 def _dimmer(brightness: list[int]) -> Callable:
     """Return callable to effect dimmer pattern."""
-    return lambda: player.lights.set_channels(brightness=brightness)
+    return lambda: mode.lights.set_channels(brightness=brightness)
 
 
 def _channel_sequence(brightness: int, trans: float) -> Callable:
     """Return callable to effect state of specified channels."""
     def func(lights: list[int]):
         pass
-        # player.lights.set_channel_subset(lights, brightness, trans)
+        # mode.lights.set_channel_subset(lights, brightness, trans)
     return func
 
 
 def _channel_sequence_flip(trans: float) -> Callable:
     """Return callable to flip state of specified channels."""
     def func(lights: list[int]):
-        brightness = 0 if player.lights.brightnesses()[lights[0]] else 100
-        # player.lights.set_channel_subset(lights, brightness, trans)
+        brightness = 0 if mode.lights.brightnesses()[lights[0]] else 100
+        # mode.lights.set_channel_subset(lights, brightness, trans)
     return func
 
 
@@ -216,7 +214,7 @@ def _light(
     if isinstance(special, ActionParams):
         result = lambda: special.action(pattern)
     else:
-        result = lambda: player.lights.set_relays(
+        result = lambda: mode.lights.set_relays(
             light_pattern=pattern,
             special=special,
         )

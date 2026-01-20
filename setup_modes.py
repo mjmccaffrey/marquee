@@ -32,6 +32,7 @@ def register_special_modes(exec: Executor) -> None:
     """"""
     exec.add_mode("select_mode", ModeSelect, 
         index=ModeIndex.SELECT_MODE, hidden=True,
+        previous="PREVIOUS_MODE",
     )
     exec.add_mode("select_brightness", BrightnessSelect, 
         index=ModeIndex.SELECT_BRIGHTNESS, hidden=True,

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from .performancemode import PerformanceMode
 from music import Measure, play, Section
-from music.music_interface import set_player
+from music.music_interface import set_mode
 
 @dataclass
 class MusicMode(PerformanceMode, ABC):
@@ -13,7 +13,7 @@ class MusicMode(PerformanceMode, ABC):
 
     def __post_init__(self):
         """Initialize."""
-        set_player(self.player)
+        set_mode(self)
 
     def execute(self, *elements: Measure | Section, tempo: int) -> None:
         """"""

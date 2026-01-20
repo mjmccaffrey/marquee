@@ -14,7 +14,6 @@ from sequences import rotate_build_flip
 @dataclass(kw_only=True)
 class SelectMode(ForegroundMode, ABC):
     """Base for the selection modes."""
-    player: Player
 
     def setup(
         self,
@@ -64,7 +63,7 @@ class SelectMode(ForegroundMode, ABC):
             # Show user what desired mode number is currently selected.
             print(f"Desired is {self.desired} {self.modes[self.desired].name}")
             self.lights.set_relays(ALL_OFF, special=self.special)
-            self.player.create_mode_instance(
+            self.create_mode_instance(
                 mode_index=ModeIndex.COUNTER,
                 parent=self,
                 kwargs=dict(

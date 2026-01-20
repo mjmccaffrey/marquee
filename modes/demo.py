@@ -5,26 +5,26 @@ import sys
 import time
 
 from lightset_misc import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
+from modes.musicmode import MusicMode
 from music import (
     dimmer, dimmer_sequence, light, measure, part, play,
-    section, Section, sequence, set_player
+    section, Section, sequence, set_mode
 )
 from music import(
     act, act_part, drum_part,
     rest, sequence_measure, sequence_part
 )
-from .performancemode import PerformanceMode
 from sequences import *
 from specialparams import ActionParams, ChannelParams
 
 
 @dataclass
-class Demo(PerformanceMode):
+class Demo(MusicMode):
     """Version 3 demo."""
 
     def __post_init__(self) -> None:
         """Initialize."""
-        set_player(self.player)
+        set_mode(self)
 
         self.lights.set_channels(brightness=100, on=True, force=True)
         time.sleep(0.5)

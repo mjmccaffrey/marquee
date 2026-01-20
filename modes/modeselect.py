@@ -9,20 +9,15 @@ from .selectmode import SelectMode
 @dataclass(kw_only=True)
 class ModeSelect(SelectMode):
     """Allows user to select mode."""
+    previous: int
 
     def __post_init__(self) -> None:
         """Initialize."""
 
-        # Find most recent normal mode.
-        # !!!!! This could find a background mode !!!!!!
-        previous = next(
-            i for i in reversed(self.player.active_mode_history) if i > 0
-        )
-
         super().setup(
             lower=1, 
             upper=max(self.modes),
-            previous=previous,
+            previous=self.previous,
         )
 
     def c_button_pressed(self) -> None:

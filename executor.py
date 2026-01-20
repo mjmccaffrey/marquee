@@ -13,7 +13,7 @@ from lightset_misc import ALL_ON
 from modes.basemode import BaseMode
 from modes.mode_misc import ModeDefinition
 from modes.sequencemode import SequenceMode
-from playerinterface import PlayerInterface
+from player import Player
 from shelly import ShellyConsolidatedController
 from specialparams import SpecialParams
 
@@ -29,7 +29,7 @@ class Executor:
 
     def __init__(
             self,
-            create_player: Callable[..., PlayerInterface],
+            create_player: Callable[..., Player],
             setup_devices: Callable[
                 [float, float], 
                 tuple[BellSet, ButtonSet, DrumSet, LightSet]
@@ -121,7 +121,7 @@ class Executor:
 
     def execute_mode(self, mode_index: int, speed_factor: float) -> None:
         """Effects the command-line specified mode."""
-        self.player: PlayerInterface = self.create_player(
+        self.player: Player = self.create_player(
             self.modes, 
             self.mode_ids,
             self.bells,

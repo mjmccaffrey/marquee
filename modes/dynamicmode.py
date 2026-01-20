@@ -22,7 +22,7 @@ class DynamicMode(PerformanceMode, ABC):
         kwargs = dict(
             special=ChannelParams(generate=self.generate_special)
         )
-        mode_instance = self.player.create_mode_instance(
+        mode_instance = self.create_mode_instance(
             mode_index=index,
             kwargs=kwargs,
             parent=self,

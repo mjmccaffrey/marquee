@@ -3,20 +3,20 @@
 from collections.abc import Callable
 from typing import Any
 
+from modes.musicmode import MusicMode
 from .music_elements import (
     Element, Measure, Part, Section, Sequence, 
 )
 from .music_implementation import (
-    _channel_sequence, _channel_sequence_flip, _light, _set_player,
+    _channel_sequence, _channel_sequence_flip, _light, _set_mode,
     expand_sequence_measures, play_measures, prepare_parts, validate_measures
 )
-from playerinterface import PlayerInterface
 from specialparams import SpecialParams
 
 
-def set_player(the_player: PlayerInterface) -> None:
-    """Set the Player object used throughout this module."""
-    _set_player(the_player)
+def set_mode(the_mode: MusicMode) -> None:
+    """Set the Mode object used throughout this module."""
+    _set_mode(the_mode)
 
 
 def play(*measures: Measure, tempo: int) -> None:

@@ -1,9 +1,9 @@
 """Marquee Lighted Sign Project - signs_song"""
 
 from lightset_misc import ALL_OFF, ALL_LOW, ALL_ON
-from .performancemode import PerformanceMode
+from .musicmode import MusicMode
 from music import (
-    set_player,
+    set_mode,
     act_part, bell_part, drum_part, sequence_part,
     dimmer_sequence_flip, section, Section, sequence,
 )
@@ -11,12 +11,12 @@ from sequences import all_on, blink_all, random_each
 from specialparams import ActionParams, ChannelParams
 
 
-class ChristmasSongs(PerformanceMode):
+class ChristmasSongs(MusicMode):
     """Christmas songs."""
 
     def execute(self) -> None:
         """Perform Christmas songs."""
-        set_player(self.player)
+        set_mode(self)
         songs: list[Section] = [
             self.jingle_bells(),
         ]

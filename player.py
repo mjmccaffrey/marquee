@@ -4,16 +4,31 @@ from dataclasses import dataclass, field
 from typing import Any, NoReturn
 
 from button import Button, ButtonPressed, Shutdown
+from button_misc import ButtonSet
 from event import PriorityQueue
+from instruments import BellSet, DrumSet
+from lightset import LightSet
 from modes.basemode import BaseMode
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
-from playerinterface import ChangeMode, PlayerInterface
+from modes.mode_misc import ModeDefinition
+from playerinterface import ChangeMode
 from specialparams import MirrorParams
 
 @dataclass(repr=False)
-class Player(PlayerInterface):
+class Player:
     """Executes one mode at a time. Contains the event queue."""
+    modes: dict[int, ModeDefinition]
+    mode_ids: dict[str, int]
+    bells: BellSet
+    buttons: ButtonSet
+    drums: DrumSet
+    lights: LightSet
+    # top: LightSet
+    speed_factor: float
+    pace: float = field(init=False)
+    active_mode_history: list[int] = field(init=False)
+    bg_mode_instances: dict = field(init=False)
     event_queue: PriorityQueue = field(init=False)
 
     def __post_init__(self) -> None:
@@ -48,6 +63,9 @@ class Player(PlayerInterface):
                 player=self,
                 index=definition.index,
                 name=definition.name, 
+                speed_factor=self.speed_factor,
+                create_mode_instance=self.create_mode_instance,
+                event_queue=self.event_queue,
                 modes=self.modes,
                 mode_ids=self.mode_ids,
                 parent=parent,
@@ -128,7 +146,7 @@ class Player(PlayerInterface):
         """Replace variables with current runtime values."""
         vars = {
             'LIGHT_PATTERN': self.lights.relay_pattern,
-            # 'PREVIOUS_MODE': self.current_mode,
+            'PREVIOUS_MODE': self.active_mode,
         }
         return {
             k: vars[v] if isinstance(v, str) and v in vars else v

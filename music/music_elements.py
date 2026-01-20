@@ -12,10 +12,10 @@ from instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 
     ReleaseableInstrument, RestInstrument,
 )
-from playerinterface import PlayerInterface
+from modes.musicmode import MusicMode
 from specialparams import SpecialParams
 
-player: PlayerInterface
+mode: MusicMode
 
 @dataclass(frozen=True)
 class Element(ABC):
@@ -69,7 +69,7 @@ class ReleasableNote(BaseNote, ABC):
     def schedule_release(self) -> None:
         """Schedule release of played note."""
         assert issubclass(self.instrument, ReleaseableInstrument)
-        player.event_queue.push(
+        mode.event_queue.push(
             Event(
                 action = self.release,
                 due = time.time() + self.instrument.release_time,
@@ -90,12 +90,12 @@ class BellNote(ReleasableNote):
 
     def play(self) -> None:
         """Play BellNote."""
-        player.bells.play(self.pitches)
+        mode.bells.play(self.pitches)
         self.schedule_release()
 
     def release(self) -> None:
         """Release BellNote."""
-        player.bells.release(self.pitches)
+        mode.bells.release(self.pitches)
 
 
 @dataclass(frozen=True)
@@ -111,7 +111,7 @@ class DrumNote(BaseNote):
 
     def play(self) -> None:
         """Play single DrumNote."""
-        player.drums.play(self.accent, self.pitches)
+        mode.drums.play(self.accent, self.pitches)
 
 
 @dataclass(frozen=True)

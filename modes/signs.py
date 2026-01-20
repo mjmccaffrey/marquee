@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - signs"""
 
 from lightset_misc import ALL_OFF, ALL_LOW, ALL_ON
-from .performancemode import PerformanceMode
+from .musicmode import MusicMode
 from music import (
     act_part, bell_part, drum_part, sequence_part,
     dimmer_sequence_flip, section, Section, sequence,
@@ -10,7 +10,7 @@ from sequences import all_on, blink_all, random_each
 from specialparams import ActionParams, ChannelParams
 
 
-class Signs(PerformanceMode):
+class Signs(MusicMode):
     """Signs song."""
 
     def execute(self) -> None:

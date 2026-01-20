@@ -7,18 +7,20 @@ import time
 from typing import Callable, NoReturn
 
 from button_misc import ButtonInterface
-from event import Event
+from event import Event, PriorityQueue
 from .mode_misc import ModeDefinition
-from playerinterface import ChangeMode, PlayerInterface
+from player import Player
+from playerinterface import ChangeMode, CreateModeInstance
 
 
 @dataclass()
 class BaseMode(ABC):
     """Base for both foreground and background modes."""
-    player: PlayerInterface
     index: int
     name: str
     speed_factor: float
+    create_mode_instance: CreateModeInstance
+    event_queue: PriorityQueue
     modes: dict[int, ModeDefinition]
     mode_ids: dict[str, int]
     parent: 'BaseMode| None' = None
@@ -58,7 +60,7 @@ class BaseMode(ABC):
 
         def push_event():
             """Push event onto queue."""
-            self.player.event_queue.push(
+            self.event_queue.push(
                 Event(
                     action=_action,
                     due=_due,
