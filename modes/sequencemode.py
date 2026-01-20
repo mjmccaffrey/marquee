@@ -1,65 +1,28 @@
 """Marquee Lighted Sign Project - sequencemode"""
 
 from collections.abc import Callable
+from dataclasses import dataclass
 from functools import partial
 import itertools
-from typing import Iterable
+from typing import Any, Iterable
 
-from button_misc import ButtonSet
-from instruments import BellSet, DrumSet
-from lightset import LightSet
 from lightset_misc import ALL_ON
-from .basemode import BaseMode
-from .mode_misc import ModeConstructor
 from .performancemode import PerformanceMode
-from player import Player
-from specialparams import ActionParams, ChannelParams, SpecialParams
+from specialparams import ActionParams, ChannelParams
 
+@dataclass(kw_only=True)
 class SequenceMode(PerformanceMode):
     """Executes all sequence-based modes."""
-    def __init__(
-        self,
-        player: Player,
-        index: int,
-        name: str,
-        modes: dict[int, ModeConstructor],
-        mode_ids: dict[str, int],
-        bells: BellSet,
-        buttons: ButtonSet,
-        drums: DrumSet,
-        lights: LightSet,
-        speed_factor: float,
-        sequence: Callable[[], Iterable],
-        pre_delay: float = 0.0,
-        delay: tuple[float, ...] | float | None = None,
-        stop: int | None = None,
-        repeat: bool = True,
-        parent: BaseMode | None = None,
-        special: SpecialParams | None = None,
-        **kwargs,
-    ) -> None:
-        """Initialize."""
-        super().__init__(
-            player=player, 
-            index=index, 
-            name=name, 
-            modes=modes, 
-            mode_ids=mode_ids, 
-            speed_factor=speed_factor,
-            bells=bells,
-            buttons=buttons,
-            drums=drums,
-            lights=lights,
-            special=special,
-        )
-        self.sequence = sequence
-        self.pre_delay = pre_delay
-        self.delay = delay
-        self.stop = stop
-        self.repeat = repeat
-        self.parent = parent
-        self.kwargs = kwargs
-        if isinstance(special, ChannelParams):
+    sequence: Callable[[], Iterable]
+    pre_delay: float = 0.0
+    delay: tuple[float, ...] | float | None = None
+    stop: int | None = None
+    repeat: bool = True
+    kwargs: dict[str, Any] = {}
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        if isinstance(self.special, ChannelParams):
             self.lights.set_relays(ALL_ON)
             self.lights.set_channels(brightness=0, on=True, force=True)
         else:

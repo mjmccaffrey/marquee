@@ -3,6 +3,7 @@
 from collections.abc import Callable
 import signal
 import time
+from typing import Any
 
 from button import Button
 from button_misc import ButtonSet
@@ -73,17 +74,25 @@ class Executor:
             name: str, 
             sequence: Callable,
             delay: tuple[float, ...] | float | None = None,
+            index: int | None = None,
+            hidden: bool = False,
             special: SpecialParams | None = None,
-            **kwargs,
+            kwargs: dict[str, Any] = {},
         ) -> None:
         """Create a Mode object from a sequence and parameters, and register it."""
-        self.add_mode(
-            name, 
-            SequenceMode,
+        kwargs = dict(
             sequence=sequence,
             delay=delay,
             special=special,
-            **kwargs,
+        ) | kwargs
+        # !!!!! MISSING INDEX AND HIDDEN
+        self.add_mode(
+            name=name, 
+            cls=SequenceMode,
+            index=index,
+            hidden=hidden,
+            special=special,
+            kwargs=kwargs,
         )
 
     def execute(
