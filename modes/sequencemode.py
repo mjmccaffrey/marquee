@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - sequencemode"""
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import partial
 import itertools
 from typing import Any, Iterable
@@ -18,7 +18,7 @@ class SequenceMode(PerformanceMode):
     delay: tuple[float, ...] | float | None = None
     stop: int | None = None
     repeat: bool = True
-    kwargs: dict[str, Any] = {}
+    kwargs: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         super().__post_init__()
