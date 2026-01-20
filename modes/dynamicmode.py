@@ -27,7 +27,7 @@ class DynamicMode(PerformanceMode, ABC):
             kwargs=kwargs,
             parent=self,
         )
-        mode_instance.execute()  # type: ignore !!!
+        mode_instance.execute()
 
     @abstractmethod
     def generate_special(self) -> ChannelParams:

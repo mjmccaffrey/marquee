@@ -11,8 +11,7 @@ from lightset import LightSet
 # from modes.basemode import BaseMode
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
-from modes.mode_misc import ModeDefinition
-from playerinterface import ChangeMode
+from modes.mode_misc import ChangeMode, ModeDefinition
 from specialparams import MirrorParams
 
 @dataclass(repr=False)

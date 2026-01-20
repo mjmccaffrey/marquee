@@ -8,8 +8,7 @@ from typing import Callable, NoReturn
 
 from button_misc import ButtonInterface
 from event import Event, PriorityQueue
-from .mode_misc import ModeDefinition
-from playerinterface import ChangeMode, CreateModeInstance
+from .mode_misc import ChangeMode, CreateModeInstance, ModeDefinition
 
 
 @dataclass()

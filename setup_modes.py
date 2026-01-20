@@ -272,6 +272,6 @@ def register_pyohio_2025_presentation_modes(exec: Executor) -> None:
         special=ChannelParams(concurrent=True),
     )
     exec.add_sequence_mode("section_3", all_off)
-    exec.add_mode("signs", Signs, special=ChannelParams())
+    # exec.add_mode("signs", Signs, special=ChannelParams())
     exec.add_sequence_mode("section_4", all_off)
 

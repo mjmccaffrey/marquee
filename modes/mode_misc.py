@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import IntEnum
-from typing import Any
+from typing import Any, Protocol
 
 
 @dataclass
@@ -11,11 +11,24 @@ class BGModeEntry:
     seconds: float
     index: int = -1
 
+class ChangeMode(Exception):
+    """Change mode exception."""
+
+class CreateModeInstance(Protocol):
+    """"""
+    def __call__(
+        self,
+        mode_index: int,
+        kwargs: dict[str, Any] = {},
+        parent: object | None = None,  # BaseMode
+    ) -> Any:  # BackgroundMode | ForegroundMode:
+        ...
+
 @dataclass
 class ModeDefinition:
     index: int
     name: str
-    cls: type
+    cls: type  # !!!
     kwargs: dict[str, Any]
 
 class ModeIndex(IntEnum):
