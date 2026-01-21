@@ -16,7 +16,7 @@ from specialparams import MirrorParams
 
 @dataclass(repr=False)
 class Player:
-    """Executes one mode at a time. Contains the event queue."""
+    """Executes one mode at a time."""
     modes: dict[int, ModeDefinition]
     mode_ids: dict[str, int]
     bells: BellSet
