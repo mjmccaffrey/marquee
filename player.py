@@ -72,7 +72,9 @@ class Player:
                 self.replace_kwarg_values(definition.kwargs) | 
                 kwargs
             )
+        print(definition.cls)
         if issubclass(definition.cls, ForegroundMode):
+            print('yes')
             kwargs |= dict(
                 bells=self.bells,
                 buttons=self.buttons,
