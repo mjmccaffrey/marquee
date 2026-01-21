@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from enum import IntEnum
 from typing import Any, Protocol
 
-from .backgroundmode import BackgroundMode
-from .foregroundmode import ForegroundMode
+# from .backgroundmode import BackgroundMode
+# from .foregroundmode import ForegroundMode
 
 @dataclass
 class BGModeEntry:
@@ -23,7 +23,7 @@ class CreateModeInstance(Protocol):
         mode_index: int,
         kwargs: dict[str, Any] = {},
         parent: object | None = None,  # BaseMode
-    ) -> BackgroundMode | ForegroundMode:
+    ) -> Any:  # BackgroundMode | ForegroundMode:
         ...
 
 @dataclass
