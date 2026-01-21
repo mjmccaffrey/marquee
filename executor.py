@@ -80,16 +80,13 @@ class Executor:
             kwargs: dict[str, Any] = {},
         ) -> None:
         """Create a Mode object from a sequence and parameters, and register it."""
-        kwargs = dict(
-            sequence=sequence,
-            delay=delay,
-            special=special,
-        ) | kwargs
         self.add_mode(
             name=name, 
             cls=SequenceMode,
             index=index,
             hidden=hidden,
+            sequence=sequence,
+            delay=delay,
             special=special,
             **kwargs,
         )
