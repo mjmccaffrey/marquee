@@ -75,7 +75,7 @@ class Player:
         print(definition.cls)
         if issubclass(definition.cls, ForegroundMode):
             print('yes')
-            kwargs |= dict(
+            _kwargs |= dict(
                 bells=self.bells,
                 buttons=self.buttons,
                 drums=self.drums,
