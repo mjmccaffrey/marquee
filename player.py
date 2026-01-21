@@ -59,7 +59,6 @@ class Player:
         if mode_index is not None:
             definition = self.modes[mode_index]
             _kwargs = dict(
-                player=self,
                 index=definition.index,
                 name=definition.name, 
                 speed_factor=self.speed_factor,
