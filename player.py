@@ -131,7 +131,7 @@ class Player:
                 print(f"Button {button} pressed in mode {self.active_mode}")
                 new_mode_index = self.notify_button_action(button)
             except ChangeMode as cm:
-                print("ChangeMode caught")
+                # print("ChangeMode caught")
                 new_mode_index, = cm.args
 
     def notify_button_action(self, button: Button) -> int | None:
