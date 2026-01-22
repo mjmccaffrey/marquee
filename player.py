@@ -16,7 +16,7 @@ from specialparams import MirrorParams
 
 @dataclass(repr=False)
 class Player:
-    """Executes one mode at a time."""
+    """Executes one mode at a time. Contains the event queue."""
     modes: dict[int, ModeDefinition]
     mode_ids: dict[str, int]
     bells: BellSet
@@ -144,9 +144,10 @@ class Player:
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""
+        assert self.active_mode is not None
         vars = {
             'LIGHT_PATTERN': self.lights.relay_pattern,
-            'PREVIOUS_MODE': self.active_mode,
+            'PREVIOUS_MODE': self.active_mode.index,
         }
         return {
             k: vars[v] if isinstance(v, str) and v in vars else v

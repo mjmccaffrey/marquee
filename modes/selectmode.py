@@ -7,7 +7,6 @@ from button import Button
 from lightset_misc import ALL_OFF
 from .foregroundmode import ForegroundMode
 from .mode_misc import ModeIndex
-from player import Player
 from sequences import rotate_build_flip
 
 
