@@ -72,9 +72,7 @@ class Player:
                 self.replace_kwarg_values(definition.kwargs) | 
                 kwargs
             )
-        print(definition.cls)
         if issubclass(definition.cls, ForegroundMode):
-            print('yes')
             _kwargs |= dict(
                 bells=self.bells,
                 buttons=self.buttons,
@@ -84,7 +82,7 @@ class Player:
             )
         return definition.cls(**_kwargs)  # type: ignore
 
-    def effect_new_active_mode(self, mode_index: int) -> None:
+    def effect_new_active_mode(self, mode_index: int) -> BackgroundMode | ForegroundMode:
         """"""
 
         # If there is an active mode, clean it up.
@@ -108,7 +106,8 @@ class Player:
             # Add new bg mode to bg mode list
             self.live_bg_modes[new_mode.index] = new_mode
 
-        self.active_mode = new_mode
+        # Return new mode instance
+        return new_mode
 
     def execute(self, starting_mode_index: int) -> None:
         """Play the specified starting mode and all subsequent modes."""
@@ -116,10 +115,10 @@ class Player:
         while True:
             try:
                 if new_mode_index is not None:
-                    self.effect_new_active_mode(new_mode_index)
+                    self.active_mode = self.effect_new_active_mode(new_mode_index)
                     new_mode_index = None
                 assert self.active_mode is not None
-                # print(f"Executing mode {self.active_mode}")
+                print(f"Executing mode {self.active_mode}")
                 self.active_mode.execute()
                 self.wait()
             except ButtonPressed as press:

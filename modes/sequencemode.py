@@ -67,7 +67,7 @@ class SequenceMode(PerformanceMode):
                 name = f"SequenceMode execute {i} {lights}",
             )
             if delay is None:
-                print("Exiting sequencemode.play, delay is None")
+                # print("Exiting sequencemode.play, delay is None")
                 return
         if self.repeat: 
             self.schedule(
