@@ -37,7 +37,9 @@ class SelectMode(ForegroundMode, ABC):
 
     def button_action(self, button: Button) -> None:
         """Respond to button being pressed.
-           Return index of new mode, if any."""
+           But first, delete the scheduled event which 
+           would have finalized the selection."""
+        self.event_queue.delete_owned_by(self)
         b = self.buttons
         match button:
             case b.body_back | b.remote_a | b.remote_d:
