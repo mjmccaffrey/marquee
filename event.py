@@ -46,7 +46,7 @@ class PriorityQueue:
         """Delete all events owned by owner."""
         self._queue = [event for event in self._queue if event.owner is not owner]
         heapify(self._queue)
-        print(f"Events owned by {owner} deleted from queue.")
+        # print(f"Events owned by {owner} deleted from queue.")
 
     def peek(self) -> Event:
         """Return next event without removing from queue."""
