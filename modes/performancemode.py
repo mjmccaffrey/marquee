@@ -27,7 +27,7 @@ class PerformanceMode(ForegroundMode, ABC):
                 new_mode = ModeIndex.SELECT_MODE
             case b.remote_c:
                 self.lights.click()
-                new_mode = self.mode_ids['section_1']
+                new_mode = ModeIndex.SELECT_BRIGHTNESS
             case b.remote_b:
                 self.lights.click()
                 new_mode = self.mode_index(self.index, -1)

@@ -14,7 +14,7 @@ from modes.foregroundmode import ForegroundMode
 from modes.mode_misc import ChangeMode, ModeDefinition
 from specialparams import MirrorParams
 
-@dataclass(repr=False)
+@dataclass()
 class Player:
     """Executes one mode at a time. Contains the event queue."""
     modes: dict[int, ModeDefinition]
@@ -40,11 +40,11 @@ class Player:
         MirrorParams.mirror = self.drums.mirror
 
     def __repr__(self) -> str:
-        return "Player repr"
+        return f"<{self}>"
     
     def __str__(self) -> str:
-        return "Player str"
-    
+        return "Player"
+
     def close(self) -> None:
         """Clean up."""
         print(f"Player {self} closed.")

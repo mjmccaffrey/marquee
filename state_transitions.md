@@ -9,7 +9,7 @@
 | Manual     | Back    | Change to Select mode                                     |
 | Manual     | A       | Change to Select mode                                     |
 | Manual     | B       | Change to previous mode                                   |
-| Manual     | C       | Change to section_1                                       |
+| Manual     | C       | Change to Bright Sel                                       |
 | Manual     | D       | Change to next mode                                       |
 | Manual     | Timeout | N/A                                                       |
 | Mode Sel   | Back    | Change selected to next mode                              |

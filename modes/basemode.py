@@ -32,6 +32,12 @@ class BaseMode(ABC):
     def execute(self) -> None:
         """Play the mode."""
 
+    def __repr__(self) -> str:
+        return f"<{self}>"
+    
+    def __str__(self) -> str:
+        return f"Mode {self.index} {self.name}"
+
     def change_mode(self, mode_index: int) -> NoReturn:
         """Effects changing active mode to mode_index."""
         print(f"Changing to mode {mode_index}")
