@@ -50,7 +50,7 @@ class SelectMode(ForegroundMode, ABC):
                 raise ValueError("Unrecognized button.")
         return None
 
-    def execute(self) -> None:
+    def execute(self) -> int | None:
         """Return user's final selection if made, otherwise None."""
         print(f"SelectMode.execute {self.previous=} {self.desired=}")
         if (    # The desired mode was not changed last go-around.
@@ -74,10 +74,11 @@ class SelectMode(ForegroundMode, ABC):
                 ),
             ).execute()
             self.previous_desired = self.desired
-            self.schedule(self.execute, due_rel=4.0)
+            self.schedule(self.execute, due_rel=10.0)
+            return None
         else:
             # Last pass.
             # Time elapsed without a button being pressed.
             # Change the mode.
-            self.change_mode(self.desired)
+            return self.desired
 

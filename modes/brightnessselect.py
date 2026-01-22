@@ -19,15 +19,13 @@ class BrightnessSelect(SelectMode):
             previous=6,
         )
 
-    def execute(self) -> int | None:
-        """Set current brightness. Return select_mode if 
-           final brightness selected, else None."""
+    def execute(self) -> None:
+        """Set current brightness_factor."""
         self.lights.brightness_factor = self.desired / LIGHT_COUNT
         self.lights.set_channels(brightness=[100] * LIGHT_COUNT)
         new = super().execute()
         if new is not None:  # Selection was made.
-            new = ModeIndex.DEFAULT
-        return new
+            self.change_mode(ModeIndex.DEFAULT)
 
     def c_button_pressed(self) -> None:
         """Respond to C button press."""

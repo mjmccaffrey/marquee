@@ -20,6 +20,12 @@ class ModeSelect(SelectMode):
             previous=self.previous,
         )
 
+    def execute(self) -> None:
+        """Set current brightness_factor."""
+        new = super().execute()
+        if new is not None:  # Selection was made.
+            self.change_mode(new)
+
     def c_button_pressed(self) -> None:
         """Respond to C button press."""
         self.desired = ModeIndex.SELECT_BRIGHTNESS
