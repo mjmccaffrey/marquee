@@ -26,7 +26,7 @@ class BrightnessSelect(SelectMode):
         self.lights.set_channels(brightness=[100] * LIGHT_COUNT)
         new = super().execute()
         if new is not None:  # Selection was made.
-            new = ModeIndex.SELECT_MODE
+            new = ModeIndex.DEFAULT
         return new
 
     def c_button_pressed(self) -> None:

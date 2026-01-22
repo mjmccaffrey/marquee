@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import sys
 import time
-from typing import Callable, NoReturn
+from typing import Callable, NoReturn, Self
 
 from button_misc import ButtonInterface
 from event import Event, PriorityQueue
@@ -21,7 +21,7 @@ class BaseMode(ABC):
     event_queue: PriorityQueue
     modes: dict[int, ModeDefinition]
     mode_ids: dict[str, int]
-    parent: 'BaseMode| None' = None
+    parent: Self | None = None
 
     @abstractmethod
     def button_action(self, button: ButtonInterface) -> int | None:
