@@ -60,7 +60,7 @@ class SelectMode(ForegroundMode, ABC):
         ):
             # Not last pass.
             # Show user what desired mode number is currently selected.
-            print(f"Desired is {self.desired} {self.modes[self.desired].name}")
+            print(f"Desired is now {self.desired}")
             self.lights.set_relays(ALL_OFF, special=self.special)
             self.create_mode_instance(
                 mode_index=ModeIndex.COUNTER,
@@ -80,5 +80,6 @@ class SelectMode(ForegroundMode, ABC):
             # Last pass.
             # Time elapsed without a button being pressed.
             # Change the mode.
+            print(f"Final selection is {self.desired}")
             return self.desired
 
