@@ -144,11 +144,11 @@ class Player:
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""
-        assert self.active_mode is not None
-        vars = {
+        vars: dict[str, Any] = {
             'LIGHT_PATTERN': self.lights.relay_pattern,
-            'PREVIOUS_MODE': self.active_mode.index,
         }
+        if self.active_mode is not None:
+            vars['PREVIOUS_MODE'] = self.active_mode.index
         return {
             k: vars[v] if isinstance(v, str) and v in vars else v
             for k, v in kwargs.items()
