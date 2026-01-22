@@ -81,7 +81,6 @@ class RandomFade(PerformanceMode):
 
     def execute(self) -> None:
         """Start each bulb off on its unique journey."""
-        print("***** EXECUTE *****")
         for light in range(self.lights.count):
             self.update_light(light)
 

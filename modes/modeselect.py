@@ -23,7 +23,9 @@ class ModeSelect(SelectMode):
     def execute(self) -> None:
         """Set current brightness_factor."""
         new = super().execute()
-        if new is not None:  # Selection was made.
+        if new is None:  # Final selection not made.
+            self.schedule(self.execute, due_rel=10.0)
+        else:  # Final selection made.
             self.change_mode(new)
 
     def c_button_pressed(self) -> None:

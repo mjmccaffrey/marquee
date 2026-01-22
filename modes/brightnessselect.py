@@ -24,7 +24,9 @@ class BrightnessSelect(SelectMode):
         self.lights.brightness_factor = self.desired / LIGHT_COUNT
         self.lights.set_channels(brightness=[100] * LIGHT_COUNT)
         new = super().execute()
-        if new is not None:  # Selection was made.
+        if new is None:  # Final selection not made.
+            self.schedule(self.execute, due_rel=10.0)
+        else:  # Final selection made.
             self.change_mode(ModeIndex.DEFAULT)
 
     def c_button_pressed(self) -> None:
