@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from button import Button
-from lightset_misc import ALL_OFF
 from .foregroundmode import ForegroundMode
 from .mode_misc import ModeIndex
 from sequences import rotate_build_flip
