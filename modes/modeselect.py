@@ -8,17 +8,11 @@ from .selectmode import SelectMode
 
 @dataclass(kw_only=True)
 class ModeSelect(SelectMode):
-    """Allows user to select mode."""
+    """Allows user to select the active mode."""
     previous: int
 
     def __post_init__(self) -> None:
         """Initialize."""
-        print("ModeSelect POST INIT")
-        self.lights.set_channels(
-            brightness=100,
-            color=self.lights.colors.ORANGE,
-            on=True,
-        )
         super().setup(
             lower=1, 
             upper=max(self.modes),
@@ -33,5 +27,5 @@ class ModeSelect(SelectMode):
 
     def c_button_pressed(self) -> None:
         """Respond to C button press."""
-        self.desired = ModeIndex.SELECT_BRIGHTNESS
+        self.desired = ModeIndex.BRIGHTNESS_SELECT
 

@@ -21,7 +21,9 @@ class BellParams(SpecialParams):
 
 @dataclass
 class ChannelParams(SpecialParams):
-    """Parameters for using channels rather than relays."""
+    """Parameters for using channels rather than relays.
+       Generate can be used to alter the other attributes,
+       or to generate an entirely new set of ChannelParams."""
     brightness_on: int | None = None
     brightness_off: int | None = None
     color_on: Color | None = None

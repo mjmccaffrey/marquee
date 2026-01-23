@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from .foregroundmode import ForegroundMode
 from button import Button
 from .mode_misc import ModeIndex
-from player import Player
 
 
 @dataclass
@@ -24,10 +23,10 @@ class PerformanceMode(ForegroundMode, ABC):
         b = self.buttons
         match button:
             case b.remote_a | b.body_back:
-                new_mode = ModeIndex.SELECT_MODE
+                new_mode = ModeIndex.MODE_SELECT
             case b.remote_c:
                 self.lights.click()
-                new_mode = ModeIndex.SELECT_BRIGHTNESS
+                new_mode = ModeIndex.BRIGHTNESS_SELECT
             case b.remote_b:
                 self.lights.click()
                 new_mode = self.mode_index(self.index, -1)

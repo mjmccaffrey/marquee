@@ -25,7 +25,7 @@ class SequenceMode(PerformanceMode):
         print("SPECIAL:", self.special)
         if isinstance(self.special, ChannelParams):
             self.lights.set_relays(ALL_ON)
-            self.lights.set_channels(brightness=0, on=True)
+            self.lights.set_channels(on=False)
         else:
             self.lights.set_channels(brightness=100, on=True)
 

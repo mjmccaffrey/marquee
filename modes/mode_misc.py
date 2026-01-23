@@ -34,8 +34,8 @@ class ModeDefinition:
     kwargs: dict[str, Any]
 
 class ModeIndex(IntEnum):
-    SELECT_BRIGHTNESS = -1
     COUNTER = -2
-    SELECT_MODE = 0
-    DEFAULT = 2
+    BRIGHTNESS_SELECT = -1
+    MODE_SELECT = 0
+    DEFAULT = 1
 

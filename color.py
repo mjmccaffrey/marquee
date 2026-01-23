@@ -71,10 +71,11 @@ class Colors:
     VIOLET = RGB(128, 0, 255)
     MAGENTA = RGB(255, 0, 255)
     ROSE = RGB(255, 0, 128)
-    # ORDERED = (
-    #     RED, ORANGE, YELLOW, LIME, GREEN, SPRING,
-    #     CYAN, TEAL, BLUE, VIOLET, MAGENTA, ROSE,
-    # )
+    WHITE = RGB(255, 255, 255)
+    WHEEL = (
+        RED, ORANGE, YELLOW, LIME, GREEN, SPRING,
+        CYAN, TEAL, BLUE, VIOLET, MAGENTA, ROSE,
+    )
 
 
 
@@ -96,6 +97,7 @@ class Colors:
         self.VIOLET = RGB(128, 0, 255, self.gamut)
         self.MAGENTA = RGB(255, 0, 255, self.gamut)
         self.ROSE = RGB(255, 0, 128, self.gamut)
+        self.WHITE = RGB(255, 255, 255, self.gamut)
 
     def random(self) -> XY:
         """Return random color within gamut."""

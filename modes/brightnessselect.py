@@ -4,7 +4,6 @@ from dataclasses import dataclass
 
 from .mode_misc import ModeIndex
 from .selectmode import SelectMode
-from lightset_misc import LIGHT_COUNT
 
 
 @dataclass(kw_only=True)
@@ -15,20 +14,15 @@ class BrightnessSelect(SelectMode):
         """Initialize."""
         INITIAL_LEVEL = 6
         self.set_brightness_level(INITIAL_LEVEL)
-        self.lights.set_channels(
-            brightness=100,
-            color=self.lights.colors.ORANGE,
-            on=True,
-        )
         super().setup(
             lower=1, 
-            upper=LIGHT_COUNT,
+            upper=self.lights.count,
             previous=INITIAL_LEVEL,
         )
 
     def set_brightness_level(self, level: int) -> None:
         """"""
-        self.lights.brightness_factor = level / LIGHT_COUNT
+        self.lights.brightness_factor = level / self.lights.count
 
     def execute(self) -> None:
         """Set current brightness_factor."""

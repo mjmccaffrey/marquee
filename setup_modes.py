@@ -31,11 +31,11 @@ def setup_modes(exec: Executor) -> None:
 def register_special_modes(exec: Executor) -> None:
     """"""
     exec.add_mode("select_mode", ModeSelect, 
-        index=ModeIndex.SELECT_MODE, hidden=True,
+        index=ModeIndex.MODE_SELECT, hidden=True,
         previous="PREVIOUS_MODE",
     )
     exec.add_mode("select_brightness", BrightnessSelect, 
-        index=ModeIndex.SELECT_BRIGHTNESS, hidden=True,
+        index=ModeIndex.BRIGHTNESS_SELECT, hidden=True,
     )
     exec.add_mode("counter", SequenceMode,
         index=ModeIndex.COUNTER, hidden=True,

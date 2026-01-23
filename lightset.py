@@ -150,17 +150,17 @@ class LightSet:
         ]
         self.controller.update_channels(updates, force)
 
-    def set_channel(
-        self,
-        channel: LightChannel,
-        brightness: int | None = None,
-        transition: float | None = None,
-        color: Color | None = None,
-        on: bool | None = None,
-    ) -> None:
-        """Build and send command via requests.
-           Does not check current state."""
-        channel._set(brightness, transition, color, on)
+    # def set_channel(
+    #     self,
+    #     channel: LightChannel,
+    #     brightness: int | None = None,
+    #     transition: float | None = None,
+    #     color: Color | None = None,
+    #     on: bool | None = None,
+    # ) -> None:
+    #     """Build and send command via requests.
+    #        Does not check current state."""
+    #     channel._set(brightness, transition, color, on)
 
     def _set_channels_instead_of_relays(
             self,
