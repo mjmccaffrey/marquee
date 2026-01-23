@@ -33,7 +33,7 @@ class SequenceMode(PerformanceMode):
         """Execute sequence with delay seconds between steps.
            If stop is specified, end the sequence 
            just before the nth pattern."""
-        print(pre_delay_done)
+        print("PDD: ", pre_delay_done)
         if self.pre_delay and not pre_delay_done:
             self.schedule(
                 action = partial(self.execute, pre_delay_done=True),

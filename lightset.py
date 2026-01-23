@@ -169,9 +169,11 @@ class LightSet:
     ) -> None:
         """Set channels per the specified pattern and special.
            Adjust for brightness_factor."""
-        bright_values: dict[int, int] = {
-            0: int(special.brightness_off * self._brightness_factor), 
-            1: int(special.brightness_on * self._brightness_factor),
+        brightness_values: dict[int, int | None] = {
+            0: (int(special.brightness_off * self._brightness_factor)
+                if special.brightness_off is not None else None),
+            1: (int(special.brightness_on * self._brightness_factor)
+                if special.brightness_on is not None else None),
         }
         trans_values: dict[int, float] = {
             0: max(self.trans_min, 
@@ -183,12 +185,16 @@ class LightSet:
             0: special.color_off,
             1: special.color_on,
         }
+        on_values: dict[int, bool | None] = {
+            0: special.on_off,
+            1: special.on_on,
+        }
         light_pattern = [int(p) for p in light_pattern]
         self.set_channels(
-            brightness=tuple(bright_values[p] for p in light_pattern), 
+            brightness=tuple(brightness_values[p] for p in light_pattern), 
             transition=tuple(trans_values[p] for p in light_pattern),
             color=tuple(color_values[p] for p in light_pattern),
-            on=True,
+            on=tuple(on_values[p] for p in light_pattern),
         )
             
     @property
