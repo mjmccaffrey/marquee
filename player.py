@@ -85,9 +85,10 @@ class Player:
     def effect_new_active_mode(self, mode_index: int) -> BackgroundMode | ForegroundMode:
         """"""
 
-        # If there is an active mode, clean it up.
+        # If there is an active mode and it is of type ForeGround, 
+        # clean it up.
         # Note: After startup, there is always an active mode.
-        if self.active_mode:
+        if isinstance(self.active_mode, ForegroundMode):
             self.event_queue.delete_owned_by(self.active_mode)
 
         # Create new mode instance
