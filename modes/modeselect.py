@@ -13,6 +13,7 @@ class ModeSelect(SelectMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
+        print("ModeSelect POST INIT")
         self.lights.set_channels(
             brightness=100,
             color=self.lights.colors.ORANGE,

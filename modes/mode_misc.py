@@ -37,5 +37,5 @@ class ModeIndex(IntEnum):
     SELECT_BRIGHTNESS = -1
     COUNTER = -2
     SELECT_MODE = 0
-    DEFAULT = 1
+    DEFAULT = 2
 
