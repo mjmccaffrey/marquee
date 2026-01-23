@@ -64,7 +64,7 @@ class LightSet:
     @brightness_factor.setter
     def brightness_factor(self, value) -> None:
         self._brightness_factor = value
-        print("Brightness factor is ", self._brightness_factor)
+        print("Brightness factor is now ", self._brightness_factor)
 
     def brightnesses(self) -> list[int]:
         """Return each channel's brightness state."""
@@ -127,7 +127,12 @@ class LightSet:
             channel_indexes
         )
         _channels = [self.channels[i] for i in _channel_indexes]
-        _brightnesses = self.convert_brightness(brightness)
+        _brightnesses = [
+                int(b * self._brightness_factor)
+            if b is not None else
+                None
+            for b in self.convert_brightness(brightness)
+        ]
         _transitions = self.convert_transition(transition)
         _colors = self.convert_color(color)
         _on = self.convert_on(on)

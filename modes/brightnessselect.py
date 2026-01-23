@@ -9,24 +9,32 @@ from lightset_misc import LIGHT_COUNT
 
 @dataclass(kw_only=True)
 class BrightnessSelect(SelectMode):
-    """Allows user to select maximum brightness."""
+    """Allows user to adjust overall brightness."""
 
     def __post_init__(self) -> None:
         """Initialize."""
+        INITIAL_LEVEL = 6
+        self.set_brightness_level(INITIAL_LEVEL)
+        self.lights.set_channels(
+            brightness=100,
+            color=self.lights.colors.ORANGE,
+            on=True,
+        )
         super().setup(
             lower=1, 
             upper=LIGHT_COUNT,
-            previous=6,
+            previous=INITIAL_LEVEL,
         )
+
+    def set_brightness_level(self, level: int) -> None:
+        """"""
+        self.lights.brightness_factor = level / LIGHT_COUNT
 
     def execute(self) -> None:
         """Set current brightness_factor."""
-        self.lights.brightness_factor = self.desired / LIGHT_COUNT
-        self.lights.set_channels(brightness=[100] * LIGHT_COUNT)
+        self.set_brightness_level(self.desired)
         new = super().execute()
-        if new is None:  # Final selection not made.
-            self.schedule(self.execute, due_rel=10.0)
-        else:  # Final selection made.
+        if new is not None:  # Final selection made.
             self.change_mode(ModeIndex.DEFAULT)
 
     def c_button_pressed(self) -> None:

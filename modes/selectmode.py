@@ -24,8 +24,8 @@ class SelectMode(ForegroundMode, ABC):
         self.lower: int = lower
         self.upper: int = upper
         self.previous: int = previous
-        self.desired: int = self.previous
         self.previous_desired: int | None = None
+        self.desired: int = self.previous
 
     def update_desired(self, delta: int) -> int:
         """Update the current selection, wrapping within the bounds."""
@@ -53,8 +53,11 @@ class SelectMode(ForegroundMode, ABC):
         return None
 
     def execute(self) -> int | None:
-        """Return user's final selection if made, otherwise None."""
-        print(f"SelectMode.execute {self.previous=} {self.desired=}")
+        """Return user's final selection if made, otherwise 
+           schedule next execute and return None."""
+        print(
+            f"SelectMode.execute {self.previous=} {self.previous_desired=} {self.desired=}"
+        )
         if (    # The desired mode was not changed last go-around.
                 self.desired != self.previous_desired 
                 # If special mode, change mode immediately.
@@ -76,6 +79,7 @@ class SelectMode(ForegroundMode, ABC):
                 ),
             ).execute()
             self.previous_desired = self.desired
+            self.schedule(self.execute, due_rel=10.0)
             return None
         else:
             # Last pass.
