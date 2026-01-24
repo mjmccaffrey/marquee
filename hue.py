@@ -96,16 +96,14 @@ class HueBridge(LightController, bulb_comp=HueBulb):
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
         """Update the all zone, rather than individual channels."""
         command = update.channel._make_set_command(update)
-        for id in self.zone_ids:
+        for i, id in enumerate(self.zone_ids):
             response = self.session.put(
                 url=f'https://{self.ip_address}/clip/v2/resource/grouped_light/{id}',
                 json=command.params,
                 timeout=2.0,
             )
-            print('*********')
-            print(command.url)
+            print("ZONE: ", i)
             print(command.params)
-            print('*********')
             response.raise_for_status()
         for channel in self.channels:
             channel.update_state(replace(update, channel=channel))
