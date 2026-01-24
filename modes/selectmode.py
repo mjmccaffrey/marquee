@@ -79,6 +79,7 @@ class SelectMode(ForegroundMode, ABC):
                 ),
             ).execute()
             self.previous_desired = self.desired
+            print("*********************************")
             self.schedule(self.execute, due=10.0)
             return None
         else:
