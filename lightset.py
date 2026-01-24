@@ -95,6 +95,9 @@ class LightSet:
         if self.smart_bulbs and not smart_bulb_override:
             special = special or EmulateParams()
             
+        if isinstance(special, MirrorParams):
+            special.mirror(_all)
+
         if isinstance(special, ChannelParams):
             if special.generate:
                 special = special.generate()
@@ -102,9 +105,6 @@ class LightSet:
         else:
             self.relays.set_state_of_devices(_all)
             self.relay_pattern, self.extra_pattern = _light, _extra
-
-        if isinstance(special, MirrorParams):
-            special.mirror(_all)
 
     def set_channels(
             self, 

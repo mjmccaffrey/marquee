@@ -18,17 +18,18 @@ class SequenceMode(PerformanceMode):
     delay: tuple[float, ...] | float | None = None
     stop: int | None = None
     repeat: bool = True
+    init_lights: bool = True
     kwargs: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         super().__post_init__()
         print("SPECIAL:", self.special)
-        # !!!!!!!!!!!!!
-        # if isinstance(self.special, ChannelParams):
-        #     self.lights.set_relays(ALL_ON)
-        #     self.lights.set_channels(on=False)
-        # else:
-        #     self.lights.set_channels(brightness=100, on=True)
+        if self.init_lights:
+            if isinstance(self.special, ChannelParams):
+                self.lights.set_relays(ALL_ON)
+                self.lights.set_channels(on=False)
+            else:
+                self.lights.set_channels(brightness=100, on=True)
 
     def execute(self, pre_delay_done=False) -> None:
         """Execute sequence with delay seconds between steps.
