@@ -40,8 +40,16 @@ HUE_BULB_IDS = [
     "108dee49-9e5c-4879-83be-1c6f361a89aa",
 ]
 HUE_ZONE_IDS = [
-    "23947092-00a5-4bf2-9979-1d42e56a9f78",
-    "686cc4ce-355a-4584-88f0-341508bd51eb",
+    # "23947092-00a5-4bf2-9979-1d42e56a9f78",
+    # "686cc4ce-355a-4584-88f0-341508bd51eb",
+
+
+    # "services": [
+    #     {
+    #         "rid": "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
+    #         "rtype": "grouped_light"    
+    "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
+    "afbce248-f994-4f71-833d-f7c20eb96814",
 ]
 
 def setup_devices(
