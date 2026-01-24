@@ -121,6 +121,28 @@ class LightSet:
            Force all specified channels to update with force.
            Adjust for brightness_factor."""
         
+        if (
+            self.controller.all_at_once and 
+            (
+                channel_indexes is None or 
+                # Assumes no duplicate entries, which would be erroneous.
+                len(channel_indexes) == self.count
+            ) and
+            not isinstance(brightness, Sequence) and
+            not isinstance(transition, Sequence) and
+            not isinstance(color, Sequence) and
+            not isinstance(on, Sequence)
+        ):
+            self.controller.execute_update_all_at_once(
+                ChannelUpdate(
+                    channel=self.controller.channels[0],  # Dummy
+                    brightness=self.convert_brightness(brightness)[0],
+                    trans=self.convert_transition(transition)[0],
+                    color=self.convert_color(color)[0],
+                    on=self.convert_on(on)[0],
+                )
+            )
+
         _channel_indexes = (
             [i for i in range(self.count)]
                 if channel_indexes is None else

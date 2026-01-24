@@ -22,6 +22,7 @@ class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
 
     trans_min: ClassVar[float] = 0.5
     trans_max: ClassVar[float] = 10800.0
+    all_at_once: ClassVar[bool] = False
 
     channel_count: int = field(init=False)
     dimmers: Sequence[LightController]
@@ -40,9 +41,13 @@ class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
         ]
         self.channel_count = len(self.channels)
 
-    def execute_updates(self, updates: Sequence['ChannelUpdate']) -> None:
+    def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands via aiohttp asynchronously."""
         asyncio.run(self._execute_commands(updates))
+
+    def execute_update_all_at_once(self, update: 'ChannelUpdate'):
+        """Update the all zone, rather than individual channels."""
+        raise ValueError("Method should not have been called.")
 
     async def _execute_commands(
         self,
@@ -87,6 +92,7 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
 
     trans_min: ClassVar[float] = 0.5
     trans_max: ClassVar[float] = 10800.0
+    all_at_once: ClassVar[bool] = False
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -125,9 +131,13 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
             for id in range(self.channel_count)
         ]      
     
-    def execute_updates(self, updates: Sequence['ChannelUpdate']) -> None:
+    def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands via aiohttp asynchronously."""
         raise NotImplementedError()
+
+    def execute_update_all_at_once(self, update: 'ChannelUpdate'):
+        """Update the all zone, rather than individual channels."""
+        raise ValueError("Method should not have been called.")
 
 
 @dataclass(kw_only=True)

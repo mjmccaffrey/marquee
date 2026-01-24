@@ -4,7 +4,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import ClassVar, Self
 
-from color import Color
+from color import Color, Colors
 
 @dataclass
 class SpecialParams:
@@ -43,6 +43,8 @@ class MirrorParams(SpecialParams):
 @dataclass
 class EmulateParams(ChannelParams, MirrorParams):
     """Emulate relay experience when using smart bulbs."""
+    color_on = Colors.WHITE
+    color_off = Colors.WHITE
     trans_on: ClassVar[float] = 0.0
     trans_off: ClassVar[float] = 0.0
 

@@ -68,7 +68,7 @@ class GameMode(PerformanceMode):
         self.update_lights(self.board)
         self.schedule(
             action=self.execute_round,
-            due_rel=(1 / self.ticks_per_second), # !!!!!!!
+            due=(1 / self.ticks_per_second), # !!!!!!!
             repeat=True,
         )
         

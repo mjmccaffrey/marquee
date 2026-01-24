@@ -4,7 +4,7 @@
 """Marquee Lighted Sign Project - hue"""
 
 from collections.abc import Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import ClassVar
 
 import requests
@@ -23,9 +23,11 @@ class HueBridge(LightController, bulb_comp=HueBulb):
 
     trans_min: ClassVar[float] = 0.0  # ?????????
     trans_max: ClassVar[float] = 10800.0  # ?????????
+    all_at_once: ClassVar[bool] = True
 
     application_key: str
     bulb_ids: Sequence[str]
+    zone_ids: Sequence[str]
     channel_count: int = field(init=False)
     channel_first_index: None = None
     index: None = None
@@ -75,7 +77,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         """Set channel count for concrete subclasses."""
         cls.channel_count = channel_count
 
-    def execute_updates(self, updates: Sequence['ChannelUpdate']) -> None:
+    def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands."""
         for update in updates:
             command = update.channel._make_set_command(update)
@@ -90,6 +92,23 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             # print('*********')
             response.raise_for_status()
             update.channel.update_state(update)
+
+    def execute_update_all_at_once(self, update: 'ChannelUpdate'):
+        """Update the all zone, rather than individual channels."""
+        command = update.channel._make_set_command(update)
+        for id in self.zone_ids:
+            response = self.session.put(
+                url=f'https://{self.ip_address}/clip/v2/resource/grouped_light/{id}',
+                json=command.params,
+                timeout=2.0,
+            )
+            print('*********')
+            print(command.url)
+            print(command.params)
+            print('*********')
+            response.raise_for_status()
+        for channel in self.channels:
+            channel.update_state(replace(update, channel=channel))
 
 
 @dataclass(kw_only=True, repr=False)

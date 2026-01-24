@@ -37,7 +37,7 @@ class SequenceMode(PerformanceMode):
         if self.pre_delay and not pre_delay_done:
             self.schedule(
                 action = partial(self.execute, pre_delay_done=True),
-                due_rel = self.pre_delay,
+                due = self.pre_delay,
                 name = "SequenceMode execute after pre_delay",
             )
             return
@@ -65,7 +65,7 @@ class SequenceMode(PerformanceMode):
                 )
             self.schedule(
                 action = action,
-                due_rel = 0 if delay is None else i * delay,
+                due = 0 if delay is None else i * delay,
                 name = f"SequenceMode execute {i} {lights}",
             )
             if delay is None:
@@ -74,7 +74,7 @@ class SequenceMode(PerformanceMode):
         if self.repeat: 
             self.schedule(
                 action = self.execute,
-                due_rel = (i + 1) * delay,
+                due = (i + 1) * delay,
                 name = "SequenceMode continue",
             )
 

@@ -53,13 +53,12 @@ class BaseMode(ABC):
     def schedule(
         self, 
         action: Callable, 
-        due_abs: float | None = None, 
-        due_rel: float | None = None,
+        due: float,
         name: str | None = None,
         repeat: bool = False,
     ) -> None:
-        """Schedule a new event, specifying either due_abs or due_rel.
-           Adjust due_rel by speed_factor.
+        """Schedule a new event for now + due.
+           Adjust due by speed_factor.
            If repeat, schedule next event before calling action."""
 
         def push_event():
@@ -76,12 +75,10 @@ class BaseMode(ABC):
         def repeater():
             """Schedule next event. Call action."""
             nonlocal _due
-            _due += _due_rel
+            _due += due
             push_event()
             action()
 
-        assert (due_abs is None) ^ (due_rel is None)
-        assert not (due_rel is None and repeat)
         if name is None:
             caller = sys._getframe(1)
             _name = (
@@ -90,13 +87,8 @@ class BaseMode(ABC):
             )
         else:
             _name = name
-
-        if due_abs is not None:
-            _due = due_abs
-        else:
-            assert due_rel is not None
-            _due_rel: float = due_rel * self.speed_factor
-            _due = time.time() + _due_rel
+            due = due * self.speed_factor
+            _due = time.time() + due
         _action = repeater if repeat else action
         push_event()
 

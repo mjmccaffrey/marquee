@@ -26,7 +26,6 @@ class Player:
     # top: LightSet
     speed_factor: float
     pace: float = field(init=False)
-    active_mode_history: list[int] = field(init=False)
     bg_mode_instances: dict = field(init=False)
     event_queue: PriorityQueue = field(init=False)
 
@@ -34,7 +33,6 @@ class Player:
         """Initialize."""
         print("Initializing player")
         self.active_mode: BackgroundMode | ForegroundMode | None = None
-        self.active_mode_history: list[int] = []
         self.live_bg_modes: dict[int, BackgroundMode] = {}
         self.event_queue = PriorityQueue()
         MirrorParams.mirror = self.drums.mirror
@@ -94,9 +92,6 @@ class Player:
         # Create new mode instance
         new_mode = self.create_mode_instance(mode_index)
         assert isinstance(new_mode, BackgroundMode | ForegroundMode)
-
-        # Add new instance to history list
-        self.active_mode_history.append(mode_index)
 
         # Note: A background mode will upon instatiation  
         #       be the active mode, for a very short time.

@@ -39,6 +39,6 @@ class ColorWheel(PerformanceMode):
             )
         self.rotation = (self.rotation + 1) % 12
         self.schedule(
-            self.execute, due_rel=1.5,
+            self.execute, due=1.5,
         )
 

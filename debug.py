@@ -55,12 +55,12 @@ class BellTest(MusicMode):
             due = 0.5 * pitch
             self.schedule(
                 action = partial(self.bells.play, {pitch}),
-                due_rel = due,
+                due = due,
                 name = f"BellTest play {pitch}",
             )
             self.schedule(
                 action = partial(self.bells.release, {pitch}),
-                due_rel = due + self.bells.release_time,
+                due = due + self.bells.release_time,
                 name = f"BellTest release {pitch}",
             )
 

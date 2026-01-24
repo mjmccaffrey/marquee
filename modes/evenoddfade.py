@@ -38,10 +38,10 @@ class EvenOddFade(PerformanceMode):
                         trans_off=self.delay,
                     )
                 ),
-                due_rel=(self.delay * i)
+                due=(self.delay * i)
             )
         self.schedule(
             action=self.execute,
-            due_rel=(self.delay * (i + 1))
+            due=(self.delay * (i + 1))
         )
 

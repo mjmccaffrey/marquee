@@ -18,6 +18,7 @@ class LightController(ABC):
     channel_count: ClassVar[int]
     trans_min: ClassVar[float]
     trans_max: ClassVar[float]
+    all_at_once: ClassVar[bool]
 
     index: int
     ip_address: str
@@ -65,11 +66,16 @@ class LightController(ABC):
             # print("UPDATES_TO_SEND:")
             # for u in updates_to_send:
             #     print("  ", u)
-        self.execute_updates(updates=updates_to_send)
+        self.execute_channel_updates(updates=updates_to_send)
 
     @abstractmethod
-    def execute_updates(self, updates: Sequence['ChannelUpdate']) -> None:
+    def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands via aiohttp asynchronously."""
+
+    @abstractmethod
+    def execute_update_all_at_once(self, update: 'ChannelUpdate'):
+        """Update the all zone, rather than individual channels."""
+        raise ValueError("Method should not have been called.")
 
 
 @dataclass(kw_only=True, repr=False)
@@ -138,7 +144,7 @@ class ChannelUpdate:
 
 @dataclass
 class ChannelCommand:
-    """ Parameters for giving command to dimmer. """
+    """ Parameters for giving command to light controller. """
     channel: 'LightChannel'
     url: str
     params: dict

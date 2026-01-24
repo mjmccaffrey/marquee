@@ -34,10 +34,10 @@ class SilentFadeBuild(PerformanceMode):
                             color=self.lights.colors.random(),
                             channel_indexes=lights,
                         ),
-                        due_rel=due,
+                        due=due,
                     )
                     due += 0.5
                 due += 1.0
             due += 1.0
-        self.schedule(action=self.execute, due_rel=due)
+        self.schedule(action=self.execute, due=due)
 

@@ -29,6 +29,6 @@ class RotateReversible(PerformanceMode):
         self.lights.set_relays(light_pattern=self.pattern)
         self.schedule(
             action=self.execute,
-            due_rel=self.delay,
+            due=self.delay,
         )
 

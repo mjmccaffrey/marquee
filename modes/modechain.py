@@ -39,7 +39,7 @@ class ModeChain(BackgroundMode):
         )
         self.schedule(
             action=self.execute,
-            due_rel=self.mode_on_deck.seconds,
+            due=self.mode_on_deck.seconds,
         )
         new_mode = self.mode_on_deck.index
         self.mode_on_deck = next(self.mode_iter)

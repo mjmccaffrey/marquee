@@ -39,6 +39,10 @@ HUE_BULB_IDS = [
     "6e3c6e43-7e01-40d5-a650-acbc391b716d",
     "108dee49-9e5c-4879-83be-1c6f361a89aa",
 ]
+HUE_ZONE_IDS = [
+    "23947092-00a5-4bf2-9979-1d42e56a9f78",
+    "686cc4ce-355a-4584-88f0-341508bd51eb",
+]
 
 def setup_devices(
     brightness_factor: float,
@@ -64,6 +68,7 @@ def setup_devices(
             ip_address=HUE_IP_ADDRESS,
             bulb_model=Hue_BR30_Enhanced_Color,
             bulb_ids=HUE_BULB_IDS,
+            zone_ids=HUE_ZONE_IDS,
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
