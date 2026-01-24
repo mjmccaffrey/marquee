@@ -87,8 +87,8 @@ class BaseMode(ABC):
             )
         else:
             _name = name
-            due = due * self.speed_factor
-            _due = time.time() + due
+        due = due * self.speed_factor
+        _due = time.time() + due
         _action = repeater if repeat else action
         push_event()
 
