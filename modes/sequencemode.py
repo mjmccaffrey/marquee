@@ -29,7 +29,7 @@ class SequenceMode(PerformanceMode):
                 self.lights.set_relays(ALL_ON)
                 self.lights.set_channels(on=False)
             else:
-                self.lights.set_channels(brightness=100, on=True)
+                self.lights.set_channels(brightness=100, on=False)
 
     def execute(self, pre_delay_done=False) -> None:
         """Execute sequence with delay seconds between steps.
