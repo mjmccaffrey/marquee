@@ -31,7 +31,11 @@ class SequenceMode(PerformanceMode):
                 self.lights.set_channels(on=False)
             else:
                 print("BBBBBBBBBBBBBBBBBBBBBBBB")
-                self.lights.set_channels(brightness=100, on=False)
+                self.lights.set_channels(
+                    brightness=100, 
+                    color=self.lights.colors.WHITE,
+                    on=False,
+                )
 
     def execute(self, pre_delay_done=False) -> None:
         """Execute sequence with delay seconds between steps.
