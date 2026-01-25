@@ -19,7 +19,7 @@ class SequenceMode(PerformanceMode):
     stop: int | None = None
     repeat: bool = True
     init_lights: bool = True
-    kwargs: dict[str, Any] = field(default_factory=dict)
+    sequence_kwargs: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         super().__post_init__()
@@ -56,7 +56,9 @@ class SequenceMode(PerformanceMode):
                 if isinstance(self.delay, Iterable) else
             itertools.repeat(self.delay)
         )
-        for i, lights in enumerate(self.sequence(**self.kwargs)):
+        for i, lights in enumerate(
+            self.sequence(**self.sequence_kwargs)
+        ):
             if self.stop is not None and i == self.stop:
                 break
             delay = next(delay_iter)
