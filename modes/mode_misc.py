@@ -26,6 +26,14 @@ class CreateModeInstance(Protocol):
     ) -> Any:  # BackgroundMode | ForegroundMode:
         ...
 
+class ReplaceKwargValues(Protocol):
+    """"""
+    def __call__(
+        self, 
+        kwargs: dict[str, Any],
+    ) -> dict[str, Any]:
+        ...
+
 @dataclass
 class ModeDefinition:
     index: int

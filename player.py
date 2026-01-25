@@ -61,6 +61,7 @@ class Player:
                 name=definition.name, 
                 speed_factor=self.speed_factor,
                 create_mode_instance=self.create_mode_instance,
+                replace_kwarg_values=self.replace_kwarg_values,
                 event_queue=self.event_queue,
                 modes=self.modes,
                 mode_ids=self.mode_ids,
