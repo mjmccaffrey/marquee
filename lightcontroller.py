@@ -118,6 +118,7 @@ class LightChannel(ABC):
         if changes:
             return ChannelUpdate(
                 channel=update.channel,
+                trans=update.trans,  # !!!!!!!!!!!!!!!!!!!!!!
                 **changes,
             )
         return None
