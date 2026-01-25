@@ -191,6 +191,7 @@ class LightSet:
            Adjust for brightness_factor."""
         if special.generate:
             special = special.generate()
+        print("SCIOR: ", special)
         brightness_values: dict[int, int | None] = {
             0: (int(special.brightness_off * self._brightness_factor)
                 if special.brightness_off is not None else None),
