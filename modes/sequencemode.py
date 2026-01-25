@@ -24,6 +24,7 @@ class SequenceMode(PerformanceMode):
     def __post_init__(self) -> None:
         super().__post_init__()
         print("SPECIAL:", self.special)
+        print("SEQ_KWARGS:", self.sequence_kwargs)
         if self.init_lights:
             if isinstance(self.special, ChannelParams):
                 print("AAAAAAAAAAAAAAAAAAAAAAA")
