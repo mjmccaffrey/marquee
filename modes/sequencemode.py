@@ -8,7 +8,7 @@ from typing import Any, Iterable
 
 from lightset_misc import ALL_ON
 from .performancemode import PerformanceMode
-from specialparams import ActionParams, ChannelParams
+from specialparams import ActionParams, ChannelParams, EmulateParams
 
 @dataclass(kw_only=True)
 class SequenceMode(PerformanceMode):
@@ -23,14 +23,15 @@ class SequenceMode(PerformanceMode):
 
     def __post_init__(self) -> None:
         super().__post_init__()
-        print("SPECIAL:", self.special)
+        if self.lights.smart_bulbs and self.special is None:
+            print("SequenceMode: emulating incandescent.")
+            self.special = EmulateParams()
         self.sequence_kwargs = self.replace_kwarg_values(self.sequence_kwargs)
         print("SEQ_KWARGS:", self.sequence_kwargs)
         if self.init_lights:
             if isinstance(self.special, ChannelParams):
                 print("AAAAAAAAAAAAAAAAAAAAAAA")
-                if not self.lights.smart_bulbs:  # ???
-                    self.lights.set_relays(ALL_ON)
+                self.lights.set_relays(ALL_ON)
                 self.lights.set_channels(on=False)
             else:
                 print("BBBBBBBBBBBBBBBBBBBBBBBB")

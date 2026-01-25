@@ -88,7 +88,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             )
             # print('*********')
             # print(command.url)
-            # print(command.params)
+            print(command.params)
             # print('*********')
             response.raise_for_status()
             update.channel.update_state(update)

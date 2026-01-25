@@ -50,22 +50,14 @@ class LightController(ABC):
     def update_channels(self, updates: Sequence['ChannelUpdate'], force: bool = False):
         """Effect updates, optionally forcing the updates 
            regardless of believed state."""
-
-        # print("UPDATES PROPOSED:")
-        # for u in updates:
-        #     print("  ", u)
-
         if force:
             updates_to_send = updates
         else:
             updates_to_send = [
-                update 
+                up
                 for update in updates
-                if update.channel.update_needed(update)
+                if (up := update.channel.updates_needed(update))
             ]
-            # print("UPDATES_TO_SEND:")
-            # for u in updates_to_send:
-            #     print("  ", u)
         self.execute_channel_updates(updates=updates_to_send)
 
     @abstractmethod
@@ -101,25 +93,32 @@ class LightChannel(ABC):
     def _make_set_command(self, update: 'ChannelUpdate') -> 'ChannelCommand':
         """Produce dimmer API parameters from provided update."""
 
-    @abstractmethod
-    def _set(
-        self, 
-        brightness: int | None,
-        transition: float | None,
-        color: Color | None,
-        on: bool | None,
-    ) -> None:
-        """Build and send command via requests.
-           Does not check current state."""
+    # @abstractmethod
+    # def _set(
+    #     self, 
+    #     brightness: int | None,
+    #     transition: float | None,
+    #     color: Color | None,
+    #     on: bool | None,
+    # ) -> None:
+    #     """Build and send command via requests.
+    #        Does not check current state."""
 
-    def update_needed(self, update: 'ChannelUpdate'):
-        """Return False if all desired states match
-           current states, else True."""
-        return (
-            self.brightness != update.brightness or
-            self.color != update.color or
-            self.on != update.on
-        )
+    def updates_needed(self, update: 'ChannelUpdate') -> 'ChannelUpdate | None':
+        """Return the updates required, or None."""
+        changes = {}
+        if self.brightness != update.brightness:
+            changes['brightness'] = update.brightness
+        if self.color != update.color:
+            changes['color'] = update.color
+        if self.on != update.on:
+            changes['on'] = update.on
+        if changes:
+            return ChannelUpdate(
+                channel=update.channel,
+                **changes,
+            )
+        return None
 
     def update_state(self, update: 'ChannelUpdate'):
         """Once the command has been sent without error,

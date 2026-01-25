@@ -83,17 +83,17 @@ class LightSet:
            Set light_pattern property, always as string
            rather than list."""
         
+        if (
+            self.smart_bulbs and 
+            not smart_bulb_override and 
+            special is None
+        ):  # Nothing to do.
+            return
+        
         lights = self.convert_relay_pattern(light_pattern)
         if lights is None:
             lights = self.relay_pattern
         all = lights + self.extra_pattern
-
-        if self.smart_bulbs and not smart_bulb_override and not special:
-            print(
-                "SET_RELAYS: Smart bulbs in use; "
-                "defaulting to emulating incandescent."
-            )
-            special = EmulateParams()
 
         if isinstance(special, MirrorParams):
             special.mirror(all)
