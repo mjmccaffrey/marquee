@@ -108,11 +108,11 @@ class LightChannel(ABC):
     def updates_needed(self, update: 'ChannelUpdate') -> 'ChannelUpdate | None':
         """Return the updates required, or None."""
         changes = {}
-        if self.brightness is not None and self.brightness != update.brightness:
+        if update.brightness is not None and self.brightness != update.brightness:
             changes['brightness'] = update.brightness
-        if self.color is not None and self.color != update.color:
+        if update.color is not None and self.color != update.color:
             changes['color'] = update.color
-        if self.on is not None and self.on != update.on:
+        if update.on is not None and self.on != update.on:
             changes['on'] = update.on
         print("CHANGES: ", changes)
         if changes:
