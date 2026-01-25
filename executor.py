@@ -77,7 +77,7 @@ class Executor:
             index: int | None = None,
             hidden: bool = False,
             special: SpecialParams | None = None,
-            kwargs: dict[str, Any] = {},
+            kwargs: dict[str, Any] = {},  # For sequence iterator.
         ) -> None:
         """Create a Mode object from a sequence and parameters, and register it."""
         self.add_mode(
@@ -86,9 +86,9 @@ class Executor:
             index=index,
             hidden=hidden,
             sequence=sequence,
+            sequence_kwargs=kwargs,
             delay=delay,
             special=special,
-            **kwargs,
         )
 
     def execute(
