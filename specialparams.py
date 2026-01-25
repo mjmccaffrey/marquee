@@ -43,8 +43,8 @@ class MirrorParams(SpecialParams):
 @dataclass
 class EmulateParams(ChannelParams, MirrorParams):
     """Emulate relay experience when using smart bulbs."""
+    brightness_on = 80
     color_on = RGB(255, 197, 143)
-    color_off = RGB(255, 197, 143)
     trans_on: ClassVar[float] = 0.0
     trans_off: ClassVar[float] = 0.0
 
