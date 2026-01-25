@@ -13,7 +13,7 @@ from bulb import SmartBulb
 from color import Color, Colors, RGB
 from lightcontroller import ChannelUpdate, LightController
 from relays import RelayModule
-from specialparams import EmulateParams, ChannelParams, MirrorParams, SpecialParams
+from specialparams import ChannelParams, MirrorParams, SpecialParams
 
 
 @dataclass
