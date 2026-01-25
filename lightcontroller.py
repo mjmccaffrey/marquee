@@ -114,7 +114,7 @@ class LightChannel(ABC):
             changes['color'] = update.color
         if self.on != update.on:
             changes['on'] = update.on
-        print(changes)
+        print("CHANGES: ", changes)
         if changes:
             return ChannelUpdate(
                 channel=update.channel,
