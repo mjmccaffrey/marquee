@@ -32,7 +32,7 @@ class SilentFadeBuild(PerformanceMode):
                             brightness=brightness,
                             transition=1.0,
                             color=self.lights.colors.random(),
-                            channel_indexes=lights,
+                            channel_indexes=set(lights),
                         ),
                         due=due,
                     )

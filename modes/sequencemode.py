@@ -27,7 +27,8 @@ class SequenceMode(PerformanceMode):
         if self.init_lights:
             if isinstance(self.special, ChannelParams):
                 print("AAAAAAAAAAAAAAAAAAAAAAA")
-                self.lights.set_relays(ALL_ON)
+                if not self.lights.smart_bulbs:  # ???
+                    self.lights.set_relays(ALL_ON)
                 self.lights.set_channels(on=False)
             else:
                 print("BBBBBBBBBBBBBBBBBBBBBBBB")

@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - lightset"""
 
-# THIS SHOULD BE THE SOLE INTERFACE FOR THE APPLICATION,
-# PARTICULARLY FOR METHODS
+# THIS SHOULD BE THE SOLE LIGHT INTERFACE FOR THE APPLICATION,
+# PARTICULARLY REGARDING METHODS.
 
 from collections.abc import Sequence
 from dataclasses import dataclass, InitVar
@@ -11,7 +11,7 @@ import rgbxy
 
 from bulb import SmartBulb
 from color import Color, Colors, RGB
-from lightcontroller import ChannelUpdate, LightController, LightChannel
+from lightcontroller import ChannelUpdate, LightController
 from relays import RelayModule
 from specialparams import EmulateParams, ChannelParams, MirrorParams, SpecialParams
 
@@ -76,7 +76,6 @@ class LightSet:
     def set_relays(
             self, 
             light_pattern: str | Sequence[int | bool] | bool | int | None = None,
-            extra_pattern: str | Sequence[int | bool] | bool | int | None = None,
             special: SpecialParams | None = None,
             smart_bulb_override: bool = False,
         ) -> None:
@@ -84,27 +83,26 @@ class LightSet:
            Set light_pattern property, always as string
            rather than list."""
         
-        _light = self.convert_relay(light_pattern)
-        if _light is None:
-            _light = self.relay_pattern
-        _extra = self.convert_relay(extra_pattern)
-        if _extra is None:
-            _extra = self.extra_pattern
-        _all = _light + _extra
+        lights = self.convert_relay_pattern(light_pattern)
+        if lights is None:
+            lights = self.relay_pattern
+        all = lights + self.extra_pattern
 
-        if self.smart_bulbs and not smart_bulb_override:
-            special = special or EmulateParams()
-            
+        if self.smart_bulbs and not smart_bulb_override and not special:
+            print(
+                "SET_RELAYS: Smart bulbs in use; "
+                "defaulting to emulating incandescent."
+            )
+            special = EmulateParams()
+
         if isinstance(special, MirrorParams):
-            special.mirror(_all)
+            special.mirror(all)
 
         if isinstance(special, ChannelParams):
-            if special.generate:
-                special = special.generate()
-            self._set_channels_instead_of_relays(_light, special)
+            self._set_channels_instead_of_relays(lights, special)
         else:
-            self.relays.set_state_of_devices(_all)
-            self.relay_pattern, self.extra_pattern = _light, _extra
+            self.relays.set_state_of_devices(all)
+            self.relay_pattern = lights
 
     def set_channels(
             self, 
@@ -112,7 +110,7 @@ class LightSet:
             transition: Sequence[float | None] | float | None = None,
             color: Sequence[Color | None] | Color | None = None,
             on: Sequence[int | bool | str | None] | bool | int | None = None,
-            channel_indexes: Sequence[int] | None = None,
+            channel_indexes: set[int] | None = None,
             force: bool = False,
         ) -> None:
         """Set the channels per the supplied brightness, 
@@ -121,18 +119,21 @@ class LightSet:
            Force all specified channels to update with force.
            Adjust for brightness_factor."""
         
-        if (
-            self.controller.all_at_once and 
-            (
-                channel_indexes is None or 
-                # Assumes no duplicate entries, which would be erroneous.
-                len(channel_indexes) == self.count
-            ) and
-            not isinstance(brightness, Sequence) and
-            not isinstance(transition, Sequence) and
-            not isinstance(color, Sequence) and
-            not isinstance(on, Sequence)
-        ):
+        def all_at_once_possible() -> bool:
+            """Can the update be performed more-or-less all at once,
+               rather than on channels individually."""
+            return (
+                self.controller.all_at_once and 
+                (   channel_indexes is None or 
+                    len(channel_indexes) == self.count
+                ) and
+                not isinstance(brightness, Sequence) and
+                not isinstance(transition, Sequence) and
+                not isinstance(color, Sequence) and
+                not isinstance(on, Sequence)
+            )
+        
+        if all_at_once_possible():
             self.controller.execute_update_all_at_once(
                 ChannelUpdate(
                     channel=self.controller.channels[0],  # Dummy
@@ -142,19 +143,16 @@ class LightSet:
                     on=self.convert_on(on)[0],
                 )
             )
+            return
 
+        # Update each channel individually
         _channel_indexes = (
             [i for i in range(self.count)]
                 if channel_indexes is None else
             channel_indexes
         )
         _channels = [self.channels[i] for i in _channel_indexes]
-        _brightnesses = [
-                int(b * self._brightness_factor)
-            if b is not None else
-                None
-            for b in self.convert_brightness(brightness)
-        ]
+        _brightnesses = self.convert_brightness(brightness)
         _transitions = self.convert_transition(transition)
         _colors = self.convert_color(color)
         _on = self.convert_on(on)
@@ -191,6 +189,8 @@ class LightSet:
     ) -> None:
         """Set channels per the specified pattern and special.
            Adjust for brightness_factor."""
+        if special.generate:
+            special = special.generate()
         brightness_values: dict[int, int | None] = {
             0: (int(special.brightness_off * self._brightness_factor)
                 if special.brightness_off is not None else None),
@@ -236,16 +236,15 @@ class LightSet:
             if i + self.count in self.click_relays else e
             for i, e in enumerate(self.extra_pattern)
         )
-        self.set_relays(
-            light_pattern=self.relay_pattern, 
-            extra_pattern=extra,
-        )
+        self.relays.set_state_of_devices(self.relay_pattern + extra)
+        self.extra_pattern = extra
 
     def convert_brightness(
         self,
         brightness: Sequence[int | None] | str | int | None,
     ) -> list[int | None]:
-        """"""
+        """Return normalized brightness pattern, 
+           adjusted by brightness_factor."""
         match brightness:
             case str():
                 result = [
@@ -262,7 +261,7 @@ class LightSet:
             if b is not None else None
             for b in result
         ]
-        return result  # type: ignore
+        return result
     
     def convert_transition(
         self,
@@ -310,7 +309,7 @@ class LightSet:
                 ] * self.count
         return result  # type: ignore
     
-    def convert_relay(
+    def convert_relay_pattern(
         self, 
         pattern: str | Sequence[int | bool] | int | bool | None,
     ) -> str | None:
