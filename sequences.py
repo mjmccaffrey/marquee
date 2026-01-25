@@ -9,7 +9,7 @@ from lightset_misc import (
     LIGHTS_BY_COL, LIGHTS_BY_ROW, LIGHTS_BY_SIDE, LIGHTS_CLOCKWISE, 
 )
 
-MAX_YIELDS = 2000   # !!!!!!!!!!!!!!1
+MAX_YIELDS = 1000   # !!!!!!!!!!!!!!1
 
 
 def opposite(pattern: Sequence) -> str:
