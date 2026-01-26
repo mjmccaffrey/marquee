@@ -13,11 +13,6 @@ class EvenOddFade(PerformanceMode):
     """Fade every-other bulb."""
     delay: float
 
-    def __post_init__(self) -> None:
-        """Initialize."""
-        super().__post_init__()
-        self.lights.set_relays("1" * self.lights.count)
-
     def execute(self) -> None:
         """Schedule next 2 patterns. Schedule next execute."""
         self.lights.set_channels(brightness=0) 

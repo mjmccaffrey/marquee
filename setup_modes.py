@@ -56,8 +56,8 @@ def register_channel_modes(exec: Executor):
     )
 
     exec.add_sequence_mode("rotaterc", rotate, 
+        sequence_kwargs=dict(pattern="100000000000"),
         delay=2.0, 
-        kwargs=dict(pattern="100000000000"),
     )
     exec.add_mode(
         "rotate_random_colors",
@@ -83,9 +83,11 @@ def register_channel_modes(exec: Executor):
         )
     )
     exec.add_sequence_mode("random_flip_fade_medium", 
-        random_flip, delay=2.0,
+        random_flip, 
+        sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
+        delay=2.0,
         special=ChannelParams(),
-        kwargs=dict(light_pattern='LIGHT_PATTERN'),
+        reset_lights=False,
     )
     exec.add_sequence_mode("blink_all_fade_fast", 
         blink_all, delay=0.5,
@@ -109,11 +111,11 @@ def register_channel_modes(exec: Executor):
     exec.add_mode("even_odd_fade", EvenOddFade, delay=0.5)
     # exec.add_mode("random_fade_steady", RandomFade, trans=2)
     exec.add_sequence_mode("rotate_sides_silent", rotate_sides, 
-        delay=2.0, 
-        kwargs=dict(
+        sequence_kwargs=dict(
             pattern='0', 
             clockwise=False,
         ),
+        delay=2.0, 
         special=ChannelParams(
             brightness_on = 90,
             brightness_off = 10,
@@ -161,26 +163,27 @@ def register_relay_modes(exec: Executor) -> None:
         special=EmulateParams(),
     )
     exec.add_sequence_mode("rotate", rotate, 
+        sequence_kwargs=dict(pattern="110000000000"),
         delay=0.5, 
-        kwargs=dict(pattern="110000000000"),
     )
     exec.add_sequence_mode("random_flip", random_flip, 
+        sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
         delay=0.5, 
-        kwargs=dict(light_pattern='LIGHT_PATTERN'),
+        reset_lights=False,
     )
     exec.add_sequence_mode("center_rotate_fade", rotate, 
+        sequence_kwargs=dict(pattern = "010" * 4),
         delay=0.5, 
-        kwargs=dict(pattern = "010" * 4),
     )
     exec.add_mode("rotate_reversible_1", 
         RotateReversible, delay=0.35, 
         pattern = "1" + "0" * (LIGHT_COUNT - 1))
     exec.add_sequence_mode("rotate_sides", rotate_sides, 
-        delay=1.0, 
-        kwargs=dict(
+        sequence_kwargs=dict(
             pattern='1', 
             clockwise=True,
         ),
+        delay=1.0, 
     )
 
 
@@ -193,17 +196,21 @@ def register_silent_modes(exec: Executor) -> None:
             trans_off=3.0,
         )
     )
-    exec.add_sequence_mode("silent_random_flip_medium", random_flip, delay=2.0,
+    exec.add_sequence_mode("silent_random_flip_medium", random_flip, 
+        sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
+        delay=2.0,
         special=ChannelParams(
             trans_on=2.0,
             trans_off=2.0,
             concurrent=False,
         ),
-        kwargs=dict(light_pattern='LIGHT_PATTERN'),
+        reset_lights=False,
     )
-    exec.add_sequence_mode("silent_random_flip_fast", random_flip, delay=0.25,
+    exec.add_sequence_mode("silent_random_flip_fast", random_flip, 
+        sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
+        delay=0.25,
         special=ChannelParams(),
-        kwargs=dict(light_pattern='LIGHT_PATTERN'),
+        reset_lights=False,
     )
     exec.add_sequence_mode("silent_blink_all_slowwww", 
         blink_all, delay=4.0,
@@ -218,13 +225,14 @@ def register_silent_modes(exec: Executor) -> None:
         SilentFadeBuild,
     )
     exec.add_sequence_mode("silent_rotate_slight_fade",
-        rotate, delay=0.5, 
+        rotate,  
+        sequence_kwargs=dict(pattern='110000000000'),
+        delay=0.5,
         special=ChannelParams(
             concurrent=False,
             brightness_on = 100,
             brightness_off = 20,
         ),
-        kwargs=dict(pattern='110000000000'),
     )
     exec.add_mode("random_bright_fixed_trans", RandomFade, transition=0.5)
     exec.add_mode("random_bright_fixed_dur", RandomFade, duration=5.0)
@@ -243,22 +251,22 @@ def register_pyohio_2025_presentation_modes(exec: Executor) -> None:
         special=MirrorParams(),
     )
     exec.add_sequence_mode("10_rotate", rotate, 
-        delay=1.0,
-        special=MirrorParams(),
-        kwargs=dict(
+        sequence_kwargs=dict(
             pattern="110111110111", 
             stop=3,
         ),
+        delay=1.0,
+        special=MirrorParams(),
     )
     exec.add_sequence_mode("12_on", all_on,
         special=MirrorParams(),
     )
     exec.add_sequence_mode("rotate_sides", rotate_sides, 
-        delay=0.75, 
-        kwargs=dict(
+        sequence_kwargs=dict(
             pattern='1', 
             clockwise=False,
         ),
+        delay=0.75, 
         special=MirrorParams(),
     )
     exec.add_sequence_mode("section_2", all_off)

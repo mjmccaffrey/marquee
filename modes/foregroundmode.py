@@ -19,6 +19,12 @@ class ForegroundMode(BaseMode, ABC):
     lights: LightSet
     speed_factor: float
     special: SpecialParams | None = None
+    reset_lights: bool = True
+
+    def __post_init__(self) -> None:
+        """Initialize."""
+        if self.reset_lights:
+            self.lights.reset()
 
     @staticmethod
     def wrap_value(

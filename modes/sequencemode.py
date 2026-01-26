@@ -27,11 +27,11 @@ class SequenceMode(PerformanceMode):
             print("SequenceMode: emulating incandescent.")
             self.special = EmulateParams()
         self.sequence_kwargs = self.replace_kwarg_values(self.sequence_kwargs)
-        if self.init_lights:
-            if isinstance(self.special, ChannelParams):
-                print("AAAAAAAAAAAAAAAAAAAAAAA")
-                self.lights.set_relays(ALL_ON)
-            self.lights.set_lights_to_baseline() # ??????????
+        # if self.init_lights:
+        #     if isinstance(self.special, ChannelParams):
+        #         print("AAAAAAAAAAAAAAAAAAAAAAA")
+        #         self.lights.set_relays(ALL_ON)
+        #     self.lights.set_lights_to_baseline() # ??????????
 
     def execute(self, pre_delay_done=False) -> None:
         """Execute sequence with delay seconds between steps.
