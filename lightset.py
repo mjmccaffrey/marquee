@@ -58,7 +58,7 @@ class LightSet:
         self.trans_max = self.controller.trans_max
         self.bulb_adjustents = self.controller.bulb_model.adjustments
         self.reset()
-        sys.exit()
+        # sys.exit()
 
 
     def reset(self):
