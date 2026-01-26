@@ -88,7 +88,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             )
             # print('*********')
             # print(command.url)
-            print(command.params)
+            # print(command.params)
             # print('*********')
             response.raise_for_status()
             update.channel.update_state(update)
@@ -102,8 +102,8 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 json=command.params,
                 timeout=2.0,
             )
-            print("ZONE: ", i)
-            print(command.params)
+            # print("ZONE: ", i)
+            # print(command.params)
             response.raise_for_status()
         for channel in self.channels:
             channel.update_state(replace(update, channel=channel))
