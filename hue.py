@@ -88,13 +88,13 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             )
             # print('*********')
             # print(command.url)
-            # print(command.params)
+            print(command.params)
             # print('*********')
             response.raise_for_status()
             update.channel.update_state(update)
 
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
-        """Update the all zone, rather than individual channels."""
+        """Update zone(s) rather than individual channels."""
         command = update.channel._make_set_command(update)
         for i, id in enumerate(self.zone_ids):
             response = self.session.put(

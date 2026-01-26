@@ -50,8 +50,8 @@ def register_channel_modes(exec: Executor):
     exec.add_mode("modechaintest", 
         ModeChain,
         sequence = [
-            ("blink_alternate_medium", 6),
-            ("random_flip_fade_medium", 6),
+            ("blink_alternate_medium", 30),
+            ("random_flip_fade_medium", 30),
         ],
     )
 
