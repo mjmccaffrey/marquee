@@ -76,7 +76,7 @@ def register_channel_modes(exec: Executor):
     exec.add_mode('running', Running, ticks_per_second=2)
     
     exec.add_sequence_mode("blink_alternate_medium",
-        blink_alternate, delay=4, 
+        blink_alternate, delay=10, 
         special=ChannelParams(
             # brightness_on=90,
             trans_on=1.0,
