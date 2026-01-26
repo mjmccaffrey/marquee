@@ -66,7 +66,7 @@ class LightSet:
         print("%%%%%%%%%%%%%%%%%% LIGHTSET RESET %%%%%%%%%%%%%%%%%%")
         self.set_channels(
             brightness=25,
-            color=self.colors.ORANGE,
+            color=self.colors.BLUE,
             on=True,
             transition=0,
         )
