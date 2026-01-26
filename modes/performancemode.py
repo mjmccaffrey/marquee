@@ -14,6 +14,7 @@ class PerformanceMode(ForegroundMode, ABC):
 
     def __post_init__(self) -> None:
         """Initialize."""
+        super().__post_init__()
         self.direction = +1
 
     def button_action(self, button: Button) -> int | None:

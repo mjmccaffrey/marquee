@@ -12,6 +12,7 @@ class BrightnessSelect(SelectMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
+        super().__post_init__()
         INITIAL_LEVEL = 6
         self.set_brightness_level(INITIAL_LEVEL)
         super().setup(
