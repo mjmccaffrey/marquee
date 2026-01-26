@@ -56,6 +56,16 @@ class LightSet:
         self.trans_min = self.controller.trans_min
         self.trans_max = self.controller.trans_max
         self.bulb_adjustents = self.controller.bulb_model.adjustments
+        self.set_lights_to_baseline()
+
+    def set_lights_to_baseline(self):
+        """Set the lights to a baseline state."""
+        self.set_channels(
+            brightness=80,
+            color=self.colors.WHITE,
+            on=False,
+            transition=0,
+        )
 
     @property
     def brightness_factor(self) -> float:

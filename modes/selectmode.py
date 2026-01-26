@@ -72,7 +72,7 @@ class SelectMode(ForegroundMode, ABC):
                 kwargs=dict(
                     sequence=lambda: rotate_build_flip(count=self.desired),
                     pre_delay=0.5,
-                    delay=0.4, 
+                    delay=0.3, 
                     repeat=False,
                     init_lights=False,
                     special=self.special,
