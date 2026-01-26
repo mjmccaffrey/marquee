@@ -62,7 +62,7 @@ class LightSet:
         """Set the lights to a baseline state."""
         print("%%%%%%%%%%%%%%%%%% LIGHTSET RESET %%%%%%%%%%%%%%%%%%")
         self.set_channels(
-            brightness=80,
+            brightness=25,
             color=self.colors.WHITE,
             on=False,
             transition=0,
