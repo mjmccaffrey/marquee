@@ -7,7 +7,7 @@ import time
 
 from lightset import LightSet
 from modes.musicmode import MusicMode
-from setup_devices_shelly import setup_devices
+from setup_devices_hue import setup_devices
 
 
 def setup():
