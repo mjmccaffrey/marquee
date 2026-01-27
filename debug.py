@@ -6,7 +6,6 @@ from functools import partial
 import time
 
 from lightset import LightSet
-from modes.musicmode import MusicMode
 from setup_devices_hue import setup_devices
 
 
@@ -42,25 +41,25 @@ def light_states(lights: LightSet) -> None:
         print(f"{i} {c.brightness} {c.color} {c.on}")
 
 
-@dataclass(kw_only=True)
-class BellTest(MusicMode):
-    """Test all bells."""
+# @dataclass(kw_only=True)
+# class BellTest(MusicMode):
+#     """Test all bells."""
 
-    def __post_init__(self) -> None:
-        """Initialize."""
+#     def __post_init__(self) -> None:
+#         """Initialize."""
 
-    def execute(self) -> None:
-        """Perform bell test."""
-        for pitch in range(self.bells.pitch_levels):
-            due = 0.5 * pitch
-            self.schedule(
-                action = partial(self.bells.play, {pitch}),
-                due = due,
-                name = f"BellTest play {pitch}",
-            )
-            self.schedule(
-                action = partial(self.bells.release, {pitch}),
-                due = due + self.bells.release_time,
-                name = f"BellTest release {pitch}",
-            )
+#     def execute(self) -> None:
+#         """Perform bell test."""
+#         for pitch in range(self.bells.pitch_levels):
+#             due = 0.5 * pitch
+#             self.schedule(
+#                 action = partial(self.bells.play, {pitch}),
+#                 due = due,
+#                 name = f"BellTest play {pitch}",
+#             )
+#             self.schedule(
+#                 action = partial(self.bells.release, {pitch}),
+#                 due = due + self.bells.release_time,
+#                 name = f"BellTest release {pitch}",
+#             )
 
