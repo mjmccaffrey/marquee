@@ -67,7 +67,8 @@ class LightController(ABC):
 
     @abstractmethod
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
-        """Update the all zone, rather than individual channels."""
+        """Update the all zone, rather than individual channels.
+           Does not check current state."""
         raise ValueError("Method should not have been called.")
 
 

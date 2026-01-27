@@ -5,7 +5,6 @@
 
 from collections.abc import Sequence
 from dataclasses import dataclass, InitVar
-import sys
 import time
 
 import rgbxy
@@ -58,16 +57,14 @@ class LightSet:
         self.trans_max = self.controller.trans_max
         self.bulb_adjustents = self.controller.bulb_model.adjustments
         self.reset()
-        # sys.exit()
-
 
     def reset(self):
         """Set the lights to a baseline state."""
         print("%%%%%%%%%%%%%%%%%% LIGHTSET RESET %%%%%%%%%%%%%%%%%%")
         self.set_channels(
             brightness=25,
-            color=self.colors.BLUE,
-            on=True,
+            color=self.colors.WHITE,
+            on=False,
             transition=0,
         )
         self.set_relays(True)

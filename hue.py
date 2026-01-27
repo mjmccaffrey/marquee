@@ -94,7 +94,8 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             update.channel.update_state(update)
 
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
-        """Update zone(s) rather than individual channels."""
+        """Update the all zone, rather than individual channels.
+           Does not check current state."""
         command = update.channel._make_set_command(update)
         for i, id in enumerate(self.zone_ids):
             response = self.session.put(
