@@ -55,8 +55,8 @@ class LightSet:
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
         self.trans_max = self.controller.trans_max
-        self.bulb_adjustents = self.controller.bulb_model.adjustments
-        self.reset()
+        self.bulb_adjustments = self.controller.bulb_model.adjustments
+        # self.reset()
 
     def reset(self):
         """Set the lights to a baseline state."""
