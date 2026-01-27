@@ -5,7 +5,12 @@ from specialparams import ChannelParams
 
 
 class RandomColors(DynamicMode):
-    """"""
+    """!!! Currently sends color commands to each bulb,
+           even the 11 that are OFF. !!!"""
+
+    def __post_init__(self) -> None:
+        """Initialize."""
+        super().__post_init__()
 
     def generate_special(self) -> ChannelParams:
         """Return new set of ChannelParams."""
