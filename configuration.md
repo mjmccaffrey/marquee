@@ -62,3 +62,5 @@ _
 
         [Install]
         WantedBy=multi-user.target
+
+sudo touch /boot/firmware/ssh
