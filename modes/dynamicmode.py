@@ -11,9 +11,9 @@ class DynamicMode(PerformanceMode, ABC):
     """"""
     sequence_mode_name: str
 
-    # def __post_init__(self) -> None:
-    #     """Initialize."""
-    #     super().__post_init__()
+    def __post_init__(self) -> None:
+        """Initialize."""
+        super().__post_init__()
 
     def execute(self):
         """Execute sequence_mode_name as child, with new 
