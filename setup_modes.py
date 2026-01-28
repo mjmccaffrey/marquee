@@ -54,6 +54,11 @@ def register_channel_modes(exec: Executor):
         delay=0.1875,
         wheel_divisions=1,
     )
+    exec.add_mode("comet_test_2", Comet,
+        length=4,
+        delay=0.1875,
+        color=Colors.RED,
+    )
     exec.add_mode("modechaintest", ModeChain,
         sequence = [
             ("blink_alternate_medium", 30),

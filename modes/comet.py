@@ -34,15 +34,15 @@ class Comet(PerformanceMode):
         yield previous
         for color in colors:
             for i in range(self.wheel_divisions):
-                red = (
+                red = previous.red + (
                     (color.red - previous.red) // 
                     self.wheel_divisions * (i + 1)
                 )
-                green = (
+                green = previous.green + (
                     (color.green - previous.green) // 
                     self.wheel_divisions * (i + 1)
                 )
-                blue = (
+                blue = previous.blue + (
                     (color.blue - previous.blue) // 
                     self.wheel_divisions * (i + 1)
                 )
