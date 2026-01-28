@@ -202,7 +202,7 @@ class LightSet:
         """Set channels per the specified pattern and special.
            Adjust for brightness_factor."""
         if special.generate:
-            special = special.generate()
+            special = special.generate(special)
         # print("SCIOR: ", special)
         brightness_values: dict[int, int | None] = {
             0: (int(special.brightness_off * self._brightness_factor)

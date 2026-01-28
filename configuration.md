@@ -11,6 +11,7 @@ Marquee Lighted Sign Project - configuration
 
     * AP
         * 192.168.64.104
+        * PW: 42.............
     * Laptop
         * 192.168.64.105
 

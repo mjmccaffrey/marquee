@@ -33,7 +33,7 @@ class ChannelParams(SpecialParams):
     concurrent: bool = True
     trans_on: float = 0.5  # ?????
     trans_off: float = 0.5  # ?????
-    generate: Callable[[], Self] | None = None
+    generate: Callable[['ChannelParams'], Self] | None = None
 
 @dataclass
 class MirrorParams(SpecialParams):

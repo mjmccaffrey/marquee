@@ -4,6 +4,7 @@ from color import Colors
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes import *
+from modes.comet import Comet
 from modes.mode_misc import ModeIndex
 from modes.sequencemode import SequenceMode
 from sequences import (
@@ -47,6 +48,12 @@ def register_special_modes(exec: Executor) -> None:
 
 def register_channel_modes(exec: Executor):
     """"""
+
+    exec.add_mode("comet_test",
+        Comet, length=3, 
+        colors=[Colors.RED, Colors.WHITE, Colors.BLUE],
+        delay=3
+    )
     exec.add_mode("modechaintest", 
         ModeChain,
         sequence = [

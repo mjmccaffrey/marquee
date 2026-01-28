@@ -135,7 +135,7 @@ class LightChannel(ABC):
             self.on = update.on
 
 
-@dataclass
+@dataclass(slots=True)
 class ChannelUpdate:
     """"""
     channel: LightChannel
@@ -145,7 +145,7 @@ class ChannelUpdate:
     on: bool | None = None
 
 
-@dataclass
+@dataclass(slots=True)
 class ChannelCommand:
     """ Parameters for giving command to light controller. """
     channel: 'LightChannel'

@@ -15,12 +15,16 @@ class DynamicMode(PerformanceMode, ABC):
         """Initialize."""
         super().__post_init__()
 
+    @abstractmethod
+    def generate(self, special: ChannelParams) -> ChannelParams:
+        """Return new set of ChannelParams."""
+
     def execute(self):
         """Execute sequence_mode_name as child, with new 
            ChannelParams generated when requested by LightSet."""
         index = self.lookup_mode_index(self.sequence_mode_name)
         kwargs = dict(
-            special=ChannelParams(generate=self.generate_special)
+            special=ChannelParams(generate=self.generate)
         )
         mode_instance = self.create_mode_instance(
             mode_index=index,
@@ -28,8 +32,4 @@ class DynamicMode(PerformanceMode, ABC):
             parent=self,
         )
         mode_instance.execute()
-
-    @abstractmethod
-    def generate_special(self) -> ChannelParams:
-        """Return new set of ChannelParams."""
 
