@@ -67,9 +67,9 @@ class Comet(PerformanceMode):
                 on=True,
                 channel_indexes={(self.head - i) % count},
             )
-        self.lights.set_channels(
-            on=False,
-            transition=self.delay,
-            channel_indexes={(self.head - self.length) % count},
-        )
+        # self.lights.set_channels(
+        #     on=False,
+        #     transition=self.delay,
+        #     channel_indexes={(self.head - self.length) % count},
+        # )
 
