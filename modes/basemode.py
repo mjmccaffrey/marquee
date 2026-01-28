@@ -55,8 +55,8 @@ class BaseMode(ABC):
 
     def schedule(
         self, 
-        action: Callable, 
         due: float,
+        action: Callable | None = None, 
         name: str | None = None,
         repeat: bool = False,
     ) -> None:
@@ -66,11 +66,12 @@ class BaseMode(ABC):
 
         def push_event():
             """Push event onto queue."""
+            assert _action is not None
             self.event_queue.push(
                 Event(
                     action=_action,
                     due=_due,
-                    owner=self.parent or self,
+                    owner=_owner,
                     name=_name,
                 )
             )
@@ -80,8 +81,15 @@ class BaseMode(ABC):
             nonlocal _due
             _due += due
             push_event()
+            assert action is not None
             action()
 
+        due = due * self.speed_factor
+        _due = time.time() + due
+        if action is None:
+            action = getattr(self, 'execute')
+        _action = repeater if repeat else action
+        _owner = self.parent or self
         if name is None:
             caller = sys._getframe(1)
             _name = (
@@ -90,8 +98,5 @@ class BaseMode(ABC):
             )
         else:
             _name = name
-        due = due * self.speed_factor
-        _due = time.time() + due
-        _action = repeater if repeat else action
         push_event()
 

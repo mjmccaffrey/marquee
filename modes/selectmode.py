@@ -82,7 +82,7 @@ class SelectMode(ForegroundMode, ABC):
                 ),
             ).execute()
             self.previous_desired = self.desired
-            self.schedule(self.execute, due=10.5 + self.desired * 0.4)
+            self.schedule(due=10.5 + self.desired * 0.4)
             return None
         else:
             # Last pass.

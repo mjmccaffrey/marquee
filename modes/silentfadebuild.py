@@ -27,14 +27,14 @@ class SilentFadeBuild(PerformanceMode):
             ):
                 for lights in lights_in_groups(rows, from_top_left):
                     self.schedule(
-                        partial(
+                        due=due,
+                        action=partial(
                             self.lights.set_channels,
                             brightness=brightness,
                             transition=1.0,
                             color=self.lights.colors.random(),
                             channel_indexes=set(lights),
                         ),
-                        due=due,
                     )
                     due += 0.5
                 due += 1.0

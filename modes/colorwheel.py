@@ -38,7 +38,5 @@ class ColorWheel(PerformanceMode):
                 channel_indexes={(i + self.rotation) % 12},
             )
         self.rotation = (self.rotation + 1) % 12
-        self.schedule(
-            self.execute, due=1.5,
-        )
+        self.schedule(due=1.5)
 
