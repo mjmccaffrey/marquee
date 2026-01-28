@@ -31,10 +31,12 @@ class Comet(PerformanceMode):
                 on=True,
                 channel_indexes={index},
             )
+        # only 1 needs to be turned off !!!
         for l in range(self.lights.count - self.length):
             index = (self.head + 1 + l) % self.lights.count
             self.lights.set_channels(
                 on=False,
+                transition=1.0,
                 channel_indexes={index},
             )
 
