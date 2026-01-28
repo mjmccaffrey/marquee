@@ -32,7 +32,7 @@ class Comet(PerformanceMode):
                 channel_indexes={index},
             )
         for l in range(self.lights.count - self.length):
-            index = (self.head - 1 - l) % self.lights.count
+            index = (self.head + 1 + l) % self.lights.count
             self.lights.set_channels(
                 on=False,
                 channel_indexes={index},
