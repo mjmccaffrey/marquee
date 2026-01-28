@@ -1,7 +1,8 @@
 """Marquee Lighted Sign Project - comet"""
 
-from dataclasses import dataclass
 from collections.abc import Sequence
+from dataclasses import dataclass
+from itertools import chain
 
 from color import Color
 from .performancemode import PerformanceMode
@@ -17,16 +18,19 @@ class Comet(PerformanceMode):
         super().__post_init__()
         self.head = -1
         self.schedule(action=self.execute, due=self.delay, repeat=True)
+        self.color = chain(self.lights.colors.WHEEL)
 
     def execute(self) -> None:
         """"""
         count = self.lights.count
         self.head = (self.head + 1) % count
+        if self.head == 0:
+            color = next(self.color)
         for i, c in enumerate(self.colors):
             self.lights.set_channels(
                 brightness=100 - i * 25,
                 transition=self.delay,
-                color=self.colors[0],
+                color=color,
                 on=True,
                 channel_indexes={(self.head - i) % count},
             )
