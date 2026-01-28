@@ -36,15 +36,15 @@ class Comet(PerformanceMode):
             for i in range(self.wheel_divisions):
                 red = previous.red + (
                     (color.red - previous.red) // 
-                    self.wheel_divisions * (i + 1)
+                    (self.wheel_divisions + 1) * (i + 1)
                 )
                 green = previous.green + (
                     (color.green - previous.green) // 
-                    self.wheel_divisions * (i + 1)
+                    (self.wheel_divisions + 1) * (i + 1)
                 )
                 blue = previous.blue + (
                     (color.blue - previous.blue) // 
-                    self.wheel_divisions * (i + 1)
+                    (self.wheel_divisions + 1) * (i + 1)
                 )
                 yield self.lights.colors.rgb(red, green, blue)
             yield color
