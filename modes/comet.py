@@ -31,6 +31,7 @@ class Comet(PerformanceMode):
         assert self.wheel_divisions is not None
         colors = cycle(self.lights.colors.WHEEL)
         previous = next(colors)
+        print(previous)
         yield previous
         for color in colors:
             for i in range(self.wheel_divisions):
@@ -46,7 +47,9 @@ class Comet(PerformanceMode):
                     (color.blue - previous.blue) // 
                     (self.wheel_divisions + 1) * (i + 1)
                 )
+                print(self.lights.colors.rgb(red, green, blue))
                 yield self.lights.colors.rgb(red, green, blue)
+            print(color)
             yield color
             previous = color
 
