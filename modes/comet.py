@@ -24,9 +24,9 @@ class Comet(PerformanceMode):
         self.head = (self.head + 1) % count
         for i, c in enumerate(self.colors):
             self.lights.set_channels(
-                brightness=80, #  - i * 10,
+                brightness=80 - i * 20,
                 transition=self.delay,
-                color=c,
+                color=self.colors[0],
                 on=True,
                 channel_indexes={(self.head - i) % count},
             )
