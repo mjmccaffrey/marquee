@@ -51,7 +51,7 @@ def register_channel_modes(exec: Executor):
 
     exec.add_mode("comet_test_1", Comet,
         length=3,
-        delay=0.25,
+        delay=0.175,
         wheel_divisions=3,
     )
     exec.add_mode("comet_test_2", Comet,
