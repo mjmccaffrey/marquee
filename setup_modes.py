@@ -49,9 +49,10 @@ def register_special_modes(exec: Executor) -> None:
 def register_channel_modes(exec: Executor):
     """"""
 
-    exec.add_mode("comet_test", Comet,
-        colors=[Colors.RED, Colors.RED, Colors.RED, Colors.RED, ],
+    exec.add_mode("comet_test_1", Comet,
+        length=4,
         delay=0.1875,
+        wheel_divisions=1,
     )
     exec.add_mode("modechaintest", ModeChain,
         sequence = [
