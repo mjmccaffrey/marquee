@@ -1,8 +1,8 @@
 """Marquee Lighted Sign Project - comet"""
 
-from collections.abc import Iterable, Sequence
+from collections.abc import Sequence
 from dataclasses import dataclass
-from itertools import chain
+from itertools import cycle
 
 from color import Color
 from .performancemode import PerformanceMode
@@ -17,7 +17,7 @@ class Comet(PerformanceMode):
     def __post_init__(self) -> None:
         super().__post_init__()
         self.head = -1
-        self.wheel = chain(self.lights.colors.WHEEL)
+        self.wheel = cycle(self.lights.colors.WHEEL)
         self.schedule(action=self.execute, due=self.delay, repeat=True)
 
     def execute(self) -> None:
