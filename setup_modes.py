@@ -49,13 +49,11 @@ def register_special_modes(exec: Executor) -> None:
 def register_channel_modes(exec: Executor):
     """"""
 
-    exec.add_mode("comet_test",
-        Comet, length=3, 
-        colors=[Colors.RED, Colors.WHITE, Colors.BLUE],
+    exec.add_mode("comet_test", Comet,
+        colors=[Colors.RED, Colors.ORANGE, Colors.YELLOW],
         delay=3
     )
-    exec.add_mode("modechaintest", 
-        ModeChain,
+    exec.add_mode("modechaintest", ModeChain,
         sequence = [
             ("blink_alternate_medium", 30),
             ("random_flip_fade_medium", 30),

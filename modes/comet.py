@@ -10,7 +10,6 @@ from .performancemode import PerformanceMode
 @dataclass(kw_only=True)
 class Comet(PerformanceMode):
     """Rotating comet with tail."""
-    length: int
     colors: Sequence[Color]
     delay: float
 
@@ -21,22 +20,19 @@ class Comet(PerformanceMode):
 
     def execute(self) -> None:
         """"""
-        self.head += 1
-        for l in range(self.length):
-            index = (self.head - l) % self.lights.count
+        count = self.lights.count
+        self.head = (self.head + 1) % count
+        for i, c in enumerate(self.colors):
             self.lights.set_channels(
-                brightness=80 - l * 10,
-                transition=1.0,
-                color=self.colors[l],
+                brightness=80 - i * 10,
+                transition=self.delay,
+                color=c,
                 on=True,
-                channel_indexes={index},
+                channel_indexes={(self.head - i) % count},
             )
-        # only 1 needs to be turned off !!!
-        for l in range(self.lights.count - self.length):
-            index = (self.head + 1 + l) % self.lights.count
-            self.lights.set_channels(
-                on=False,
-                transition=1.0,
-                channel_indexes={index},
-            )
+        self.lights.set_channels(
+            on=False,
+            transition=self.delay,
+            channel_indexes={(self.head - 1) % count},
+        )
 
