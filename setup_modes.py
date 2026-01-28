@@ -51,7 +51,7 @@ def register_channel_modes(exec: Executor):
 
     exec.add_mode("comet_test", Comet,
         colors=[Colors.RED, Colors.RED, Colors.RED, Colors.RED, ],
-        delay=1.5
+        delay=0.75
     )
     exec.add_mode("modechaintest", ModeChain,
         sequence = [
