@@ -59,7 +59,6 @@ class Comet(PerformanceMode):
         self.head = (self.head + 1) % count
         if self.head == 0:
             self.color = next(self.colors)
-        # for i in range(self.length):
         self.lights.set_channels(
             brightness=100,
             transition=self.delay,
@@ -74,9 +73,4 @@ class Comet(PerformanceMode):
             on=True,
             channel_indexes={(self.head - 1) % count},
         )
-        # self.lights.set_channels(
-        #     on=False,
-        #     transition=self.delay,
-        #     channel_indexes={(self.head - self.length) % count},
-        # )
 
