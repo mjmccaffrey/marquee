@@ -16,11 +16,11 @@ from relays import NumatoRL160001, NumatoSSR80001
 
 SHELLY_IP_ADDRESSES = [
     '192.168.64.111',
-    # '192.168.64.112',
-    # '192.168.64.113',
-    # '192.168.64.114',
-    # '192.168.64.115',
-    # '192.168.64.116',
+    '192.168.64.112',
+    '192.168.64.113',
+    '192.168.64.114',
+    '192.168.64.115',
+    '192.168.64.116',
 ]
 
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
@@ -88,7 +88,7 @@ def setup_devices(
                     bulb_model=Sylvania_G40_Frosted_100,
                     channel_first_index=i * 2,
                 )
-                for i, ip in enumerate(SHELLY_IP_ADDRESSES)
+                for i, ip in enumerate([SHELLY_IP_ADDRESSES[0]])
             ],
         ),
         brightness_factor_init=brightness_factor,
