@@ -51,7 +51,7 @@ HUE_ZONE_IDS = [
 def setup_devices(
     brightness_factor: float,
     speed_factor: float,
-) -> tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet]:
+) -> tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet, ClickSet]:
     """Create and return objects for all physical devices."""
 
     relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
@@ -64,7 +64,7 @@ def setup_devices(
     )
     relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
     primary = LightSet(
-        relays=relays.create_client(),
+        relays=relays.create_client(LIGHT_TO_RELAY),
         controller_type=HueBridge,
         controller_kwargs=dict(
             application_key=HUE_APPLICATION_KEY,
@@ -77,7 +77,7 @@ def setup_devices(
         speed_factor=speed_factor,
     )
     secondary = LightSet(
-        relays=relays.create_client(),
+        relays=relays.create_client(TOP_TO_RELAY),
         controller_type=ShellyConsolidatedController,
         controller_kwargs=dict(
             bulb_model=Sylvania_G40_Frosted_100,
@@ -94,7 +94,9 @@ def setup_devices(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
-    clicker = ClickSet()
+    clicker = ClickSet(
+        relays=relays.create_client(CLICK_TO_RELAY),
+    )
     buttons = ButtonSet(
         body_back = Button(
             "body_back",

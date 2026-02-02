@@ -102,9 +102,9 @@ class Executor:
         ) -> None:
         """Effects the command-line specified command, mode or pattern(s)."""
         signal.signal(signal.SIGTERM, self.sigterm_received)
-        self.bells, self.buttons, self.drums, self.lights, self.top = (
-            self.setup_devices(brightness_factor, speed_factor)
-        )
+        devices = self.setup_devices(brightness_factor, speed_factor)
+        (self.bells, self.buttons, self.drums, 
+         self.lights, self.top, self.clicker) = devices
         if command is not None:
             self.execute_command(command)
         elif mode_index is not None:
