@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from button_misc import ButtonSet
 from instruments import BellSet, DrumSet
-from lightset import LightSet
+from lightset import ClickSet, LightSet
 from .basemode import BaseMode
 from specialparams import SpecialParams
 
@@ -17,6 +17,8 @@ class ForegroundMode(BaseMode, ABC):
     buttons: ButtonSet
     drums: DrumSet
     lights: LightSet
+    top: LightSet
+    clicker: ClickSet
     speed_factor: float
     special: SpecialParams | None = None
     reset_lights: bool = True

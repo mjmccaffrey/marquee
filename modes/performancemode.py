@@ -26,13 +26,13 @@ class PerformanceMode(ForegroundMode, ABC):
             case b.remote_a | b.body_back:
                 new_mode = ModeIndex.MODE_SELECT
             case b.remote_c:
-                self.lights.click()
+                self.clicker.click()
                 new_mode = ModeIndex.BRIGHTNESS_SELECT
             case b.remote_b:
-                self.lights.click()
+                self.clicker.click()
                 new_mode = self.mode_index(self.index, -1)
             case b.remote_d:
-                self.lights.click()
+                self.clicker.click()
                 new_mode = self.mode_index(self.index, +1)
             case _:
                 raise ValueError("Unrecognized button.")

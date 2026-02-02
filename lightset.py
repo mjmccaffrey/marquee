@@ -29,9 +29,7 @@ class LightSet:
         """Initialize."""
         self._brightness_factor = brightness_factor_init
         self.count = self.relays.count
-        full_pattern = self.relays.get_state_of_devices()
-        self.relay_pattern = full_pattern[:self.count]
-        self.extra_pattern = full_pattern[self.count:]
+        self.relay_pattern = self.relays.get_state_of_devices()
         self.smart_bulbs = issubclass(
             self.controller_type.bulb_comp, 
             SmartBulb,
@@ -89,7 +87,7 @@ class LightSet:
             special: SpecialParams | None = None,
             smart_bulb_override: bool = False,
         ) -> None:
-        """Set all lights and extra relays per supplied patterns and special.
+        """Set all light relays per supplied patterns and special.
            Set light_pattern property, always as string
            rather than list."""
         
@@ -103,15 +101,14 @@ class LightSet:
         lights = self.convert_relay_pattern(light_pattern)
         if lights is None:
             lights = self.relay_pattern
-        all = lights + self.extra_pattern
 
         if isinstance(special, MirrorParams):
-            special.mirror(all)
+            special.mirror(lights)
 
         if isinstance(special, ChannelParams):
             self._set_channels_instead_of_relays(lights, special)
         else:
-            self.relays.set_state_of_devices(all)
+            self.relays.set_state_of_devices(lights)
             self.relay_pattern = lights
 
     def set_channels(
@@ -240,15 +237,6 @@ class LightSet:
         """Update the active light pattern."""
         self._relay_pattern = value
 
-    def click(self) -> None:
-        """Click the otherwise unused light relays."""
-        extra = ''.join(
-            '0' if e == '1' else '1'
-            for e in self.extra_pattern
-        )
-        self.relays.set_state_of_devices(self.relay_pattern + extra)
-        self.extra_pattern = extra
-
     def convert_brightness(
         self,
         brightness: Sequence[int | None] | str | int | None,
@@ -335,3 +323,23 @@ class LightSet:
                 result = ("1" if pattern else "0") * self.count
         return result
     
+
+@dataclass
+class ClickSet:
+    """"""
+    relays: RelayClient
+
+    def __post_init__(self) -> None:
+        """Initialize."""
+        self.count = self.relays.count
+        self.relay_pattern = self.relays.get_state_of_devices()
+
+    def click(self) -> None:
+        """Click the otherwise unused light relays."""
+        pattern = ''.join(
+            '0' if e == '1' else '1'
+            for e in self.relay_pattern
+        )
+        self.relays.set_state_of_devices(pattern)
+        self.relay_pattern = pattern
+

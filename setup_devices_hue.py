@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - setup_devices"""
+"""Marquee Lighted Sign Project - setup_devices_hue"""
 
 import signal
 
@@ -10,10 +10,8 @@ from button_misc import ButtonSet
 from hue import HueBridge
 from shelly import ShellyConsolidatedController, ShellyProDimmer2PM
 from instruments import BellSet, DrumSet
-from lightset import LightSet
-from lightset_misc import (
-    PRIMARY_LIGHTSET_DEVICES, SECONDARY_LIGHTSET_DEVICES,
-)
+from lightset import ClickSet, LightSet
+from lightset_misc import LIGHT_TO_RELAY, TOP_TO_RELAY, CLICK_TO_RELAY
 from relays import NumatoRL160001, NumatoSSR80001
 
 SHELLY_IP_ADDRESSES = [
@@ -66,7 +64,7 @@ def setup_devices(
     )
     relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
     primary = LightSet(
-        relays=relays.create_client(PRIMARY_LIGHTSET_DEVICES),
+        relays=relays.create_client(),
         controller_type=HueBridge,
         controller_kwargs=dict(
             application_key=HUE_APPLICATION_KEY,
@@ -79,7 +77,7 @@ def setup_devices(
         speed_factor=speed_factor,
     )
     secondary = LightSet(
-        relays=relays.create_client(SECONDARY_LIGHTSET_DEVICES),
+        relays=relays.create_client(),
         controller_type=ShellyConsolidatedController,
         controller_kwargs=dict(
             bulb_model=Sylvania_G40_Frosted_100,
@@ -96,6 +94,7 @@ def setup_devices(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
+    clicker = ClickSet()
     buttons = ButtonSet(
         body_back = Button(
             "body_back",
@@ -121,5 +120,5 @@ def setup_devices(
             _Button(pin=5, pull_up=False, bounce_time=0.10)
         ),
     )
-    return bells, buttons, drums, primary, secondary
+    return bells, buttons, drums, primary, secondary, clicker
 

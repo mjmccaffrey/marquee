@@ -1,5 +1,7 @@
 """Marquee Lighted Sign Project - lightset_misc"""
-"""Everything here except TOP_* applies to the primary LightSet."""
+
+"""Everything here except TOP_* and CLICK_* """
+"""applies to the primary LightSet."""
 
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
@@ -31,15 +33,13 @@ LIGHT_TO_RELAY = {
      9:  1,                        5: 13,
             8:  0,  7: 15,  6: 14,
 }
-EXTRA_TO_RELAY = {
-     12: 2,  13: 3, 15: 11,
-}
-PRIMARY_LIGHTSET_DEVICES = LIGHT_TO_RELAY | EXTRA_TO_RELAY
 TOP_TO_RELAY = {
     0: 10,
 }
-SECONDARY_LIGHTSET_DEVICES = TOP_TO_RELAY
-ALL_RELAYS = LIGHT_TO_RELAY | EXTRA_TO_RELAY | TOP_TO_RELAY
+CLICK_TO_RELAY = {
+     0: 2,  1: 3, 2: 11,
+}
+ALL_RELAYS = LIGHT_TO_RELAY | TOP_TO_RELAY | CLICK_TO_RELAY
 
 HIGH, LOW = "A", "0"
 ON, OFF = "1", "0"

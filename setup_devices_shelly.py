@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - setup_devices"""
+"""Marquee Lighted Sign Project - setup_devices_shelly"""
 
 import signal
 
@@ -34,7 +34,7 @@ def setup_devices(
         relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
     )
     relays = NumatoRL160001(
-        "/dev/marquee_lights", ALL_RELAYS,
+        "/dev/marquee_lights", ALL_RELAYS,  THIS DOES NOT ALLOW DEVICE #s TO BE INDEPENDENT
     )  # /dev/ttyACM2
     primary = LightSet(
         relays=relays,

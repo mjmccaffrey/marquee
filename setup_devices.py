@@ -1,9 +1,10 @@
+"""Marquee Lighted Sign Project - setup_devices"""
 
 from typing import Protocol
 
 from button_misc import ButtonSet
 from instruments import BellSet, DrumSet
-from lightset import LightSet
+from lightset import ClickSet, LightSet
 
 
 class SetupDevices(Protocol):
@@ -12,6 +13,6 @@ class SetupDevices(Protocol):
         self,
         brightness_factor: float,
         speed_factor: float,
-     ) -> tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet]:
+     ) -> tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet, ClickSet]:
         ...
 
