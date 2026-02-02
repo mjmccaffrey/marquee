@@ -32,7 +32,7 @@ class LightController(ABC):
 
     def __post_init__(self) -> None:
         """Ensure bulb compatibility"""
-        if not isinstance(self.bulb_model, type(self.bulb_comp)):
+        if not isinstance(self.bulb_model, self.bulb_comp):
             raise TypeError(
                 f"Incompatible bulb model {self.bulb_model} "
                 f"for controller {type(self).__name__}."
