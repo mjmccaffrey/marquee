@@ -36,6 +36,7 @@ class LightSet:
         )
 
         if self.smart_bulbs:
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!", self.relay_pattern)
             if all(r == '1' for r in self.relay_pattern):
                 print("***** Smart bulbs in use - light relays already ON. *****")
             else:
