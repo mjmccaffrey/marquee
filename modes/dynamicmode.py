@@ -8,12 +8,9 @@ from specialparams import ChannelParams
 
 @dataclass(kw_only=True)
 class DynamicMode(PerformanceMode, ABC):
-    """"""
+    """Utilizes ChannelParams.generate to insert
+       dynamic channel parameters. Of limited use."""
     sequence_mode_name: str
-
-    def __post_init__(self) -> None:
-        """Initialize."""
-        super().__post_init__()
 
     @abstractmethod
     def generate(self, special: ChannelParams) -> ChannelParams:

@@ -7,11 +7,10 @@ from gpiozero import Button as _Button  # type: ignore
 from bulb import Sylvania_G25_Frosted_40
 from button import Button
 from button_misc import ButtonSet
-from hue import HueBridge
 from shelly import ShellyConsolidatedController, ShellyProDimmer2PM
 from instruments import BellSet, DrumSet
 from lightset import LightSet
-from lightset_misc import ALL_RELAYS
+from lightset_misc import ALL_RELAYS, TOP_TO_RELAY
 from relays import NumatoRL160001, NumatoSSR80001
 
 SHELLY_IP_ADDRESSES = [
@@ -26,7 +25,7 @@ SHELLY_IP_ADDRESSES = [
 def setup_devices(
     brightness_factor: float,
     speed_factor: float,
-) -> tuple[BellSet, ButtonSet, DrumSet, LightSet]:
+) -> tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet]:
     """Create and return objects for all physical devices."""
     bells = BellSet(
         relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
@@ -39,8 +38,7 @@ def setup_devices(
     )  # /dev/ttyACM2
     primary = LightSet(
         relays=relays,
-        light_relays={1, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16,},
-        click_relays={2, 3, 10},
+        relay_devices=list(TOP_TO_RELAY),
         controller_type=ShellyConsolidatedController,
         controller_kwargs=dict(
                 bulb_model=Sylvania_G25_Frosted_40,

@@ -17,6 +17,7 @@ class PacManGame(GameMode):
 
     def __post_init__(self):
         """Initialize board and characters."""
+        super().__post_init__()
         assert self.lights.gamut is not None  # Color lights
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.pacman = self.create_entity(etype=PacMan, name="pacman")

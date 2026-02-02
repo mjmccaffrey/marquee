@@ -4,14 +4,16 @@ import signal
 
 from gpiozero import Button as _Button  # type: ignore
 
-from bulb import Hue_BR30_Enhanced_Color
+from bulb import Hue_BR30_Enhanced_Color, Sylvania_G40_Frosted_100
 from button import Button
 from button_misc import ButtonSet
 from hue import HueBridge
-# from shelly import ShellyConsolidatedController, ShellyProDimmer2PM
+from shelly import ShellyConsolidatedController, ShellyProDimmer2PM
 from instruments import BellSet, DrumSet
 from lightset import LightSet
-from lightset_misc import ALL_RELAYS
+from lightset_misc import (
+    PRIMARY_LIGHTSET_DEVICES, SECONDARY_LIGHTSET_DEVICES,
+)
 from relays import NumatoRL160001, NumatoSSR80001
 
 SHELLY_IP_ADDRESSES = [
@@ -40,10 +42,6 @@ HUE_BULB_IDS = [
     "108dee49-9e5c-4879-83be-1c6f361a89aa",
 ]
 HUE_ZONE_IDS = [
-    # "23947092-00a5-4bf2-9979-1d42e56a9f78",
-    # "686cc4ce-355a-4584-88f0-341508bd51eb",
-
-
     # "services": [
     #     {
     #         "rid": "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
@@ -55,21 +53,20 @@ HUE_ZONE_IDS = [
 def setup_devices(
     brightness_factor: float,
     speed_factor: float,
-) -> tuple[BellSet, ButtonSet, DrumSet, LightSet]:
+) -> tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet]:
     """Create and return objects for all physical devices."""
-    bells = BellSet(
-        relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
+
+    relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
+    bells = BellSet(relays=relays.create_client(
+        {i: i for i in range(relays.relay_count)})
     )
-    drums = DrumSet(
-        relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
+    relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
+    drums = DrumSet(relays=relays.create_client(
+        {i: i for i in range(relays.relay_count)})
     )
-    relays = NumatoRL160001(
-        "/dev/marquee_lights", ALL_RELAYS,
-    )  # /dev/ttyACM2
+    relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
     primary = LightSet(
-        relays=relays,
-        light_relays={1, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16,},
-        click_relays={2, 3, 10},
+        relays=relays.create_client(PRIMARY_LIGHTSET_DEVICES),
         controller_type=HueBridge,
         controller_kwargs=dict(
             application_key=HUE_APPLICATION_KEY,
@@ -77,6 +74,24 @@ def setup_devices(
             bulb_model=Hue_BR30_Enhanced_Color,
             bulb_ids=HUE_BULB_IDS,
             zone_ids=HUE_ZONE_IDS,
+        ),
+        brightness_factor_init=brightness_factor,
+        speed_factor=speed_factor,
+    )
+    secondary = LightSet(
+        relays=relays.create_client(SECONDARY_LIGHTSET_DEVICES),
+        controller_type=ShellyConsolidatedController,
+        controller_kwargs=dict(
+            bulb_model=Sylvania_G40_Frosted_100,
+            dimmers=[
+                ShellyProDimmer2PM(
+                    index=i,
+                    ip_address=ip,
+                    bulb_model=Sylvania_G40_Frosted_100,
+                    channel_first_index=i * 2,
+                )
+                for i, ip in enumerate(SHELLY_IP_ADDRESSES[-1])
+            ],
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
@@ -91,6 +106,7 @@ def setup_devices(
         remote_a = Button(
             "remote_a",
             _Button(pin=19, pull_up=False, bounce_time=0.10)
+
         ),
         remote_b = Button(
             "remote_b",
@@ -105,4 +121,5 @@ def setup_devices(
             _Button(pin=5, pull_up=False, bounce_time=0.10)
         ),
     )
-    return bells, buttons, drums, primary
+    return bells, buttons, drums, primary, secondary
+

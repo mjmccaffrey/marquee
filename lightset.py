@@ -12,16 +12,14 @@ import rgbxy
 from bulb import SmartBulb
 from color import Color, Colors, RGB
 from lightcontroller import ChannelUpdate, LightController
-from relays import RelayModule
+from relays import RelayClient
 from specialparams import ChannelParams, MirrorParams, SpecialParams
 
 
 @dataclass
 class LightSet:
     """Supports all of the light-related devices."""
-    relays: RelayModule
-    light_relays: set[int]
-    click_relays: set[int]
+    relays: RelayClient
     controller_type: type[LightController]
     controller_kwargs: dict
     brightness_factor_init: InitVar[float]
@@ -30,7 +28,7 @@ class LightSet:
     def __post_init__(self, brightness_factor_init: float) -> None:
         """Initialize."""
         self._brightness_factor = brightness_factor_init
-        self.count = len(self.light_relays)
+        self.count = self.relays.count
         full_pattern = self.relays.get_state_of_devices()
         self.relay_pattern = full_pattern[:self.count]
         self.extra_pattern = full_pattern[self.count:]
@@ -243,11 +241,10 @@ class LightSet:
         self._relay_pattern = value
 
     def click(self) -> None:
-        """Click the specified otherwise unused light relays."""
+        """Click the otherwise unused light relays."""
         extra = ''.join(
-            ('0' if e == '1' else '1')
-            if i + self.count in self.click_relays else e
-            for i, e in enumerate(self.extra_pattern)
+            '0' if e == '1' else '1'
+            for e in self.extra_pattern
         )
         self.relays.set_state_of_devices(self.relay_pattern + extra)
         self.extra_pattern = extra

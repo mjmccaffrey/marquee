@@ -1,23 +1,60 @@
 """Marquee Lighted Sign Project - relays"""
 
-from abc import ABC, abstractmethod
-from collections.abc import Mapping, Sequence
-from typing import ClassVar, Protocol
+from abc import ABC
+from dataclasses import dataclass
+from typing import ClassVar, NewType, Protocol
 
-import serial  # type: ignore
+import serial  # type: ignore missing module
+
+DevicePattern = NewType('DevicePattern', str)
+"""str[n] represents the state of the nth client device."""
+
+RelayPattern = NewType('RelayPattern', str)
+"""str[len(str) - n] represents the state of the nth relay."""
+
+RelayHex = NewType('RelayHex', str)
+"""Hex representation of relay pattern."""
+
+
+@dataclass()
+class RelayClient:
+    module: 'RelayModule'
+    count: int
+    device_to_relay: dict
+    relay_to_device: dict
+    bit_to_device: dict
+    device_to_bit: dict
+
+    def get_state_of_devices(self) -> str:
+        return self.module.get_state_of_devices(self)
+
+    def set_state_of_devices(self, pattern: str):
+        return self.module.set_state_of_devices(
+            self, DevicePattern(pattern)
+        )
 
 
 class RelayModule(Protocol):
     """Protocol for any relay module."""
-    
     relay_count: ClassVar[int]
+    state: RelayPattern
 
-    def set_state_of_devices(self, device_pattern: Sequence) -> None:
-        """Set state of each relay per device_pattern."""
+    def set_state_of_devices(
+        self, 
+        client: RelayClient,
+        pattern: DevicePattern,
+    ) -> None:
+        """Set the physical relays per client device pattern.
+           Do not change relays not assigned to client."""
         ...
 
-    def get_state_of_devices(self) -> str:
-        """Get state of each relay, output device pattern."""
+    def get_state_of_devices(
+        self, 
+        client: RelayClient,
+    ) -> DevicePattern:
+        """Get the state of all relays from the module.
+           Update saved state.
+           Return a client device pattern."""
         ...
 
 
@@ -31,11 +68,14 @@ class NumatoUSBRelayModule(RelayModule, ABC):
     def __init__(
         self, 
         port_address: str, 
-        device_mapping: Mapping[int, int] = {},
     ) -> None:
-        """Create the object, where device_mapping
-           maps device indices to relay indices.
-           Establish connection to relay module via serial port."""
+        """Establish connection to relay module via serial port."""
+        self.reserved = {r: False for r in range(self.relay_count)}
+        try:
+            hex_lengths = {8: 2, 16: 4}
+            self.relay_pattern_hex_len = hex_lengths[self.relay_count]
+        except LookupError:
+            raise ValueError("Unrecognized device count")
         self.port_address = port_address
         print(f"Initializing {self}")
         try:
@@ -49,24 +89,30 @@ class NumatoUSBRelayModule(RelayModule, ABC):
             print(f"*** Error: {e} ***")
             print()
             raise OSError from None
-        if device_mapping:
-            assert len(device_mapping) == self.relay_count
-            self.device_mapping = device_mapping
-        else:
-            self.device_mapping = {i: i for i in range(self.relay_count)}
-        self.device_count = max(self.device_mapping.keys()) + 1
-        try:
-            hex_lengths = {8: 2, 16: 4}
-            self.relay_pattern_hex_len = hex_lengths[self.device_count]
-        except LookupError:
-            raise ValueError("Unrecognized device count")
-        self._device_to_bit = {
+
+    def create_client(
+        self,
+        device_to_relay: dict[int, int],
+    ) -> RelayClient:
+        """Define a client, in which device_to_relay maps 
+           device indices to relay indices."""
+        for r in device_to_relay.values():
+            assert not self.reserved[r]
+            self.reserved[r] = True
+        device_to_bit = {
             l: self.relay_count - 1 - r
-            for l, r in self.device_mapping.items()
+            for l, r in device_to_relay.items()
         }
-        self._bit_to_device = {
-            v: k for k, v in self._device_to_bit.items()
-        }
+        return RelayClient(
+            module=self,
+            count=len(device_to_relay),
+            device_to_relay=device_to_relay,
+            relay_to_device={v: k for k, v in device_to_relay.items()},
+            device_to_bit=device_to_bit,
+            bit_to_device = {
+                v: k for k, v in device_to_bit.items()
+            },
+        )
 
     def __str__(self) -> str:
         return f"{type(self).__name__} @ {self.port_address}"
@@ -76,16 +122,80 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         self._serial_port.close()
         print(f"Relay module {self} closed.")
 
-    def set_state_of_devices(self, device_pattern: Sequence) -> None:
-        """Set the physical relays per device_pattern."""
-        assert len(device_pattern) == self.device_count
-        relay_pattern_hex = self._devices_to_relays(device_pattern)
-        self._set_relays(relay_pattern_hex)
+    def set_state_of_devices(
+        self, 
+        client: RelayClient,
+        pattern: DevicePattern,
+    ) -> None:
+        """Set the physical relays per client device pattern.
+           Do not change relays not assigned to client."""
+        assert len(pattern) == client.count
+        # Build relay pattern using current state 
+        # for relays not used by this client.
+        for i in reversed(range(self.relay_count)):
+            relay_pattern = RelayPattern(
+                ''.join(
+                        pattern[client.relay_to_device[i]]
+                            if i in client.relay_to_device else
+                        self.state[i]
+                    for i in range(self.relay_count)
+                )
+            )
+        relay_hex = self._relays_to_relay_hex(relay_pattern)
+        self._set_relays(relay_hex)
+        self.state = relay_pattern
 
-    def get_state_of_devices(self) -> str:
-        """Get the state of all devices and output a device pattern."""
-        relays = self._get_relays()
-        return self._relays_to_devices(relays)
+    def get_state_of_devices(
+        self, 
+        client: RelayClient,
+    ) -> DevicePattern:
+        """Get the state of all relays from the module.
+           Update saved state.
+           Return a client device pattern."""
+        self.state = self._get_relays()
+        return self._relays_to_devices(client, self.state)
+
+    def _get_relays(self) -> RelayPattern:
+        """Get the state of all relays and output a relay pattern."""
+        self._serial_port.reset_input_buffer()
+        self._send_command("relay readall")
+        # Response example: b'0000\n\r>'
+        response = self._serial_port.read(self.relay_pattern_hex_len + 3)
+        val = response[:self.relay_pattern_hex_len].decode('utf-8')
+        val = bin(int(val, base=16))[2:]
+        return RelayPattern(f"{val:>0{self.relay_count}}")
+
+    # def _devices_to_relays(
+    #         self, 
+    #         client: RelayClient,
+    #         pattern: DevicePattern,
+    #     ) -> RelayPattern:
+    #     """Return relay hex pattern corresponding to device_pattern."""
+    #     return RelayPattern(
+    #         ''.join(
+    #             str(pattern[client.bit_to_device[b]])
+    #             if b in client.bit_to_device else 'X'
+    #             for b in range(client.relay_count)
+    #         )
+    #     )
+
+    def _relays_to_devices(
+            self,
+            client: RelayClient,
+            pattern: RelayPattern,
+        ) -> DevicePattern:
+        """Convert a relay pattern to a device pattern."""
+        return DevicePattern(
+            ''.join(
+                pattern[client.device_to_bit[d]]
+                for d in range(client.count)
+            )
+        )
+
+    def _relays_to_relay_hex(self, pattern: RelayPattern) -> RelayHex:
+        """Return relay hex pattern corresponding to relay pattern."""
+        val = hex(int(''.join(str(e) for e in pattern), 2))[2:]
+        return RelayHex(f"{val:>0{self.relay_pattern_hex_len}}")
 
     def _send_command(self, command: str) -> None:
         """Send command and read resulting echo."""
@@ -94,37 +204,9 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         self._serial_port.write(command_b)
         self._serial_port.read(len(command_b) + 1)
 
-    def _set_relays(self, relay_pattern_hex: str) -> None:
+    def _set_relays(self, relay_hex: RelayHex) -> None:
         """Send command to relay board to set all relays."""
-        self._send_command(f"relay writeall {relay_pattern_hex}")
-
-    def _get_relays(self) -> str:
-        """Get the state of all relays and output a relay pattern."""
-        self._serial_port.reset_input_buffer()
-        self._send_command("relay readall")
-        # Response example: b'0000\n\r>'
-        response = self._serial_port.read(self.relay_pattern_hex_len + 3)
-        val = response[:self.relay_pattern_hex_len].decode('utf-8')
-        val = bin(int(val, base=16))[2:]
-        return f"{val:>0{self.relay_count}}"
-
-    def _devices_to_relays(self, device_pattern: Sequence) -> str:
-        """Return relay hex pattern corresponding to device_pattern."""
-        relay_pattern = ''.join(
-            str(device_pattern[self._bit_to_device[b]])
-            if b in self._bit_to_device else '0'
-            for b in range(self.relay_count)
-        )
-        val = hex(int(''.join(str(e) for e in relay_pattern), 2))[2:]
-        return f"{val:>0{self.relay_pattern_hex_len}}"
-
-    def _relays_to_devices(self, relay_pattern: Sequence) -> str:
-        """Convert a relay pattern to a device pattern."""
-        device_pattern = ''.join(
-            relay_pattern[self._device_to_bit[d]]
-            for d in range(self.device_count)
-        )
-        return device_pattern
+        self._send_command(f"relay writeall {relay_hex}")
 
 
 class NumatoRL160001(NumatoUSBRelayModule, relay_count=16):

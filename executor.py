@@ -32,7 +32,7 @@ class Executor:
             create_player: Callable[..., Player],
             setup_devices: Callable[
                 [float, float], 
-                tuple[BellSet, ButtonSet, DrumSet, LightSet]
+                tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet]
             ],
         ) -> None:
         """Init the (single) executor."""
@@ -104,7 +104,7 @@ class Executor:
         ) -> None:
         """Effects the command-line specified command, mode or pattern(s)."""
         signal.signal(signal.SIGTERM, self.sigterm_received)
-        self.bells, self.buttons, self.drums, self.lights = (
+        self.bells, self.buttons, self.drums, self.lights, self.top = (
             self.setup_devices(brightness_factor, speed_factor)
         )
         if command is not None:
@@ -127,6 +127,7 @@ class Executor:
             self.buttons,
             self.drums,
             self.lights,
+            self.top,
             speed_factor,
         )
         self.player.execute(mode_index)
@@ -172,7 +173,7 @@ class Executor:
     def command_off(self) -> None:
         """Turn off all relays and potentially other devices."""
         for d in (self.bells, self.drums, self.lights):
-            d.relays.set_state_of_devices('0' * d.relays.relay_count)
+            d.relays.set_state_of_devices('0' * d.relays.count)
         print("Marquee hardware is now partially shut down.")
         print()
 

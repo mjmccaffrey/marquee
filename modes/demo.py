@@ -24,7 +24,7 @@ class Demo(MusicMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        set_mode(self)
+        super().__post_init__()
 
         self.lights.set_channels(brightness=100, on=True, force=True)
         time.sleep(0.5)

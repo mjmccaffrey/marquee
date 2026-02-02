@@ -35,6 +35,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
     def __post_init__(self) -> None:
         """Initialize."""
         print(f"Initializing {self}")
+        super().__post_init__()
         self.session = requests.Session()
         self.session.headers = {'hue-application-key': self.application_key}
         self.session.verify = False

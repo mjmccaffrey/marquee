@@ -49,3 +49,8 @@ Sylvania_G25_Frosted_40 = DimBulb(
         'A': 100, 'F': 23,
     }
 )
+Sylvania_G40_Frosted_100 = DimBulb(
+    wattage_actual=100,
+    wattage_reference=100,
+)
+

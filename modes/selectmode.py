@@ -13,9 +13,6 @@ from sequences import rotate_build_flip
 class SelectMode(ForegroundMode, ABC):
     """Base for the selection modes."""
 
-    def __post_init__(self) -> None:
-        super().__post_init__()
-
     def setup(
         self,
         lower: int,

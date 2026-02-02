@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Collection
 import random
 
-from relays import RelayModule
+from relays import RelayClient
 from sequences import opposite
 
 
@@ -35,10 +35,10 @@ class RestInstrument(Instrument, ABC):
 
 class RelayInstrument(Instrument, ABC):
     """Abstract instrument that uses relays."""
-    def __init__(self, relays: RelayModule) -> None:
+    def __init__(self, relays: RelayClient) -> None:
         super().__init__()
         self.relays = relays
-        self.count = self.relays.relay_count
+        self.count = self.relays.count
         self.relays.set_state_of_devices("0" * self.count)
         self.pattern = self.relays.get_state_of_devices()
         assert self.pattern == "0" * self.count
@@ -73,15 +73,15 @@ class BellSet(RelayInstrument, ReleaseableInstrument):
     pitch_levels = 8
     release_time = 0.09
 
-    def __init__(self, relays: RelayModule) -> None:
+    def __init__(self, relays: RelayClient) -> None:
         super().__init__(relays)
 
     def _update_relays(self, state: str, relays: Collection[int]) -> None:
         """Set relays to state."""
-        pattern = [
+        pattern = ''.join(
             state if i in relays else p
             for i, p in enumerate(self.pattern)
-        ]
+        )
         self.relays.set_state_of_devices(pattern)
         self.pattern = pattern
 
@@ -105,7 +105,7 @@ class DrumSet(RelayInstrument):
         0: '0', 1: '1',
     }
 
-    def __init__(self, relays: RelayModule) -> None:
+    def __init__(self, relays: RelayClient) -> None:
         super().__init__(relays)
 
     def play(self, accent: int, pitches: set[int]) -> None:

@@ -13,6 +13,7 @@ class MusicMode(PerformanceMode, ABC):
 
     def __post_init__(self):
         """Initialize."""
+        super().__post_init__()
         set_mode(self)
 
     def execute(self, *elements: Measure | Section, tempo: int) -> None:

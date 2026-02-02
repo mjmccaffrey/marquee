@@ -23,7 +23,7 @@ class Player:
     buttons: ButtonSet
     drums: DrumSet
     lights: LightSet
-    # top: LightSet
+    top: LightSet
     speed_factor: float
     pace: float = field(init=False)
     bg_mode_instances: dict = field(init=False)

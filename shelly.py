@@ -33,6 +33,7 @@ class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
     def __post_init__(self) -> None:
         """Initialize."""
         print(f"Initializing {self}")
+        super().__post_init__()
         self.session = requests.Session()
         self.channels = [
             channel
@@ -97,6 +98,7 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
     def __post_init__(self) -> None:
         """Initialize."""
         print(f"Initializing {self}")
+        super().__post_init__()
         self.session = requests.Session()
         try:
             self.channels = [
