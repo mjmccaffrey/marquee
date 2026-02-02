@@ -88,7 +88,7 @@ def setup_devices(
                     bulb_model=Sylvania_G40_Frosted_100,
                     channel_first_index=i * 2,
                 )
-                for i, ip in enumerate([SHELLY_IP_ADDRESSES[0]])
+                for i, ip in enumerate([SHELLY_IP_ADDRESSES[-1]])
             ],
         ),
         brightness_factor_init=brightness_factor,
