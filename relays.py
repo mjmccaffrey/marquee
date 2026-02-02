@@ -185,6 +185,7 @@ class NumatoUSBRelayModule(RelayModule, ABC):
             pattern: RelayPattern,
         ) -> DevicePattern:
         """Convert a relay pattern to a device pattern."""
+        print(client)
         return DevicePattern(
             ''.join(
                 pattern[client.device_to_bit[d]]
