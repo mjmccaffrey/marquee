@@ -14,6 +14,7 @@ from modes.basemode import BaseMode
 from modes.mode_misc import ModeDefinition
 from modes.sequencemode import SequenceMode
 from player import Player
+from setup_devices import SetupDevices
 from shelly import ShellyConsolidatedController
 from specialparams import SpecialParams
 
@@ -30,10 +31,7 @@ class Executor:
     def __init__(
             self,
             create_player: Callable[..., Player],
-            setup_devices: Callable[
-                [float, float], 
-                tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet]
-            ],
+            setup_devices: SetupDevices,
         ) -> None:
         """Init the (single) executor."""
         self.create_player = create_player
