@@ -7,7 +7,7 @@ from button import Button, ButtonPressed, Shutdown
 from button_misc import ButtonSet
 from event import PriorityQueue
 from instruments import BellSet, DrumSet
-from lightset import LightSet
+from lightset import ClickSet, LightSet
 # from modes.basemode import BaseMode
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
@@ -24,6 +24,7 @@ class Player:
     drums: DrumSet
     lights: LightSet
     top: LightSet
+    clicker: ClickSet
     speed_factor: float
     pace: float = field(init=False)
     bg_mode_instances: dict = field(init=False)
@@ -77,6 +78,8 @@ class Player:
                 buttons=self.buttons,
                 drums=self.drums,
                 lights=self.lights,
+                top=self.top,
+                clicker=self.clicker,
                 speed_factor=self.speed_factor,
             )
         return definition.cls(**_kwargs)  # type: ignore

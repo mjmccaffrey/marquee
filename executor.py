@@ -126,6 +126,7 @@ class Executor:
             self.drums,
             self.lights,
             self.top,
+            self.clicker,
             speed_factor,
         )
         self.player.execute(mode_index)
