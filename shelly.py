@@ -212,6 +212,11 @@ class ShellyChannel(LightChannel):
 
 
 @dataclass(kw_only=True)
+class ShellyProDimmer1PM(ShellyDimmer, channel_count=1):
+    """Supports the Shelly Pro Dimmer 1PM."""
+
+
+@dataclass(kw_only=True)
 class ShellyProDimmer2PM(ShellyDimmer, channel_count=2):
     """Supports the Shelly Pro Dimmer 2PM."""
 

@@ -78,18 +78,12 @@ def setup_devices(
     )
     secondary = LightSet(
         relays=relays.create_client(TOP_TO_RELAY),
-        controller_type=ShellyConsolidatedController,
+        controller_type=ShellyProDimmer2PM,
         controller_kwargs=dict(
+            index=0,
+            ip_address='192.168.64.116',
             bulb_model=Sylvania_G40_Frosted_100,
-            dimmers=[
-                ShellyProDimmer2PM(
-                    index=i,
-                    ip_address=ip,
-                    bulb_model=Sylvania_G40_Frosted_100,
-                    channel_first_index=i * 2,
-                )
-                for i, ip in enumerate([SHELLY_IP_ADDRESSES[-1]])
-            ],
+            channel_first_index=0,
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
