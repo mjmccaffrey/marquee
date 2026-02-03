@@ -132,15 +132,14 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         assert len(pattern) == client.count
         # Build relay pattern using current state 
         # for relays not used by this client.
-        for i in reversed(range(self.relay_count)):
-            relay_pattern = RelayPattern(
-                ''.join(
-                        pattern[client.relay_to_device[i]]
-                            if i in client.relay_to_device else
-                        self.state[i]
-                    for i in range(self.relay_count)
-                )
+        relay_pattern = RelayPattern(
+            ''.join(
+                    pattern[client.relay_to_device[i]]
+                        if i in client.relay_to_device else
+                    self.state[i]
+                for i in reversed(range(self.relay_count))
             )
+        )
         relay_hex = self._relays_to_relay_hex(relay_pattern)
         self._set_relays(relay_hex)
         self.state = relay_pattern
@@ -164,20 +163,6 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         val = response[:self.relay_pattern_hex_len].decode('utf-8')
         val = bin(int(val, base=16))[2:]
         return RelayPattern(f"{val:>0{self.relay_count}}")
-
-    # def _devices_to_relays(
-    #         self, 
-    #         client: RelayClient,
-    #         pattern: DevicePattern,
-    #     ) -> RelayPattern:
-    #     """Return relay hex pattern corresponding to device_pattern."""
-    #     return RelayPattern(
-    #         ''.join(
-    #             str(pattern[client.bit_to_device[b]])
-    #             if b in client.bit_to_device else 'X'
-    #             for b in range(client.relay_count)
-    #         )
-    #     )
 
     def _relays_to_devices(
             self,

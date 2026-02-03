@@ -48,12 +48,7 @@ class LightSet:
         self.gamut = self.controller.bulb_model.gamut
         RGB.adjust_incomplete_colors(self.gamut or rgbxy.GamutC)
         self.colors = Colors(self.gamut or rgbxy.GamutC)
-
-
-        # Top lightset has 2 channels but 1 relay...
-        # assert len(self.controller.channels) == self.count
-
-
+        assert len(self.controller.channels) == self.count
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
         self.trans_max = self.controller.trans_max

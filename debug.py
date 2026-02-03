@@ -1,9 +1,6 @@
 """Marquee Lighted Sign Project - debug"""
 
 from collections.abc import Sequence
-from dataclasses import dataclass
-from functools import partial
-import time
 
 from lightset import LightSet
 from setup_devices_hue import setup_devices
