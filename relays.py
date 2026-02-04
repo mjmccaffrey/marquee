@@ -69,7 +69,6 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         port_address: str, 
     ) -> None:
         """Establish connection to relay module via serial port."""
-        self.relay_pattern = self._get_relays()
         self.reserved = {r: False for r in range(self.relay_count)}
         try:
             hex_lengths = {8: 2, 16: 4}
@@ -78,8 +77,6 @@ class NumatoUSBRelayModule(RelayModule, ABC):
             raise ValueError("Unrecognized device count")
         self.port_address = port_address
         print(f"Initializing {self}")
-        if not self.port_address:
-            return
         try:
             self._serial_port = serial.Serial(self.port_address, timeout=2)
         except serial.serialutil.SerialException as e:  # type: ignore
@@ -88,6 +85,7 @@ class NumatoUSBRelayModule(RelayModule, ABC):
             print(f"*** Error: {e} ***")
             print()
             raise OSError from None
+        self.relay_pattern = self._get_relays()
 
     def create_client(
         self,
