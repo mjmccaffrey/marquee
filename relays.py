@@ -37,7 +37,6 @@ class RelayClient:
 class RelayModule(Protocol):
     """Protocol for any relay module."""
     relay_count: ClassVar[int]
-    relay_pattern: RelayPattern
 
     def set_state_of_devices(
         self, 
@@ -70,6 +69,7 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         port_address: str, 
     ) -> None:
         """Establish connection to relay module via serial port."""
+        self.relay_pattern: RelayPattern
         self.reserved = {r: False for r in range(self.relay_count)}
         try:
             hex_lengths = {8: 2, 16: 4}
