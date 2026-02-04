@@ -22,8 +22,6 @@ class RelayClient:
     count: int
     device_to_relay: dict
     relay_to_device: dict
-    bit_to_device: dict
-    device_to_bit: dict
 
     def get_state_of_devices(self) -> str:
         return self.module.get_state_of_devices(self)
@@ -96,17 +94,11 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         for r in device_to_relay.values():
             assert not self.reserved[r]
             self.reserved[r] = True
-        device_to_bit = {
-            l: self.relay_count - 1 - r
-            for l, r in device_to_relay.items()
-        }
         return RelayClient(
             module=self,
             count=len(device_to_relay),
             device_to_relay=device_to_relay,
             relay_to_device={v: k for k, v in device_to_relay.items()},
-            device_to_bit=device_to_bit,
-            bit_to_device = {v: k for k, v in device_to_bit.items()},
         )
 
     def __str__(self) -> str:
@@ -148,10 +140,11 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         ) -> RelayPattern:
         """Build relay pattern using client device pattern and
            current state for relays not used by this client."""
+        top = self.relay_count - 1
         return RelayPattern(
             ''.join(
-                    pattern[client.relay_to_device[i]]
-                        if i in client.relay_to_device else
+                    pattern[client.relay_to_device[top - i]]
+                        if top - i in client.relay_to_device else
                     relay
                 for i, relay in enumerate(self.relay_pattern)
             )
@@ -163,9 +156,10 @@ class NumatoUSBRelayModule(RelayModule, ABC):
             pattern: RelayPattern,
         ) -> DevicePattern:
         """Convert a relay pattern to a device pattern."""
+        top = self.relay_count - 1
         return DevicePattern(
             ''.join(
-                pattern[client.device_to_bit[d]]
+                pattern[top - client.device_to_relay[d]]
                 for d in range(client.count)
             )
         )
