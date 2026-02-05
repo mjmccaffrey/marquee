@@ -1,3 +1,8 @@
+<figure>
+<figcaption><b>12 Hue lights and an incandescent one on top for good measure.<br>Fingers crossed that my PyCon talk proposal is accepted!</b></figcaption>
+<img src="readme/PXL_20260205_163605874.jpg" height=600>
+</figure>
+
 **Marquee animated sign project**
 
 I had wanted to make this project for a while, and our son's graduation from the University Alabama was the excuse I needed.<br/><br/>
