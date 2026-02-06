@@ -124,6 +124,7 @@ class DrumSet(RelayInstrument):
 
     def mirror(self, pattern: str) -> None:
         print(pattern)
-        self.relays.set_state_of_devices(pattern)
+        self.relays.module.set_state_of_devices(relay_pattern=pattern)  # type: ignore
+        # !!!!!!!!!!!!!!!!!1
         self.pattern = pattern
 
