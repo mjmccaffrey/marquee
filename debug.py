@@ -7,9 +7,9 @@ from setup_devices_hue import setup_devices
 
 
 def setup():
-    global bells, buttons, drums, primary, secondary, clicker
+    global bells, buttons, drums, lights, top, clicker
 
-    bells, buttons, drums, primary, secondary, clicker = setup_devices(1.0, 1.0)
+    bells, buttons, drums, lights, top, clicker = setup_devices(1.0, 1.0)
 
 
 def ppp(p: Sequence) -> None:

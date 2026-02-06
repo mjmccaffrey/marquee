@@ -63,7 +63,7 @@ def setup_devices(
         {i: i for i in range(relays.relay_count)})
     )
     relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
-    primary = LightSet(
+    lights = LightSet(
         relays=relays.create_client(LIGHT_TO_RELAY),
         controller_type=HueBridge,
         controller_kwargs=dict(
@@ -76,7 +76,7 @@ def setup_devices(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
-    secondary = LightSet(
+    top = LightSet(
         relays=relays.create_client(TOP_TO_RELAY),
         controller_type=ShellyConsolidatedController,
         controller_kwargs=dict(
@@ -121,5 +121,5 @@ def setup_devices(
             _Button(pin=5, pull_up=False, bounce_time=0.10)
         ),
     )
-    return bells, buttons, drums, primary, secondary, clicker
+    return bells, buttons, drums, lights, top, clicker
 

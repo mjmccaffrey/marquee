@@ -36,7 +36,7 @@ def setup_devices(
     relays = NumatoRL160001(
         "/dev/marquee_lights", ALL_RELAYS,  THIS DOES NOT ALLOW DEVICE #s TO BE INDEPENDENT
     )  # /dev/ttyACM2
-    primary = LightSet(
+    lights = LightSet(
         relays=relays,
         relay_devices=list(TOP_TO_RELAY),
         controller_type=ShellyConsolidatedController,
@@ -79,4 +79,4 @@ def setup_devices(
             _Button(pin=5, pull_up=False, bounce_time=0.10)
         ),
     )
-    return bells, buttons, drums, primary
+    return bells, buttons, drums, lights
