@@ -1,9 +1,10 @@
 """Marquee Lighted Sign Project - event"""
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from heapq import heapify, heappop, heappush
 import time
-from typing import Callable, NoReturn
+from typing import NoReturn
 
 @dataclass(order=True, repr=False)
 class Event:

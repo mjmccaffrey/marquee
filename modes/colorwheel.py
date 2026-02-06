@@ -1,10 +1,12 @@
 """Marquee Lighted Sign Project - colorwheel"""
 
+from dataclasses import dataclass
 from .performancemode import PerformanceMode
 
-
+@dataclass(kw_only=True)
 class ColorWheel(PerformanceMode):
     """"""
+    delay: float | None
 
     def __post_init__(self) -> None:
         super().__post_init__()
@@ -38,5 +40,6 @@ class ColorWheel(PerformanceMode):
                 channel_indexes={(i + self.rotation) % 12},
             )
         self.rotation = (self.rotation + 1) % 12
-        self.schedule(due=1.5)
+        if self.delay is not None:
+            self.schedule(due=self.delay)
 

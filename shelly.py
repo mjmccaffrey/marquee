@@ -16,6 +16,7 @@ from lightcontroller import (
     LightController, LightChannel,
 )
 
+
 @dataclass(kw_only=True)
 class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
     """Virtual consolidated controller."""
@@ -47,7 +48,8 @@ class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
         asyncio.run(self._execute_commands(updates))
 
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
-        """Update the all zone, rather than individual channels."""
+        """Update the all zone, rather than individual channels.
+           Not supported on these devices."""
         raise ValueError("Method should not have been called.")
 
     async def _execute_commands(
@@ -66,7 +68,7 @@ class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
         self, 
         update: 'ChannelUpdate'
     ) -> aiohttp.ClientResponse:
-        """Send individual command as part of asynchonous batch.
+        """Send individual command as part of asynchronous batch.
            Update channel state."""
         command = update.channel._make_set_command(update)
         # print(
@@ -134,11 +136,13 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
         ]      
     
     def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
-        """Build and send commands via aiohttp asynchronously."""
+        """Build and send commands via aiohttp asynchronously.
+           Use method in ShellyConsolidatedController instead."""
         raise NotImplementedError()
 
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
-        """Update the all zone, rather than individual channels."""
+        """Update the all zone, rather than individual channels.
+           Not supported on these devices."""
         raise ValueError("Method should not have been called.")
 
 

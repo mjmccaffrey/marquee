@@ -1,9 +1,10 @@
 """Marquee Lighted Sign Project - music_implementation"""
 
+from collections.abc import Callable
 from dataclasses import replace
 from itertools import chain
 import time
-from typing import Any, Callable, Iterator
+from typing import Any, Iterator
 
 from event import Event
 from modes.musicmode import MusicMode

@@ -8,7 +8,7 @@ from bulb import Hue_BR30_Enhanced_Color, Sylvania_G40_Frosted_100
 from button import Button
 from button_misc import ButtonSet
 from hue import HueBridge
-from shelly import ShellyProDimmer1PM
+from shelly import ShellyConsolidatedController, ShellyProDimmer1PM
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 from lightset_misc import LIGHT_TO_RELAY, TOP_TO_RELAY, CLICK_TO_RELAY
@@ -78,12 +78,17 @@ def setup_devices(
     )
     secondary = LightSet(
         relays=relays.create_client(TOP_TO_RELAY),
-        controller_type=ShellyProDimmer1PM,
+        controller_type=ShellyConsolidatedController,
         controller_kwargs=dict(
-            index=0,
-            ip_address='192.168.64.116',
             bulb_model=Sylvania_G40_Frosted_100,
-            channel_first_index=0,
+            dimmers=[
+                ShellyProDimmer1PM(
+                    index=0,
+                    ip_address='192.168.64.116',
+                    bulb_model=Sylvania_G40_Frosted_100,
+                    channel_first_index=0,
+                ),
+            ],
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,

@@ -1,10 +1,11 @@
 """Marquee Lighted Sign Project - basemode"""
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass
 import sys
 import time
-from typing import Callable, NoReturn, Self
+from typing import NoReturn, Self
 
 from button_misc import ButtonInterface
 from event import Event, PriorityQueue
