@@ -27,7 +27,7 @@ class OneTwo(Dot):
     """Grouped dots."""
     color = Colors.YELLOW
     direction = +1
-    speed = 3
+    speed = 5
 
 class One(OneTwo):
     """Grouped dots."""
