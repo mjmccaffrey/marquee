@@ -4,14 +4,14 @@ import signal
 
 from gpiozero import Button as _Button  # type: ignore
 
-from bulb import Sylvania_G25_Frosted_40
-from button import Button
-from devices_misc import ButtonSet
-from shelly import ShellyConsolidatedController, ShellyProDimmer2PM
+from .bulb import Sylvania_G25_Frosted_40
+from .button import Button
+from .devices_misc import ButtonSet
+from .shelly import ShellyConsolidatedController, ShellyProDimmer2PM
 from instruments import BellSet, DrumSet
 from lightset import LightSet
 from lightset_misc import ALL_RELAYS, TOP_TO_RELAY
-from relays import NumatoRL160001, NumatoSSR80001
+from .relays import NumatoRL160001, NumatoSSR80001
 
 SHELLY_IP_ADDRESSES = [
     '192.168.64.111',

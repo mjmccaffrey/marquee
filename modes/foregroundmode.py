@@ -3,7 +3,7 @@
 from abc import ABC
 from dataclasses import dataclass
 
-from devices_misc import ButtonSet
+from devices.devices_misc import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 from .basemode import BaseMode

@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 
-import rgbxy
+from . import rgbxy
 
 def default_adjustments() -> dict[str, int]:
     """Return default brightness adjustments."""

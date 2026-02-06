@@ -10,9 +10,9 @@ from typing import ClassVar
 import requests
 import urllib3
 
-from bulb import HueBulb
 from color import Color
-from lightcontroller import (
+from .bulb import HueBulb
+from .lightcontroller import (
     ChannelUpdate, ChannelCommand, 
     LightController, LightChannel,
 )

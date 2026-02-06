@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import ClassVar
 
 from color import Color
-from lightcontroller import LightChannel, ChannelUpdate
+from devices.lightcontroller import LightChannel, ChannelUpdate
 from .performancemode import PerformanceMode
 
 

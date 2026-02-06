@@ -5,14 +5,14 @@ import signal
 import time
 from typing import Any
 
-from button import Button
-from devices_misc import SetupDevices
+from devices.button import Button
+from devices.devices_misc import SetupDevices
 from lightset_misc import ALL_ON
 from modes.basemode import BaseMode
 from modes.mode_misc import ModeDefinition
 from modes.sequencemode import SequenceMode
 from player import Player
-from shelly import ShellyConsolidatedController
+from devices.shelly import ShellyConsolidatedController
 from specialparams import SpecialParams
 
 

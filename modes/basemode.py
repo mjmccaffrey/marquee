@@ -7,7 +7,7 @@ import sys
 import time
 from typing import NoReturn, Self
 
-from devices_misc import ButtonInterface
+from devices.devices_misc import ButtonInterface
 from event import Event, PriorityQueue
 from .mode_misc import (
     ChangeMode, CreateModeInstance, ModeDefinition, ReplaceKwargValues,

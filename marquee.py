@@ -51,11 +51,11 @@ marquee
 import os
 
 from argument import display_help, process_arguments
-from button import Shutdown
+from devices.button import Shutdown
 from executor import Executor, SigTerm
 from player import Player
 from setup_modes import setup_modes
-from setup_devices_hue import setup_devices
+from devices.setup_devices_hue import setup_devices
 
 def main() -> None:
     """Execute Marquee application."""

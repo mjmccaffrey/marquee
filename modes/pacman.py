@@ -5,7 +5,7 @@ from .gamemode import (
     Entity, EntityGroup, GameMode,
 )
 from .pacman_assets import Dot, Ghost, PacMan, Pinky, Blinky, maze_12
-from lightcontroller import LightChannel, ChannelUpdate
+from devices.lightcontroller import LightChannel, ChannelUpdate
 
 
 class PacManGame(GameMode):

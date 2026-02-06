@@ -3,8 +3,8 @@
 from dataclasses import dataclass, field
 from typing import Any, NoReturn
 
-from button import Button, ButtonPressed, Shutdown
-from devices_misc import ButtonSet
+from devices.button import Button, ButtonPressed, Shutdown
+from devices.devices_misc import ButtonSet
 from event import PriorityQueue
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet

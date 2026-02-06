@@ -4,7 +4,7 @@ from abc import ABC
 from dataclasses import dataclass
 
 from .foregroundmode import ForegroundMode
-from button import Button
+from devices.button import Button
 from .mode_misc import ModeIndex
 
 

@@ -3,7 +3,7 @@
 from collections.abc import Sequence
 
 from lightset import LightSet
-from setup_devices_hue import setup_devices
+from devices.setup_devices_hue import setup_devices
 
 
 def setup():

@@ -9,11 +9,10 @@ from typing import ClassVar
 import aiohttp
 import requests
 
-from bulb import DimBulb
 from color import Color
-from lightcontroller import (
-    ChannelUpdate, ChannelCommand, 
-    LightController, LightChannel,
+from .bulb import DimBulb
+from .lightcontroller import (
+    ChannelUpdate, ChannelCommand, LightController, LightChannel,
 )
 
 

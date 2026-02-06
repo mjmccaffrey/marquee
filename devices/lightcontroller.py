@@ -7,7 +7,7 @@ from typing import ClassVar
 
 import requests
 
-from bulb import Bulb
+from .bulb import Bulb
 from color import Color
 
 @dataclass(kw_only=True, repr=False)

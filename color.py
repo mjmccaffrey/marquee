@@ -2,7 +2,7 @@
 
 from abc import ABC
 
-import rgbxy
+from devices import rgbxy
 
 
 class Color(ABC):

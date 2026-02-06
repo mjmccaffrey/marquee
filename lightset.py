@@ -7,12 +7,13 @@ from collections.abc import Sequence
 from dataclasses import dataclass, InitVar
 import time
 
-import rgbxy
+from devices import rgbxy
 
-from bulb import SmartBulb
+from devices.bulb import SmartBulb
 from color import Color, Colors, RGB
-from lightcontroller import ChannelUpdate, LightController
-from relays import RelayClient
+from devices.lightcontroller import ChannelUpdate, LightController
+from devices.relays import RelayClient
+from sequences import opposite
 from specialparams import ChannelParams, MirrorParams, SpecialParams
 
 
@@ -178,18 +179,6 @@ class LightSet:
         ]
         self.controller.update_channels(updates, force)
 
-    # def set_channel(
-    #     self,
-    #     channel: LightChannel,
-    #     brightness: int | None = None,
-    #     transition: float | None = None,
-    #     color: Color | None = None,
-    #     on: bool | None = None,
-    # ) -> None:
-    #     """Build and send command via requests.
-    #        Does not check current state."""
-    #     channel._set(brightness, transition, color, on)
-
     def _set_channels_instead_of_relays(
             self,
             light_pattern: list | str, 
@@ -337,10 +326,7 @@ class ClickSet:
 
     def click(self) -> None:
         """Click the otherwise unused light relays."""
-        pattern = ''.join(
-            '0' if e == '1' else '1'
-            for e in self.relay_pattern
-        )
+        pattern = opposite(self.relay_pattern)
         self.relays.set_state_of_devices(pattern)
         self.relay_pattern = pattern
 

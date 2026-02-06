@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Collection
 import random
 
-from relays import RelayClient
+from devices.relays import RelayClient
 from sequences import opposite
 
 

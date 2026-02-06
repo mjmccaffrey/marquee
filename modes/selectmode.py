@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from button import Button
+from devices.button import Button
 from .foregroundmode import ForegroundMode
 from .mode_misc import ModeIndex
 from sequences import rotate_build_flip
