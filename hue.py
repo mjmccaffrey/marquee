@@ -137,7 +137,6 @@ class HueChannel(LightChannel):
                 if update.brightness is not None else {}) |
             ({'on': {'on': update.on}}
                 if update.on is not None else {}) |
-            {}
             {'dynamics': {'duration': transition}}
         )
         return ChannelCommand(
