@@ -8,7 +8,6 @@ from devices_misc import ButtonSet
 from event import PriorityQueue
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
-# from modes.basemode import BaseMode
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
 from modes.mode_misc import ChangeMode, ModeDefinition
