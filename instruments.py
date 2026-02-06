@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Collection
 import random
 
-from devices.relays import RelayClient
+from devices.relays import DevicePattern, RelayClient
 from sequences import opposite
 
 
@@ -124,7 +124,10 @@ class DrumSet(RelayInstrument):
 
     def mirror(self, pattern: str) -> None:
         print(pattern)
-        self.relays.module.set_state_of_devices(relay_pattern=pattern)  # type: ignore
+        self.relays.module.set_state_of_devices(
+            self.relays, DevicePattern(pattern),
+            relay_pattern=pattern,  # type: ignore
+        )
         # !!!!!!!!!!!!!!!!!1
         self.pattern = pattern
 
