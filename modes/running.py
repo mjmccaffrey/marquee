@@ -39,7 +39,7 @@ class Three(Dot):
     """Solitary dot."""
     color = Colors.BLUE
     direction = -1
-    speed = 2
+    speed = 1
 
 
 @dataclass(kw_only=True)
