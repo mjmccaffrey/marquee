@@ -61,7 +61,7 @@ class LightSet:
         self.set_channels(
             brightness=25,
             color=self.colors.WHITE,
-            on=False,
+            on=True,
             transition=0,
         )
         self.set_relays(True)
