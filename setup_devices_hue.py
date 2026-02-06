@@ -4,15 +4,15 @@ import signal
 
 from gpiozero import Button as _Button  # type: ignore
 
-from .bulb import Hue_BR30_Enhanced_Color, Sylvania_G40_Frosted_100
-from .button import Button
-from .devices_misc import ButtonSet
-from .hue import HueBridge
-from .shelly import ShellyConsolidatedController, ShellyProDimmer1PM
+from devices.bulb import Hue_BR30_Enhanced_Color, Sylvania_G40_Frosted_100
+from devices.button import Button
+from devices.devices_misc import ButtonSet
+from devices.hue import HueBridge
+from devices.shelly import ShellyConsolidatedController, ShellyProDimmer1PM
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 from lightset_misc import LIGHT_TO_RELAY, TOP_TO_RELAY, CLICK_TO_RELAY
-from .relays import NumatoRL160001, NumatoSSR80001
+from devices.relays import NumatoRL160001, NumatoSSR80001
 
 SHELLY_IP_ADDRESSES = [
     '192.168.64.111',
