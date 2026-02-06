@@ -6,7 +6,7 @@ from gpiozero import Button as _Button  # type: ignore
 
 from bulb import Hue_BR30_Enhanced_Color, Sylvania_G40_Frosted_100
 from button import Button
-from button_misc import ButtonSet
+from devices_misc import ButtonSet
 from hue import HueBridge
 from shelly import ShellyConsolidatedController, ShellyProDimmer1PM
 from instruments import BellSet, DrumSet

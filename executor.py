@@ -6,15 +6,12 @@ import time
 from typing import Any
 
 from button import Button
-from button_misc import ButtonSet
-from instruments import BellSet, DrumSet
-from lightset import LightSet
+from devices_misc import SetupDevices
 from lightset_misc import ALL_ON
 from modes.basemode import BaseMode
 from modes.mode_misc import ModeDefinition
 from modes.sequencemode import SequenceMode
 from player import Player
-from setup_devices import SetupDevices
 from shelly import ShellyConsolidatedController
 from specialparams import SpecialParams
 

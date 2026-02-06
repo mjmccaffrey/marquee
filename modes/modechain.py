@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from itertools import cycle
 
-from button_misc import ButtonInterface
+from devices_misc import ButtonInterface
 from .backgroundmode import BackgroundMode
 from .mode_misc import BGModeEntry
 

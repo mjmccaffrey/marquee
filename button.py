@@ -7,7 +7,7 @@ from typing import ClassVar
 
 from gpiozero import Button as _Button  # type: ignore
 
-from button_misc import ButtonInterface
+from devices_misc import ButtonInterface
 
 
 class ButtonPressed(Exception):

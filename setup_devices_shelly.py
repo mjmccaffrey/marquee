@@ -6,7 +6,7 @@ from gpiozero import Button as _Button  # type: ignore
 
 from bulb import Sylvania_G25_Frosted_40
 from button import Button
-from button_misc import ButtonSet
+from devices_misc import ButtonSet
 from shelly import ShellyConsolidatedController, ShellyProDimmer2PM
 from instruments import BellSet, DrumSet
 from lightset import LightSet
