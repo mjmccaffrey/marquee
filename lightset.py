@@ -105,12 +105,7 @@ class LightSet:
             lights = self.relay_pattern
 
         if isinstance(special, MirrorParams):
-            special.mirror(
-                self.relays.module._devices_to_relays(  # type: ignore
-                    self.relays, lights
-                )
-            )
-            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+            special.mirror(self.relays, lights)
 
         if isinstance(special, ChannelParams):
             self._set_channels_instead_of_relays(lights, special)

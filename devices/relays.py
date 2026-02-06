@@ -113,13 +113,11 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         self, 
         client: RelayClient,
         pattern: DevicePattern,
-        relay_pattern: RelayPattern | None = None
     ) -> None:
         """Set the physical relays per client device pattern.
            Do not change relays not assigned to client."""
         assert len(pattern) == client.count
-        if relay_pattern is None:
-            relay_pattern = self._devices_to_relays(client, pattern)
+        relay_pattern = self._devices_to_relays(client, pattern)
         relay_hex = self._relays_to_relay_hex(relay_pattern)
         self._set_relays(relay_hex)
         self.relay_pattern = relay_pattern

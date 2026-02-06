@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import ClassVar, Self
 
 from color import Color, Colors, RGB
+from devices.relays import RelayClient
 
 @dataclass
 class SpecialParams:
@@ -38,7 +39,7 @@ class ChannelParams(SpecialParams):
 @dataclass
 class MirrorParams(SpecialParams):
     """Parameters to mirror lights with another relay board."""
-    mirror: ClassVar[Callable[[str], None]]
+    mirror: ClassVar[Callable[[RelayClient, str], None]]
 
 @dataclass
 class EmulateParams(ChannelParams, MirrorParams):
