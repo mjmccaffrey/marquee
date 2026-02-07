@@ -72,7 +72,7 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         port_address: str, 
     ) -> None:
         """Establish connection to relay module via serial port."""
-        self.reserved = {r: False for r in range(self.relay_count)}
+        # self.reserved = {r: False for r in range(self.relay_count)}
         try:
             hex_lengths = {8: 2, 16: 4}
             self.relay_pattern_hex_len = hex_lengths[self.relay_count]
@@ -96,9 +96,9 @@ class NumatoUSBRelayModule(RelayModule, ABC):
     ) -> RelayClient:
         """Define a client, in which device_to_relay maps 
            device indices to relay indices."""
-        for r in device_to_relay.values():
-            assert not self.reserved[r]
-            self.reserved[r] = True
+        # for r in device_to_relay.values():
+        #     assert not self.reserved[r]
+        #     self.reserved[r] = True
         return RelayClient(
             module=self,
             count=len(device_to_relay),

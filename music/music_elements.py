@@ -15,7 +15,9 @@ from instruments import (
 from modes.musicmode import MusicMode
 from specialparams import SpecialParams
 
+
 mode: MusicMode
+
 
 @dataclass(frozen=True)
 class Element(ABC):
@@ -69,12 +71,9 @@ class ReleasableNote(BaseNote, ABC):
     def schedule_release(self) -> None:
         """Schedule release of played note."""
         assert issubclass(self.instrument, ReleaseableInstrument)
-        mode.event_queue.push(
-            Event(
-                action = self.release,
-                due = time.time() + self.instrument.release_time,
-                owner = self,
-            )
+        mode.schedule(
+            action = self.release,
+            due = time.time() + self.instrument.release_time,
         )
 
 
@@ -126,7 +125,7 @@ class NoteGroup(Element):
         assert all(n.duration == 0.0 for n in self.notes)
 
     def play(self) -> None:
-        """Play all notes in group."""
+        """Play all notes in group, not quite concurrently."""
         for note in self.notes:
             note.play()
 
@@ -156,9 +155,7 @@ class SequenceMeasure(Measure):
     def __post_init__(self) -> None:
         """Create iterator."""
         object.__setattr__(
-            self, 
-            'patterns', 
-            itertools.cycle(self.sequence(**self.kwargs)),
+            self, 'patterns', itertools.cycle(self.sequence(**self.kwargs)),
         )
 
 
@@ -174,9 +171,7 @@ class Sequence(Element):
     def __post_init__(self) -> None:
         """Create iterator."""
         object.__setattr__(
-            self, 
-            'iter', 
-            itertools.cycle(self.sequence(**self.kwargs)),
+            self, 'iter', itertools.cycle(self.sequence(**self.kwargs)),
         )
 
 
@@ -221,9 +216,7 @@ class Section(Element):
         if self.beats is not None:
             self.apply_beats()
         object.__setattr__(
-            self, 
-            'measures', 
-            self.prepare_parts(self.parts),
+            self, 'measures', self.prepare_parts(self.parts),
         )
 
     def apply_beats(self) -> None:
