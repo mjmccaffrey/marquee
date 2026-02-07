@@ -50,14 +50,17 @@ class SequenceMode(PerformanceMode):
                     lights, 
                     special=self.special,
                 )
+            due = (
+                self.pre_delay
+                    if delay is None else 
+                self.pre_delay + i * delay
+            )
+            name = f"SequenceMode execute {i} {lights}"
+            print(due, name)
             self.schedule(
                 action = action,
-                due = (
-                    self.pre_delay
-                        if delay is None else 
-                    self.pre_delay + i * delay
-                ),
-                name = f"SequenceMode execute {i} {lights}",
+                due = due,
+                name = name,
             )
             if delay is None:
                 return
