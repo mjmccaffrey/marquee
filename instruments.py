@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Collection
 import random
 
-from devices.relays import DevicePattern, RelayClient
+from devices.relays import RelayClient
 from sequences import opposite
 
 
@@ -40,8 +40,7 @@ class RelayInstrument(Instrument, ABC):
         self.relays = relays
         self.count = self.relays.count
         self.relays.set_state_of_devices("0" * self.count)
-        self.pattern = self.relays.get_state_of_devices()
-        assert self.pattern == "0" * self.count
+        assert self.relays.device_pattern == "0" * self.count
 
     def close(self) -> None:
         """Close."""
@@ -52,7 +51,7 @@ class RelayInstrument(Instrument, ABC):
         """Randomly select count relays in state."""
         candidates = [
             i
-            for i, p in enumerate(self.pattern)
+            for i, p in enumerate(self.relays.device_pattern)
             if p == state
         ]
         try:
@@ -80,10 +79,9 @@ class BellSet(RelayInstrument, ReleaseableInstrument):
         """Set relays to state."""
         pattern = ''.join(
             state if i in relays else p
-            for i, p in enumerate(self.pattern)
+            for i, p in enumerate(self.relays.device_pattern)
         )
         self.relays.set_state_of_devices(pattern)
-        self.pattern = pattern
 
     def play(self, pitches: set[int]) -> None:
         """Play specified pitches."""
@@ -110,7 +108,7 @@ class DrumSet(RelayInstrument):
 
     def play(self, accent: int, pitches: set[int]) -> None:
         """Play specified pitches."""
-        new_pattern = self.pattern
+        new_pattern = self.relays.device_pattern
         desired_count = self.accent_to_relay_count[accent]
         for pitch in pitches:
             desired_state = self.pitch_to_relay_state[pitch]
@@ -120,9 +118,4 @@ class DrumSet(RelayInstrument):
                 for i, p in enumerate(new_pattern)
             )
         self.relays.set_state_of_devices(new_pattern)
-        self.pattern = new_pattern
-
-    def mirror(self, client: RelayClient, pattern: str) -> None:
-        self.relays.module.set_state_of_devices(client, DevicePattern(pattern))
-        self.pattern = pattern
 

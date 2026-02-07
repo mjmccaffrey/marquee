@@ -21,6 +21,7 @@ from specialparams import ChannelParams, MirrorParams, SpecialParams
 class LightSet:
     """Supports all of the light-related devices."""
     relays: RelayClient
+    mirror: RelayClient
     controller_type: type[LightController]
     controller_kwargs: dict
     brightness_factor_init: InitVar[float]
@@ -105,7 +106,7 @@ class LightSet:
             lights = self.relay_pattern
 
         if isinstance(special, MirrorParams):
-            special.mirror(self.relays, lights)
+            self.mirror.set_state_of_devices(lights)
 
         if isinstance(special, ChannelParams):
             self._set_channels_instead_of_relays(lights, special)
@@ -319,14 +320,8 @@ class ClickSet:
     """"""
     relays: RelayClient
 
-    def __post_init__(self) -> None:
-        """Initialize."""
-        self.count = self.relays.count
-        self.relay_pattern = self.relays.get_state_of_devices()
-
     def click(self) -> None:
         """Click the otherwise unused light relays."""
-        pattern = opposite(self.relay_pattern)
+        pattern = opposite(self.relays.device_pattern)
         self.relays.set_state_of_devices(pattern)
-        self.relay_pattern = pattern
 

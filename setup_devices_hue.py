@@ -54,17 +54,18 @@ def setup_devices(
 ) -> tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet, ClickSet]:
     """Create and return objects for all physical devices."""
 
-    relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
-    bells = BellSet(relays=relays.create_client(
-        {i: i for i in range(relays.relay_count)})
+    bell_relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
+    bells = BellSet(relays=bell_relays.create_client(
+        {i: i for i in range(bell_relays.relay_count)})
     )
-    relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
-    drums = DrumSet(relays=relays.create_client(
-        {i: i for i in range(relays.relay_count)})
+    drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
+    drums = DrumSet(relays=drum_relays.create_client(
+        {i: i for i in range(drum_relays.relay_count)})
     )
-    relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
+    light_relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
     lights = LightSet(
-        relays=relays.create_client(LIGHT_TO_RELAY),
+        relays=light_relays.create_client(LIGHT_TO_RELAY),
+        mirror=drum_relays.create_client(LIGHT_TO_RELAY),
         controller_type=HueBridge,
         controller_kwargs=dict(
             application_key=HUE_APPLICATION_KEY,
@@ -77,7 +78,8 @@ def setup_devices(
         speed_factor=speed_factor,
     )
     top = LightSet(
-        relays=relays.create_client(TOP_TO_RELAY),
+        relays=light_relays.create_client(TOP_TO_RELAY),
+        mirror=drum_relays.create_client(TOP_TO_RELAY),
         controller_type=ShellyConsolidatedController,
         controller_kwargs=dict(
             bulb_model=Sylvania_G40_Frosted_100,
@@ -94,7 +96,7 @@ def setup_devices(
         speed_factor=speed_factor,
     )
     clicker = ClickSet(
-        relays=relays.create_client(CLICK_TO_RELAY),
+        relays=light_relays.create_client(CLICK_TO_RELAY),
     )
     buttons = ButtonSet(
         body_back = Button(

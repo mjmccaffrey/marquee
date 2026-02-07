@@ -23,13 +23,18 @@ class RelayClient:
     device_to_relay: dict
     relay_to_device: dict
 
+    def __post_init__(self):
+        """"""
+        self.device_pattern = self.get_state_of_devices()
+
     def get_state_of_devices(self) -> str:
+        """"""
         return self.module.get_state_of_devices(self)
 
     def set_state_of_devices(self, pattern: str):
-        return self.module.set_state_of_devices(
-            self, DevicePattern(pattern)
-        )
+        """"""
+        self.module.set_state_of_devices(self, DevicePattern(pattern))
+        self.device_pattern = pattern
 
 
 class RelayModule(Protocol):

@@ -35,7 +35,6 @@ class Player:
         self.active_mode: BackgroundMode | ForegroundMode | None = None
         self.live_bg_modes: dict[int, BackgroundMode] = {}
         self.event_queue = PriorityQueue()
-        MirrorParams.mirror = self.drums.mirror
 
     def __repr__(self) -> str:
         return f"<{self}>"

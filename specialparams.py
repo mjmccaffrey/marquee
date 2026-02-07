@@ -39,7 +39,6 @@ class ChannelParams(SpecialParams):
 @dataclass
 class MirrorParams(SpecialParams):
     """Parameters to mirror lights with another relay board."""
-    mirror: ClassVar[Callable[[RelayClient, str], None]]
 
 @dataclass
 class EmulateParams(ChannelParams, MirrorParams):
