@@ -46,5 +46,5 @@ class EmulateParams(ChannelParams, MirrorParams):
     brightness_on: int = 70
     color_on: Color = RGB(255, 197, 143)
     trans_on: float = 0.0
-    trans_off: float = 1.0
+    trans_off: float = 0.5
 
