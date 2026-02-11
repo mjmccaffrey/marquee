@@ -55,6 +55,8 @@ class PacManGame(GameMode):
         ):
             self.state = GameStates.LOST
             print("COLLISION")
+            assert self.pacman.prior_coord is not None
+            self.move_character(self.pacman, self.pacman.prior_coord)
     
     def desired_light_state(
             self, 
