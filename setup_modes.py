@@ -20,7 +20,7 @@ def setup_modes(exec: Executor) -> None:
     register_channel_modes(exec)
 
     # exec.add_mode("christmas", ChristmasSongs)
-    # exec.add_mode("pacman", PacManGame)
+    exec.add_mode("pacman", PacManGame)
 
     register_color_modes(exec)
     register_relay_modes(exec)
