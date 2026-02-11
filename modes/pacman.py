@@ -1,11 +1,18 @@
 """Marquee Lighted Sign Project - pacman mode"""
 
+from enum import Enum
+
 from color import Colors, RGB
-from .gamemode import (
-    Entity, EntityGroup, GameMode,
-)
+from .gamemode import Entity, EntityGroup, GameMode
 from .pacman_assets import Dot, Ghost, PacMan, Pinky, Blinky, maze_12
 from devices.lightcontroller import LightChannel, ChannelUpdate
+
+
+class GameStates(Enum):
+    PREGAME = 1
+    GAME = 2
+    LOST = 3
+    WON = 4
 
 
 class PacManGame(GameMode):
@@ -15,27 +22,34 @@ class PacManGame(GameMode):
     """Level 2 - add Blinky."""
     """Level 3 - add bypass."""
 
+
     def __post_init__(self):
         """Initialize board and characters."""
         super().__post_init__()
         assert self.lights.gamut is not None  # Color lights
         RGB.adjust_incomplete_colors(self.lights.gamut)
-        self.pacman = self.create_entity(etype=PacMan, name="pacman")
+        self.pacman = self.create_character(ctype=PacMan, name="pacman")
         self.place_entity(self.pacman, 7)
-        self.pinky = self.create_entity(etype=Pinky, name="pinky")
-        self.blinky = self.create_entity(etype=Blinky, name="blinky")
+        self.pinky = self.create_character(ctype=Pinky, name="pinky")
+        self.blinky = self.create_character(ctype=Blinky, name="blinky")
         for d in maze_12.keys() - {7}:
             dot = self.create_entity(etype=Dot, name=f"dot_{d}")
             self.place_entity(dot, d)
+        self.state = GameStates.PREGAME
 
     def state_logic(self) -> None:
         """"""
-        # If ghost and Pac-Man on same square, game is over etc.
+        # If ghost and Pac-Man on same square, or 
+        # attempted to pass each other, game is over etc.
         assert self.pacman.coord is not None
         if any(
-            ghost in self.board[self.pacman.coord]
-            for ghost in (Pinky, Blinky)
+            self.pacman.coord == ghost.coord
+                        or
+            self.pacman.prior_coord == ghost.coord and
+            self.pacman.coord == ghost.prior_coord
+            for ghost in (self.pinky, self.blinky)
         ):
+            self.state = GameStates.LOST
             print("COLLISION")
     
     def desired_light_state(

@@ -36,7 +36,7 @@ class PacMan(Character):
                 # print(f"BRIGHTNESS AT {coord} IS NOW {dest[Dot].brightness}")
                 if dest[Dot].brightness <= 0:
                     del dest[Dot]
-            self.game.move_entity(self, coord)
+            self.game.move_character(self, coord)
 
         # TEST
         keystrokes = {'l': 'left', 'r': 'right', 'u': 'up', 'd': 'down'}
@@ -63,39 +63,55 @@ class Ghost(Character, ABC):
     brightness: int = 80
     draw_priority: ClassVar[int] = 2
     turn_priority: ClassVar[int] = 2
-    sleep_ticks: int
+    hide_ticks: int
     direction: int
+
+    def __post_init__(self):
+        """"""
+        self.WAITING = self.waiting
+        self.EMERGING = self.emerging
+        self.CHASING = self.chasing
+        self.state = self.WAITING
+
+    def waiting(self) -> None:
+        """"""
+        if self.game.tick == self.hide_ticks:
+            self.state = self.EMERGING
+
+    def emerging(self) -> None:
+        """"""
+        assert self.coord is None
+        if not any(
+            issubclass(e, Character)
+            for e in self.game.board[1]
+        ):
+            self.game.place_entity(self, 1)
+            self.state = self.CHASING
+
+    def chasing(self) -> None:
+        """"""
+        assert self.coord is not None
+        self.game.move_character(self, self.coord + self.direction)
 
     def execute_turn(self) -> None:
         """"""
-        if self.game.tick < self.sleep_ticks:
-            return
-        if self.coord is None:
-            if not any(
-                issubclass(e, Character)
-                for e in self.game.board[1]
-            ):
-                self.game.place_entity(self, 1)
-        else:
-            pacman = self.game.characters_by_name['pacman']
-            # if pacman.coord == self.coord 
-            self.game.move_entity(self, self.coord + self.direction)
+        self.state()
 
 
 @dataclass(kw_only=True, repr=False)
 class Pinky(Ghost):
     """"""
     color: ClassVar[Color] = Colors.MAGENTA
-    sleep_ticks: int = 10
     direction: int = +1
+    hide_ticks: int = 10
 
 
 @dataclass(kw_only=True, repr=False)
 class Blinky(Ghost):
     """"""
     color: ClassVar[Color] = Colors.GREEN
-    sleep_ticks: int = 15
     direction: int = -1
+    hide_ticks: int = 15
 
 
 maze_base: Maze = {

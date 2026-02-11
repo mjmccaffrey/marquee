@@ -20,7 +20,7 @@ class Dot(Character):
         """Take turn."""
         assert self.coord is not None
         if self.game.tick and (self.game.tick % self.speed) == 0:
-            self.game.move_entity(self, self.coord + self.direction)
+            self.game.move_character(self, self.coord + self.direction)
 
 
 class OneTwo(Dot):

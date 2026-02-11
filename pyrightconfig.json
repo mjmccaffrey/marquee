@@ -4,5 +4,6 @@
     ],
     "reportIncompatibleMethodOverride": false,
     "reportIncompatibleVariableOverride": false,
+    "reportMatchNotExhaustive": true,
     "reportPossiblyUnboundVariable": false,
 }
