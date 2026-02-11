@@ -1,9 +1,10 @@
 """Marquee Lighted Sign Project - pacman mode"""
 
+from dataclasses import dataclass, field
 from enum import Enum
 
 from color import Colors, RGB
-from .gamemode import Entity, EntityGroup, GameMode
+from .gamemode import Entity, EntityGroup, GameMode, Maze
 from .pacman_assets import Dot, Ghost, PacMan, Pinky, Blinky, maze_12
 from devices.lightcontroller import LightChannel, ChannelUpdate
 
@@ -15,12 +16,15 @@ class GameStates(Enum):
     WON = 4
 
 
+@dataclass(kw_only=True)
 class PacManGame(GameMode):
     """"""
     """Level 0 - basic maze."""
     """Level 1 - add Pinky."""
     """Level 2 - add Blinky."""
     """Level 3 - add bypass."""
+    maze: Maze = field(default_factory=lambda: maze_12)
+    ticks_per_second: int = 2
 
 
     def __post_init__(self):
