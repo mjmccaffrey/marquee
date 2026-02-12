@@ -26,7 +26,11 @@ class PacManGame(GameMode):
         self.PRE_GAME = self.pre_game
         self.WON_GAME = self.won_game
         self.LOST_GAME = self.lost_game
+
+    def execute(self) -> None:
+        """"""
         self.state = self.PRE_GAME
+        self.start()
 
     def pre_game(self) -> None:
         """Set up dots and characters."""
@@ -46,6 +50,7 @@ class PacManGame(GameMode):
         self.blinky = self.register_entity(
             Blinky(game=self, wait_ticks=999999 if self.level == 0 else 10))
         self.place_entity(self.pacman, 7)
+        self.update_lights(self.board)
         self.state = self.PLAY_GAME
 
     def won_game(self) -> None:

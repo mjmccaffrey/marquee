@@ -60,7 +60,7 @@ class GameMode(PerformanceMode):
         """"""
         super().__post_init__()
         self.PLAY_GAME = self.play_game
-        self.state: Callable[[], None] = self.play_game
+        self.state: Callable[[], None]
 
     @abstractmethod
     def desired_light_state(
@@ -68,6 +68,10 @@ class GameMode(PerformanceMode):
             entities: EntityGroup, 
             channel: LightChannel,
         ) -> ChannelUpdate:
+        """"""
+
+    @abstractmethod
+    def execute(self) -> None:
         """"""
 
     @abstractmethod
@@ -82,9 +86,8 @@ class GameMode(PerformanceMode):
         self.entities: dict[type, int] = defaultdict()
         self.tick: int = 0
 
-    def execute(self):
+    def start(self):
         """"""
-        self.update_lights(self.board)
         self.schedule(
             action=self.execute_state,
             due=(1 / self.ticks_per_second), # !!!!!!!
