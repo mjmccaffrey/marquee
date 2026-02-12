@@ -20,7 +20,7 @@ class Dot(Entity):
 @dataclass(kw_only=True, repr=False)
 class PacMan(Character):
     """"""
-    name: str = "PacMan"
+    name: str = "#Pac Man#"
     color: ClassVar[Color] = RGB(252, 234, 63)
     brightness: int = 80
     draw_priority: ClassVar[int] = 3
