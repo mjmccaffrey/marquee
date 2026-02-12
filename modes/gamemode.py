@@ -83,7 +83,7 @@ class GameMode(PerformanceMode):
         self.board: Board = {coord: {} for coord in sorted(self.maze)}
         self.characters_by_name: dict[str, Character] = {}
         self.characters_turn_order: list[Character] = []
-        self.entities: dict[type, int] = defaultdict()
+        self.entities: dict[type, int] = defaultdict(int)
         self.tick: int = 0
 
     def start(self):
