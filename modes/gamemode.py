@@ -48,7 +48,7 @@ class Square:
 Board = dict[int, 'EntityGroup']
 EntityGroup = dict[type[Entity], Entity]
 Maze = dict[int, Square]
-
+E = TypeVar("E", bound=Entity)
 
 @dataclass(kw_only=True)
 class GameMode(PerformanceMode):
@@ -143,9 +143,9 @@ class GameMode(PerformanceMode):
         }
         return result
 
-    E = TypeVar("E", bound=Entity)
     def register_entity(self, entity: E) -> E:
         """Register and return new entity."""
+        print("##############", type[entity])
         self.entities[type[entity]] += 1
         if isinstance(entity, Character):
             self.characters_by_name[entity.name] = entity

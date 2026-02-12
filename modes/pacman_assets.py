@@ -9,7 +9,7 @@ from .gamemode import Character, Entity, Maze, Square
 # from debug import light_states
 
 
-@dataclass(kw_only=True, repr=False)
+@dataclass(kw_only=True, repr=False, eq=True, )
 class Dot(Entity):
     """"""
     color: RGB = Colors.GREEN
