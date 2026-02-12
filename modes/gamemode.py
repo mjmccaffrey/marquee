@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, TypeVar
 
 from color import Color
 from devices.lightcontroller import LightChannel, ChannelUpdate  # !!! Use LightSet, not LightController
@@ -140,7 +140,8 @@ class GameMode(PerformanceMode):
         }
         return result
 
-    def register_entity[E: Entity](self, entity: E) -> E:
+    E = TypeVar("E", bound=Entity)
+    def register_entity(self, entity: E) -> E:
         """Register and return new entity."""
         self.entities[type[entity]] += 1
         if isinstance(entity, Character):
