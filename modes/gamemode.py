@@ -145,6 +145,7 @@ class GameMode(PerformanceMode):
 
     def register_entity(self, entity: E) -> E:
         """Register and return new entity."""
+        print("??????????????", entity)
         print("##############", type[entity])
         self.entities[type[entity]] += 1
         if isinstance(entity, Character):
