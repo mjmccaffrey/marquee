@@ -40,9 +40,9 @@ class PacManGame(GameMode):
         """"""
         self.level = level
         self.init_level()
-        for d in maze_12.keys() - {7}:
-            dot = self.register_entity(Dot(game=self, name=f"dot_{d}"))
-            self.place_entity(dot, d)
+        # for d in maze_12.keys() - {7}:
+        #     dot = self.register_entity(Dot(game=self, name=f"dot_{d}"))
+        #     self.place_entity(dot, d)
         self.pacman = self.register_entity(PacMan(game=self))
         self.pinky = self.register_entity(
             Pinky(game=self, wait_ticks=10 if self.level == 0 else 5)
