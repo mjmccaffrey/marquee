@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - running mode"""
 
+from abc import ABC
 from dataclasses import dataclass, field
 
 from color import Colors, RGB
@@ -8,7 +9,7 @@ from .gamemode import Character, EntityGroup, GameMode, Maze
 from .pacman_assets import maze_12
 
 
-class Dot(Character):
+class Dot(Character, ABC):
     """"""
     brightness = 100
     draw_priority = 1
@@ -23,20 +24,27 @@ class Dot(Character):
             self.game.move_character(self, self.coord + self.direction)
 
 
-class OneTwo(Dot):
+@dataclass(kw_only=True, repr=False)
+class OneTwo(Dot, ABC):
     """Grouped dots."""
     color = Colors.YELLOW
     direction = +1
     speed = 5
 
+@dataclass(kw_only=True, repr=False)
 class One(OneTwo):
     """Grouped dots."""
+    name: str = "One"
 
+@dataclass(kw_only=True, repr=False)
 class Two(OneTwo):
     """Grouped dots."""
+    name: str = "Two"
 
+@dataclass(kw_only=True, repr=False)
 class Three(Dot):
     """Solitary dot."""
+    name: str = "Three"
     color = Colors.BLUE
     direction = -1
     speed = 1
@@ -52,9 +60,9 @@ class Running(GameMode):
         super().__post_init__()
         assert self.lights.gamut is not None  # Color lights
         RGB.adjust_incomplete_colors(self.lights.gamut)
-        self.one = self.create_entity(etype=One, name="one")
-        self.two = self.create_entity(etype=Two, name="two")
-        self.three = self.create_entity(etype=Three, name="three")
+        self.one = self.register_entity(One(game=self))
+        self.two = self.register_entity(Two(game=self))
+        self.three = self.register_entity(Three(game=self))
         self.place_entity(self.one, 0)
         self.place_entity(self.two, 1)
         self.place_entity(self.three, 6)

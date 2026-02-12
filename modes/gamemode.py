@@ -1,6 +1,8 @@
 """Marquee Lighted Sign Project - gamemode"""
 
 from abc import ABC, abstractmethod
+from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import ClassVar
 
@@ -55,35 +57,10 @@ class GameMode(PerformanceMode):
     ticks_per_second: int # !!! adjust by speed_factor
 
     def __post_init__(self):
-        """Initialize board and characters."""
-        super().__post_init__()
-        self.board: Board = {coord: {} for coord in sorted(self.maze)}
-        assert all(c == i for i, c in enumerate(self.board)) # ??? What is this?
-        self.characters_by_name: dict[str, Character] = {}
-        self.characters_turn_order: list[Character] = []
-        self.tick: int = 0
-
-    def execute(self):
         """"""
-        self.update_lights(self.board)
-        self.schedule(
-            action=self.execute_round,
-            due=(1 / self.ticks_per_second), # !!!!!!!
-            repeat=True,
-        )
-        
-    def execute_round(self):
-        """Execute a game round."""
-        old_board = {
-            k: v.copy()
-            for k, v in self.board.items()
-        }
-        for character in self.characters_turn_order:
-            character.execute_turn()
-        self.state_logic()
-        delta_board = self.compare_boards(old_board)
-        self.update_lights(delta_board)
-        self.tick += 1
+        super().__post_init__()
+        self.PLAY_GAME = self.play_game
+        self.state: Callable[[], None] = self.play_game
 
     @abstractmethod
     def desired_light_state(
@@ -96,6 +73,40 @@ class GameMode(PerformanceMode):
     @abstractmethod
     def state_logic(self):
         """"""
+
+    def init_level(self):
+        """"""
+        self.board: Board = {coord: {} for coord in sorted(self.maze)}
+        self.characters_by_name: dict[str, Character] = {}
+        self.characters_turn_order: list[Character] = []
+        self.entities: dict[type, int] = defaultdict()
+        self.tick: int = 0
+
+    def execute(self):
+        """"""
+        self.update_lights(self.board)
+        self.schedule(
+            action=self.execute_state,
+            due=(1 / self.ticks_per_second), # !!!!!!!
+            repeat=True,
+        )
+
+    def execute_state(self):
+        """"""
+        self.state()
+        
+    def play_game(self):
+        """Execute a game round."""
+        old_board = {
+            k: v.copy()
+            for k, v in self.board.items()
+        }
+        for character in self.characters_turn_order:
+            character.execute_turn()
+        self.state_logic()
+        delta_board = self.compare_boards(old_board)
+        self.update_lights(delta_board)
+        self.tick += 1
 
     def light_updates(self, board: Board) -> list[ChannelUpdate]:
         """"""
@@ -129,18 +140,25 @@ class GameMode(PerformanceMode):
         }
         return result
 
-    def create_entity(self, etype: type[Entity], name: str) -> Entity:
-        """Return new entity. Update various structures."""
-        return etype(game=self, name=name)
+    def register_entity[E: Entity](self, entity: E) -> E:
+        """Register and return new entity."""
+        self.entities[type[entity]] += 1
+        if isinstance(entity, Character):
+            self.characters_by_name[entity.name] = entity
+            self.characters_turn_order.append(entity)
+            self.characters_turn_order.sort(key = lambda c: c.turn_priority)
+        return entity
 
-    def create_character(self, ctype: type[Character], name: str) -> Character:
-        """Return new character. Update various structures."""
-        character = self.create_entity(ctype, name)
-        assert isinstance(character, Character)
-        self.characters_by_name[name] = character
-        self.characters_turn_order.append(character)
-        self.characters_turn_order.sort(key = lambda c: c.turn_priority)
-        return character
+    def delete_entity(self, etype: type[Entity], coord: int) -> None:
+        """"""
+        del self.board[coord][etype]
+        self.entities[etype] -= 1
+
+    def place_entity(self, entity: Entity, coord: int):
+        """Place entity on board at coord, with wrapping."""
+        coord = coord % len(self.board)
+        entity.coord = coord
+        self.board[entity.coord][type(entity)] = entity
 
     def move_character(self, character: Character, coord: int):
         """Move character to coord, with wrapping."""
@@ -149,10 +167,4 @@ class GameMode(PerformanceMode):
         del self.board[character.coord][type(character)]
         character.prior_coord = character.coord
         self.place_entity(character, coord)
-
-    def place_entity(self, entity: Entity, coord: int):
-        """Place entity on board at coord, with wrapping."""
-        coord = coord % len(self.board)
-        entity.coord = coord
-        self.board[entity.coord][type(entity)] = entity
 

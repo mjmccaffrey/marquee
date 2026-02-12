@@ -20,6 +20,7 @@ class Dot(Entity):
 @dataclass(kw_only=True, repr=False)
 class PacMan(Character):
     """"""
+    name: str = "PacMan"
     color: ClassVar[Color] = RGB(252, 234, 63)
     brightness: int = 80
     draw_priority: ClassVar[int] = 3
@@ -33,9 +34,8 @@ class PacMan(Character):
             dest = self.game.board[coord]
             if Dot in dest:
                 dest[Dot].brightness -= 65
-                # print(f"BRIGHTNESS AT {coord} IS NOW {dest[Dot].brightness}")
                 if dest[Dot].brightness <= 0:
-                    del dest[Dot]
+                    self.game.delete_entity(Dot, coord)
             self.game.move_character(self, coord)
 
         # TEST
@@ -63,11 +63,11 @@ class Ghost(Character, ABC):
     brightness: int = 80
     draw_priority: ClassVar[int] = 2
     turn_priority: ClassVar[int] = 2
-    hide_ticks: int
+    wait_ticks: int
     direction: int
 
     def __post_init__(self):
-        """"""
+        """Initialize states."""
         self.WAITING = self.waiting
         self.EMERGING = self.emerging
         self.CHASING = self.chasing
@@ -75,7 +75,7 @@ class Ghost(Character, ABC):
 
     def waiting(self) -> None:
         """"""
-        if self.game.tick == self.hide_ticks:
+        if self.game.tick == self.wait_ticks:
             self.state = self.EMERGING
 
     def emerging(self) -> None:
@@ -99,19 +99,19 @@ class Ghost(Character, ABC):
 
 
 @dataclass(kw_only=True, repr=False)
-class Pinky(Ghost):
+class Blinky(Ghost):
     """"""
-    color: ClassVar[Color] = Colors.MAGENTA
-    direction: int = +1
-    hide_ticks: int = 10
+    name: str = "Blinky"
+    color: ClassVar[Color] = Colors.GREEN
+    direction: int = -1
 
 
 @dataclass(kw_only=True, repr=False)
-class Blinky(Ghost):
+class Pinky(Ghost):
     """"""
-    color: ClassVar[Color] = Colors.GREEN
-    direction: int = -1
-    hide_ticks: int = 15
+    name: str = "Pinky"
+    color: ClassVar[Color] = Colors.MAGENTA
+    direction: int = +1
 
 
 maze_base: Maze = {

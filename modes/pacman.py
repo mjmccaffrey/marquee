@@ -1,7 +1,6 @@
 """Marquee Lighted Sign Project - pacman mode"""
 
 from dataclasses import dataclass, field
-from enum import Enum
 
 from color import Colors, RGB
 from .gamemode import Entity, EntityGroup, GameMode, Maze
@@ -9,55 +8,84 @@ from .pacman_assets import Dot, Ghost, PacMan, Pinky, Blinky, maze_12
 from devices.lightcontroller import LightChannel, ChannelUpdate
 
 
-class GameStates(Enum):
-    PREGAME = 1
-    GAME = 2
-    LOST = 3
-    WON = 4
-
-
 @dataclass(kw_only=True)
 class PacManGame(GameMode):
     """"""
-    """Level 0 - basic maze."""
-    """Level 1 - add Pinky."""
-    """Level 2 - add Blinky."""
-    """Level 3 - add bypass."""
+    # """Level 0 - basic maze."""
+    """Level 0 - Blinky."""
+    """Level 2 - Blinky and Pinky."""
+    # """Level 3 - add bypass."""
     maze: Maze = field(default_factory=lambda: maze_12)
     ticks_per_second: int = 2
-
 
     def __post_init__(self):
         """Initialize board and characters."""
         super().__post_init__()
-        assert self.lights.gamut is not None  # Color lights
+        assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
-        self.pacman = self.create_character(ctype=PacMan, name="pacman")
-        self.place_entity(self.pacman, 7)
-        self.pinky = self.create_character(ctype=Pinky, name="pinky")
-        self.blinky = self.create_character(ctype=Blinky, name="blinky")
+        self.PRE_GAME = self.pre_game
+        self.WON_GAME = self.won_game
+        self.LOST_GAME = self.lost_game
+        self.state = self.PRE_GAME
+
+    def pre_game(self) -> None:
+        """Set up dots and characters."""
+        self.play_level(0)
+    
+    def play_level(self, level: int) -> None:
+        """"""
+        self.level = level
+        self.init_level()
         for d in maze_12.keys() - {7}:
-            dot = self.create_entity(etype=Dot, name=f"dot_{d}")
+            dot = self.register_entity(Dot(game=self, name=f"dot_{d}"))
             self.place_entity(dot, d)
-        self.state = GameStates.PREGAME
+        self.pacman = self.register_entity(PacMan(game=self))
+        self.pinky = self.register_entity(
+            Pinky(game=self, wait_ticks=10 if self.level == 0 else 5)
+        )
+        self.blinky = self.register_entity(
+            Blinky(game=self, wait_ticks=999999 if self.level == 0 else 10))
+        self.place_entity(self.pacman, 7)
+        self.state = self.PLAY_GAME
+
+    def won_game(self) -> None:
+        """"""
+        print("You won!")
+
+    def lost_game(self) -> None:
+        """"""
+        print("You lost!")
 
     def state_logic(self) -> None:
         """"""
         # If ghost and Pac-Man on same square, or 
         # attempted to pass each other, game is over etc.
         assert self.pacman.coord is not None
-        if any(
+        if self.all_dots_eaten():
+            if self.level == 0:
+                self.play_level(1)
+                self.state = self.PLAY_GAME
+            else:
+                self.state = self.WON_GAME
+        if self.ghost_got_pacman():
+            assert self.pacman.prior_coord is not None
+            self.move_character(self.pacman, self.pacman.prior_coord)
+            self.state = self.LOST_GAME
+
+    def all_dots_eaten(self):
+        """"""
+        return not self.entities[Dot]
+
+    def ghost_got_pacman(self):
+        """"""
+        return any(
             self.pacman.coord == ghost.coord
                         or
             self.pacman.prior_coord == ghost.coord and
             self.pacman.coord == ghost.prior_coord
             for ghost in (self.pinky, self.blinky)
-        ):
-            self.state = GameStates.LOST
-            print("COLLISION")
-            assert self.pacman.prior_coord is not None
-            self.move_character(self.pacman, self.pacman.prior_coord)
-    
+        )
+
     def desired_light_state(
             self, 
             entities: EntityGroup, 
