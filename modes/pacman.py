@@ -42,6 +42,7 @@ class PacManGame(GameMode):
         self.level = level
         self.init_level()
         self.top.set_channels(brightness=0, on=True)
+        self.top.set_relays(True)
         for d in maze_12.keys() - {7}:
             dot = self.register_entity(Dot(game=self, name=f"dot_{d}"))
             self.place_entity(dot, d)
