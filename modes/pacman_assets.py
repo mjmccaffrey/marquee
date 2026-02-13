@@ -6,12 +6,14 @@ from dataclasses import dataclass
 
 from color import Color, Colors, RGB
 from .gamemode import Character, Entity, Maze, Square
+from .pacman import PacManGame
 # from debug import light_states
 
 
 @dataclass(kw_only=True, repr=False, eq=True, )
 class Dot(Entity):
     """"""
+    game: PacManGame
     color: RGB = Colors.GREEN
     brightness: int = 80
     draw_priority: int = 1
@@ -20,7 +22,8 @@ class Dot(Entity):
 @dataclass(kw_only=True, repr=False)
 class PacMan(Character):
     """"""
-    name: str = "#Pac Man#"
+    game: PacManGame
+    name: str = "PacMan"
     color: ClassVar[Color] = RGB(252, 234, 63)
     brightness: int = 80
     draw_priority: ClassVar[int] = 3
@@ -29,33 +32,40 @@ class PacMan(Character):
     def execute_turn(self):
         """Take turn."""
 
-        def _move_to(coord: int) -> None:
-            """"""
-            dest = self.game.board[coord]
-            if Dot in dest:
-                dest[Dot].brightness -= 65
-                if dest[Dot].brightness <= 0:
-                    self.game.delete_entity(Dot, coord)
-            self.game.move_character(self, coord)
-
         # TEST
         keystrokes = {'l': 'left', 'r': 'right', 'u': 'up', 'd': 'down'}
         direction = input(f"move {self.game.tick}:").lower()
         match direction:
             case '.':
-                dest = None
+                coord = None
             case key if key in keystrokes:
                 assert self.coord is not None
-                dest = getattr(
+                coord = getattr(
                     self.game.maze[self.coord],
                     keystrokes[key],
                 )
             case _:
-                dest = None
+                coord = None
                 # light_states(self.game.lights)
-        if dest is not None:
-            _move_to(dest)
+        if coord is not None:
+            self.game.move_character(self, coord)
+            if Dot in self.game.board[coord]:
+                self.eat_dot_piece(coord)
 
+    def eat_dot_piece(self, coord: int) -> None:
+        """"""
+        self.game.dot_pieces_remaining -= 1
+        self.game.top.set_channels(
+            brightness=int(
+                (self.game.dot_pieces_maximum  - 
+                 self.game.dot_pieces_remaining) * 
+                100 / self.game.dot_pieces_maximum
+            ),
+        )
+        dot = self.game.board[coord][Dot]
+        dot.brightness -= 65
+        if dot.brightness <= 0:
+            del self.game.board[coord][Dot]
 
 @dataclass(kw_only=True, repr=False)
 class Ghost(Character, ABC):

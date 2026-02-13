@@ -83,7 +83,6 @@ class GameMode(PerformanceMode):
         self.board: Board = {coord: {} for coord in sorted(self.maze)}
         self.characters_by_name: dict[str, Character] = {}
         self.characters_turn_order: list[Character] = []
-        self.entities: dict[type, int] = defaultdict(int)
         self.tick: int = 0
 
     def start(self):
@@ -123,7 +122,7 @@ class GameMode(PerformanceMode):
     def update_lights(self, board: Board):
         """"""
         updates = self.light_updates(board)
-        self.lights.controller.update_channels(updates)
+        self.lights.update_channels(updates)
 
     def print_board(self, board: Board) -> None:
         """"""
@@ -145,17 +144,11 @@ class GameMode(PerformanceMode):
 
     def register_entity(self, entity: E) -> E:
         """Register and return new entity."""
-        self.entities[type(entity)] += 1
         if isinstance(entity, Character):
             self.characters_by_name[entity.name] = entity
             self.characters_turn_order.append(entity)
             self.characters_turn_order.sort(key = lambda c: c.turn_priority)
         return entity
-
-    def delete_entity(self, etype: type[Entity], coord: int) -> None:
-        """"""
-        del self.board[coord][etype]
-        self.entities[etype] -= 1
 
     def place_entity(self, entity: Entity, coord: int):
         """Place entity on board at coord, with wrapping."""

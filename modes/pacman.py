@@ -23,6 +23,8 @@ class PacManGame(GameMode):
         super().__post_init__()
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
+        self.dot_pieces_maximum = (self.lights.count - 1 * 2)
+        self.dot_pieces_remaining = 0
         self.PRE_GAME = self.pre_game
         self.WON_GAME = self.won_game
         self.LOST_GAME = self.lost_game
@@ -38,11 +40,14 @@ class PacManGame(GameMode):
     
     def play_level(self, level: int) -> None:
         """"""
+        print("Playing level ", level)
         self.level = level
         self.init_level()
+        self.top.set_channels(brightness=0, on=True)
         for d in maze_12.keys() - {7}:
             dot = self.register_entity(Dot(game=self, name=f"dot_{d}"))
             self.place_entity(dot, d)
+        self.dot_pieces_remaining = self.dot_pieces_maximum
         self.pacman = self.register_entity(PacMan(game=self))
         self.pinky = self.register_entity(
             Pinky(game=self, wait_ticks=10 if self.level == 0 else 5)
@@ -56,10 +61,12 @@ class PacManGame(GameMode):
     def won_game(self) -> None:
         """"""
         print("You won!")
+        self.event_queue.delete_owned_by(self)
 
     def lost_game(self) -> None:
         """"""
         print("You lost!")
+        self.event_queue.delete_owned_by(self)
 
     def state_logic(self) -> None:
         """"""
@@ -69,7 +76,6 @@ class PacManGame(GameMode):
         if self.all_dots_eaten():
             if self.level == 0:
                 self.play_level(1)
-                self.state = self.PLAY_GAME
             else:
                 self.state = self.WON_GAME
         if self.ghost_got_pacman():
@@ -79,7 +85,8 @@ class PacManGame(GameMode):
 
     def all_dots_eaten(self):
         """"""
-        return not self.entities[Dot]
+        return not self.dot_pieces_remaining
+        # return not self.entities[Dot]
 
     def ghost_got_pacman(self):
         """"""

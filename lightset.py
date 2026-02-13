@@ -1,8 +1,5 @@
 """Marquee Lighted Sign Project - lightset"""
 
-# THIS SHOULD BE THE SOLE LIGHT INTERFACE FOR THE APPLICATION,
-# PARTICULARLY REGARDING METHODS.
-
 from collections.abc import Sequence
 from dataclasses import dataclass, InitVar
 import time
@@ -67,15 +64,6 @@ class LightSet:
             transition=0,
         )
         self.set_relays(True)
-
-    @property
-    def brightness_factor(self) -> float:
-        return self._brightness_factor
-    
-    @brightness_factor.setter
-    def brightness_factor(self, value) -> None:
-        self._brightness_factor = value
-        print("Brightness factor is now ", self._brightness_factor)
 
     def brightnesses(self) -> list[int]:
         """Return each channel's brightness state."""
@@ -180,6 +168,10 @@ class LightSet:
         ]
         self.controller.update_channels(updates, force)
 
+    def update_channels(self, updates: Sequence['ChannelUpdate']):
+        """Effect channel updates."""
+        self.controller.update_channels(updates)
+
     def _set_channels_instead_of_relays(
             self,
             light_pattern: list | str, 
@@ -218,6 +210,15 @@ class LightSet:
             on=tuple(on_values[p] for p in light_pattern),
         )
             
+    @property
+    def brightness_factor(self) -> float:
+        return self._brightness_factor
+    
+    @brightness_factor.setter
+    def brightness_factor(self, value) -> None:
+        self._brightness_factor = value
+        print("Brightness factor is now ", self._brightness_factor)
+
     @property
     def relay_pattern(self) -> str:
         """Return the active light pattern."""
