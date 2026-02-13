@@ -59,12 +59,13 @@ class PacMan(Character):
     def eat_dot_piece(self, coord: int) -> None:
         """"""
         self.dot_pieces_remaining -= 1
-        self.game.top.set_channels(
-            brightness=int(
+        b = int(
                 (self.dot_pieces_maximum  - 
                  self.dot_pieces_remaining) * 
                 100 / self.dot_pieces_maximum
-            ),
+        )
+        self.game.top.set_channels(
+            brightness=b,
         )
         dot = self.game.board[coord][Dot]
         dot.brightness -= 65
