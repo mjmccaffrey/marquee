@@ -79,6 +79,7 @@ class PacManGame(GameMode):
             assert self.pacman.prior_coord is not None
             self.move_character(self.pacman, self.pacman.prior_coord)
             self.state = self.LOST_GAME
+        print(self.pacman.coord, self.blinky.coord, self.pinky.coord)
 
     def ghost_got_pacman(self):
         """"""
