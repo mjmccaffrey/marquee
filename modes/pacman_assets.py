@@ -47,7 +47,7 @@ class PacMan(Character):
                 )
             case 'c':
                 assert self.coord is not None
-                coord = self.coord + 1
+                coord = (self.coord + 1) % 12
             case _:
                 coord = None
                 # light_states(self.game.lights)
