@@ -47,7 +47,7 @@ class PacMan(Character):
                 )
             case 'c':
                 assert self.coord is not None
-                coord = (self.coord + 1) % 12
+                coord = (self.coord - 1) % 12
             case _:
                 coord = None
                 # light_states(self.game.lights)
@@ -64,6 +64,7 @@ class PacMan(Character):
                  self.dot_pieces_remaining) * 
                 100 / self.dot_pieces_maximum
         )
+        print(b)
         self.game.top.set_channels(
             brightness=b,
         )
