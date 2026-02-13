@@ -23,8 +23,6 @@ class PacManGame(GameMode):
         super().__post_init__()
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
-        self.dot_pieces_maximum = (self.lights.count - 1 * 2)
-        self.dot_pieces_remaining = 0
         self.PRE_GAME = self.pre_game
         self.WON_GAME = self.won_game
         self.LOST_GAME = self.lost_game
@@ -47,7 +45,6 @@ class PacManGame(GameMode):
         for d in maze_12.keys() - {7}:
             dot = self.register_entity(Dot(game=self, name=f"dot_{d}"))
             self.place_entity(dot, d)
-        self.dot_pieces_remaining = self.dot_pieces_maximum
         self.pacman = self.register_entity(PacMan(game=self))
         self.pinky = self.register_entity(
             Pinky(game=self, wait_ticks=10 if self.level == 0 else 5)
@@ -73,7 +70,7 @@ class PacManGame(GameMode):
         # If ghost and Pac-Man on same square, or 
         # attempted to pass each other, game is over etc.
         assert self.pacman.coord is not None
-        if self.all_dots_eaten():
+        if not self.pacman.dot_pieces_remaining:
             if self.level == 0:
                 self.play_level(1)
             else:
@@ -82,11 +79,6 @@ class PacManGame(GameMode):
             assert self.pacman.prior_coord is not None
             self.move_character(self.pacman, self.pacman.prior_coord)
             self.state = self.LOST_GAME
-
-    def all_dots_eaten(self):
-        """"""
-        return not self.dot_pieces_remaining
-        # return not self.entities[Dot]
 
     def ghost_got_pacman(self):
         """"""

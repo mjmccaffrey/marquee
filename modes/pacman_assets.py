@@ -5,15 +5,14 @@ from typing import ClassVar
 from dataclasses import dataclass
 
 from color import Color, Colors, RGB
-from .gamemode import Character, Entity, Maze, Square
-from .pacman import PacManGame
+from .gamemode import Character, Entity, GameMode, Maze, Square
 # from debug import light_states
 
 
 @dataclass(kw_only=True, repr=False, eq=True, )
 class Dot(Entity):
     """"""
-    game: PacManGame
+    game: GameMode
     color: RGB = Colors.GREEN
     brightness: int = 80
     draw_priority: int = 1
@@ -22,12 +21,14 @@ class Dot(Entity):
 @dataclass(kw_only=True, repr=False)
 class PacMan(Character):
     """"""
-    game: PacManGame
+    game: GameMode
     name: str = "PacMan"
     color: ClassVar[Color] = RGB(252, 234, 63)
     brightness: int = 80
     draw_priority: ClassVar[int] = 3
     turn_priority: ClassVar[int] = 1
+    dot_pieces_maximum: int = 22
+    dot_pieces_remaining: int = dot_pieces_maximum
 
     def execute_turn(self):
         """Take turn."""
@@ -54,12 +55,12 @@ class PacMan(Character):
 
     def eat_dot_piece(self, coord: int) -> None:
         """"""
-        self.game.dot_pieces_remaining -= 1
+        self.dot_pieces_remaining -= 1
         self.game.top.set_channels(
             brightness=int(
-                (self.game.dot_pieces_maximum  - 
-                 self.game.dot_pieces_remaining) * 
-                100 / self.game.dot_pieces_maximum
+                (self.dot_pieces_maximum  - 
+                 self.dot_pieces_remaining) * 
+                100 / self.dot_pieces_maximum
             ),
         )
         dot = self.game.board[coord][Dot]
