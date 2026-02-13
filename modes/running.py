@@ -69,6 +69,7 @@ class Running(GameMode):
 
     def execute(self) -> None:
         """"""
+        self.init_level()
         self.state = self.PLAY_GAME
         self.start()
 
