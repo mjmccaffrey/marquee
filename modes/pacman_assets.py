@@ -113,7 +113,7 @@ class Ghost(Character, ABC):
 class Blinky(Ghost):
     """"""
     name: str = "Blinky"
-    color: ClassVar[Color] = Colors.GREEN
+    color: ClassVar[Color] = Colors.RED
     direction: int = -1
 
 

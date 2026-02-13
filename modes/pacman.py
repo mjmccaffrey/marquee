@@ -46,11 +46,12 @@ class PacManGame(GameMode):
             dot = self.register_entity(Dot(game=self, name=f"dot_{d}"))
             self.place_entity(dot, d)
         self.pacman = self.register_entity(PacMan(game=self))
-        self.pinky = self.register_entity(
-            Pinky(game=self, wait_ticks=10 if self.level == 0 else 5)
-        )
         self.blinky = self.register_entity(
-            Blinky(game=self, wait_ticks=999999 if self.level == 0 else 10))
+            Blinky(game=self, wait_ticks=10 if self.level == 0 else 5)
+        )
+        self.pinky = self.register_entity(
+            Pinky(game=self, wait_ticks=999999 if self.level == 0 else 10)
+        )
         self.place_entity(self.pacman, 7)
         self.update_lights(self.board)
         self.state = self.PLAY_GAME
@@ -106,7 +107,7 @@ class PacManGame(GameMode):
             ghost in entities
             for ghost in (Pinky, Blinky)
         ):
-            brightness, color = Pinky.brightness, Colors.RED
+            brightness, color = Ghost.brightness, Colors.BLUE
         # 2 Ghosts
         elif len(list(e for e in entities if isinstance(e, Ghost))) > 1:
             brightness, color = Pinky.brightness, Colors.BLUE
