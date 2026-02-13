@@ -45,6 +45,9 @@ class PacMan(Character):
                     self.game.maze[self.coord],
                     keystrokes[key],
                 )
+            case 'c':
+                assert self.coord is not None
+                coord = self.coord + 1
             case _:
                 coord = None
                 # light_states(self.game.lights)
