@@ -3,8 +3,8 @@
 from collections import defaultdict
 from collections.abc import Callable
 
-type Callback = Callable[[],None]
-type EventName = str
+Callback = Callable[[], None]
+EventName = str
 
 class EventSystem:
     """"""
