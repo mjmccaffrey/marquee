@@ -36,9 +36,9 @@ class SelectMode(ForegroundMode, ABC):
 
     def button_action(self, button: Button) -> None:
         """Respond to button being pressed.
-           But first, delete the scheduled event which 
+           But first, delete the scheduled task which 
            would have finalized the selection."""
-        self.event_queue.delete_owned_by(self)
+        self.tasks.delete_owned_by(self)
         b = self.buttons
         match button:
             case b.body_back | b.remote_a | b.remote_d:

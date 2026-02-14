@@ -5,17 +5,17 @@ from typing import Any, NoReturn
 
 from devices.button import Button, ButtonPressed, Shutdown
 from devices.devices_misc import ButtonSet
-from event import PriorityQueue
+from event import EventSystem
+from task import TaskSchedule
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
 from modes.mode_misc import ChangeMode, ModeDefinition
-from specialparams import MirrorParams
 
 @dataclass()
 class Player:
-    """Executes one mode at a time. Contains the event queue."""
+    """Executes one mode at a time. Contains the task queue."""
     modes: dict[int, ModeDefinition]
     mode_ids: dict[str, int]
     bells: BellSet
@@ -27,14 +27,16 @@ class Player:
     speed_factor: float
     pace: float = field(init=False)
     bg_mode_instances: dict = field(init=False)
-    event_queue: PriorityQueue = field(init=False)
+    events: EventSystem = field(init=False)
+    tasks: TaskSchedule = field(init=False)
 
     def __post_init__(self) -> None:
         """Initialize."""
         print("Initializing player")
         self.active_mode: BackgroundMode | ForegroundMode | None = None
         self.live_bg_modes: dict[int, BackgroundMode] = {}
-        self.event_queue = PriorityQueue()
+        self.events = EventSystem()
+        self.tasks = TaskSchedule()
 
     def __repr__(self) -> str:
         return f"<{self}>"
@@ -61,7 +63,8 @@ class Player:
                 speed_factor=self.speed_factor,
                 create_mode_instance=self.create_mode_instance,
                 replace_kwarg_values=self.replace_kwarg_values,
-                event_queue=self.event_queue,
+                events=self.events,
+                tasks=self.tasks,
                 modes=self.modes,
                 mode_ids=self.mode_ids,
                 parent=parent,
@@ -89,7 +92,7 @@ class Player:
         # clean it up.
         # Note: After startup, there is always an active mode.
         if isinstance(self.active_mode, ForegroundMode):
-            self.event_queue.delete_owned_by(self.active_mode)
+            self.tasks.delete_owned_by(self.active_mode)
 
         # Create new mode instance
         new_mode = self.create_mode_instance(mode_index)
@@ -100,7 +103,7 @@ class Player:
         if isinstance(new_mode, BackgroundMode):
             # If bg mode of same type already present, clean it up.
             if (conflict := self.live_bg_modes.pop(new_mode.index, None)):
-                self.event_queue.delete_owned_by(conflict)
+                self.tasks.delete_owned_by(conflict)
             # Add new bg mode to bg mode list
             self.live_bg_modes[new_mode.index] = new_mode
 
@@ -158,10 +161,10 @@ class Player:
         """Wait seconds, adjusted for speed_factor.
            If seconds is None, wait indefinitely (in this case,
            the current mode instance will never be returned to).
-           While waiting, trigger any events that come due; 
+           While waiting, execute any tasks that come due; 
            any button press will terminate waiting."""
 
         if seconds is not None:
             seconds *= self.speed_factor
-        self.event_queue.wait(seconds, Button.wait)
+        self.tasks.wait(seconds, Button.wait)
 

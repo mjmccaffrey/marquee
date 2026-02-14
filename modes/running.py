@@ -17,7 +17,7 @@ class Dot(Character, ABC):
     direction: int
     speed: int
 
-    def execute_turn(self) -> None:
+    def execute(self) -> None:
         """Take turn."""
         assert self.coord is not None
         if self.game.tick and (self.game.tick % self.speed) == 0:

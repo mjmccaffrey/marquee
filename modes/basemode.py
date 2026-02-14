@@ -8,7 +8,8 @@ import time
 from typing import NoReturn, Self
 
 from devices.devices_misc import ButtonInterface
-from event import Event, PriorityQueue
+from event import EventSystem
+from task import Task, TaskSchedule
 from .mode_misc import (
     ChangeMode, CreateModeInstance, ModeDefinition, ReplaceKwargValues,
 )
@@ -22,7 +23,8 @@ class BaseMode(ABC):
     speed_factor: float
     create_mode_instance: CreateModeInstance
     replace_kwarg_values: ReplaceKwargValues
-    event_queue: PriorityQueue
+    events: EventSystem
+    tasks: TaskSchedule
     modes: dict[int, ModeDefinition]
     mode_ids: dict[str, int]
     parent: Self | None = None
@@ -61,15 +63,15 @@ class BaseMode(ABC):
         name: str | None = None,
         repeat: bool = False,
     ) -> None:
-        """Schedule a new event for now + due.
+        """Schedule a new task for now + due.
            Adjust due by speed_factor.
-           If repeat, schedule next event before calling action."""
+           If repeat, schedule next task before calling action."""
 
         def push_event():
-            """Push event onto queue."""
+            """Push task onto queue."""
             assert _action is not None
-            self.event_queue.push(
-                Event(
+            self.tasks.push(
+                Task(
                     action=_action,
                     due=_due,
                     owner=_owner,
@@ -78,7 +80,7 @@ class BaseMode(ABC):
             )
 
         def repeater():
-            """Schedule next event. Call action."""
+            """Schedule next task. Call action."""
             nonlocal _due
             _due += due
             push_event()

@@ -1,13 +1,12 @@
 """Marquee Lighted Sign Project - gamemode"""
 
 from abc import ABC, abstractmethod
-from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import ClassVar, TypeVar
 
 from color import Color
-from devices.lightcontroller import LightChannel, ChannelUpdate  # !!! Use LightSet, not LightController
+from devices.lightcontroller import LightChannel, ChannelUpdate
 from .performancemode import PerformanceMode
 
 
@@ -33,7 +32,7 @@ class Character(Entity, ABC):
     prior_coord: int | None = None
  
     @abstractmethod
-    def execute_turn(self) -> None:
+    def execute(self) -> None:
         """Take turn."""
 
 
@@ -88,15 +87,11 @@ class GameMode(PerformanceMode):
     def start(self):
         """"""
         self.schedule(
-            action=self.execute_state,
-            due=(1 / self.ticks_per_second), # !!!!!!!
+            action=self.state,
+            due=(1 / self.ticks_per_second),
             repeat=True,
         )
 
-    def execute_state(self):
-        """"""
-        self.state()
-        
     def play_game(self):
         """Execute a game round."""
         old_board = {
@@ -104,7 +99,7 @@ class GameMode(PerformanceMode):
             for k, v in self.board.items()
         }
         for character in self.characters_turn_order:
-            character.execute_turn()
+            character.execute()
         self.state_logic()
         delta_board = self.compare_boards(old_board)
         self.update_lights(delta_board)

@@ -4,7 +4,9 @@ from dataclasses import dataclass, field
 
 from color import Colors, RGB
 from .gamemode import Entity, EntityGroup, GameMode, Maze
-from .pacman_assets import Dot, Ghost, PacMan, Pinky, Blinky, maze_12
+from .pacman_assets import (
+    Dot, DOT_BITTEN, Ghost, PacMan, Pinky, Blinky, maze_12
+)
 from devices.lightcontroller import LightChannel, ChannelUpdate
 
 
@@ -23,9 +25,22 @@ class PacManGame(GameMode):
         super().__post_init__()
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
+        self.events.subscribe(DOT_BITTEN, self.dot_bitten)
         self.PRE_GAME = self.pre_game
         self.WON_GAME = self.won_game
         self.LOST_GAME = self.lost_game
+        self.dot_bites_maximum = (self.lights.count - 1) * 2
+
+    def dot_bitten(self):
+        """Track remaining. Brighten top bulb."""
+        self.dot_bites_remaining -= 1
+        self.top.set_channels(
+            brightness=int(
+                (self.dot_bites_maximum  - 
+                 self.dot_bites_remaining) * 
+                100 / self.dot_bites_maximum
+            )
+        )
 
     def execute(self) -> None:
         """"""
@@ -39,6 +54,7 @@ class PacManGame(GameMode):
     def play_level(self, level: int) -> None:
         """"""
         print("Playing level ", level)
+        self.dot_bites_remaining = self.dot_bites_maximum
         self.level = level
         self.init_level()
         self.top.set_channels(brightness=0, on=True)
@@ -60,19 +76,19 @@ class PacManGame(GameMode):
     def won_game(self) -> None:
         """"""
         print("You won!")
-        self.event_queue.delete_owned_by(self)
+        self.tasks.delete_owned_by(self)
 
     def lost_game(self) -> None:
         """"""
         print("You lost!")
-        self.event_queue.delete_owned_by(self)
+        self.tasks.delete_owned_by(self)
 
     def state_logic(self) -> None:
         """"""
         # If ghost and Pac-Man on same square, or 
         # attempted to pass each other, game is over etc.
         assert self.pacman.coord is not None
-        if not self.pacman.dot_pieces_remaining:
+        if not self.dot_bites_remaining:
             if self.level == 0:
                 self.play_level(1)
             else:

@@ -1,4 +1,4 @@
-| Mode       | Event   | Change                                                    |
+| Mode       | Task   | Change                                                    |
 | ---------- | ------- | --------------------------------------------------------- |
 | Auto       | Back    | Exit Auto, change to Select                               |
 | Auto       | A       | Exit Auto, change to Select                               |

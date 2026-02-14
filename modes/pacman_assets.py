@@ -6,8 +6,8 @@ from dataclasses import dataclass
 
 from color import Color, Colors, RGB
 from .gamemode import Character, Entity, GameMode, Maze, Square
-# from debug import light_states
 
+DOT_BITTEN = "DOT_BITTEN"
 
 @dataclass(kw_only=True, repr=False, eq=True, )
 class Dot(Entity):
@@ -27,10 +27,8 @@ class PacMan(Character):
     brightness: int = 80
     draw_priority: ClassVar[int] = 3
     turn_priority: ClassVar[int] = 1
-    dot_pieces_maximum: int = 22
-    dot_pieces_remaining: int = dot_pieces_maximum
 
-    def execute_turn(self):
+    def execute(self):
         """Take turn."""
 
         # TEST
@@ -54,20 +52,11 @@ class PacMan(Character):
         if coord is not None:
             self.game.move_character(self, coord)
             if Dot in self.game.board[coord]:
-                self.eat_dot_piece(coord)
+                self.bite_dot(coord)
 
-    def eat_dot_piece(self, coord: int) -> None:
+    def bite_dot(self, coord: int) -> None:
         """"""
-        self.dot_pieces_remaining -= 1
-        b = int(
-                (self.dot_pieces_maximum  - 
-                 self.dot_pieces_remaining) * 
-                100 / self.dot_pieces_maximum
-        )
-        print(b)
-        self.game.top.set_channels(
-            brightness=b,
-        )
+        self.game.events.notify(DOT_BITTEN)
         dot = self.game.board[coord][Dot]
         dot.brightness -= 65
         if dot.brightness <= 0:
@@ -109,7 +98,7 @@ class Ghost(Character, ABC):
         assert self.coord is not None
         self.game.move_character(self, self.coord + self.direction)
 
-    def execute_turn(self) -> None:
+    def execute(self) -> None:
         """"""
         self.state()
 
@@ -143,8 +132,8 @@ maze_base: Maze = {
     11: Square(right=0, up=0, down=10),
 }
 maze_12: Maze = maze_base | {
-    4: Square(up=3, down=5),
-    10: Square(up=11, down=9),
+    4: Square(right=10, up=3, down=5),
+    10: Square(left=4, up=11, down=9),
 }
 maze_15: Maze = maze_base | {
     4: Square(left=14, up=3, down=5),

@@ -7,7 +7,7 @@ import itertools
 import time
 from typing import Any, ClassVar
 
-from event import Event
+from task import Task
 from instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 
     ReleaseableInstrument, RestInstrument,

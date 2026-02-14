@@ -6,7 +6,7 @@ from itertools import chain
 import time
 from typing import Any, Iterator
 
-from event import Event
+from task import Task
 from modes.musicmode import MusicMode
 from .music_elements import (
     ActionNote, BaseNote, DrumNote, Element, Measure, NoteGroup,
@@ -140,14 +140,14 @@ def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
             object.__setattr__(part, 'measures', measures)
 
 
-def events_in_measure(measure: Measure, start: float) -> list[Event]:
+def events_in_measure(measure: Measure, start: float) -> list[Task]:
     """Return events for all notes in measure."""
     beat = 0.0 
     result = []
     for element in measure.elements:
         assert isinstance(element, (BaseNote, NoteGroup))
         result.append(
-            Event(
+            Task(
                 action = element.play,
                 owner = mode,
                 due = start + beat
@@ -163,7 +163,7 @@ def events_in_measure(measure: Measure, start: float) -> list[Event]:
     # mode.wait(measure.beats - beat, time.time() - start)
     return result
 
-def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Event]:
+def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Task]:
     """Return events for all notes in all measures."""
     start = time.time()
     pace = 60 / tempo
@@ -173,17 +173,17 @@ def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Event]
         for index, measure in enumerate(measures)
     )
     events_combined = [
-        event
+        task
         for measure in events_by_measure
-        for event in measure
+        for task in measure
     ]
     return events_combined
 
 
 def play_measures(measures: tuple[Measure, ...], tempo: int):
-    """Convert measures to events, add to event queue."""
+    """Convert measures to events, add to task queue."""
     events = events_in_measures(measures, tempo)
-    mode.event_queue.bulk_add(events)
+    mode.tasks.bulk_add(events)
 
 
 def _dimmer(brightness: list[int]) -> Callable:
