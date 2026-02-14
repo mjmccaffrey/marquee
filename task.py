@@ -63,10 +63,10 @@ class TaskSchedule:
     def push(self, task: Task) -> None:
         """Add task to schedule."""
         heappush(self._schedule, task)
-        # print(self)
-        # print()
-        # print(f"schedule length: {len(self._schedule)}")
-        # print(f"Task {task} added to schedule.")
+        print(self)
+        print()
+        print(f"schedule length: {len(self._schedule)}")
+        print(f"Task {task} added to schedule.")
 
     def wait(
         self, 
