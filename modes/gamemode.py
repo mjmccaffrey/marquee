@@ -86,12 +86,15 @@ class GameMode(PerformanceMode):
 
     def start(self):
         """"""
-        print(f"{self.state=}")
         self.schedule(
-            action=self.state,
+            action=self.execute_state,
             due=(1 / self.ticks_per_second),
             repeat=True,
         )
+
+    def execute_state(self):
+        """"""
+        self.state()
 
     def play_game(self):
         """Execute a game round."""
