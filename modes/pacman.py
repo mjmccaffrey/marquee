@@ -44,6 +44,7 @@ class PacManGame(GameMode):
 
     def execute(self) -> None:
         """"""
+        print("PACMAN.EXECUTE")
         self.state = self.PRE_GAME
         self.start()
 
