@@ -86,6 +86,7 @@ class GameMode(PerformanceMode):
 
     def start(self):
         """"""
+        print(f"{self.state=}")
         self.schedule(
             action=self.state,
             due=(1 / self.ticks_per_second),
