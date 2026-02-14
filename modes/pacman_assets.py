@@ -58,7 +58,7 @@ class PacMan(Character):
         """"""
         self.game.events.notify(DOT_BITTEN)
         dot = self.game.board[coord][Dot]
-        dot.brightness -= 65
+        dot.brightness -= 75
         if dot.brightness <= 0:
             del self.game.board[coord][Dot]
 
