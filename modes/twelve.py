@@ -24,7 +24,7 @@ class Twelve(PerformanceMode):
     )
     notes = (
         0.5, 0.5, 0.5, 1, 1, 0.5,
-        1, 0.5, 1, 1, 1.5, 1,
+        1, 0.5, 1, 1, 1.25, 1,
     )
     bpm = 160.0
     bps = bpm / 60
@@ -74,6 +74,7 @@ class Twelve(PerformanceMode):
         """"""
         self.lights.set_channels(
             on=True,
+            brightness=70,
             channel_indexes={index},
         )
 
