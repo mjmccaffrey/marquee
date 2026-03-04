@@ -14,15 +14,6 @@ from lightset import ClickSet, LightSet
 from lightset_misc import LIGHT_TO_RELAY, TOP_TO_RELAY, CLICK_TO_RELAY
 from devices.relays import NumatoRL160001, NumatoSSR80001
 
-SHELLY_IP_ADDRESSES = [
-    '192.168.64.111',
-    '192.168.64.112',
-    '192.168.64.113',
-    '192.168.64.114',
-    '192.168.64.115',
-    '192.168.64.116',
-]
-
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'
 HUE_BULB_IDS = [
@@ -123,5 +114,11 @@ def setup_devices(
             _Button(pin=5, pull_up=False, bounce_time=0.10)
         ),
     )
+    # joystick = Joystick(
+    #     north=_Button(pin=13, pull_up=False, bounce_time=0.10),
+    #     south=_Button(pin=19, pull_up=False, bounce_time=0.10),
+    #     east=_Button(pin=26, pull_up=False, bounce_time=0.10),
+    #     west=_Button(pin=5, pull_up=False, bounce_time=0.10),
+    # )
     return bells, buttons, drums, lights, top, clicker
 

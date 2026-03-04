@@ -60,9 +60,6 @@ class Running(GameMode):
         super().__post_init__()
         assert self.lights.gamut is not None  # Color lights
         RGB.adjust_incomplete_colors(self.lights.gamut)
-
-    def execute(self) -> None:
-        """"""
         self.init_level()
         self.one = self.register_entity(One(game=self))
         self.two = self.register_entity(Two(game=self))
@@ -71,7 +68,6 @@ class Running(GameMode):
         self.place_entity(self.two, 1)
         self.place_entity(self.three, 6)
         self.state = self.PLAY_GAME
-        self.start()
 
     def state_logic(self) -> None:
         """No state logic required."""

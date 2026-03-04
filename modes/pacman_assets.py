@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from color import Color, Colors, RGB
 from .gamemode import Character, Entity, GameMode, Maze, Square
 
-DOT_BITTEN = "DOT_BITTEN"
+PACMAN_BIT = "PACMAN_BIT"
+
 
 @dataclass(kw_only=True, repr=False, eq=True, )
 class Dot(Entity):
@@ -56,11 +57,8 @@ class PacMan(Character):
 
     def bite_dot(self, coord: int) -> None:
         """"""
-        self.game.events.notify(DOT_BITTEN)
-        dot = self.game.board[coord][Dot]
-        dot.brightness -= 75
-        if dot.brightness <= 0:
-            del self.game.board[coord][Dot]
+        self.game.events.notify(PACMAN_BIT, etype=Dot, coord=coord)
+
 
 @dataclass(kw_only=True, repr=False)
 class Ghost(Character, ABC):
@@ -80,7 +78,7 @@ class Ghost(Character, ABC):
 
     def waiting(self) -> None:
         """"""
-        if self.game.tick == self.wait_ticks:
+        if self.game.tick + 1 == self.wait_ticks:
             self.state = self.EMERGING
 
     def emerging(self) -> None:
@@ -108,7 +106,6 @@ class Blinky(Ghost):
     """"""
     name: str = "Blinky"
     color: ClassVar[Color] = Colors.RED
-    direction: int = -1
 
 
 @dataclass(kw_only=True, repr=False)
@@ -116,7 +113,20 @@ class Pinky(Ghost):
     """"""
     name: str = "Pinky"
     color: ClassVar[Color] = Colors.MAGENTA
-    direction: int = +1
+
+
+@dataclass(kw_only=True, repr=False)
+class Inky(Ghost):
+    """"""
+    name: str = "Inky"
+    color: ClassVar[Color] = Colors.TEAL
+
+
+@dataclass(kw_only=True, repr=False)
+class Clyde(Ghost):
+    """"""
+    name: str = "Clyde"
+    color: ClassVar[Color] = Colors.ORANGE
 
 
 maze_base: Maze = {

@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from color import Colors, RGB
 from .gamemode import Entity, EntityGroup, GameMode, Maze
 from .pacman_assets import (
-    Dot, DOT_BITTEN, Ghost, PacMan, Pinky, Blinky, maze_12
+    Dot, PACMAN_BIT, Ghost, PacMan, Pinky, Blinky, maze_12
 )
 from devices.lightcontroller import LightChannel, ChannelUpdate
 
@@ -25,14 +25,19 @@ class PacManGame(GameMode):
         super().__post_init__()
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
-        self.events.subscribe(DOT_BITTEN, self.dot_bitten)
+        self.dot_bites_maximum = (self.lights.count - 1) * 2
+        self.events.subscribe(PACMAN_BIT, self.pacman_bit)
         self.PRE_GAME = self.pre_game
         self.WON_GAME = self.won_game
         self.LOST_GAME = self.lost_game
-        self.dot_bites_maximum = (self.lights.count - 1) * 2
+        self.state = self.PRE_GAME
 
-    def dot_bitten(self):
+    def pacman_bit(self, etype: type, coord: int):
         """Track remaining. Brighten top bulb."""
+        dot = self.board[coord][etype]
+        dot.brightness -= 75
+        if dot.brightness <= 0:
+            del self.board[coord][Dot]
         self.dot_bites_remaining -= 1
         self.top.set_channels(
             brightness=int(
@@ -41,11 +46,6 @@ class PacManGame(GameMode):
                 100 / self.dot_bites_maximum
             )
         )
-
-    def execute(self) -> None:
-        """"""
-        self.state = self.PRE_GAME
-        self.start()
 
     def pre_game(self) -> None:
         """Set up dots and characters."""
@@ -64,10 +64,18 @@ class PacManGame(GameMode):
             self.place_entity(dot, d)
         self.pacman = self.register_entity(PacMan(game=self))
         self.blinky = self.register_entity(
-            Blinky(game=self, wait_ticks=10 if self.level == 0 else 5)
+            Blinky(
+                game=self, 
+                direction=+1,
+                wait_ticks=10 if self.level == 0 else 5,
+            )
         )
         self.pinky = self.register_entity(
-            Pinky(game=self, wait_ticks=999999 if self.level == 0 else 10)
+            Pinky(
+                game=self, 
+                direction=-1,
+                wait_ticks=999999 if self.level == 0 else 10,
+            )
         )
         self.place_entity(self.pacman, 7)
         self.update_lights(self.board)
@@ -134,6 +142,7 @@ class PacManGame(GameMode):
                 entities.values(), key=lambda e: e.draw_priority,
             )
             brightness, color = s[-1].brightness, s[-1].color
+        #
         return ChannelUpdate(
             channel=channel,
             brightness=brightness,

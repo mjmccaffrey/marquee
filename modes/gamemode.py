@@ -70,10 +70,6 @@ class GameMode(PerformanceMode):
         """"""
 
     @abstractmethod
-    def execute(self) -> None:
-        """"""
-
-    @abstractmethod
     def state_logic(self):
         """"""
 
@@ -84,7 +80,7 @@ class GameMode(PerformanceMode):
         self.characters_turn_order: list[Character] = []
         self.tick: int = 0
 
-    def start(self):
+    def execute(self) -> None:
         """"""
         self.schedule(
             action=self.execute_state,
