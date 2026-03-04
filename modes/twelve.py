@@ -64,6 +64,12 @@ class Twelve(PerformanceMode):
                 action=partial(self.turn_on, index=i),
             )
 
+        # Schedule repeat
+        self.schedule(
+            due=delay + 1 / self.bps,
+            action=self.execute,
+        )
+
     def turn_on(self, index: int):
         """"""
         self.lights.set_channels(
