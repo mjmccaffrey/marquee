@@ -73,15 +73,15 @@ class Twelve(PerformanceMode):
         #     action=self.execute,
         # )
 
-        # Schedule full brightness
-        self.schedule(
-            due=delay,
-            action=partial(
-                self.lights.set_channels,
-                brightness=100,
-                transition=3.0,
-            )
-        )
+        # # Schedule full brightness
+        # self.schedule(
+        #     due=delay,
+        #     action=partial(
+        #         self.lights.set_channels,
+        #         brightness=100,
+        #         transition=3.0,
+        #     )
+        # )
 
     def turn_on(self, index: int):
         """"""
