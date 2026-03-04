@@ -63,7 +63,7 @@ class Twelve(PerformanceMode):
         for i, d in enumerate(delays):
             delay += d
             self.schedule(
-                due=delay - 0.05,
+                due=delay,
                 action=partial(self.turn_on, index=i),
             )
 
@@ -77,6 +77,7 @@ class Twelve(PerformanceMode):
         """"""
         self.lights.set_channels(
             on=True,
+            transition=0.0,
             channel_indexes={index},
         )
 
