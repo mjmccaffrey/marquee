@@ -37,7 +37,7 @@ class Twelve(PerformanceMode):
         # Set each color
         for i, (r, g, b) in enumerate(self.colors):
             self.lights.set_channels(
-                brightness=33,
+                brightness=28,
                 color=self.lights.colors.rgb(
                     int(r / 100 * 255),
                     int(g / 100 * 255),
