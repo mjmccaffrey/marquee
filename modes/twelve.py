@@ -46,10 +46,17 @@ class Twelve(PerformanceMode):
                 channel_indexes={i},
             )
 
+        # Click intro
+        for i in range(4):
+            self.schedule(
+                due=i / self.bps,
+                action=partial(self.clicker.click),
+            )
+        delay = 4.0 / self.bps
+
         # Schedule to turn each on
         delays = (0.0,) + tuple(n / self.bps for n in self.notes[:-1])
         print(delays)
-        delay = 0.0
         for i, d in enumerate(delays):
             delay += d
             self.schedule(
