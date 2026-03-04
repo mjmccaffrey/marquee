@@ -47,7 +47,7 @@ class Twelve(PerformanceMode):
             )
 
         # Schedule to turn each on
-        delays = (0.0,) + tuple(n * self.bps for n in self.notes[:-1])
+        delays = (0.0,) + tuple(n / self.bps for n in self.notes[:-1])
         print(delays)
         delay = 0.0
         for i, d in enumerate(delays):
