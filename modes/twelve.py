@@ -56,14 +56,14 @@ class Twelve(PerformanceMode):
 
         # Schedule to turn each on
         delays = (0.0,) + tuple(
-            (n / self.bps) - 0.05 
+            (n / self.bps) 
             for n in self.notes[:-1]
         )
         print(delays)
         for i, d in enumerate(delays):
             delay += d
             self.schedule(
-                due=delay,
+                due=delay - 0.05,
                 action=partial(self.turn_on, index=i),
             )
 
