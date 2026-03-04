@@ -37,6 +37,7 @@ class Twelve(PerformanceMode):
         # Set each color
         for i, (r, g, b) in enumerate(self.colors):
             self.lights.set_channels(
+                brightness=70,
                 color=self.lights.colors.rgb(
                     int(r / 100 * 255),
                     int(g / 100 * 255),
@@ -46,7 +47,7 @@ class Twelve(PerformanceMode):
             )
 
         # Schedule to turn each on
-        delays = (0.0,) + tuple(n * self.bps for n in self.notes)
+        delays = (0.0,) + tuple(n * self.bps for n in self.notes[:-1])
         for i, d in enumerate(delays):
             self.schedule(
                 due=d,
