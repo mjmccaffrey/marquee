@@ -74,7 +74,6 @@ class Twelve(PerformanceMode):
         """"""
         self.lights.set_channels(
             on=True,
-            brightness=70,
             channel_indexes={index},
         )
 
