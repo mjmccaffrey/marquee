@@ -3,7 +3,7 @@
 from collections.abc import Callable
 from typing import Any
 
-from modes.musicmode import MusicMode
+from modes.foregroundmode import ForegroundMode
 from .music_elements import (
     Element, Measure, Part, Section, Sequence, 
 )
@@ -14,7 +14,7 @@ from .music_implementation import (
 from specialparams import SpecialParams
 
 
-def set_mode(the_mode: MusicMode) -> None:
+def set_mode(the_mode: ForegroundMode) -> None:
     """Set the Mode object used throughout this module."""
     _set_mode(the_mode)
 

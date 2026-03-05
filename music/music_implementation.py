@@ -7,7 +7,7 @@ import time
 from typing import Any, Iterator
 
 from task import Task
-from modes.musicmode import MusicMode
+from modes.foregroundmode import ForegroundMode
 from .music_elements import (
     ActionNote, BaseNote, DrumNote, Element, Measure, NoteGroup,
     Part, Rest, SequenceMeasure,
@@ -17,7 +17,7 @@ from specialparams import (
 )
 
 
-def _set_mode(the_mode: MusicMode) -> None:
+def _set_mode(the_mode: ForegroundMode) -> None:
     """Set the Mode object used throughout this module."""
     global mode
     mode = the_mode
