@@ -7,16 +7,15 @@ import itertools
 import time
 from typing import Any, ClassVar
 
-from task import Task
 from instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 
     ReleaseableInstrument, RestInstrument,
 )
-from modes.musicmode import MusicMode
+from modes.foregroundmode import ForegroundMode
 from specialparams import SpecialParams
 
 
-mode: MusicMode
+mode: ForegroundMode
 
 
 @dataclass(frozen=True)
