@@ -3,10 +3,10 @@
 from dataclasses import dataclass
 from functools import partial
 
-from .performancemode import PerformanceMode
+from .musicmode import MusicMode
 
 @dataclass(kw_only=True)
-class Twelve(PerformanceMode):
+class Twelve(MusicMode):
     """"""
     colors = (
         (100, 0, 0),
@@ -59,35 +59,21 @@ class Twelve(PerformanceMode):
             (n / self.bps) 
             for n in self.notes[:-1]
         )
-        print(delays)
         for i, d in enumerate(delays):
             delay += d
             self.schedule(
                 due=delay,
-                action=partial(self.turn_on, index=i),
+                action=partial(
+                    self.lights.set_channels,
+                    on=True,
+                    transition=0.0,
+                    channel_indexes={i},
+                )
             )
 
         # Schedule repeat
         self.schedule(
             due=delay + 1 / self.bps,
             action=self.execute,
-        )
-
-        # # Schedule full brightness
-        # self.schedule(
-        #     due=delay,
-        #     action=partial(
-        #         self.lights.set_channels,
-        #         brightness=100,
-        #         transition=3.0,
-        #     )
-        # )
-
-    def turn_on(self, index: int):
-        """"""
-        self.lights.set_channels(
-            on=True,
-            transition=0.0,
-            channel_indexes={index},
         )
 

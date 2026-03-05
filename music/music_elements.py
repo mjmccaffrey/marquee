@@ -42,6 +42,7 @@ class Rest(BaseNote):
 
     def play(self) -> None:
         """Play single rest (do nothing)."""
+        print("PLAYING REST")
 
 
 @dataclass(frozen=True)

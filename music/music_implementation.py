@@ -148,9 +148,9 @@ def events_in_measure(measure: Measure, start: float) -> list[Task]:
         assert isinstance(element, (BaseNote, NoteGroup))
         result.append(
             Task(
+                due = start + beat,
                 action = element.play,
                 owner = mode,
-                due = start + beat
             )
         )
         # if element.duration:
@@ -161,6 +161,9 @@ def events_in_measure(measure: Measure, start: float) -> list[Task]:
             raise ValueError("Too many actual beats in measure.")
     # # Play implied rests at end of measure
     # mode.wait(measure.beats - beat, time.time() - start)
+    print("EVENTS IN MEASURE:")
+    for r in result:
+        print("  ", r.due)
     return result
 
 def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Task]:
