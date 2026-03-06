@@ -106,6 +106,7 @@ class Twelve(MusicMode):
     
     def turn_on(self, index: int):
         """"""
+        print("TURN ON", index)
         self.lights.set_channels(
             on=True,
             transition=0.0,
