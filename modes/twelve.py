@@ -45,11 +45,11 @@ class Twelve(MusicMode):
         # next = self.play_basic()
         next = self.play_music()
 
-        # Schedule repeat
-        self.schedule(
-            due=next,
-            action=self.execute,
-        )
+        # # Schedule repeat
+        # self.schedule(
+        #     due=next,
+        #     action=self.execute,
+        # )
 
     def play_basic(self) -> float:
         """"""
@@ -96,13 +96,19 @@ class Twelve(MusicMode):
             act_part(
                 '  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩ ',
                 partial(
-                    self.lights.set_channels,
-                    on=True,
-                    transition=0.0,
-                    channel_indexes={next(indices)},
+                    self.turn_on,
+                    next(indices)
                 )
             )
         )
         song.play(tempo=self.bpm)
         return 0.0
     
+    def turn_on(self, index: int):
+        """"""
+        self.lights.set_channels(
+            on=True,
+            transition=0.0,
+            channel_indexes={index},
+        )
+
