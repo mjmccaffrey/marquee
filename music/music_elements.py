@@ -57,6 +57,7 @@ class ActionNote(BaseNote):
     def play(self) -> None:
         """Play single ActionNote."""
         for action in self.actions:
+            print("PLAY", action)
             action()
 
 
