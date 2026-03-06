@@ -146,13 +146,14 @@ def events_in_measure(measure: Measure, start: float) -> list[Task]:
     result = []
     for element in measure.elements:
         assert isinstance(element, (BaseNote, NoteGroup))
-        result.append(
-            Task(
-                due = start + beat,
-                action = element.play,
-                owner = mode,
+        if not isinstance(element, Rest):
+            result.append(
+                Task(
+                    due = start + beat,
+                    action = element.play,
+                    owner = mode,
+                )
             )
-        )
         # if element.duration:
         #     mode.wait(element.duration, time.time() - start)
         #     start = time.time()
@@ -163,7 +164,7 @@ def events_in_measure(measure: Measure, start: float) -> list[Task]:
     # mode.wait(measure.beats - beat, time.time() - start)
     print("EVENTS IN MEASURE:")
     for r in result:
-        print("  ", r.due)
+        print("  ", r.due, r.action)
     return result
 
 def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Task]:
