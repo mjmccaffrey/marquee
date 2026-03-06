@@ -42,8 +42,8 @@ class Twelve(MusicMode):
                 channel_indexes={i},
             )
 
-        # next = self.play_basic()
-        next = self.play_music()
+        next = self.play_basic()
+        # next = self.play_music()
 
         # # Schedule repeat
         # self.schedule(
