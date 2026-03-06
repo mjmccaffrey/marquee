@@ -137,7 +137,7 @@ def act_part(
     """Produce act part from notation."""
     acts = cycle(actions)
     def func(symbols: str) -> ActionNote | Rest:
-        return act(symbols, partial(next, acts), pre_call_actions=False)  # !!!!!!!!!
+        return act(symbols, next(acts), pre_call_actions=False)  # !!!!!!!!!
     return part(
         *_interpret_notation(func, notation, beats)
     )
