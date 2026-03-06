@@ -92,26 +92,25 @@ class Twelve(MusicMode):
         """"""
         set_mode(self)
         indices = iter(range(self.lights.count))
+
+        def turn_on():
+            """"""
+            index = next(indices)
+            print("TURN ON", index)
+            self.lights.set_channels(
+                on=True,
+                transition=0.0,
+                channel_indexes={index},
+            )
+
         song = section(
             # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
             act_part(
                 '  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩ ',
-                partial(
-                    self.turn_on,
-                    indices,
-                )
+                turn_on,
             )
         )
         song.play(tempo=self.bpm)
         return 0.0
     
-    def turn_on(self, indices: Iterator):
-        """"""
-        index = next(indices)
-        print("TURN ON", index)
-        self.lights.set_channels(
-            on=True,
-            transition=0.0,
-            channel_indexes={index},
-        )
 
