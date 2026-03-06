@@ -2,6 +2,7 @@
 
 from collections.abc import Callable, Iterator
 from enum import IntEnum
+from functools import partial
 
 from .music_elements import (
     ActionNote, BaseNote, BellNote, DrumNote,
@@ -134,7 +135,7 @@ def act_part(
     ) -> Part:
     """Produce act part from notation."""
     def func(symbols: str) -> ActionNote | Rest:
-        return act(symbols, lambda: next(acts), pre_call_actions=False)  # !!!!!!!!!
+        return act(symbols, partial(next, acts), pre_call_actions=False)  # !!!!!!!!!
     acts = iter(actions)
     return part(
         *_interpret_notation(func, notation, beats)
