@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - twelve"""
 
+from collections.abc import Iterator
 from dataclasses import dataclass
 from functools import partial
 
@@ -97,15 +98,16 @@ class Twelve(MusicMode):
                 '  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩ ',
                 partial(
                     self.turn_on,
-                    next(indices)
+                    indices,
                 )
             )
         )
         song.play(tempo=self.bpm)
         return 0.0
     
-    def turn_on(self, index: int):
+    def turn_on(self, indices: Iterator):
         """"""
+        index = next(indices)
         print("TURN ON", index)
         self.lights.set_channels(
             on=True,
