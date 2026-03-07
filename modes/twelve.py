@@ -24,7 +24,7 @@ class Twelve(MusicMode):
         (100, 0, 100),
         (100, 0, 50),
     )
-    bpm = 60  # 160
+    bpm = 160
 
     def execute(self):
         """"""
