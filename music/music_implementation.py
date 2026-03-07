@@ -152,7 +152,7 @@ def events_in_measure(measure: Measure, tempo: int, start: float) -> list[Task]:
         if not isinstance(element, Rest):
             result.append(
                 Task(
-                    due = start + beat * bps,
+                    due = start + beat / bps,
                     action = element.play,
                     owner = mode,
                 )
