@@ -140,9 +140,10 @@ def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
             object.__setattr__(part, 'measures', measures)
 
 
-def events_in_measure(measure: Measure, start: float) -> list[Task]:
+def events_in_measure(measure: Measure, tempo: int, start: float) -> list[Task]:
     """Return events for all notes in measure."""
     print(f"{start=}")
+    bps = tempo / 60
     beat = 0.0 
     result = []
     for element in measure.elements:
@@ -151,7 +152,7 @@ def events_in_measure(measure: Measure, start: float) -> list[Task]:
         if not isinstance(element, Rest):
             result.append(
                 Task(
-                    due = start + beat,
+                    due = start + beat * bps,
                     action = element.play,
                     owner = mode,
                 )
@@ -176,7 +177,7 @@ def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Task]:
     pace = 60 / tempo
     duration = pace * measures[0].beats
     events_by_measure = chain(
-        events_in_measure(measure, start + index * duration)
+        events_in_measure(measure, tempo, start + index * duration)
         for index, measure in enumerate(measures)
     )
     events_combined = [
