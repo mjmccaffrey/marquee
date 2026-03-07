@@ -142,9 +142,11 @@ def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
 
 def events_in_measure(measure: Measure, start: float) -> list[Task]:
     """Return events for all notes in measure."""
+    print(f"{start=}")
     beat = 0.0 
     result = []
     for element in measure.elements:
+        print(f"{beat=}")
         assert isinstance(element, (BaseNote, NoteGroup))
         if not isinstance(element, Rest):
             result.append(
@@ -190,25 +192,41 @@ def play_measures(measures: tuple[Measure, ...], tempo: int):
     mode.tasks.bulk_add(events)
 
 
-def _dimmer(brightness: list[int]) -> Callable:
+def _dimmer(pattern: str) -> Callable:
     """Return callable to effect dimmer pattern."""
+    brightness = [
+        mode.lights.controller.bulb_model.adjustments[b]
+        for b in pattern
+    ]
     return lambda: mode.lights.set_channels(brightness=brightness)
 
 
-def _channel_sequence(brightness: int, trans: float) -> Callable:
+def _dimmer_sequence(brightness: int, trans: float) -> Callable:
     """Return callable to effect state of specified channels."""
-    def func(lights: list[int]):
-        pass
-        # mode.lights.set_channel_subset(lights, brightness, trans)
-    return func
+
+    def set_channels(lights: list[int]):
+        """"""
+        mode.lights.set_channels(
+            brightness=brightness, 
+            transition=trans,
+            channel_indexes=set(lights),
+        )
+
+    return set_channels
 
 
-def _channel_sequence_flip(trans: float) -> Callable:
+def _dimmer_sequence_flip(trans: float) -> Callable:
     """Return callable to flip state of specified channels."""
-    def func(lights: list[int]):
+
+    def set_channels(lights: list[int]):
+        """"""
         brightness = 0 if mode.lights.brightnesses()[lights[0]] else 100
-        # mode.lights.set_channel_subset(lights, brightness, trans)
-    return func
+        mode.lights.set_channels(
+            brightness=brightness, 
+            transition=trans,
+            channel_indexes=set(lights),
+        )
+    return set_channels
 
 
 def _light(

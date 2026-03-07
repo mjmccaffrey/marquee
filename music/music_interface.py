@@ -8,7 +8,7 @@ from .music_elements import (
     Element, Measure, Part, Section, Sequence, 
 )
 from .music_implementation import (
-    _channel_sequence, _channel_sequence_flip, _light, _set_mode,
+    _dimmer, _dimmer_sequence, _dimmer_sequence_flip, _light, _set_mode,
     expand_sequence_measures, play_measures, prepare_parts, validate_measures
 )
 from specialparams import SpecialParams
@@ -64,17 +64,17 @@ def sequence(
 
 def dimmer(pattern: str) -> Callable:
     """Return callable to effect dimmer pattern."""
-    # return _channel(pattern)
+    return _dimmer(pattern)
 
 
 def dimmer_sequence(brightness: int, trans: float) -> Callable:
     """Return callable to effect state of specified channels."""
-    return _channel_sequence(brightness, trans)
+    return _dimmer_sequence(brightness, trans)
 
 
 def dimmer_sequence_flip(trans: float) -> Callable:
     """Return callable to flip state of specified channels."""
-    return _channel_sequence_flip(trans)
+    return _dimmer_sequence_flip(trans)
 
 
 def light(

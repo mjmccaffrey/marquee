@@ -79,7 +79,7 @@ class Signs(MusicMode):
                 sequence(
                     random_each,
                     measures=10,
-                    special=ActionParams(action=dimmer_sequence_flip(1)),
+                    special=ActionParams(action=dimmer_sequence_flip(trans=1.0)),
                 ),
             ),
             act_part(

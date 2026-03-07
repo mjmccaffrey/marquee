@@ -135,11 +135,12 @@ def act_part(
         beats=4,
     ) -> Part:
     """Produce act part from notation."""
-    acts = cycle(actions)
-    def func(symbols: str) -> ActionNote | Rest:
-        return act(symbols, next(acts), pre_call_actions=False)  # !!!!!!!!!
+    action_cycle = cycle(actions)
+    def create_act(symbols: str) -> ActionNote | Rest:
+        """Return ActionNote for next action in cycle."""
+        return act(symbols, next(action_cycle))
     return part(
-        *_interpret_notation(func, notation, beats)
+        *_interpret_notation(create_act, notation, beats)
     )
 
 
@@ -223,21 +224,25 @@ def sequence_part(
         while True:
             yield sequence
 
-    def func(s: str) -> ActionNote | Rest:
-        """Return a callable that returns an ActionNote."""
+    def create_note(symbol: str) -> ActionNote | Rest:
+        """Return ActionNote for symbol and next pattern in sequence."""
         return act(
-            s, 
-            lambda: light(
+            symbol, 
+            light(
                 next(sequence.iter), 
                 sequence.special,
             ),
-            pre_call_actions=True,
         )
+    
     each_sequence = sequence_gen()
     measures = []
     for notation in _each_notation_measure(notation):
         sequence = next(each_sequence)
-        measure_tuple = _interpret_notation(func, notation, beats)
+        measure_tuple = _interpret_notation(
+            create_note, 
+            notation, 
+            beats,
+        )
         assert len(measure_tuple) == 1
         measures.append(measure_tuple[0])
     return part(*measures)
