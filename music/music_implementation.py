@@ -171,6 +171,7 @@ def events_in_measure(measure: Measure, start: float) -> list[Task]:
 
 def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Task]:
     """Return events for all notes in all measures."""
+    print("TEMPO: ", tempo)
     start = time.time()
     pace = 60 / tempo
     duration = pace * measures[0].beats
