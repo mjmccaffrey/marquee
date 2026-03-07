@@ -41,7 +41,7 @@ class Rest(BaseNote):
 
     def play(self) -> None:
         """Play single rest (do nothing)."""
-        print("PLAYING REST")
+        raise ValueError("PLAYING REST")
 
 
 @dataclass(frozen=True)
@@ -230,6 +230,5 @@ class Section(Element):
 
     def play(self, tempo: int = 0) -> None:
         """Play already-generated measures comprising Section."""
-        print("SECTION.PLAY")
         self.play_measures(self.measures, tempo or self.tempo)
 

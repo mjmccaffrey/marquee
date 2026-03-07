@@ -113,4 +113,3 @@ class Twelve(MusicMode):
         song.play(tempo=self.bpm)
         return 0.0
     
-

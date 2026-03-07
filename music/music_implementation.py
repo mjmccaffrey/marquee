@@ -142,12 +142,10 @@ def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
 
 def events_in_measure(measure: Measure, tempo: int, start: float) -> list[Task]:
     """Return events for all notes in measure."""
-    print(f"{start=}")
     bps = tempo / 60
     beat = 0.0 
     result = []
     for element in measure.elements:
-        print(f"{beat=}")
         assert isinstance(element, (BaseNote, NoteGroup))
         if not isinstance(element, Rest):
             result.append(
@@ -157,22 +155,13 @@ def events_in_measure(measure: Measure, tempo: int, start: float) -> list[Task]:
                     owner = mode,
                 )
             )
-        # if element.duration:
-        #     mode.wait(element.duration, time.time() - start)
-        #     start = time.time()
         beat += element.duration
         if beat > measure.beats:
             raise ValueError("Too many actual beats in measure.")
-    # # Play implied rests at end of measure
-    # mode.wait(measure.beats - beat, time.time() - start)
-    print("EVENTS IN MEASURE:")
-    for r in result:
-        print("  ", r.due, r.action)
     return result
 
 def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Task]:
     """Return events for all notes in all measures."""
-    print("TEMPO: ", tempo)
     start = time.time()
     pace = 60 / tempo
     duration = pace * measures[0].beats
