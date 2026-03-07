@@ -90,7 +90,8 @@ class TaskSchedule:
                     self.pop()
                     return task, 0
                 elif seconds is None or task.due < end:
-                    print(f"Waiting for {task} or button push")
+                    # print(f"Waiting for {task} or button push")
+                    print(f"Waiting for {task.due - now} or button push")
                     return None, task.due - now
                 else:
                     print(f"Waiting for remaining {remaining} or button push; schedule not empty")
