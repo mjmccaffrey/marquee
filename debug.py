@@ -34,7 +34,7 @@ def profile(hue: HueBridge, name: str):
     hue.get_state_of_channels()
     return {
         name: {
-                int(channel.id): {
+                channel.index: {
                     'brightness': channel.brightness,
                     'x': channel.color.x,  # type: ignore None
                     'y': channel.color.y,  # type: ignore None
