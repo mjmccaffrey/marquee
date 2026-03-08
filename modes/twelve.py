@@ -24,7 +24,7 @@ class Twelve(MusicMode):
         (100, 0, 100),
         (100, 0, 50),
     )
-    bpm = 160
+    tempo = 160
 
     def execute(self):
         """"""
@@ -44,13 +44,13 @@ class Twelve(MusicMode):
             )
 
         # next = self.play_basic()
-        next = self.play_music()
+        restart_seconds = self.play_music()
 
-        # # Schedule repeat
-        # self.schedule(
-        #     due=next,
-        #     action=self.execute,
-        # )
+        # Schedule repeat
+        self.schedule(
+            due=restart_seconds,
+            action=self.execute,
+        )
 
     def play_basic(self) -> float:
         """"""
@@ -58,7 +58,7 @@ class Twelve(MusicMode):
             0.5, 0.5, 0.5, 1, 1, 0.5,
             1, 0.5, 1, 1, 1.5, 1,
         )
-        bps = self.bpm / 60
+        bps = self.tempo / 60
 
         # Click intro
         for i in range(4):
@@ -96,7 +96,6 @@ class Twelve(MusicMode):
         def turn_on():
             """"""
             index = next(indices)
-            print("TURN ON", index)
             self.lights.set_channels(
                 on=True,
                 transition=0.0,
@@ -110,6 +109,6 @@ class Twelve(MusicMode):
                 turn_on,
             )
         )
-        song.play(tempo=self.bpm)
+        song.play(tempo=self.tempo)
         return 0.0
     

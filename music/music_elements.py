@@ -207,7 +207,7 @@ class Section(Element):
     beats: int
     tempo: int
     prepare_parts: Callable[[tuple[Part, ...]], tuple[Measure, ...]]
-    play_measures: Callable[[tuple[Measure, ...], int], None]
+    play_measures: Callable[[tuple[Measure, ...], int], float]
     measures: tuple[Measure, ...] = field(init=False)
 
     def __post_init__(self) -> None:

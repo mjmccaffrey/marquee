@@ -9,11 +9,11 @@ from typing import Any, Iterator
 from task import Task
 from modes.foregroundmode import ForegroundMode
 from .music_elements import (
-    ActionNote, BaseNote, DrumNote, Element, Measure, NoteGroup,
+    ActionNote, BaseNote, Element, Measure, NoteGroup,
     Part, Rest, SequenceMeasure,
 )
 from specialparams import (
-    ActionParams, ChannelParams, SpecialParams,
+    ActionParams, SpecialParams,
 )
 
 
@@ -94,10 +94,10 @@ def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
 
 def expand_sequence_measures(measures: tuple[Measure, ...]) -> None:
     """Populate SequenceMeasures with ActionNotes."""
-    for measure in measures:
-        if not isinstance(measure, SequenceMeasure):
-            continue
-        assert isinstance(measure, SequenceMeasure)
+    sequence_measures = (
+        m for m in measures if isinstance(m, SequenceMeasure)
+    )
+    for measure in sequence_measures:
         elements = tuple(
             ActionNote(
                 duration=measure.step_duration,
@@ -140,9 +140,8 @@ def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
             object.__setattr__(part, 'measures', measures)
 
 
-def events_in_measure(measure: Measure, tempo: int, start: float) -> list[Task]:
-    """Return events for all notes in measure."""
-    bps = tempo / 60
+def tasks_in_measure(measure: Measure, bps: float, start: float) -> list[Task]:
+    """Return tasks for all notes in measure."""
     beat = 0.0 
     result = []
     for element in measure.elements:
@@ -160,27 +159,39 @@ def events_in_measure(measure: Measure, tempo: int, start: float) -> list[Task]:
             raise ValueError("Too many actual beats in measure.")
     return result
 
-def events_in_measures(measures: tuple[Measure, ...], tempo: int) -> list[Task]:
-    """Return events for all notes in all measures."""
-    start = time.time()
-    pace = 60 / tempo
-    duration = pace * measures[0].beats
-    events_by_measure = chain(
-        events_in_measure(measure, tempo, start + index * duration)
+
+def tasks_in_measures(
+        measures: tuple[Measure, ...], 
+        bps: float,
+        start: float,
+) -> list[Task]:
+    """Return tasks for all notes in all measures."""
+    duration = bps / measures[0].beats
+    tasks_by_measure = chain(
+        tasks_in_measure(measure, bps, start + index * duration)
         for index, measure in enumerate(measures)
     )
-    events_combined = [
+    tasks_combined = [
         task
-        for measure in events_by_measure
+        for measure in tasks_by_measure
         for task in measure
     ]
-    return events_combined
+    return tasks_combined
 
 
-def play_measures(measures: tuple[Measure, ...], tempo: int):
-    """Convert measures to events, add to task queue."""
-    events = events_in_measures(measures, tempo)
-    mode.tasks.bulk_add(events)
+def play_measures(measures: tuple[Measure, ...], tempo: int) -> float:
+    """Convert measures to tasks, add to task queue.
+       Return the # of seconds when playing the last measure
+       will be finished, i.e. when a repeat or the next 
+       section of music could start."""
+    bps = tempo / 60
+    start = time.time()
+    print(start)
+    tasks = tasks_in_measures(measures, bps, start)
+    print(time.time())
+    mode.tasks.bulk_add(tasks)
+    print(time.time())
+    return bps / measures[0].beats * len(measures)
 
 
 def _dimmer(pattern: str) -> Callable:
