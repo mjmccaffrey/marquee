@@ -1,8 +1,10 @@
 """Marquee Lighted Sign Project - debug"""
 
 from collections.abc import Sequence
+import json
 
 from lightset import LightSet
+from devices.hue import HueBridge
 from setup_devices_hue import setup_devices
 
 
@@ -26,6 +28,13 @@ def light_states(lights: LightSet) -> None:
     """"""
     for i, c in enumerate(lights.channels):
         print(f"{i} {c.brightness} {c.color} {c.on}")
+
+def save(hue: HueBridge, filename: str):
+    """"""
+    state = hue._get_state_of_channels()
+    with open(filename, "wt") as f:
+        json.dump(state, f)
+    return state
 
 
 # @dataclass(kw_only=True)
