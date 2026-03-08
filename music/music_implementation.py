@@ -186,11 +186,11 @@ def play_measures(measures: tuple[Measure, ...], tempo: int) -> float:
        section of music could start."""
     bps = tempo / 60
     start = time.time()
-    print(start)
+    print(f"{start=}")
     tasks = tasks_in_measures(measures, bps, start)
-    print(time.time())
+    for t in tasks:
+        print(t.due)
     mode.tasks.bulk_add(tasks)
-    print(time.time())
     return bps / measures[0].beats * len(measures)
 
 
