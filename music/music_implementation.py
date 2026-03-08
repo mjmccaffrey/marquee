@@ -171,7 +171,7 @@ def tasks_in_measures(
     start: float,
 ) -> list[Task]:
     """Return tasks for all notes in all measures."""
-    duration = bps / measures[0].beats
+    duration = measures[0].beats / bps
     tasks_by_measure = chain(
         tasks_in_measure(measure, bps, start + i * duration)
         for i, measure in enumerate(measures)
