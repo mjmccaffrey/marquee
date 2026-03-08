@@ -42,12 +42,24 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         assert isinstance(self.bulb_model, HueBulb)
         try:
-            lights = self._get_state_of_channels()
-            print(f"Received status for {len(lights)} lights.")
+            self.get_state_of_channels()
         except requests.exceptions.Timeout as e:
             print(f"*** Failed to reach '{self.ip_address}' ***")
             print(f"*** Error: {e} ***")
             raise OSError from None
+
+    def get_state_of_channels(self) -> None:
+        """Fetch status parameters for all channels."""
+        result = self.session.get(
+            url=f'https://{self.ip_address}/clip/v2/resource/light',
+            timeout=2.0,
+        )
+        result.raise_for_status()
+        json = result.json()
+        lights = {
+            light['id']: light
+            for light in json['data']
+        }
         self.channels = [
             HueChannel(
                 index=i,
@@ -60,19 +72,6 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             for i, id in enumerate(self.bulb_ids)
         ]
         self.channel_count = len(self.channels)
-
-    def _get_state_of_channels(self) -> dict[str, dict]:
-        """Fetch status parameters for all channels."""
-        result = self.session.get(
-            url=f'https://{self.ip_address}/clip/v2/resource/light',
-            timeout=2.0,
-        )
-        result.raise_for_status()
-        json = result.json()
-        return {
-            light['id']: light
-            for light in json['data']
-        }
     
     def __init_subclass__(cls, channel_count: int) -> None:
         """Set channel count for concrete subclasses."""

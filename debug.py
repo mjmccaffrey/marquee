@@ -29,12 +29,19 @@ def light_states(lights: LightSet) -> None:
     for i, c in enumerate(lights.channels):
         print(f"{i} {c.brightness} {c.color} {c.on}")
 
-def save(hue: HueBridge, filename: str):
+def profile(hue: HueBridge, name: str):
     """"""
-    state = hue._get_state_of_channels()
-    with open(filename, "wt") as f:
-        json.dump(state, f)
-    return state
+    hue.get_state_of_channels()
+    return {
+        name: {
+                int(channel.id): {
+                    'brightness': channel.brightness,
+                    'x': channel.color.x,  # type: ignore None
+                    'y': channel.color.y,  # type: ignore None
+                }
+                for channel in hue.channels
+        }
+    }
 
 
 # @dataclass(kw_only=True)
