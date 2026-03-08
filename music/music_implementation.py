@@ -191,7 +191,7 @@ def play_measures(measures: tuple[Measure, ...], tempo: int) -> float:
     for t in tasks:
         print(t.due)
     mode.tasks.bulk_add(tasks)
-    return bps / measures[0].beats * len(measures)
+    return measures[0].beats * len(measures) / bps
 
 
 def _dimmer(pattern: str) -> Callable:
