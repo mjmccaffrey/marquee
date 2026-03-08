@@ -45,12 +45,13 @@ class Twelve(MusicMode):
 
         # next = self.play_basic()
         restart_seconds = self.play_music()
+        print(restart_seconds)
 
         # Schedule repeat
-        self.schedule(
-            due=restart_seconds,
-            action=self.execute,
-        )
+        # self.schedule(
+        #     due=restart_seconds,
+        #     action=self.execute,
+        # )
 
     def play_basic(self) -> float:
         """"""
