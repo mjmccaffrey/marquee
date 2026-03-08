@@ -19,11 +19,11 @@ def set_mode(the_mode: ForegroundMode) -> None:
     _set_mode(the_mode)
 
 
-def play(*measures: Measure, tempo: int) -> None:
+def play(*measures: Measure, tempo: int) -> float:
     """Process and then play a series of measures."""
     expand_sequence_measures(measures)
     validate_measures(measures)
-    play_measures(measures, tempo=tempo)
+    return play_measures(measures, tempo=tempo)
 
 
 def measure(*elements: Element, beats: int = 4) -> Measure:

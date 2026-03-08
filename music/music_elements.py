@@ -228,7 +228,7 @@ class Section(Element):
             )
             object.__setattr__(part, 'measures', measures)
 
-    def play(self, tempo: int = 0) -> None:
+    def play(self, tempo: int = 0) -> float:
         """Play already-generated measures comprising Section."""
-        self.play_measures(self.measures, tempo or self.tempo)
+        return self.play_measures(self.measures, tempo or self.tempo)
 
