@@ -64,7 +64,7 @@ class Twelve(MusicMode):
         # Click intro
         for i in range(4):
             self.schedule(
-                due=i / bps,
+                due=(i / bps),
                 action=partial(self.clicker.click),
             )
         delay = 4 / bps

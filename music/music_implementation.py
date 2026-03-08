@@ -140,8 +140,13 @@ def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
             object.__setattr__(part, 'measures', measures)
 
 
-def tasks_in_measure(measure: Measure, bps: float, start: float) -> list[Task]:
+def tasks_in_measure(
+    measure: Measure, 
+    bps: float, 
+    start: float,
+) -> list[Task]:
     """Return tasks for all notes in measure."""
+    print(bps, start)
     beat = 0.0 
     result = []
     for element in measure.elements:
@@ -161,15 +166,15 @@ def tasks_in_measure(measure: Measure, bps: float, start: float) -> list[Task]:
 
 
 def tasks_in_measures(
-        measures: tuple[Measure, ...], 
-        bps: float,
-        start: float,
+    measures: tuple[Measure, ...], 
+    bps: float,
+    start: float,
 ) -> list[Task]:
     """Return tasks for all notes in all measures."""
     duration = bps / measures[0].beats
     tasks_by_measure = chain(
-        tasks_in_measure(measure, bps, start + index * duration)
-        for index, measure in enumerate(measures)
+        tasks_in_measure(measure, bps, start + i * duration)
+        for i, measure in enumerate(measures)
     )
     tasks_combined = [
         task
