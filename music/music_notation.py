@@ -2,7 +2,6 @@
 
 from collections.abc import Callable, Iterator
 from enum import IntEnum
-from functools import partial
 from itertools import cycle
 
 from .music_elements import (
@@ -113,10 +112,9 @@ def rest(symbols: str) -> Rest:
 
 
 def act(
-        symbols: str, 
-        *actions: Callable, 
-        pre_call_actions: bool = False,
-    ) -> ActionNote | Rest:
+    symbols: str, 
+    *actions: Callable, 
+) -> ActionNote | Rest:
     """Validate symbols and return ActionNote or Rest."""
     duration, pitches, accent, is_rest = _interpret_symbols(symbols)
     if is_rest:
@@ -124,16 +122,14 @@ def act(
     if pitches or accent:
         # raise ValueError("Action note cannot have pitch or accent.")
         pass
-    if pre_call_actions:
-        actions = tuple(action() for action in actions)
     return ActionNote(duration, actions)
 
 
 def act_part(
-        notation: str, 
-        *actions: Callable,
-        beats=4,
-    ) -> Part:
+    notation: str, 
+    *actions: Callable,
+    beats=4,
+) -> Part:
     """Produce act part from notation."""
     action_cycle = cycle(actions)
     def create_act(symbols: str) -> ActionNote | Rest:
@@ -195,7 +191,7 @@ def sequence_measure(
     special: SpecialParams | None = None,
     beats: int = 4,
     **kwargs,
-    ) -> SequenceMeasure:
+) -> SequenceMeasure:
     """Produce a SequenceMeasure."""
     step_duration, _, _, _ = _interpret_symbols(symbols)
     return SequenceMeasure(
@@ -213,7 +209,7 @@ def sequence_part(
         notation: str, 
         *sequences: Sequence,
         beats=4,
-    ) -> Part:
+) -> Part:
     """Produce sequence part from notation."""
 
     def sequence_gen() -> Iterator[Sequence]:

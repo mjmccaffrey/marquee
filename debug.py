@@ -36,8 +36,8 @@ def profile(hue: HueBridge, name: str):
         name: {
                 channel.index: {
                     'brightness': channel.brightness,
-                    'x': channel.color.x,  # type: ignore None
-                    'y': channel.color.y,  # type: ignore None
+                    '1': channel.color.x,  # type: ignore None
+                    '2': channel.color.y,  # type: ignore None
                 }
                 for channel in hue.channels
         }
