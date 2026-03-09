@@ -10,7 +10,7 @@ from typing import ClassVar
 import requests
 import urllib3
 
-from color import Color
+from color import Color, XY
 from .bulb import HueBulb
 from .lightcontroller import (
     ChannelUpdate, ChannelCommand, 
@@ -66,7 +66,10 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 id=id,
                 controller=self,
                 brightness=lights[id]['dimming']['brightness'],
-                color=lights[id]['color']['xy'],
+                color=XY(
+                    x=lights[id]['color']['xy']['x'],
+                    y=lights[id]['color']['xy']['y'],
+                ),
                 on=lights[id]['on']['on'],
             )
             for i, id in enumerate(self.bulb_ids)
