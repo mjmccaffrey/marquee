@@ -1,8 +1,9 @@
 """Marquee Lighted Sign Project - debug"""
 
 from collections.abc import Sequence
-import json
+from typing import cast
 
+from color import Color
 from lightset import LightSet
 from devices.hue import HueBridge
 from setup_devices_hue import setup_devices
@@ -36,8 +37,8 @@ def profile(hue: HueBridge, name: str):
         name: {
                 channel.index: {
                     'brightness': channel.brightness,
-                    '1': channel.color.x,  # type: ignore None
-                    '2': channel.color.y,  # type: ignore None
+                    'x': cast(Color, channel.color).x,
+                    'y': cast(Color, channel.color).y,
                 }
                 for channel in hue.channels
         }

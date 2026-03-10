@@ -3,6 +3,7 @@
 from collections.abc import Sequence
 from dataclasses import dataclass, InitVar
 import time
+from typing import cast
 
 from devices import rgbxy
 
@@ -263,7 +264,7 @@ class LightSet:
                 result = list(transition)
             case _:
                 result = [transition] * self.count
-        return result  # type: ignore
+        return cast(list, result)
     
     def convert_color(
         self,
@@ -297,7 +298,7 @@ class LightSet:
                 result = [
                     bool(on) if on is not None else None
                 ] * self.count
-        return result  # type: ignore
+        return cast(list, result)
     
     def convert_relay_pattern(
         self, 

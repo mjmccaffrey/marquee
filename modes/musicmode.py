@@ -1,7 +1,9 @@
 """Marquee Lighted Sign Project - musicmode"""
 
 from abc import ABC
+from collections.abc import Sequence
 from dataclasses import dataclass
+from typing import cast
 
 from .performancemode import PerformanceMode
 from music import Measure, play, Section
@@ -21,7 +23,7 @@ class MusicMode(PerformanceMode, ABC):
         tempo = int(tempo * self.speed_factor)
         if isinstance(elements[0], Measure):
             assert all(isinstance(e, Measure) for e in elements)
-            play(*elements, tempo=tempo)  # type: ignore
+            play(*cast(Sequence[Measure], elements), tempo=tempo)
         else:
             for element in elements:
                 assert isinstance(element, Section)
