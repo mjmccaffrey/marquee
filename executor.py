@@ -37,7 +37,7 @@ class Executor:
         self.mode_ids: dict[str, int] = {}
         self.mode_menu: list[tuple[int, str]] = []
         self.modes: dict[int, ModeDefinition] = {}
-        self.color_sets = load_color_sets('color_sets.json')
+        self.color_sets = {}  # load_color_sets('color_sets.json')
         self.commands: dict[str, Callable[[], None]] = {
             'calibrate': self.command_calibrate,
             'off': self.command_off,
