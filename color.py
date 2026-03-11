@@ -118,7 +118,19 @@ class Colors:
         return RGB(r, g, b, self.gamut)
 
 
-type ColorSets = dict[str, ColorSet]
+@dataclass
+class ColorSet:
+    name: str
+    colors: tuple[XYB, ...]
+
+    def convert_for_set_channels(self) -> tuple[tuple[XY, ...], tuple[float, ...]]:
+        """Return color and brightness arguments for lightset.set_channels."""
+        xy = tuple(XY(c.x, c.y) for c in self.colors)
+        b = tuple(c.b  for c in self.colors)
+        return (xy, b)
+
+
+ColorSets = dict[str, ColorSet]
 
 
 def load_color_sets(filepath: str) -> ColorSets:
@@ -132,16 +144,4 @@ def load_color_sets(filepath: str) -> ColorSets:
         )
         for name, colors in json.items()
     }
-
-
-@dataclass
-class ColorSet:
-    name: str
-    colors: tuple[XYB, ...]
-
-    def convert_for_set_channels(self) -> tuple[tuple[XY, ...], tuple[float, ...]]:
-        """Return color and brightness arguments for lightset.set_channels."""
-        xy = tuple(XY(c.x, c.y) for c in self.colors)
-        b = tuple(c.b  for c in self.colors)
-        return (xy, b)
 
