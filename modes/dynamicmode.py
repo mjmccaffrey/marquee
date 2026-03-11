@@ -9,7 +9,7 @@ from specialparams import ChannelParams
 @dataclass(kw_only=True)
 class DynamicMode(PerformanceMode, ABC):
     """Utilizes ChannelParams.generate to insert
-       dynamic channel parameters. Of limited use."""
+       dynamic channel parameters. OF LIMITED USE."""
     sequence_mode_name: str
 
     @abstractmethod

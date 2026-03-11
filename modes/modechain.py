@@ -5,7 +5,7 @@ from itertools import cycle
 
 from devices.devices_misc import ButtonInterface
 from .backgroundmode import BackgroundMode
-from .mode_misc import BGModeEntry
+from .mode_misc import ChainEntry
 
 
 @dataclass(kw_only=True)
@@ -22,7 +22,7 @@ class ModeChain(BackgroundMode):
     def create_mode_sequence(self) -> None:
         """Create mode sequence."""
         self.mode_sequence = [
-            BGModeEntry(
+            ChainEntry(
                 name,
                 seconds,
                 self.lookup_mode_index(name),

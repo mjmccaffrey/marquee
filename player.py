@@ -3,6 +3,7 @@
 from dataclasses import dataclass, field
 from typing import Any, NoReturn
 
+from color import ColorSets
 from devices.button import Button, ButtonPressed, Shutdown
 from devices.devices_misc import ButtonSet
 from event import EventSystem
@@ -18,6 +19,7 @@ class Player:
     """Executes one mode at a time. Contains the task queue."""
     modes: dict[int, ModeDefinition]
     mode_ids: dict[str, int]
+    color_sets: ColorSets
     bells: BellSet
     buttons: ButtonSet
     drums: DrumSet
@@ -67,6 +69,7 @@ class Player:
                 tasks=self.tasks,
                 modes=self.modes,
                 mode_ids=self.mode_ids,
+                color_sets=self.color_sets,
                 parent=parent,
             )
             _kwargs |= (

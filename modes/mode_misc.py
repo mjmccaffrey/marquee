@@ -8,7 +8,7 @@ from typing import Any, Protocol
 # from .foregroundmode import ForegroundMode
 
 @dataclass
-class BGModeEntry:
+class ChainEntry:
     name: str
     seconds: float
     index: int = -1

@@ -5,6 +5,7 @@ import signal
 import time
 from typing import Any
 
+from color import load_color_sets
 from devices.button import Button
 from devices.devices_misc import SetupDevices
 from lightset_misc import ALL_ON
@@ -36,6 +37,7 @@ class Executor:
         self.mode_ids: dict[str, int] = {}
         self.mode_menu: list[tuple[int, str]] = []
         self.modes: dict[int, ModeDefinition] = {}
+        self.color_sets = load_color_sets('color_sets.json')
         self.commands: dict[str, Callable[[], None]] = {
             'calibrate': self.command_calibrate,
             'off': self.command_off,
@@ -118,6 +120,7 @@ class Executor:
         self.player: Player = self.create_player(
             self.modes, 
             self.mode_ids,
+            self.color_sets,
             self.bells,
             self.buttons,
             self.drums,

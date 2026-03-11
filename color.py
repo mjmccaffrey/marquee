@@ -1,6 +1,8 @@
 """Marquee Lighted Sign Project - color"""
 
 from abc import ABC
+from dataclasses import dataclass
+from json import load
 
 from devices import rgbxy
 
@@ -17,6 +19,14 @@ class XY(Color):
     def __init__(self, x: float, y: float) -> None:
         """Initialize."""
         self.x, self.y = x, y
+
+
+class XYB(Color):
+    """XYB color (not really)."""
+
+    def __init__(self, x: float, y: float, b: float) -> None:
+        """Initialize."""
+        self.x, self.y, self.b = x, y, b
 
 
 class RGB(Color):
@@ -106,4 +116,32 @@ class Colors:
     def rgb(self, r: int, g: int, b: int) -> RGB:
         """Return RGB instance adjusted for gamut."""
         return RGB(r, g, b, self.gamut)
+
+
+type ColorSets = dict[str, ColorSet]
+
+
+def load_color_sets(filepath: str) -> ColorSets:
+    """"""
+    with open(filepath) as f:
+        json = load(f)
+    return {
+        name: ColorSet(
+            name, 
+            tuple(XYB(*c) for c in colors),
+        )
+        for name, colors in json.items()
+    }
+
+
+@dataclass
+class ColorSet:
+    name: str
+    colors: tuple[XYB, ...]
+
+    def convert_for_set_channels(self) -> tuple[tuple[XY, ...], tuple[float, ...]]:
+        """Return color and brightness arguments for lightset.set_channels."""
+        xy = tuple(XY(c.x, c.y) for c in self.colors)
+        b = tuple(c.b  for c in self.colors)
+        return (xy, b)
 
