@@ -25,23 +25,25 @@ def ppp(p: Sequence) -> None:
         f"  {p[8]} {p[7]} {p[6]}\n"
     )
 
+
 def light_states(lights: LightSet) -> None:
     """"""
     for i, c in enumerate(lights.channels):
         print(f"{i} {c.brightness} {c.color} {c.on}")
 
-def profile(hue: HueBridge, name: str):
+
+def get_color_set(hue: HueBridge, name: str):
     """"""
     hue.get_state_of_channels()
     return {
-        name: {
-                channel.index: {
-                    'brightness': channel.brightness,
-                    'x': cast(Color, channel.color).x,
-                    'y': cast(Color, channel.color).y,
-                }
-                for channel in hue.channels
-        }
+        name: tuple(
+            (
+                cast(Color, channel.color).x,
+                cast(Color, channel.color).y,
+                channel.brightness,
+            )
+            for channel in hue.channels
+        )
     }
 
 
