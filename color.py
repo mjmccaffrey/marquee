@@ -1,7 +1,8 @@
 """Marquee Lighted Sign Project - color"""
 
 from abc import ABC
-from dataclasses import dataclass
+from collections import defaultdict
+from dataclasses import dataclass, field
 from json import load
 
 from devices import rgbxy
@@ -121,27 +122,49 @@ class Colors:
 @dataclass
 class ColorSet:
     name: str
+    group: str
     colors: tuple[XYB, ...]
 
-    def convert_for_set_channels(self) -> tuple[tuple[XY, ...], tuple[float, ...]]:
+    def convert_for_set_channels(self) -> tuple[tuple[XY, ...], tuple[int, ...]]:
         """Return color and brightness arguments for lightset.set_channels."""
         xy = tuple(XY(c.x, c.y) for c in self.colors)
-        b = tuple(c.b  for c in self.colors)
+        b = tuple(round(c.b)  for c in self.colors)  # !!!
         return (xy, b)
 
 
-ColorSets = dict[str, ColorSet]
-
-
-def load_color_sets(filepath: str) -> ColorSets:
+class ColorSets:
     """"""
-    with open(filepath) as f:
-        json = load(f)
-    return {
-        name: ColorSet(
-            name, 
-            tuple(XYB(*c) for c in colors),
-        )
-        for name, colors in json.items()
-    }
+    by_set_name: dict[str, ColorSet]
+    by_group_name: dict[str, list[ColorSet]]
 
+    def __init__(self, by_set_name: dict | None = None) -> None:
+        """"""
+        self.by_set_name = (
+            by_set_name or self.load_color_sets('color_sets.json')
+        )
+        self.by_group_name = self.create_color_groups(self.by_set_name)
+
+    @staticmethod
+    def load_color_sets(filepath: str) -> dict[str, ColorSet]:
+        """"""
+        with open(filepath) as f:
+            json = load(f)
+        return {
+            name: ColorSet(
+                name, group, tuple(XYB(*c) for c in colors),
+            )
+            for name, group, colors in json.items()
+        }
+
+    @staticmethod
+    def create_color_groups(sets: dict[str, ColorSet]) -> dict[str, list[ColorSet]]:
+        """"""
+        result = defaultdict(list)
+        for cs in sets.values():
+            result[cs.group].append(cs)
+        # return result
+
+        d = {
+            group: [s for s in sets.values() if s.name == group]
+            for group in set(s.group for s in sets.values())
+        }

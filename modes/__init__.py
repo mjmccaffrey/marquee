@@ -6,18 +6,23 @@ from .modeselect import ModeSelect
 
 # Foreground Performance concrete modes
 # from .christmas import ChristmasSongs
+from .colorsetcycle import ColorSetCycle
 from .colorwheel import ColorWheel
+from .comet import Comet
 # from .demo import Demo
 from .evenoddfade import EvenOddFade
+from .mode_misc import ModeIndex
 from .pacman import PacManGame
 from .randomfade import RandomFade
 from .randomcolors import RandomColors
 from .rotatereversible import RotateReversible
 from .running import Running
+from .sequencemode import SequenceMode
 # from .signs import Signs
 from .silentfadebuild import SilentFadeBuild
+from .twelve import Twelve
 
 # Background concrete modes
-from .modechain import ModeChain
+from .modecycle import ModeCycle
 
 # 

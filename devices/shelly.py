@@ -42,6 +42,9 @@ class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
         ]
         self.channel_count = len(self.channels)
 
+    def __str__(self) -> str:
+        return f"{type(self).__name__}"
+    
     def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands via aiohttp asynchronously."""
         asyncio.run(self._execute_commands(updates))

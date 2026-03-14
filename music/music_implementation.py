@@ -2,7 +2,7 @@
 
 from collections.abc import Callable
 from dataclasses import replace
-from itertools import chain
+from itertools import cycle
 import time
 from typing import Any, Iterator
 
@@ -172,7 +172,7 @@ def tasks_in_measures(
 ) -> list[Task]:
     """Return tasks for all notes in all measures."""
     duration = measures[0].beats / bps
-    tasks_by_measure = chain(
+    tasks_by_measure = cycle(
         tasks_in_measure(measure, bps, start + i * duration)
         for i, measure in enumerate(measures)
     )

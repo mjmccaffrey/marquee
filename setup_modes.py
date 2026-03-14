@@ -4,10 +4,6 @@ from color import Colors
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes import *
-from modes.comet import Comet
-from modes.mode_misc import ModeIndex
-from modes.sequencemode import SequenceMode
-from modes.twelve import Twelve
 from sequences import (
     all_on, all_off, blink_all, blink_alternate, even_on, even_off,
     rotate, random_flip, rotate_sides,
@@ -50,6 +46,15 @@ def register_special_modes(exec: Executor) -> None:
 def register_channel_modes(exec: Executor):
     """"""
 
+    exec.add_mode("cs_test", ColorSetCycle,
+        sequence = [
+            ("", 30),
+            ("", 30),
+            ("", 30),
+            ("", 30),
+            ("", 30),
+        ],
+    )
     exec.add_mode("twelve", Twelve)
     exec.add_mode("comet_test_1", Comet,
         length=9,
@@ -61,7 +66,7 @@ def register_channel_modes(exec: Executor):
         delay=0.1875,
         color=Colors.RED,
     )
-    exec.add_mode("modechaintest", ModeChain,
+    exec.add_mode("modecycletest", ModeCycle,
         sequence = [
             ("blink_alternate_medium", 30),
             ("random_flip_fade_medium", 30),
