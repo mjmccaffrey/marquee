@@ -52,6 +52,7 @@ def merge_color_files(filepath: str) -> list:
     """"""
     result = []
     for file in Path().glob("*.json"):
+        print(f"{file=}")
         data = json.load(file.open())
         for set_name, data in cast(dict, data).items():
             result.append([set_name, file.stem, data])
