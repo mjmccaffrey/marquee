@@ -125,11 +125,12 @@ class ColorSet:
     group: str
     colors: tuple[XYB, ...]
 
-    def convert_for_set_channels(self) -> tuple[tuple[XY, ...], tuple[int, ...]]:
+    def set_channels_kwargs(self) -> dict:
         """Return color and brightness arguments for lightset.set_channels."""
-        xy = tuple(XY(c.x, c.y) for c in self.colors)
-        b = tuple(round(c.b)  for c in self.colors)  # !!!
-        return (xy, b)
+        return {
+            'color': tuple(XY(c.x, c.y) for c in self.colors),
+            'brightness': tuple(round(c.b)  for c in self.colors),  # !!!
+        }
 
 
 class ColorSets:
@@ -139,11 +140,11 @@ class ColorSets:
 
     def __init__(self) -> None:
         """"""
-        self.by_set_name = self.load_color_sets('color_sets.json')
-        self.by_group_name = self.create_color_groups(self.by_set_name)
+        self.by_set_name = self._load_color_sets('color_sets.json')
+        self.by_group_name = self._create_color_groups(self.by_set_name)
 
     @staticmethod
-    def load_color_sets(filepath: str) -> dict[str, ColorSet]:
+    def _load_color_sets(filepath: str) -> dict[str, ColorSet]:
         """"""
         with open(filepath) as f:
             json = load(f)
@@ -155,7 +156,7 @@ class ColorSets:
         }
 
     @staticmethod
-    def create_color_groups(sets: dict[str, ColorSet]) -> dict[str, list[ColorSet]]:
+    def _create_color_groups(sets: dict[str, ColorSet]) -> dict[str, list[ColorSet]]:
         """"""
 
         # result = defaultdict(list)
@@ -167,3 +168,4 @@ class ColorSets:
             group: [s for s in sets.values() if s.name == group]
             for group in set(s.group for s in sets.values())
         }
+
