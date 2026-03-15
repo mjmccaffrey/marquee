@@ -51,9 +51,7 @@ def get_color_set(hue: HueBridge, name: str):
 def merge_color_files(filepath: str) -> list:
     """"""
     result = []
-    for file in Path().glob("*.json"):
-        if file.stem == 'pyrightconfig':
-            continue
+    for file in Path().glob("color_sets/*.json"):
         print(f"{file=}")
         data = json.load(file.open())
         for set_name, data in cast(dict, data).items():
