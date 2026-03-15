@@ -153,18 +153,19 @@ class ColorSets:
             name: ColorSet(
                 name, group, tuple(XYB(*c) for c in colors),
             )
-            for name, group, colors in json.items()
+            for name, group, colors in json
         }
 
     @staticmethod
     def create_color_groups(sets: dict[str, ColorSet]) -> dict[str, list[ColorSet]]:
         """"""
-        result = defaultdict(list)
-        for cs in sets.values():
-            result[cs.group].append(cs)
+
+        # result = defaultdict(list)
+        # for cs in sets.values():
+        #     result[cs.group].append(cs)
         # return result
 
-        d = {
+        return {
             group: [s for s in sets.values() if s.name == group]
             for group in set(s.group for s in sets.values())
         }

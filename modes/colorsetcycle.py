@@ -24,14 +24,10 @@ class ColorSetCycle(PerformanceMode):
            Any groups specified are expanded into the member color sets."""
         cs_sequence = []
         for name, seconds in sequence:
-            if name in self.color_set_groups:
-                cs_in_group = (
-                    cs for cs in self.color_sets.values() 
-                    if cs.group == name
-                )
-                for cs in cs_in_group:
+            if name in self.color_sets.by_group_name:
+                for cs in self.color_sets.by_group_name[name]:
                     cs_sequence.append(CycleEntry(cs.name, seconds))
-            elif name not in self.color_sets:
+            elif name not in self.color_sets.by_set_name:
                 raise ValueError(f"Color set {name} not defined.")
             else:
                 cs_sequence.append(CycleEntry(name, seconds))
@@ -39,14 +35,14 @@ class ColorSetCycle(PerformanceMode):
 
     def execute(self):
         """Change to next set. Schedule next next set."""
-        cs = self.color_sets[self.on_deck.name]
-        color, brightness = cs.convert_for_set_channels()
+        color, brightness = self.on_deck.convert_for_set_channels()
         self.lights.set_channels(brightness=brightness, color=color)
+        #
+        self.schedule(due=self.on_deck.seconds)
+        self.on_deck = next(self.cycle)
         print(
             f"Next color set in sequence is "
             f"{self.on_deck.name} for "
             f"{self.on_deck.seconds} seconds."
         )
-        self.schedule(due=self.on_deck.seconds)
-        self.on_deck = next(self.cycle)
 
