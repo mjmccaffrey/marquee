@@ -137,11 +137,9 @@ class ColorSets:
     by_set_name: dict[str, ColorSet]
     by_group_name: dict[str, list[ColorSet]]
 
-    def __init__(self, by_set_name: dict | None = None) -> None:
+    def __init__(self) -> None:
         """"""
-        self.by_set_name = (
-            by_set_name or self.load_color_sets('color_sets.json')
-        )
+        self.by_set_name = self.load_color_sets('color_sets.json')
         self.by_group_name = self.create_color_groups(self.by_set_name)
 
     @staticmethod
