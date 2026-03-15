@@ -165,7 +165,7 @@ class ColorSets:
         # return result
 
         return {
-            group: [s for s in sets.values() if s.name == group]
+            group: [s for s in sets.values() if s.group == group]
             for group in set(s.group for s in sets.values())
         }
 
