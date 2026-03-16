@@ -1,9 +1,9 @@
 """Marquee Lighted Sign Project - color"""
 
 from abc import ABC
-from collections import defaultdict
-from dataclasses import dataclass, field
-from json import load
+import json
+from pathlib import Path
+from typing import TypedDict, Unpack
 
 from devices import rgbxy
 
@@ -119,51 +119,52 @@ class Colors:
         return RGB(r, g, b, self.gamut)
 
 
-@dataclass
 class ColorSet:
-    name: str
-    group: str
-    colors: tuple[XYB, ...]
+    """"""
 
-    def set_channels_kwargs(self) -> dict:
+    class SetChannelsKwargs(TypedDict):
+        color: tuple[XY, ...]
+        brightness: tuple[int, ...]
+
+    def __init__(self, name: str, group: str, colors: tuple[XYB, ...]) -> None:
+        """"""
+        self.name, self.group, self.colors = name, group, colors
+
+    def set_channels_kwargs(self) -> SetChannelsKwargs:
         """Return color and brightness arguments for lightset.set_channels."""
-        return {
-            'color': tuple(XY(c.x, c.y) for c in self.colors),
-            'brightness': tuple(round(c.b)  for c in self.colors),  # !!!
-        }
+        return self.SetChannelsKwargs(
+            color=tuple(XY(c.x, c.y) for c in self.colors),
+            brightness=tuple(round(c.b)  for c in self.colors),  # !!!
+        )
 
 
 class ColorSets:
     """"""
-    by_set_name: dict[str, ColorSet]
-    by_group_name: dict[str, list[ColorSet]]
+    BySetName = dict[str, ColorSet]
+    ByGroupName = dict[str, list[ColorSet]]
+    by_set_name: BySetName
+    by_group_name: ByGroupName
 
-    def __init__(self) -> None:
+    def __init__(self, source: str) -> None:
         """"""
-        self.by_set_name = self._load_color_sets('color_sets.json')
+        self.by_set_name = self._load_color_sets(Path(source))
         self.by_group_name = self._create_color_groups(self.by_set_name)
 
     @staticmethod
-    def _load_color_sets(filepath: str) -> dict[str, ColorSet]:
+    def _load_color_sets(source: Path) -> BySetName:
         """"""
-        with open(filepath) as f:
-            json = load(f)
+        with open(source) as f:
+            data = json.load(f)
         return {
             name: ColorSet(
                 name, group, tuple(XYB(*c) for c in colors),
             )
-            for name, group, colors in json
+            for name, group, colors in data
         }
 
     @staticmethod
-    def _create_color_groups(sets: dict[str, ColorSet]) -> dict[str, list[ColorSet]]:
+    def _create_color_groups(sets: BySetName) -> ByGroupName:
         """"""
-
-        # result = defaultdict(list)
-        # for cs in sets.values():
-        #     result[cs.group].append(cs)
-        # return result
-
         return {
             group: [s for s in sets.values() if s.group == group]
             for group in set(s.group for s in sets.values())
