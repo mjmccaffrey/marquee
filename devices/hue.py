@@ -126,8 +126,8 @@ class HueChannel(LightChannel):
         """Produce dimmer API parameters from provided update."""
         transition = int(
             (self.controller.trans_min
-                    if update.trans is None else
-             update.trans
+                    if update.transition is None else
+             update.transition
             ) * 1000
         )
         params = (
@@ -140,7 +140,7 @@ class HueChannel(LightChannel):
             ({'on': {'on': update.on}}
                 if update.on is not None else {}) |
             ({'dynamics': {'duration': transition}}
-                if update.trans is not None else {})  # !!!!!!!!!
+                if update.transition is not None else {})  # !!!!!!!!!
         )
         return ChannelCommand(
             channel = update.channel,
@@ -160,7 +160,7 @@ class HueChannel(LightChannel):
         update = ChannelUpdate(
             channel=self,
             brightness=brightness,
-            trans=transition,
+            transition=transition,
             color=color,
             on=on,
         )

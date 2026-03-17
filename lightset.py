@@ -113,7 +113,7 @@ class LightSet:
             force: bool = False,
         ) -> None:
         """Set the channels per the supplied brightness, 
-           trans times and colors. 
+           transition times and colors. 
            Specify a subset of channels via channel_indexes.
            Force all specified channels to update with force.
            Adjust for brightness_factor."""
@@ -137,7 +137,7 @@ class LightSet:
                 ChannelUpdate(
                     channel=self.controller.channels[0],  # Dummy
                     brightness=self.convert_brightness(brightness)[0],
-                    trans=self.convert_transition(transition)[0],
+                    transition=self.convert_transition(transition)[0],
                     color=self.convert_color(color)[0],
                     on=self.convert_on(on)[0],
                 )
@@ -159,7 +159,7 @@ class LightSet:
             ChannelUpdate(
                 channel=ch,
                 brightness=br,
-                trans=tr,
+                transition=tr,
                 color=co,
                 on=on,
             )

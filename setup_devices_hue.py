@@ -96,6 +96,10 @@ def setup_devices(
             support_hold=True,
             signal_number=signal.SIGUSR1,  # type: ignore
         ),
+        corded = Button(
+            'corded',
+            _Button(pin=27, pull_up=False),
+        ),
         remote_a = Button(
             "remote_a",
             _Button(pin=19, pull_up=False, bounce_time=0.10)

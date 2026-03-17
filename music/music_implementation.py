@@ -208,21 +208,21 @@ def _dimmer(pattern: str) -> Callable:
     return lambda: mode.lights.set_channels(brightness=brightness)
 
 
-def _dimmer_sequence(brightness: int, trans: float) -> Callable:
+def _dimmer_sequence(brightness: int, transition: float) -> Callable:
     """Return callable to effect state of specified channels."""
 
     def set_channels(lights: list[int]):
         """"""
         mode.lights.set_channels(
             brightness=brightness, 
-            transition=trans,
+            transition=transition,
             channel_indexes=set(lights),
         )
 
     return set_channels
 
 
-def _dimmer_sequence_flip(trans: float) -> Callable:
+def _dimmer_sequence_flip(transition: float) -> Callable:
     """Return callable to flip state of specified channels."""
 
     def set_channels(lights: list[int]):
@@ -230,7 +230,7 @@ def _dimmer_sequence_flip(trans: float) -> Callable:
         brightness = 0 if mode.lights.brightnesses()[lights[0]] else 100
         mode.lights.set_channels(
             brightness=brightness, 
-            transition=trans,
+            transition=transition,
             channel_indexes=set(lights),
         )
     return set_channels

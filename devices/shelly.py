@@ -173,8 +173,8 @@ class ShellyChannel(LightChannel):
            Color is ignored."""
         _trans = (
             self.controller.trans_min
-                if update.trans is None else
-            update.trans
+                if update.transition is None else
+            update.transition
         )
         params = (
             ({'id': update.channel.id}) |
@@ -203,7 +203,7 @@ class ShellyChannel(LightChannel):
         update = ChannelUpdate(
             channel=self,
             brightness=brightness,
-            trans=transition,
+            transition=transition,
             color=color,
             on=on,
         )

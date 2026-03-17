@@ -146,7 +146,7 @@ class PacManGame(GameMode):
         return ChannelUpdate(
             channel=channel,
             brightness=brightness,
-            trans=0,
+            transition=0,
             color=color,
             on=True,
         )

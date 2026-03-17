@@ -12,14 +12,16 @@ from .mode_misc import CycleEntry
 class ColorSetCycle(PerformanceMode):
     """Play repeating sequence of color sets."""
     sequence: InitVar[list[tuple[str, int]]]  # (color_set_name, seconds)
-    transition: float | None
+    transition: float | None = None
 
     def __post_init__(self, sequence: list[tuple[str, int]]) -> None:
         """Initialize."""
         self.cycle = self.create_sequence_cycle(sequence)
-        self.on_deck = next(self.cycle)
 
-    def create_sequence_cycle(self, sequence: list[tuple[str, int]]) -> Iterator:
+    def create_sequence_cycle(
+        self, 
+        sequence: list[tuple[str, int]],
+    ) -> Iterator[CycleEntry]:
         """Return cycle of color sets and durations.
            Any groups specified are expanded into the member color sets."""
         cs_sequence = []
@@ -35,14 +37,13 @@ class ColorSetCycle(PerformanceMode):
 
     def execute(self):
         """Change to next set. Schedule next next set."""
-        color, brightness = self.on_deck.convert_for_set_channels()
-        self.lights.set_channels(brightness=brightness, color=color)
-        #
-        self.schedule(due=self.on_deck.seconds)
-        self.on_deck = next(self.cycle)
+        current = next(self.cycle)
+        cs = self.color_sets.by_set_name[current.name]
         print(
             f"Next color set in sequence is "
-            f"{self.on_deck.name} for "
-            f"{self.on_deck.seconds} seconds."
+            f"{cs.group}.{cs.name} for {current.seconds} seconds."
         )
+        print(f"Displaying color set {cs.group}.{cs.name}")
+        self.lights.set_channels(transition=self.transition, **cs.set_channels_kwargs)
+        self.schedule(due=current.seconds)
 

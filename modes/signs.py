@@ -21,7 +21,7 @@ class Signs(MusicMode):
         sections = [
             self.intro(),
             self.refrain(1),
-            self.trans(),
+            self.transition(),
             self.refrain(2),
         ]
         for section in sections:
@@ -79,7 +79,7 @@ class Signs(MusicMode):
                 sequence(
                     random_each,
                     measures=10,
-                    special=ActionParams(action=dimmer_sequence_flip(trans=1.0)),
+                    special=ActionParams(action=dimmer_sequence_flip(transition=1.0)),
                 ),
             ),
             act_part(
@@ -115,8 +115,8 @@ class Signs(MusicMode):
             ),
         )
  
-    def trans (self) -> Section:
-        """Signs song trans."""
+    def transition (self) -> Section:
+        """Signs song transition."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             drum_part(

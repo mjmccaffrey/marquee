@@ -17,7 +17,6 @@ class ModeCycle(BackgroundMode):
         """Initialize."""
         self.create_mode_sequence()
         self.mode_cycle = cycle(self.mode_sequence)
-        self.mode_on_deck = next(self.mode_cycle)
 
     def create_mode_sequence(self) -> None:
         """Create mode sequence."""
@@ -31,22 +30,15 @@ class ModeCycle(BackgroundMode):
         ]
 
     def execute(self):
-        """Schedule next next mode. Change to next mode in sequence."""
+        """Change to next mode in sequence. Schedule next next mode."""
+        new = next(self.mode_cycle)
         print(
-            f"Next mode in sequence is "
-            f"{self.mode_on_deck.name} for "
-            f"{self.mode_on_deck.seconds} seconds."
+            f"Next mode in sequence is {new.name} for {new.seconds} seconds."
         )
-        self.schedule(
-            action=self.execute,
-            due=self.mode_on_deck.seconds,
-        )
-        new_mode = self.mode_on_deck.index
-        self.mode_on_deck = next(self.mode_cycle)
-        self.change_mode(new_mode)
+        self.schedule(due=new.seconds)
+        self.change_mode(new.index)
     
     def button_action(self, button: ButtonInterface) -> None:
         """Close the instance in response to any button press."""
         # self.player.delete_mode_instance(bg_index=self.index)
         # !!!!!!!!!!!!!!1
-

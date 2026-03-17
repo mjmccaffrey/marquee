@@ -129,12 +129,9 @@ class ColorSet:
     def __init__(self, name: str, group: str, colors: tuple[XYB, ...]) -> None:
         """"""
         self.name, self.group, self.colors = name, group, colors
-
-    def set_channels_kwargs(self) -> SetChannelsKwargs:
-        """Return color and brightness arguments for lightset.set_channels."""
-        return self.SetChannelsKwargs(
+        self.set_channels_kwargs = self.SetChannelsKwargs(
             color=tuple(XY(c.x, c.y) for c in self.colors),
-            brightness=tuple(round(c.b)  for c in self.colors),  # !!!
+            brightness=tuple(round(c.b) for c in self.colors),  # !!!
         )
 
 

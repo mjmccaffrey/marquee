@@ -3,8 +3,8 @@
 from abc import ABC
 from dataclasses import dataclass
 
-from .foregroundmode import ForegroundMode
 from devices.button import Button
+from .foregroundmode import ForegroundMode
 from .mode_misc import ModeIndex
 
 
@@ -37,4 +37,4 @@ class PerformanceMode(ForegroundMode, ABC):
             case _:
                 raise ValueError("Unrecognized button.")
         return new_mode
-
+    

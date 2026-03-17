@@ -48,11 +48,11 @@ def register_channel_modes(exec: Executor):
 
     exec.add_mode("cs_test", ColorSetCycle,
         sequence = [
-            ("", 30),
-            ("", 30),
-            ("", 30),
-            ("", 30),
-            ("", 30),
+            ("party", 10),
+            ("cancun", 30),
+            ("race", 10),
+            ("amber_bloom", 30),
+            ("INVALID", 30),
         ],
     )
     exec.add_mode("twelve", Twelve)
@@ -129,7 +129,7 @@ def register_channel_modes(exec: Executor):
         )
     )
     exec.add_mode("even_odd_fade", EvenOddFade, delay=0.5)
-    # exec.add_mode("random_fade_steady", RandomFade, trans=2)
+    # exec.add_mode("random_fade_steady", RandomFade, transition=2)
     exec.add_sequence_mode("rotate_sides_silent", rotate_sides, 
         sequence_kwargs=dict(
             pattern='0', 

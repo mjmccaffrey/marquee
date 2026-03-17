@@ -119,7 +119,7 @@ class LightChannel(ABC):
         if changes:
             return ChannelUpdate(
                 channel=update.channel,
-                trans=update.trans,  # !!!!!!!!!!!!!!!!!!!!!!
+                transition=update.transition,  # !!!!!!!!!!!!!!!!!!!!!!
                 **changes,
             )
         return None
@@ -140,7 +140,7 @@ class ChannelUpdate:
     """"""
     channel: LightChannel
     brightness: int | None = None
-    trans: float | None = None
+    transition: float | None = None
     color: Color | None = None
     on: bool | None = None
 
