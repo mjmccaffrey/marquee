@@ -40,10 +40,9 @@ class ColorSetCycle(PerformanceMode):
         current = next(self.cycle)
         cs = self.color_sets.by_set_name[current.name]
         print(
-            f"Next color set in sequence is "
-            f"{cs.group}.{cs.name} for {current.seconds} seconds."
+            f"Displaying color set {cs.group}.{cs.name} "
+            f"for {current.seconds} seconds."
         )
-        print(f"Displaying color set {cs.group}.{cs.name}")
         self.lights.set_channels(transition=self.transition, **cs.set_channels_kwargs)
         self.schedule(due=current.seconds)
 
