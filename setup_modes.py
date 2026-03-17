@@ -52,7 +52,6 @@ def register_channel_modes(exec: Executor):
             ("cancun", 30),
             ("race", 10),
             ("amber_bloom", 30),
-            ("INVALID", 30),
         ],
     )
     exec.add_mode("twelve", Twelve)
