@@ -48,10 +48,10 @@ def register_channel_modes(exec: Executor):
 
     exec.add_mode("cs_test", ColorSetCycle,
         sequence = [
-            ("party", 2),
-            ("cancun", 2),
-            ("race", 2),
-            ("amber_bloom", 2),
+            ("party", 1),
+            ("cancun", 1),
+            ("race", 1),
+            ("amber_bloom", 1),
         ],
         transition=0.0,
     )
