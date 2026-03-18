@@ -14,7 +14,6 @@ from .evenoddfade import EvenOddFade
 from .mode_misc import ModeIndex
 from .pacman import PacManGame
 from .randomfade import RandomFade
-from .randomcolors import RandomColors
 from .rotatereversible import RotateReversible
 from .running import Running
 from .sequencemode import SequenceMode
