@@ -22,8 +22,16 @@ class ColorSetCycle(PerformanceMode):
         self, 
         sequence: CycleSequence,
     ) -> list[CycleEntry]:
-        """Return cycle of color sets and durations.
-           Any groups specified are expanded into the member color sets."""
+        """Return expanded sequence of color set names and durations.
+           Any group names specified are expanded into the member color sets.
+           An initial entry with the pseudo group name "ALL" is expanded into
+           all the groups and hence all the color sets."""
+        assert sequence
+        if sequence[0][0] == 'ALL':
+            sequence = [
+                (n, sequence[0][1])
+                for n in self.color_sets.by_group_name
+            ]
         cs_sequence = []
         for name, seconds in sequence:
             if name in self.color_sets.by_group_name:

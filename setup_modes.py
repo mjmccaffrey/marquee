@@ -48,12 +48,13 @@ def register_channel_modes(exec: Executor):
 
     exec.add_mode("cs_test", ColorSetCycle,
         sequence = [
-            ("party", 1),
-            ("cancun", 1),
-            ("race", 1),
-            ("amber_bloom", 1),
+            # ("party", 1),
+            # ("cancun", 1),
+            # ("race", 1),
+            # ("amber_bloom", 1),
+            ("ALL", 1.5)
         ],
-        transition=0.0,
+        # transition=0.0,
     )
     exec.add_mode("twelve", Twelve)
     exec.add_mode("comet_test_1", Comet,
