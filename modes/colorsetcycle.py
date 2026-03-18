@@ -1,27 +1,27 @@
 """Marquee Lighted Sign Project - color_setcycle"""
 
-from collections.abc import Iterator
 from dataclasses import InitVar, dataclass
 from itertools import cycle
 
 from .performancemode import PerformanceMode
-from .mode_misc import CycleEntry
+from .mode_misc import CycleEntry, CycleSequence
 
 
 @dataclass(kw_only=True)
 class ColorSetCycle(PerformanceMode):
     """Play repeating sequence of color sets."""
-    sequence: InitVar[list[tuple[str, int]]]  # (color_set_name, seconds)
+    sequence: InitVar[CycleSequence]  # (color_set_name, seconds)
     transition: float | None = None
 
-    def __post_init__(self, sequence: list[tuple[str, int]]) -> None:
+    def __post_init__(self, sequence: CycleSequence) -> None:
         """Initialize."""
-        self.cycle = self.create_sequence_cycle(sequence)
+        self.expanded = self.expand_sequence(sequence)
+        self.cycle = enumerate(cycle(self.expanded))
 
-    def create_sequence_cycle(
+    def expand_sequence(
         self, 
-        sequence: list[tuple[str, int]],
-    ) -> Iterator[CycleEntry]:
+        sequence: CycleSequence,
+    ) -> list[CycleEntry]:
         """Return cycle of color sets and durations.
            Any groups specified are expanded into the member color sets."""
         cs_sequence = []
@@ -33,16 +33,17 @@ class ColorSetCycle(PerformanceMode):
                 raise ValueError(f"Color set {name} not defined.")
             else:
                 cs_sequence.append(CycleEntry(name, seconds))
-        return cycle(cs_sequence)
+        return cs_sequence
 
     def execute(self):
         """Change to next set. Schedule next next set."""
-        current = next(self.cycle)
-        cs = self.color_sets.by_set_name[current.name]
+        index, entry = next(self.cycle)
+        cs = self.color_sets.by_set_name[entry.name]
         print(
             f"Displaying color set {cs.group}.{cs.name} "
-            f"for {current.seconds} seconds."
+            f"({index + 1} / {len(self.expanded)}) "
+            f"for {entry.seconds} seconds."
         )
         self.lights.set_channels(transition=self.transition, **cs.set_channels_kwargs)
-        self.schedule(due=current.seconds)
+        self.schedule(due=entry.seconds)
 

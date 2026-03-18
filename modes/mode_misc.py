@@ -13,6 +13,8 @@ class CycleEntry:
     seconds: float
     index: int = -1
 
+CycleSequence = list[tuple[str, int]]
+
 class ChangeMode(Exception):
     """Change mode exception."""
 

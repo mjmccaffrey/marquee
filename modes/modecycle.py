@@ -5,13 +5,13 @@ from itertools import cycle
 
 from devices.devices_misc import ButtonInterface
 from .backgroundmode import BackgroundMode
-from .mode_misc import CycleEntry
+from .mode_misc import CycleEntry, CycleSequence
 
 
 @dataclass(kw_only=True)
 class ModeCycle(BackgroundMode):
     """Play repeating sequence of foreground modes."""
-    sequence: list[tuple[str, int]]  # (mode_name, seconds)
+    sequence: CycleSequence  # (mode_name, seconds)
 
     def __post_init__(self) -> None:
         """Initialize."""
