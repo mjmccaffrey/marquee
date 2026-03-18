@@ -41,8 +41,8 @@ class ColorSetCycle(PerformanceMode):
         cs = self.color_sets.by_set_name[entry.name]
         print(
             f"Displaying color set {cs.group}.{cs.name} "
-            f"({index + 1} / {len(self.expanded)}) "
-            f"for {entry.seconds} seconds."
+            f"for {entry.seconds} seconds "
+            f"({index + 1} / {len(self.expanded)})."
         )
         self.lights.set_channels(transition=self.transition, **cs.set_channels_kwargs)
         self.schedule(due=entry.seconds)
