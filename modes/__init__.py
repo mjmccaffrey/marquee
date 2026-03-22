@@ -11,7 +11,7 @@ from .colorwheel import ColorWheel
 from .comet import Comet
 # from .demo import Demo
 from .evenoddfade import EvenOddFade
-from .mode_misc import ModeIndex
+from .modes_misc import ModeIndex
 from .pacman import PacManGame
 from .randomfade import RandomFade
 from .rotatereversible import RotateReversible

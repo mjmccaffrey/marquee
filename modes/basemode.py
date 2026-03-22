@@ -12,7 +12,7 @@ from color import ColorSets
 from devices.devices_misc import ButtonInterface
 from event import EventSystem
 from task import Task, TaskSchedule
-from .mode_misc import (
+from .modes_misc import (
     ChangeMode, CreateModeInstance, ModeDefinition, ReplaceKwargValues,
 )
 

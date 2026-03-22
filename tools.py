@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - debug"""
+"""Marquee Lighted Sign Project - tools"""
 
 from collections.abc import Sequence
 import json
@@ -26,12 +26,6 @@ def ppp(p: Sequence) -> None:
         f"{p[9]}       {p[5]}\n"
         f"  {p[8]} {p[7]} {p[6]}\n"
     )
-
-
-def light_states(lights: LightSet) -> None:
-    """"""
-    for i, c in enumerate(lights.channels):
-        print(f"{i} {c.brightness} {c.color} {c.on}")
 
 
 def get_color_set(hue: HueBridge, name: str):

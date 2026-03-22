@@ -8,12 +8,12 @@ from color import ColorSets
 from devices.button import Button, ButtonPressed
 from devices.devices_misc import ButtonSet
 from event import EventSystem, Shutdown
-from task import TaskSchedule
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
-from modes.mode_misc import ChangeMode, ModeDefinition
+from modes.modes_misc import ChangeMode, ModeDefinition
+from task import TaskSchedule
 
 log = logging.getLogger(__name__)
 
@@ -125,7 +125,6 @@ class Player:
                 if new_mode_index is not None:
                     self.active_mode = self.effect_new_active_mode(new_mode_index)
                     new_mode_index = None
-                    # assert self.active_mode is not None
                     print(f"Executing mode {self.active_mode}")
                     self.active_mode.execute()
                 self.wait()

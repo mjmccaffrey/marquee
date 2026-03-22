@@ -60,6 +60,7 @@ def setup_devices(
         controller_type=HueBridge,
         controller_kwargs=dict(
             application_key=HUE_APPLICATION_KEY,
+            index=0,
             ip_address=HUE_IP_ADDRESS,
             bulb_model=Hue_BR30_Enhanced_Color,
             bulb_ids=HUE_BULB_IDS,

@@ -110,13 +110,17 @@ class DrumSet(RelayInstrument):
 
     def play(self, accent: int, pitches: set[int]) -> None:
         """Play specified pitches."""
+
+        def flip(s: str) -> str:
+            return '0' if s == '1' else '1'
+
         new_pattern = self.relays.device_pattern
         desired_count = self.accent_to_relay_count[accent]
         for pitch in pitches:
             desired_state = self.pitch_to_relay_state[pitch]
             selected = self.select_relays(desired_state, desired_count)
             new_pattern = ''.join(
-                opposite(p) if i in selected else p
+                flip(p) if i in selected else p
                 for i, p in enumerate(new_pattern)
             )
         self.relays.set_state_of_devices(new_pattern)

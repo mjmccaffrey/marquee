@@ -138,7 +138,6 @@ class NumatoUSBRelayModule(RelayModule, ABC):
            Update saved state.
            Return a client device pattern."""
         self.relay_pattern = self._get_relays()
-        print(f"GSOD: {self._relays_to_devices(client, self.relay_pattern)}")
         return self._relays_to_devices(client, self.relay_pattern)
 
     def _devices_to_relays(

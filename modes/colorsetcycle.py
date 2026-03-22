@@ -6,7 +6,7 @@ import logging
 
 from devices.button import Button
 from .performancemode import PerformanceMode
-from .mode_misc import CycleEntry, CycleSequence
+from .modes_misc import CycleEntry, CycleSequence
 
 log = logging.getLogger(__name__)
 
@@ -21,7 +21,6 @@ class ColorSetCycle(PerformanceMode):
         """Initialize."""
         self.expanded = self.expand_sequence(sequence)
         self.cycle = enumerate(cycle(self.expanded))
-
 
     def button_action(self, button: Button) -> int | None:
         """Respond to button being pressed.
@@ -41,9 +40,10 @@ class ColorSetCycle(PerformanceMode):
            An initial entry with the pseudo group name "ALL" is expanded into
            all the groups and hence all the color sets."""
         assert sequence
-        if sequence[0][0] == 'ALL':
+        name, seconds = sequence[0]
+        if name == 'ALL':
             sequence = [
-                (n, sequence[0][1])
+                (n, seconds)
                 for n in self.color_sets.by_group_name
             ]
         cs_sequence = []

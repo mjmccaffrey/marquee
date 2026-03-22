@@ -20,6 +20,7 @@ marquee
             ShellyChannel
         RelayClient
             RelayModule
+                NumatoUSBRelayModule
         BaseMode
             BackgroundMode
             ForegroundMode

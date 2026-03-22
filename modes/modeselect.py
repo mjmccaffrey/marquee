@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 import logging
 
-from .mode_misc import ModeIndex
+from .modes_misc import ModeIndex
 from .selectmode import SelectMode
 
 log = logging.getLogger(__name__)

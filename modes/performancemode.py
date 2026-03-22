@@ -6,7 +6,7 @@ import logging
 
 from devices.button import Button
 from .foregroundmode import ForegroundMode
-from .mode_misc import ModeIndex
+from .modes_misc import ModeIndex
 
 log = logging.getLogger(__name__)
 

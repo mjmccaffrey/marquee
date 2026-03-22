@@ -6,7 +6,7 @@ import logging
 
 from devices.devices_misc import ButtonInterface
 from .backgroundmode import BackgroundMode
-from .mode_misc import CycleEntry, CycleSequence
+from .modes_misc import CycleEntry, CycleSequence
 
 log = logging.getLogger(__name__)
 

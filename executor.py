@@ -9,9 +9,8 @@ from color import ColorSets
 from devices.button import Button
 from devices.devices_misc import SetupDevices
 from event import Shutdown, SigTerm
-from lightset_misc import ALL_ON
 from modes.basemode import BaseMode
-from modes.mode_misc import ModeDefinition
+from modes.modes_misc import ModeDefinition
 from modes.sequencemode import SequenceMode
 from player import Player
 from specialparams import SpecialParams

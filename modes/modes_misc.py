@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - mode_misc"""
+"""Marquee Lighted Sign Project - modes_misc"""
 
 from dataclasses import dataclass
 from enum import IntEnum

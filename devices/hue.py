@@ -32,7 +32,6 @@ class HueBridge(LightController, bulb_comp=HueBulb):
     zone_ids: Sequence[str]
     channel_count: int = field(init=False)
     channel_first_index: None = None
-    index: None = None
 
     def __init_subclass__(cls, channel_count: int) -> None:
         """Set channel count for concrete subclasses."""
