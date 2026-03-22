@@ -27,6 +27,7 @@ class ColorSetCycle(PerformanceMode):
         """Respond to button being pressed.
            Return index of new mode, if any."""
         if button == self.buttons.corded:
+            self.tasks.delete_owned_by(self)
             self.execute()
         else:
             return super().button_action(button)
