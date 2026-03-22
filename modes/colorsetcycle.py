@@ -4,6 +4,7 @@ from dataclasses import InitVar, dataclass
 from itertools import cycle
 import logging
 
+from devices.button import Button
 from .performancemode import PerformanceMode
 from .mode_misc import CycleEntry, CycleSequence
 
