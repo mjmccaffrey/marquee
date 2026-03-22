@@ -31,7 +31,7 @@ class PerformanceMode(ForegroundMode, ABC):
             case b.remote_c:
                 self.clicker.click()
                 new_mode = ModeIndex.BRIGHTNESS_SELECT
-            case b.corded | b.remote_b:
+            case b.remote_b:
                 self.clicker.click()
                 new_mode = self.mode_index(self.index, -1)
             case b.remote_d:

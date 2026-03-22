@@ -48,7 +48,7 @@ def register_channel_modes(exec: Executor):
             # ("cancun", 1),
             # ("race", 1),
             # ("amber_bloom", 1),
-            ("ALL", 1.5)
+            ("ALL", 5)
         ],
         # transition=0.0,
     )

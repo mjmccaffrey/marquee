@@ -21,6 +21,15 @@ class ColorSetCycle(PerformanceMode):
         self.expanded = self.expand_sequence(sequence)
         self.cycle = enumerate(cycle(self.expanded))
 
+
+    def button_action(self, button: Button) -> int | None:
+        """Respond to button being pressed.
+           Return index of new mode, if any."""
+        if button == self.buttons.corded:
+            self.execute()
+        else:
+            return super().button_action(button)
+
     def expand_sequence(
         self, 
         sequence: CycleSequence,
