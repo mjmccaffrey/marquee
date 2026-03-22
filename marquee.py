@@ -6,24 +6,25 @@ marquee
     Player
         BellSet
         ButtonSet
-            Buttons
+            Button
         DrumSet
-        LightController
-            HueBridge
-            ShellyDimmer
-        LightChannel
-            HueChannel
-            ShellyChannel
         LightSet
             LightController
             LightChannel
-            Relays
+            RelayClient
+        LightController
+            HueBridge
+            ShellyController
+        LightChannel
+            HueChannel
+            ShellyChannel
+        RelayClient
+            RelayModule
         BaseMode
             BackgroundMode
             ForegroundMode
                 SelectMode
                 PerformanceMode
-                    DynamicMode
                     GameMode
                     MusicMode
                     SequenceMode
@@ -49,13 +50,16 @@ marquee
                 Sequence
 """
 import os
+import logging
 
 from argument import display_help, process_arguments
-from devices.button import Shutdown
-from executor import Executor, SigTerm
+from executor import Executor
 from player import Player
+from setup_devices import setup_devices
 from setup_modes import setup_modes
-from setup_devices_hue import setup_devices
+
+log = logging.getLogger(__name__)
+
 
 def main() -> None:
     """Execute Marquee application."""
@@ -67,13 +71,12 @@ def main() -> None:
         except ValueError:
             display_help(exec.mode_menu, exec.commands)
         else:
-            try:
-                exec.execute(**args)
-            except SigTerm:
-                print("Exiting.")
-            except Shutdown:
+            shutdown = exec.execute(**args)
+            if shutdown:
                 print("Shutting down.")
                 os.system("sudo shutdown --halt")
+            else:
+                print("Exiting without shutdown.")
     finally:
         try:
             exec.close()

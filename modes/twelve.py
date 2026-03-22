@@ -1,11 +1,13 @@
 """Marquee Lighted Sign Project - twelve"""
 
-from collections.abc import Iterator
 from dataclasses import dataclass
 from functools import partial
+import logging
 
 from .musicmode import MusicMode
 from music import act_part, section, set_mode
+
+log = logging.getLogger(__name__)
 
 @dataclass(kw_only=True)
 class Twelve(MusicMode):

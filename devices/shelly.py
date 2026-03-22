@@ -4,6 +4,8 @@ from abc import ABC
 import asyncio
 from collections.abc import Sequence
 from dataclasses import dataclass, field
+import time
+import logging
 from typing import ClassVar
 
 import aiohttp
@@ -15,13 +17,14 @@ from .lightcontroller import (
     ChannelUpdate, ChannelCommand, LightController, LightChannel,
 )
 
+log = logging.getLogger(__name__)
+
 
 @dataclass(kw_only=True)
-class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
+class ShellyController(LightController, bulb_comp=DimBulb):
     """Virtual consolidated controller."""
 
     trans_min: ClassVar[float] = 0.5
-    trans_max: ClassVar[float] = 10800.0
     all_at_once: ClassVar[bool] = False
 
     channel_count: int = field(init=False)
@@ -45,6 +48,20 @@ class ShellyConsolidatedController(LightController, bulb_comp=DimBulb):
     def __str__(self) -> str:
         return f"{type(self).__name__}"
     
+    def calibrate(self) -> None:
+        """Execute calibration on each successive channel."""
+        time.sleep(3)
+        max_channel = max(
+            d.channel_count for d in self.dimmers
+        )
+        for id in range(max_channel):
+            print(f"Calibrating channel {id}")
+            for dimmer in self.dimmers:
+                if id < dimmer.channel_count:
+                    dimmer.channels[id].calibrate()
+            time.sleep(150)
+        print("Calibration should be complete")
+
     def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands via aiohttp asynchronously."""
         asyncio.run(self._execute_commands(updates))
@@ -96,8 +113,11 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
        Everything else handled by parent controller and child channels."""
 
     trans_min: ClassVar[float] = 0.5
-    trans_max: ClassVar[float] = 10800.0
     all_at_once: ClassVar[bool] = False
+
+    def __init_subclass__(cls, channel_count: int) -> None:
+        """Set channel count for concrete subclasses."""
+        cls.channel_count = channel_count
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -121,10 +141,6 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
             print(f"*** Error: {e} ***")
             raise OSError from None
 
-    def __init_subclass__(cls, channel_count: int) -> None:
-        """Set channel count for concrete subclasses."""
-        cls.channel_count = channel_count
-
     def _get_state_of_channels(self) -> list[tuple[int, dict]]:
         """Fetch status parameters for all channels."""
         result = self.session.get(
@@ -137,9 +153,13 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
             for id in range(self.channel_count)
         ]      
     
+    def calibrate(self) -> None:
+        """Calibrate all channels."""
+        raise ValueError("Method should not have been called.")
+
     def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands via aiohttp asynchronously.
-           Use method in ShellyConsolidatedController instead."""
+           Use method in ShellyController instead."""
         raise NotImplementedError()
 
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):

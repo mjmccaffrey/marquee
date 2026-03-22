@@ -4,10 +4,6 @@ from color import Colors
 from executor import Executor
 from lightset_misc import LIGHT_COUNT
 from modes import *
-from sequences import (
-    all_on, all_off, blink_all, blink_alternate, even_on, even_off,
-    rotate, random_flip, rotate_sides,
-)
 from specialparams import ChannelParams, EmulateParams, MirrorParams
 
 
@@ -77,16 +73,6 @@ def register_channel_modes(exec: Executor):
     exec.add_sequence_mode("rotaterc", rotate, 
         sequence_kwargs=dict(pattern="100000000000"),
         delay=2.0, 
-    )
-    exec.add_mode(
-        "rotate_random_colors",
-        RandomColors,
-        sequence_mode_name="rotaterc",
-    )
-    exec.add_mode(
-        "rffm_random_colors",
-        RandomColors,
-        sequence_mode_name="random_flip_fade_medium",
     )
     exec.add_mode(
         'colorwheel',

@@ -1,24 +1,22 @@
 """Marquee Lighted Sign Project - executor"""
 
 from collections.abc import Callable
+import logging
 import signal
-import time
 from typing import Any
 
 from color import ColorSets
 from devices.button import Button
 from devices.devices_misc import SetupDevices
+from event import Shutdown, SigTerm
 from lightset_misc import ALL_ON
 from modes.basemode import BaseMode
 from modes.mode_misc import ModeDefinition
 from modes.sequencemode import SequenceMode
 from player import Player
-from devices.shelly import ShellyConsolidatedController
 from specialparams import SpecialParams
 
-
-class SigTerm(Exception):
-    """Triggered to cleanly exit the application."""
+log = logging.getLogger(__name__)
 
 
 class Executor:
@@ -98,8 +96,10 @@ class Executor:
             mode_index: int | None = None, 
             light_pattern: str | None = None, 
             brightness_pattern: str | None = None,
-        ) -> None:
-        """Effects the command-line specified command, mode or pattern(s)."""
+        ) -> bool:
+        """Effect the command-line specified command, mode or pattern(s).
+           Return True if system shutdown requested, else False."""
+        shutdown = False
         signal.signal(signal.SIGTERM, self.sigterm_received)
         devices = self.setup_devices(brightness_factor, speed_factor)
         (self.bells, self.buttons, self.drums, 
@@ -107,9 +107,15 @@ class Executor:
         if command is not None:
             self.execute_command(command)
         elif mode_index is not None:
-            self.execute_mode(mode_index, speed_factor)
+            try:
+                self.execute_mode(mode_index, speed_factor)
+            except Shutdown:
+                shutdown = True
+            except SigTerm:
+                pass
         else:
             self.execute_pattern(light_pattern, brightness_pattern)
+        return shutdown
 
     def execute_command(self, command: str):
         """Effects the command-line specified command."""
@@ -147,27 +153,12 @@ class Executor:
             self.lights.set_relays(light_pattern)
 
     def command_calibrate(self) -> None:
-        """Execute calibration on each successive channel."""
-        assert isinstance(self.lights.controller, ShellyConsolidatedController)
-        print("Calibrating channels")
-        # Set all light relays on
-        self.lights.set_relays(ALL_ON)
-        # Set all light channels to high
-        self.lights.set_channels(
-            brightness=100,
-            force=True,
-        )
-        time.sleep(3)
-        max_channel = max(
-            d.channel_count for d in self.lights.controller.dimmers
-        )
-        for id in range(max_channel):
-            print(f"Calibrating channel {id}")
-            for dimmer in self.lights.controller.dimmers:
-                if id < dimmer.channel_count:
-                    dimmer.channels[id].calibrate()
-            time.sleep(150)
-        print("Calibration should be complete")
+        """Calibrate all light sets supporting it."""
+        for lightset in [self.lights, self.top]:
+            try:
+                lightset.calibrate()
+            except NotImplementedError:
+                pass
 
     def command_off(self) -> None:
         """Turn off all relays and potentially other devices."""

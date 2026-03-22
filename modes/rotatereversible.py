@@ -1,9 +1,12 @@
 """Marquee Lighted Sign Project - rotatereversible"""
 
 from dataclasses import dataclass
+import logging
 
 from .performancemode import PerformanceMode
             
+log = logging.getLogger(__name__)
+
 
 @dataclass(kw_only=True)
 class RotateReversible(PerformanceMode):

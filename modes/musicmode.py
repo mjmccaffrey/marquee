@@ -3,11 +3,15 @@
 from abc import ABC
 from collections.abc import Sequence
 from dataclasses import dataclass
+import logging
 from typing import cast
 
 from .performancemode import PerformanceMode
 from music import Measure, play, Section
 from music.music_interface import set_mode
+
+log = logging.getLogger(__name__)
+
 
 @dataclass
 class MusicMode(PerformanceMode, ABC):

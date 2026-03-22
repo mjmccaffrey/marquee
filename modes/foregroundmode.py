@@ -2,12 +2,15 @@
 
 from abc import ABC
 from dataclasses import dataclass
+import logging
 
 from devices.devices_misc import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 from .basemode import BaseMode
 from specialparams import SpecialParams
+
+log = logging.getLogger(__name__)
 
 
 @dataclass(kw_only=True)

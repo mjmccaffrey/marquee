@@ -2,10 +2,12 @@
 
 from abc import ABC, abstractmethod
 from collections.abc import Collection
+import logging
 import random
 
 from devices.relays import RelayClient
-from sequences import opposite
+
+log = logging.getLogger(__name__)
 
 
 class Instrument(ABC):

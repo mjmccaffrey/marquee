@@ -2,10 +2,13 @@
 
 from dataclasses import dataclass
 from itertools import cycle
+import logging
 
 from devices.devices_misc import ButtonInterface
 from .backgroundmode import BackgroundMode
 from .mode_misc import CycleEntry, CycleSequence
+
+log = logging.getLogger(__name__)
 
 
 @dataclass(kw_only=True)

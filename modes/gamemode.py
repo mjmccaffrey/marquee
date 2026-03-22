@@ -3,11 +3,14 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
+import logging
 from typing import ClassVar, TypeVar
 
 from color import Color
 from devices.lightcontroller import LightChannel, ChannelUpdate
 from .performancemode import PerformanceMode
+
+log = logging.getLogger(__name__)
 
 
 @dataclass(kw_only=True, repr=False)

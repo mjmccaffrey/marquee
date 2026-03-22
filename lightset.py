@@ -2,6 +2,7 @@
 
 from collections.abc import Sequence
 from dataclasses import dataclass, InitVar
+import logging
 import time
 from typing import cast
 
@@ -11,8 +12,9 @@ from devices.bulb import SmartBulb
 from color import Color, Colors, RGB
 from devices.lightcontroller import ChannelUpdate, LightController
 from devices.relays import RelayClient
-from sequences import opposite
 from specialparams import ChannelParams, MirrorParams, SpecialParams
+
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -41,7 +43,7 @@ class LightSet:
                 print("***** Smart bulbs in use - light relays already ON. *****")
             else:
                 print("***** Smart bulbs in use - setting light relays ON. *****")
-                self.set_relays(light_pattern=True, smart_bulb_override=True)
+                self.set_relays(True, smart_bulb_override=True)
                 time.sleep(5.0)  # Enough time for controller to see all bulbs.
 
         self.controller = self.controller_type(**self.controller_kwargs)
@@ -49,11 +51,25 @@ class LightSet:
         RGB.adjust_incomplete_colors(self.gamut or rgbxy.GamutC)
         self.colors = Colors(self.gamut or rgbxy.GamutC)
         assert len(self.controller.channels) == self.count
+        self.update_sequence = (
+            [i for i in range(self.count) if i % 2] + 
+            [i for i in range(self.count) if not i % 2]
+            # [i for i in range(self.count)]
+        )
+        print(self.update_sequence)
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
-        self.trans_max = self.controller.trans_max
         self.bulb_adjustments = self.controller.bulb_model.adjustments
         # self.reset()
+
+    def calibrate(self):
+        """Calibrate lights, if supported by controller.
+           If not supported, exception will bubble up
+           to executor."""
+        print("Calibrating channels")
+        self.set_relays(True)
+        self.set_channels(brightness=100, force=True)
+        self.controller.calibrate()
 
     def reset(self):
         """Set the lights to a baseline state."""
@@ -75,7 +91,7 @@ class LightSet:
 
     def set_relays(
             self, 
-            light_pattern: str | Sequence[int | bool] | bool | int | None = None,
+            light_pattern: str | Sequence[int | bool] | bool | int,
             special: SpecialParams | None = None,
             smart_bulb_override: bool = False,
         ) -> None:
@@ -91,8 +107,8 @@ class LightSet:
             return
         
         lights = self.convert_relay_pattern(light_pattern)
-        if lights is None:
-            lights = self.relay_pattern
+        # if lights is None:
+        #     lights = self.relay_pattern
 
         if isinstance(special, MirrorParams):
             self.mirror.set_state_of_devices(lights)
@@ -120,7 +136,7 @@ class LightSet:
         
         def all_at_once_possible() -> bool:
             """Can the update be performed more-or-less all at once,
-               rather than on channels individually."""
+               rather than on each channel individually."""
             return (
                 self.controller.all_at_once and 
                 (   channel_indexes is None or 
@@ -146,7 +162,7 @@ class LightSet:
 
         # Update each channel individually
         _channel_indexes = (
-            [i for i in range(self.count)]
+            self.update_sequence
                 if channel_indexes is None else
             channel_indexes
         )
@@ -180,9 +196,6 @@ class LightSet:
     ) -> None:
         """Set channels per the specified pattern and special.
            Adjust for brightness_factor."""
-        if special.generate:
-            special = special.generate(special)
-        # print("SCIOR: ", special)
         brightness_values: dict[int, int | None] = {
             0: (int(special.brightness_off * self._brightness_factor)
                 if special.brightness_off is not None else None),
@@ -302,20 +315,20 @@ class LightSet:
     
     def convert_relay_pattern(
         self, 
-        pattern: str | Sequence[int | bool] | int | bool | None,
-    ) -> str | None:
+        pattern: str | Sequence[int | bool] | int | bool,
+    ) -> str:
         """"""
         match pattern:
             case str():
                 result = pattern
             case Sequence():
                 result = ''.join("1" if e else "0" for e in pattern)
-            case None:
-                result = None
+            # case None:
+            #     result = None
             case _:
                 result = ("1" if pattern else "0") * self.count
         return result
-    
+
 
 @dataclass
 class ClickSet:
@@ -324,6 +337,8 @@ class ClickSet:
 
     def click(self) -> None:
         """Click the otherwise unused light relays."""
-        pattern = opposite(self.relays.device_pattern)
+        pattern = "".join(
+            "1" if p == "0" else "0" for p in self.relays.device_pattern
+        )
         self.relays.set_state_of_devices(pattern)
 

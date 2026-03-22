@@ -4,9 +4,12 @@ from argparse import (
     Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
 )
 from collections.abc import Callable
+import logging
 from typing import Any, NoReturn
 
 from lightset_misc import LIGHT_COUNT
+
+log = logging.getLogger(__name__)
 
 
 class ArgumentParserImproved(ArgumentParser):

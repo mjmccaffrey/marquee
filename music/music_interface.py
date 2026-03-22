@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - music_interface"""
 
 from collections.abc import Callable
+import logging
 from typing import Any
 
 from modes.foregroundmode import ForegroundMode
@@ -12,6 +13,8 @@ from .music_implementation import (
     expand_sequence_measures, play_measures, prepare_parts, validate_measures
 )
 from specialparams import SpecialParams
+
+log = logging.getLogger(__name__)
 
 
 def set_mode(the_mode: ForegroundMode) -> None:

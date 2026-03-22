@@ -4,10 +4,14 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from functools import partial
 import itertools
+import logging
 from typing import Any, Iterable
 
 from .performancemode import PerformanceMode
 from specialparams import ActionParams, EmulateParams
+
+log = logging.getLogger(__name__)
+
 
 @dataclass(kw_only=True)
 class SequenceMode(PerformanceMode):

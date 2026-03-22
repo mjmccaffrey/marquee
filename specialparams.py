@@ -2,10 +2,8 @@
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import ClassVar, Self
 
-from color import Color, Colors, RGB
-from devices.relays import RelayClient
+from color import Color, RGB
 
 @dataclass
 class SpecialParams:
@@ -34,7 +32,6 @@ class ChannelParams(SpecialParams):
     concurrent: bool = True
     trans_on: float = 0.5  # ?????
     trans_off: float = 0.5  # ?????
-    generate: Callable[['ChannelParams'], Self] | None = None
 
 @dataclass
 class MirrorParams(SpecialParams):

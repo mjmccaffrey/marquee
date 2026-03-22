@@ -2,11 +2,14 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+import logging
 
 from devices.button import Button
 from .foregroundmode import ForegroundMode
 from .mode_misc import ModeIndex
 from sequences import rotate_build_flip
+
+log = logging.getLogger(__name__)
 
 
 @dataclass(kw_only=True)

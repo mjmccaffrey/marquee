@@ -3,6 +3,7 @@
 from collections.abc import Callable
 from dataclasses import replace
 from itertools import cycle
+import logging
 import time
 from typing import Any, Iterator
 
@@ -15,6 +16,8 @@ from .music_elements import (
 from specialparams import (
     ActionParams, SpecialParams,
 )
+
+log = logging.getLogger(__name__)
 
 
 def _set_mode(the_mode: ForegroundMode) -> None:
@@ -202,7 +205,7 @@ def play_measures(measures: tuple[Measure, ...], tempo: int) -> float:
 def _dimmer(pattern: str) -> Callable:
     """Return callable to effect dimmer pattern."""
     brightness = [
-        mode.lights.controller.bulb_model.adjustments[b]
+        mode.lights.bulb_adjustments[b]
         for b in pattern
     ]
     return lambda: mode.lights.set_channels(brightness=brightness)

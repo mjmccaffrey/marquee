@@ -24,4 +24,6 @@ from .twelve import Twelve
 # Background concrete modes
 from .modecycle import ModeCycle
 
-# 
+# Sequences
+from sequences import *
+

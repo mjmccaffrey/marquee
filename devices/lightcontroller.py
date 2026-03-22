@@ -3,12 +3,16 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from collections.abc import Sequence
+import logging
 from typing import ClassVar
 
 import requests
 
 from .bulb import Bulb
 from color import Color
+
+log = logging.getLogger(__name__)
+
 
 @dataclass(kw_only=True, repr=False)
 class LightController(ABC):
@@ -17,7 +21,6 @@ class LightController(ABC):
     bulb_comp: ClassVar[type[Bulb]]
     channel_count: ClassVar[int]
     trans_min: ClassVar[float]
-    trans_max: ClassVar[float]
     all_at_once: ClassVar[bool]
 
     index: int
@@ -62,12 +65,16 @@ class LightController(ABC):
         self.execute_channel_updates(updates=updates_to_send)
 
     @abstractmethod
+    def calibrate(self) -> None:
+        """Calibrate all channels."""
+        
+    @abstractmethod
     def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands via aiohttp asynchronously."""
 
     @abstractmethod
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
-        """Update the all zone, rather than individual channels.
+        """Update the 'all' zone, rather than individual channels.
            Does not check current state."""
         raise ValueError("Method should not have been called.")
 

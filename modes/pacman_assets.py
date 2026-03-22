@@ -1,12 +1,14 @@
 """Marquee Lighted Sign Project - pac_man entities"""
 
 from abc import ABC
-from typing import ClassVar
 from dataclasses import dataclass
+import logging
+from typing import ClassVar
 
 from color import Color, Colors, RGB
 from .gamemode import Character, Entity, GameMode, Maze, Square
 
+log = logging.getLogger(__name__)
 PACMAN_BIT = "PACMAN_BIT"
 
 

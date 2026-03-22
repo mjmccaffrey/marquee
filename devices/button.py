@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - button"""
 
 from dataclasses import dataclass
+import logging
 import signal
 import threading
 from typing import ClassVar
@@ -9,6 +10,7 @@ from gpiozero import Button as _Button  # type: ignore
 
 from .devices_misc import ButtonInterface
 
+log = logging.getLogger(__name__)
 
 class ButtonPressed(Exception):
     """Button pressed base exception."""
@@ -18,9 +20,6 @@ class PhysicalButtonPressed(ButtonPressed):
 
 class VirtualButtonPressed(ButtonPressed):
     """Virtual button pressed (IPC signal received) exception."""
-
-class Shutdown(Exception):
-    """Triggered to clean up and shut down the system."""
 
 
 @dataclass

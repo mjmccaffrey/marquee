@@ -1,9 +1,12 @@
 """Marquee Lighted Sign Project - brightnessselect"""
 
 from dataclasses import dataclass
+import logging
 
 from .mode_misc import ModeIndex
 from .selectmode import SelectMode
+
+log = logging.getLogger(__name__)
 
 
 @dataclass(kw_only=True)

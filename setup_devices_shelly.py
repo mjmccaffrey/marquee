@@ -7,7 +7,7 @@ from gpiozero import Button as _Button  # type: ignore
 from devices.bulb import Sylvania_G25_Frosted_40
 from devices.button import Button
 from devices.devices_misc import ButtonSet
-from devices.shelly import ShellyConsolidatedController, ShellyProDimmer2PM
+from devices.shelly import ShellyController, ShellyProDimmer2PM
 from instruments import BellSet, DrumSet
 from lightset import LightSet
 from lightset_misc import ALL_RELAYS, TOP_TO_RELAY
@@ -39,7 +39,7 @@ def setup_devices(
     lights = LightSet(
         relays=relays,
         relay_devices=list(TOP_TO_RELAY),
-        controller_type=ShellyConsolidatedController,
+        controller_type=ShellyController,
         controller_kwargs=dict(
                 bulb_model=Sylvania_G25_Frosted_40,
                 dimmers=[

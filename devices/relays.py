@@ -2,9 +2,12 @@
 
 from abc import ABC
 from dataclasses import dataclass
+import logging
 from typing import ClassVar, NewType, Protocol
 
 import serial  # type: ignore missing module
+
+log = logging.getLogger(__name__)
 
 DevicePattern = NewType('DevicePattern', str)
 """str[n] represents the state of the nth device in RelayClient."""
@@ -32,7 +35,7 @@ class RelayClient:
         return self.module.get_state_of_devices(self)
 
     def set_state_of_devices(self, pattern: str):
-        """"""
+        """!!!THIS SHOULD NORMALIZE pattern???"""
         self.module.set_state_of_devices(self, DevicePattern(pattern))
         self.device_pattern = pattern
 

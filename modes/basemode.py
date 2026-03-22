@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
+import logging
 import sys
 import time
 from typing import NoReturn, Self
@@ -14,6 +15,8 @@ from task import Task, TaskSchedule
 from .mode_misc import (
     ChangeMode, CreateModeInstance, ModeDefinition, ReplaceKwargValues,
 )
+
+log = logging.getLogger(__name__)
 
 
 @dataclass()

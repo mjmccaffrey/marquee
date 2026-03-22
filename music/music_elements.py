@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field, replace
 import itertools
+import logging
 import time
 from typing import Any, ClassVar
 
@@ -15,6 +16,7 @@ from modes.foregroundmode import ForegroundMode
 from specialparams import SpecialParams
 
 
+log = logging.getLogger(__name__)
 mode: ForegroundMode
 
 

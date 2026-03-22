@@ -3,6 +3,7 @@
 from collections.abc import Callable, Iterator
 from enum import IntEnum
 from itertools import cycle
+import logging
 
 from .music_elements import (
     ActionNote, BaseNote, BellNote, DrumNote,
@@ -10,6 +11,8 @@ from .music_elements import (
 )
 from .music_interface import light, part
 from specialparams import SpecialParams
+
+log = logging.getLogger(__name__)
 
 note_duration_map: dict[str, float] = {
     '𝅝': 4,     '𝅗𝅥': 2,      '♩': 1,
@@ -20,12 +23,14 @@ rest_duration_map: dict[str, float] = {
     '𝄾': 0.5,   '𝄿': 0.25,  '𝅀': 0.125,
 }
 symbol_duration_map = note_duration_map | rest_duration_map
+
 class Bell(IntEnum):
     e = 7;  d = 6
     c = 5;  b = 4
     a = 3;  G = 2
     # F#
     E = 1;  D = 0
+
 bell_pitch_map = {k: int(v) for k, v in Bell.__members__.items()}
 drum_accent_map = {
     '': 0, '-': 1, '>': 2, '^': 3,

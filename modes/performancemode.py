@@ -2,10 +2,13 @@
 
 from abc import ABC
 from dataclasses import dataclass
+import logging
 
 from devices.button import Button
 from .foregroundmode import ForegroundMode
 from .mode_misc import ModeIndex
+
+log = logging.getLogger(__name__)
 
 
 @dataclass

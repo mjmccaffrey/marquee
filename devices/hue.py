@@ -5,6 +5,7 @@
 
 from collections.abc import Sequence
 from dataclasses import dataclass, field, replace
+import logging
 from typing import ClassVar
 
 import requests
@@ -13,16 +14,17 @@ import urllib3
 from color import Color, XY
 from .bulb import HueBulb
 from .lightcontroller import (
-    ChannelUpdate, ChannelCommand, 
-    LightController, LightChannel,
+    ChannelUpdate, ChannelCommand, LightController, LightChannel,
 )
+
+log = logging.getLogger(__name__)
+
 
 @dataclass(kw_only=True, repr=False)
 class HueBridge(LightController, bulb_comp=HueBulb):
     """Hue bridge controller."""
 
     trans_min: ClassVar[float] = 0.0  # ?????????
-    trans_max: ClassVar[float] = 10800.0  # ?????????
     all_at_once: ClassVar[bool] = True
 
     application_key: str
@@ -31,6 +33,10 @@ class HueBridge(LightController, bulb_comp=HueBulb):
     channel_count: int = field(init=False)
     channel_first_index: None = None
     index: None = None
+
+    def __init_subclass__(cls, channel_count: int) -> None:
+        """Set channel count for concrete subclasses."""
+        cls.channel_count = channel_count
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -76,9 +82,9 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         ]
         self.channel_count = len(self.channels)
     
-    def __init_subclass__(cls, channel_count: int) -> None:
-        """Set channel count for concrete subclasses."""
-        cls.channel_count = channel_count
+    def calibrate(self) -> None:
+        """Calibrate all channels."""
+        raise NotImplementedError
 
     def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands."""
@@ -97,7 +103,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             update.channel.update_state(update)
 
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
-        """Update the all zone, rather than individual channels.
+        """Update the 'all' zone, rather than individual channels.
            Does not check current state."""
         command = update.channel._make_set_command(update)
         for i, id in enumerate(self.zone_ids):

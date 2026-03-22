@@ -8,7 +8,7 @@ from typing import cast
 from color import Color, ColorSets
 from lightset import LightSet
 from devices.hue import HueBridge
-from setup_devices_hue import setup_devices
+from setup_devices import setup_devices
 
 
 def setup():

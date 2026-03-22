@@ -2,9 +2,12 @@
 
 from dataclasses import InitVar, dataclass
 from itertools import cycle
+import logging
 
 from .performancemode import PerformanceMode
 from .mode_misc import CycleEntry, CycleSequence
+
+log = logging.getLogger(__name__)
 
 
 @dataclass(kw_only=True)

@@ -1,7 +1,12 @@
 """Marquee Lighted Sign Project - colorwheel"""
 
 from dataclasses import dataclass
+import logging
+
 from .performancemode import PerformanceMode
+
+log = logging.getLogger(__name__)
+
 
 @dataclass(kw_only=True)
 class ColorWheel(PerformanceMode):

@@ -1,18 +1,22 @@
 """Marquee Lighted Sign Project - player"""
 
 from dataclasses import dataclass, field
+import logging
 from typing import Any, NoReturn
 
 from color import ColorSets
-from devices.button import Button, ButtonPressed, Shutdown
+from devices.button import Button, ButtonPressed
 from devices.devices_misc import ButtonSet
-from event import EventSystem
+from event import EventSystem, Shutdown
 from task import TaskSchedule
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
 from modes.mode_misc import ChangeMode, ModeDefinition
+
+log = logging.getLogger(__name__)
+
 
 @dataclass()
 class Player:

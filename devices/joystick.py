@@ -2,9 +2,11 @@
 
 # from dataclasses import dataclass
 # from enum import Enum
+import logging
 
 # from gpiozero import Button as _Button  # type: ignore
 
+log = logging.getLogger(__name__)
 
 # class Directions(Enum):
 #     """"""
