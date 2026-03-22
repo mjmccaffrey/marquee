@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from functools import partial
 
 from .performancemode import PerformanceMode
-from sequences import opposite
+from .sequences import opposite
 from specialparams import ChannelParams
             
 

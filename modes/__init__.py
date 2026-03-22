@@ -25,5 +25,5 @@ from .twelve import Twelve
 from .modecycle import ModeCycle
 
 # Sequences
-from sequences import *
+from .sequences import *
 

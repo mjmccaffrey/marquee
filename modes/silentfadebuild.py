@@ -5,7 +5,7 @@ from functools import partial
 import random
 
 from .performancemode import PerformanceMode
-from sequences import lights_in_groups
+from .sequences import lights_in_groups
 
 
 @dataclass(kw_only=True)

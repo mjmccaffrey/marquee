@@ -14,7 +14,7 @@ from music import(
     act, act_part, drum_part,
     rest, sequence_measure, sequence_part
 )
-from sequences import *
+from .sequences import *
 from specialparams import ActionParams, ChannelParams
 
 
