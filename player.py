@@ -125,9 +125,9 @@ class Player:
                 if new_mode_index is not None:
                     self.active_mode = self.effect_new_active_mode(new_mode_index)
                     new_mode_index = None
-                assert self.active_mode is not None
-                print(f"Executing mode {self.active_mode}")
-                self.active_mode.execute()
+                    # assert self.active_mode is not None
+                    print(f"Executing mode {self.active_mode}")
+                    self.active_mode.execute()
                 self.wait()
             except ButtonPressed as press:
                 button, held = press.args
