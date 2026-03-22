@@ -44,7 +44,7 @@ class SelectMode(ForegroundMode, ABC):
         self.tasks.delete_owned_by(self)
         b = self.buttons
         match button:
-            case b.body_back | b.remote_a | b.remote_d:
+            case b.body_back | b.corded | b.remote_a | b.remote_d:
                 self.desired = self.update_desired(+1)
             case b.remote_b:
                 self.desired = self.update_desired(-1)
