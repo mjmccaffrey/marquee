@@ -15,7 +15,7 @@ from modes.foregroundmode import ForegroundMode
 from modes.modes_misc import ChangeMode, ModeDefinition
 from task import TaskSchedule
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass()

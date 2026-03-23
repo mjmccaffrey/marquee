@@ -10,7 +10,7 @@ from color import Color
 from devices.lightcontroller import LightChannel, ChannelUpdate
 from .performancemode import PerformanceMode
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.gamemode')
 
 
 @dataclass(kw_only=True, repr=False)

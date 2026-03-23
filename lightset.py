@@ -14,7 +14,7 @@ from devices.lightcontroller import ChannelUpdate, LightController
 from devices.relays import RelayClient
 from specialparams import ChannelParams, MirrorParams, SpecialParams
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass

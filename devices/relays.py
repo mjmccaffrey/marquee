@@ -7,7 +7,7 @@ from typing import ClassVar, NewType, Protocol
 
 import serial  # type: ignore missing module
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.relays')
 
 DevicePattern = NewType('DevicePattern', str)
 """str[n] represents the state of the nth device in RelayClient."""

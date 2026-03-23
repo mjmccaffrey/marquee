@@ -16,7 +16,7 @@ from .modes_misc import (
     ChangeMode, CreateModeInstance, ModeDefinition, ReplaceKwargValues,
 )
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.basemode')
 
 
 @dataclass()

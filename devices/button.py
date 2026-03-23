@@ -10,7 +10,7 @@ from gpiozero import Button as _Button  # type: ignore
 
 from .devices_misc import ButtonInterface
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.button')
 
 class ButtonPressed(Exception):
     """Button pressed base exception."""

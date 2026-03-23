@@ -17,7 +17,7 @@ from .lightcontroller import (
     ChannelUpdate, ChannelCommand, LightController, LightChannel,
 )
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.hue')
 
 
 @dataclass(kw_only=True, repr=False)

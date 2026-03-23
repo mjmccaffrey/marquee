@@ -6,7 +6,7 @@ import logging
 from .modes_misc import ModeIndex
 from .selectmode import SelectMode
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.modeselect')
 
 
 @dataclass(kw_only=True)

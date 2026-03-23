@@ -63,7 +63,7 @@ from setup_modes import setup_modes
 def setup_logging() -> None:
     """"""
     global log
-    log = logging.getLogger(__name__)
+    log = logging.getLogger('marquee')
     log.setLevel(logging.DEBUG)
     filelog = logging.FileHandler('marquee.log')
     filelog.setLevel(logging.DEBUG)

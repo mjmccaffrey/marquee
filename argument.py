@@ -9,7 +9,7 @@ from typing import Any, NoReturn
 
 from lightset_misc import LIGHT_COUNT
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.argument')
 
 
 class ArgumentParserImproved(ArgumentParser):

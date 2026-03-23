@@ -7,7 +7,7 @@ import random
 
 from devices.relays import RelayClient
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.instruments')
 
 
 class Instrument(ABC):

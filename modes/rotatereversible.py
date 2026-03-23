@@ -5,7 +5,7 @@ import logging
 
 from .performancemode import PerformanceMode
             
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.rotatereversible')
 
 
 @dataclass(kw_only=True)

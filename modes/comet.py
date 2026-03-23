@@ -8,7 +8,7 @@ import logging
 from color import Color
 from .performancemode import PerformanceMode
             
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.comet')
 
 
 @dataclass(kw_only=True)

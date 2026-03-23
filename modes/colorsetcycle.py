@@ -8,7 +8,7 @@ from devices.button import Button
 from .performancemode import PerformanceMode
 from .modes_misc import CycleEntry, CycleSequence
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.colorsetcycle')
 
 
 @dataclass(kw_only=True)

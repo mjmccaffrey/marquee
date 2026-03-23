@@ -10,7 +10,7 @@ from .pacman_assets import (
 )
 from devices.lightcontroller import LightChannel, ChannelUpdate
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.pacman')
 
 
 @dataclass(kw_only=True)

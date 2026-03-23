@@ -15,8 +15,8 @@ from modes.sequencemode import SequenceMode
 from player import Player
 from specialparams import SpecialParams
 
-log = logging.getLogger(__name__)
-print(__name__)
+log = logging.getLogger('marquee.' + __name__)
+
 
 class Executor:
     """Executes patterns and commands specified on the command line.

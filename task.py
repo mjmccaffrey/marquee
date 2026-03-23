@@ -7,7 +7,7 @@ import logging
 import time
 from typing import NoReturn
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(order=True, repr=False)

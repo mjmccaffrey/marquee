@@ -8,7 +8,7 @@ from devices.button import Button
 from .foregroundmode import ForegroundMode
 from .modes_misc import ModeIndex
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.performancemode')
 
 
 @dataclass
