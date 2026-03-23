@@ -16,7 +16,7 @@ from player import Player
 from specialparams import SpecialParams
 
 log = logging.getLogger(__name__)
-
+print(__name__)
 
 class Executor:
     """Executes patterns and commands specified on the command line.
