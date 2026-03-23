@@ -45,13 +45,13 @@ class TaskSchedule:
         """"""
         self._schedule.extend(new)
         heapify(self._schedule)
-        log.info(f"{len(new)} tasks added to schedule.")
+        log.debug(f"{len(new)} tasks added to schedule.")
 
     def delete_owned_by(self, owner: object) -> None:
         """Delete all tasks owned by owner."""
         self._schedule = [task for task in self._schedule if task.owner is not owner]
         heapify(self._schedule)
-        log.info(f"Tasks owned by {owner} deleted from schedule.")
+        log.debug(f"Tasks owned by {owner} deleted from schedule.")
 
     def peek(self) -> Task:
         """Return next task without removing from schedule."""
@@ -61,16 +61,16 @@ class TaskSchedule:
     def pop(self) -> Task:
         """Remove and return next task from schedule."""
         task = heappop(self._schedule)
-        # log.info(f"Task {task} removed from schedule.")
+        # log.debug(f"Task {task} removed from schedule.")
         return task
 
     def push(self, task: Task) -> None:
         """Add task to schedule."""
         heappush(self._schedule, task)
-        # log.info(self)
-        # log.info('')
-        # log.info(f"schedule length: {len(self._schedule)}")
-        # log.info(f"Task {task} added to schedule.")
+        # log.debug(self)
+        # log.debug('')
+        # log.debug(f"schedule length: {len(self._schedule)}")
+        # log.debug(f"Task {task} added to schedule.")
 
     def wait(
         self, 
@@ -90,25 +90,25 @@ class TaskSchedule:
             if self._schedule:
                 task = self.peek()
                 if task.due < now:
-                    log.info(f"Running {task} {now - task.due} late")
+                    log.debug(f"Running {task} {now - task.due} late")
                     self.pop()
                     return task, 0
                 elif seconds is None or task.due < end:
-                    # log.info(f"Waiting for {task} or button push")
-                    log.info(f"Waiting for {task.due - now} or button push")
+                    log.debug(f"Waiting for {task} or button push")
+                    log.debug(f"Waiting for {task.due - now} or button push")
                     return None, task.due - now
                 else:
-                    log.info(f"Waiting for remaining {remaining} or button push; schedule not empty")
+                    log.debug(f"Waiting for remaining {remaining} or button push; schedule not empty")
                     return None, remaining
             else:
                 if seconds is None:
-                    log.info(f"Waiting for button push")
+                    log.debug(f"Waiting for button push")
                     return None, None
                 else:
-                    log.info(f"Waiting for remaining {remaining} or button push; schedule empty")
+                    log.debug(f"Waiting for remaining {remaining} or button push; schedule empty")
                     return None, remaining
 
-        # log.info(f"Waiting {seconds=}")
+        log.debug(f"Waiting {seconds=}")
         start = time.time()
         while True:
             now = time.time()
@@ -116,7 +116,7 @@ class TaskSchedule:
                 remaining = start + seconds - now
                 end = now + remaining
                 if now > end:
-                    log.info(f"Exiting wait {now - end} late")
+                    log.debug(f"Exiting wait {now - end} late")
                     break
             task, duration = next_task_or_wait()
             if task is not None:
