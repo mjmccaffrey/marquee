@@ -38,7 +38,6 @@ class LightSet:
         )
 
         if self.smart_bulbs:
-            log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!", self.relay_pattern)
             if all(r == '1' for r in self.relay_pattern):
                 log.info("***** Smart bulbs in use - light relays already ON. *****")
             else:
@@ -231,7 +230,7 @@ class LightSet:
     @brightness_factor.setter
     def brightness_factor(self, value) -> None:
         self._brightness_factor = value
-        log.info("Brightness factor is now ", self._brightness_factor)
+        log.info(f"Brightness factor is now {self._brightness_factor}")
 
     @property
     def relay_pattern(self) -> str:

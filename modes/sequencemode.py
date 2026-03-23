@@ -60,7 +60,6 @@ class SequenceMode(PerformanceMode):
                 self.pre_delay + i * delay
             )
             name = f"SequenceMode execute {i} {lights}"
-            log.info(due, name)
             self.schedule(
                 action = action,
                 due = due,

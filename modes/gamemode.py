@@ -128,7 +128,7 @@ class GameMode(PerformanceMode):
         for i in board:
             log.info(i)
             for e in board[i].values():
-                log.info("  ", e.name)
+                log.info("  " + e.name)
         log.info("*****")
 
     def compare_boards(self, old_board: Board) -> Board:

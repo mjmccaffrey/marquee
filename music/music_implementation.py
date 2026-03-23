@@ -149,7 +149,6 @@ def tasks_in_measure(
     start: float,
 ) -> list[Task]:
     """Return tasks for all notes in measure."""
-    log.info(bps, start)
     beat = 0.0 
     result = []
     for element in measure.elements:
