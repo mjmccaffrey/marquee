@@ -69,9 +69,7 @@ def setup_logging() -> None:
     filelog.setLevel(logging.DEBUG)
     conlog = logging.StreamHandler()
     conlog.setLevel(logging.INFO)
-    format = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
+    format = logging.Formatter('%(asctime)s - %(message)s')
     filelog.setFormatter(format)
     conlog.setFormatter(format)
     log.addHandler(filelog)
