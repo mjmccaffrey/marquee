@@ -47,7 +47,7 @@ class Twelve(MusicMode):
 
         # next = self.play_basic()
         restart_seconds = self.play_music()
-        print(f"{restart_seconds=}")
+        log.info(f"{restart_seconds=}")
 
         # Schedule repeat
         # self.schedule(

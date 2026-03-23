@@ -124,12 +124,12 @@ class GameMode(PerformanceMode):
 
     def print_board(self, board: Board) -> None:
         """"""
-        print("*****")
+        log.info("*****")
         for i in board:
-            print(i)
+            log.info(i)
             for e in board[i].values():
-                print("  ", e.name)
-        print("*****")
+                log.info("  ", e.name)
+        log.info("*****")
 
     def compare_boards(self, old_board: Board) -> Board:
         """Return a partial board with delta of old and new."""

@@ -38,7 +38,7 @@ class Player:
 
     def __post_init__(self) -> None:
         """Initialize."""
-        print("Initializing player")
+        log.info("Initializing player")
         self.active_mode: BackgroundMode | ForegroundMode | None = None
         self.live_bg_modes: dict[int, BackgroundMode] = {}
         self.events = EventSystem()
@@ -52,7 +52,7 @@ class Player:
 
     def close(self) -> None:
         """Clean up."""
-        print(f"Player {self} closed.")
+        log.info(f"Player {self} closed.")
 
     def create_mode_instance(
         self, 
@@ -125,7 +125,7 @@ class Player:
                 if new_mode_index is not None:
                     self.active_mode = self.effect_new_active_mode(new_mode_index)
                     new_mode_index = None
-                    print(f"Executing mode {self.active_mode}")
+                    log.info(f"Executing mode {self.active_mode}")
                     self.active_mode.execute()
                 self.wait()
             except ButtonPressed as press:
@@ -134,10 +134,10 @@ class Player:
                     raise Shutdown("Button was held.")
                 Button.reset()
                 assert self.active_mode is not None
-                print(f"Button {button} pressed in mode {self.active_mode}")
+                log.info(f"Button {button} pressed in mode {self.active_mode}")
                 new_mode_index = self.notify_button_action(button)
             except ChangeMode as cm:
-                # print("ChangeMode caught")
+                # log.info("ChangeMode caught")
                 new_mode_index, = cm.args
 
     def notify_button_action(self, button: Button) -> int | None:

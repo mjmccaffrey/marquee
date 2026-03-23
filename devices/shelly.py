@@ -35,7 +35,7 @@ class ShellyController(LightController, bulb_comp=DimBulb):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        print(f"Initializing {self}")
+        log.info(f"Initializing {self}")
         super().__post_init__()
         self.session = requests.Session()
         self.channels = [
@@ -55,12 +55,12 @@ class ShellyController(LightController, bulb_comp=DimBulb):
             d.channel_count for d in self.dimmers
         )
         for id in range(max_channel):
-            print(f"Calibrating channel {id}")
+            log.info(f"Calibrating channel {id}")
             for dimmer in self.dimmers:
                 if id < dimmer.channel_count:
                     dimmer.channels[id].calibrate()
             time.sleep(150)
-        print("Calibration should be complete")
+        log.info("Calibration should be complete")
 
     def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands via aiohttp asynchronously."""
@@ -90,7 +90,7 @@ class ShellyController(LightController, bulb_comp=DimBulb):
         """Send individual command as part of asynchronous batch.
            Update channel state."""
         command = update.channel._make_set_command(update)
-        # print(
+        # log.info(
         #     command.channel.index,
         #     command.channel.controller.ip_address,
         #     command.url,
@@ -121,7 +121,7 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        print(f"Initializing {self}")
+        log.info(f"Initializing {self}")
         super().__post_init__()
         self.session = requests.Session()
         try:
@@ -137,8 +137,8 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
                 for id, status in self._get_state_of_channels()
             ]
         except requests.exceptions.Timeout as e:
-            print(f"*** Failed to reach '{self.ip_address}' ***")
-            print(f"*** Error: {e} ***")
+            log.info(f"*** Failed to reach '{self.ip_address}' ***")
+            log.info(f"*** Error: {e} ***")
             raise OSError from None
 
     def _get_state_of_channels(self) -> list[tuple[int, dict]]:

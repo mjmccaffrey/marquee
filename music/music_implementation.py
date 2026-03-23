@@ -149,7 +149,7 @@ def tasks_in_measure(
     start: float,
 ) -> list[Task]:
     """Return tasks for all notes in measure."""
-    print(bps, start)
+    log.info(bps, start)
     beat = 0.0 
     result = []
     for element in measure.elements:
@@ -194,10 +194,10 @@ def play_measures(measures: tuple[Measure, ...], tempo: int) -> float:
        section of music could start."""
     bps = tempo / 60
     start = time.time()
-    print(f"{start=}")
+    log.info(f"{start=}")
     tasks = tasks_in_measures(measures, bps, start)
     for t in tasks:
-        print(t.due)
+        log.info(t.due)
     mode.tasks.bulk_add(tasks)
     return measures[0].beats * len(measures) / bps
 

@@ -59,12 +59,29 @@ from player import Player
 from setup_devices import setup_devices
 from setup_modes import setup_modes
 
-log = logging.getLogger(__name__)
+
+def setup_logging() -> None:
+    """"""
+    global log
+    log = logging.getLogger(__name__)
+    log.setLevel(logging.DEBUG)
+    filelog = logging.FileHandler('marquee.log')
+    filelog.setLevel(logging.DEBUG)
+    conlog = logging.StreamHandler()
+    conlog.setLevel(logging.INFO)
+    format = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    filelog.setFormatter(format)
+    conlog.setFormatter(format)
+    log.addHandler(filelog)
+    log.addHandler(conlog)
 
 
 def main() -> None:
     """Execute Marquee application."""
     try:
+        setup_logging()
         exec = Executor(Player, setup_devices)
         setup_modes(exec)
         try:
@@ -74,10 +91,10 @@ def main() -> None:
         else:
             shutdown = exec.execute(**args)
             if shutdown:
-                print("Shutting down.")
+                log.info("Shutting down.")
                 os.system("sudo shutdown --halt")
             else:
-                print("Exiting without shutdown.")
+                log.info("Exiting without shutdown.")
     finally:
         try:
             exec.close()

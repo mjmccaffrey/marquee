@@ -35,7 +35,7 @@ class ModeCycle(BackgroundMode):
     def execute(self):
         """Change to next mode in sequence. Schedule next next mode."""
         new = next(self.mode_cycle)
-        print(
+        log.info(
             f"Next mode in sequence is {new.name} for {new.seconds} seconds."
         )
         self.schedule(due=new.seconds)

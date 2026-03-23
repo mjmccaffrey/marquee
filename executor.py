@@ -43,7 +43,7 @@ class Executor:
     def close(self) -> None:
         """Close dependencies."""
         self.player.close()
-        print(f"Executor {self} closed. - !!! close devices")
+        log.info(f"Executor {self} closed. - !!! close devices")
 
     def add_mode(
             self, 
@@ -163,11 +163,11 @@ class Executor:
         """Turn off all relays and potentially other devices."""
         for d in (self.bells, self.drums, self.lights):
             d.relays.set_state_of_devices('0' * d.relays.count)
-        print("Marquee hardware is now partially shut down.")
-        print()
+        log.info("Marquee hardware is now partially shut down.")
+        log.info('')
 
     def sigterm_received(self, signal_number, stack_frame) -> None:
         """Callback for SIGTERM received."""
-        print(f"SIGTERM received.")
+        log.info(f"SIGTERM received.")
         raise SigTerm
 

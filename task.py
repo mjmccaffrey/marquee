@@ -3,8 +3,12 @@
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from heapq import heapify, heappop, heappush
+import logging
 import time
 from typing import NoReturn
+
+log = logging.getLogger(__name__)
+
 
 @dataclass(order=True, repr=False)
 class Task:
@@ -41,13 +45,13 @@ class TaskSchedule:
         """"""
         self._schedule.extend(new)
         heapify(self._schedule)
-        print(f"{len(new)} tasks added to schedule.")
+        log.info(f"{len(new)} tasks added to schedule.")
 
     def delete_owned_by(self, owner: object) -> None:
         """Delete all tasks owned by owner."""
         self._schedule = [task for task in self._schedule if task.owner is not owner]
         heapify(self._schedule)
-        print(f"Tasks owned by {owner} deleted from schedule.")
+        log.info(f"Tasks owned by {owner} deleted from schedule.")
 
     def peek(self) -> Task:
         """Return next task without removing from schedule."""
@@ -57,16 +61,16 @@ class TaskSchedule:
     def pop(self) -> Task:
         """Remove and return next task from schedule."""
         task = heappop(self._schedule)
-        # print(f"Task {task} removed from schedule.")
+        # log.info(f"Task {task} removed from schedule.")
         return task
 
     def push(self, task: Task) -> None:
         """Add task to schedule."""
         heappush(self._schedule, task)
-        # print(self)
-        # print()
-        # print(f"schedule length: {len(self._schedule)}")
-        # print(f"Task {task} added to schedule.")
+        # log.info(self)
+        # log.info('')
+        # log.info(f"schedule length: {len(self._schedule)}")
+        # log.info(f"Task {task} added to schedule.")
 
     def wait(
         self, 
@@ -86,25 +90,25 @@ class TaskSchedule:
             if self._schedule:
                 task = self.peek()
                 if task.due < now:
-                    print(f"Running {task} {now - task.due} late")
+                    log.info(f"Running {task} {now - task.due} late")
                     self.pop()
                     return task, 0
                 elif seconds is None or task.due < end:
-                    # print(f"Waiting for {task} or button push")
-                    print(f"Waiting for {task.due - now} or button push")
+                    # log.info(f"Waiting for {task} or button push")
+                    log.info(f"Waiting for {task.due - now} or button push")
                     return None, task.due - now
                 else:
-                    print(f"Waiting for remaining {remaining} or button push; schedule not empty")
+                    log.info(f"Waiting for remaining {remaining} or button push; schedule not empty")
                     return None, remaining
             else:
                 if seconds is None:
-                    print(f"Waiting for button push")
+                    log.info(f"Waiting for button push")
                     return None, None
                 else:
-                    print(f"Waiting for remaining {remaining} or button push; schedule empty")
+                    log.info(f"Waiting for remaining {remaining} or button push; schedule empty")
                     return None, remaining
 
-        # print(f"Waiting {seconds=}")
+        # log.info(f"Waiting {seconds=}")
         start = time.time()
         while True:
             now = time.time()
@@ -112,7 +116,7 @@ class TaskSchedule:
                 remaining = start + seconds - now
                 end = now + remaining
                 if now > end:
-                    print(f"Exiting wait {now - end} late")
+                    log.info(f"Exiting wait {now - end} late")
                     break
             task, duration = next_task_or_wait()
             if task is not None:

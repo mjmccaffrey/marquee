@@ -33,10 +33,6 @@ class SelectMode(ForegroundMode, ABC):
         """Update the current selection, wrapping within the bounds."""
         return self.wrap_value(self.lower, self.upper, self.desired, delta)
 
-    @abstractmethod
-    def c_button_pressed(self) -> None:
-        """Respond to C button press."""
-
     def button_action(self, button: Button) -> None:
         """Respond to button being pressed.
            But first, delete the scheduled task which 
@@ -49,7 +45,7 @@ class SelectMode(ForegroundMode, ABC):
             case b.remote_b:
                 self.desired = self.update_desired(-1)
             case b.remote_c:
-                self.c_button_pressed()
+                pass
             case _:
                 raise ValueError("Unrecognized button.")
         return None
@@ -57,7 +53,7 @@ class SelectMode(ForegroundMode, ABC):
     def execute(self) -> int | None:
         """Return user's final selection if made, otherwise 
            schedule next execute and return None."""
-        print(
+        log.info(
             f"SelectMode.execute {self.previous=} {self.previous_desired=} {self.desired=}"
         )
         if (    # The desired mode was not changed last go-around.
@@ -67,7 +63,7 @@ class SelectMode(ForegroundMode, ABC):
         ):
             # Not last pass.
             # Show user what desired mode number is currently selected.
-            print(f"Desired is now {self.desired}")
+            log.info(f"Desired is now {self.desired}")
             # self.lights.set_relays(ALL_OFF, special=self.special)
             self.create_mode_instance(
                 mode_index=ModeIndex.COUNTER,
@@ -88,6 +84,6 @@ class SelectMode(ForegroundMode, ABC):
             # Last pass.
             # Time elapsed without a button being pressed.
             # Change the mode.
-            print(f"Final selection is {self.desired}")
+            log.info(f"Final selection is {self.desired}")
             return self.desired
 

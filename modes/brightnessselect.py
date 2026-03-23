@@ -35,7 +35,3 @@ class BrightnessSelect(SelectMode):
         if new is not None:  # Final selection made.
             self.change_mode(ModeIndex.DEFAULT)
 
-    def c_button_pressed(self) -> None:
-        """Respond to C button press."""
-        print("C button ignored in brightness select mode.")
-

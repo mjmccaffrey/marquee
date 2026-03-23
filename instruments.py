@@ -20,7 +20,7 @@ class Instrument(ABC):
 
     def close(self) -> None:
         """Close."""
-        print(f"Instrument {self} closed.")
+        log.info(f"Instrument {self} closed.")
 
     @abstractmethod
     def play(self) -> None:
@@ -59,7 +59,7 @@ class RelayInstrument(Instrument, ABC):
         try:
             selected = set(random.sample(candidates, count))
         except ValueError:
-            print(f'{len(candidates)} of {count} {state} relays present.')
+            log.info(f'{len(candidates)} of {count} {state} relays present.')
             selected = set(candidates)
         return selected
 

@@ -51,7 +51,7 @@ class BaseMode(ABC):
 
     def change_mode(self, mode_index: int) -> NoReturn:
         """Effects changing active mode to mode_index."""
-        print(f"Changing to mode {mode_index}")
+        log.info(f"Changing to mode {mode_index}")
         raise ChangeMode(mode_index)
 
     def lookup_mode_index(self, name: str) -> int:

@@ -38,11 +38,11 @@ class LightSet:
         )
 
         if self.smart_bulbs:
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!", self.relay_pattern)
+            log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!", self.relay_pattern)
             if all(r == '1' for r in self.relay_pattern):
-                print("***** Smart bulbs in use - light relays already ON. *****")
+                log.info("***** Smart bulbs in use - light relays already ON. *****")
             else:
-                print("***** Smart bulbs in use - setting light relays ON. *****")
+                log.info("***** Smart bulbs in use - setting light relays ON. *****")
                 self.set_relays(True, smart_bulb_override=True)
                 time.sleep(5.0)  # Enough time for controller to see all bulbs.
 
@@ -56,7 +56,7 @@ class LightSet:
             [i for i in range(self.count) if not i % 2]
             # [i for i in range(self.count)]
         )
-        print(self.update_sequence)
+        log.info(self.update_sequence)
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
         self.bulb_adjustments = self.controller.bulb_model.adjustments
@@ -66,14 +66,14 @@ class LightSet:
         """Calibrate lights, if supported by controller.
            If not supported, exception will bubble up
            to executor."""
-        print("Calibrating channels")
+        log.info("Calibrating channels")
         self.set_relays(True)
         self.set_channels(brightness=100, force=True)
         self.controller.calibrate()
 
     def reset(self):
         """Set the lights to a baseline state."""
-        print("%%%%%%%%%%%%%%%%%% LIGHTSET RESET %%%%%%%%%%%%%%%%%%")
+        log.info("%%%%%%%%%%%%%%%%%% LIGHTSET RESET %%%%%%%%%%%%%%%%%%")
         self.set_channels(
             brightness=25,
             color=self.colors.WHITE,
@@ -231,7 +231,7 @@ class LightSet:
     @brightness_factor.setter
     def brightness_factor(self, value) -> None:
         self._brightness_factor = value
-        print("Brightness factor is now ", self._brightness_factor)
+        log.info("Brightness factor is now ", self._brightness_factor)
 
     @property
     def relay_pattern(self) -> str:
@@ -259,7 +259,7 @@ class LightSet:
                 result = list(brightness)
             case _:
                 result = [brightness] * self.count
-        # print(f"{result=} {self._brightness_factor=}")
+        # log.info(f"{result=} {self._brightness_factor=}")
         result = [
             int(b * self._brightness_factor)
             if b is not None else None

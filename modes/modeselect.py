@@ -29,7 +29,7 @@ class ModeSelect(SelectMode):
         if new is not None:  # Final selection made.
             self.change_mode(new)
 
-    def c_button_pressed(self) -> None:
-        """Respond to C button press."""
-        self.desired = ModeIndex.BRIGHTNESS_SELECT
+    # def c_button_pressed(self) -> None:
+    #     """Respond to C button press."""
+    #     self.desired = ModeIndex.BRIGHTNESS_SELECT
 

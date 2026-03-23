@@ -28,7 +28,7 @@ class ForegroundMode(BaseMode, ABC):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        print("^^^^^^^^^^^^^^^^ FG MODE RESET ^^^^^^^^^^^^^^")
+        log.info("^^^^^^^^^^^^^^^^ FG MODE RESET ^^^^^^^^^^^^^^")
         if self.reset_lights:
             self.lights.reset()
 

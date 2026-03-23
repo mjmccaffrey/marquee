@@ -82,14 +82,14 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         except LookupError:
             raise ValueError("Unrecognized device count")
         self.port_address = port_address
-        print(f"Initializing {self}")
+        log.info(f"Initializing {self}")
         try:
             self._serial_port = serial.Serial(self.port_address, timeout=2)
         except serial.serialutil.SerialException as e:  # type: ignore
-            print()
-            print(f"*** Failed to open '{self.port_address}' ***")
-            print(f"*** Error: {e} ***")
-            print()
+            log.info('')
+            log.info(f"*** Failed to open '{self.port_address}' ***")
+            log.info(f"*** Error: {e} ***")
+            log.info('')
             raise OSError from None
         self.relay_pattern = self._get_relays()
 
@@ -115,7 +115,7 @@ class NumatoUSBRelayModule(RelayModule, ABC):
     def close(self) -> None:
         """Clean up."""
         self._serial_port.close()
-        print(f"Relay module {self} closed.")
+        log.info(f"Relay module {self} closed.")
 
     def set_state_of_devices(
         self, 

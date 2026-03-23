@@ -39,7 +39,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        print(f"Initializing {self}")
+        log.info(f"Initializing {self}")
         super().__post_init__()
         self.session = requests.Session()
         self.session.headers = {'hue-application-key': self.application_key}
@@ -49,8 +49,8 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         try:
             self.get_state_of_channels()
         except requests.exceptions.Timeout as e:
-            print(f"*** Failed to reach '{self.ip_address}' ***")
-            print(f"*** Error: {e} ***")
+            log.info(f"*** Failed to reach '{self.ip_address}' ***")
+            log.info(f"*** Error: {e} ***")
             raise OSError from None
 
     def get_state_of_channels(self) -> None:
@@ -94,10 +94,10 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 json=command.params,
                 timeout=2.0,
             )
-            # print('*********')
-            # print(command.url)
-            # print(command.params)
-            # print('*********')
+            # log.info('*********')
+            # log.info(command.url)
+            # log.info(command.params)
+            # log.info('*********')
             response.raise_for_status()
             update.channel.update_state(update)
 
@@ -111,7 +111,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 json=command.params,
                 timeout=2.0,
             )
-            print("ZONE: ", i, command.params)
+            log.info("ZONE: ", i, command.params)
             response.raise_for_status()
         for channel in self.channels:
             channel.update_state(replace(update, channel=channel))

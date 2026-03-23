@@ -27,7 +27,7 @@ class SequenceMode(PerformanceMode):
     def __post_init__(self) -> None:
         super().__post_init__()
         if self.lights.smart_bulbs and self.special is None:
-            print("SequenceMode: emulating incandescent.")
+            log.info("SequenceMode: emulating incandescent.")
             self.special = EmulateParams()
         self.sequence_kwargs = self.replace_kwarg_values(self.sequence_kwargs)
 
@@ -60,7 +60,7 @@ class SequenceMode(PerformanceMode):
                 self.pre_delay + i * delay
             )
             name = f"SequenceMode execute {i} {lights}"
-            print(due, name)
+            log.info(due, name)
             self.schedule(
                 action = action,
                 due = due,

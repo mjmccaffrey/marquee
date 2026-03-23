@@ -61,7 +61,7 @@ class ColorSetCycle(PerformanceMode):
         """Change to next set. Schedule next next set."""
         index, entry = next(self.cycle)
         cs = self.color_sets.by_set_name[entry.name]
-        print(
+        log.info(
             f"Displaying color set {cs.group}.{cs.name} "
             f"for {entry.seconds} seconds "
             f"({index + 1} / {len(self.expanded)})."

@@ -61,7 +61,7 @@ class LightController(ABC):
                 for update in updates
                 if (up := update.channel.updates_needed(update))
             ]
-        # print(len(updates), len(updates_to_send))
+        # log.info(len(updates), len(updates_to_send))
         self.execute_channel_updates(updates=updates_to_send)
 
     @abstractmethod
@@ -122,7 +122,7 @@ class LightChannel(ABC):
             changes['color'] = update.color
         if update.on is not None and self.on != update.on:
             changes['on'] = update.on
-        # print("CHANGES: ", changes)
+        # log.info("CHANGES: ", changes)
         if changes:
             return ChannelUpdate(
                 channel=update.channel,

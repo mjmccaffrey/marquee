@@ -56,7 +56,7 @@ class PacManGame(GameMode):
     
     def play_level(self, level: int) -> None:
         """"""
-        print("Playing level ", level)
+        log.info("Playing level ", level)
         self.dot_bites_remaining = self.dot_bites_maximum
         self.level = level
         self.init_level()
@@ -86,12 +86,12 @@ class PacManGame(GameMode):
 
     def won_game(self) -> None:
         """"""
-        print("You won!")
+        log.info("You won!")
         self.tasks.delete_owned_by(self)
 
     def lost_game(self) -> None:
         """"""
-        print("You lost!")
+        log.info("You lost!")
         self.tasks.delete_owned_by(self)
 
     def state_logic(self) -> None:
@@ -108,7 +108,7 @@ class PacManGame(GameMode):
             assert self.pacman.prior_coord is not None
             self.move_character(self.pacman, self.pacman.prior_coord)
             self.state = self.LOST_GAME
-        print(self.pacman.coord, self.blinky.coord, self.pinky.coord)
+        log.info(self.pacman.coord, self.blinky.coord, self.pinky.coord)
 
     def ghost_got_pacman(self):
         """"""

@@ -37,7 +37,7 @@ class Button(ButtonInterface):
     @classmethod
     def reset(cls) -> None:
         """Prepare for a button press."""
-        # print("Button.reset()")
+        # log.info("Button.reset()")
         cls.which_button_pressed: Button | None = None
         cls.button_was_held = False
         cls.pressed_event = threading.Event()
@@ -53,7 +53,7 @@ class Button(ButtonInterface):
     def __post_init__(self) -> None:
         """Initialize."""
         if not Button._buttons:
-            print(f"Initializing buttons")
+            log.info(f"Initializing buttons")
             Button.reset()
         Button._buttons.append(self)
         self.button.when_pressed = self.button_pressed
@@ -74,7 +74,7 @@ class Button(ButtonInterface):
     def close(self) -> None:
         """Clean up."""
         self.button.close()
-        print(f"Button {self} closed.")
+        log.info(f"Button {self} closed.")
 
     def button_held(self) -> None:
         """Callback for button hold."""
@@ -83,15 +83,15 @@ class Button(ButtonInterface):
     def button_pressed(self, held: bool = False) -> None:
         """Callback for button press."""
         if held:
-            print(f"Button <{self}> held")
+            log.info(f"Button <{self}> held")
         else:
-            print(f"Button <{self}> pressed")
+            log.info(f"Button <{self}> pressed")
         Button.button_was_held = held
         Button.which_button_pressed = self
         Button.pressed_event.set()
 
     def virtual_button_pressed(self, signal_number, stack_frame) -> None:
         """Callback for virtual button press."""
-        print(f"Virtual button <{self}> pressed")
+        log.info(f"Virtual button <{self}> pressed")
         raise VirtualButtonPressed(self)
 
