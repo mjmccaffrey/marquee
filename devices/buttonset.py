@@ -18,8 +18,6 @@ class ButtonSet:
     remote_b: ButtonInterface
     remote_c: ButtonInterface
     remote_d: ButtonInterface
-    which_button_pressed: ButtonInterface | None
-    button_was_held: bool
 
     def __post_init__(self):
         """"""
