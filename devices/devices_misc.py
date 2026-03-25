@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import Protocol
 
-from buttonset import ButtonSet
+from .buttonset import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 
