@@ -6,7 +6,7 @@ from typing import Any, NoReturn
 
 from color import ColorSets
 from devices.devices_misc import ButtonInterface, ButtonPressed
-from devices.devices_misc import ButtonSet
+from devices.buttonset import ButtonSet
 from event import EventSystem, Shutdown
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet

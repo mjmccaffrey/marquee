@@ -4,7 +4,7 @@ from abc import ABC
 from dataclasses import dataclass
 import logging
 
-from devices.devices_misc import ButtonSet
+from devices.buttonset import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 from .basemode import BaseMode

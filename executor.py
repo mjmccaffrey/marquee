@@ -4,11 +4,13 @@ from collections.abc import Callable
 import logging
 import signal
 import time
-from typing import Any
+from typing import Any, Protocol
 
 from color import ColorSets
-from devices.devices_misc import SetupDevices
+from devices.buttonset import ButtonSet
 from event import Shutdown, SigTerm
+from instruments import BellSet, DrumSet
+from lightset import ClickSet, LightSet
 from modes.basemode import BaseMode
 from modes.modes_misc import ModeDefinition
 from modes.sequencemode import SequenceMode
@@ -26,7 +28,7 @@ class Executor:
     def __init__(
             self,
             create_player: Callable[..., Player],
-            setup_devices: SetupDevices,
+            setup_devices: 'SetupDevices',
         ) -> None:
         """Init the (single) executor."""
         self.create_player = create_player
@@ -170,4 +172,14 @@ class Executor:
         """Callback for SIGTERM received."""
         log.info(f"SIGTERM received.")
         raise SigTerm
+
+
+class SetupDevices(Protocol):
+    """"""
+    def __call__(
+        self,
+        brightness_factor: float,
+        speed_factor: float,
+     ) -> tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet, ClickSet]:
+        ...
 
