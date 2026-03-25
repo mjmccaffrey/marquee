@@ -23,7 +23,10 @@ class ButtonSet:
         """"""
         log.info(f"Initializing buttons")
         for field in fields(self):
-            setattr(field, 'button_in_set_pressed', self.button_in_set_pressed)
+            button = getattr(self, field.name)
+            setattr(
+                button, 'button_in_set_pressed', self.button_in_set_pressed
+            )
         self.reset()
 
     def button_in_set_pressed(self, button: ButtonInterface, held: bool) -> None:
