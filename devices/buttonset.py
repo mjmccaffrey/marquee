@@ -4,7 +4,7 @@ from dataclasses import dataclass, fields
 import logging
 import threading
 
-from devices_misc import ButtonInterface, ButtonPhysicallyPressed
+from .devices_misc import ButtonInterface, ButtonPhysicallyPressed
 
 log = logging.getLogger('marquee.button')
 
