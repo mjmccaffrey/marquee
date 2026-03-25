@@ -4,7 +4,7 @@ from dataclasses import InitVar, dataclass
 from itertools import cycle
 import logging
 
-from devices.button import Button
+from devices.devices_misc import ButtonInterface
 from .performancemode import PerformanceMode
 from .modes_misc import CycleEntry, CycleSequence
 
@@ -22,7 +22,7 @@ class ColorSetCycle(PerformanceMode):
         self.expanded = self.expand_sequence(sequence)
         self.cycle = enumerate(cycle(self.expanded))
 
-    def button_action(self, button: Button) -> int | None:
+    def button_action(self, button: ButtonInterface) -> int | None:
         """Respond to button being pressed.
            Return index of new mode, if any."""
         if button == self.buttons.corded:

@@ -50,8 +50,8 @@ marquee
                 SequenceMeasure
                 Sequence
 """
-import os
 import logging
+import sys
 
 from argument import display_help, process_arguments
 from executor import Executor
@@ -76,8 +76,9 @@ def setup_logging() -> None:
     log.addHandler(conlog)
 
 
-def main() -> None:
+def main() -> int:
     """Execute Marquee application."""
+    result = 1
     try:
         setup_logging()
         exec = Executor(Player, setup_devices)
@@ -88,18 +89,18 @@ def main() -> None:
             display_help(exec.mode_menu, exec.commands)
         else:
             shutdown = exec.execute(**args)
-            if shutdown:
-                log.info("Shutting down.")
-                os.system("sudo shutdown --halt")
-            else:
-                log.info("Exiting without shutdown.")
+            result = 3 if shutdown else 0
     finally:
         try:
             exec.close()
         except Exception:
             pass
-
+    match result:
+        case 0: log.error("Exiting without shutdown.")
+        case 1: log.error("Unexpected error occurred.")
+        case 3: log.error("Exiting with shutdown.")
+    return result
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
 

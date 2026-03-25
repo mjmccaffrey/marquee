@@ -3,66 +3,32 @@
 from dataclasses import dataclass
 import logging
 import signal
-import threading
-from typing import ClassVar
 
 from gpiozero import Button as _Button  # type: ignore
 
-from .devices_misc import ButtonInterface
+from .devices_misc import ButtonInterface, ButtonVirtuallyPressed
 
 log = logging.getLogger('marquee.button')
-
-class ButtonPressed(Exception):
-    """Button pressed base exception."""
-
-class PhysicalButtonPressed(ButtonPressed):
-    """Physical button pressed exception."""
-
-class VirtualButtonPressed(ButtonPressed):
-    """Virtual button pressed (IPC signal received) exception."""
 
 
 @dataclass
 class Button(ButtonInterface):
     """Supports physical buttons on remote and sign."""
-
-    _buttons: ClassVar[list["Button"]] = []
-    which_button_pressed: ClassVar["Button | None"]
-    button_was_held: ClassVar[bool]
     name: str
     button: _Button
     support_hold: bool = False
     signal_number: int | None = None
-
-    @classmethod
-    def reset(cls) -> None:
-        """Prepare for a button press."""
-        # log.info("Button.reset()")
-        cls.which_button_pressed: Button | None = None
-        cls.button_was_held = False
-        cls.pressed_event = threading.Event()
-
-    @classmethod
-    def wait(cls, seconds: float | None) -> None:
-        """Wait until seconds have elapsed or any button is pressed."""
-        if cls.pressed_event.wait(seconds):
-            raise PhysicalButtonPressed(
-                cls.which_button_pressed, cls.button_was_held,
-            )
+    button_set: ButtonSetInterface | None = None
 
     def __post_init__(self) -> None:
         """Initialize."""
-        if not Button._buttons:
-            log.info(f"Initializing buttons")
-            Button.reset()
-        Button._buttons.append(self)
-        self.button.when_pressed = self.button_pressed
+        self.button.when_pressed = self.button_physically_pressed
         if self.support_hold:
-            self.button.when_held = self.button_held
+            self.button.when_held = self.button_physically_held
         if self.signal_number is not None:
             signal.signal(
                 self.signal_number,
-                self.virtual_button_pressed,
+                self.button_virtually_pressed,
             )
     
     def __repr__(self) -> str:
@@ -76,22 +42,23 @@ class Button(ButtonInterface):
         self.button.close()
         log.info(f"Button {self} closed.")
 
-    def button_held(self) -> None:
+    def button_physically_held(self) -> None:
         """Callback for button hold."""
-        self.button_pressed(held=True)
+        self.button_physically_pressed(held=True)
 
-    def button_pressed(self, held: bool = False) -> None:
-        """Callback for button press."""
+    def button_physically_pressed(self, held: bool = False) -> None:
+        """Callback for physical button press."""
         if held:
             log.info(f"Button <{self}> held")
         else:
             log.info(f"Button <{self}> pressed")
-        Button.button_was_held = held
-        Button.which_button_pressed = self
-        Button.pressed_event.set()
+        self.button_set_pressed(self, held)
+        # self.button_set.button_was_held = held
+        # self.button_set.which_button_pressed = self
+        # self.button_set.pressed_event.set()
 
-    def virtual_button_pressed(self, signal_number, stack_frame) -> None:
+    def button_virtually_pressed(self, signal_number, stack_frame) -> None:
         """Callback for virtual button press."""
         log.info(f"Virtual button <{self}> pressed")
-        raise VirtualButtonPressed(self)
+        raise ButtonVirtuallyPressed(self)
 

@@ -7,6 +7,19 @@ from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 
 
+@dataclass
+class ButtonPressed(Exception):
+    """Button pressed base exception."""
+    button: 'ButtonInterface'
+    held: bool
+
+class PhysicalButtonPressed(ButtonPressed):
+    """Physical button pressed exception."""
+
+class ButtonVirtuallyPressed(ButtonPressed):
+    """Virtual button pressed (IPC signal received) exception."""
+
+
 class ButtonInterface(Protocol):
     """Button interface."""
 
@@ -24,24 +37,13 @@ class ButtonInterface(Protocol):
         """Clean up."""
         ...
 
-    def button_pressed(self, held: bool = False) -> None:
+    def button_physically_pressed(self, held: bool = False) -> None:
         """Callback for button press."""
         ...
 
-    def virtual_button_pressed(self, signal_number, stack_frame) -> None:
+    def button_virtually_pressed(self, signal_number, stack_frame) -> None:
         """Callback for virtual button press."""
         ...
-
-
-@dataclass
-class ButtonSet:
-    """Every button."""
-    body_back: ButtonInterface
-    corded: ButtonInterface
-    remote_a: ButtonInterface
-    remote_b: ButtonInterface
-    remote_c: ButtonInterface
-    remote_d: ButtonInterface
 
 
 class SetupDevices(Protocol):

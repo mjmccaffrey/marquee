@@ -5,7 +5,7 @@ import logging
 from typing import Any, NoReturn
 
 from color import ColorSets
-from devices.button import Button, ButtonPressed
+from devices.devices_misc import ButtonInterface, ButtonPressed
 from devices.devices_misc import ButtonSet
 from event import EventSystem, Shutdown
 from instruments import BellSet, DrumSet
@@ -140,7 +140,7 @@ class Player:
                 # log.info("ChangeMode caught")
                 new_mode_index, = cm.args
 
-    def notify_button_action(self, button: Button) -> int | None:
+    def notify_button_action(self, button: ButtonInterface) -> int | None:
         """Notify all background modes, and active mode, 
            of button action. Return active mode's response."""
         for mode in self.live_bg_modes.values():

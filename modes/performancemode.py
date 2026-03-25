@@ -4,7 +4,7 @@ from abc import ABC
 from dataclasses import dataclass
 import logging
 
-from devices.button import Button
+from devices.devices_misc import ButtonInterface
 from .foregroundmode import ForegroundMode
 from .modes_misc import ModeIndex
 
@@ -20,7 +20,7 @@ class PerformanceMode(ForegroundMode, ABC):
         super().__post_init__()
         self.direction = +1
 
-    def button_action(self, button: Button) -> int | None:
+    def button_action(self, button: ButtonInterface) -> int | None:
         """Respond to button being pressed.
            Return index of new mode, if any."""
         new_mode = None

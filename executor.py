@@ -3,10 +3,10 @@
 from collections.abc import Callable
 import logging
 import signal
+import time
 from typing import Any
 
 from color import ColorSets
-from devices.button import Button
 from devices.devices_misc import SetupDevices
 from event import Shutdown, SigTerm
 from modes.basemode import BaseMode
@@ -147,7 +147,7 @@ class Executor:
                 brightness=brightness_pattern,
                 transition=self.lights.trans_min,
             )
-            Button.wait(self.lights.trans_min)
+            time.sleep(self.lights.trans_min)
         if light_pattern is not None:
             self.lights.set_relays(light_pattern)
 
