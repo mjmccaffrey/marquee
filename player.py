@@ -132,7 +132,7 @@ class Player:
                 button, held = press.args
                 if held:
                     raise Shutdown("Button was held.")
-                Button.reset()
+                self.buttons.reset()
                 assert self.active_mode is not None
                 log.info(f"Button {button} pressed in mode {self.active_mode}")
                 new_mode_index = self.notify_button_action(button)
@@ -172,5 +172,5 @@ class Player:
 
         if seconds is not None:
             seconds *= self.speed_factor
-        self.tasks.wait(seconds, Button.wait)
+        self.tasks.wait(seconds, self.buttons.wait)
 

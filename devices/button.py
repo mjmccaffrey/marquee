@@ -6,7 +6,9 @@ import signal
 
 from gpiozero import Button as _Button  # type: ignore
 
-from .devices_misc import ButtonInterface, ButtonVirtuallyPressed
+from .devices_misc import (
+    ButtonInSetPressed, ButtonInterface, ButtonVirtuallyPressed
+)
 
 log = logging.getLogger('marquee.button')
 
@@ -18,7 +20,7 @@ class Button(ButtonInterface):
     button: _Button
     support_hold: bool = False
     signal_number: int | None = None
-    button_set: ButtonSetInterface | None = None
+    button_in_set_pressed: ButtonInSetPressed | None = None
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -49,16 +51,14 @@ class Button(ButtonInterface):
     def button_physically_pressed(self, held: bool = False) -> None:
         """Callback for physical button press."""
         if held:
-            log.info(f"Button <{self}> held")
+            log.info(f"Button <{self}> physically held")
         else:
-            log.info(f"Button <{self}> pressed")
-        self.button_set_pressed(self, held)
-        # self.button_set.button_was_held = held
-        # self.button_set.which_button_pressed = self
-        # self.button_set.pressed_event.set()
+            log.info(f"Button <{self}> physically pressed")
+        assert self.button_in_set_pressed is not None
+        self.button_in_set_pressed(self, held)
 
     def button_virtually_pressed(self, signal_number, stack_frame) -> None:
         """Callback for virtual button press."""
-        log.info(f"Virtual button <{self}> pressed")
-        raise ButtonVirtuallyPressed(self)
+        log.info(f"Virtual button <{self}> vitually pressed")
+        raise ButtonVirtuallyPressed(button=self, held=False)
 

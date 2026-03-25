@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from typing import Protocol
 
+from buttonset import ButtonSet
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 
@@ -13,7 +14,7 @@ class ButtonPressed(Exception):
     button: 'ButtonInterface'
     held: bool
 
-class PhysicalButtonPressed(ButtonPressed):
+class ButtonPhysicallyPressed(ButtonPressed):
     """Physical button pressed exception."""
 
 class ButtonVirtuallyPressed(ButtonPressed):
@@ -23,20 +24,6 @@ class ButtonVirtuallyPressed(ButtonPressed):
 class ButtonInterface(Protocol):
     """Button interface."""
 
-    @classmethod
-    def reset(cls) -> None:
-        """Prepare for a button press."""
-        ...
-
-    @classmethod
-    def wait(cls, seconds: float | None) -> None:
-        """Wait until seconds have elapsed or any button is pressed."""
-        ...
-    
-    def close(self) -> None:
-        """Clean up."""
-        ...
-
     def button_physically_pressed(self, held: bool = False) -> None:
         """Callback for button press."""
         ...
@@ -45,6 +32,19 @@ class ButtonInterface(Protocol):
         """Callback for virtual button press."""
         ...
 
+    def close(self) -> None:
+        """Clean up."""
+        ...
+
+
+class ButtonInSetPressed(Protocol):
+    """"""
+    def __call__(
+        self,
+        button: ButtonInterface, 
+        held: bool,
+    ) -> None:
+        ...
 
 class SetupDevices(Protocol):
     """"""
