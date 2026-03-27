@@ -12,7 +12,7 @@ from .music_elements import (
 from .music_interface import light, part
 from specialparams import SpecialParams
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.' + __name__)
 
 note_duration_map: dict[str, float] = {
     '𝅝': 4,     '𝅗𝅥': 2,      '♩': 1,

@@ -7,9 +7,9 @@ from collections.abc import Callable
 import logging
 from typing import Any, NoReturn
 
-from lightset_misc import LIGHT_COUNT
+from lightset_config import LIGHT_COUNT
 
-log = logging.getLogger('marquee.argument')
+log = logging.getLogger('marquee.' + __name__)
 
 
 class ArgumentParserImproved(ArgumentParser):

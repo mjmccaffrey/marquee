@@ -14,7 +14,7 @@ from .music_implementation import (
 )
 from specialparams import SpecialParams
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.' + __name__)
 
 
 def set_mode(the_mode: ForegroundMode) -> None:

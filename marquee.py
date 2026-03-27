@@ -1,7 +1,6 @@
 """Marquee Lighted Sign Project - marquee (main)"""
 """
 marquee
-    arguments
     Executor
     Player
         BellSet
@@ -10,17 +9,14 @@ marquee
         DrumSet
         LightSet
             LightController
+                HueBridge
+                ShellyController
             LightChannel
+                HueChannel
+                ShellyChannel
             RelayClient
-        LightController
-            HueBridge
-            ShellyController
-        LightChannel
-            HueChannel
-            ShellyChannel
-        RelayClient
-            RelayModule
-                NumatoUSBRelayModule
+                RelayModule
+                    NumatoUSBRelayModule
         BaseMode
             BackgroundMode
             ForegroundMode

@@ -10,7 +10,7 @@ from .devices_misc import (
     ButtonInSetPressed, ButtonInterface, ButtonVirtuallyPressed
 )
 
-log = logging.getLogger('marquee.button')
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass

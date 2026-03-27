@@ -2,12 +2,13 @@
 
 from dataclasses import dataclass, field
 import logging
+import signal
 from typing import Any, NoReturn
 
 from color import ColorSets
 from devices.devices_misc import ButtonInterface, ButtonPressed
 from devices.buttonset import ButtonSet
-from event import EventSystem, Shutdown
+from event import EventSystem
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 from modes.backgroundmode import BackgroundMode
@@ -41,6 +42,7 @@ class Player:
         log.info("Initializing player")
         self.active_mode: BackgroundMode | ForegroundMode | None = None
         self.live_bg_modes: dict[int, BackgroundMode] = {}
+        signal.signal(signal.SIGTERM, self.sigterm_received)
         self.events = EventSystem()
         self.tasks = TaskSchedule()
 
@@ -53,6 +55,11 @@ class Player:
     def close(self) -> None:
         """Clean up."""
         log.info(f"Player {self} closed.")
+
+    def sigterm_received(self, signal_number, stack_frame) -> None:
+        """Callback for SIGTERM received."""
+        log.info(f"SIGTERM received.")
+        raise SigTerm
 
     def create_mode_instance(
         self, 
@@ -117,8 +124,9 @@ class Player:
         # Return new mode instance
         return new_mode
 
-    def execute(self, starting_mode_index: int) -> None:
-        """Play the specified starting mode and all subsequent modes."""
+    def execute(self, starting_mode_index: int) -> bool:
+        """Play the specified starting mode and all subsequent modes.
+           Return whether to shut down the system."""
         new_mode_index: int | None = starting_mode_index
         while True:
             try:
@@ -131,14 +139,16 @@ class Player:
             except ButtonPressed as press:
                 button, held = press.args
                 if held:
-                    raise Shutdown("Button was held.")
+                    return True
                 self.buttons.reset()
                 assert self.active_mode is not None
-                log.info(f"Button {button} pressed in mode {self.active_mode}")
+                log.debug(f"Button {button} pressed in mode {self.active_mode}")
                 new_mode_index = self.notify_button_action(button)
             except ChangeMode as cm:
-                # log.info("ChangeMode caught")
+                log.debug("ChangeMode caught")
                 new_mode_index, = cm.args
+            except SigTerm:
+                return False
 
     def notify_button_action(self, button: ButtonInterface) -> int | None:
         """Notify all background modes, and active mode, 
@@ -173,4 +183,8 @@ class Player:
         if seconds is not None:
             seconds *= self.speed_factor
         self.tasks.wait(seconds, self.buttons.wait)
+
+
+class SigTerm(Exception):
+    """Triggered to cleanly exit the application."""
 

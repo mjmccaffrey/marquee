@@ -4,13 +4,7 @@ from collections import defaultdict
 from collections.abc import Callable
 import logging
 
-log = logging.getLogger('marquee.event')
-
-class Shutdown(Exception):
-    """Triggered to clean up and shut down the system."""
-
-class SigTerm(Exception):
-    """Triggered to cleanly exit the application."""
+log = logging.getLogger('marquee.' + __name__)
 
 
 class EventSystem:

@@ -10,7 +10,7 @@ from lightset import ClickSet, LightSet
 from .basemode import BaseMode
 from specialparams import SpecialParams
 
-log = logging.getLogger('marquee.foregroundmode')
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(kw_only=True)

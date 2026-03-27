@@ -6,7 +6,7 @@ import logging
 
 # from gpiozero import Button as _Button  # type: ignore
 
-log = logging.getLogger('marquee.joystick')
+log = logging.getLogger('marquee.' + __name__)
 
 
 # class Directions(Enum):

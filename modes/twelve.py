@@ -7,7 +7,7 @@ import logging
 from .musicmode import MusicMode
 from music import act_part, section, set_mode
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.' + __name__)
 
 @dataclass(kw_only=True)
 class Twelve(MusicMode):

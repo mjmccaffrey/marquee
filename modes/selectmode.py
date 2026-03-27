@@ -9,7 +9,7 @@ from .foregroundmode import ForegroundMode
 from .modes_misc import ModeIndex
 from .sequences import rotate_build_flip
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(kw_only=True)

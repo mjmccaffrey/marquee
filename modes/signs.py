@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - signs"""
 
-from lightset_misc import ALL_OFF, ALL_LOW, ALL_ON
+from lightset_config import ALL_OFF, ALL_LOW, ALL_ON
 from .musicmode import MusicMode
 from .sequences import all_on, blink_all, random_each
 from music import (

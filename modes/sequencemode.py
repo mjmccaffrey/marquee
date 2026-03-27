@@ -10,7 +10,7 @@ from typing import Any, Iterable
 from .performancemode import PerformanceMode
 from specialparams import ActionParams, EmulateParams
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(kw_only=True)

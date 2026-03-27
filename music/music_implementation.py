@@ -17,7 +17,7 @@ from specialparams import (
     ActionParams, SpecialParams,
 )
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.' + __name__)
 
 
 def _set_mode(the_mode: ForegroundMode) -> None:

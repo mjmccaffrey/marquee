@@ -2,7 +2,7 @@
 
 from color import Colors
 from executor import Executor
-from lightset_misc import LIGHT_COUNT
+from lightset_config import LIGHT_COUNT
 from modes import *
 from specialparams import ChannelParams, EmulateParams, MirrorParams
 

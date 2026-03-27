@@ -8,7 +8,7 @@ from typing import ClassVar
 from color import Color, Colors, RGB
 from .gamemode import Character, Entity, GameMode, Maze, Square
 
-log = logging.getLogger('marquee.pacman_assets')
+log = logging.getLogger('marquee.' + __name__)
 
 PACMAN_BIT = "PACMAN_BIT"
 

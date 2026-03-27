@@ -6,7 +6,7 @@ import threading
 
 from .devices_misc import ButtonInterface, ButtonPhysicallyPressed
 
-log = logging.getLogger('marquee.button')
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass

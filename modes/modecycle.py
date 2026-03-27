@@ -8,7 +8,7 @@ from devices.devices_misc import ButtonInterface
 from .backgroundmode import BackgroundMode
 from .modes_misc import CycleEntry, CycleSequence
 
-log = logging.getLogger('marquee.modecycle')
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(kw_only=True)

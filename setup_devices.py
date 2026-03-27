@@ -11,7 +11,7 @@ from devices.hue import HueBridge
 from devices.shelly import ShellyController, ShellyProDimmer1PM
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
-from lightset_misc import LIGHT_TO_RELAY, TOP_TO_RELAY, CLICK_TO_RELAY
+from lightset_config import LIGHT_TO_RELAY, TOP_TO_RELAY, CLICK_TO_RELAY
 from devices.relays import NumatoRL160001, NumatoSSR80001
 
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
@@ -44,7 +44,6 @@ def setup_devices(
     speed_factor: float,
 ) -> tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet, ClickSet]:
     """Create and return objects for all physical devices."""
-
     bell_relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
     bells = BellSet(relays=bell_relays.create_client(
         {i: i for i in range(bell_relays.relay_count)})

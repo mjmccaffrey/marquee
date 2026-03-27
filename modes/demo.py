@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import sys
 import time
 
-from lightset_misc import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
+from lightset_config import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
 from modes.musicmode import MusicMode
 from music import (
     dimmer, dimmer_sequence, light, measure, part, play,

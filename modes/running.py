@@ -9,7 +9,7 @@ from devices.lightcontroller import LightChannel, ChannelUpdate
 from .gamemode import Character, EntityGroup, GameMode, Maze
 from .pacman_assets import maze_12
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.' + __name__)
 
 class Dot(Character, ABC):
     """"""

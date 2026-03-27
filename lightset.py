@@ -8,8 +8,8 @@ from typing import cast
 
 from devices import rgbxy
 
-from devices.bulb import SmartBulb
 from color import Color, Colors, RGB
+from devices.bulb import SmartBulb
 from devices.lightcontroller import ChannelUpdate, LightController
 from devices.relays import RelayClient
 from specialparams import ChannelParams, MirrorParams, SpecialParams

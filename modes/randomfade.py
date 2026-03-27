@@ -5,7 +5,7 @@ from functools import partial
 import random
 
 from color import XY
-from lightset_misc import ALL_ON
+from lightset_config import ALL_ON
 from .performancemode import PerformanceMode
 
 

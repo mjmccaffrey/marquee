@@ -10,7 +10,7 @@ from .performancemode import PerformanceMode
 from music import Measure, play, Section
 from music.music_interface import set_mode
 
-log = logging.getLogger('marquee.musicmode')
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass

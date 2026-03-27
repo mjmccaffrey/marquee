@@ -11,7 +11,7 @@ import requests
 from .bulb import Bulb
 from color import Color
 
-log = logging.getLogger('marquee.lightcontroller')
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(kw_only=True, repr=False)

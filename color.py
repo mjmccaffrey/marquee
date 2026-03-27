@@ -8,7 +8,7 @@ from typing import TypedDict
 
 from devices import rgbxy
 
-log = logging.getLogger('marquee.color')
+log = logging.getLogger('marquee.' + __name__)
 
 
 class Color(ABC):

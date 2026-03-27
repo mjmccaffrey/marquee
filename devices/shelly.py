@@ -17,7 +17,7 @@ from .lightcontroller import (
     ChannelUpdate, ChannelCommand, LightController, LightChannel,
 )
 
-log = logging.getLogger('marquee.shelly')
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(kw_only=True)

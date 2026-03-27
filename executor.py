@@ -2,13 +2,11 @@
 
 from collections.abc import Callable
 import logging
-import signal
 import time
 from typing import Any, Protocol
 
 from color import ColorSets
 from devices.buttonset import ButtonSet
-from event import Shutdown, SigTerm
 from instruments import BellSet, DrumSet
 from lightset import ClickSet, LightSet
 from modes.basemode import BaseMode
@@ -101,19 +99,13 @@ class Executor:
         """Effect the command-line specified command, mode or pattern(s).
            Return True if system shutdown requested, else False."""
         shutdown = False
-        signal.signal(signal.SIGTERM, self.sigterm_received)
         devices = self.setup_devices(brightness_factor, speed_factor)
         (self.bells, self.buttons, self.drums, 
          self.lights, self.top, self.clicker) = devices
         if command is not None:
             self.execute_command(command)
         elif mode_index is not None:
-            try:
-                self.execute_mode(mode_index, speed_factor)
-            except Shutdown:
-                shutdown = True
-            except SigTerm:
-                pass
+            shutdown = self.execute_mode(mode_index, speed_factor)
         else:
             self.execute_pattern(light_pattern, brightness_pattern)
         return shutdown
@@ -122,8 +114,9 @@ class Executor:
         """Effects the command-line specified command."""
         self.commands[command]()
 
-    def execute_mode(self, mode_index: int, speed_factor: float) -> None:
-        """Effects the command-line specified mode."""
+    def execute_mode(self, mode_index: int, speed_factor: float) -> bool:
+        """Launches Player with the command-line specified mode.
+           Returns the Player's exit / shutdown return value."""
         self.player: Player = self.create_player(
             self.modes, 
             self.mode_ids,
@@ -136,7 +129,7 @@ class Executor:
             self.clicker,
             speed_factor,
         )
-        self.player.execute(mode_index)
+        return self.player.execute(mode_index)
 
     def execute_pattern(
         self, 
@@ -165,13 +158,8 @@ class Executor:
         """Turn off all relays and potentially other devices."""
         for d in (self.bells, self.drums, self.lights):
             d.relays.set_state_of_devices('0' * d.relays.count)
-        log.info("Marquee hardware is now partially shut down.")
+        log.info("Marquee hardware is now partially powered off.")
         log.info('')
-
-    def sigterm_received(self, signal_number, stack_frame) -> None:
-        """Callback for SIGTERM received."""
-        log.info(f"SIGTERM received.")
-        raise SigTerm
 
 
 class SetupDevices(Protocol):

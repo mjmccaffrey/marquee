@@ -10,7 +10,7 @@ from devices.devices_misc import ButtonSet
 from devices.shelly import ShellyController, ShellyProDimmer2PM
 from instruments import BellSet, DrumSet
 from lightset import LightSet
-from lightset_misc import ALL_RELAYS, TOP_TO_RELAY
+from lightset_config import ALL_RELAYS, TOP_TO_RELAY
 from devices.relays import NumatoRL160001, NumatoSSR80001
 
 SHELLY_IP_ADDRESSES = [

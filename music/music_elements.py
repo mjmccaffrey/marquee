@@ -16,7 +16,7 @@ from modes.foregroundmode import ForegroundMode
 from specialparams import SpecialParams
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('marquee.' + __name__)
 mode: ForegroundMode
 
 

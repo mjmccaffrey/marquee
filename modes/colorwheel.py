@@ -5,7 +5,7 @@ import logging
 
 from .performancemode import PerformanceMode
 
-log = logging.getLogger('marquee.colorwheel')
+log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(kw_only=True)
