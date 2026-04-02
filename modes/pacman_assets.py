@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import logging
 from typing import ClassVar
 
-from color import Color, Colors, RGB
+from devices.color import Color, Colors, RGB
 from .gamemode import Character, Entity, GameMode, Maze, Square
 
 log = logging.getLogger('marquee.' + __name__)

@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - setup_devices"""
+"""Marquee Lighted Sign Project - define_devices"""
 
 from dataclasses import dataclass, field
 

@@ -9,7 +9,7 @@ from typing import ClassVar
 import requests
 
 from .bulb import Bulb
-from color import Color
+from .color import Color
 
 log = logging.getLogger('marquee.' + __name__)
 

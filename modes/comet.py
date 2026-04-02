@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from itertools import cycle, repeat
 import logging
 
-from color import Color
+from devices.color import Color
 from .performancemode import PerformanceMode
             
 log = logging.getLogger('marquee.' + __name__)

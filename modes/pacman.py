@@ -3,7 +3,7 @@
 from dataclasses import dataclass, field
 import logging
 
-from color import Colors, RGB
+from devices.color import Colors, RGB
 from .gamemode import Entity, EntityGroup, GameMode, Maze
 from .pacman_assets import (
     Dot, PACMAN_BIT, Ghost, PacMan, Pinky, Blinky, maze_12

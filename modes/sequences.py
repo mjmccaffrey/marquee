@@ -4,7 +4,7 @@ from collections.abc import Iterator, Sequence
 import itertools
 import random
 
-from lightset_config import (
+from device_defs import (
     ALL_OFF, ALL_ON, LIGHT_COUNT, 
     LIGHTS_BY_COL, LIGHTS_BY_ROW, LIGHTS_BY_SIDE, LIGHTS_CLOCKWISE, 
 )

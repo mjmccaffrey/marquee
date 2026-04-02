@@ -12,7 +12,7 @@ from .music_implementation import (
     _dimmer, _dimmer_sequence, _dimmer_sequence_flip, _light, _set_mode,
     expand_sequence_measures, play_measures, prepare_parts, validate_measures
 )
-from specialparams import SpecialParams
+from devices.specialparams import SpecialParams
 
 log = logging.getLogger('marquee.' + __name__)
 

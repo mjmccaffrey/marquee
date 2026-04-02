@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import logging
 from typing import ClassVar, TypeVar
 
-from color import Color
+from devices.color import Color
 from devices.lightcontroller import LightChannel, ChannelUpdate
 from .performancemode import PerformanceMode
 

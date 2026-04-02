@@ -5,15 +5,15 @@ import logging
 import time
 from typing import Any, Protocol
 
-from color import ColorSets
+from device_defs import DeviceSet
 from devices.buttonset import ButtonSet
-from instruments import BellSet, DrumSet
-from lightset import ClickSet, LightSet
+from devices.color import ColorSets
+from devices.specialparams import SpecialParams
+from instruments import BellSet, ClickSet, DrumSet, LightSet
 from modes.basemode import BaseMode
 from modes.modes_misc import ModeDefinition
 from modes.sequencemode import SequenceMode
 from player import Player
-from specialparams import SpecialParams
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -24,13 +24,13 @@ class Executor:
        to a Player object."""
 
     def __init__(
-            self,
-            create_player: Callable[..., Player],
-            setup_devices: 'SetupDevices',
-        ) -> None:
+        self,
+        create_player: Callable[..., Player],
+        define_devices: 'SetupDevices',
+    ) -> None:
         """Init the (single) executor."""
         self.create_player = create_player
-        self.setup_devices = setup_devices
+        self.define_devices = define_devices
         self.mode_ids: dict[str, int] = {}
         self.mode_menu: list[tuple[int, str]] = []
         self.modes: dict[int, ModeDefinition] = {}
@@ -46,12 +46,12 @@ class Executor:
         log.info(f"Executor {self} closed. - !!! close devices")
 
     def add_mode(
-            self, 
-            name: str,
-            cls: type[BaseMode],
-            index: int | None = None,
-            hidden: bool = False,
-            **kwargs,
+        self, 
+        name: str,
+        cls: type[BaseMode],
+        index: int | None = None,
+        hidden: bool = False,
+        **kwargs,
     ) -> None:
         """Register the mode IDs and everything needed to create an instance."""
         assert name not in self.mode_ids, "Duplicate mode name"
@@ -64,16 +64,16 @@ class Executor:
         self.modes[index] = ModeDefinition(index, name, cls, kwargs)
 
     def add_sequence_mode(
-            self,
-            name: str, 
-            sequence: Callable,
-            sequence_kwargs: dict[str, Any] = {},
-            delay: tuple[float, ...] | float | None = None,
-            index: int | None = None,
-            hidden: bool = False,
-            special: SpecialParams | None = None,
-            **kwargs,
-        ) -> None:
+        self,
+        name: str, 
+        sequence: Callable,
+        sequence_kwargs: dict[str, Any] = {},
+        delay: tuple[float, ...] | float | None = None,
+        index: int | None = None,
+        hidden: bool = False,
+        special: SpecialParams | None = None,
+        **kwargs,
+    ) -> None:
         """Create a Mode object from a sequence and parameters, and register it."""
         self.add_mode(
             name=name, 
@@ -88,18 +88,18 @@ class Executor:
         )
 
     def execute(
-            self, 
-            brightness_factor: float = 1.0,  # Must default; only
-            speed_factor: float = 1.0,       # provided with mode.
-            command: str | None = None, 
-            mode_index: int | None = None, 
-            light_pattern: str | None = None, 
-            brightness_pattern: str | None = None,
-        ) -> bool:
+        self, 
+        brightness_factor: float = 1.0,  # Must default; only
+        speed_factor: float = 1.0,       # provided with mode.
+        command: str | None = None, 
+        mode_index: int | None = None, 
+        light_pattern: str | None = None, 
+        brightness_pattern: str | None = None,
+    ) -> bool:
         """Effect the command-line specified command, mode or pattern(s).
            Return True if system shutdown requested, else False."""
         shutdown = False
-        devices = self.setup_devices(brightness_factor, speed_factor)
+        devices = self.define_devices(brightness_factor, speed_factor)
         (self.bells, self.buttons, self.drums, 
          self.lights, self.top, self.clicker) = devices
         if command is not None:
@@ -168,6 +168,6 @@ class SetupDevices(Protocol):
         self,
         brightness_factor: float,
         speed_factor: float,
-     ) -> tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet, ClickSet]:
+    ) -> DeviceSet:
         ...
 

@@ -11,7 +11,7 @@ from typing import ClassVar
 import requests
 import urllib3
 
-from color import Color, XY
+from .color import Color, XY
 from .bulb import HueBulb
 from .lightcontroller import (
     ChannelUpdate, ChannelCommand, LightController, LightChannel,

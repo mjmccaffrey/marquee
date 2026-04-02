@@ -6,9 +6,9 @@ import logging
 
 from devices.buttonset import ButtonSet
 from instruments import BellSet, DrumSet
-from lightset import ClickSet, LightSet
+from instruments import ClickSet, LightSet
 from .basemode import BaseMode
-from specialparams import SpecialParams
+from devices.specialparams import SpecialParams
 
 log = logging.getLogger('marquee.' + __name__)
 

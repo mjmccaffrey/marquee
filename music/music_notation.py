@@ -10,7 +10,7 @@ from .music_elements import (
     Measure, Part, Rest, Sequence, SequenceMeasure,
 )
 from .music_interface import light, part
-from specialparams import SpecialParams
+from devices.specialparams import SpecialParams
 
 log = logging.getLogger('marquee.' + __name__)
 

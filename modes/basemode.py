@@ -8,7 +8,7 @@ import sys
 import time
 from typing import NoReturn, Self
 
-from color import ColorSets
+from devices.color import ColorSets
 from devices.devices_misc import ButtonInterface
 from event import EventSystem
 from task import Task, TaskSchedule

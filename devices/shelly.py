@@ -11,8 +11,8 @@ from typing import ClassVar
 import aiohttp
 import requests
 
-from color import Color
 from .bulb import DimBulb
+from .color import Color
 from .lightcontroller import (
     ChannelUpdate, ChannelCommand, LightController, LightChannel,
 )

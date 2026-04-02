@@ -3,20 +3,30 @@
 marquee
     Executor
     Player
-        BellSet
+        Event
+        Task
         ButtonSet
             Button
-        DrumSet
+    devices
+        LightController
+            HueBridge
+            ShellyController
+        LightChannel
+            HueChannel
+            ShellyChannel
+        RelayClient
+            RelayModule
+                NumatoUSBRelayModule
+    instruments
         LightSet
-            LightController
-                HueBridge
-                ShellyController
-            LightChannel
-                HueChannel
-                ShellyChannel
-            RelayClient
-                RelayModule
-                    NumatoUSBRelayModule
+        ActionInstrument
+        RelayInstrument
+            BellSet
+            DrumSet
+        Releaseable Instrument
+            BellSet
+        RestInstrument
+    modes
         BaseMode
             BackgroundMode
             ForegroundMode
@@ -25,14 +35,7 @@ marquee
                     GameMode
                     MusicMode
                     SequenceMode
-        Instrument
-            ActionInstrument
-            RelayInstrument
-                BellSet
-                DrumSet
-            Releaseable Instrument
-                BellSet
-            RestInstrument
+    music
         Section
             Part
                 Measure
@@ -52,12 +55,12 @@ import sys
 from argument import display_help, process_arguments
 from executor import Executor
 from player import Player
-from setup_devices import setup_devices
-from setup_modes import setup_modes
+from device_defs import define_devices
+from mode_defs import define_modes
 
 
 def setup_logging() -> None:
-    """"""
+    """Setup logging."""
     global log
     log = logging.getLogger('marquee')
     log.setLevel(logging.DEBUG)
@@ -74,15 +77,15 @@ def setup_logging() -> None:
 
 def main() -> int:
     """Execute Marquee application."""
-    result = 1
     try:
         setup_logging()
-        exec = Executor(Player, setup_devices)
-        setup_modes(exec)
+        exec = Executor(Player, define_devices)
+        define_modes(exec)
         try:
             args = process_arguments(exec.mode_ids, exec.commands)
         except ValueError:
             display_help(exec.mode_menu, exec.commands)
+            result = 2
         else:
             shutdown = exec.execute(**args)
             result = 3 if shutdown else 0
@@ -93,7 +96,7 @@ def main() -> int:
             pass
     match result:
         case 0: log.error("Exiting without shutdown.")
-        case 1: log.error("Unexpected error occurred.")
+        case 2: pass
         case 3: log.error("Exiting with shutdown.")
     return result
 

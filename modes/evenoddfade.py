@@ -5,7 +5,7 @@ from functools import partial
 
 from .performancemode import PerformanceMode
 from .sequences import opposite
-from specialparams import ChannelParams
+from devices.specialparams import ChannelParams
             
 
 @dataclass(kw_only=True)

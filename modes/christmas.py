@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - signs_song"""
 
-from lightset_config import ALL_OFF, ALL_LOW, ALL_ON
+from device_defs import ALL_OFF, ALL_LOW, ALL_ON
 from .musicmode import MusicMode
 from .sequences import all_on, blink_all, random_each
 from music import (
@@ -8,7 +8,7 @@ from music import (
     act_part, bell_part, drum_part, sequence_part,
     dimmer_sequence_flip, section, Section, sequence,
 )
-from specialparams import ActionParams, ChannelParams
+from devices.specialparams import ActionParams, ChannelParams
 
 
 class ChristmasSongs(MusicMode):

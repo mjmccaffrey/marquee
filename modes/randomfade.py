@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from functools import partial
 import random
 
-from color import XY
-from lightset_config import ALL_ON
+from device_defs import ALL_ON
+from devices.color import XY
 from .performancemode import PerformanceMode
 
 

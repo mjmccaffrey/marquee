@@ -7,7 +7,7 @@ from collections.abc import Callable
 import logging
 from typing import Any, NoReturn
 
-from lightset_config import LIGHT_COUNT
+from device_defs import LIGHT_COUNT
 
 log = logging.getLogger('marquee.' + __name__)
 

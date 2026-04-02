@@ -13,7 +13,7 @@ from .music_elements import (
     ActionNote, BaseNote, Element, Measure, NoteGroup,
     Part, Rest, SequenceMeasure,
 )
-from specialparams import (
+from devices.specialparams import (
     ActionParams, SpecialParams,
 )
 

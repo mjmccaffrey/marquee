@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import sys
 import time
 
-from lightset_config import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
+from device_defs import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
 from modes.musicmode import MusicMode
 from music import (
     dimmer, dimmer_sequence, light, measure, part, play,
@@ -15,7 +15,7 @@ from music import(
     rest, sequence_measure, sequence_part
 )
 from .sequences import *
-from specialparams import ActionParams, ChannelParams
+from devices.specialparams import ActionParams, ChannelParams
 
 
 @dataclass

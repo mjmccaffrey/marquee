@@ -5,16 +5,16 @@ import json
 from pathlib import Path
 from typing import cast
 
-from color import Color, ColorSets
-from lightset import LightSet
+from devices.color import Color, ColorSets
+from instruments import LightSet
 from devices.hue import HueBridge
-from setup_devices import setup_devices
+from device_defs import define_devices
 
 
 def setup():
     global bells, buttons, drums, lights, top, clicker
 
-    bells, buttons, drums, lights, top, clicker = setup_devices(1.0, 1.0)
+    bells, buttons, drums, lights, top, clicker = define_devices(1.0, 1.0)
 
 
 def ppp(p: Sequence) -> None:

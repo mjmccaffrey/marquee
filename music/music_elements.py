@@ -13,7 +13,7 @@ from instruments import (
     ReleaseableInstrument, RestInstrument,
 )
 from modes.foregroundmode import ForegroundMode
-from specialparams import SpecialParams
+from devices.specialparams import SpecialParams
 
 
 log = logging.getLogger('marquee.' + __name__)

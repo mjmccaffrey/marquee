@@ -8,7 +8,7 @@ import logging
 from typing import Any, Iterable
 
 from .performancemode import PerformanceMode
-from specialparams import ActionParams, EmulateParams
+from devices.specialparams import ActionParams, EmulateParams
 
 log = logging.getLogger('marquee.' + __name__)
 

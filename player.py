@@ -5,12 +5,12 @@ import logging
 import signal
 from typing import Any, NoReturn
 
-from color import ColorSets
+from devices.color import ColorSets
 from devices.devices_misc import ButtonInterface, ButtonPressed
 from devices.buttonset import ButtonSet
 from event import EventSystem
 from instruments import BellSet, DrumSet
-from lightset import ClickSet, LightSet
+from instruments import ClickSet, LightSet
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
 from modes.modes_misc import ChangeMode, ModeDefinition
@@ -29,7 +29,7 @@ class Player:
     buttons: ButtonSet
     drums: DrumSet
     lights: LightSet
-    top: LightSet
+    top: LightSet | None
     clicker: ClickSet
     speed_factor: float
     pace: float = field(init=False)
@@ -102,7 +102,7 @@ class Player:
     def effect_new_active_mode(self, mode_index: int) -> BackgroundMode | ForegroundMode:
         """"""
 
-        # If there is an active mode and it is of type ForeGround, 
+        # If there is an active mode and it is of type ForegroundMode, 
         # clean it up.
         # Note: After startup, there is always an active mode.
         if isinstance(self.active_mode, ForegroundMode):
@@ -126,7 +126,7 @@ class Player:
 
     def execute(self, starting_mode_index: int) -> bool:
         """Play the specified starting mode and all subsequent modes.
-           Return whether to shut down the system."""
+           Return whether to shut down the system, or just exit."""
         new_mode_index: int | None = starting_mode_index
         while True:
             try:
@@ -155,8 +155,11 @@ class Player:
            of button action. Return active mode's response."""
         for mode in self.live_bg_modes.values():
             mode.button_action(button)
-        assert self.active_mode is not None
-        return self.active_mode.button_action(button)
+        return (
+            self.active_mode.button_action(button)
+            if isinstance(self.active_mode, ForegroundMode) else
+            None
+        )
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""
