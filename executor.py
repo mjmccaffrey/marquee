@@ -6,10 +6,8 @@ import time
 from typing import Any, Protocol
 
 from device_defs import DeviceSet
-from devices.buttonset import ButtonSet
 from devices.color import ColorSets
 from devices.specialparams import SpecialParams
-from instruments import BellSet, ClickSet, DrumSet, LightSet
 from modes.basemode import BaseMode
 from modes.modes_misc import ModeDefinition
 from modes.sequencemode import SequenceMode
