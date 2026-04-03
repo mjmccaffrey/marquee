@@ -56,16 +56,18 @@ def cleanup(exec: Executor) -> None:
 
 def main() -> int:
     """Execute Marquee application."""
+    result = 1
     try:
         exec = setup()
         result = execute(exec)
     finally:
         cleanup(exec)
-    match result:
-        case 0: log.error("Exiting without shutdown.")
-        case 2: log.error("Invalid arguments.")
-        case 3: log.error("Exiting with shutdown.")
-    return result
+        match result:
+            case 0: log.error("Exiting without shutdown.")
+            case 1: log.error("Exiting with unexpected error.")
+            case 2: log.error("Invalid arguments.")
+            case 3: log.error("Exiting with shutdown.")
+        return result
 
 
 if __name__ == "__main__":

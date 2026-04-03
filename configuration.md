@@ -29,8 +29,6 @@ Marquee Lighted Sign Project - configuration
         * 192.168.64.115
     * Shelly ProDimmer2PM A0DD6C9F72D0| 1.4.4| 679fcca9
         * 192.168.64.116
-    * Hue Bridge
-        * 192.168.64.121
     * Hue Bridge Pro
         * 192.168.64.130
     * DHCP Pool
@@ -42,7 +40,7 @@ SUBSYSTEM=="tty", ATTRS{serial}=="NLRL260501R0296", SYMLINK+="marquee_drums"
 SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250409R0868", SYMLINK+="marquee_bells"
 * **Dependencies**
     * pip install aiohttp --break-system-packages
-* **Bells**
+* **Bell Physical Layout**
 * * >   c   d   e
 * * >   b   a   G
 * * >   D   E

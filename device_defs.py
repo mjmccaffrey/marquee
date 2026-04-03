@@ -50,6 +50,40 @@ SHELLY_IP_ADDRESSES = [
     '192.168.64.116',
 ]
 
+
+def buttons() -> ButtonSet:
+    """"""
+    return ButtonSet(
+        body_back = Button(
+            "body_back",
+            _Button(pin=26, bounce_time=0.10, hold_time=10), 
+            support_hold=True,
+            signal_number=signal.SIGUSR1,  # type: ignore
+        ),
+        corded = Button(
+            'corded',
+            _Button(pin=11, bounce_time=0.05),
+        ),
+        remote_a = Button(
+            "remote_a",
+            _Button(pin=19, pull_up=False, bounce_time=0.10)
+
+        ),
+        remote_b = Button(
+            "remote_b",
+            _Button(pin=13, pull_up=False, bounce_time=0.10)
+        ),
+        remote_c = Button(
+            "remote_c",
+            _Button(pin=6, pull_up=False, bounce_time=0.10)
+        ),
+        remote_d = Button(
+            "remote_d",
+            _Button(pin=5, pull_up=False, bounce_time=0.10)
+        ),
+    )
+
+
 def define_devices_hue_shelly(
     brightness_factor: float,
     speed_factor: float,
@@ -100,42 +134,14 @@ def define_devices_hue_shelly(
     clicker = ClickSet(
         relays=light_relays.create_client(CLICK_TO_RELAY),
     )
-    buttons = ButtonSet(
-        body_back = Button(
-            "body_back",
-            _Button(pin=26, bounce_time=0.10, hold_time=10), 
-            support_hold=True,
-            signal_number=signal.SIGUSR1,  # type: ignore
-        ),
-        corded = Button(
-            'corded',
-            _Button(pin=11, bounce_time=0.05),
-        ),
-        remote_a = Button(
-            "remote_a",
-            _Button(pin=19, pull_up=False, bounce_time=0.10)
-
-        ),
-        remote_b = Button(
-            "remote_b",
-            _Button(pin=13, pull_up=False, bounce_time=0.10)
-        ),
-        remote_c = Button(
-            "remote_c",
-            _Button(pin=6, pull_up=False, bounce_time=0.10)
-        ),
-        remote_d = Button(
-            "remote_d",
-            _Button(pin=5, pull_up=False, bounce_time=0.10)
-        ),
-    )
     # joystick = Joystick(
     #     north=_Button(pin=13, pull_up=False, bounce_time=0.10),
     #     south=_Button(pin=19, pull_up=False, bounce_time=0.10),
     #     east=_Button(pin=26, pull_up=False, bounce_time=0.10),
     #     west=_Button(pin=5, pull_up=False, bounce_time=0.10),
     # )
-    return bells, buttons, drums, lights, top, clicker
+    return bells, buttons(), drums, lights, top, clicker
+
 
 def define_devices_shelly(
     brightness_factor: float,
@@ -175,31 +181,8 @@ def define_devices_shelly(
     clicker = ClickSet(
         relays=light_relays.create_client(CLICK_TO_RELAY),
     )
-    buttons = ButtonSet(
-        body_back = Button(
-            "body_back",
-            _Button(pin=26, bounce_time=0.10, hold_time=10), 
-            support_hold=True,
-            signal_number=signal.SIGUSR1,  # type: ignore
-        ),
-        remote_a = Button(
-            "remote_a",
-            _Button(pin=19, pull_up=False, bounce_time=0.10)
-        ),
-        remote_b = Button(
-            "remote_b",
-            _Button(pin=13, pull_up=False, bounce_time=0.10)
-        ),
-        remote_c = Button(
-            "remote_c",
-            _Button(pin=6, pull_up=False, bounce_time=0.10)
-        ),
-        remote_d = Button(
-            "remote_d",
-            _Button(pin=5, pull_up=False, bounce_time=0.10)
-        ),
-    )
-    return bells, buttons, drums, lights, top, clicker
+    return bells, buttons(), drums, lights, top, clicker
+
 
 define_devices = define_devices_hue_shelly
 """Create and return objects for all physical devices."""
