@@ -27,8 +27,8 @@ class ColorSetCycle(PerformanceMode):
                 delta=d,
             )
         )
-        self.entry_index = self.direction * -1
         super().__post_init__()
+        self.entry_index = self.direction * -1
 
     def expand_sequence(
         self, 
