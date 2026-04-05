@@ -64,7 +64,9 @@ def main() -> int:
         cleanup(exec)
         match result:
             case 0: log.error("Exiting without shutdown.")
-            case 1: log.error("Exiting with unexpected error.")
+            case 1: 
+                log.error("Exiting with unexpected error.")
+                raise
             case 2: log.error("Invalid arguments.")
             case 3: log.error("Exiting with shutdown.")
         return result
