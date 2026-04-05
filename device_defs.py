@@ -60,9 +60,13 @@ def buttons() -> ButtonSet:
             support_hold=True,
             signal_number=signal.SIGUSR1,  # type: ignore
         ),
-        corded = Button(
+        corded_a = Button(
             'corded',
-            _Button(pin=11, bounce_time=0.05),
+            _Button(pin=12, bounce_time=0.05),
+        ),
+        corded_b = Button(
+            'corded',
+            _Button(pin=16, bounce_time=0.05),
         ),
         remote_a = Button(
             "remote_a",
