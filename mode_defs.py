@@ -48,8 +48,9 @@ def register_channel_modes(exec: Executor):
             # ("cancun", 1),
             # ("race", 1),
             # ("amber_bloom", 1),
-            ("ALL", 5)
+            ("ALL", 10)
         ],
+        reset_lights = False,
         # transition=0.0,
     )
     exec.add_mode("twelve", Twelve)
