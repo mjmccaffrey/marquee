@@ -73,6 +73,7 @@ class ColorSetCycle(PerformanceMode):
 
     def execute(self):
         """Automatic change to next set."""
+        print("EXECUTE")
         self.entry_index += self.direction
         self.show_color_set()
 
