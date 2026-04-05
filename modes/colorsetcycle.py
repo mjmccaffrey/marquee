@@ -18,16 +18,16 @@ class ColorSetCycle(PerformanceMode):
 
     def __post_init__(self, sequence: CycleSequence) -> None:
         """Initialize."""
-        self.expanded = self.expand_sequence(sequence)
+        self.entries = self.expand_sequence(sequence)
         self.wrap_index = lambda d: (
             self.wrap_value(
                 lower=0, 
-                upper=len(self.expanded) - 1, 
-                current=self.index,
+                upper=len(self.entries) - 1, 
+                current=self.entry_index,
                 delta=d,
             )
         )
-        self.index = 0
+        self.entry_index = 0
 
     def expand_sequence(
         self, 
@@ -68,22 +68,22 @@ class ColorSetCycle(PerformanceMode):
     def manual_change(self, delta: int):
         """"""
         self.tasks.delete_owned_by(self)
-        self.index = self.wrap_index(delta)
+        self.entry_index = self.wrap_index(delta)
         self.show_color_set()
 
     def execute(self):
         """Automatic change to next set."""
-        self.index += self.direction
+        self.entry_index += self.direction
         self.show_color_set()
 
     def show_color_set(self):
         """Show color set. Schedule next set."""
-        entry = self.expanded[self.index]
+        entry = self.entries[self.entry_index]
         cs = self.color_sets.by_set_name[entry.name]
         log.info(
             f"Displaying color set {cs.group}.{cs.name} "
             f"for {entry.seconds} seconds "
-            f"({self.index + 1} / {len(self.expanded)})."
+            f"({self.entry_index + 1} / {len(self.entries)})."
         )
         self.lights.set_channels(transition=self.transition, **cs.set_channels_kwargs)
         self.schedule(due=entry.seconds)
