@@ -27,7 +27,7 @@ class ColorSetCycle(PerformanceMode):
                 delta=d,
             )
         )
-        self.entry_index = 0
+        self.entry_index = self.direction * -1
         super().__post_init__()
 
     def expand_sequence(
@@ -74,7 +74,6 @@ class ColorSetCycle(PerformanceMode):
 
     def execute(self):
         """Automatic change to next set."""
-        print("EXECUTE")
         self.entry_index = self.wrap_index(self.direction)
         self.show_color_set()
 
