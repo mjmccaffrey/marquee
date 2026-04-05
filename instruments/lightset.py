@@ -55,7 +55,7 @@ class LightSet:
             [i for i in range(self.count) if not i % 2]
             # [i for i in range(self.count)]
         )
-        log.info(self.update_sequence)
+        # log.info(self.update_sequence)
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
         self.bulb_adjustments = self.controller.bulb_model.adjustments

@@ -13,7 +13,8 @@ log = logging.getLogger('marquee.' + __name__)
 class ButtonSet:
     """Every button."""
     body_back: ButtonInterface
-    corded: ButtonInterface
+    corded_a: ButtonInterface
+    corded_b: ButtonInterface
     remote_a: ButtonInterface
     remote_b: ButtonInterface
     remote_c: ButtonInterface
