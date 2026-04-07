@@ -45,6 +45,25 @@ SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250409R0868", SYMLINK+="marquee_bells"
 * * >   b   a   G
 * * >   D   E
 
+**GPIO Pins**
+* Back button
+* * GND
+* * 26
+* Corded button A
+* * 12
+* Corded button B
+* * 16
+* Remote button A
+* * 19
+* Remote button B
+* * 13
+* Remote button C
+* * 6
+* Remote button D
+* * 5
+
+* RS-232
+
 _
 * **Auto Start**
 * /etc/systemd/system/marquee.service

@@ -245,6 +245,7 @@ def register_silent_modes(exec: Executor) -> None:
     exec.add_mode("random_bright_fixed_trans", RandomFade, transition=0.5)
     exec.add_mode("random_bright_fixed_dur", RandomFade, duration=5.0)
     exec.add_mode("random_random_random", RandomFade)
+    exec.add_mode("narcissa_random_random", RandomFade, color_set_name='narcissa')
 
 
 def register_test_modes(exec: Executor) -> None:

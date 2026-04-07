@@ -17,6 +17,7 @@ class RandomFade(PerformanceMode):
        specified duration."""
     transition: float | None = None
     duration: float | None = None
+    color_set_name: str | None = None
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -54,7 +55,13 @@ class RandomFade(PerformanceMode):
 
     def new_color(self) -> XY:
         """Return random color."""
-        return self.lights.colors.random()
+        if self.color_set_name is None:
+            new = self.lights.colors.random()
+        else:
+            color_set = self.color_sets.by_set_name[self.color_set_name]
+            choice = random.choice(color_set.colors)
+            new = XY(choice.x, choice.y)
+        return new
 
     def update_light(self, index: int):
         """Update light to random / specified values.

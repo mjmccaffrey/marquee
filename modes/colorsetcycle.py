@@ -19,14 +19,6 @@ class ColorSetCycle(PerformanceMode):
     def __post_init__(self, sequence: CycleSequence) -> None:
         """Initialize."""
         self.entries = self.expand_sequence(sequence)
-        self.wrap_index = lambda d: (
-            self.wrap_value(
-                lower=0, 
-                upper=len(self.entries) - 1, 
-                current=self.entry_index,
-                delta=d,
-            )
-        )
         super().__post_init__()
         self.entry_index = -self.direction
 
@@ -57,24 +49,23 @@ class ColorSetCycle(PerformanceMode):
         return cs_sequence
 
     def button_action(self, button: ButtonInterface) -> int | None:
-        """Respond to button being pressed.
-           Return index of new mode, if any."""
-        if button == self.buttons.corded_a:
-            self.manual_change(+1)
-        elif button == self.buttons.corded_b:
-            self.manual_change(-1)
+        """If direction button pushed, change displayed color set.
+           Otherwise, call parent's button handler."""
+        direction_buttons = {
+            self.buttons.corded_a: +1,
+            self.buttons.corded_b: -1,
+        }
+        if button in direction_buttons:
+            self.clicker.click()
+            self.tasks.delete_owned_by(self)
+            self.entry_index = self.wrap_entry_index(direction_buttons[button])
+            self.show_color_set()
         else:
             return super().button_action(button)
 
-    def manual_change(self, delta: int):
-        """"""
-        self.tasks.delete_owned_by(self)
-        self.entry_index = self.wrap_index(delta)
-        self.show_color_set()
-
     def execute(self):
-        """Automatic change to next set."""
-        self.entry_index = self.wrap_index(self.direction)
+        """Timer-invoked change to next color set."""
+        self.entry_index = self.wrap_entry_index(self.direction)
         self.show_color_set()
 
     def show_color_set(self):
@@ -88,4 +79,13 @@ class ColorSetCycle(PerformanceMode):
         )
         self.lights.set_channels(transition=self.transition, **cs.set_channels_kwargs)
         self.schedule(due=entry.seconds)
+
+    def wrap_entry_index(self, delta: int):
+        """"""
+        return self.wrap_value(
+            lower=0, 
+            upper=len(self.entries) - 1, 
+            current=self.entry_index,
+            delta=delta,
+        )
 

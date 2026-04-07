@@ -33,11 +33,20 @@ class PerformanceMode(ForegroundMode, ABC):
                 new_mode = ModeIndex.BRIGHTNESS_SELECT
             case b.remote_b:
                 self.clicker.click()
-                new_mode = self.mode_index(self.index, -1)
+                new_mode = self.wrap_mode_index(-1)
             case b.remote_d:
                 self.clicker.click()
-                new_mode = self.mode_index(self.index, +1)
+                new_mode = self.wrap_mode_index(+1)
             case _:
                 raise ValueError("Unrecognized button.")
         return new_mode
-    
+
+    def wrap_mode_index(self, delta: int) -> int:
+        """"""
+        return self.wrap_value(
+            lower=1, 
+            upper=max(self.modes), 
+            current=self.index,
+            delta=delta,
+        )
+

@@ -108,3 +108,19 @@ class BaseMode(ABC):
             _name = name
         push_event()
 
+    @staticmethod
+    def wrap_value(
+        lower: int,
+        upper: int, 
+        current: int, 
+        delta: int,
+    ) -> int:
+        """Return current + delta, wrapping the value
+           within the inclusive range lower..upper."""
+        value = current + delta % (upper - lower + 1)
+        if (dif := value - upper) > 0:
+            value = lower + dif - 1
+        elif (dif := value - lower) < 0:
+            value = upper + dif + 1
+        return value
+
