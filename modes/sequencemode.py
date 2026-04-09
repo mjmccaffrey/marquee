@@ -1,16 +1,35 @@
 """Marquee Lighted Sign Project - sequencemode"""
 
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from functools import partial
 import itertools
 import logging
 from typing import Any, Iterable
 
-from .performancemode import PerformanceMode
+from devices.color import Color, Colors
 from devices.specialparams import ActionParams, EmulateParams
+from .performancemode import PerformanceMode
 
 log = logging.getLogger('marquee.' + __name__)
+
+
+@dataclass
+class LightSetBaseline:
+    """"""
+    relay: bool | None = None
+    brightness: int | None = None
+    color: Color | None = None
+    on: bool | None = None
+    transition: float | None = None
+
+DEFAULT_BASELINE = LightSetBaseline(
+    relay=False,
+    brightness=100,
+    color=Colors.WHITE,
+    on=True,
+    transition=0.0,
+)
 
 
 @dataclass(kw_only=True)
@@ -21,15 +40,25 @@ class SequenceMode(PerformanceMode):
     delay: tuple[float, ...] | float | None = None
     stop: int | None = None
     repeat: bool = True
-    init_lights: bool = True
+    baseline: LightSetBaseline | None = DEFAULT_BASELINE
     sequence_kwargs: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        super().__post_init__()
+        """Initialize."""
+        self.sequence_kwargs = self.replace_kwarg_values(self.sequence_kwargs)
         if self.lights.smart_bulbs and self.special is None:
             log.info("SequenceMode: emulating incandescent.")
             self.special = EmulateParams()
-        self.sequence_kwargs = self.replace_kwarg_values(self.sequence_kwargs)
+        if self.baseline is not None:
+            params = asdict(self.baseline)
+            self.lights.set_relays(params.pop('relay'))
+            self.lights.set_channels(**params)
+            # self.lights.set_channels(
+            #     brightness=bl.brightness,
+            #     color=bl.color,
+            #     on=bl.on,
+            #     transition=bl.transition,
+            # )
 
     def execute(self) -> None:
         """Execute sequence with delay seconds between steps.

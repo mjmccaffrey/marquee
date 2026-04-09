@@ -73,7 +73,6 @@ class SelectMode(ForegroundMode, ABC):
                     pre_delay=0.5,
                     delay=0.25, 
                     repeat=False,
-                    init_lights=False,
                     special=self.special,
                 ),
             ).execute()

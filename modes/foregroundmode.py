@@ -5,10 +5,9 @@ from dataclasses import dataclass
 import logging
 
 from devices.buttonset import ButtonSet
-from instruments import BellSet, DrumSet
-from instruments import ClickSet, LightSet
-from .basemode import BaseMode
 from devices.specialparams import SpecialParams
+from instruments import BellSet, ClickSet, DrumSet, LightSet
+from .basemode import BaseMode
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -24,11 +23,4 @@ class ForegroundMode(BaseMode, ABC):
     clicker: ClickSet
     speed_factor: float
     special: SpecialParams | None = None
-    reset_lights: bool = True
-
-    def __post_init__(self) -> None:
-        """Initialize."""
-        log.info("^^^^^^^^^^^^^^^^ FG MODE RESET ^^^^^^^^^^^^^^")
-        if self.reset_lights:
-            self.lights.reset()
 

@@ -6,7 +6,7 @@ import logging
 from devices.color import Colors, RGB
 from .gamemode import Entity, EntityGroup, GameMode, Maze
 from .pacman_assets import (
-    Dot, PACMAN_BIT, Ghost, PacMan, Pinky, Blinky, maze_12
+    Dot, PACMAN_BITE, Ghost, PacMan, Pinky, Blinky, maze_12
 )
 from devices.lightcontroller import LightChannel, ChannelUpdate
 
@@ -29,13 +29,13 @@ class PacManGame(GameMode):
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.dot_bites_maximum = (self.lights.count - 1) * 2
-        self.events.subscribe(PACMAN_BIT, self.pacman_bit)
+        self.events.subscribe(PACMAN_BITE, self.PACMAN_BITE)
         self.PRE_GAME = self.pre_game
         self.WON_GAME = self.won_game
         self.LOST_GAME = self.lost_game
         self.state = self.PRE_GAME
 
-    def pacman_bit(self, etype: type, coord: int):
+    def PACMAN_BITE(self, etype: type, coord: int):
         """Track remaining. Brighten top bulb."""
         dot = self.board[coord][etype]
         dot.brightness -= 75

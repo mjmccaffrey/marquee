@@ -59,7 +59,6 @@ class LightSet:
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
         self.bulb_adjustments = self.controller.bulb_model.adjustments
-        # self.reset()
 
     def calibrate(self):
         """Calibrate lights, if supported by controller.
@@ -70,17 +69,6 @@ class LightSet:
         self.set_channels(brightness=100, force=True)
         self.controller.calibrate()
 
-    def reset(self):
-        """Set the lights to a baseline state."""
-        log.info("%%%%%%%%%%%%%%%%%% LIGHTSET RESET %%%%%%%%%%%%%%%%%%")
-        self.set_channels(
-            brightness=25,
-            color=self.colors.WHITE,
-            on=False,
-            transition=0,
-        )
-        self.set_relays(True)
-
     def brightnesses(self) -> list[int]:
         """Return each channel's brightness state."""
         return [
@@ -90,7 +78,7 @@ class LightSet:
 
     def set_relays(
             self, 
-            light_pattern: str | Sequence[int | bool] | bool | int,
+            light_pattern: str | Sequence[int | bool] | bool | int | None,
             special: SpecialParams | None = None,
             smart_bulb_override: bool = False,
         ) -> None:
@@ -98,7 +86,7 @@ class LightSet:
            Set light_pattern property, always as string
            rather than list."""
         
-        if (
+        if light_pattern is None or (
             self.smart_bulbs and 
             not smart_bulb_override and 
             special is None

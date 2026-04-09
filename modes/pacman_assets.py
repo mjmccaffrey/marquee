@@ -10,7 +10,7 @@ from .gamemode import Character, Entity, GameMode, Maze, Square
 
 log = logging.getLogger('marquee.' + __name__)
 
-PACMAN_BIT = "PACMAN_BIT"
+PACMAN_BITE = "PACMAN_BITE"
 
 
 @dataclass(kw_only=True, repr=False, eq=True, )
@@ -60,7 +60,7 @@ class PacMan(Character):
 
     def bite_dot(self, coord: int) -> None:
         """"""
-        self.game.events.notify(PACMAN_BIT, etype=Dot, coord=coord)
+        self.game.events.notify(PACMAN_BITE, etype=Dot, coord=coord)
 
 
 @dataclass(kw_only=True, repr=False)

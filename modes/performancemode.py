@@ -15,11 +15,6 @@ log = logging.getLogger('marquee.' + __name__)
 class PerformanceMode(ForegroundMode, ABC):
     """Base for performance modes."""
 
-    def __post_init__(self) -> None:
-        """Initialize."""
-        super().__post_init__()
-        self.direction = +1
-
     def button_action(self, button: ButtonInterface) -> int | None:
         """Respond to button being pressed.
            Return index of new mode, if any."""

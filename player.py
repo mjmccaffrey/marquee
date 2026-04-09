@@ -9,8 +9,7 @@ from devices.color import ColorSets
 from devices.devices_misc import ButtonInterface, ButtonPressed
 from devices.buttonset import ButtonSet
 from event import EventSystem
-from instruments import BellSet, DrumSet
-from instruments import ClickSet, LightSet
+from instruments import BellSet, ClickSet, DrumSet, LightSet
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
 from modes.modes_misc import ChangeMode, ModeDefinition
@@ -19,7 +18,7 @@ from task import TaskSchedule
 log = logging.getLogger('marquee.' + __name__)
 
 
-@dataclass()
+@dataclass
 class Player:
     """Executes one mode at a time. Contains the task queue."""
     modes: dict[int, ModeDefinition]

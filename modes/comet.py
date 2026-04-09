@@ -20,7 +20,7 @@ class Comet(PerformanceMode):
     wheel_divisions: int | None = None
 
     def __post_init__(self) -> None:
-        super().__post_init__()
+        """"""
         assert (self.color is None) ^ (self.wheel_divisions is None)
         self.head = -1
         if self.color is not None:

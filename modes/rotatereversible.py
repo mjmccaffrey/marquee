@@ -16,8 +16,8 @@ class RotateReversible(PerformanceMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        super().__post_init__()
         self.lights.set_channels(brightness=100, on=True, force=True)
+        self.direction = +1
         self.pattern = self.lights.relay_pattern
 
     def execute(self) -> None:

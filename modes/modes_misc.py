@@ -18,6 +18,9 @@ CycleSequence = list[tuple[str, int]]
 class ChangeMode(Exception):
     """Change mode exception."""
 
+class InterruptMode(Exception):
+    """Event that mode handles itself."""
+
 class CreateModeInstance(Protocol):
     """"""
     def __call__(

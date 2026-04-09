@@ -50,7 +50,6 @@ def register_channel_modes(exec: Executor):
             # ("amber_bloom", 1),
             ("ALL", 10)
         ],
-        reset_lights = False,
         # transition=0.0,
     )
     exec.add_mode("twelve", Twelve)
@@ -95,7 +94,7 @@ def register_channel_modes(exec: Executor):
         sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
         delay=2.0,
         special=ChannelParams(),
-        reset_lights=False,
+        baseline=None,
     )
     exec.add_sequence_mode("blink_all_fade_fast", 
         blink_all, delay=0.5,
@@ -177,7 +176,7 @@ def register_relay_modes(exec: Executor) -> None:
     exec.add_sequence_mode("random_flip", random_flip, 
         sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
         delay=0.5, 
-        reset_lights=False,
+        baseline=None,
     )
     exec.add_sequence_mode("center_rotate_fade", rotate, 
         sequence_kwargs=dict(pattern = "010" * 4),
@@ -212,13 +211,13 @@ def register_silent_modes(exec: Executor) -> None:
             trans_off=2.0,
             concurrent=False,
         ),
-        reset_lights=False,
+        baseline=None,
     )
     exec.add_sequence_mode("silent_random_flip_fast", random_flip, 
         sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
         delay=0.25,
         special=ChannelParams(),
-        reset_lights=False,
+        baseline=None,
     )
     exec.add_sequence_mode("silent_blink_all_slowwww", 
         blink_all, delay=4.0,

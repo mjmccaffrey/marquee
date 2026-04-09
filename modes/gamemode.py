@@ -60,7 +60,6 @@ class GameMode(PerformanceMode):
 
     def __post_init__(self):
         """"""
-        super().__post_init__()
         self.PLAY_GAME = self.play_game
         self.state: Callable[[], None]
 
