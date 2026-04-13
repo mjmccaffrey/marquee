@@ -72,6 +72,7 @@ def register_channel_modes(exec: Executor):
     exec.add_sequence_mode("cs_chase", rotate, 
         sequence_kwargs=dict(pattern="123000000000"),
         delay=1.0, 
+        stop=50,
         color_set_name='cancun',
         )
 
