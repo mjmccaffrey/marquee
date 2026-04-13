@@ -101,7 +101,7 @@ class SequenceMode(PerformanceMode):
                 name = "SequenceMode continue",
             )
 
-    def action_partial(self, pattern: str) -> None:
+    def action_partial(self, pattern: str) -> Callable:
         """"""
         if isinstance(self.special, ActionParams):
             action = partial(self.special.action, pattern)
@@ -116,6 +116,7 @@ class SequenceMode(PerformanceMode):
                 pattern, 
                 special=self.special,
             )
+        return action
 
     def set_color_lights(self, pattern: str) -> None:
         """"""
