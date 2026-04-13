@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass, field
 from functools import partial
 import itertools
 import logging
-from typing import Any, Iterable
+from typing import Any, cast, Iterable
 
 from devices.color import Color, Colors
 from devices.specialparams import ActionParams, EmulateParams
@@ -41,10 +41,13 @@ class SequenceMode(PerformanceMode):
     stop: int | None = None
     repeat: bool = True
     baseline: LightSetBaseline | None = DEFAULT_BASELINE
+    color_set_name: str | None = None
     sequence_kwargs: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         """Initialize."""
+        color_sets = cast(dict, self.color_sets.by_set_name)
+        self.color_set = color_sets.get(self.color_set_name)
         self.sequence_kwargs = self.replace_kwarg_values(self.sequence_kwargs)
         if self.lights.smart_bulbs and self.special is None:
             log.info("SequenceMode: emulating incandescent.")
@@ -70,29 +73,20 @@ class SequenceMode(PerformanceMode):
                 if isinstance(self.delay, Iterable) else
             itertools.repeat(self.delay)
         )
-        for i, lights in enumerate(self.sequence(**self.sequence_kwargs)):
+        for i, pattern in enumerate(self.sequence(**self.sequence_kwargs)):
             if self.stop is not None and i == self.stop:
                 break
+            action = self.action_partial(pattern)
             delay = next(delay_iter)
-
-            if isinstance(self.special, ActionParams):
-                action = partial(self.special.action, lights)
-            else:
-                action = partial(
-                    self.lights.set_relays,
-                    lights, 
-                    special=self.special,
-                )
             due = (
                 self.pre_delay
                     if delay is None else 
                 self.pre_delay + i * delay
             )
-            name = f"SequenceMode execute {i} {lights}"
             self.schedule(
                 action = action,
                 due = due,
-                name = name,
+                name = f"SequenceMode execute {i} {pattern}",
             )
             if delay is None:
                 return
@@ -102,4 +96,42 @@ class SequenceMode(PerformanceMode):
                 due = (i + 1) * delay,
                 name = "SequenceMode continue",
             )
+
+    def action_partial(self, pattern: str) -> None:
+        """"""
+        if isinstance(self.special, ActionParams):
+            action = partial(self.special.action, pattern)
+        elif self.color_set is not None:
+            action = partial(
+                self.set_color_lights,
+                pattern, 
+            )
+        else:
+            action = partial(
+                self.lights.set_relays,
+                pattern, 
+                special=self.special,
+            )
+
+    def set_color_lights(self, pattern: str) -> None:
+        """"""
+        assert self.color_set is not None
+        assert len(pattern) == self.lights.count
+        assert all(
+            int(p) in range(len(self.color_set.colors))
+            for p in pattern
+        )
+        cs_kwargs = self.color_set.set_channels_kwargs
+        kwargs = {
+            'on': (False if p == '0' else True for p in pattern),
+            'brightness': (
+                None if p == '0' else cs_kwargs['brightness'][int(p)]
+                for p in pattern
+            ),
+            'color': (
+                None if p == '0' else cs_kwargs['color'][int(p)]
+                for p in pattern
+            ),
+        }
+        self.lights.set_channels(**kwargs)
 

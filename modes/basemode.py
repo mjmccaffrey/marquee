@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import logging
 import sys
 import time
-from typing import NoReturn, Self
+from typing import Any, NoReturn, Self
 
 from devices.color import ColorSets
 from devices.devices_misc import ButtonInterface
@@ -42,6 +42,10 @@ class BaseMode(ABC):
     @abstractmethod
     def execute(self) -> None:
         """Play the mode."""
+
+    def interrupt_action(self, args: tuple[Any, ...]) -> None:
+        """Respond to mode interrupt exception."""
+        raise ValueError("Method must be overridden.")
 
     def __repr__(self) -> str:
         return f"<{self}>"

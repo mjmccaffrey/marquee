@@ -125,7 +125,6 @@ def define_devices_hue_shelly(
             bulb_model=Sylvania_G40_Frosted_100,
             dimmers=[
                 ShellyProDimmer1PM(
-                    index=0,
                     ip_address='192.168.64.116',
                     bulb_model=Sylvania_G40_Frosted_100,
                     channel_first_index=0,
@@ -170,7 +169,6 @@ def define_devices_shelly(
                 bulb_model=Sylvania_G25_Frosted_40,
                 dimmers=[
                     ShellyProDimmer2PM(
-                        index=i,
                         ip_address=ip,
                         bulb_model=Sylvania_G25_Frosted_40,
                         channel_first_index=i * 2,

@@ -23,7 +23,6 @@ class LightController(ABC):
     trans_min: ClassVar[float]
     all_at_once: ClassVar[bool]
 
-    index: int
     ip_address: str
     bulb_model: Bulb
     channel_first_index: int
@@ -42,7 +41,7 @@ class LightController(ABC):
             )
 
     def __str__(self) -> str:
-        return f"{type(self).__name__} {self.index} @ {self.ip_address}"
+        return f"{type(self).__name__} @ {self.ip_address}"
     
     def __repr__(self) -> str:
         return f"<{self}>"

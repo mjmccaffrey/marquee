@@ -2,16 +2,19 @@
 
 from dataclasses import dataclass, field
 import logging
+from typing import Any
 
 from devices.color import Colors, RGB
 from .gamemode import Entity, EntityGroup, GameMode, Maze
 from .pacman_assets import (
-    Dot, PACMAN_BITE, Ghost, PacMan, Pinky, Blinky, maze_12
+    Dot, BITE_EVENT, Ghost, PacMan, Pinky, Blinky, maze_12
 )
 from devices.lightcontroller import LightChannel, ChannelUpdate
 
 log = logging.getLogger('marquee.' + __name__)
 
+GHOSTS = {Pinky, Blinky}
+PACMAN_START = 7
 
 @dataclass(kw_only=True)
 class PacManGame(GameMode):
@@ -29,13 +32,16 @@ class PacManGame(GameMode):
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.dot_bites_maximum = (self.lights.count - 1) * 2
-        self.events.subscribe(PACMAN_BITE, self.PACMAN_BITE)
+        self.events.subscribe(BITE_EVENT, self.pacman_bite)
         self.PRE_GAME = self.pre_game
         self.WON_GAME = self.won_game
         self.LOST_GAME = self.lost_game
         self.state = self.PRE_GAME
 
-    def PACMAN_BITE(self, etype: type, coord: int):
+    def interrupt_action(self, args: tuple[Any, ...]) -> None:
+        """"""
+    
+    def pacman_bite(self, etype: type, coord: int):
         """Track remaining. Brighten top bulb."""
         dot = self.board[coord][etype]
         dot.brightness -= 75
@@ -62,7 +68,7 @@ class PacManGame(GameMode):
         self.init_level()
         self.top.set_channels(brightness=0, on=True)
         self.top.set_relays(True)
-        for d in maze_12.keys() - {7}:
+        for d in maze_12.keys() - {PACMAN_START}:
             dot = self.register_entity(Dot(game=self, name=f"dot_{d}"))
             self.place_entity(dot, d)
         self.pacman = self.register_entity(PacMan(game=self))
@@ -80,7 +86,7 @@ class PacManGame(GameMode):
                 wait_ticks=999999 if self.level == 0 else 10,
             )
         )
-        self.place_entity(self.pacman, 7)
+        self.place_entity(self.pacman, PACMAN_START)
         self.update_lights(self.board)
         self.state = self.PLAY_GAME
 
@@ -105,19 +111,21 @@ class PacManGame(GameMode):
             else:
                 self.state = self.WON_GAME
         if self.ghost_got_pacman():
-            assert self.pacman.prior_coord is not None
-            self.move_character(self.pacman, self.pacman.prior_coord)
             self.state = self.LOST_GAME
 
-    def ghost_got_pacman(self):
+    def ghost_got_pacman(self) -> bool:
         """"""
-        return any(
-            self.pacman.coord == ghost.coord
-                        or
-            self.pacman.prior_coord == ghost.coord and
-            self.pacman.coord == ghost.prior_coord
-            for ghost in (self.pinky, self.blinky)
-        )
+        for ghost in GHOSTS:
+            if self.pacman.coord == ghost.coord:
+                return True
+            if (
+                self.pacman.prior_coord == ghost.coord and
+                self.pacman.coord == ghost.prior_coord
+            ):
+                assert self.pacman.prior_coord is not None
+                self.move_character(self.pacman, self.pacman.prior_coord)
+                return True
+        return False
 
     def desired_light_state(
             self, 
@@ -130,9 +138,9 @@ class PacManGame(GameMode):
             return ChannelUpdate(channel=channel, on=False)
         assert self.pacman.coord is not None
         # Pac-Man and Ghost
-        if PacMan in entities and any(
-            ghost in entities
-            for ghost in (Pinky, Blinky)
+        if (
+            PacMan in entities and 
+            any(ghost in entities for ghost in GHOSTS)
         ):
             brightness, color = Ghost.brightness, Colors.BLUE
         # 2 Ghosts
