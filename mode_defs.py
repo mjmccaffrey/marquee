@@ -69,7 +69,11 @@ def register_channel_modes(exec: Executor):
             ("random_flip_fade_medium", 30),
         ],
     )
-    exec.add_sequence_mode("cs_chase", rotate, delay=0.5, color_set_name='cancun')
+    exec.add_sequence_mode("cs_chase", rotate, 
+        delay=1.0, 
+        color_set_name='cancun',
+        sequence_kwargs=dict(pattern="123000000000"),
+        )
 
     exec.add_sequence_mode("rotaterc", rotate, 
         sequence_kwargs=dict(pattern="100000000000"),
