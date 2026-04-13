@@ -70,8 +70,8 @@ def register_channel_modes(exec: Executor):
         ],
     )
     exec.add_sequence_mode("cs_chase", rotate, 
-        sequence_kwargs=dict(pattern="012---------"),
-        delay=0.5, 
+        sequence_kwargs=dict(pattern="012---------", clockwise=False),
+        delay=0.35, 
         color_set_name='amber_bloom',
     )
 
