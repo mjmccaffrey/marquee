@@ -89,6 +89,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         """Build and send commands."""
         for update in updates:
             command = update.channel._make_set_command(update)
+            print(command)
             response = self.session.put(
                 url=command.url,
                 json=command.params,
