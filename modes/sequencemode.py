@@ -134,5 +134,6 @@ class SequenceMode(PerformanceMode):
                 for p in pattern
             ),
         }
+        print(kwargs)
         self.lights.set_channels(**kwargs)
 
