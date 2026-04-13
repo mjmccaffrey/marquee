@@ -40,12 +40,13 @@ class SequenceMode(PerformanceMode):
     delay: tuple[float, ...] | float | None = None
     stop: int | None = None
     repeat: bool = True
-    baseline: LightSetBaseline | None = DEFAULT_BASELINE
+    baseline: LightSetBaseline | None = None
     color_set_name: str | None = None
     sequence_kwargs: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         """Initialize."""
+        self.baseline = self.baseline or DEFAULT_BASELINE
         color_sets = cast(dict, self.color_sets.by_set_name)
         self.color_set = color_sets.get(self.color_set_name)
         self.sequence_kwargs = self.replace_kwarg_values(self.sequence_kwargs)
