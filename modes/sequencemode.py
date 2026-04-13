@@ -49,6 +49,7 @@ class SequenceMode(PerformanceMode):
         self.baseline = self.baseline or DEFAULT_BASELINE
         color_sets = cast(dict, self.color_sets.by_set_name)
         self.color_set = color_sets.get(self.color_set_name)
+        print(self.color_set)
         self.sequence_kwargs = self.replace_kwarg_values(self.sequence_kwargs)
         if self.lights.smart_bulbs and self.special is None:
             log.info("SequenceMode: emulating incandescent.")
