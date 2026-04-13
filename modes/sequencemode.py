@@ -130,11 +130,11 @@ class SequenceMode(PerformanceMode):
         kwargs = {
             'on': tuple(False if p == '0' else True for p in pattern),
             'brightness': tuple(
-                None if p == '0' else cs_kwargs['brightness'][int(p)]
+                None if p == '-' else cs_kwargs['brightness'][int(p)]
                 for p in pattern
             ),
             'color': tuple(
-                None if p == '0' else cs_kwargs['color'][int(p)]
+                None if p == '-' else cs_kwargs['color'][int(p)]
                 for p in pattern
             ),
         }
