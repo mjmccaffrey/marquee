@@ -85,6 +85,7 @@ class SequenceMode(PerformanceMode):
                     if delay is None else 
                 self.pre_delay + i * delay
             )
+            print(i, pattern)
             self.schedule(
                 action = action,
                 due = due,
