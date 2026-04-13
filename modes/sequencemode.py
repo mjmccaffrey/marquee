@@ -128,12 +128,12 @@ class SequenceMode(PerformanceMode):
         )
         cs_kwargs = self.color_set.set_channels_kwargs
         kwargs = {
-            'on': (False if p == '0' else True for p in pattern),
-            'brightness': (
+            'on': tuple(False if p == '0' else True for p in pattern),
+            'brightness': tuple(
                 None if p == '0' else cs_kwargs['brightness'][int(p)]
                 for p in pattern
             ),
-            'color': (
+            'color': tuple(
                 None if p == '0' else cs_kwargs['color'][int(p)]
                 for p in pattern
             ),
