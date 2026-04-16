@@ -100,8 +100,8 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
 def joystick() -> Joystick:
     """"""
     return Joystick(
-        up=_Button(pin=17, bounce_time=0.05),
-        down=_Button(pin=4, bounce_time=0.05),
+        up=_Button(pin=4, bounce_time=0.05),
+        down=_Button(pin=17, bounce_time=0.05),
         left=_Button(pin=27, bounce_time=0.05),
         right=_Button(pin=22, bounce_time=0.05),
     )
