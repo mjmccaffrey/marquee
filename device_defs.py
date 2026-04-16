@@ -75,7 +75,7 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
         game_start = LightedButton(
             'game_start',
             _Button(pin=21, bounce_time=0.05),
-            relay=light_relays.create_client(CLICK_TO_RELAY),
+            relay=light_relays.create_client(BUTTON_TO_RELAY),
         ),
         remote_a = Button(
             "remote_a",
