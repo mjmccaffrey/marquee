@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import logging
 
 from devices.button import Button
-from devices_misc import LightedButtonInterface
+from devices.devices_misc import LightedButtonInterface
 from devices.relays import RelayClient
 
 log = logging.getLogger('marquee.' + __name__)
