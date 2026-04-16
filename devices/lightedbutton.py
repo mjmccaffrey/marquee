@@ -21,5 +21,6 @@ class LightedButton(Button, LightedButtonInterface):
 
     def set_light(self, on: bool) -> None:
         """"""
+        print(self.relay)
         self.relay.set_state_of_devices('1' if on else '0')
 
