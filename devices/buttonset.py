@@ -4,7 +4,9 @@ from dataclasses import dataclass, fields
 import logging
 import threading
 
-from .devices_misc import ButtonInterface, ButtonPhysicallyPressed
+from .devices_misc import (
+    ButtonInterface, ButtonPhysicallyPressed, LightedButtonInterface,
+)
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -15,6 +17,7 @@ class ButtonSet:
     body_back: ButtonInterface
     corded_a: ButtonInterface
     corded_b: ButtonInterface
+    game_start: LightedButtonInterface
     remote_a: ButtonInterface
     remote_b: ButtonInterface
     remote_c: ButtonInterface
@@ -33,6 +36,7 @@ class ButtonSet:
     def button_in_set_pressed(self, button: ButtonInterface, held: bool) -> None:
         """Called by Button that was pressed."""
         self.which_button_pressed = button
+        print(button)
         self.button_was_held = held
         self.pressed_event.set()
         

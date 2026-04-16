@@ -31,6 +31,7 @@ class PacManGame(GameMode):
         super().__post_init__()
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
+        self.buttons.game_start.set_light(True)
         self.dot_bites_maximum = (self.lights.count - 1) * 2
         self.events.subscribe(BITE_EVENT, self.pacman_bite)
         self.PRE_GAME = self.pre_game

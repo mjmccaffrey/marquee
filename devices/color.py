@@ -150,6 +150,12 @@ class ColorSets:
         self.by_set_name = self._load_color_sets(Path(source))
         self.by_group_name = self._create_color_groups(self.by_set_name)
 
+    def lookup(self, name: str) -> ColorSet:
+        """"""
+        if name not in self.by_set_name:
+            raise ValueError(f"Color set {name} not defined.")
+        return self.by_set_name[name]
+    
     @staticmethod
     def _load_color_sets(source: Path) -> BySetName:
         """"""

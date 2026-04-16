@@ -43,9 +43,8 @@ class ColorSetCycle(PerformanceMode):
             if name in self.color_sets.by_group_name:
                 for cs in self.color_sets.by_group_name[name]:
                     cs_sequence.append(CycleEntry(cs.name, seconds))
-            elif name not in self.color_sets.by_set_name:
-                raise ValueError(f"Color set {name} not defined.")
             else:
+                _ = self.color_sets.lookup(name)
                 cs_sequence.append(CycleEntry(name, seconds))
         return cs_sequence
 

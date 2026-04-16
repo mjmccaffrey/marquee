@@ -99,7 +99,7 @@ class Executor:
         shutdown = False
         devices = self.define_devices(brightness_factor, speed_factor)
         (self.bells, self.buttons, self.drums, 
-         self.lights, self.top, self.clicker) = devices
+         self.lights, self.top, self.clicker, self.joystick) = devices
         if command is not None:
             self.execute_command(command)
         elif mode_index is not None:

@@ -51,8 +51,10 @@ SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250409R0868", SYMLINK+="marquee_bells"
 * * 26
 * Corded button A
 * * 12
+* * GROUND !!!!!!!!!!
 * Corded button B
 * * 16
+* * GROUND !!!!!!!!!!
 * Remote button A
 * * 19
 * Remote button B
@@ -61,6 +63,31 @@ SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250409R0868", SYMLINK+="marquee_bells"
 * * 6
 * Remote button D
 * * 5
+* * GROUND !!!!!!!!!!
+
+* Game RJ-45 on external unit
+* * GND: Orange
+* * Button switch
+* * * OrangeWhite, GND
+* * Button light (5 volt)
+* * * +: Green, -: GreenWhite
+* * Joystick
+* * * Green: Brow
+* * * Yellow: BrownWhite
+* * * Orange: Blue
+* * * Red: BlueWhite
+* * * Black: GND
+
+* Game RJ-45 on main body
+* * OrangeWhite: IO21
+* * Orange: GND
+* * GreenWhite: GND
+* * Green: 5V
+* * BrownWhite: IO17
+* * Brown: IO4
+* * BlueWhite: IO22
+* * Blue: IO27
+
 
 * RS-232
 

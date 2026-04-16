@@ -1,54 +1,60 @@
 # """Marquee Lighted Sign Project - joystick"""
 
-# from dataclasses import dataclass
-# from enum import Enum
+from dataclasses import dataclass, field
+from enum import auto, StrEnum
 import logging
 
-# from gpiozero import Button as _Button  # type: ignore
+from gpiozero import Button as _Button  # type: ignore
 
 log = logging.getLogger('marquee.' + __name__)
 
+class Direction(StrEnum):
+    """"""
+    NONE = auto()
+    UP = auto()
+    DOWN = auto()
+    LEFT = auto()
+    RIGHT = auto()
+    UPRIGHT = auto()
+    UPLEFT = auto()
+    DOWNRIGHT = auto()
+    DOWNLEFT = auto()
 
-# class Directions(Enum):
-#     """"""
-#     UP = 0
-#     DOWN = 1
-#     LEFT = 2
-#     RIGHT = 3
-#     UPRIGHT = 4
-#     UPLEFT = 5
-#     DOWNRIGHT = 6
-#     DOWNLEFT = 7
+state_to_direction = {
+    '0000': Direction.NONE,
+    '0001': Direction.LEFT,
+    '0010': Direction.RIGHT,
+    '0100': Direction.DOWN,
+    '0101': Direction.DOWNLEFT,
+    '0110': Direction.DOWNRIGHT,
+    '1000': Direction.UP,
+    '1001': Direction.UPLEFT,
+    '1010': Direction.UPRIGHT,
+}
 
 
-# @dataclass
-# class Joystick:
-#     """"""
-#     up_switch: _Button
-#     down_switch: _Button
-#     left_switch: _Button
-#     right_switch: _Button
+@dataclass
+class Joystick:
+    """"""
+    up: _Button
+    down: _Button
+    left: _Button
+    right: _Button
+    direction: Direction = field(init=False)
 
-#     D = Directions
-#     def update(self):
-#         match state:
-#             case '0000':
-#                 dir = None
-#             case '0001':
-#                 dir = D.LEFT
-#             case '0010':
-#                 dir = D.RIGHT
-#             case '0100':
-#                 dir = D.DOWN
-#             case '0101':
-#                 dir = D.DOWNLEFT
-#             case '0110':
-#                 dir = D.DOWNRIGHT
-#             case '1000':
-#                 dir = D.UP
-#             case '1001':
-#                 dir = D.UPLEFT
-#             case '1010':
-#                 dir = D.UPRIGHT
-#             case _:
-#                 raise ValueError(state)
+    def __post_init__(self) -> None:
+        """"""
+        self.switches = (
+            self.up, self.down, 
+            self.right, self.left,
+        )
+        for switch in self.switches:
+            switch.when_pressed = self.update
+            switch.when_released = self.update
+
+    def update(self) -> None:
+        """"""
+        values = ''.join(str(s.value) for s in self.switches)
+        self.direction = state_to_direction[values]
+        print(values, self.direction)
+

@@ -33,6 +33,14 @@ class ButtonInterface(Protocol):
         ...
 
 
+class LightedButtonInterface(ButtonInterface):
+    """Lighted button interface."""
+
+    def set_light(self, on: bool) -> None:
+        """"""
+        ...
+
+
 class ButtonInSetPressed(Protocol):
     """"""
     def __call__(

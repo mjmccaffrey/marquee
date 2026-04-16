@@ -9,13 +9,17 @@ from devices.bulb import (
     Sylvania_G25_Frosted_40,
 )
 from devices.button import Button
+from devices.lightedbutton import LightedButton
 from devices.buttonset import ButtonSet
 from devices.hue import HueBridge
+from devices.joystick import Joystick
 from devices.relays import NumatoRL160001, NumatoSSR80001
 from devices.shelly import ShellyController, ShellyProDimmer1PM, ShellyProDimmer2PM
 from instruments import BellSet, ClickSet, DrumSet, LightSet
 
-DeviceSet = tuple[BellSet, ButtonSet, DrumSet, LightSet, LightSet | None, ClickSet]
+DeviceSet = tuple[
+    BellSet, ButtonSet, DrumSet, LightSet, LightSet | None, ClickSet, Joystick,
+]
 
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'
@@ -51,7 +55,7 @@ SHELLY_IP_ADDRESSES = [
 ]
 
 
-def buttons() -> ButtonSet:
+def buttons(light_relays: NumatoRL160001) -> ButtonSet:
     """"""
     return ButtonSet(
         body_back = Button(
@@ -67,6 +71,11 @@ def buttons() -> ButtonSet:
         corded_b = Button(
             'corded_b',
             _Button(pin=16, bounce_time=0.05),
+        ),
+        game_start = LightedButton(
+            'game_start',
+            _Button(pin=21, bounce_time=0.05),
+            relay=light_relays.create_client(CLICK_TO_RELAY),
         ),
         remote_a = Button(
             "remote_a",
@@ -87,6 +96,15 @@ def buttons() -> ButtonSet:
         ),
     )
 
+
+def joystick() -> Joystick:
+    """"""
+    return Joystick(
+        up=_Button(pin=17, pull_up=False, bounce_time=0.10),
+        down=_Button(pin=4, pull_up=False, bounce_time=0.10),
+        left=_Button(pin=22, pull_up=False, bounce_time=0.10),
+        right=_Button(pin=27, pull_up=False, bounce_time=0.10),
+    )
 
 def define_devices_hue_shelly(
     brightness_factor: float,
@@ -136,13 +154,7 @@ def define_devices_hue_shelly(
     clicker = ClickSet(
         relays=light_relays.create_client(CLICK_TO_RELAY),
     )
-    # joystick = Joystick(
-    #     north=_Button(pin=13, pull_up=False, bounce_time=0.10),
-    #     south=_Button(pin=19, pull_up=False, bounce_time=0.10),
-    #     east=_Button(pin=26, pull_up=False, bounce_time=0.10),
-    #     west=_Button(pin=5, pull_up=False, bounce_time=0.10),
-    # )
-    return bells, buttons(), drums, lights, top, clicker
+    return bells, buttons(light_relays), drums, lights, top, clicker, joystick()
 
 
 def define_devices_shelly(
@@ -182,7 +194,7 @@ def define_devices_shelly(
     clicker = ClickSet(
         relays=light_relays.create_client(CLICK_TO_RELAY),
     )
-    return bells, buttons(), drums, lights, top, clicker
+    return bells, buttons(light_relays), drums, lights, top, clicker, joystick()
 
 
 define_devices = define_devices_hue_shelly
@@ -225,10 +237,13 @@ LIGHT_TO_RELAY = {
 TOP_TO_RELAY = {
     0: 10,
 }
-CLICK_TO_RELAY = {
-     0: 2,  1: 3, 2: 11,
+BUTTON_TO_RELAY = {
+    0: 11,    
 }
-ALL_RELAYS = LIGHT_TO_RELAY | TOP_TO_RELAY | CLICK_TO_RELAY
+CLICK_TO_RELAY = {
+     0: 2,  1: 3, 
+}
+ALL_RELAYS = LIGHT_TO_RELAY | TOP_TO_RELAY | BUTTON_TO_RELAY | CLICK_TO_RELAY
 
 LIGHT_COUNT = len(LIGHT_TO_RELAY)
 ALL_HIGH = "A" * LIGHT_COUNT

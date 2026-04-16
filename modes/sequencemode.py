@@ -1,11 +1,11 @@
 """Marquee Lighted Sign Project - sequencemode"""
 
 from collections.abc import Callable
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, InitVar
 from functools import partial
 import itertools
 import logging
-from typing import Any, cast, Iterable
+from typing import Any, Iterable
 
 from devices.color import Color, Colors
 from devices.specialparams import ActionParams, EmulateParams
@@ -41,15 +41,16 @@ class SequenceMode(PerformanceMode):
     stop: int | None = None
     repeat: bool = True
     baseline: LightSetBaseline | None = None
-    color_set_name: str | None = None
+    color_set_name: InitVar[str | None] = None
     sequence_kwargs: dict[str, Any] = field(default_factory=dict)
 
-    def __post_init__(self) -> None:
+    def __post_init__(self, color_set_name) -> None:
         """Initialize."""
         self.baseline = self.baseline or DEFAULT_BASELINE
-        color_sets = cast(dict, self.color_sets.by_set_name)
-        self.color_set = color_sets.get(self.color_set_name)
-        print(self.color_set)
+        self.color_set = (
+            self.color_sets.lookup(color_set_name)
+            if color_set_name is not None else None
+        )
         self.sequence_kwargs = self.replace_kwarg_values(self.sequence_kwargs)
         if self.lights.smart_bulbs and self.special is None:
             log.info("SequenceMode: emulating incandescent.")
@@ -101,7 +102,7 @@ class SequenceMode(PerformanceMode):
                 name = "SequenceMode continue",
             )
 
-    def action_partial(self, pattern: str) -> Callable:
+    def action_partial_old(self, pattern: str) -> Callable:
         """"""
         if isinstance(self.special, ActionParams):
             action = partial(self.special.action, pattern)
@@ -118,14 +119,18 @@ class SequenceMode(PerformanceMode):
             )
         return action
 
+    def action_partial(self, pattern: str) -> Callable:
+        """"""
+        if isinstance(self.special, ActionParams):
+            return partial(self.special.action, pattern)
+        if self.color_set is not None:
+            return partial(self.set_color_lights, pattern)
+        return partial(self.lights.set_relays, pattern, special=self.special)
+
     def set_color_lights(self, pattern: str) -> None:
         """"""
         assert self.color_set is not None
         assert len(pattern) == self.lights.count
-        # assert all(
-        #     int(p) in range(len(self.color_set.colors))
-        #     for p in pattern
-        # )
         cs_kwargs = self.color_set.set_channels_kwargs
         kwargs = {
             'on': tuple(False if p == '-' else True for p in pattern),
