@@ -17,6 +17,7 @@ class LightedButton(Button, LightedButtonInterface):
     
     def __post_init__(self) -> None:
         """Initialize."""
+        super().__post_init__()
         self.set_light(False)
 
     def set_light(self, on: bool) -> None:
