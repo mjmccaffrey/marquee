@@ -44,6 +44,7 @@ class Joystick:
 
     def __post_init__(self) -> None:
         """"""
+        self.direction = Direction.NONE
         self.switches = (
             self.up, self.down, 
             self.right, self.left,
