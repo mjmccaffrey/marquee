@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import logging
 
 from devices.buttonset import ButtonSet
+from devices.joystick import Joystick
 from devices.specialparams import SpecialParams
 from instruments import BellSet, ClickSet, DrumSet, LightSet
 from .basemode import BaseMode
@@ -21,6 +22,7 @@ class ForegroundMode(BaseMode, ABC):
     lights: LightSet
     top: LightSet
     clicker: ClickSet
+    joystick: Joystick
     speed_factor: float
     special: SpecialParams | None = None
 

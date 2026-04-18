@@ -121,6 +121,7 @@ def define_devices_hue_shelly(
     )
     light_relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
     lights = LightSet(
+        count=LIGHT_COUNT,
         relays=light_relays.create_client(LIGHT_TO_RELAY),
         mirror=drum_relays.create_client(LIGHT_TO_RELAY),
         controller_type=HueBridge,
@@ -134,7 +135,14 @@ def define_devices_hue_shelly(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
+
+    # zigbee:
+    #     relay?
+    #     donut
+    #     3 pacman lights
+    
     top = LightSet(
+        count=len(TOP_TO_RELAY),
         relays=light_relays.create_client(TOP_TO_RELAY),
         mirror=drum_relays.create_client(TOP_TO_RELAY),
         controller_type=ShellyController,
@@ -173,8 +181,9 @@ def define_devices_shelly(
     )
     light_relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
     lights = LightSet(
-        relays=light_relays.create_client(TOP_TO_RELAY),
-        mirror=drum_relays.create_client(TOP_TO_RELAY),
+        count=len(LIGHT_TO_RELAY),
+        relays=light_relays.create_client(LIGHT_TO_RELAY),
+        mirror=drum_relays.create_client(LIGHT_TO_RELAY),
         controller_type=ShellyController,
         controller_kwargs=dict(
                 bulb_model=Sylvania_G25_Frosted_40,

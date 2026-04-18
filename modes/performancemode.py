@@ -33,7 +33,7 @@ class PerformanceMode(ForegroundMode, ABC):
                 self.clicker.click()
                 new_mode = self.wrap_mode_index(+1)
             case _:
-                raise ValueError("Unrecognized button.")
+                raise RuntimeError("Unrecognized button.")
         return new_mode
 
     def wrap_mode_index(self, delta: int) -> int:

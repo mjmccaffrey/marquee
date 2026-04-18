@@ -18,7 +18,7 @@ class EventSystem:
     def notify(self, event: str, **kwargs) -> None:
         """"""
         if event not in self.subscriptions:
-            raise ValueError("event")
+            raise RuntimeError(event)
         for callback in self.subscriptions[event]:
             callback(**kwargs)
 

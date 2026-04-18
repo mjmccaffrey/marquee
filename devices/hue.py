@@ -25,7 +25,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
     """Hue bridge controller."""
 
     trans_min: ClassVar[float] = 0.0  # ?????????
-    all_at_once: ClassVar[bool] = True
+    all_at_once_supported: ClassVar[bool] = True
 
     application_key: str
     bulb_ids: Sequence[str]

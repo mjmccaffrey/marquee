@@ -20,8 +20,9 @@ log = logging.getLogger('marquee.' + __name__)
 @dataclass
 class LightSet:
     """Supports all of the light-related devices."""
-    relays: RelayClient
-    mirror: RelayClient
+    count: int
+    relays: RelayClient | None
+    mirror: RelayClient | None
     controller_type: type[LightController]
     controller_kwargs: dict
     brightness_factor_init: InitVar[float]
@@ -30,13 +31,19 @@ class LightSet:
     def __post_init__(self, brightness_factor_init: float) -> None:
         """Initialize."""
         self._brightness_factor = brightness_factor_init
-        self.count = self.relays.count
-        self.relay_pattern = self.relays.get_state_of_devices()
         self.smart_bulbs = issubclass(
             self.controller_type.bulb_comp, 
             SmartBulb,
         )
+        self._init_relays()
+        self._init_controller()
 
+    def _init_relays(self):
+        """Initialize relays, if they exist."""
+        if self.relays is None: 
+            return
+        assert self.relays.count == self.count
+        self.relay_pattern = self.relays.get_state_of_devices()
         if self.smart_bulbs:
             if all(r == '1' for r in self.relay_pattern):
                 log.info("***** Smart bulbs in use - light relays already ON. *****")
@@ -45,6 +52,8 @@ class LightSet:
                 self.set_relays(True, smart_bulb_override=True)
                 time.sleep(5.0)  # Enough time for controller to see all bulbs.
 
+    def _init_controller(self):
+        """Initialize controller."""
         self.controller = self.controller_type(**self.controller_kwargs)
         self.gamut = self.controller.bulb_model.gamut
         RGB.adjust_incomplete_colors(self.gamut or rgbxy.GamutC)
@@ -78,27 +87,28 @@ class LightSet:
             special: SpecialParams | None = None,
             smart_bulb_override: bool = False,
         ) -> None:
-        """Set all light relays per supplied patterns and special.
-           Set light_pattern property, always as string
-           rather than list."""
+        """Set all light relays, or channels,
+           per supplied patterns and special."""
         
-        if light_pattern is None or (
+        if light_pattern is None:
+            return  # No pattern given; nothing to do.
+        if (
             self.smart_bulbs and 
             not smart_bulb_override and 
             special is None
-        ):  # Nothing to do.
+        ):  # Ignore relay command unless special circumstances.
             return
         
-        lights = self.convert_relay_pattern(light_pattern)
-        # if lights is None:
-        #     lights = self.relay_pattern
+        lights = self._convert_relay_pattern(light_pattern)
 
         if isinstance(special, MirrorParams):
+            assert self.mirror is not None
             self.mirror.set_state_of_devices(lights)
 
         if isinstance(special, ChannelParams):
             self._set_channels_instead_of_relays(lights, special)
         else:
+            assert self.relays is not None
             self.relays.set_state_of_devices(lights)
             self.relay_pattern = lights
 
@@ -121,7 +131,7 @@ class LightSet:
             """Can the update be performed more-or-less all at once,
                rather than on each channel individually."""
             return (
-                self.controller.all_at_once and 
+                self.controller.all_at_once_supported and 
                 (   channel_indexes is None or 
                     len(channel_indexes) == self.count
                 ) and
@@ -135,10 +145,10 @@ class LightSet:
             self.controller.execute_update_all_at_once(
                 ChannelUpdate(
                     channel=self.controller.channels[0],  # Dummy
-                    brightness=self.convert_brightness(brightness)[0],
-                    transition=self.convert_transition(transition)[0],
-                    color=self.convert_color(color)[0],
-                    on=self.convert_on(on)[0],
+                    brightness=self._convert_brightness(brightness)[0],
+                    transition=self._convert_transition(transition)[0],
+                    color=self._convert_color(color)[0],
+                    on=self._convert_on(on)[0],
                 )
             )
             return
@@ -150,10 +160,10 @@ class LightSet:
             channel_indexes
         )
         _channels = [self.channels[i] for i in _channel_indexes]
-        _brightnesses = self.convert_brightness(brightness)
-        _transitions = self.convert_transition(transition)
-        _colors = self.convert_color(color)
-        _on = self.convert_on(on)
+        _brightnesses = self._convert_brightness(brightness)
+        _transitions = self._convert_transition(transition)
+        _colors = self._convert_color(color)
+        _on = self._convert_on(on)
         updates = [
             ChannelUpdate(
                 channel=ch,
@@ -226,7 +236,7 @@ class LightSet:
         """Update the active light pattern."""
         self._relay_pattern = value
 
-    def convert_brightness(
+    def _convert_brightness(
         self,
         brightness: Sequence[int | None] | str | int | None,
     ) -> list[int | None]:
@@ -250,7 +260,7 @@ class LightSet:
         ]
         return result
     
-    def convert_transition(
+    def _convert_transition(
         self,
         transition: Sequence[float | None] | float | None,
     ) -> list[float | None]:
@@ -262,7 +272,7 @@ class LightSet:
                 result = [transition] * self.count
         return cast(list, result)
     
-    def convert_color(
+    def _convert_color(
         self,
         color: Sequence[Color | None] | Color | None,
     ) -> list[Color | None]:
@@ -274,7 +284,7 @@ class LightSet:
                 result = [color] * self.count
         return result
     
-    def convert_on(
+    def _convert_on(
         self,
         on: Sequence[int | bool | str | None] | bool | int | None,
     ) -> list[bool | None]:
@@ -296,7 +306,7 @@ class LightSet:
                 ] * self.count
         return cast(list, result)
     
-    def convert_relay_pattern(
+    def _convert_relay_pattern(
         self, 
         pattern: str | Sequence[int | bool] | int | bool,
     ) -> str:

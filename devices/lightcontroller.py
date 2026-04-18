@@ -21,7 +21,7 @@ class LightController(ABC):
     bulb_comp: ClassVar[type[Bulb]]
     channel_count: ClassVar[int]
     trans_min: ClassVar[float]
-    all_at_once: ClassVar[bool]
+    all_at_once_supported: ClassVar[bool]
 
     ip_address: str
     bulb_model: Bulb
@@ -76,7 +76,7 @@ class LightController(ABC):
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
         """Update the 'all' zone, rather than individual channels.
            Does not check current state."""
-        raise ValueError("Method should not have been called.")
+        raise RuntimeError("Method should not have been called.")
 
 
 @dataclass(kw_only=True, repr=False)

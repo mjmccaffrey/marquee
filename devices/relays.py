@@ -80,7 +80,7 @@ class NumatoUSBRelayModule(RelayModule, ABC):
             hex_lengths = {8: 2, 16: 4}
             self.relay_pattern_hex_len = hex_lengths[self.relay_count]
         except LookupError:
-            raise ValueError("Unrecognized device count")
+            raise RuntimeError("Unrecognized device count")
         self.port_address = port_address
         log.info(f"Initializing {self}")
         try:

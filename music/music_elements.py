@@ -43,7 +43,7 @@ class Rest(BaseNote):
 
     def play(self) -> None:
         """Play single rest (do nothing)."""
-        raise ValueError("PLAYING REST")
+        raise RuntimeError("PLAYING REST")
 
 
 @dataclass(frozen=True)

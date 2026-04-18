@@ -49,7 +49,7 @@ class SelectMode(ForegroundMode, ABC):
             case b.remote_c:
                 pass
             case _:
-                raise ValueError("Unrecognized button.")
+                raise RuntimeError("Unrecognized button.")
         return None
 
     def execute(self) -> int | None:

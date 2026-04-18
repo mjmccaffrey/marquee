@@ -45,7 +45,7 @@ class BaseMode(ABC):
 
     def interrupt_action(self, args: tuple[Any, ...]) -> None:
         """Respond to mode interrupt exception."""
-        raise ValueError("Method must be overridden.")
+        raise RuntimeError("Method must be overridden.")
 
     def __repr__(self) -> str:
         return f"<{self}>"

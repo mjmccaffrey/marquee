@@ -8,6 +8,7 @@ from typing import Any, NoReturn
 from devices.color import ColorSets
 from devices.devices_misc import ButtonInterface, ButtonPressed
 from devices.buttonset import ButtonSet
+from devices.joystick import Joystick
 from event import EventSystem
 from instruments import BellSet, ClickSet, DrumSet, LightSet
 from modes.backgroundmode import BackgroundMode
@@ -30,6 +31,7 @@ class Player:
     lights: LightSet
     top: LightSet | None
     clicker: ClickSet
+    joystick: Joystick
     speed_factor: float
     pace: float = field(init=False)
     bg_mode_instances: dict = field(init=False)
@@ -94,6 +96,7 @@ class Player:
                 lights=self.lights,
                 top=self.top,
                 clicker=self.clicker,
+                joystick=self.joystick,
                 speed_factor=self.speed_factor,
             )
         return definition.cls(**_kwargs)  # type: ignore

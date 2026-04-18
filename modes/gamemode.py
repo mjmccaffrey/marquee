@@ -45,6 +45,10 @@ class Square:
     right: int | None = None
     up: int | None = None
     down: int | None = None
+    upleft: int | None = None
+    downleft: int | None = None
+    upright: int | None = None
+    downright: int | None = None
 
 
 Board = dict[int, 'EntityGroup']

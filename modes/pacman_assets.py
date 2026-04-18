@@ -33,29 +33,16 @@ class PacMan(Character):
 
     def execute(self):
         """Take turn."""
-
-        # TEST
-        keystrokes = {'l': 'left', 'r': 'right', 'u': 'up', 'd': 'down'}
-        direction = input(f"move {self.game.tick}:").lower()
-        match direction:
-            case '.':
-                coord = None
-            case key if key in keystrokes:
-                assert self.coord is not None
-                coord = getattr(
-                    self.game.maze[self.coord],
-                    keystrokes[key],
-                )
-            case 'c':
-                assert self.coord is not None
-                coord = (self.coord - 1) % 12
-            case _:
-                coord = None
-                # light_states(self.game.lights)
-        if coord is not None:
-            self.game.move_character(self, coord)
-            if Dot in self.game.board[coord]:
-                self.bite_dot(coord)
+        dir = self.game.joystick.direction
+        if dir is None:
+            return
+        assert self.coord is not None
+        coord = getattr(self.game.maze[self.coord], dir, None)
+        if coord is None:
+            return
+        self.game.move_character(self, coord)
+        if Dot in self.game.board[coord]:
+            self.bite_dot(coord)
 
     def bite_dot(self, coord: int) -> None:
         """"""
@@ -132,26 +119,26 @@ class Clyde(Ghost):
 
 
 maze_base: Maze = {
-    0: Square(left=11, right=1, down=11),
+    0: Square(right=1, left=11, down=11, downleft=11),
     1: Square(left=0, right=2),
-    2: Square(left=1, right=3, down=3),
-    3: Square(left=2, up=2, down=4),       
-    5: Square(left=6, up=4, down=6),
-    6: Square(left=7, right=5, up=5),
+    2: Square(left=1, down=3, downright=3, right=3),
+    3: Square(down=4, left=2, up=2, upleft=2),       
+    5: Square(up=4, left=6, down=6, downleft=6),
+    6: Square(left=7, right=5, up=5, upright=5),
     7: Square(left=8, right=6),
-    8: Square(left=9, right=7, up=9),
-    9: Square(right=8, up=10, down=8),
-    11: Square(right=0, up=0, down=10),
+    8: Square(right=7, left=9, up=9, upleft=9),
+    9: Square(up=10, right=8, down=8, downright=8),
+    11: Square(down=10, right=0, up=0, upright=0),
 }
 maze_12: Maze = maze_base | {
     4: Square(right=10, up=3, down=5),
     10: Square(left=4, up=11, down=9),
 }
-maze_15: Maze = maze_base | {
-    4: Square(left=14, up=3, down=5),
-    10: Square(right=12, up=11, down=9),
-    12: Square(left=10, right=11),
-    13: Square(left=12, right=14),
-    14: Square(left=13, right=4),
-}
+# maze_15: Maze = maze_base | {
+#     4: Square(left=14, up=3, down=5),
+#     10: Square(right=12, up=11, down=9),
+#     12: Square(left=10, right=11),
+#     13: Square(left=12, right=14),
+#     14: Square(left=13, right=4),
+# }
 

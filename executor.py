@@ -125,6 +125,7 @@ class Executor:
             self.lights,
             self.top,
             self.clicker,
+            self.joystick,
             speed_factor,
         )
         return self.player.execute(mode_index)
@@ -155,6 +156,7 @@ class Executor:
     def command_off(self) -> None:
         """Turn off all relays and potentially other devices."""
         for d in (self.bells, self.drums, self.lights):
+            assert d.relays is not None
             d.relays.set_state_of_devices('0' * d.relays.count)
         log.info("Marquee hardware is now partially powered off.")
         log.info('')

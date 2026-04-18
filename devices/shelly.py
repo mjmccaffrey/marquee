@@ -25,7 +25,7 @@ class ShellyController(LightController, bulb_comp=DimBulb):
     """Virtual consolidated controller."""
 
     trans_min: ClassVar[float] = 0.5
-    all_at_once: ClassVar[bool] = False
+    all_at_once_supported: ClassVar[bool] = False
 
     channel_count: int = field(init=False)
     dimmers: Sequence[LightController]
@@ -69,7 +69,7 @@ class ShellyController(LightController, bulb_comp=DimBulb):
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
         """Update the 'all' zone, rather than individual channels.
            Not supported on these devices."""
-        raise ValueError("Method should not have been called.")
+        raise RuntimeError("Method should not have been called.")
 
     async def _execute_commands(
         self,
@@ -113,7 +113,7 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
        Everything else handled by parent controller and child channels."""
 
     trans_min: ClassVar[float] = 0.5
-    all_at_once: ClassVar[bool] = False
+    all_at_once_supported: ClassVar[bool] = False
 
     def __init_subclass__(cls, channel_count: int) -> None:
         """Set channel count for concrete subclasses."""
@@ -155,7 +155,7 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
     
     def calibrate(self) -> None:
         """Calibrate all channels."""
-        raise ValueError("Method should not have been called.")
+        raise RuntimeError("Method should not have been called.")
 
     def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands via aiohttp asynchronously.
@@ -165,7 +165,7 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
         """Update the 'all' zone, rather than individual channels.
            Not supported on these devices."""
-        raise ValueError("Method should not have been called.")
+        raise RuntimeError("Method should not have been called.")
 
 
 @dataclass(kw_only=True)
