@@ -24,7 +24,7 @@ class PacManGame(GameMode):
     """Level 2 - Blinky and Pinky."""
     # """Level 3 - add bypass."""
     maze: Maze = field(default_factory=lambda: maze_12)
-    ticks_per_second: float = 1.5
+    ticks_per_second: float = 2.0
 
     def __post_init__(self):
         """Initialize board and characters."""
@@ -108,7 +108,7 @@ class PacManGame(GameMode):
         assert self.pacman.coord is not None
         if not self.dot_bites_remaining:
             if self.level == 0:
-                self.play_level(1)
+                self.play_level(0)
             else:
                 self.state = self.WON_GAME
         if self.ghost_got_pacman():
