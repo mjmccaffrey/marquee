@@ -60,7 +60,7 @@ E = TypeVar("E", bound=Entity)
 class GameMode(PerformanceMode):
     """Play a game with the lights."""
     maze: Maze
-    ticks_per_second: int # !!! adjust by speed_factor
+    ticks_per_second: float # !!! adjust by speed_factor
 
     def __post_init__(self):
         """"""

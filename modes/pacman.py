@@ -24,7 +24,7 @@ class PacManGame(GameMode):
     """Level 2 - Blinky and Pinky."""
     # """Level 3 - add bypass."""
     maze: Maze = field(default_factory=lambda: maze_12)
-    ticks_per_second: int = 2
+    ticks_per_second: float = 0.5
 
     def __post_init__(self):
         """Initialize board and characters."""
