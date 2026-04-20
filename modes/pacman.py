@@ -45,7 +45,7 @@ class PacManGame(GameMode):
     def pacman_bite(self, etype: type, coord: int):
         """Track remaining. Brighten top bulb."""
         dot = self.board[coord][etype]
-        dot.brightness -= 75
+        dot.brightness -= 50
         if dot.brightness <= 0:
             del self.board[coord][Dot]
         self.dot_bites_remaining -= 1

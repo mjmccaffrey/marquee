@@ -120,7 +120,6 @@ class TaskSchedule:
                     break
             task, duration = next_task_or_wait()
             if task is not None:
-                print('!!!!!!!!!!!!!', task)
                 task.action()
             else:
                 wait_fn(duration)
