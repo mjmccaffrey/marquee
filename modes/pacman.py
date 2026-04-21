@@ -15,7 +15,6 @@ from devices.lightcontroller import LightChannel, ChannelUpdate
 
 log = logging.getLogger('marquee.' + __name__)
 
-GHOSTS = {Pinky, Blinky}
 PACMAN_START = 7
 
 @dataclass(kw_only=True)
@@ -86,6 +85,7 @@ class PacManGame(GameMode):
                 wait_ticks=999999 if self.level == 0 else 20,
             )
         )
+        self.ghosts = (self.pinky, self.blinky)
         self.place_entity(self.pacman, PACMAN_START)
         self.update_lights(self.board)
         self.change_state(self.PLAY_GAME_STATE)
@@ -130,7 +130,7 @@ class PacManGame(GameMode):
 
     def ghost_got_pacman(self) -> bool:
         """"""
-        for ghost in GHOSTS:
+        for ghost in self.ghosts:
             if self.pacman.coord == ghost.coord:
                 return True
             if (
@@ -155,7 +155,7 @@ class PacManGame(GameMode):
         # Pac-Man and Ghost
         if (
             PacMan in entities and 
-            any(ghost in entities for ghost in GHOSTS)
+            any(ghost in entities for ghost in self.ghosts)
         ):
             brightness, color = Ghost.brightness, Colors.BLUE
         # 2 Ghosts
