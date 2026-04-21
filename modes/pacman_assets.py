@@ -36,7 +36,7 @@ class PacMan(Character):
         dir = self.game.joystick.direction
         if dir is None:
             return
-        log.info(f'{dir=}')
+        # log.info(f'{dir=}')
         assert self.coord is not None
         coord = getattr(self.game.maze[self.coord], dir, None)
         if coord is None:
