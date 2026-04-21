@@ -111,7 +111,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 json=command.params,
                 timeout=2.0,
             )
-            log.info(f"ZONE: {i} {command.params}")
+            log.debug(f"ZONE: {i} {command.params}")
             response.raise_for_status()
         for channel in self.channels:
             channel.update_state(replace(update, channel=channel))

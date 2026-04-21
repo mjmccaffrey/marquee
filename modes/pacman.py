@@ -48,7 +48,7 @@ class PacManGame(GameMode):
     def pacman_bite(self, etype: type, coord: int):
         """Track remaining. Brighten top bulb."""
         dot = self.board[coord][etype]
-        dot.brightness -= 40
+        dot.brightness -= 50
         if dot.brightness <= 0:
             del self.board[coord][Dot]
         self.dot_bites_remaining -= 1
@@ -96,8 +96,7 @@ class PacManGame(GameMode):
 
     def post_level_1_state(self) -> None:
         """"""
-        colors = (Colors.WHITE, Colors.BLUE)
-        for i, c in zip(range(8), cycle(colors)):
+        for i, c in zip(range(8), cycle((Colors.WHITE, Colors.BLUE))):
             log.info(f'{1 + i * 0.5} {c}')
             self.schedule(
                 due=(1 + i * 0.5),
