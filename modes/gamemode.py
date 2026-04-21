@@ -64,7 +64,7 @@ class GameMode(PerformanceMode):
 
     def __post_init__(self):
         """"""
-        self.PLAY_GAME = self.play_game
+        self.PLAY_GAME_STATE = self.play_game_state
         self.state: Callable[[], None]
 
     @abstractmethod
@@ -93,17 +93,17 @@ class GameMode(PerformanceMode):
 
     def execute(self) -> None:
         """"""
+        self.state()
+
+    def play_game_state(self):
+        """"""
         self.schedule(
-            action=self.execute_state,
+            action=self.play_game_round,
             due=(1 / self.ticks_per_second),
             repeat=True,
         )
 
-    def execute_state(self):
-        """"""
-        self.state()
-
-    def play_game(self):
+    def play_game_round(self):
         """Execute a game round."""
         old_board = {
             k: v.copy()

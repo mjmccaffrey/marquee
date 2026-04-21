@@ -69,7 +69,7 @@ class Running(GameMode):
         self.place_entity(self.one, 0)
         self.place_entity(self.two, 1)
         self.place_entity(self.three, 6)
-        self.state = self.PLAY_GAME
+        self.state = self.PLAY_GAME_STATE
 
     def state_logic(self) -> None:
         """No state logic required."""

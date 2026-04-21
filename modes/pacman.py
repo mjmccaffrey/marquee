@@ -88,7 +88,7 @@ class PacManGame(GameMode):
         )
         self.place_entity(self.pacman, PACMAN_START)
         self.update_lights(self.board)
-        self.change_state(self.PLAY_GAME)
+        self.change_state(self.PLAY_GAME_STATE)
 
     def pre_level_1_state(self) -> None:
         """Set up dots and characters."""
@@ -104,6 +104,7 @@ class PacManGame(GameMode):
                     self.lights.set_channels, color=c, on=True, transition=0,
                 ),
             )
+        self.schedule(due=6.0, action=partial(self.change_state, self.pre_level_1_state))
 
     def game_won_state(self) -> None:
         """"""
