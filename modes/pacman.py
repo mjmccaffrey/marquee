@@ -98,6 +98,7 @@ class PacManGame(GameMode):
         """"""
         colors = (Colors.WHITE, Colors.BLUE)
         for i, c in zip(range(8), cycle(colors)):
+            log.info(f'{1 + i * 0.5} {c}')
             self.schedule(
                 due=(1 + i * 0.5),
                 action=partial(
