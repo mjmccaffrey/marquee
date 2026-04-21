@@ -12,7 +12,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 BITE_EVENT = "BITE_EVENT"
 
-@dataclass(kw_only=True, repr=False, eq=True, )
+@dataclass(kw_only=True, repr=False, eq=True)
 class Dot(Entity):
     """"""
     game: GameMode
@@ -50,7 +50,7 @@ class PacMan(Character):
         self.game.events.notify(BITE_EVENT, etype=Dot, coord=coord)
 
 
-@dataclass(kw_only=True, repr=False)
+@dataclass(kw_only=True, repr=False, eq=True)
 class Ghost(Character, ABC):
     """"""
     brightness: int = 80
