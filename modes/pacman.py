@@ -155,7 +155,7 @@ class PacManGame(GameMode):
         # Pac-Man and Ghost
         if (
             PacMan in entities and 
-            any(ghost in entities for ghost in self.ghosts)
+            any(type(ghost) in entities for ghost in self.ghosts)
         ):
             brightness, color = Ghost.brightness, Colors.BLUE
         # 2 Ghosts

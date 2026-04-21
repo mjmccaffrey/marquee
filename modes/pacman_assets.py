@@ -50,7 +50,7 @@ class PacMan(Character):
         self.game.events.notify(BITE_EVENT, etype=Dot, coord=coord)
 
 
-@dataclass(kw_only=True, repr=False, eq=True)
+@dataclass(kw_only=True, repr=False)
 class Ghost(Character, ABC):
     """"""
     brightness: int = 80
