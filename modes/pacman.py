@@ -1,6 +1,8 @@
 """Marquee Lighted Sign Project - pacman mode"""
 
 from dataclasses import dataclass, field
+from functools import partial
+from itertools import cycle
 import logging
 from typing import Any
 
@@ -34,10 +36,11 @@ class PacManGame(GameMode):
         self.buttons.game_start.set_light(True)
         self.dot_bites_maximum = (self.lights.count - 1) * 2
         self.events.subscribe(BITE_EVENT, self.pacman_bite)
-        self.PRE_GAME = self.pre_game
-        self.WON_GAME = self.won_game
-        self.LOST_GAME = self.lost_game
-        self.state = self.PRE_GAME
+        self.PRE_LEVEL_1_STATE = self.pre_level_1_state
+        self.POST_LEVEL_1_STATE = self.post_level_1_state
+        self.GAME_WON_STATE = self.game_won_state
+        self.GAME_LOST_STATE = self.game_lost_state
+        self.state = self.PRE_LEVEL_1_STATE
 
     def interrupt_action(self, args: tuple[Any, ...]) -> None:
         """"""
@@ -45,7 +48,7 @@ class PacManGame(GameMode):
     def pacman_bite(self, etype: type, coord: int):
         """Track remaining. Brighten top bulb."""
         dot = self.board[coord][etype]
-        dot.brightness -= 50
+        dot.brightness -= 40
         if dot.brightness <= 0:
             del self.board[coord][Dot]
         self.dot_bites_remaining -= 1
@@ -57,10 +60,6 @@ class PacManGame(GameMode):
             )
         )
 
-    def pre_game(self) -> None:
-        """Set up dots and characters."""
-        self.play_level(0)
-    
     def play_level(self, level: int) -> None:
         """"""
         log.info(f"Playing level {level}")
@@ -91,12 +90,25 @@ class PacManGame(GameMode):
         self.update_lights(self.board)
         self.state = self.PLAY_GAME
 
-    def won_game(self) -> None:
+    def pre_level_1_state(self) -> None:
+        """Set up dots and characters."""
+        self.play_level(0)
+
+    def post_level_1_state(self) -> None:
+        """"""
+        colors = (Colors.WHITE, Colors.BLUE)
+        for i, c in zip(range(8), cycle(colors)):
+            self.schedule(
+                due=(1 + i * 0.5),
+                action=partial(self.lights.set_channels, color=c, transition=0),
+            )
+
+    def game_won_state(self) -> None:
         """"""
         log.info("You won!")
         self.tasks.delete_owned_by(self)
 
-    def lost_game(self) -> None:
+    def game_lost_state(self) -> None:
         """"""
         log.info("You lost!")
         self.tasks.delete_owned_by(self)
@@ -108,11 +120,11 @@ class PacManGame(GameMode):
         assert self.pacman.coord is not None
         if not self.dot_bites_remaining:
             if self.level == 0:
-                self.play_level(0)
+                self.state = self.POST_LEVEL_1_STATE
             else:
-                self.state = self.WON_GAME
+                self.state = self.GAME_WON_STATE
         if self.ghost_got_pacman():
-            self.state = self.LOST_GAME
+            self.state = self.GAME_LOST_STATE
 
     def ghost_got_pacman(self) -> bool:
         """"""
