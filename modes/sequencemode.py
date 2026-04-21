@@ -71,7 +71,6 @@ class SequenceMode(PerformanceMode):
            If stop is specified, end the sequence 
            just before the nth pattern."""
         # self.player.replace_kwarg_values(self.kwargs)
-        print("**************************************************")
         delay_iter = (
             itertools.cycle(self.delay) 
                 if isinstance(self.delay, Iterable) else
@@ -87,7 +86,6 @@ class SequenceMode(PerformanceMode):
                     if delay is None else 
                 self.pre_delay + i * delay
             )
-            print(i, delay, pattern)
             self.schedule(
                 action = action,
                 due = due,
@@ -143,6 +141,5 @@ class SequenceMode(PerformanceMode):
                 for p in pattern
             ),
         }
-        print(kwargs)
         self.lights.set_channels(**kwargs)
 

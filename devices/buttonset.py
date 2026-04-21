@@ -36,7 +36,6 @@ class ButtonSet:
     def button_in_set_pressed(self, button: ButtonInterface, held: bool) -> None:
         """Called by Button that was pressed."""
         self.which_button_pressed = button
-        print(button)
         self.button_was_held = held
         self.pressed_event.set()
         
