@@ -40,7 +40,7 @@ class PacManGame(GameMode):
         self.POST_LEVEL_1_STATE = self.post_level_1_state
         self.GAME_WON_STATE = self.game_won_state
         self.GAME_LOST_STATE = self.game_lost_state
-        self.state = self.POST_LEVEL_1_STATE
+        self.state = self.PRE_LEVEL_1_STATE
 
     def interrupt_action(self, args: tuple[Any, ...]) -> None:
         """"""
@@ -96,17 +96,13 @@ class PacManGame(GameMode):
 
     def post_level_1_state(self) -> None:
         """"""
-        for i, c in zip(range(8), cycle((Colors.WHITE, Colors.BLUE))):
-            kwargs = dict(
-                color=c, transition=0
-            )
+        for i, c in zip(range(4), cycle((Colors.WHITE, Colors.BLUE))):
+            kwargs = dict(color=c, transition=0)
             if i == 0:
-                kwargs = kwargs | dict(on=True)
+                kwargs |= dict(on=True)
             self.schedule(
-                due=(1 + i * 0.5),
-                action=partial(
-                    self.lights.set_channels, **kwargs,
-                ),
+                due=(1 + i),
+                action=partial(self.lights.set_channels, **kwargs),
             )
         self.schedule(due=6.0, action=partial(self.change_state, self.pre_level_1_state))
 
@@ -117,6 +113,7 @@ class PacManGame(GameMode):
     def game_lost_state(self) -> None:
         """"""
         log.info("You lost!")
+        print("**************************************")
 
     def state_logic(self) -> None:
         """"""
