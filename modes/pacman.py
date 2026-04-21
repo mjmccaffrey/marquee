@@ -96,14 +96,14 @@ class PacManGame(GameMode):
 
     def post_level_1_state(self) -> None:
         """"""
-        for i, c in zip(range(4), cycle((Colors.WHITE, Colors.BLUE))):
+        for i, c in zip(range(8), cycle((Colors.WHITE, Colors.BLUE))):
             kwargs = dict(
                 color=c, transition=0
             )
             if i == 0:
                 kwargs = kwargs | dict(on=True)
             self.schedule(
-                due=(1 + i),
+                due=(1 + i * 0.5),
                 action=partial(
                     self.lights.set_channels, **kwargs,
                 ),
