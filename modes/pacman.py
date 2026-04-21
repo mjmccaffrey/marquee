@@ -97,10 +97,15 @@ class PacManGame(GameMode):
     def post_level_1_state(self) -> None:
         """"""
         for i, c in zip(range(4), cycle((Colors.WHITE, Colors.BLUE))):
+            kwargs = dict(
+                color=c, transition=0
+            )
+            if i == 0:
+                kwargs = kwargs | dict(on=True)
             self.schedule(
                 due=(1 + i),
                 action=partial(
-                    self.lights.set_channels, color=c, on=True, transition=0,
+                    self.lights.set_channels, **kwargs,
                 ),
             )
         self.schedule(due=6.0, action=partial(self.change_state, self.pre_level_1_state))

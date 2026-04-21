@@ -4,12 +4,9 @@ from argparse import (
     Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
 )
 from collections.abc import Callable
-import logging
 from typing import Any, NoReturn
 
 from device_defs import LIGHT_COUNT
-
-log = logging.getLogger('marquee.' + __name__)
 
 
 class ArgumentParserImproved(ArgumentParser):
@@ -60,32 +57,32 @@ def display_help(
     commands: dict[str, Callable],
 ) -> None:
     """"Display the command-line syntax."""
-    log.error('')
-    log.error("Usage:")
-    log.error("  marquee.py mode [mode_index | mode_name]")
-    log.error("                  [--brightness_factor=[0 - 1.0]]")
-    log.error("                  [--speed_factor=(0 - 5.0]]")
-    log.error("  marquee.py pattern [--dimmer=[pattern] &| --relay=[pattern]]")
-    log.error("                     [--derive_missing=[true|false]]")
-    log.error("  marquee.py command [command_name]")
-    log.error('')
-    log.error("Modes:")
+    print('')
+    print("Usage:")
+    print("  marquee.py mode [mode_index | mode_name]")
+    print("                  [--brightness_factor=[0 - 1.0]]")
+    print("                  [--speed_factor=(0 - 5.0]]")
+    print("  marquee.py pattern [--dimmer=[pattern] &| --relay=[pattern]]")
+    print("                     [--derive_missing=[true|false]]")
+    print("  marquee.py command [command_name]")
+    print('')
+    print("Modes:")
     for index, name in mode_menu:
-        log.error(f'   {index}   {name}')
-    log.error('')
-    log.error("Patterns: Specify --dimmer, --relay, or both.")
-    log.error(f"  dimmer: {LIGHT_COUNT} hex values, each 0..A (0%..100%)")
-    log.error(f"  relay: {LIGHT_COUNT} binary values")
-    log.error("  derive_missing:")
-    log.error("      If true (default) and only one pattern is specified,")
-    log.error("      the missing pattern will be assumed.")
-    log.error("      If false, the state of the device set without a pattern")
-    log.error("      will not be initialized at startup.")
-    log.error('')
-    log.error("Commands:")
+        print(f'   {index}   {name}')
+    print('')
+    print("Patterns: Specify --dimmer, --relay, or both.")
+    print(f"  dimmer: {LIGHT_COUNT} hex values, each 0..A (0%..100%)")
+    print(f"  relay: {LIGHT_COUNT} binary values")
+    print("  derive_missing:")
+    print("      If true (default) and only one pattern is specified,")
+    print("      the missing pattern will be assumed.")
+    print("      If false, the state of the device set without a pattern")
+    print("      will not be initialized at startup.")
+    print('')
+    print("Commands:")
     for command in commands:
-        log.error(f'  {command}')
-    log.error('')
+        print(f'  {command}')
+    print('')
 
 
 def validate_brightness_factor(arg: str) -> float:
