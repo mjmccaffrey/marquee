@@ -88,7 +88,7 @@ class PacManGame(GameMode):
         )
         self.place_entity(self.pacman, PACMAN_START)
         self.update_lights(self.board)
-        self.state = self.PLAY_GAME
+        self.change_state(self.PLAY_GAME)
 
     def pre_level_1_state(self) -> None:
         """Set up dots and characters."""
@@ -100,18 +100,18 @@ class PacManGame(GameMode):
         for i, c in zip(range(8), cycle(colors)):
             self.schedule(
                 due=(1 + i * 0.5),
-                action=partial(self.lights.set_channels, color=c, transition=0),
+                action=partial(
+                    self.lights.set_channels, color=c, on=True, transition=0,
+                ),
             )
 
     def game_won_state(self) -> None:
         """"""
         log.info("You won!")
-        self.tasks.delete_owned_by(self)
 
     def game_lost_state(self) -> None:
         """"""
         log.info("You lost!")
-        self.tasks.delete_owned_by(self)
 
     def state_logic(self) -> None:
         """"""
@@ -120,11 +120,11 @@ class PacManGame(GameMode):
         assert self.pacman.coord is not None
         if not self.dot_bites_remaining:
             if self.level == 0:
-                self.state = self.POST_LEVEL_1_STATE
+                self.change_state(self.POST_LEVEL_1_STATE)
             else:
-                self.state = self.GAME_WON_STATE
+                self.change_state(self.GAME_WON_STATE)
         if self.ghost_got_pacman():
-            self.state = self.GAME_LOST_STATE
+            self.change_state(self.GAME_LOST_STATE)
 
     def ghost_got_pacman(self) -> bool:
         """"""

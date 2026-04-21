@@ -79,6 +79,11 @@ class GameMode(PerformanceMode):
     def state_logic(self):
         """"""
 
+    def change_state(self, state: Callable):
+        """"""
+        self.tasks.delete_owned_by(self)
+        self.state = state
+
     def init_level(self):
         """"""
         self.board: Board = {coord: {} for coord in sorted(self.maze)}
