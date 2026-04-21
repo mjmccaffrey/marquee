@@ -76,14 +76,14 @@ class PacManGame(GameMode):
             Blinky(
                 game=self, 
                 direction=+1,
-                wait_ticks=999999 if self.level == 0 else 5,
+                wait_ticks=20 if self.level == 0 else 10,
             )
         )
         self.pinky = self.register_entity(
             Pinky(
                 game=self, 
                 direction=-1,
-                wait_ticks=999999 if self.level == 0 else 10,
+                wait_ticks=999999 if self.level == 0 else 20,
             )
         )
         self.place_entity(self.pacman, PACMAN_START)
@@ -96,10 +96,9 @@ class PacManGame(GameMode):
 
     def post_level_1_state(self) -> None:
         """"""
-        for i, c in zip(range(8), cycle((Colors.WHITE, Colors.BLUE))):
-            log.info(f'{1 + i * 0.5} {c}')
+        for i, c in zip(range(4), cycle((Colors.WHITE, Colors.BLUE))):
             self.schedule(
-                due=(1 + i * 0.5),
+                due=(1 + i),
                 action=partial(
                     self.lights.set_channels, color=c, on=True, transition=0,
                 ),
