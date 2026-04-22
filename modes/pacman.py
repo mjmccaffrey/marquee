@@ -43,7 +43,7 @@ class PacManGame(GameMode):
         self.POST_LEVEL_1_STATE = self.post_level_1_state
         self.GAME_WON_STATE = self.game_won_state
         self.GAME_LOST_STATE = self.game_lost_state
-        self.state = self.PRE_LEVEL_1_STATE
+        self.state = self.PRE_GAME_STATE
 
     def button_action(self, button: ButtonInterface) -> int | None:
         """If direction button pushed, change displayed color set.
