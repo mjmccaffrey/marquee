@@ -33,26 +33,30 @@ class PacManGame(GameMode):
         super().__post_init__()
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
-        self.buttons.game_start.set_light(True)
         self.dot_bites_maximum = (self.lights.count - 1) * 2
+        self._define_events_and_states()
+        self.state = self.PRE_GAME_STATE
+
+    def _define_events_and_states(self):
+        """"""
         self.events.subscribe(BITE_EVENT, self.pacman_bite)
-        self.game_start_pressed = False
         self.PRE_GAME_STATE = self.pre_game_state
         self.PRE_LEVEL_1_STATE = self.pre_level_1_state
         self.PRE_LEVEL_1_STATE = self.pre_level_1_state
         self.POST_LEVEL_1_STATE = self.post_level_1_state
         self.GAME_WON_STATE = self.game_won_state
         self.GAME_LOST_STATE = self.game_lost_state
-        self.state = self.PRE_GAME_STATE
 
     def button_action(self, button: ButtonInterface) -> int | None:
-        """If direction button pushed, change displayed color set.
-           Otherwise, call parent's button handler."""
-        if button == self.buttons.game_start:
-            self.game_start_pressed = True
+        """"""
+        if (
+            button == self.buttons.game_start and
+            self.state == self.PRE_GAME_STATE
+        ):
+            self.change_state(self.PRE_LEVEL_1_STATE)
         else:
             return super().button_action(button)
-        
+
     def interrupt_action(self, args: tuple[Any, ...]) -> None:
         """"""
     
@@ -104,11 +108,7 @@ class PacManGame(GameMode):
 
     def pre_game_state(self) -> None:
         """"""
-        if self.game_start_pressed:
-            self.game_start_pressed = False
-            self.change_state(self.PRE_LEVEL_1_STATE)
-        else:
-            self.schedule(due=0.1, action=self.pre_game_state)
+        self.buttons.game_start.set_light(True)
 
     def pre_level_1_state(self) -> None:
         """Set up dots and characters."""
