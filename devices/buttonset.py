@@ -30,7 +30,7 @@ class ButtonSet:
         for field in fields(self):
             button = getattr(self, field.name)
             setattr(
-                button, 'button_action', self.button_action
+                button, 'button_action', self.button_activity
             )
         self.reset()
 
