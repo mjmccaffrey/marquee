@@ -42,11 +42,9 @@ class SelectMode(ForegroundMode, ABC):
         match button:
             case b.body_back | b.corded_a | b.corded_b | b.remote_a | b.remote_d:
                 self.desired = self.update_desired(+1)
-            case b.game_start:
-                pass
             case b.remote_b:
                 self.desired = self.update_desired(-1)
-            case b.remote_c:
+            case b.game_start | b.remote_c:
                 pass
             case _:
                 raise RuntimeError("Unrecognized button.")

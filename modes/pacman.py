@@ -7,6 +7,7 @@ import logging
 from typing import Any
 
 from devices.color import Colors, RGB
+from devices.devices_misc import ButtonInterface
 from .gamemode import Entity, EntityGroup, GameMode, Maze
 from .pacman_assets import (
     Dot, BITE_EVENT, Ghost, PacMan, Pinky, Blinky, maze_12
@@ -35,12 +36,23 @@ class PacManGame(GameMode):
         self.buttons.game_start.set_light(True)
         self.dot_bites_maximum = (self.lights.count - 1) * 2
         self.events.subscribe(BITE_EVENT, self.pacman_bite)
+        self.game_start_pressed = False
+        self.PRE_GAME_STATE = self.pre_game_state
+        self.PRE_LEVEL_1_STATE = self.pre_level_1_state
         self.PRE_LEVEL_1_STATE = self.pre_level_1_state
         self.POST_LEVEL_1_STATE = self.post_level_1_state
         self.GAME_WON_STATE = self.game_won_state
         self.GAME_LOST_STATE = self.game_lost_state
         self.state = self.PRE_LEVEL_1_STATE
 
+    def button_action(self, button: ButtonInterface) -> int | None:
+        """If direction button pushed, change displayed color set.
+           Otherwise, call parent's button handler."""
+        if button == self.buttons.game_start:
+            self.game_start_pressed = True
+        else:
+            return super().button_action(button)
+        
     def interrupt_action(self, args: tuple[Any, ...]) -> None:
         """"""
     
@@ -90,6 +102,14 @@ class PacManGame(GameMode):
         self.update_lights(self.board)
         self.change_state(self.PLAY_GAME_STATE)
 
+    def pre_game_state(self) -> None:
+        """"""
+        if self.game_start_pressed:
+            self.game_start_pressed = False
+            self.change_state(self.PRE_LEVEL_1_STATE)
+        else:
+            self.schedule(due=0.1, action=self.pre_game_state)
+
     def pre_level_1_state(self) -> None:
         """Set up dots and characters."""
         self.play_level(0)
@@ -113,7 +133,6 @@ class PacManGame(GameMode):
     def game_lost_state(self) -> None:
         """"""
         log.info("You lost!")
-        print("**************************************")
 
     def state_logic(self) -> None:
         """"""

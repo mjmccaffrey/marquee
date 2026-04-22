@@ -6,7 +6,9 @@ import signal
 from typing import Any, NoReturn
 
 from devices.color import ColorSets
-from devices.devices_misc import ButtonInterface, ButtonPressed
+from devices.devices_misc import (
+    ButtonAction, ButtonActionException, ButtonInterface,
+)
 from devices.buttonset import ButtonSet
 from devices.joystick import Joystick
 from event import EventSystem
@@ -138,13 +140,13 @@ class Player:
                     log.info(f"Executing mode {self.active_mode}")
                     self.active_mode.execute()
                 self.wait()
-            except ButtonPressed as press:
-                button, held = press.args
-                if held:
+            except ButtonActionException as press:
+                button, activity = press.args
+                if activity == ButtonAction.HELD:
                     return True
                 self.buttons.reset()
                 assert self.active_mode is not None
-                log.debug(f"Button {button} pressed in mode {self.active_mode}")
+                log.debug(f"Button {button} {activity} in mode {self.active_mode}")
                 new_mode_index = self.notify_button_action(button)
             except ChangeMode as cm:
                 log.debug("ChangeMode caught")

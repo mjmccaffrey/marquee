@@ -1,35 +1,45 @@
 """Marquee Lighted Sign Project - devices_misc"""
 
 from dataclasses import dataclass
+from enum import auto, StrEnum
 from typing import Protocol
 
 
-@dataclass
-class ButtonPressed(Exception):
-    """Button pressed base exception."""
-    button: 'ButtonInterface'
-    held: bool
+class ButtonAction(StrEnum):
+    """"""
+    HELD = auto()
+    PRESSED = auto()
+    RELEASED = auto()
 
-class ButtonPhysicallyPressed(ButtonPressed):
+@dataclass
+class ButtonActionException(Exception):
+    """Button activity base exception."""
+    button: 'ButtonInterface'
+    action: ButtonAction
+
+class ButtonPhysicallyChanged(ButtonActionException):
     """Physical button pressed exception."""
 
-class ButtonVirtuallyPressed(ButtonPressed):
+class ButtonVirtuallyPressed(ButtonActionException):
     """Virtual button pressed (IPC signal received) exception."""
 
 
 class ButtonInterface(Protocol):
     """Button interface."""
 
-    def button_physically_pressed(self, held: bool = False) -> None:
-        """Callback for button press."""
+    def button_physically_held(self) -> None:
+        ...
+
+    def button_physically_pressed(self) -> None:
+        ...
+
+    def button_physically_released(self) -> None:
         ...
 
     def button_virtually_pressed(self, signal_number, stack_frame) -> None:
-        """Callback for virtual button press."""
         ...
 
     def close(self) -> None:
-        """Clean up."""
         ...
 
 
@@ -37,16 +47,15 @@ class LightedButtonInterface(ButtonInterface):
     """Lighted button interface."""
 
     def set_light(self, on: bool) -> None:
-        """"""
         ...
 
 
-class ButtonInSetPressed(Protocol):
+class ButtonActionInterface(Protocol):
     """"""
     def __call__(
         self,
         button: ButtonInterface, 
-        held: bool,
+        action: ButtonAction
     ) -> None:
         ...
 

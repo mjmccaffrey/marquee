@@ -5,7 +5,8 @@ import logging
 import threading
 
 from .devices_misc import (
-    ButtonInterface, ButtonPhysicallyPressed, LightedButtonInterface,
+    ButtonAction, ButtonInterface, 
+    ButtonPhysicallyChanged, LightedButtonInterface,
 )
 
 log = logging.getLogger('marquee.' + __name__)
@@ -29,27 +30,33 @@ class ButtonSet:
         for field in fields(self):
             button = getattr(self, field.name)
             setattr(
-                button, 'button_in_set_pressed', self.button_in_set_pressed
+                button, 'button_action', self.button_action
             )
         self.reset()
 
-    def button_in_set_pressed(self, button: ButtonInterface, held: bool) -> None:
-        """Called by Button that was pressed."""
-        self.which_button_pressed = button
-        self.button_was_held = held
+    def button_activity(
+        self, 
+        button: ButtonInterface, 
+        action: ButtonAction,
+    ) -> None:
+        """Called by Button that had activity."""
+        log.info(f"Button <{button}> physically {action}")
+        self.button_actioned = button
+        self.button_action = action
         self.pressed_event.set()
         
     def reset(self) -> None:
         """Prepare for a button press."""
-        self.which_button_pressed = None
-        self.button_was_held = False
+        self.button_actioned = None
+        self.button_action = None
         self.pressed_event = threading.Event()
 
     def wait(self, seconds: float | None) -> None:
         """Wait until seconds have elapsed or any button is pressed."""
         if self.pressed_event.wait(seconds):
-            assert self.which_button_pressed is not None
-            raise ButtonPhysicallyPressed(
-                self.which_button_pressed, self.button_was_held,
+            assert self.button_actioned is not None
+            assert self.button_action is not None
+            raise ButtonPhysicallyChanged(
+                self.button_actioned, self.button_action,
             )
 

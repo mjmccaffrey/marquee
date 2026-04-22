@@ -32,6 +32,8 @@ class PerformanceMode(ForegroundMode, ABC):
             case b.remote_d:
                 self.clicker.click()
                 new_mode = self.wrap_mode_index(+1)
+            case b.game_start:
+                pass
             case _:
                 raise RuntimeError("Unrecognized button.")
         return new_mode

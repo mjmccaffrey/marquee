@@ -61,7 +61,7 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
         body_back = Button(
             "body_back",
             _Button(pin=26, bounce_time=0.10, hold_time=10), 
-            support_hold=True,
+            supports_hold=True,
             signal_number=signal.SIGUSR1,  # type: ignore
         ),
         corded_a = Button(
