@@ -6,7 +6,7 @@ import random
 
 from device_defs import (
     ALL_OFF, ALL_ON, LIGHT_COUNT, 
-    LIGHTS_BY_COL, LIGHTS_BY_ROW, LIGHTS_BY_SIDE, LIGHTS_CLOCKWISE, 
+    LIGHTS_BY_COLUMN, LIGHTS_BY_ROW, LIGHTS_BY_SIDE, LIGHTS_CLOCKWISE, 
 )
 
 MAX_YIELDS = 50   # !!!!!!!!!!!!!!
@@ -68,7 +68,7 @@ def lights_in_groups(rows=True, from_top_left=True) -> Iterator[list[int]]:
     if rows:
         groups = LIGHTS_BY_ROW
     else:  # cols
-        groups = LIGHTS_BY_COL
+        groups = LIGHTS_BY_COLUMN
     if not from_top_left:
         groups = reversed(groups)
     for group in groups:
