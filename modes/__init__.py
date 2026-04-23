@@ -19,6 +19,7 @@ from .running import Running
 from .sequencemode import SequenceMode
 # from .signs import Signs
 from .silentfadebuild import SilentFadeBuild
+from .tiltsensors import TiltSensors
 from .twelve import Twelve
 
 # Background concrete modes

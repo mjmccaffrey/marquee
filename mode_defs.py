@@ -42,6 +42,7 @@ def register_special_modes(exec: Executor) -> None:
 def register_channel_modes(exec: Executor):
     """"""
 
+    exec.add_mode('tilt', TiltSensors)
     exec.add_mode("cs_test", ColorSetCycle,
         sequence = [
             # ("party", 1),
