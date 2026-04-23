@@ -38,6 +38,7 @@ class TiltSensors(PerformanceMode):
 
     def execute(self):
         """"""
+        print(self.lights_on())
         self.lights.set_channels(on=self.lights_on())
 
     def wrap_position(self, delta: int):
