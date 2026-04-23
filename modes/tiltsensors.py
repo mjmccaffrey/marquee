@@ -23,10 +23,10 @@ class TiltSensors(PerformanceMode):
     def button_action(self, button: ButtonInterface) -> int | None:
         """"""
         if button == self.buttons.corded_a:
-            self.entry_index = self.wrap_position(+1)
+            self.position = self.wrap_position(+1)
             self.execute()
         elif button == self.buttons.corded_b:
-            self.entry_index = self.wrap_position(-1)
+            self.position = self.wrap_position(-1)
             self.execute()
         else:
             return super().button_action(button)
