@@ -5,6 +5,17 @@ from enum import auto, StrEnum
 from typing import Protocol
 
 
+class ButtonRef(StrEnum):
+    """Every button."""
+    BODY_BACK = auto()
+    CORDED_A = auto()
+    CORDED_B = auto()
+    GAME_START = auto()
+    REMOTE_A = auto()
+    REMOTE_B = auto()
+    REMOTE_C = auto()
+    REMOTE_D = auto()
+
 class ButtonAction(StrEnum):
     """"""
     HELD = auto()
@@ -14,7 +25,7 @@ class ButtonAction(StrEnum):
 @dataclass
 class ButtonActionException(Exception):
     """Button activity base exception."""
-    button: 'ButtonInterface'
+    button: ButtonRef
     action: ButtonAction
 
 class ButtonPhysicallyChanged(ButtonActionException):
@@ -54,7 +65,7 @@ class ButtonActionInterface(Protocol):
     """"""
     def __call__(
         self,
-        button: ButtonInterface, 
+        button: ButtonRef,
         action: ButtonAction
     ) -> None:
         ...

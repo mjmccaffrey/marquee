@@ -7,7 +7,7 @@ import signal
 from gpiozero import Button as _Button  # type: ignore
 
 from .devices_misc import (
-    ButtonAction, ButtonActionInterface, ButtonInterface, ButtonVirtuallyPressed
+    ButtonAction, ButtonActionInterface, ButtonRef, ButtonVirtuallyPressed
 )
 
 log = logging.getLogger('marquee.' + __name__)

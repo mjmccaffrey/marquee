@@ -3,7 +3,7 @@
 from dataclasses import InitVar, dataclass
 import logging
 
-from devices.devices_misc import ButtonInterface
+from devices.devices_misc import ButtonRef
 from .performancemode import PerformanceMode
 from .modes_misc import CycleEntry, CycleSequence
 
@@ -48,7 +48,7 @@ class ColorSetCycle(PerformanceMode):
                 cs_sequence.append(CycleEntry(name, seconds))
         return cs_sequence
 
-    def button_action(self, button: ButtonInterface) -> int | None:
+    def button_action(self, button: ButtonRef) -> int | None:
         """If direction button pushed, change displayed color set.
            Otherwise, call parent's button handler."""
         direction_buttons = {

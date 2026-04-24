@@ -4,7 +4,7 @@ from abc import ABC
 from dataclasses import dataclass
 import logging
 
-from devices.devices_misc import ButtonInterface
+from devices.devices_misc import ButtonRef
 from .foregroundmode import ForegroundMode
 from .modes_misc import ModeIndex
 
@@ -15,7 +15,7 @@ log = logging.getLogger('marquee.' + __name__)
 class PerformanceMode(ForegroundMode, ABC):
     """Base for performance modes."""
 
-    def button_action(self, button: ButtonInterface) -> int | None:
+    def button_action(self, button: ButtonRef) -> int | None:
         """Respond to button being pressed.
            Return index of new mode, if any."""
         new_mode = None

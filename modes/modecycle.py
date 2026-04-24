@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from itertools import cycle
 import logging
 
-from devices.devices_misc import ButtonInterface
+from devices.devices_misc import ButtonRef
 from .backgroundmode import BackgroundMode
 from .modes_misc import CycleEntry, CycleSequence
 
@@ -41,7 +41,7 @@ class ModeCycle(BackgroundMode):
         self.schedule(due=new.seconds)
         self.change_mode(new.index)
     
-    def button_action(self, button: ButtonInterface) -> None:
+    def button_action(self, button: ButtonRef) -> None:
         """Close the instance in response to any button press."""
         # self.player.delete_mode_instance(bg_index=self.index)
         # !!!!!!!!!!!!!!1

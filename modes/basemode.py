@@ -9,7 +9,7 @@ import time
 from typing import Any, NoReturn, Self
 
 from devices.color import ColorSets
-from devices.devices_misc import ButtonInterface
+from devices.devices_misc import ButtonRef
 from event import EventSystem
 from task import Task, TaskSchedule
 from .modes_misc import (
@@ -35,7 +35,7 @@ class BaseMode(ABC):
     parent: Self | None = None
 
     @abstractmethod
-    def button_action(self, button: ButtonInterface) -> int | None:
+    def button_action(self, button: ButtonRef) -> int | None:
         """Respond to button being pressed.
            Return index of new mode, if any."""
 

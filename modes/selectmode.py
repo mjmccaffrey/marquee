@@ -4,7 +4,7 @@ from abc import ABC
 from dataclasses import dataclass
 import logging
 
-from devices.devices_misc import ButtonInterface
+from devices.devices_misc import ButtonRef
 from .foregroundmode import ForegroundMode
 from .modes_misc import ModeIndex
 from .sequences import rotate_build_flip
@@ -33,7 +33,7 @@ class SelectMode(ForegroundMode, ABC):
         """Update the current selection, wrapping within the bounds."""
         return self.wrap_value(self.lower, self.upper, self.desired, delta)
 
-    def button_action(self, button: ButtonInterface) -> None:
+    def button_action(self, button: ButtonRef) -> None:
         """Respond to button being pressed.
            But first, delete the scheduled task which 
            would have finalized the selection."""

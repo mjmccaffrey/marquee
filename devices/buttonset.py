@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - buttonset"""
 
 from dataclasses import dataclass, fields
+from enum import auto, StrEnum
 import logging
 import threading
 
@@ -10,7 +11,6 @@ from .devices_misc import (
 )
 
 log = logging.getLogger('marquee.' + __name__)
-
 
 @dataclass
 class ButtonSet:
@@ -36,7 +36,7 @@ class ButtonSet:
 
     def button_activity(
         self, 
-        button: ButtonInterface, 
+        button: ButtonRef, 
         action: ButtonAction,
     ) -> None:
         """Called by Button that had activity."""

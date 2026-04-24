@@ -7,7 +7,7 @@ from typing import Any, NoReturn
 
 from devices.color import ColorSets
 from devices.devices_misc import (
-    ButtonAction, ButtonActionException, ButtonInterface,
+    ButtonAction, ButtonActionException, ButtonRef,
 )
 from devices.buttonset import ButtonSet
 from devices.joystick import Joystick
@@ -158,7 +158,7 @@ class Player:
             except SigTerm:
                 return False
 
-    def notify_button_action(self, button: ButtonInterface) -> int | None:
+    def notify_button_action(self, button: ButtonRef) -> int | None:
         """Notify all background modes, and active mode, 
            of button action. Return active mode's response."""
         for mode in self.live_bg_modes.values():

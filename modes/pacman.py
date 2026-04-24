@@ -7,7 +7,7 @@ import logging
 from typing import Any
 
 from devices.color import Colors, RGB
-from devices.devices_misc import ButtonInterface
+from devices.devices_misc import ButtonRef
 from .gamemode import Entity, EntityGroup, GameMode, Maze
 from .pacman_assets import (
     Dot, BITE_EVENT, Ghost, PacMan, Pinky, Blinky, maze_12
@@ -47,7 +47,7 @@ class PacManGame(GameMode):
         self.GAME_WON_STATE = self.game_won_state
         self.GAME_LOST_STATE = self.game_lost_state
 
-    def button_action(self, button: ButtonInterface) -> int | None:
+    def button_action(self, button: ButtonRef) -> int | None:
         """"""
         if (
             button == self.buttons.game_start and

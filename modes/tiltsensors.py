@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import logging
 
 from device_defs import LIGHT_COUNT, LIGHTS_BY_COLUMN
-from devices.devices_misc import ButtonInterface
+from devices.devices_misc import ButtonRef
 from devices.color import Colors
 from .performancemode import PerformanceMode
 
@@ -20,10 +20,11 @@ class TiltSensors(PerformanceMode):
         self.lights.set_channels(on=False)
         self.lights.set_channels(color=Colors.WHITE)
     
-    def button_action(self, button: ButtonInterface) -> int | None:
+    def button_action(self, button: ButtonRef) -> int | None:
         """"""
-        if button == self.buttons.corded_a:
-            self.position = self.wrap_position(+1)
+        direction
+        if button == :
+            self.shift = 0
             self.execute()
         elif button == self.buttons.corded_b:
             self.position = self.wrap_position(-1)
@@ -33,6 +34,7 @@ class TiltSensors(PerformanceMode):
 
     def lights_on(self) -> tuple[bool, ...]:
         """"""
+
         on = set(i for c in LIGHTS_BY_COLUMN[:self.position] for i in c)
         return tuple(i in on for i in range(LIGHT_COUNT))
 
