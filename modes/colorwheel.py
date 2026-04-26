@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import logging
+from typing import override
 
 from .performancemode import PerformanceMode
 
@@ -16,6 +17,7 @@ class ColorWheel(PerformanceMode):
     def __post_init__(self) -> None:
         self.rotation = 1
     
+    @override
     def execute(self):
         """"""
         values = (

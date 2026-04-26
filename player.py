@@ -3,11 +3,11 @@
 from dataclasses import dataclass, field
 import logging
 import signal
-from typing import Any, NoReturn
+from typing import Any, NoReturn, override
 
 from devices.color import ColorSets
 from devices.devices_misc import (
-    ButtonAction, ButtonActionException, ButtonRef,
+    ButtonAction, ButtonActionException, ButtonName,
 )
 from devices.buttonset import ButtonSet
 from devices.joystick import Joystick
@@ -31,7 +31,7 @@ class Player:
     buttons: ButtonSet
     drums: DrumSet
     lights: LightSet
-    top: LightSet | None
+    aux: LightSet | None
     clicker: ClickSet
     joystick: Joystick
     speed_factor: float
@@ -49,9 +49,11 @@ class Player:
         self.events = EventSystem()
         self.tasks = TaskSchedule()
 
+    @override
     def __repr__(self) -> str:
         return f"<{self}>"
     
+    @override
     def __str__(self) -> str:
         return "Player"
 
@@ -96,7 +98,7 @@ class Player:
                 buttons=self.buttons,
                 drums=self.drums,
                 lights=self.lights,
-                top=self.top,
+                aux=self.aux,
                 clicker=self.clicker,
                 joystick=self.joystick,
                 speed_factor=self.speed_factor,
@@ -141,12 +143,12 @@ class Player:
                     self.active_mode.execute()
                 self.wait()
             except ButtonActionException as press:
-                button, activity = press.args
-                if activity == ButtonAction.HELD:
+                button, action = press.args
+                if action == ButtonAction.HELD:
                     return True
                 self.buttons.reset()
                 assert self.active_mode is not None
-                log.debug(f"Button {button} {activity} in mode {self.active_mode}")
+                log.debug(f"Button {button} {action} in mode {self.active_mode}")
                 new_mode_index = self.notify_button_action(button)
             except ChangeMode as cm:
                 log.debug("ChangeMode caught")
@@ -158,7 +160,7 @@ class Player:
             except SigTerm:
                 return False
 
-    def notify_button_action(self, button: ButtonRef) -> int | None:
+    def notify_button_action(self, button: ButtonName) -> int | None:
         """Notify all background modes, and active mode, 
            of button action. Return active mode's response."""
         for mode in self.live_bg_modes.values():

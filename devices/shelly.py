@@ -6,7 +6,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 import time
 import logging
-from typing import ClassVar
+from typing import ClassVar, override
 
 import aiohttp
 import requests
@@ -45,9 +45,11 @@ class ShellyController(LightController, bulb_comp=DimBulb):
         ]
         self.channel_count = len(self.channels)
 
+    @override
     def __str__(self) -> str:
         return f"{type(self).__name__}"
     
+    @override
     def calibrate(self) -> None:
         """Execute calibration on each successive channel."""
         time.sleep(3)
@@ -62,10 +64,12 @@ class ShellyController(LightController, bulb_comp=DimBulb):
             time.sleep(150)
         log.info("Calibration should be complete")
 
+    @override
     def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands via aiohttp asynchronously."""
         asyncio.run(self._execute_commands(updates))
 
+    @override
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
         """Update the 'all' zone, rather than individual channels.
            Not supported on these devices."""
@@ -153,15 +157,18 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
             for id in range(self.channel_count)
         ]      
     
+    @override
     def calibrate(self) -> None:
         """Calibrate all channels."""
         raise RuntimeError("Method should not have been called.")
 
+    @override
     def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands via aiohttp asynchronously.
            Use method in ShellyController instead."""
         raise NotImplementedError()
 
+    @override
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
         """Update the 'all' zone, rather than individual channels.
            Not supported on these devices."""
@@ -174,6 +181,7 @@ class ShellyChannel(LightChannel):
 
     brightness: int
 
+    @override
     def calibrate(self) -> None:
         """Initiate channel calibration."""
         command = ChannelCommand(
@@ -188,6 +196,7 @@ class ShellyChannel(LightChannel):
         )
         response.raise_for_status()
 
+    @override
     def _make_set_command(self, update: ChannelUpdate) -> 'ChannelCommand':
         """Produce dimmer API parameters from provided update.
            Color is ignored."""

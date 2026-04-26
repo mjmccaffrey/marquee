@@ -3,8 +3,9 @@
 from abc import ABC
 from dataclasses import dataclass
 import logging
+from typing import override
 
-from devices.devices_misc import ButtonRef
+from devices.devices_misc import ButtonName
 from .foregroundmode import ForegroundMode
 from .modes_misc import ModeIndex
 
@@ -15,27 +16,26 @@ log = logging.getLogger('marquee.' + __name__)
 class PerformanceMode(ForegroundMode, ABC):
     """Base for performance modes."""
 
-    def button_action(self, button: ButtonRef) -> int | None:
+    @override
+    def button_action(self, button: ButtonName) -> int | None:
         """Respond to button being pressed.
            Return index of new mode, if any."""
         new_mode = None
-        b = self.buttons
+        b = ButtonName
         match button:
-            case b.remote_a | b.body_back:
+            case b.REMOTE_A | b.BODY_BACK:
                 new_mode = ModeIndex.MODE_SELECT
-            case b.remote_c:
+            case b.REMOTE_C:
                 self.clicker.click()
                 new_mode = ModeIndex.BRIGHTNESS_SELECT
-            case b.remote_b:
+            case b.REMOTE_B:
                 self.clicker.click()
                 new_mode = self.wrap_mode_index(-1)
-            case b.remote_d:
+            case b.REMOTE_D:
                 self.clicker.click()
                 new_mode = self.wrap_mode_index(+1)
-            case b.game_start:
+            case b.CORDED_A | b.CORDED_B | b.GAME_START:
                 pass
-            case _:
-                raise RuntimeError("Unrecognized button.")
         return new_mode
 
     def wrap_mode_index(self, delta: int) -> int:

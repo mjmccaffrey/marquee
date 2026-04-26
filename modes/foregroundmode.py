@@ -20,7 +20,7 @@ class ForegroundMode(BaseMode, ABC):
     buttons: ButtonSet
     drums: DrumSet
     lights: LightSet
-    top: LightSet
+    aux: LightSet
     clicker: ClickSet
     joystick: Joystick
     speed_factor: float

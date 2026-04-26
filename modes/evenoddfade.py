@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from functools import partial
+from typing import override
 
 from .performancemode import PerformanceMode
 from .sequences import opposite
@@ -13,6 +14,7 @@ class EvenOddFade(PerformanceMode):
     """Fade every-other bulb."""
     delay: float
 
+    @override
     def execute(self) -> None:
         """Schedule next 2 patterns. Schedule next execute."""
         self.lights.set_channels(brightness=0) 

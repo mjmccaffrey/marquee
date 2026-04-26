@@ -3,8 +3,9 @@
 from dataclasses import dataclass
 from itertools import cycle
 import logging
+from typing import override
 
-from devices.devices_misc import ButtonRef
+from devices.devices_misc import ButtonName
 from .backgroundmode import BackgroundMode
 from .modes_misc import CycleEntry, CycleSequence
 
@@ -32,6 +33,7 @@ class ModeCycle(BackgroundMode):
             for name, seconds in self.sequence
         ]
 
+    @override
     def execute(self):
         """Change to next mode in sequence. Schedule next next mode."""
         new = next(self.mode_cycle)
@@ -41,7 +43,8 @@ class ModeCycle(BackgroundMode):
         self.schedule(due=new.seconds)
         self.change_mode(new.index)
     
-    def button_action(self, button: ButtonRef) -> None:
+    @override
+    def button_action(self, button: ButtonName) -> None:
         """Close the instance in response to any button press."""
         # self.player.delete_mode_instance(bg_index=self.index)
         # !!!!!!!!!!!!!!1

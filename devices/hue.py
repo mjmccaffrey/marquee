@@ -1,12 +1,12 @@
-# 1: https://192.168.64.121/clip/v2/resource/light/ca051ade-5842-4c15-aacf-b1e795feb1ad?on=on&dynamics=duration
-# 2: on state not being saved
-
 """Marquee Lighted Sign Project - hue"""
+
+# https://192.168.64.121/clip/v2/resource/light/ca051ade-5842-4c15-aacf-b1e795feb1ad?on=on&dynamics=duration
+# on state not being saved
 
 from collections.abc import Sequence
 from dataclasses import dataclass, field, replace
 import logging
-from typing import ClassVar
+from typing import ClassVar, override
 
 import requests
 import urllib3
@@ -81,10 +81,12 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         ]
         self.channel_count = len(self.channels)
     
+    @override
     def calibrate(self) -> None:
         """Calibrate all channels."""
         raise NotImplementedError
 
+    @override
     def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands."""
         for update in updates:
@@ -101,6 +103,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             response.raise_for_status()
             update.channel.update_state(update)
 
+    @override
     def execute_update_all_at_once(self, update: 'ChannelUpdate'):
         """Update the 'all' zone, rather than individual channels.
            Does not check current state."""
@@ -123,10 +126,12 @@ class HueChannel(LightChannel):
 
     brightness: float
 
+    @override
     def calibrate(self) -> None:
         """Initiate channel calibration."""
         raise NotImplementedError
 
+    @override
     def _make_set_command(self, update: ChannelUpdate) -> 'ChannelCommand':
         """Produce dimmer API parameters from provided update."""
         transition = int(

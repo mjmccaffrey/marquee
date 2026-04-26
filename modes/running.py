@@ -1,13 +1,16 @@
 """Marquee Lighted Sign Project - running mode"""
 
+# pyright: reportImplicitOverride=true
+
 from abc import ABC
 from dataclasses import dataclass, field
 import logging
+from typing import override
 
 from devices.color import Colors, RGB
 from devices.lightcontroller import LightChannel, ChannelUpdate
-from .gamemode import Character, EntityGroup, GameMode, Maze
-from .pacman_assets import maze_12
+from .gamemode import Character, EntityGroup, GameMode, GameState, Maze
+from .pacman_assets import maze_base
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -19,11 +22,12 @@ class Dot(Character, ABC):
     direction: int
     speed: int
 
+    @override
     def execute(self) -> None:
         """Take turn."""
         assert self.coord is not None
         if self.game.tick and (self.game.tick % self.speed) == 0:
-            self.game.move_character(self, self.coord + self.direction)
+            self.game.move_character(self, (self.coord + self.direction) % len(maze_base))
 
 
 @dataclass(kw_only=True, repr=False)
@@ -55,7 +59,7 @@ class Three(Dot):
 @dataclass(kw_only=True)
 class Running(GameMode):
     """"""
-    maze: Maze = field(default_factory=lambda: maze_12)
+    maze: Maze = field(default_factory=lambda: maze_base)
 
     def __post_init__(self):
         """Initialize board and characters."""
@@ -69,12 +73,14 @@ class Running(GameMode):
         self.place_entity(self.one, 0)
         self.place_entity(self.two, 1)
         self.place_entity(self.three, 6)
-        self.state = self.PLAY_GAME_STATE
+        self.state = GameState.PLAY_GAME
 
+    @override
     def state_logic(self) -> None:
         """No state logic required."""
         pass
-    
+
+    @override
     def desired_light_state(
             self, 
             entities: EntityGroup, 

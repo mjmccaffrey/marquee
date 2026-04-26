@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Collection
 import logging
 import random
+from typing import override
 
 from devices.relays import RelayClient
 
@@ -44,6 +45,7 @@ class RelayInstrument(Instrument, ABC):
         self.relays.set_state_of_devices("0" * self.count)
         assert self.relays.device_pattern == "0" * self.count
 
+    @override
     def close(self) -> None:
         """Close."""
         self.relays.set_state_of_devices("0" * self.count)
@@ -85,6 +87,7 @@ class BellSet(RelayInstrument, ReleaseableInstrument):
         )
         self.relays.set_state_of_devices(pattern)
 
+    @override
     def play(self, pitches: set[int]) -> None:
         """Play specified pitches."""
         self._update_relays('1', pitches)
@@ -108,6 +111,7 @@ class DrumSet(RelayInstrument):
     def __init__(self, relays: RelayClient) -> None:
         super().__init__(relays)
 
+    @override
     def play(self, accent: int, pitches: set[int]) -> None:
         """Play specified pitches."""
 
@@ -124,4 +128,18 @@ class DrumSet(RelayInstrument):
                 for i, p in enumerate(new_pattern)
             )
         self.relays.set_state_of_devices(new_pattern)
+
+
+class RingerBell(RelayInstrument):
+    """"""
+    pitch_levels = 1
+
+    @override
+    def play(self):
+        """"""
+        self.relays.set_state_of_devices("1")
+
+    def rest(self):
+        """"""
+        self.relays.set_state_of_devices("0")
 

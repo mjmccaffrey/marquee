@@ -1,45 +1,41 @@
 """Marquee Lighted Sign Project - buttonset"""
 
-from dataclasses import dataclass, fields
-from enum import auto, StrEnum
+from dataclasses import dataclass
 import logging
 import threading
+from typing import cast
 
-from .devices_misc import (
-    ButtonAction, ButtonInterface, 
-    ButtonPhysicallyChanged, LightedButtonInterface,
-)
+from .button import Button, LightedButton
+from .devices_misc import ButtonAction, ButtonName, ButtonPhysicallyChanged
 
 log = logging.getLogger('marquee.' + __name__)
 
 @dataclass
 class ButtonSet:
     """Every button."""
-    body_back: ButtonInterface
-    corded_a: ButtonInterface
-    corded_b: ButtonInterface
-    game_start: LightedButtonInterface
-    remote_a: ButtonInterface
-    remote_b: ButtonInterface
-    remote_c: ButtonInterface
-    remote_d: ButtonInterface
+    body_back: Button
+    corded_a: Button
+    corded_b: Button
+    game_start: LightedButton
+    remote_a: Button
+    remote_b: Button
+    remote_c: Button
+    remote_d: Button
 
     def __post_init__(self):
         """"""
         log.info(f"Initializing buttons")
-        for field in fields(self):
-            button = getattr(self, field.name)
-            setattr(
-                button, 'button_action', self.button_activity
-            )
+        for name in ButtonName:
+            button = cast(Button, getattr(self, name))
+            button.action_in_button_set = self.action_in_button_set
         self.reset()
 
-    def button_activity(
+    def action_in_button_set(
         self, 
-        button: ButtonRef, 
+        button: ButtonName, 
         action: ButtonAction,
     ) -> None:
-        """Called by Button that had activity."""
+        """Called by Button that had action."""
         log.info(f"Button <{button}> physically {action}")
         self.button_actioned = button
         self.button_action = action

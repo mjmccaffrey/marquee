@@ -1,22 +1,36 @@
 """Marquee Lighted Sign Project - pacman mode"""
 
+# pyright: reportImplicitOverride=true
+
+from collections.abc import Callable
 from dataclasses import dataclass, field
+from enum import auto, StrEnum
 from functools import partial
 from itertools import cycle
 import logging
-from typing import Any
+from typing import Any, override
 
 from devices.color import Colors, RGB
-from devices.devices_misc import ButtonRef
-from .gamemode import Entity, EntityGroup, GameMode, Maze
+from devices.devices_misc import ButtonName
+from .gamemode import Board, Entity, EntityGroup, GameMode, Maze
 from .pacman_assets import (
-    Dot, BITE_EVENT, Ghost, PacMan, Pinky, Blinky, maze_12
+    Dot, BITE_EVENT, Ghost, PacMan, Pinky, Blinky, maze_base
 )
 from devices.lightcontroller import LightChannel, ChannelUpdate
 
 log = logging.getLogger('marquee.' + __name__)
 
 PACMAN_START = 7
+
+@override
+class GameState(StrEnum):
+    """"""
+    PRE_GAME = auto()
+    PLAY_GAME = auto()
+    PRE_LEVEL_1 = auto()
+    POST_LEVEL_1 = auto()
+    GAME_LOST = auto()
+    GAME_WON = auto()
 
 @dataclass(kw_only=True)
 class PacManGame(GameMode):
@@ -25,7 +39,7 @@ class PacManGame(GameMode):
     """Level 0 - Blinky."""
     """Level 2 - Blinky and Pinky."""
     # """Level 3 - add bypass."""
-    maze: Maze = field(default_factory=lambda: maze_12)
+    maze: Maze = field(default_factory=lambda: maze_base)
     ticks_per_second: float = 2.0
 
     def __post_init__(self):
@@ -34,40 +48,32 @@ class PacManGame(GameMode):
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.dot_bites_maximum = (self.lights.count - 1) * 2
-        self._define_events_and_states()
-        self.state = self.PRE_GAME_STATE
-
-    def _define_events_and_states(self):
-        """"""
         self.events.subscribe(BITE_EVENT, self.pacman_bite)
-        self.PRE_GAME_STATE = self.pre_game_state
-        self.PRE_LEVEL_1_STATE = self.pre_level_1_state
-        self.PRE_LEVEL_1_STATE = self.pre_level_1_state
-        self.POST_LEVEL_1_STATE = self.post_level_1_state
-        self.GAME_WON_STATE = self.game_won_state
-        self.GAME_LOST_STATE = self.game_lost_state
+        self.state = GameState.PRE_GAME
 
-    def button_action(self, button: ButtonRef) -> int | None:
+    @override
+    def button_action(self, button: ButtonName) -> int | None:
         """"""
         if (
             button == self.buttons.game_start and
-            self.state == self.PRE_GAME_STATE
+            self.state == GameState.PRE_GAME
         ):
-            self.change_state(self.PRE_LEVEL_1_STATE)
+            self.change_state(GameState.PRE_LEVEL_1)
         else:
             return super().button_action(button)
 
+    @override
     def interrupt_action(self, args: tuple[Any, ...]) -> None:
         """"""
     
     def pacman_bite(self, etype: type, coord: int):
-        """Track remaining. Brighten top bulb."""
+        """Track remaining. Brighten aux bulb."""
         dot = self.board[coord][etype]
         dot.brightness -= 50
         if dot.brightness <= 0:
             del self.board[coord][Dot]
         self.dot_bites_remaining -= 1
-        self.top.set_channels(
+        self.aux.set_channels(
             brightness=int(
                 (self.dot_bites_maximum  - 
                  self.dot_bites_remaining) * 
@@ -81,9 +87,9 @@ class PacManGame(GameMode):
         self.dot_bites_remaining = self.dot_bites_maximum
         self.level = level
         self.init_level()
-        self.top.set_channels(brightness=0, on=True)
-        self.top.set_relays(True)
-        for d in maze_12.keys() - {PACMAN_START}:
+        self.aux.set_channels(brightness=0, on=True)
+        self.aux.set_relays(True)
+        for d in maze_base.keys() - {PACMAN_START}:
             dot = self.register_entity(Dot(game=self, name=f"dot_{d}"))
             self.place_entity(dot, d)
         self.pacman = self.register_entity(PacMan(game=self))
@@ -104,7 +110,7 @@ class PacManGame(GameMode):
         self.ghosts = (self.pinky, self.blinky)
         self.place_entity(self.pacman, PACMAN_START)
         self.update_lights(self.board)
-        self.change_state(self.PLAY_GAME_STATE)
+        self.change_state(GameState.PLAY_GAME)
 
     def pre_game_state(self) -> None:
         """"""
@@ -124,7 +130,7 @@ class PacManGame(GameMode):
                 due=(1 + i),
                 action=partial(self.lights.set_channels, **kwargs),
             )
-        self.schedule(due=6.0, action=partial(self.change_state, self.pre_level_1_state))
+        self.schedule(due=6.0, action=partial(self.change_state, GameState.PRE_LEVEL_1))
 
     def game_won_state(self) -> None:
         """"""
@@ -134,6 +140,24 @@ class PacManGame(GameMode):
         """"""
         log.info("You lost!")
 
+    @override
+    def state_func(self) -> Callable:
+        match self.state:
+            case GameState.PLAY_GAME:
+                func = self.play_game_state
+            case GameState.PRE_GAME:
+                func = self.pre_game_state
+            case GameState.PRE_LEVEL_1:
+                func = self.pre_level_1_state
+            case GameState.POST_LEVEL_1:
+                func = self.post_level_1_state
+            case GameState.GAME_LOST:
+                func = self.game_lost_state
+            case GameState.GAME_WON:
+                func = self.game_won_state
+        return func
+
+    @override
     def state_logic(self) -> None:
         """"""
         # If ghost and Pac-Man on same square, or 
@@ -141,11 +165,11 @@ class PacManGame(GameMode):
         assert self.pacman.coord is not None
         if not self.dot_bites_remaining:
             if self.level == 0:
-                self.change_state(self.POST_LEVEL_1_STATE)
+                self.change_state(GameState.POST_LEVEL_1)
             else:
-                self.change_state(self.GAME_WON_STATE)
+                self.change_state(GameState.GAME_WON)
         if self.ghost_got_pacman():
-            self.change_state(self.GAME_LOST_STATE)
+            self.change_state(GameState.GAME_LOST)
 
     def ghost_got_pacman(self) -> bool:
         """"""
@@ -161,6 +185,14 @@ class PacManGame(GameMode):
                 return True
         return False
 
+    @override
+    def update_lights(self, board: Board):
+        """Overrides GameMode method."""
+        updates = self.light_updates(board)
+        self.lights.update_channels(updates[:self.lights.count])
+        self.aux.update_channels(updates[self.lights.count:])
+
+    @override
     def desired_light_state(
             self, 
             entities: EntityGroup, 

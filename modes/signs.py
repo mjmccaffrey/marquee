@@ -1,5 +1,7 @@
 """Marquee Lighted Sign Project - signs"""
 
+from typing import override
+
 from device_defs import ALL_OFF, ALL_LOW, ALL_ON
 from .musicmode import MusicMode
 from .sequences import all_on, blink_all, random_each
@@ -13,6 +15,7 @@ from devices.specialparams import ActionParams, ChannelParams
 class Signs(MusicMode):
     """Signs song."""
 
+    @override
     def execute(self) -> None:
         """Perform Signs song."""
         self.lights.set_channels(brightness=0, force=True)

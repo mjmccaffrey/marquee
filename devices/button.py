@@ -3,25 +3,27 @@
 from dataclasses import dataclass, field
 import logging
 import signal
+from typing import override
 
 from gpiozero import Button as _Button  # type: ignore
 
 from .devices_misc import (
-    ButtonAction, ButtonActionInterface, ButtonRef, ButtonVirtuallyPressed
+    ButtonAction, ButtonActionInterface, ButtonName, ButtonVirtuallyPressed
 )
+from devices.relays import RelayClient
 
 log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass
-class Button(ButtonInterface):
+class Button:
     """Supports physical buttons on remote and sign."""
-    name: str
+    name: ButtonName
     button: _Button
     supports_hold: bool = False
     supports_release: bool = False
     signal_number: int | None = None
-    button_action: ButtonActionInterface = field(init=False)
+    action_in_button_set: ButtonActionInterface = field(init=False)
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -36,9 +38,11 @@ class Button(ButtonInterface):
                 self.button_virtually_pressed,
             )
     
+    @override
     def __repr__(self) -> str:
         return f"<{self}>"
     
+    @override
     def __str__(self) -> str:
         return self.name
 
@@ -49,18 +53,32 @@ class Button(ButtonInterface):
 
     def button_physically_held(self) -> None:
         """Callback for physical button hold."""
-        self.button_action(self, ButtonAction.HELD)
+        self.action_in_button_set(self.name, ButtonAction.HELD)
 
     def button_physically_pressed(self) -> None:
         """Callback for physical button press."""
-        self.button_action(self, ButtonAction.PRESSED)
+        self.action_in_button_set(self.name, ButtonAction.PRESSED)
 
     def button_physically_released(self) -> None:
         """Callback for physical button release."""
-        self.button_action(self, ButtonAction.RELEASED)
+        self.action_in_button_set(self.name, ButtonAction.RELEASED)
 
     def button_virtually_pressed(self, signal_number, stack_frame) -> None:
         """Callback for virtual button press."""
         log.info(f"Button <{self}> vitually pressed")
-        raise ButtonVirtuallyPressed(button=self, action=ButtonAction.PRESSED)
+        raise ButtonVirtuallyPressed(button=self.name, action=ButtonAction.PRESSED)
+
+@dataclass(kw_only=True)
+class LightedButton(Button):
+    """Supports lighted physical buttons."""
+    relay: RelayClient
+    
+    def __post_init__(self) -> None:
+        """Initialize."""
+        super().__post_init__()
+        self.set_light(False)
+
+    def set_light(self, on: bool) -> None:
+        """"""
+        self.relay.set_state_of_devices('1' if on else '0')
 

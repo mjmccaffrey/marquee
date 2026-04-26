@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass, field, InitVar
 from functools import partial
 import itertools
 import logging
-from typing import Any, Iterable
+from typing import Any, Iterable, override
 
 from devices.color import Color, Colors
 from devices.specialparams import ActionParams, EmulateParams
@@ -66,6 +66,7 @@ class SequenceMode(PerformanceMode):
             #     transition=bl.transition,
             # )
 
+    @override
     def execute(self) -> None:
         """Execute sequence with delay seconds between steps.
            If stop is specified, end the sequence 

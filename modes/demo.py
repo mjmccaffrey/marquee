@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 import sys
 import time
+from typing import override
 
 from device_defs import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
 from modes.musicmode import MusicMode
@@ -30,6 +31,7 @@ class Demo(MusicMode):
         time.sleep(0.5)
         self.lights.set_relays(ALL_ON)
 
+    @override
     def execute(self) -> None:
         """Execute version 3 demo."""
         sections = [

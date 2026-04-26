@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import logging
+from typing import override
 
 from .modes_misc import ModeIndex
 from .selectmode import SelectMode
@@ -27,6 +28,7 @@ class BrightnessSelect(SelectMode):
         """"""
         self.lights.brightness_factor = level / self.lights.count
 
+    @override
     def execute(self) -> None:
         """Set current brightness_factor."""
         self.set_brightness_level(self.desired)

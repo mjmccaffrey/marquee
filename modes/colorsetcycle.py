@@ -2,8 +2,9 @@
 
 from dataclasses import InitVar, dataclass
 import logging
+from typing import override
 
-from devices.devices_misc import ButtonRef
+from devices.devices_misc import ButtonName
 from .performancemode import PerformanceMode
 from .modes_misc import CycleEntry, CycleSequence
 
@@ -48,12 +49,13 @@ class ColorSetCycle(PerformanceMode):
                 cs_sequence.append(CycleEntry(name, seconds))
         return cs_sequence
 
-    def button_action(self, button: ButtonRef) -> int | None:
+    @override
+    def button_action(self, button: ButtonName) -> int | None:
         """If direction button pushed, change displayed color set.
            Otherwise, call parent's button handler."""
         direction_buttons = {
-            self.buttons.corded_a: +1,
-            self.buttons.corded_b: -1,
+            ButtonName.CORDED_A: +1,
+            ButtonName.CORDED_B: -1,
         }
         if button in direction_buttons:
             self.clicker.click()
@@ -63,6 +65,7 @@ class ColorSetCycle(PerformanceMode):
         else:
             return super().button_action(button)
 
+    @override
     def execute(self):
         """Timer-invoked change to next color set."""
         self.entry_index = self.wrap_entry_index(self.direction)

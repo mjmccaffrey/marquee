@@ -3,7 +3,7 @@
 from abc import ABC
 from dataclasses import dataclass
 import logging
-from typing import ClassVar, NewType, Protocol
+from typing import ClassVar, NewType, override, Protocol
 
 import serial  # type: ignore missing module
 
@@ -109,6 +109,7 @@ class NumatoUSBRelayModule(RelayModule, ABC):
             relay_to_device={v: k for k, v in device_to_relay.items()},
         )
 
+    @override
     def __str__(self) -> str:
         return f"{type(self).__name__} @ {self.port_address}"
     
@@ -117,6 +118,7 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         self._serial_port.close()
         log.info(f"Relay module {self} closed.")
 
+    @override
     def set_state_of_devices(
         self, 
         client: RelayClient,
@@ -130,6 +132,7 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         self._set_relays(relay_hex)
         self.relay_pattern = relay_pattern
 
+    @override
     def get_state_of_devices(
         self, 
         client: RelayClient,

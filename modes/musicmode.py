@@ -4,7 +4,7 @@ from abc import ABC
 from collections.abc import Sequence
 from dataclasses import dataclass
 import logging
-from typing import cast
+from typing import cast, override
 
 from .performancemode import PerformanceMode
 from music import Measure, play, Section
@@ -21,6 +21,7 @@ class MusicMode(PerformanceMode, ABC):
         """Initialize."""
         set_mode(self)
 
+    @override
     def execute(self, *elements: Measure | Section, tempo: int) -> None:
         """"""
         tempo = int(tempo * self.speed_factor)

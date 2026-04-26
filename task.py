@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from heapq import heapify, heappop, heappush
 import logging
 import time
-from typing import NoReturn
+from typing import NoReturn, override
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -18,9 +18,11 @@ class Task:
     action: Callable = field(compare=False)
     name: str = ''
 
+    @override
     def __repr__(self) -> str:
         return f"<{self}>"
     
+    @override
     def __str__(self) -> str:
         return f"'{self.name}' {self.owner}"
 
@@ -33,9 +35,11 @@ class TaskSchedule:
         """Number of tasks in schedule."""
         return len(self._schedule)
 
+    @override
     def __repr__(self) -> str:
         return f"<{self}>"
     
+    @override
     def __str__(self) -> str:
         return '\n'.join(
             str(e) for e in sorted(self._schedule)

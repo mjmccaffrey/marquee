@@ -12,9 +12,9 @@ from device_defs import define_devices
 
 
 def setup():
-    global bells, buttons, drums, lights, top, clicker, joystick
+    global bells, buttons, drums, lights, aux, clicker, joystick
 
-    bells, buttons, drums, lights, top, clicker, joystick = define_devices(1.0, 1.0)
+    bells, buttons, drums, lights, aux, clicker, joystick = define_devices(1.0, 1.0)
 
 
 def ppp(p: Sequence) -> None:

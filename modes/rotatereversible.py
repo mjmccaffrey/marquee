@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import logging
+from typing import override
 
 from .performancemode import PerformanceMode
             
@@ -20,6 +21,7 @@ class RotateReversible(PerformanceMode):
         self.direction = +1
         self.pattern = self.lights.relay_pattern
 
+    @override
     def execute(self) -> None:
         """"""
         

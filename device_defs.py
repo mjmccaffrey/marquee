@@ -8,9 +8,9 @@ from devices.bulb import (
     Hue_BR30_Enhanced_Color, Sylvania_G40_Frosted_100, 
     Sylvania_G25_Frosted_40,
 )
-from devices.button import Button
-from devices.lightedbutton import LightedButton
-from devices.buttonset import ButtonSet
+from devices.button import Button, LightedButton
+from devices.buttonset import ButtonSet 
+from devices.devices_misc import ButtonName
 from devices.hue import HueBridge
 from devices.joystick import Joystick
 from devices.relays import NumatoRL160001, NumatoSSR80001
@@ -60,39 +60,39 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
     """"""
     return ButtonSet(
         body_back = Button(
-            "body_back",
+            ButtonName.BODY_BACK,
             _Button(pin=26, bounce_time=0.10, hold_time=10), 
             supports_hold=True,
             signal_number=signal.SIGUSR1,  # type: ignore
         ),
         corded_a = Button(
-            'corded_a',
+            ButtonName.CORDED_A,
             _Button(pin=12, bounce_time=0.05),
         ),
         corded_b = Button(
-            'corded_b',
+            ButtonName.CORDED_B,
             _Button(pin=16, bounce_time=0.05),
         ),
         game_start = LightedButton(
-            'game_start',
+            ButtonName.GAME_START,
             _Button(pin=21, bounce_time=0.05),
             relay=light_relays.create_client(BUTTON_TO_RELAY),
         ),
         remote_a = Button(
-            "remote_a",
+            ButtonName.REMOTE_A,
             _Button(pin=19, pull_up=False, bounce_time=0.10)
 
         ),
         remote_b = Button(
-            "remote_b",
+            ButtonName.REMOTE_B,
             _Button(pin=13, pull_up=False, bounce_time=0.10)
         ),
         remote_c = Button(
-            "remote_c",
+            ButtonName.REMOTE_C,
             _Button(pin=6, pull_up=False, bounce_time=0.10)
         ),
         remote_d = Button(
-            "remote_d",
+            ButtonName.REMOTE_D,
             _Button(pin=5, pull_up=False, bounce_time=0.10)
         ),
     )
@@ -142,7 +142,7 @@ def define_devices_hue_shelly(
     #     donut
     #     3 pacman lights
     
-    top = LightSet(
+    aux = LightSet(
         count=len(TOP_TO_RELAY),
         relays=light_relays.create_client(TOP_TO_RELAY),
         mirror=drum_relays.create_client(TOP_TO_RELAY),
@@ -163,7 +163,7 @@ def define_devices_hue_shelly(
     clicker = ClickSet(
         relays=light_relays.create_client(CLICK_TO_RELAY),
     )
-    return bells, buttons(light_relays), drums, lights, top, clicker, joystick()
+    return bells, buttons(light_relays), drums, lights, aux, clicker, joystick()
 
 
 def define_devices_shelly(
@@ -200,11 +200,11 @@ def define_devices_shelly(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
-    top = None
+    aux = None
     clicker = ClickSet(
         relays=light_relays.create_client(CLICK_TO_RELAY),
     )
-    return bells, buttons(light_relays), drums, lights, top, clicker, joystick()
+    return bells, buttons(light_relays), drums, lights, aux, clicker, joystick()
 
 
 define_devices = define_devices_hue_shelly

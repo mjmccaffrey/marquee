@@ -3,8 +3,9 @@
 from abc import ABC
 from dataclasses import dataclass
 import logging
+from typing import override
 
-from devices.devices_misc import ButtonRef
+from devices.devices_misc import ButtonName
 from .foregroundmode import ForegroundMode
 from .modes_misc import ModeIndex
 from .sequences import rotate_build_flip
@@ -33,23 +34,23 @@ class SelectMode(ForegroundMode, ABC):
         """Update the current selection, wrapping within the bounds."""
         return self.wrap_value(self.lower, self.upper, self.desired, delta)
 
-    def button_action(self, button: ButtonRef) -> None:
+    @override
+    def button_action(self, button: ButtonName) -> None:
         """Respond to button being pressed.
            But first, delete the scheduled task which 
            would have finalized the selection."""
         self.tasks.delete_owned_by(self)
-        b = self.buttons
+        b = ButtonName
         match button:
-            case b.body_back | b.corded_a | b.corded_b | b.remote_a | b.remote_d:
+            case b.BODY_BACK | b.CORDED_A | b.CORDED_B | b.REMOTE_A | b.REMOTE_D:
                 self.desired = self.update_desired(+1)
-            case b.remote_b:
+            case b.REMOTE_B:
                 self.desired = self.update_desired(-1)
-            case b.game_start | b.remote_c:
+            case b.GAME_START | b.REMOTE_C:
                 pass
-            case _:
-                raise RuntimeError("Unrecognized button.")
         return None
 
+    @override
     def execute(self) -> int | None:
         """Return user's final selection if made, otherwise 
            schedule next execute and return None."""

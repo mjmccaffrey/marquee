@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from functools import partial
 import random
+from typing import override
 
 from .performancemode import PerformanceMode
 from .sequences import lights_in_groups
@@ -16,6 +17,7 @@ class SilentFadeBuild(PerformanceMode):
         """Initialize."""
         self.lights.set_channels(brightness=0)
  
+    @override
     def execute(self) -> None:
         """Perform SilentFadeBuild indefinitely."""
         due = 0.0

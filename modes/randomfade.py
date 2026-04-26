@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from functools import partial
 import random
+from typing import override
 
 from device_defs import ALL_ON
 from devices.color import XY
@@ -86,6 +87,7 @@ class RandomFade(PerformanceMode):
             name=f"RandomFade update_light {index}",
         )
 
+    @override
     def execute(self) -> None:
         """Start each bulb off on its unique journey."""
         for light in range(self.lights.count):

@@ -6,10 +6,10 @@ from dataclasses import dataclass
 import logging
 import sys
 import time
-from typing import Any, NoReturn, Self
+from typing import Any, NoReturn, override, Self
 
 from devices.color import ColorSets
-from devices.devices_misc import ButtonRef
+from devices.devices_misc import ButtonName
 from event import EventSystem
 from task import Task, TaskSchedule
 from .modes_misc import (
@@ -35,7 +35,7 @@ class BaseMode(ABC):
     parent: Self | None = None
 
     @abstractmethod
-    def button_action(self, button: ButtonRef) -> int | None:
+    def button_action(self, button: ButtonName) -> int | None:
         """Respond to button being pressed.
            Return index of new mode, if any."""
 
@@ -47,9 +47,11 @@ class BaseMode(ABC):
         """Respond to mode interrupt exception."""
         raise RuntimeError("Method must be overridden.")
 
+    @override
     def __repr__(self) -> str:
         return f"<{self}>"
     
+    @override
     def __str__(self) -> str:
         return f"Mode {self.index} {self.name}"
 

@@ -1,5 +1,7 @@
 """Marquee Lighted Sign Project - signs_song"""
 
+from typing import override
+
 from device_defs import ALL_OFF, ALL_LOW, ALL_ON
 from .musicmode import MusicMode
 from .sequences import all_on, blink_all, random_each
@@ -14,6 +16,7 @@ from devices.specialparams import ActionParams, ChannelParams
 class ChristmasSongs(MusicMode):
     """Christmas songs."""
 
+    @override
     def execute(self) -> None:
         """Perform Christmas songs."""
         set_mode(self)

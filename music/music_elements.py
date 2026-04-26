@@ -6,7 +6,7 @@ from dataclasses import dataclass, field, replace
 import itertools
 import logging
 import time
-from typing import Any, ClassVar
+from typing import Any, ClassVar, override
 
 from instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 
@@ -41,6 +41,7 @@ class Rest(BaseNote):
     """Musical rest."""
     instrument: ClassVar[type[Instrument]] = RestInstrument
 
+    @override
     def play(self) -> None:
         """Play single rest (do nothing)."""
         raise RuntimeError("PLAYING REST")
@@ -56,6 +57,7 @@ class ActionNote(BaseNote):
         """Validate."""
         assert self.actions
 
+    @override
     def play(self) -> None:
         """Play single ActionNote."""
         for action in self.actions:
@@ -89,11 +91,13 @@ class BellNote(ReleasableNote):
         """Validate."""
         assert self.pitches
 
+    @override
     def play(self) -> None:
         """Play BellNote."""
         mode.bells.play(self.pitches)
         self.schedule_release()
 
+    @override
     def release(self) -> None:
         """Release BellNote."""
         mode.bells.release(self.pitches)
@@ -110,6 +114,7 @@ class DrumNote(BaseNote):
         """Validate."""
         assert self.pitches
 
+    @override
     def play(self) -> None:
         """Play single DrumNote."""
         mode.drums.play(self.accent, self.pitches)

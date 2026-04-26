@@ -2,8 +2,8 @@
 
 from dataclasses import dataclass
 import logging
+from typing import override
 
-from .modes_misc import ModeIndex
 from .selectmode import SelectMode
 
 log = logging.getLogger('marquee.' + __name__)
@@ -22,6 +22,7 @@ class ModeSelect(SelectMode):
             previous=self.previous,
         )
 
+    @override
     def execute(self) -> None:
         """Set current brightness_factor."""
         new = super().execute()

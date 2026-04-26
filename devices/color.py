@@ -4,7 +4,7 @@ from abc import ABC
 import json
 import logging
 from pathlib import Path
-from typing import TypedDict
+from typing import TypedDict, override
 
 from devices import rgbxy
 
@@ -66,6 +66,7 @@ class RGB(Color):
         else:
             self._adjust_incomplete_color(rgb=self, gamut=gamut)
 
+    @override
     def __repr__(self):
         """"""
         return f"RGB({self.red}, {self.green}, {self.blue})"

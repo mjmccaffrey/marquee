@@ -3,8 +3,9 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
+from enum import auto, StrEnum
 import logging
-from typing import ClassVar, TypeVar
+from typing import ClassVar, TypeVar, override
 
 from devices.color import Color
 from devices.lightcontroller import LightChannel, ChannelUpdate
@@ -23,6 +24,7 @@ class Entity(ABC):
     brightness: int = 100
     coord: int | None = None
 
+    @override
     def __repr__(self):
         """"""
         return self.name
@@ -45,16 +47,19 @@ class Square:
     right: int | None = None
     up: int | None = None
     down: int | None = None
-    upleft: int | None = None
-    downleft: int | None = None
-    upright: int | None = None
-    downright: int | None = None
+    # upleft: int | None = None
+    # downleft: int | None = None
+    # upright: int | None = None
+    # downright: int | None = None
 
 
 Board = dict[int, 'EntityGroup']
 EntityGroup = dict[type[Entity], Entity]
 Maze = dict[int, Square]
 E = TypeVar("E", bound=Entity)
+
+class GameState(StrEnum):
+    PLAY_GAME = auto()
 
 @dataclass(kw_only=True)
 class GameMode(PerformanceMode):
@@ -64,8 +69,8 @@ class GameMode(PerformanceMode):
 
     def __post_init__(self):
         """"""
-        self.PLAY_GAME_STATE = self.play_game_state
-        self.state: Callable[[], None]
+        self.light_channels = self.lights.channels  # !!!!!!
+        self.state = GameState.PLAY_GAME
 
     @abstractmethod
     def desired_light_state(
@@ -79,12 +84,20 @@ class GameMode(PerformanceMode):
     def state_logic(self):
         """"""
 
-    def change_state(self, state: Callable):
+    def state_func(self) -> Callable:
+        match self.state:
+            case GameState.PLAY_GAME:
+                func = self.play_game_state
+            case _:
+                raise RuntimeError(self.state)
+        return func
+    
+    def change_state(self, state: StrEnum):
         """"""
         # print(f'{state=}')
         self.tasks.delete_owned_by(self)
         self.state = state
-        self.schedule(due=0, action=self.state)
+        self.schedule(due=0, action=self.state_func())
 
     def init_level(self):
         """"""
@@ -93,9 +106,10 @@ class GameMode(PerformanceMode):
         self.characters_turn_order: list[Character] = []
         self.tick: int = 0
 
+    @override
     def execute(self) -> None:
         """"""
-        self.state()
+        self.state_func()
 
     def play_game_state(self):
         """"""
@@ -122,7 +136,7 @@ class GameMode(PerformanceMode):
         """"""
         return [
             self.desired_light_state(
-                entities=e, channel=self.lights.channels[i],
+                entities=e, channel=self.light_channels[i],
             )
             for i, e in board.items()
         ]
@@ -159,13 +173,13 @@ class GameMode(PerformanceMode):
         return entity
 
     def place_entity(self, entity: Entity, coord: int):
-        """Place entity on board at coord, with wrapping."""
+        """Place entity on board at coord."""
         coord = coord % len(self.board)
         entity.coord = coord
         self.board[entity.coord][type(entity)] = entity
 
     def move_character(self, character: Character, coord: int):
-        """Move character to coord, with wrapping."""
+        """Move character to coord."""
         coord = coord % len(self.board)
         assert character.coord is not None
         del self.board[character.coord][type(character)]

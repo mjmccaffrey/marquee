@@ -4,6 +4,7 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from itertools import cycle, repeat
 import logging
+from typing import override
 
 from devices.color import Color
 from .performancemode import PerformanceMode
@@ -56,6 +57,7 @@ class Comet(PerformanceMode):
             yield color
             previous = color
 
+    @override
     def execute(self) -> None:
         """"""
         count = self.lights.count

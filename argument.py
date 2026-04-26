@@ -4,7 +4,7 @@ from argparse import (
     Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
 )
 from collections.abc import Callable
-from typing import Any, NoReturn
+from typing import Any, NoReturn, override
 
 from device_defs import LIGHT_COUNT
 
@@ -20,6 +20,7 @@ class ArgumentParserImproved(ArgumentParser):
     Also some small enhancements.
     """ 
 
+    @override
     def add_argument(self, *args, **kwargs) -> Action:
         """If new kwarg optional==True, the option is added
            prefixed by both - and --."""
@@ -31,10 +32,12 @@ class ArgumentParserImproved(ArgumentParser):
             args = tuple(a for t in new_args for a in t)
         return super().add_argument(*args, **kwargs)
     
+    @override
     def error(self, message) -> NoReturn:
         """ Do not exit when certain errors occur. """
         raise ValueError(f"Argparse error:{message}")
 
+    @override
     def exit(self, status=0, message=None) -> NoReturn:
         """ Do not exit when certain other errors occur. """
         raise ValueError(f"Argparse error:{status}:{message}")

@@ -69,6 +69,8 @@ def main() -> int:
                 raise
             case 2: log.error("Invalid arguments.")
             case 3: log.error("Exiting with shutdown.")
+            case _:
+                raise RuntimeError
         return result
 
 

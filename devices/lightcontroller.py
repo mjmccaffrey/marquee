@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from collections.abc import Sequence
 import logging
-from typing import ClassVar
+from typing import ClassVar, override
 
 import requests
 
@@ -40,9 +40,11 @@ class LightController(ABC):
                 f"for controller {type(self).__name__}."
             )
 
+    @override
     def __str__(self) -> str:
         return f"{type(self).__name__} @ {self.ip_address}"
     
+    @override
     def __repr__(self) -> str:
         return f"<{self}>"
     
@@ -91,6 +93,7 @@ class LightChannel(ABC):
     on: bool
 
 
+    @override
     def __repr__(self):
         return f"Channel {self.index}"
     

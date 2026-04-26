@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from functools import partial
 import logging
+from typing import override
 
 from .musicmode import MusicMode
 from music import act_part, section, set_mode
@@ -28,6 +29,7 @@ class Twelve(MusicMode):
     )
     tempo = 160
 
+    @override
     def execute(self):
         """"""
         # Turn all off

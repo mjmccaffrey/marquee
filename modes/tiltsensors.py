@@ -2,9 +2,10 @@
 
 from dataclasses import dataclass
 import logging
+from typing import override
 
-from device_defs import LIGHT_COUNT, LIGHTS_BY_COLUMN
-from devices.devices_misc import ButtonRef
+from light_defs import LIGHT_COUNT, LIGHTS_BY_COLUMN
+from devices.devices_misc import ButtonName
 from devices.color import Colors
 from .performancemode import PerformanceMode
 
@@ -16,39 +17,38 @@ class TiltSensors(PerformanceMode):
     """"""
 
     def __post_init__(self) -> None:
-        self.position = 1
+        self.shift = 1
         self.lights.set_channels(on=False)
         self.lights.set_channels(color=Colors.WHITE)
     
-    def button_action(self, button: ButtonRef) -> int | None:
+    @override
+    def button_action(self, button: ButtonName) -> int | None:
         """"""
-        direction
-        if button == :
-            self.shift = 0
-            self.execute()
-        elif button == self.buttons.corded_b:
-            self.position = self.wrap_position(-1)
-            self.execute()
+        direction_buttons = {
+            ButtonName.CORDED_A: +1,
+            ButtonName.CORDED_B: -1,
+        }
+        if button in direction_buttons:
+            shift = self.shift + direction_buttons[button]
+            if -5 >= shift >= 5:
+                self.shift = shift
+                self.execute()
         else:
             return super().button_action(button)
 
-    def lights_on(self) -> tuple[bool, ...]:
+    @staticmethod
+    def on_parameter(shift: int) -> tuple[bool, ...]:
         """"""
+        cols_on = (
+            slice(shift, 5) 
+                if shift >= 0 else 
+            slice(0, 5 + shift)
+        )
+        lights_on = set(i for c in LIGHTS_BY_COLUMN[cols_on] for i in c)
+        return tuple(i in lights_on for i in range(LIGHT_COUNT))
 
-        on = set(i for c in LIGHTS_BY_COLUMN[:self.position] for i in c)
-        return tuple(i in on for i in range(LIGHT_COUNT))
-
+    @override
     def execute(self):
         """"""
-        print(self.lights_on())
-        self.lights.set_channels(on=self.lights_on())
-
-    def wrap_position(self, delta: int):
-        """"""
-        return self.wrap_value(
-            lower=0, 
-            upper=len(LIGHTS_BY_COLUMN),
-            current=self.position,
-            delta=delta,
-        )
+        self.lights.set_channels(on=self.on_parameter(self.shift))
 
