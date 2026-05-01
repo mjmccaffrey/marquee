@@ -15,10 +15,6 @@ class ActionParams(SpecialParams):
     action: Callable
 
 @dataclass
-class BellParams(SpecialParams):
-    """Parameters to ring bells."""
-
-@dataclass
 class ChannelParams(SpecialParams):
     """Parameters for using channels rather than relays.
        Generate can be used to alter the other attributes,

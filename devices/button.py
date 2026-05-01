@@ -3,12 +3,12 @@
 from dataclasses import dataclass, field
 import logging
 import signal
-from typing import override
+from typing import override, Protocol
 
 from gpiozero import Button as _Button  # type: ignore
 
 from .devices_misc import (
-    ButtonAction, ButtonActionInterface, ButtonName, ButtonVirtuallyPressed
+    ButtonAction, ButtonName, ButtonVirtuallyPressed
 )
 from devices.relays import RelayClient
 
@@ -23,7 +23,7 @@ class Button:
     supports_hold: bool = False
     supports_release: bool = False
     signal_number: int | None = None
-    action_in_button_set: ButtonActionInterface = field(init=False)
+    action_in_button_set: 'ButtonActionInterface' = field(init=False)
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -68,6 +68,7 @@ class Button:
         log.info(f"Button <{self}> vitually pressed")
         raise ButtonVirtuallyPressed(button=self.name, action=ButtonAction.PRESSED)
 
+
 @dataclass(kw_only=True)
 class LightedButton(Button):
     """Supports lighted physical buttons."""
@@ -79,6 +80,16 @@ class LightedButton(Button):
         self.set_light(False)
 
     def set_light(self, on: bool) -> None:
-        """"""
+        """Set state of light."""
         self.relay.set_state_of_devices('1' if on else '0')
+
+
+class ButtonActionInterface(Protocol):
+    """"""
+    def __call__(
+        self,
+        button: ButtonName,
+        action: ButtonAction
+    ) -> None:
+        ...
 

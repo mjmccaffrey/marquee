@@ -22,6 +22,15 @@ class Dot(Entity):
     draw_priority: int = 1
 
 
+@dataclass(kw_only=True, repr=False, eq=True)
+class Fruit(Entity):
+    """"""
+    game: GameMode
+    color: RGB = Colors.ORANGE
+    brightness: int = 80
+    draw_priority: int = 1
+
+
 @dataclass(kw_only=True, repr=False)
 class PacMan(Character):
     """"""
@@ -44,12 +53,10 @@ class PacMan(Character):
         if coord is None:
             return
         self.game.move_character(self, coord)
-        if Dot in self.game.board[coord]:
-            self.bite_dot(coord)
+        for element in self.game.board[coord]:
+            if element in {Dot, Fruit}:
+                self.game.events.notify(BITE_EVENT, etype=element, coord=coord)
 
-    def bite_dot(self, coord: int) -> None:
-        """"""
-        self.game.events.notify(BITE_EVENT, etype=Dot, coord=coord)
 
 
 class GhostState(StrEnum):

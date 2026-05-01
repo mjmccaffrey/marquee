@@ -1,20 +1,19 @@
 """Marquee Lighted Sign Project - pacman mode"""
 
-# pyright: reportImplicitOverride=true
-
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import auto, StrEnum
 from functools import partial
 from itertools import cycle
 import logging
-from typing import Any, override
+from typing import Any, Sequence, override
 
 from devices.color import Colors, RGB
 from devices.devices_misc import ButtonName
-from .gamemode import Board, Entity, EntityGroup, GameMode, Maze
+from .gamemode import Entity, EntityGroup, GameMode, Maze
+from . import pacman_assets as assets
 from .pacman_assets import (
-    Dot, BITE_EVENT, Ghost, PacMan, Pinky, Blinky, maze_base
+    Dot, Fruit, BITE_EVENT, Ghost, PacMan, Pinky, Blinky, maze_base
 )
 from devices.lightcontroller import LightChannel, ChannelUpdate
 
@@ -68,18 +67,24 @@ class PacManGame(GameMode):
     
     def pacman_bite(self, etype: type, coord: int):
         """Track remaining. Brighten aux bulb."""
-        dot = self.board[coord][etype]
-        dot.brightness -= 50
-        if dot.brightness <= 0:
-            del self.board[coord][Dot]
-        self.dot_bites_remaining -= 1
-        self.aux.set_channels(
-            brightness=int(
-                (self.dot_bites_maximum  - 
-                 self.dot_bites_remaining) * 
-                100 / self.dot_bites_maximum
-            )
-        )
+        match etype:
+            case assets.Dot:
+                dot = self.board[coord][etype]
+                dot.brightness -= 50
+                if dot.brightness <= 0:
+                    del self.board[coord][Dot]
+                self.dot_bites_remaining -= 1
+                self.aux.set_channels(
+                    brightness=int(
+                        (self.dot_bites_maximum  - 
+                        self.dot_bites_remaining) * 
+                        100 / self.dot_bites_maximum
+                    )
+                )
+            case assets.Fruit:
+                    del self.board[coord][Fruit]
+            case _:
+                raise RuntimeError(etype)
 
     def play_level(self, level: int) -> None:
         """"""
@@ -186,11 +191,10 @@ class PacManGame(GameMode):
         return False
 
     @override
-    def update_lights(self, board: Board):
-        """Overrides GameMode method."""
-        updates = self.light_updates(board)
-        self.lights.update_channels(updates[:self.lights.count])
-        self.aux.update_channels(updates[self.lights.count:])
+    def send_desired_states_to_lights(self, desired: Sequence[ChannelUpdate]):
+        """"""
+        self.lights.update_channels(desired[:self.lights.count])
+        self.aux.update_channels(desired[self.lights.count:])
 
     @override
     def desired_light_state(

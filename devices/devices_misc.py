@@ -2,7 +2,6 @@
 
 from dataclasses import dataclass
 from enum import auto, StrEnum
-from typing import Protocol
 
 
 class ButtonName(StrEnum):
@@ -33,13 +32,4 @@ class ButtonPhysicallyChanged(ButtonActionException):
 
 class ButtonVirtuallyPressed(ButtonActionException):
     """Virtual button pressed (IPC signal received) exception."""
-
-class ButtonActionInterface(Protocol):
-    """"""
-    def __call__(
-        self,
-        button: ButtonName,
-        action: ButtonAction
-    ) -> None:
-        ...
 

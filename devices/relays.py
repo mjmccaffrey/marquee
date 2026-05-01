@@ -49,17 +49,12 @@ class RelayModule(Protocol):
         client: RelayClient,
         pattern: DevicePattern,
     ) -> None:
-        """Set the physical relays per client device pattern.
-           Do not change relays not assigned to client."""
         ...
 
     def get_state_of_devices(
         self, 
         client: RelayClient,
     ) -> DevicePattern:
-        """Get the state of all relays from the module.
-           Update saved state.
-           Return a client device pattern."""
         ...
 
 

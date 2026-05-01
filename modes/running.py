@@ -1,9 +1,7 @@
 """Marquee Lighted Sign Project - running mode"""
 
-# pyright: reportImplicitOverride=true
-
 from abc import ABC
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import logging
 from typing import override
 
@@ -13,6 +11,7 @@ from .gamemode import Character, EntityGroup, GameMode, GameState, Maze
 from .pacman_assets import maze_base
 
 log = logging.getLogger('marquee.' + __name__)
+
 
 class Dot(Character, ABC):
     """"""
@@ -59,7 +58,7 @@ class Three(Dot):
 @dataclass(kw_only=True)
 class Running(GameMode):
     """"""
-    maze: Maze = field(default_factory=lambda: maze_base)
+    maze: Maze = maze_base
 
     def __post_init__(self):
         """Initialize board and characters."""

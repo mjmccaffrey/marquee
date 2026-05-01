@@ -2,10 +2,7 @@
 
 from dataclasses import dataclass
 from enum import IntEnum
-from typing import Any, Protocol
-
-# from .backgroundmode import BackgroundMode
-# from .foregroundmode import ForegroundMode
+from typing import Any
 
 @dataclass
 class CycleEntry:
@@ -20,24 +17,6 @@ class ChangeMode(Exception):
 
 class InterruptMode(Exception):
     """Event that mode handles itself."""
-
-class CreateModeInstance(Protocol):
-    """"""
-    def __call__(
-        self,
-        mode_index: int,
-        kwargs: dict[str, Any] = {},
-        parent: object | None = None,  # BaseMode
-    ) -> Any:  # BackgroundMode | ForegroundMode:
-        ...
-
-class ReplaceKwargValues(Protocol):
-    """"""
-    def __call__(
-        self, 
-        kwargs: dict[str, Any],
-    ) -> dict[str, Any]:
-        ...
 
 @dataclass
 class ModeDefinition:

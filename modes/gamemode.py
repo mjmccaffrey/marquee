@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - gamemode"""
 
 from abc import ABC, abstractmethod
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from enum import auto, StrEnum
 import logging
@@ -132,19 +132,18 @@ class GameMode(PerformanceMode):
         self.state_logic()
         self.tick += 1
 
-    def light_updates(self, board: Board) -> list[ChannelUpdate]:
-        """"""
-        return [
+    def update_lights(self, board: Board):
+        """Send (unfiltered) desired light states to lightset."""
+        desired = [
             self.desired_light_state(
                 entities=e, channel=self.light_channels[i],
             )
             for i, e in board.items()
         ]
 
-    def update_lights(self, board: Board):
-        """"""
-        updates = self.light_updates(board)
-        self.lights.update_channels(updates)
+    def send_desired_states_to_lights(self, desired: Sequence[ChannelUpdate]):
+        """Override for multple light sets."""
+        self.lights.update_channels(desired)
 
     def print_board(self, board: Board) -> None:
         """"""

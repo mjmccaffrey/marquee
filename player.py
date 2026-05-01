@@ -73,25 +73,24 @@ class Player:
         parent: object | None = None,  # BaseMode
     ) -> BackgroundMode | ForegroundMode:
         """"""
-        if mode_index is not None:
-            definition = self.modes[mode_index]
-            _kwargs = dict(
-                index=definition.index,
-                name=definition.name, 
-                speed_factor=self.speed_factor,
-                create_mode_instance=self.create_mode_instance,
-                replace_kwarg_values=self.replace_kwarg_values,
-                events=self.events,
-                tasks=self.tasks,
-                modes=self.modes,
-                mode_ids=self.mode_ids,
-                color_sets=self.color_sets,
-                parent=parent,
-            )
-            _kwargs |= (
-                self.replace_kwarg_values(definition.kwargs) | 
-                kwargs
-            )
+        definition = self.modes[mode_index]
+        _kwargs = dict(
+            index=definition.index,
+            name=definition.name, 
+            speed_factor=self.speed_factor,
+            create_mode_instance=self.create_mode_instance,
+            replace_kwarg_values=self.replace_kwarg_values,
+            events=self.events,
+            tasks=self.tasks,
+            modes=self.modes,
+            mode_ids=self.mode_ids,
+            color_sets=self.color_sets,
+            parent=parent,
+        )
+        _kwargs |= (
+            self.replace_kwarg_values(definition.kwargs) | 
+            kwargs
+        )
         if issubclass(definition.cls, ForegroundMode):
             _kwargs |= dict(
                 bells=self.bells,

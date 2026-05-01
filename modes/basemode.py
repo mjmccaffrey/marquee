@@ -6,14 +6,14 @@ from dataclasses import dataclass
 import logging
 import sys
 import time
-from typing import Any, NoReturn, override, Self
+from typing import Any, NoReturn, override, Protocol, Self
 
 from devices.color import ColorSets
 from devices.devices_misc import ButtonName
 from event import EventSystem
 from task import Task, TaskSchedule
 from .modes_misc import (
-    ChangeMode, CreateModeInstance, ModeDefinition, ReplaceKwargValues,
+    ChangeMode, ModeDefinition,
 )
 
 log = logging.getLogger('marquee.' + __name__)
@@ -25,8 +25,8 @@ class BaseMode(ABC):
     index: int
     name: str
     speed_factor: float
-    create_mode_instance: CreateModeInstance
-    replace_kwarg_values: ReplaceKwargValues
+    create_mode_instance: 'CreateModeInstance'
+    replace_kwarg_values: 'ReplaceKwargValues'
     events: EventSystem
     tasks: TaskSchedule
     modes: dict[int, ModeDefinition]
@@ -129,4 +129,22 @@ class BaseMode(ABC):
         elif (dif := value - lower) < 0:
             value = upper + dif + 1
         return value
+
+class CreateModeInstance(Protocol):
+    """"""
+    def __call__(
+        self,
+        mode_index: int,
+        kwargs: dict[str, Any] = {},
+        parent: BaseMode | None = None,  # !!! BaseMode
+    ) -> BaseMode:  # !!! BackgroundMode | ForegroundMode:
+        ...
+
+class ReplaceKwargValues(Protocol):
+    """"""
+    def __call__(
+        self, 
+        kwargs: dict[str, Any],
+    ) -> dict[str, Any]:
+        ...
 
