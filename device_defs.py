@@ -11,16 +11,13 @@ from devices.bulb import (
 from devices.button import Button, LightedButton
 from devices.buttonset import ButtonSet 
 from devices.devices_misc import ButtonName
+from devices.deviceset import DeviceSet
 from devices.hue import HueBridge
 from devices.joystick import Joystick
 from devices.relays import NumatoRL160001, NumatoSSR80001
 from devices.shelly import ShellyController, ShellyProDimmer1PM, ShellyProDimmer2PM
-from instruments import BellSet, ClickSet, DrumSet, LightSet
+from instruments import BellSet, ClickSet, DrumSet, LightSet, RingerBell
 from light_defs import *
-
-DeviceSet = tuple[
-    BellSet, ButtonSet, DrumSet, LightSet, LightSet | None, ClickSet, Joystick,
-]
 
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'
@@ -160,10 +157,12 @@ def define_devices_hue_shelly(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
-    clicker = ClickSet(
-        relays=light_relays.create_client(CLICK_TO_RELAY),
+    clicker = ClickSet(light_relays.create_client(CLICK_TO_RELAY))
+    ringer = RingerBell(light_relays.create_client(RINGER_TO_RELAY))
+    return DeviceSet(
+        bells, buttons(light_relays), drums, lights, aux, 
+        clicker, ringer, joystick(),
     )
-    return bells, buttons(light_relays), drums, lights, aux, clicker, joystick()
 
 
 def define_devices_shelly(
@@ -201,19 +200,22 @@ def define_devices_shelly(
         speed_factor=speed_factor,
     )
     aux = None
-    clicker = ClickSet(
-        relays=light_relays.create_client(CLICK_TO_RELAY),
+    clicker = ClickSet(light_relays.create_client(CLICK_TO_RELAY))
+    ringer = RingerBell(light_relays.create_client(RINGER_TO_RELAY))
+    return DeviceSet(
+        bells, buttons(light_relays), drums, lights, aux, 
+        clicker, ringer, joystick(),
     )
-    return bells, buttons(light_relays), drums, lights, aux, clicker, joystick()
 
 
 define_devices = define_devices_hue_shelly
 """Create and return objects for all physical devices."""
 
-BUTTON_TO_RELAY = {
-    0: 11,    
-}
-CLICK_TO_RELAY = {
-     0: 2,  1: 3, 
-}
-ALL_RELAYS = LIGHT_TO_RELAY | TOP_TO_RELAY | BUTTON_TO_RELAY | CLICK_TO_RELAY
+BUTTON_TO_RELAY = {0: 11}
+CLICK_TO_RELAY = {0: 2}
+RINGER_TO_RELAY = {0: 3}
+ALL_RELAYS = (
+    LIGHT_TO_RELAY | TOP_TO_RELAY | 
+    BUTTON_TO_RELAY | CLICK_TO_RELAY | RINGER_TO_RELAY
+)
+

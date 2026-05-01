@@ -6,13 +6,11 @@ import signal
 from typing import Any, NoReturn, override
 
 from devices.color import ColorSets
+from devices.deviceset import DeviceSet
 from devices.devices_misc import (
     ButtonAction, ButtonActionException, ButtonName,
 )
-from devices.buttonset import ButtonSet
-from devices.joystick import Joystick
 from event import EventSystem
-from instruments import BellSet, ClickSet, DrumSet, LightSet
 from modes.backgroundmode import BackgroundMode
 from modes.foregroundmode import ForegroundMode
 from modes.modes_misc import ChangeMode, InterruptMode, ModeDefinition
@@ -27,13 +25,7 @@ class Player:
     modes: dict[int, ModeDefinition]
     mode_ids: dict[str, int]
     color_sets: ColorSets
-    bells: BellSet
-    buttons: ButtonSet
-    drums: DrumSet
-    lights: LightSet
-    aux: LightSet | None
-    clicker: ClickSet
-    joystick: Joystick
+    devices: DeviceSet
     speed_factor: float
     pace: float = field(init=False)
     bg_mode_instances: dict = field(init=False)
@@ -93,13 +85,7 @@ class Player:
         )
         if issubclass(definition.cls, ForegroundMode):
             _kwargs |= dict(
-                bells=self.bells,
-                buttons=self.buttons,
-                drums=self.drums,
-                lights=self.lights,
-                aux=self.aux,
-                clicker=self.clicker,
-                joystick=self.joystick,
+                devices=self.devices,
                 speed_factor=self.speed_factor,
             )
         return definition.cls(**_kwargs)  # type: ignore
@@ -145,7 +131,7 @@ class Player:
                 button, action = press.args
                 if action == ButtonAction.HELD:
                     return True
-                self.buttons.reset()
+                self.devices.buttons.reset()
                 assert self.active_mode is not None
                 log.debug(f"Button {button} {action} in mode {self.active_mode}")
                 new_mode_index = self.notify_button_action(button)
@@ -173,7 +159,7 @@ class Player:
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""
         vars: dict[str, Any] = {
-            'LIGHT_PATTERN': self.lights.relay_pattern,
+            'LIGHT_PATTERN': self.devices.lights.relay_pattern,
         }
         if self.active_mode is not None:
             vars['PREVIOUS_MODE'] = self.active_mode.index
@@ -194,7 +180,7 @@ class Player:
 
         if seconds is not None:
             seconds *= self.speed_factor
-        self.tasks.wait(seconds, self.buttons.wait)
+        self.tasks.wait(seconds, self.devices.buttons.wait)
 
 
 class SigTerm(Exception):

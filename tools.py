@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - tools"""
 
 from collections.abc import Sequence
+from dataclasses import astuple
 import json
 from pathlib import Path
 from typing import cast
@@ -14,7 +15,9 @@ from device_defs import define_devices
 def setup():
     global bells, buttons, drums, lights, aux, clicker, joystick
 
-    bells, buttons, drums, lights, aux, clicker, joystick = define_devices(1.0, 1.0)
+    bells, buttons, drums, lights, aux, clicker, ringer, joystick = astuple(
+        define_devices(1.0, 1.0)
+    )
 
 
 def ppp(p: Sequence) -> None:

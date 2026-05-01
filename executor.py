@@ -97,9 +97,7 @@ class Executor:
         """Effect the command-line specified command, mode or pattern(s).
            Return True if system shutdown requested, else False."""
         shutdown = False
-        devices = self.define_devices(brightness_factor, speed_factor)
-        (self.bells, self.buttons, self.drums, 
-         self.lights, self.aux, self.clicker, self.joystick) = devices
+        self.devices = self.define_devices(brightness_factor, speed_factor)
         if command is not None:
             self.execute_command(command)
         elif mode_index is not None:
@@ -119,13 +117,7 @@ class Executor:
             self.modes, 
             self.mode_ids,
             self.color_sets,
-            self.bells,
-            self.buttons,
-            self.drums,
-            self.lights,
-            self.aux,
-            self.clicker,
-            self.joystick,
+            self.devices,
             speed_factor,
         )
         return self.player.execute(mode_index)
@@ -137,17 +129,17 @@ class Executor:
     ) -> None:
         """Effects the command-line specified pattern(s)."""
         if brightness_pattern is not None:
-            self.lights.set_channels(
+            self.devices.lights.set_channels(
                 brightness=brightness_pattern,
-                transition=self.lights.trans_min,
+                transition=self.devices.lights.trans_min,
             )
-            time.sleep(self.lights.trans_min)
+            time.sleep(self.devices.lights.trans_min)
         if light_pattern is not None:
-            self.lights.set_relays(light_pattern)
+            self.devices.lights.set_relays(light_pattern)
 
     def command_calibrate(self) -> None:
         """Calibrate all light sets supporting it."""
-        for lightset in [self.lights, self.aux]:
+        for lightset in [self.devices.lights, self.devices.aux]:
             try:
                 lightset.calibrate()
             except NotImplementedError:
@@ -155,7 +147,7 @@ class Executor:
 
     def command_off(self) -> None:
         """Turn off all relays and potentially other devices."""
-        for d in (self.bells, self.drums, self.lights):
+        for d in (self.devices.bells, self.devices.drums, self.devices.lights):
             assert d.relays is not None
             d.relays.set_state_of_devices('0' * d.relays.count)
         log.info("Marquee hardware is now partially powered off.")
