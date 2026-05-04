@@ -17,6 +17,7 @@ class TiltSensors(PerformanceMode):
     """"""
 
     def __post_init__(self) -> None:
+        super().__post_init__()
         self.shift = 1
         self.lights.set_channels(on=False)
         self.lights.set_channels(color=Colors.WHITE)

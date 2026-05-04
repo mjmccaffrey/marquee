@@ -21,7 +21,7 @@ class ForegroundMode(BaseMode, ABC):
     def __post_init__(self):
         """"""
         (
-            self.bells, self.buttons, self.drums, self.lights, self.aux, 
+            self.buttons, self.drums, self.lights, self.aux, 
             self.clicker, self.ringer, self.joystick,
         ) = astuple(self.devices)
 

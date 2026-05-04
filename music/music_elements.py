@@ -95,13 +95,13 @@ class BellNote(ReleasableNote):
     @override
     def play(self) -> None:
         """Play BellNote."""
-        mode.bells.play(self.pitches)
+        # mode.bells.play(self.pitches)
         self.schedule_release()
 
     @override
     def release(self) -> None:
         """Release BellNote."""
-        mode.bells.release(self.pitches)
+        # mode.bells.release(self.pitches)
 
 
 @dataclass(frozen=True)
