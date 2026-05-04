@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from itertools import cycle
 import logging
-from typing import override
+from typing_extensions import override
 
 from devices.devices_misc import ButtonName
 from .backgroundmode import BackgroundMode

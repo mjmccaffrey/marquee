@@ -6,7 +6,9 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 import time
 import logging
-from typing import ClassVar, override
+from typing import ClassVar
+from typing_extensions import override
+
 
 import aiohttp
 import requests

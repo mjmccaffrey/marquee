@@ -3,7 +3,8 @@
 from dataclasses import dataclass, field
 import logging
 import signal
-from typing import Any, cast, NoReturn, override
+from typing import Any, cast, NoReturn
+from typing_extensions import override
 
 from devices.color import ColorSets
 from devices.deviceset import DeviceSet

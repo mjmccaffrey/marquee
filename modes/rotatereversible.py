@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 import logging
-from typing import override
+from typing_extensions import override
 
 from .performancemode import PerformanceMode
             

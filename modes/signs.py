@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - signs"""
 
-from typing import override
+from typing_extensions import override
 
 from device_defs import ALL_OFF, ALL_LOW, ALL_ON
 from .musicmode import MusicMode

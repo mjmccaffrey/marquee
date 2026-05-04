@@ -4,7 +4,7 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from itertools import cycle, repeat
 import logging
-from typing import override
+from typing_extensions import override
 
 from devices.color import Color
 from .performancemode import PerformanceMode

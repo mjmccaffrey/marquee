@@ -3,7 +3,7 @@
 from abc import ABC
 from dataclasses import dataclass
 import logging
-from typing import override
+from typing_extensions import override
 
 from devices.color import Colors, RGB
 from devices.lightcontroller import LightChannel, ChannelUpdate

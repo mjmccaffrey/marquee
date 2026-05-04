@@ -6,7 +6,8 @@ from dataclasses import dataclass, field, replace
 import itertools
 import logging
 import time
-from typing import Any, ClassVar, override
+from typing import Any, ClassVar
+from typing_extensions import override
 
 from instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 

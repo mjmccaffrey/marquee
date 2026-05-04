@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from functools import partial
 import random
-from typing import override
+from typing_extensions import override
 
 from device_defs import ALL_ON
 from devices.color import XY

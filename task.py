@@ -5,7 +5,8 @@ from dataclasses import dataclass, field, replace
 from heapq import heapify, heappop, heappush
 import logging
 import time
-from typing import NoReturn, override
+from typing import NoReturn
+from typing_extensions import override
 
 log = logging.getLogger('marquee.' + __name__)
 

@@ -3,7 +3,8 @@
 from dataclasses import dataclass, field
 import logging
 import signal
-from typing import override, Protocol
+from typing import Protocol
+from typing_extensions import override
 
 from gpiozero import Button as _Button
 

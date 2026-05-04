@@ -5,7 +5,8 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from enum import auto, StrEnum
 import logging
-from typing import ClassVar, TypeVar, override
+from typing import ClassVar, TypeVar
+from typing_extensions import override
 
 from devices.color import Color
 from devices.lightcontroller import LightChannel, ChannelUpdate

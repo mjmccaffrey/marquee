@@ -3,7 +3,7 @@
 from abc import ABC
 from dataclasses import dataclass
 import logging
-from typing import override
+from typing_extensions import override
 
 from devices.devices_misc import ButtonName
 from .foregroundmode import ForegroundMode

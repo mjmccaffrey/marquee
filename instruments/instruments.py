@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Collection
 import logging
 import random
-from typing import override
+from typing_extensions import override
 
 from devices.relays import RelayClient
 

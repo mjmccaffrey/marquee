@@ -6,7 +6,8 @@ from dataclasses import dataclass
 import logging
 import sys
 import time
-from typing import Any, NoReturn, override, Protocol, Self
+from typing import Any, NoReturn, Protocol, Self
+from typing_extensions import override
 
 from devices.color import ColorSets
 from devices.devices_misc import ButtonName

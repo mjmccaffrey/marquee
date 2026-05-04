@@ -4,7 +4,8 @@ from abc import ABC
 from dataclasses import dataclass
 from enum import auto, StrEnum
 import logging
-from typing import ClassVar, override
+from typing import ClassVar
+from typing_extensions import override
 
 from devices.color import Color, Colors, RGB
 from .gamemode import Character, Entity, GameMode, Maze, Square

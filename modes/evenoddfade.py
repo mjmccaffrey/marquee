@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from functools import partial
-from typing import override
+from typing_extensions import override
 
 from .performancemode import PerformanceMode
 from .sequences import opposite

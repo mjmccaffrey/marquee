@@ -4,7 +4,8 @@ from argparse import (
     Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
 )
 from collections.abc import Callable
-from typing import Any, NoReturn, override
+from typing import Any, NoReturn
+from typing_extensions import override
 
 from device_defs import LIGHT_COUNT
 

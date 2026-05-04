@@ -6,7 +6,8 @@ from enum import auto, StrEnum
 from functools import partial
 from itertools import cycle
 import logging
-from typing import Any, Sequence, override
+from typing import Any, Sequence
+from typing_extensions import override
 
 from devices.color import Colors, RGB
 from devices.devices_misc import ButtonName

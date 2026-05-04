@@ -5,7 +5,8 @@ from dataclasses import asdict, dataclass, field, InitVar
 from functools import partial
 import itertools
 import logging
-from typing import Any, Iterable, override
+from typing import Any, Iterable
+from typing_extensions import override
 
 from devices.color import Color, Colors
 from devices.specialparams import ActionParams, EmulateParams

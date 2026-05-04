@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from functools import partial
 import logging
-from typing import override
+from typing_extensions import override
 
 from .musicmode import MusicMode
 from music import act_part, section, set_mode

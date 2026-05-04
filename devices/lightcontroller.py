@@ -4,7 +4,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from collections.abc import Sequence
 import logging
-from typing import ClassVar, override
+from typing import ClassVar
+from typing_extensions import override
 
 import requests
 

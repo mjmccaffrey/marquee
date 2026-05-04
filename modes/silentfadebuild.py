@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from functools import partial
 import random
-from typing import override
+from typing_extensions import override
 
 from .performancemode import PerformanceMode
 from .sequences import lights_in_groups

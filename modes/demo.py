@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 import sys
 import time
-from typing import override
+from typing_extensions import override
 
 from device_defs import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
 from modes.musicmode import MusicMode

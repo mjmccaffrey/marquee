@@ -2,7 +2,7 @@
 
 from dataclasses import InitVar, dataclass
 import logging
-from typing import override
+from typing_extensions import override
 
 from devices.devices_misc import ButtonName
 from .performancemode import PerformanceMode
