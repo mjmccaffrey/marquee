@@ -58,7 +58,7 @@ class Three(Dot):
 @dataclass(kw_only=True)
 class Running(GameMode):
     """"""
-    maze: Maze = maze_base
+    maze = maze_base
 
     def __post_init__(self):
         """Initialize board and characters."""
