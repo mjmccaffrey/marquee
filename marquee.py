@@ -71,7 +71,7 @@ def main() -> int:
             case 3: log.error("Exiting with shutdown.")
             case _:
                 raise RuntimeError
-        return result
+    return result
 
 
 if __name__ == "__main__":

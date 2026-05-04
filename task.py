@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - task"""
 
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from heapq import heapify, heappop, heappush
 import logging
 import time
@@ -10,7 +10,7 @@ from typing import NoReturn, override
 log = logging.getLogger('marquee.' + __name__)
 
 
-@dataclass(order=True, repr=False)
+@dataclass(order=True, frozen=True, repr=False)
 class Task:
     """Scheduled task."""
     due: float
@@ -75,6 +75,15 @@ class TaskSchedule:
         # log.debug('')
         # log.debug(f"schedule length: {len(self._schedule)}")
         # log.debug(f"Task {task} added to schedule.")
+
+    def delay_all(self, delta: float):
+        """Push all scheduled tasks back by delta seconds."""
+        self._schedule = [
+            replace(task, due=task.due + delta)
+            for task in self._schedule
+        ]
+        heapify(self._schedule)
+        log.debug(f"{len(self._schedule)} tasks delayed by {delta} seconds.")
 
     def wait(
         self, 

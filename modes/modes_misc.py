@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - modes_misc"""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import IntEnum
 from typing import Any
 
@@ -18,15 +18,14 @@ class ChangeMode(Exception):
 class InterruptMode(Exception):
     """Event that mode handles itself."""
 
-@dataclass
+@dataclass(kw_only=True)
 class ModeDefinition:
-    index: int
+    index: int | None = None
     name: str
     cls: type  # !!!
-    kwargs: dict[str, Any]
+    kwargs: dict[str, Any] = field(default_factory=dict)
 
 class ModeIndex(IntEnum):
-    COUNTER = -2
     BRIGHTNESS_SELECT = -1
     MODE_SELECT = 0
     DEFAULT = 1

@@ -5,7 +5,7 @@ import logging
 import signal
 from typing import override, Protocol
 
-from gpiozero import Button as _Button  # type: ignore
+from gpiozero import Button as _Button
 
 from .devices_misc import (
     ButtonAction, ButtonName, ButtonVirtuallyPressed

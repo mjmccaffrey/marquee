@@ -7,7 +7,8 @@ from typing import override
 
 from devices.devices_misc import ButtonName
 from .foregroundmode import ForegroundMode
-from .modes_misc import ModeIndex
+from .modes_misc import ModeDefinition
+from .sequencemode import SequenceMode
 from .sequences import rotate_build_flip
 
 log = logging.getLogger('marquee.' + __name__)
@@ -67,7 +68,10 @@ class SelectMode(ForegroundMode, ABC):
             log.info(f"Desired is now {self.desired}")
             # self.lights.set_relays(ALL_OFF, special=self.special)
             self.create_mode_instance(
-                mode_index=ModeIndex.COUNTER,
+                mode_definition=ModeDefinition(
+                    name='counter',
+                    cls=SequenceMode,
+                ),
                 parent=self,
                 kwargs=dict(
                     sequence=lambda: rotate_build_flip(count=self.desired),

@@ -3,7 +3,7 @@
 from dataclasses import dataclass, field
 import logging
 import signal
-from typing import Any, NoReturn, override
+from typing import Any, cast, NoReturn, override
 
 from devices.color import ColorSets
 from devices.deviceset import DeviceSet
@@ -60,13 +60,15 @@ class Player:
 
     def create_mode_instance(
         self, 
-        mode_index: int,
+        mode_index: int | None = None,
+        mode_definition: ModeDefinition | None = None,
         kwargs: dict[str, Any] = {},
         parent: object | None = None,  # BaseMode
     ) -> BackgroundMode | ForegroundMode:
         """"""
-        definition = self.modes[mode_index]
-        _kwargs = dict(
+        assert (mode_index is None) ^ (mode_definition is None)
+        definition = mode_definition or self.modes[cast(int, mode_index)]
+        _kwargs: dict[str, Any] = dict(
             index=definition.index,
             name=definition.name, 
             speed_factor=self.speed_factor,
@@ -80,15 +82,14 @@ class Player:
             parent=parent,
         )
         _kwargs |= (
-            self.replace_kwarg_values(definition.kwargs) | 
-            kwargs
+            self.replace_kwarg_values(definition.kwargs) | kwargs
         )
         if issubclass(definition.cls, ForegroundMode):
             _kwargs |= dict(
                 devices=self.devices,
                 speed_factor=self.speed_factor,
             )
-        return definition.cls(**_kwargs)  # type: ignore
+        return definition.cls(**_kwargs)
 
     def effect_new_active_mode(self, mode_index: int) -> BackgroundMode | ForegroundMode:
         """"""

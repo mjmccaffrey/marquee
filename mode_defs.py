@@ -31,9 +31,6 @@ def register_special_modes(exec: Executor) -> None:
     exec.add_mode("select_brightness", BrightnessSelect, 
         index=ModeIndex.BRIGHTNESS_SELECT, hidden=True,
     )
-    exec.add_mode("counter", SequenceMode,
-        index=ModeIndex.COUNTER, hidden=True,
-    )
     exec.add_sequence_mode("all_off", all_off,
         index=ModeIndex.DEFAULT,
     )

@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from enum import auto, StrEnum
 import logging
 
-from gpiozero import Button as _Button  # type: ignore
+from gpiozero import Button as _Button
 
 log = logging.getLogger('marquee.' + __name__)
 

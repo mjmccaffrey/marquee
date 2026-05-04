@@ -2,7 +2,7 @@
 
 import signal
 
-from gpiozero import Button as _Button  # type: ignore
+from gpiozero import Button as _Button
 
 from devices.bulb import (
     Hue_BR30_Enhanced_Color, Sylvania_G40_Frosted_100, 
@@ -109,10 +109,10 @@ def define_devices_hue_shelly(
     speed_factor: float,
 ) -> DeviceSet:
     """Create and return objects for all physical devices."""
-    bell_relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
-    bells = BellSet(relays=bell_relays.create_client(
-        {i: i for i in range(bell_relays.relay_count)})
-    )
+    # bell_relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
+    # bells = BellSet(relays=bell_relays.create_client(
+    #     {i: i for i in range(bell_relays.relay_count)})
+    # )
     drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
     drums = DrumSet(relays=drum_relays.create_client(
         {i: i for i in range(drum_relays.relay_count)})
@@ -160,7 +160,7 @@ def define_devices_hue_shelly(
     clicker = ClickSet(light_relays.create_client(CLICK_TO_RELAY))
     ringer = RingerBell(light_relays.create_client(RINGER_TO_RELAY))
     return DeviceSet(
-        bells, buttons(light_relays), drums, lights, aux, 
+        buttons(light_relays), drums, lights, aux, 
         clicker, ringer, joystick(),
     )
 
@@ -171,10 +171,10 @@ def define_devices_shelly(
     speed_factor: float,
 ) -> DeviceSet:
     """Create and return objects for all physical devices."""
-    bell_relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
-    bells = BellSet(relays=bell_relays.create_client(
-        {i: i for i in range(bell_relays.relay_count)})
-    )
+    # bell_relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
+    # bells = BellSet(relays=bell_relays.create_client(
+    #     {i: i for i in range(bell_relays.relay_count)})
+    # )
     drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
     drums = DrumSet(relays=drum_relays.create_client(
         {i: i for i in range(drum_relays.relay_count)})
@@ -203,7 +203,7 @@ def define_devices_shelly(
     clicker = ClickSet(light_relays.create_client(CLICK_TO_RELAY))
     ringer = RingerBell(light_relays.create_client(RINGER_TO_RELAY))
     return DeviceSet(
-        bells, buttons(light_relays), drums, lights, aux, 
+        buttons(light_relays), drums, lights, aux, 
         clicker, ringer, joystick(),
     )
 

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import logging
 from typing import ClassVar, NewType, override, Protocol
 
-import serial  # type: ignore missing module
+import serial
 
 log = logging.getLogger('marquee.' + __name__)
 

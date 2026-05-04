@@ -74,13 +74,6 @@ class LightSet:
         self.set_channels(brightness=100, force=True)
         self.controller.calibrate()
 
-    def brightnesses(self) -> list[int]:
-        """Return each channel's brightness state."""
-        return [
-            int(channel.brightness)
-            for channel in self.channels
-        ]
-
     def set_relays(
             self, 
             light_pattern: str | Sequence[int | bool] | bool | int | None,
@@ -217,6 +210,31 @@ class LightSet:
             on=tuple(on_values[p] for p in light_pattern),
         )
             
+    def brightnesses(self) -> list[int]:
+        """Return each channel's brightness state."""
+        return [
+            int(channel.brightness)
+            for channel in self.channels
+        ]
+
+    def current_state(self) -> 'SavedState':
+        """Return state of lights."""
+        return (
+            tuple(int(c.brightness) for c in self.channels),
+            tuple(c.color for c in self.channels),
+            tuple(c.on for c in self.channels),
+        )
+
+    def restore_state(self, state: 'SavedState', transition: float) -> None:
+        """"""
+        br, co, on = state
+        self.set_channels(
+            brightness=br,
+            color=co,
+            on=on,
+            transition=transition,
+        )
+
     @property
     def brightness_factor(self) -> float:
         return self._brightness_factor
@@ -334,4 +352,7 @@ class ClickSet:
             "1" if p == "0" else "0" for p in self.relays.device_pattern
         )
         self.relays.set_state_of_devices(pattern)
+
+
+SavedState = tuple[tuple[int, ...], tuple[Color | None, ...], tuple[bool, ...]]
 

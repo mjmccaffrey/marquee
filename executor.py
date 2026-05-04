@@ -59,7 +59,9 @@ class Executor:
             self.mode_menu.append((index, name))
             self.mode_ids[str(index)] = index
             self.mode_ids[name] = index
-        self.modes[index] = ModeDefinition(index, name, cls, kwargs)
+        self.modes[index] = ModeDefinition(
+            index=index, name=name, cls=cls, kwargs=kwargs,
+        )
 
     def add_sequence_mode(
         self,
@@ -147,7 +149,10 @@ class Executor:
 
     def command_off(self) -> None:
         """Turn off all relays and potentially other devices."""
-        for d in (self.devices.bells, self.devices.drums, self.devices.lights):
+        for d in (
+            # self.devices.bells, 
+            self.devices.drums, self.devices.lights,
+        ):
             assert d.relays is not None
             d.relays.set_state_of_devices('0' * d.relays.count)
         log.info("Marquee hardware is now partially powered off.")

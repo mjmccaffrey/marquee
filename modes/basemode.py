@@ -134,7 +134,8 @@ class CreateModeInstance(Protocol):
     """"""
     def __call__(
         self,
-        mode_index: int,
+        mode_index: int | None = None,
+        mode_definition: ModeDefinition | None = None,
         kwargs: dict[str, Any] = {},
         parent: BaseMode | None = None,  # !!! BaseMode
     ) -> BaseMode:  # !!! BackgroundMode | ForegroundMode:
