@@ -4,6 +4,7 @@ from abc import ABC
 from collections.abc import Sequence
 from dataclasses import dataclass
 import logging
+from typing import cast
 from typing_extensions import override
 
 from .performancemode import PerformanceMode
