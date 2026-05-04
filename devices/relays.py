@@ -3,7 +3,8 @@
 from abc import ABC
 from dataclasses import dataclass
 import logging
-from typing import ClassVar, NewType, override, Protocol
+from typing import ClassVar, NewType, Protocol
+from typing_extensions import override
 
 import serial
 
