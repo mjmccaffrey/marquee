@@ -29,12 +29,10 @@ class TiltSensors(PerformanceMode):
             ButtonName.CORDED_A: +1,
             ButtonName.CORDED_B: -1,
         }
-        print(button, type(button))
         if button in direction_buttons:
             shift = self.shift + direction_buttons[button]
             if -5 <= shift <= 5:
                 self.shift = shift
-                print(self.shift)
                 self.execute()
         else:
             return super().button_action(button)

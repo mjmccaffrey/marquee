@@ -50,7 +50,6 @@ class ButtonSet:
     def wait(self, seconds: float | None) -> None:
         """Wait until seconds have elapsed or any button is pressed."""
         if self.pressed_event.wait(seconds):
-            print("ButtonSet pressed during wait!")
             assert self.button_actioned is not None
             assert self.button_action is not None
             raise ButtonPhysicallyChanged(
