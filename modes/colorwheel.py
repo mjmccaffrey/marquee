@@ -17,6 +17,7 @@ class ColorWheel(PerformanceMode):
     def __post_init__(self) -> None:
         super().__post_init__()
         self.rotation = 1
+        self.lights.set_channels(on=True)
     
     @override
     def execute(self):
