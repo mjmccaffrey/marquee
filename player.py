@@ -130,13 +130,13 @@ class Player:
                     self.active_mode.execute()
                 self.wait()
             except ButtonActionException as press:
-                button, action = press.args
-                if action == ButtonAction.HELD:
+                if press.action == ButtonAction.HELD:
                     return True
                 self.devices.buttons.reset()
                 assert self.active_mode is not None
-                log.debug(f"Button {button} {action} in mode {self.active_mode}")
-                new_mode_index = self.notify_button_action(button)
+                print(f"Button {press.button} {press.action} in mode {self.active_mode}")
+                log.debug(f"Button {press.button} {press.action} in mode {self.active_mode}")
+                new_mode_index = self.notify_button_action(press.button)
             except ChangeMode as cm:
                 log.debug("ChangeMode caught")
                 new_mode_index, = cm.args
@@ -150,6 +150,7 @@ class Player:
     def notify_button_action(self, button: ButtonName) -> int | None:
         """Notify all background modes, and active mode, 
            of button action. Return active mode's response."""
+        print(self.active_mode)
         for mode in self.live_bg_modes.values():
             mode.button_action(button)
         return (
