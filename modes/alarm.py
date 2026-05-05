@@ -64,5 +64,5 @@ class AlarmForeground(PerformanceMode):
     def restore_order(self):
         """Stop ringing. Restore lights."""
         self.ringer.rest()
-        self.lights.restore_state(self.state)
+        self.lights.restore_state(self.state, self.restore_time)
 

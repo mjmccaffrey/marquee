@@ -75,6 +75,7 @@ class PacManGame(GameMode):
                 if dot.brightness <= 0:
                     del self.board[coord][Dot]
                 self.dot_bites_remaining -= 1
+                assert self.aux is not None
                 self.aux.set_channels(
                     brightness=int(
                         (self.dot_bites_maximum  - 
@@ -93,6 +94,7 @@ class PacManGame(GameMode):
         self.dot_bites_remaining = self.dot_bites_maximum
         self.level = level
         self.init_level()
+        assert self.aux is not None
         self.aux.set_channels(brightness=0, on=True)
         self.aux.set_relays(True)
         for d in maze_base.keys() - {PACMAN_START}:
@@ -195,6 +197,7 @@ class PacManGame(GameMode):
     def send_desired_states_to_lights(self, desired: Sequence[ChannelUpdate]):
         """"""
         self.lights.update_channels(desired[:self.lights.count])
+        assert self.aux is not None
         self.aux.update_channels(desired[self.lights.count:])
 
     @override
