@@ -16,13 +16,12 @@ class ColorWheel(PerformanceMode):
 
     def __post_init__(self) -> None:
         super().__post_init__()
-        self.rotation = -1
+        self.rotation = 0
         self.lights.set_channels(on=True)
     
     @override
     def execute(self):
         """"""
-        self.rotation += 1
         values = (
             (100, 0, 0),
             (100, 50, 0),
@@ -39,7 +38,7 @@ class ColorWheel(PerformanceMode):
         )
         for i, (r, g, b) in enumerate(values):
             self.lights.set_channels(
-                brightness=int(100 / 12 * ((i + self.rotation + 1) % 12)),
+                brightness=100, # int(100 / 12 * ((i + self.rotation + 1) % 12)),
                 color=self.lights.colors.rgb(
                     int(r / 100 * 255),
                     int(g / 100 * 255),
