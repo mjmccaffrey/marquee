@@ -80,7 +80,7 @@ def register_channel_modes(exec: Executor):
     exec.add_mode(
         'colorwheel',
         ColorWheel,
-        delay=0.5,
+        delay=0.25,
     )
     exec.add_mode('running', Running, ticks_per_second=2)
     
