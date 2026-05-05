@@ -47,6 +47,7 @@ class SequenceMode(PerformanceMode):
 
     def __post_init__(self, color_set_name) -> None:
         """Initialize."""
+        super().__post_init__()
         self.baseline = self.baseline or DEFAULT_BASELINE
         self.color_set = (
             self.color_sets.lookup(color_set_name)
