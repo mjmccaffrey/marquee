@@ -15,6 +15,7 @@ class ColorWheel(PerformanceMode):
     delay: float | None
 
     def __post_init__(self) -> None:
+        super().__post_init__()
         self.rotation = 1
     
     @override
