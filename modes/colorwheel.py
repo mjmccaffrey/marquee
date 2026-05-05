@@ -44,7 +44,7 @@ class ColorWheel(PerformanceMode):
                     int(g / 100 * 255),
                     int(b / 100 * 255),
                 ),
-                transition=1.0,
+                transition=self.delay,
                 channel_indexes={(i + self.rotation) % 12},
             )
         self.rotation = (self.rotation + 1) % 12
