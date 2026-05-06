@@ -13,6 +13,7 @@ log = logging.getLogger('marquee.' + __name__)
 class FastChange(PerformanceMode):
     """"""
     delay: float
+    transition: float
 
     def __post_init__(self) -> None:
         super().__post_init__()
@@ -24,7 +25,7 @@ class FastChange(PerformanceMode):
         """"""
         self.lights.set_channels(
             color=self.lights.colors.random(),
-            transition=0,
+            transition=self.transition,
             channel_indexes={self.rotation},
         )
         self.rotation = (self.rotation + 1) % 12
