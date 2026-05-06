@@ -64,7 +64,7 @@ class Player:
         mode_index: int | None = None,
         mode_definition: ModeDefinition | None = None,
         kwargs: dict[str, Any] = {},
-        parent: object | None = None,  # BaseMode
+        parent: BackgroundMode | ForegroundMode | None = None,
     ) -> BackgroundMode | ForegroundMode:
         """"""
         assert (mode_index is None) ^ (mode_definition is None)
