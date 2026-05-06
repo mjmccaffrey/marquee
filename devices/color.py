@@ -78,7 +78,7 @@ class Colors:
     RED = RGB(255, 0, 0)
     ORANGE = RGB(255, 128, 0)
     YELLOW = RGB(255, 255, 0)
-    LIME = RGB(75, 0, 130)  # RGB(128, 200, 0)
+    LIME = RGB(128, 200, 0)
     GREEN = RGB(0, 255, 0)
     SPRING = RGB(0, 255, 128)
     CYAN = RGB(0, 255, 255)
@@ -92,7 +92,7 @@ class Colors:
         RED, ORANGE, YELLOW, LIME, GREEN, SPRING,
         CYAN, TEAL, BLUE, VIOLET, MAGENTA, ROSE,
     )
-
+    INDIGO = RGB(75, 0, 130)  
 
 
 

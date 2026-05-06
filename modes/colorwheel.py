@@ -12,7 +12,7 @@ log = logging.getLogger('marquee.' + __name__)
 @dataclass(kw_only=True)
 class ColorWheel(PerformanceMode):
     """"""
-    delay: float | None
+    delay: float
 
     def __post_init__(self) -> None:
         super().__post_init__()
@@ -44,10 +44,9 @@ class ColorWheel(PerformanceMode):
                     int(g / 100 * 255),
                     int(b / 100 * 255),
                 ),
-                transition=self.delay,
+                transition=self.delay * 2,
                 channel_indexes={(i + self.rotation) % 12},
             )
         self.rotation = (self.rotation + 1) % 12
-        if self.delay is not None:
-            self.schedule(due=self.delay)
+        self.schedule(due=self.delay)
 
