@@ -28,8 +28,8 @@ class GameState(StrEnum):
     """"""
     PRE_GAME = auto()
     PLAY_GAME = auto()
-    PRE_LEVEL_1 = auto()
-    POST_LEVEL_1 = auto()
+    PRE_LEVEL_0 = auto()
+    POST_LEVEL_0 = auto()
     GAME_LOST = auto()
     GAME_WON = auto()
 
@@ -74,7 +74,7 @@ class PacManGame(GameMode):
             button == ButtonName.GAME_START and
             self.state == GameState.PRE_GAME
         ):
-            self.change_state(GameState.PRE_LEVEL_1)
+            self.change_state(GameState.PRE_LEVEL_0)
         else:
             return super().button_action(button)
 
@@ -136,19 +136,22 @@ class PacManGame(GameMode):
         self.ghosts = (self.pinky, self.blinky)
         self.place_entity(self.pacman, PACMAN_START)
         self.update_lights(self.board)
-        self.change_state(GameState.PLAY_GAME)
+        self.schedule(
+            due=2.0, action=partial(self.change_state, GameState.PLAY_GAME)
+        )
 
     def pre_game_state(self) -> None:
         """"""
         log.info("Waiting for Start Game button press")
         self.buttons.game_start.set_light(True)
 
-    def pre_level_1_state(self) -> None:
+    def pre_level_0_state(self) -> None:
         """Set up dots and characters."""
         self.play_sound(Sound.BEGINNING)
+        self.schedule(due=3.0, action=partial(self.play_level, 0))
         self.play_level(0)
 
-    def post_level_1_state(self) -> None:
+    def post_level_0_state(self) -> None:
         """"""
         self.play_sound(Sound.INTERMISSION)
         for i, c in zip(range(4), cycle((Colors.WHITE, Colors.BLUE))):
@@ -159,7 +162,8 @@ class PacManGame(GameMode):
                 due=(1 + i),
                 action=partial(self.lights.set_channels, **kwargs),
             )
-        self.schedule(due=6.0, action=partial(self.change_state, GameState.PRE_LEVEL_1))
+        self.level = 1
+        self.schedule(due=6.0, action=partial(self.change_state, GameState.PRE_LEVEL_0))
 
     def game_won_state(self) -> None:
         """"""
@@ -182,10 +186,10 @@ class PacManGame(GameMode):
                 func = self.play_game_state
             case GameState.PRE_GAME:
                 func = self.pre_game_state
-            case GameState.PRE_LEVEL_1:
-                func = self.pre_level_1_state
-            case GameState.POST_LEVEL_1:
-                func = self.post_level_1_state
+            case GameState.PRE_LEVEL_0:
+                func = self.pre_level_0_state
+            case GameState.POST_LEVEL_0:
+                func = self.post_level_0_state
             case GameState.GAME_LOST:
                 func = self.game_lost_state
             case GameState.GAME_WON:
@@ -200,7 +204,7 @@ class PacManGame(GameMode):
         assert self.pacman.coord is not None
         if not self.dot_bites_remaining:
             if self.level == 0:
-                self.change_state(GameState.POST_LEVEL_1)
+                self.change_state(GameState.POST_LEVEL_0)
             else:
                 self.change_state(GameState.GAME_WON)
         if self.ghost_got_pacman():
