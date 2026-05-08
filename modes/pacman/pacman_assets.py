@@ -54,10 +54,9 @@ class PacMan(Character):
         if coord is None:
             return
         self.game.move_character(self, coord)
-        for element in self.game.board[coord]:
-            if element in {Dot, Fruit}:
-                self.game.events.notify(BITE_EVENT, etype=element, coord=coord)
-
+        edible = {e for e in self.game.board[coord] if e in {Dot, Fruit}}
+        for e in edible:
+            self.game.events.notify(BITE_EVENT, etype=e, coord=coord)
 
 
 class Sound(StrEnum):
