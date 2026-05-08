@@ -150,18 +150,18 @@ class Clyde(Ghost):
 
 
 maze_base: Maze = {
-    0: Square(right=1, left=11, down=11),
+    0: Square(right=1, down=11),
     1: Square(left=0, right=2),
-    2: Square(left=1, down=3, right=3),
-    3: Square(down=4, left=2, up=2),       
+    2: Square(left=1, down=3),
+    3: Square(down=4, left=2),       
     4: Square(up=3, down=5),
-    5: Square(up=4, left=6, down=6),
-    6: Square(left=7, right=5, up=5),
+    5: Square(up=4, left=6),
+    6: Square(left=7, up=5),
     7: Square(left=8, right=6),
-    8: Square(right=7, left=9, up=9),
-    9: Square(up=10, right=8, down=8),
+    8: Square(right=7, up=9),
+    9: Square(up=10, right=8),
     10: Square(down=9, up=11),
-    11: Square(down=10, right=0, up=0),
+    11: Square(down=10, right=0),
 }
 maze_passage: Maze = maze_base | {
     4: Square(left=14, up=3, down=5),
