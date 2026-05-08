@@ -124,7 +124,7 @@ class PacManGame(GameMode):
             Blinky(
                 game=self, 
                 direction=+1,
-                wait_ticks=100 if self.level == 0 else 50,
+                wait_ticks=25 if self.level == 0 else 50,
             )
         )
         self.pinky = self.register_entity(
