@@ -109,7 +109,6 @@ class PacManGame(GameMode):
     def play_level(self, level: int) -> None:
         """"""
         log.info(f"Playing level {level}")
-        print(f"Playing level {level}")
         self.dot_bites_remaining = self.dot_bites_maximum
         self.level = level
         self.init_level()

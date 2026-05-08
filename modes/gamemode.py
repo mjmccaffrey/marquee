@@ -142,6 +142,7 @@ class GameMode(PerformanceMode):
             )
             for i, e in board.items()
         ]
+        self.send_desired_states_to_lights(desired)
 
     def send_desired_states_to_lights(self, desired: Sequence[ChannelUpdate]):
         """Override for multple light sets."""
