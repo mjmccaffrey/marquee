@@ -260,7 +260,6 @@ class PacManGame(GameMode):
         # Empty square
         if not entities:
             return ChannelUpdate(channel=channel, on=False)
-        assert self.pacman.coord is not None
         # Pac-Man and Ghost
         if (
             PacMan in entities and 
