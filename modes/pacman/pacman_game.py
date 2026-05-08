@@ -71,7 +71,7 @@ class PacManGame(GameMode):
     def button_action(self, button: ButtonName) -> int | None:
         """"""
         if (
-            button == self.buttons.game_start and
+            button == ButtonName.GAME_START and
             self.state == GameState.PRE_GAME
         ):
             self.change_state(GameState.PRE_LEVEL_1)
