@@ -29,6 +29,7 @@ class GameState(StrEnum):
     PRE_GAME = auto()
     PLAY_GAME = auto()
     PRE_LEVEL_0 = auto()
+    PRE_LEVEL_1 = auto()
     POST_LEVEL_0 = auto()
     GAME_LOST = auto()
     GAME_WON = auto()
@@ -42,6 +43,7 @@ class PacManGame(GameMode):
     # """Level 3 - add bypass."""
     maze: Maze = field(default_factory=lambda: maze_base)
     ticks_per_second: float = 2.0
+    level: int = field(init=False)
 
     def __post_init__(self):
         """Initialize board and characters."""
@@ -106,12 +108,11 @@ class PacManGame(GameMode):
             case _:
                 raise RuntimeError(etype)
 
-    def play_level(self, level: int) -> None:
+    @override
+    def init_level(self, level: int) -> None:
         """"""
-        log.info(f"Playing level {level}")
+        super().init_level()
         self.dot_bites_remaining = self.dot_bites_maximum
-        self.level = level
-        self.init_level()
         assert self.aux is not None
         self.aux.set_channels(brightness=0, on=True)
         self.aux.set_relays(True)
@@ -134,8 +135,11 @@ class PacManGame(GameMode):
             )
         )
         self.ghosts = (self.pinky, self.blinky)
-        self.place_entity(self.pacman, PACMAN_START)
         self.update_lights(self.board)
+
+    def play_level(self) -> None:
+        """"""
+        self.place_entity(self.pacman, PACMAN_START)
         self.schedule(
             due=2.0, action=partial(self.change_state, GameState.PLAY_GAME)
         )
@@ -146,9 +150,21 @@ class PacManGame(GameMode):
         self.buttons.game_start.set_light(True)
 
     def pre_level_0_state(self) -> None:
-        """Set up dots and characters."""
+        """"""
         self.play_sound(Sound.BEGINNING)
-        self.schedule(due=3.0, action=partial(self.play_level, 0))
+        self.level = 0
+        self.schedule(due=3.0, action=partial(self.init_level))
+        self.schedule(
+            due=5.0, action=partial(self.play_level)
+        )
+
+    def pre_level_1_state(self) -> None:
+        """"""
+        self.level = 1
+        self.schedule(due=0.0, action=partial(self.init_level))
+        self.schedule(
+            due=2.0, action=partial(self.play_level)
+        )
 
     def post_level_0_state(self) -> None:
         """"""
@@ -162,7 +178,9 @@ class PacManGame(GameMode):
                 action=partial(self.lights.set_channels, **kwargs),
             )
         self.level = 1
-        self.schedule(due=6.0, action=partial(self.change_state, GameState.PRE_LEVEL_0))
+        self.schedule(
+            due=6.0, action=partial(self.change_state, GameState.PRE_LEVEL_1)
+        )
 
     def game_won_state(self) -> None:
         """"""
@@ -187,6 +205,8 @@ class PacManGame(GameMode):
                 func = self.pre_game_state
             case GameState.PRE_LEVEL_0:
                 func = self.pre_level_0_state
+            case GameState.PRE_LEVEL_1:
+                func = self.pre_level_1_state
             case GameState.POST_LEVEL_0:
                 func = self.post_level_0_state
             case GameState.GAME_LOST:
