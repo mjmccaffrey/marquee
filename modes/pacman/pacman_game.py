@@ -150,6 +150,7 @@ class PacManGame(GameMode):
 
     def post_level_1_state(self) -> None:
         """"""
+        self.play_sound(Sound.INTERMISSION)
         for i, c in zip(range(4), cycle((Colors.WHITE, Colors.BLUE))):
             kwargs = dict(color=c, transition=0)
             if i == 0:
@@ -163,10 +164,14 @@ class PacManGame(GameMode):
     def game_won_state(self) -> None:
         """"""
         log.info("You won!")
+        self.play_sound(Sound.EXTRAPAC)
+        self.schedule(due=5.0, action=partial(self.change_state, GameState.PRE_GAME))
 
     def game_lost_state(self) -> None:
         """"""
         log.info("You lost!")
+        self.play_sound(Sound.DEATH)
+        self.schedule(due=5.0, action=partial(self.change_state, GameState.PRE_GAME))
 
     @override
     def execute_state(self) -> None:
