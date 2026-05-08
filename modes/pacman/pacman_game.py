@@ -64,7 +64,7 @@ class PacManGame(GameMode):
     def play_sound(self, sound: Sound):
         """"""
         self.sounds[sound].play()
-        
+
     @override
     def button_action(self, button: ButtonName) -> int | None:
         """"""
@@ -97,8 +97,10 @@ class PacManGame(GameMode):
                         100 / self.dot_bites_maximum
                     )
                 )
+                self.play_sound(Sound.CHOMP)
             case assets.Fruit:
-                    del self.board[coord][Fruit]
+                del self.board[coord][Fruit]
+                self.play_sound(Sound.EATFRUIT)
             case _:
                 raise RuntimeError(etype)
 
