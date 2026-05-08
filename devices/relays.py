@@ -71,7 +71,6 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         port_address: str, 
     ) -> None:
         """Establish connection to relay module via serial port."""
-        # self.reserved = {r: False for r in range(self.relay_count)}
         try:
             hex_lengths = {8: 2, 16: 4}
             self.relay_pattern_hex_len = hex_lengths[self.relay_count]
@@ -95,9 +94,6 @@ class NumatoUSBRelayModule(RelayModule, ABC):
     ) -> RelayClient:
         """Define a client, in which device_to_relay maps 
            device indices to relay indices."""
-        # for r in device_to_relay.values():
-        #     assert not self.reserved[r]
-        #     self.reserved[r] = True
         return RelayClient(
             module=self,
             count=len(device_to_relay),
@@ -205,6 +201,24 @@ class NumatoUSBRelayModule(RelayModule, ABC):
 class NumatoRL160001(NumatoUSBRelayModule, relay_count=16):
     """Supports the Numato RL160001 16 Channel USB 
        Mechanical Relay Module."""
+
+
+class NumatoRL320001(NumatoUSBRelayModule, relay_count=32):
+    """Supports the Numato RL160001 32 Channel USB 
+       Mechanical Relay Module."""
+    bottom_mirrors_top: bool = False
+
+    @override
+    def _devices_to_relays(
+        self,
+        client: RelayClient,
+        pattern: DevicePattern,
+    ) -> RelayPattern:
+        """"""
+        pat = super()._devices_to_relays(client, pattern)
+        if self.bottom_mirrors_top:
+            pat = RelayPattern(pat[:int(self.relay_count / 2)] * 2)
+        return pat
 
 
 class NumatoSSR80001(NumatoUSBRelayModule, relay_count=8):

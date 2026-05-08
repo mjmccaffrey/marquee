@@ -23,6 +23,19 @@ class FastChange(PerformanceMode):
     @override
     def execute(self):
         """"""
+        self.single()
+
+    def single(self):
+        """"""
+        self.lights.set_channels(
+            color=self.lights.colors.random(),
+            transition=self.transition,
+            channel_indexes={self.rotation},
+        )
+        self.schedule(due=self.delay)
+
+    def rotate(self):
+        """"""
         self.lights.set_channels(
             color=self.lights.colors.random(),
             transition=self.transition,

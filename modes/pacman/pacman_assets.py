@@ -8,7 +8,7 @@ from typing import ClassVar
 from typing_extensions import override
 
 from devices.color import Color, Colors, RGB
-from .gamemode import Character, Entity, GameMode, Maze, Square
+from ..gamemode import Character, Entity, GameMode, Maze, Square
 
 log = logging.getLogger('marquee.' + __name__)
 

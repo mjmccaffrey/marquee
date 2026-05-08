@@ -248,7 +248,10 @@ def register_silent_modes(exec: Executor) -> None:
     exec.add_mode("random_bright_fixed_dur", RandomFade, duration=5.0)
     exec.add_mode("random_random_random", RandomFade)
     exec.add_mode("narcissa_random_random", RandomFade, color_set_name='narcissa')
-    exec.add_mode("fast_change", FastChange, delay=0.0025, transition=0.25)
+    exec.add_mode(
+        "fast_change", FastChange, 
+        delay=0.0025, transition=0.25,  # Rotation: Seems To MAYBE Occasionally Miss
+    )
 
 def register_test_modes(exec: Executor) -> None:
     """"""

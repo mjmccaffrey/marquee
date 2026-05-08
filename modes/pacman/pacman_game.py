@@ -11,7 +11,7 @@ from typing_extensions import override
 
 from devices.color import Colors, RGB
 from devices.devices_misc import ButtonName
-from .gamemode import Entity, EntityGroup, GameMode, Maze
+from ..gamemode import Entity, EntityGroup, GameMode, Maze
 from . import pacman_assets as assets
 from .pacman_assets import (
     Dot, Fruit, BITE_EVENT, Ghost, PacMan, Pinky, Blinky, maze_base
