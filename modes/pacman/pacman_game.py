@@ -109,7 +109,7 @@ class PacManGame(GameMode):
                 raise RuntimeError(etype)
 
     @override
-    def init_level(self, level: int) -> None:
+    def init_level(self) -> None:
         """"""
         super().init_level()
         self.dot_bites_remaining = self.dot_bites_maximum
