@@ -149,7 +149,6 @@ class PacManGame(GameMode):
         """Set up dots and characters."""
         self.play_sound(Sound.BEGINNING)
         self.schedule(due=3.0, action=partial(self.play_level, 0))
-        self.play_level(0)
 
     def post_level_0_state(self) -> None:
         """"""
