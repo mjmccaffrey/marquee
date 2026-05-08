@@ -141,6 +141,8 @@ class PacManGame(GameMode):
     def pre_game_state(self) -> None:
         """"""
         self.buttons.game_start.set_light(True)
+        self.play_sound(Sound.BEGINNING)
+        self.change_state(GameState.PRE_LEVEL_1)
 
     def pre_level_1_state(self) -> None:
         """Set up dots and characters."""
