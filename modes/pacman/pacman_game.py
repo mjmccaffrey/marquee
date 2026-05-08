@@ -6,6 +6,7 @@ from enum import auto, StrEnum
 from functools import partial
 from itertools import cycle
 import logging
+import pygame
 from typing import Any, Sequence
 from typing_extensions import override
 
@@ -14,7 +15,7 @@ from devices.devices_misc import ButtonName
 from ..gamemode import Entity, EntityGroup, GameMode, Maze
 from . import pacman_assets as assets
 from .pacman_assets import (
-    Dot, Fruit, BITE_EVENT, Ghost, PacMan, Pinky, Blinky, maze_base
+    Dot, Fruit, BITE_EVENT, Ghost, PacMan, Pinky, Blinky, maze_base, Sound,
 )
 from devices.lightcontroller import LightChannel, ChannelUpdate
 
@@ -47,10 +48,23 @@ class PacManGame(GameMode):
         super().__post_init__()
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
+        self.init_sound()
         self.dot_bites_maximum = (self.lights.count - 1) * 2
         self.events.subscribe(BITE_EVENT, self.pacman_bite)
         self.state = GameState.PRE_GAME
 
+    def init_sound(self):
+        """"""
+        pygame.mixer.init()
+        self.sounds = {
+            sound: pygame.mixer.Sound(f'modes/pacman/pacman_{sound}.wav')
+            for sound in Sound
+        }
+
+    def play_sound(self, sound: Sound):
+        """"""
+        self.sounds[sound].play()
+        
     @override
     def button_action(self, button: ButtonName) -> int | None:
         """"""

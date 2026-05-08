@@ -60,6 +60,16 @@ class PacMan(Character):
 
 
 
+class Sound(StrEnum):
+    BEGINNING = auto()
+    CHOMP = auto()
+    DEATH = auto()
+    EATFRUIT = auto()
+    EATGHOST = auto()
+    EXTRAPAC = auto()
+    INTERMISSION = auto()
+    
+
 class GhostState(StrEnum):
     """"""
     WAITING = auto()
