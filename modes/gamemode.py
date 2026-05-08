@@ -86,20 +86,20 @@ class GameMode(PerformanceMode):
     def state_logic(self):
         """"""
 
-    def state_func(self) -> Callable:
+    def execute_state(self) -> None:
         match self.state:
             case GameState.PLAY_GAME:
                 func = self.play_game_state
             case _:
                 raise RuntimeError(self.state)
-        return func
+        func()
     
     def change_state(self, state: StrEnum):
         """"""
         print(f'{state=}')
         self.tasks.delete_owned_by(self)
         self.state = state
-        self.schedule(due=0, action=self.state_func)
+        self.schedule(due=0, action=self.execute_state)
 
     def init_level(self):
         """"""
@@ -111,7 +111,7 @@ class GameMode(PerformanceMode):
     @override
     def execute(self) -> None:
         """"""
-        self.state_func()
+        self.execute_state()
 
     def play_game_state(self):
         """"""

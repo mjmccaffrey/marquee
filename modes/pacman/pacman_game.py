@@ -51,7 +51,7 @@ class PacManGame(GameMode):
         self.init_sound()
         self.dot_bites_maximum = (self.lights.count - 1) * 2
         self.events.subscribe(BITE_EVENT, self.pacman_bite)
-        self.change_state(GameState.PRE_GAME)
+        self.state = GameState.PRE_GAME
 
     def init_sound(self):
         """"""
@@ -169,8 +169,9 @@ class PacManGame(GameMode):
         log.info("You lost!")
 
     @override
-    def state_func(self) -> Callable:
+    def execute_state(self) -> None:
         assert isinstance(self.state, GameState)
+        print(self.state)
         match self.state:
             case GameState.PLAY_GAME:
                 func = self.play_game_state
@@ -184,7 +185,7 @@ class PacManGame(GameMode):
                 func = self.game_lost_state
             case GameState.GAME_WON:
                 func = self.game_won_state
-        return func
+        func()
 
     @override
     def state_logic(self) -> None:
