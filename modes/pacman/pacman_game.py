@@ -123,14 +123,14 @@ class PacManGame(GameMode):
             Blinky(
                 game=self, 
                 direction=+1,
-                wait_ticks=20 if self.level == 0 else 10,
+                wait_ticks=50 if self.level == 0 else 25,
             )
         )
         self.pinky = self.register_entity(
             Pinky(
                 game=self, 
                 direction=-1,
-                wait_ticks=999999 if self.level == 0 else 20,
+                wait_ticks=999999 if self.level == 0 else 50,
             )
         )
         self.ghosts = (self.pinky, self.blinky)
