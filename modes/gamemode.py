@@ -70,6 +70,7 @@ class GameMode(PerformanceMode):
 
     def __post_init__(self):
         """"""
+        super().__post_init__()
         self.light_channels = self.lights.channels  # !!!!!!
         self.state = GameState.PLAY_GAME
 
