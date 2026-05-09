@@ -92,7 +92,7 @@ class Twelve(MusicMode):
         bps = self.tempo / 60
         pygame.mixer.music.play()
         schedule_12(3 * 4 / bps)
-        schedule_12(6 * 4 / bps)
+        schedule_12(9 * 4 / bps)
 
 
     def play_music(self) -> float:
