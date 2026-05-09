@@ -56,43 +56,43 @@ class Twelve(MusicMode):
         # restart_seconds = self.play_music()
         # log.info(f"{restart_seconds=}")
 
-    def play_basic(self) -> float:
+    def play_basic(self):
         """"""
+
+        def schedule_12(delay: float):
+            """"""
+            delays = (0.0,) + tuple(
+                (n / bps) 
+                for n in notes[:-1]
+            )
+            for i, d in enumerate(delays):
+                delay += d
+                self.schedule(
+                    due=delay,
+                    action=partial(
+                        self.lights.set_channels,
+                        on=True,
+                        transition=0.0,
+                        channel_indexes={i},
+                    )
+                )
+            self.schedule(
+                due=delay + 4.0,
+                action=partial(
+                    self.lights.set_channels,
+                    on=False,
+                ),
+            )
+        
         notes = (
             0.5, 0.5, 0.5, 1, 1, 0.5,
             1, 0.5, 1, 1, 1.5, 1,
         )
         bps = self.tempo / 60
-
-        # # Click intro
-        # for i in range(4):
-        #     self.schedule(
-        #         due=(i / bps),
-        #         action=partial(self.clicker.click),
-        #     )
-
         pygame.mixer.music.play()
-        delay = 3 * 4 / bps
+        schedule_12(3 * 4 / bps)
+        schedule_12(3 * 24 / bps)
 
-        # Schedule to turn each on
-        delays = (0.0,) + tuple(
-            (n / bps) 
-            for n in notes[:-1]
-        )
-        for i, d in enumerate(delays):
-            delay += d
-            self.schedule(
-                due=delay,
-                action=partial(
-                    self.lights.set_channels,
-                    on=True,
-                    transition=0.0,
-                    channel_indexes={i},
-                )
-            )
-
-        # Return when to repeat
-        return delay + 1 / bps
 
     def play_music(self) -> float:
         """"""
