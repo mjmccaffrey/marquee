@@ -49,7 +49,7 @@ class Twelve(MusicMode):
             """"""
             for i, (r, g, b) in enumerate(self.colors):
                 self.lights.set_channels(
-                    brightness=28,
+                    brightness=40,
                     color=self.lights.colors.rgb(
                         int(r / 100 * 255),
                         int(g / 100 * 255),
@@ -60,8 +60,6 @@ class Twelve(MusicMode):
 
         def schedule_12(delay: float):
             """"""
-            #
-            self.schedule(due=delay-2.0, action=prep_lights)
             #
             delays = (0.0,) + tuple(
                 (n / bps) 
@@ -74,6 +72,7 @@ class Twelve(MusicMode):
                     action=partial(
                         self.lights.set_channels,
                         on=True,
+                        brightness=40,
                         transition=0.0,
                         channel_indexes={i},
                     )
@@ -94,8 +93,9 @@ class Twelve(MusicMode):
         )
         bps = self.tempo / 60
         pygame.mixer.music.play()
+        prep_lights()
         schedule_12(3 * 4 / bps)
-        schedule_12(9 * 4 / bps)
+        schedule_12(8.5 * 4 / bps)
 
 
     def play_music(self) -> float:
