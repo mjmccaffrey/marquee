@@ -113,7 +113,7 @@ class Twelve(MusicMode):
         song = section(
             # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
             act_part(
-                '  ♩ ♩ ♩  ',
+                '  ♩  ',
                 play_mp3,
             ),
             act_part(
