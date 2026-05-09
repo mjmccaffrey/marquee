@@ -163,7 +163,7 @@ maze_base: Maze = {
     10: Square(down=9, up=11),
     11: Square(down=10, right=0),
 }
-maze_passage: Maze = maze_base | {
+maze_with_passage: Maze = maze_base | {
     4: Square(left=14, up=3, down=5),
     10: Square(right=12, down=9, up=11),
     12: Square(left=10, right=13),

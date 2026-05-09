@@ -21,7 +21,7 @@ from light_defs import *
 
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'
-HUE_BULB_IDS = [
+HUE_BULB_IDS_0 = [
     "79d6cc75-8eaa-450a-be32-6bc14695b11a",
     "1e5bbfc7-f3f1-47e1-bba9-18e70588f1e3",
     "b0338b37-5ed1-4ec2-b4be-5f9157ba62af",
@@ -34,6 +34,11 @@ HUE_BULB_IDS = [
     "be70ec73-1aca-41a8-afaa-3e9dab07c27a",  # Label 0
     "3d3132d3-528c-4e15-bba7-f587e1442ef2",  # Label 1
     "35c48818-a97b-4b67-bbc8-22a68e6be153",  # Label 2
+]
+HUE_BULB_IDS_1 = [
+    "04098e6c-f416-4ce5-b91c-06e6004b2a23",
+    "a0906758-e0b5-45c3-8e19-85994f253bd7",
+    "359de043-2614-443f-8e44-fad407fdc854",
 ]
 HUE_ZONE_IDS = [
     # "services": [
@@ -104,7 +109,7 @@ def joystick() -> Joystick:
         right=_Button(pin=22, bounce_time=0.05),
     )
 
-def define_devices_hue_shelly(
+def define_devices_hue(
     brightness_factor: float,
     speed_factor: float,
 ) -> DeviceSet:
@@ -127,32 +132,25 @@ def define_devices_hue_shelly(
             application_key=HUE_APPLICATION_KEY,
             ip_address=HUE_IP_ADDRESS,
             bulb_model=Hue_BR30_Enhanced_Color,
-            bulb_ids=HUE_BULB_IDS,
-            zone_ids=HUE_ZONE_IDS,
+            bulb_ids=HUE_BULB_IDS_0,
+            zone_ids=[],
+            all_at_once_supported=False,
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
 
-    # zigbee:
-    #     relay?
-    #     donut
-    #     3 pacman lights
-    
     aux = LightSet(
-        count=len(TOP_TO_RELAY),
-        relays=light_relays.create_client(TOP_TO_RELAY),
-        mirror=drum_relays.create_client(TOP_TO_RELAY),
-        controller_type=ShellyController,
+        count=LIGHT_COUNT,
+        relays=None,
+        mirror=None,
+        controller_type=HueBridge,
         controller_kwargs=dict(
-            bulb_model=Sylvania_G40_Frosted_100,
-            dimmers=[
-                ShellyProDimmer1PM(
-                    ip_address='192.168.64.116',
-                    bulb_model=Sylvania_G40_Frosted_100,
-                    channel_first_index=0,
-                ),
-            ],
+            application_key=HUE_APPLICATION_KEY,
+            ip_address=HUE_IP_ADDRESS,
+            bulb_model=Hue_BR30_Enhanced_Color,
+            bulb_ids=HUE_BULB_IDS_1,
+            zone_ids=HUE_ZONE_IDS, 
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
@@ -208,7 +206,7 @@ def define_devices_shelly(
     )
 
 
-define_devices = define_devices_hue_shelly
+define_devices = define_devices_hue
 """Create and return objects for all physical devices."""
 
 BUTTON_TO_RELAY = {0: 11}
