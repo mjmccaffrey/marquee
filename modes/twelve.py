@@ -64,13 +64,15 @@ class Twelve(MusicMode):
         )
         bps = self.tempo / 60
 
-        # Click intro
-        for i in range(4):
-            self.schedule(
-                due=(i / bps),
-                action=partial(self.clicker.click),
-            )
-        delay = 4 / bps
+        # # Click intro
+        # for i in range(4):
+        #     self.schedule(
+        #         due=(i / bps),
+        #         action=partial(self.clicker.click),
+        #     )
+
+        pygame.mixer.music.play()
+        delay = 3 * 4 / bps
 
         # Schedule to turn each on
         delays = (0.0,) + tuple(
