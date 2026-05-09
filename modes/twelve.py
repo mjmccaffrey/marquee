@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from functools import partial
 import logging
+import pygame
 from typing_extensions import override
 
 from .musicmode import MusicMode
@@ -35,6 +36,10 @@ class Twelve(MusicMode):
         # Turn all off
         self.lights.set_channels(on=False)
 
+        # Set up sound
+        pygame.mixer.init()
+        pygame.mixer.music.load('modes/twelve.mp3')
+
         # Set each color
         for i, (r, g, b) in enumerate(self.colors):
             self.lights.set_channels(
@@ -50,12 +55,6 @@ class Twelve(MusicMode):
         # next = self.play_basic()
         restart_seconds = self.play_music()
         log.info(f"{restart_seconds=}")
-
-        # Schedule repeat
-        # self.schedule(
-        #     due=restart_seconds,
-        #     action=self.execute,
-        # )
 
     def play_basic(self) -> float:
         """"""
@@ -107,12 +106,21 @@ class Twelve(MusicMode):
                 channel_indexes={index},
             )
 
+        def play_mp3():
+            """"""
+            pygame.mixer.music.play()
+
         song = section(
             # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
             act_part(
-                '  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩ ',
+                '  ♩  ',
+                play_mp3,
+            ),
+            act_part(
+                '  𝄻  |  𝄻  |  𝄻  |  '
+                '  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  ',
                 turn_on,
-            )
+            ),
         )
         restart = song.play(tempo=self.tempo)
         return restart
