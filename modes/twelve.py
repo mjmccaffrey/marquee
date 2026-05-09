@@ -35,11 +35,8 @@ class Twelve(MusicMode):
         """"""
         # Turn all off
         self.lights.set_channels(on=False)
-
-        # Set up sound
         pygame.mixer.init()
         pygame.mixer.music.load('modes/twelve.mp3')
-
         self.play_basic()
 
     def play_basic(self):
@@ -91,8 +88,8 @@ class Twelve(MusicMode):
             1, 0.5, 1, 1, 1.5, 1,
         )
         bps = self.tempo / 60
-        pygame.mixer.music.play()
         prep_lights()
+        pygame.mixer.music.play()
         schedule_12(3 * 4 / bps)
         schedule_12(9 * 4 / bps)
 
