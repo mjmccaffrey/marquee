@@ -72,7 +72,6 @@ class Twelve(MusicMode):
                     action=partial(
                         self.lights.set_channels,
                         on=True,
-                        brightness=40,
                         transition=0.0,
                         channel_indexes={i},
                     )
@@ -83,7 +82,7 @@ class Twelve(MusicMode):
                 action=partial(
                     self.lights.set_channels,
                     on=False,
-                    transition=1.0,
+                    # transition=1.0,
                 ),
             )
         
@@ -95,7 +94,7 @@ class Twelve(MusicMode):
         pygame.mixer.music.play()
         prep_lights()
         schedule_12(3 * 4 / bps)
-        schedule_12(8.5 * 4 / bps)
+        schedule_12(9 * 4 / bps)
 
 
     def play_music(self) -> float:
