@@ -91,7 +91,7 @@ class Twelve(MusicMode):
         prep_lights()
         pygame.mixer.music.play()
         schedule_12(3 * 4 / bps)
-        schedule_12(9 * 4 / bps)
+        schedule_12(9.5 * 4 / bps)
 
 
     def play_music(self) -> float:
