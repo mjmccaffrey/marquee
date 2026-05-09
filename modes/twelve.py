@@ -77,10 +77,11 @@ class Twelve(MusicMode):
                     )
                 )
             self.schedule(
-                due=delay + 4.0,
+                due=delay + 2.0,
                 action=partial(
                     self.lights.set_channels,
                     on=False,
+                    transition=1.0,
                 ),
             )
         
@@ -91,7 +92,7 @@ class Twelve(MusicMode):
         bps = self.tempo / 60
         pygame.mixer.music.play()
         schedule_12(3 * 4 / bps)
-        schedule_12(3 * 24 / bps)
+        schedule_12(6 * 4 / bps)
 
 
     def play_music(self) -> float:
