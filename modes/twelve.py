@@ -52,9 +52,9 @@ class Twelve(MusicMode):
                 channel_indexes={i},
             )
 
-        # next = self.play_basic()
-        restart_seconds = self.play_music()
-        log.info(f"{restart_seconds=}")
+        next = self.play_basic()
+        # restart_seconds = self.play_music()
+        # log.info(f"{restart_seconds=}")
 
     def play_basic(self) -> float:
         """"""
