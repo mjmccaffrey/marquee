@@ -124,7 +124,7 @@ class PacManGame(GameMode):
             Blinky(
                 game=self, 
                 direction=+1,
-                wait_ticks=25 if self.level == 0 else 50,
+                wait_ticks=75 if self.level == 0 else 50,
             )
         )
         self.pinky = self.register_entity(
@@ -140,6 +140,7 @@ class PacManGame(GameMode):
     def play_level(self) -> None:
         """"""
         self.place_entity(self.pacman, PACMAN_START)
+        self.update_lights(self.board)
         self.schedule(
             due=2.0, action=partial(self.change_state, GameState.PLAY_GAME)
         )

@@ -22,9 +22,6 @@ from light_defs import *
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'
 HUE_BULB_IDS = [
-    "be70ec73-1aca-41a8-afaa-3e9dab07c27a",
-    "3d3132d3-528c-4e15-bba7-f587e1442ef2",
-    "35c48818-a97b-4b67-bbc8-22a68e6be153",
     "79d6cc75-8eaa-450a-be32-6bc14695b11a",
     "1e5bbfc7-f3f1-47e1-bba9-18e70588f1e3",
     "b0338b37-5ed1-4ec2-b4be-5f9157ba62af",
@@ -34,6 +31,9 @@ HUE_BULB_IDS = [
     "90a20fd0-3aef-4a57-b93d-393c0956baa1",
     "6e3c6e43-7e01-40d5-a650-acbc391b716d",
     "108dee49-9e5c-4879-83be-1c6f361a89aa",
+    "be70ec73-1aca-41a8-afaa-3e9dab07c27a",  # Label 0
+    "3d3132d3-528c-4e15-bba7-f587e1442ef2",  # Label 1
+    "35c48818-a97b-4b67-bbc8-22a68e6be153",  # Label 2
 ]
 HUE_ZONE_IDS = [
     # "services": [

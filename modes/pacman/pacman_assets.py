@@ -18,7 +18,7 @@ BITE_EVENT = "BITE_EVENT"
 class Dot(Entity):
     """"""
     game: GameMode
-    color: RGB = Colors.GREEN
+    color: ClassVar[Color] = RGB(255, 176, 124)
     brightness: int = 80
     draw_priority: int = 1
 
