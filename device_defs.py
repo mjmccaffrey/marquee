@@ -141,7 +141,7 @@ def define_devices_hue(
     )
 
     aux = LightSet(
-        count=LIGHT_COUNT,
+        count=3,
         relays=None,
         mirror=None,
         controller_type=HueBridge,
