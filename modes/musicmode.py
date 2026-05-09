@@ -20,6 +20,7 @@ class MusicMode(PerformanceMode, ABC):
 
     def __post_init__(self):
         """Initialize."""
+        super().__post_init__()
         set_mode(self)
 
     @override
