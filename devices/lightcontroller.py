@@ -22,8 +22,8 @@ class LightController(ABC):
     bulb_comp: ClassVar[type[Bulb]]
     channel_count: ClassVar[int]
     trans_min: ClassVar[float]
-    all_at_once_supported: ClassVar[bool]
-
+    all_at_once_supported: bool  # !!! ClassVar
+ 
     ip_address: str
     bulb_model: Bulb
     channel_first_index: int
