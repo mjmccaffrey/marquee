@@ -71,7 +71,7 @@ class Twelve(MusicMode):
                         self.lights.set_channels,
                         on=True,
                         transition=0.0,
-                        indices={i},
+                        indices={(i + 2) % self.lights.count},
                     )
                 )
             #
