@@ -116,7 +116,7 @@ class Twelve(MusicMode):
             self.lights.set_channels,
             on=False,
         ),
-        count_to_12 = '  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  |  𝄻  |  ♩  '
+        count_to_12 = '  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  |  𝄻  |  ♩  |  '
         song = section(
             # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
             act_part('  ♩  ', play_mp3),
