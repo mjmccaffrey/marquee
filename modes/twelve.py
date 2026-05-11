@@ -117,12 +117,14 @@ class Twelve(MusicMode):
         light_ops = (
             (nada,) * 3 + 
             (turn_on,) * 12 + 
+            (nada,) * 1 + 
             (
                 partial(
                     self.lights.set_channels,
                     on=False,
                 ),
-            )
+            ) + 
+            (nada,) * 1 
         )
         song = section(
             # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
