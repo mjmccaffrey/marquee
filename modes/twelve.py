@@ -125,7 +125,7 @@ class Twelve(MusicMode):
                 count_to_12 + 
                 '  𝄻  |  𝄻  |  𝄻  |  ' + 
                 count_to_12,
-                *light_ops * 2,
+                *(light_ops * 2),
             ),
 
         )
