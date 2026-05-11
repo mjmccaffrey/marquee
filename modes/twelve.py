@@ -111,20 +111,18 @@ class Twelve(MusicMode):
             """"""
             pygame.mixer.music.play()
 
-        light_ops = (turn_on,) * 12
-        light_ops += partial(
-            self.lights.set_channels,
-            on=False,
-        ),
-        each_on_all_off = '  |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩ 𝄼  |  𝄻  |  ♩  𝄼 𝄽  |  '
+        light_ops = (
+            (turn_on,) * 12 + 
+            (partial(self.lights.set_channels, on=False),)
+        )
         song = section(
             # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
             act_part('  ♩  ', play_mp3),
             act_part(
-                '  |  𝄻  |  𝄻  |  𝄻  |  ' + 
-                each_on_all_off + 
-                '  |  𝄻  |  ' + 
-                each_on_all_off,
+                '  |  𝄻  |  𝄻  |  𝄻  |  '
+                '  |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩ 𝄼  |  𝄻  |  ♩  𝄼 𝄽  |  '
+                '  |  𝄻  |  '
+                '  |  𝄽 ♪ ♪ ♪ ♩ ♪ 𝄾 | ♪ ♩ ♪ ♩ ♩  |  ♪ 𝄽 ♩ 𝄼  |  𝄻  |  ♩  𝄼 𝄽  |  ',
                 *light_ops * 2,
             ),
         )
