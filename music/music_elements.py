@@ -144,9 +144,9 @@ class Measure(Element):
     elements: tuple[Element, ...]
     beats: int
 
-    # def __post_init__(self) -> None:
-    #     """Validate."""
-    #     assert self.elements
+    def __post_init__(self) -> None:
+        """Validate."""
+        assert self.elements
 
 
 @dataclass(frozen=True)

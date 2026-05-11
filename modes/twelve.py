@@ -33,27 +33,26 @@ class Twelve(MusicMode):
     @override
     def execute(self):
         """"""
-        # Turn all off
         self.lights.set_channels(on=False)
         pygame.mixer.init()
         pygame.mixer.music.load('modes/twelve.mp3')
         self.play_basic()
 
+    def prep_lights(self):
+        """"""
+        for i, (r, g, b) in enumerate(self.colors):
+            self.lights.set_channels(
+                brightness=40,
+                color=self.lights.colors.rgb(
+                    int(r / 100 * 255),
+                    int(g / 100 * 255),
+                    int(b / 100 * 255),
+                ),
+                indices={i},
+            )
+
     def play_basic(self):
         """"""
-
-        def prep_lights():
-            """"""
-            for i, (r, g, b) in enumerate(self.colors):
-                self.lights.set_channels(
-                    brightness=40,
-                    color=self.lights.colors.rgb(
-                        int(r / 100 * 255),
-                        int(g / 100 * 255),
-                        int(b / 100 * 255),
-                    ),
-                    channel_indexes={i},
-                )
 
         def schedule_12(delay: float):
             """"""
@@ -70,7 +69,7 @@ class Twelve(MusicMode):
                         self.lights.set_channels,
                         on=True,
                         transition=0.0,
-                        channel_indexes={i},
+                        indices={i},
                     )
                 )
             #
@@ -79,7 +78,6 @@ class Twelve(MusicMode):
                 action=partial(
                     self.lights.set_channels,
                     on=False,
-                    # transition=1.0,
                 ),
             )
         
@@ -88,7 +86,7 @@ class Twelve(MusicMode):
             1, 0.5, 1, 1, 1.5, 1,
         )
         bps = self.tempo / 60
-        prep_lights()
+        self.prep_lights()
         pygame.mixer.music.play()
         schedule_12(3 * 4 / bps)
         schedule_12(9.25 * 4 / bps)
@@ -105,7 +103,7 @@ class Twelve(MusicMode):
             self.lights.set_channels(
                 on=True,
                 transition=0.0,
-                channel_indexes={index},
+                indices={index},
             )
 
         def play_mp3():

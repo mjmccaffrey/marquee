@@ -94,6 +94,7 @@ def _interpret_notation(
     beats: int = 4,
 ) -> tuple[Measure, ...]:
     """Return measures from notation using create_note."""
+    print("in:", notation)
     def create_measure(measure) -> Measure:
         return Measure(
             tuple(
@@ -102,10 +103,12 @@ def _interpret_notation(
             ),
             beats = beats,
         )
-    return tuple(
+    result = tuple(
         create_measure(measure)
         for measure in _each_notation_measure(notation)
     )
+    print("out:", result)
+    return result
 
 
 def rest(symbols: str) -> Rest:

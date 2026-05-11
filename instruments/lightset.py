@@ -111,12 +111,12 @@ class LightSet:
             transition: Sequence[float | None] | float | None = None,
             color: Sequence[Color | None] | Color | None = None,
             on: Sequence[int | bool | str | None] | bool | int | None = None,
-            channel_indexes: set[int] | None = None,
+            indices: set[int] | None = None,
             force: bool = False,
         ) -> None:
         """Set the channels per the supplied brightness, 
            transition times and colors. 
-           Specify a subset of channels via channel_indexes.
+           Specify a subset of channels via indices.
            Force all specified channels to update with force.
            Adjust for brightness_factor."""
         
@@ -125,8 +125,8 @@ class LightSet:
                rather than on each channel individually."""
             return (
                 self.controller.all_at_once_supported and 
-                (   channel_indexes is None or 
-                    len(channel_indexes) == self.count
+                (   indices is None or 
+                    len(indices) == self.count
                 ) and
                 not isinstance(brightness, Sequence) and
                 not isinstance(transition, Sequence) and
@@ -147,12 +147,12 @@ class LightSet:
             return
 
         # Update each channel individually
-        _channel_indexes = (
+        _indices = (
             self.update_sequence
-                if channel_indexes is None else
-            channel_indexes
+                if indices is None else
+            indices
         )
-        _channels = [self.channels[i] for i in _channel_indexes]
+        _channels = [self.channels[i] for i in _indices]
         _brightnesses = self._convert_brightness(brightness)
         _transitions = self._convert_transition(transition)
         _colors = self._convert_color(color)

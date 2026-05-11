@@ -78,7 +78,7 @@ class RandomFade(PerformanceMode):
             brightness=brightness,
             transition=transition,
             color=color,
-            channel_indexes={index},
+            indices={index},
         )
         self.brightnesses[index] = brightness
 
