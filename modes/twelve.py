@@ -96,7 +96,7 @@ class Twelve(MusicMode):
     def play_music(self) -> float:
         """"""
         set_mode(self)
-        indices = iter(range(self.lights.count))
+        indices = iter([i for i in range(self.lights.count)] * 2)
 
         def turn_on():
             """"""
@@ -125,9 +125,8 @@ class Twelve(MusicMode):
                 count_to_12 + 
                 '  𝄻  |  𝄻  |  𝄻  |  ' + 
                 count_to_12,
-                *(light_ops * 2),
+                *light_ops * 2,
             ),
-
         )
         restart = song.play(tempo=self.tempo)
         return restart
