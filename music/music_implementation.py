@@ -135,7 +135,7 @@ def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
     longest = max(len(part.measures) for part in parts)
     for part in parts:
         if len(part.measures) < longest:
-            pad = Measure(elements=(), beats=part.measures[-1].beats)
+            pad = Measure(elements=(Rest(0.0),), beats=part.measures[-1].beats)
             measures = tuple(
                 part.measures[i] if i < len(part.measures) else pad
                 for i in range(longest)
