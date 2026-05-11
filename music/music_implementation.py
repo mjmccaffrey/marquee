@@ -195,9 +195,13 @@ def play_measures(measures: tuple[Measure, ...], tempo: int) -> float:
     start = time.time()
     log.info(f"{start=}")
     tasks = tasks_in_measures(measures, bps, start)
+    print('a')
     for t in tasks:
+        print(t.due)
         log.info(t.due)
+    print('b')
     mode.tasks.bulk_add(tasks)
+    print('c')
     return measures[0].beats * len(measures) / bps
 
 
