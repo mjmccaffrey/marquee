@@ -142,7 +142,9 @@ def act_part(
     action_cycle = cycle(actions)
     def create_act(symbols: str) -> ActionNote | Rest:
         """Return ActionNote for next action in cycle."""
-        return act(symbols, next(action_cycle))
+        result = act(symbols, next(action_cycle))
+        print(result)
+        return result
     return part(
         *_interpret_notation(create_act, notation, beats)
     )
