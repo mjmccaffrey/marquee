@@ -104,7 +104,7 @@ class Twelve(MusicMode):
             self.lights.set_channels(
                 on=True,
                 transition=0.0,
-                indices={index},
+                indices={(index + 2) % self.lights.count},
             )
 
         def play_mp3():
@@ -116,14 +116,18 @@ class Twelve(MusicMode):
             self.lights.set_channels,
             on=False,
         ),
+        count_to_12 = '  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  |  𝄻  |  ♩  '
         song = section(
             # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
             act_part('  ♩  ', play_mp3),
             act_part(
-                '  𝄻  |  𝄻  |  𝄻  |  '
-                '  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  |  𝄻  |  ♩  ',
-                *light_ops,
+                '  𝄻  |  𝄻  |  𝄻  |  ' + 
+                count_to_12 + 
+                '  𝄻  |  𝄻  |  𝄻  ' + 
+                count_to_12,
+                *light_ops * 2,
             ),
+
         )
         restart = song.play(tempo=self.tempo)
         return restart
