@@ -98,6 +98,9 @@ class Twelve(MusicMode):
         set_mode(self)
         indices = iter(range(self.lights.count))
 
+        def nada():
+            pass
+
         def turn_on():
             """"""
             index = next(indices)
@@ -112,6 +115,7 @@ class Twelve(MusicMode):
             pygame.mixer.music.play()
 
         light_ops = (
+            (nada,) * 3 + 
             (turn_on,) * 12 + 
             (
                 partial(
