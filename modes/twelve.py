@@ -111,6 +111,15 @@ class Twelve(MusicMode):
             """"""
             pygame.mixer.music.play()
 
+        light_ops = (
+            (turn_on,) * 12 + 
+            (
+                partial(
+                    self.lights.set_channels,
+                    on=False,
+                ),
+            )
+        )
         song = section(
             # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
             act_part(
@@ -119,8 +128,8 @@ class Twelve(MusicMode):
             ),
             act_part(
                 '  𝄻  |  𝄻  |  𝄻  |  '
-                '  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  ',
-                turn_on,
+                '  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  |  𝄻  |  ♩  ',
+                *light_ops,
             ),
         )
         restart = song.play(tempo=self.tempo)
