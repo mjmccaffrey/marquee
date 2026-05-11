@@ -104,12 +104,10 @@ def expand_sequence_measures(measures: tuple[Measure, ...]) -> None:
         elements = tuple(
             ActionNote(
                 duration=measure.step_duration,
-                actions=(
-                    _light(
-                        next(measure.patterns),
-                        measure.special,
-                    ),
-                )
+                action=_light(
+                    next(measure.patterns),
+                    measure.special,
+                ),
             )
             for _ in range(measure.count)
         )

@@ -52,17 +52,12 @@ class Rest(BaseNote):
 class ActionNote(BaseNote):
     """Note to execute arbitrary actions."""
     instrument: ClassVar[type[Instrument]] = ActionInstrument
-    actions: tuple[Callable, ...]
-
-    def __post_init__(self) -> None:
-        """Validate."""
-        assert self.actions
+    action: Callable
 
     @override
     def play(self) -> None:
         """Play single ActionNote."""
-        for action in self.actions:
-            action()
+        self.action()
 
 
 @dataclass(frozen=True)

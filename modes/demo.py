@@ -166,7 +166,7 @@ class Demo(MusicMode):
         return section(
             part(
                 measure(
-                    act('♩', light(ALL_ON), light(ALL_ON, ChannelParams()))
+                    act('♩', light(ALL_ON, ChannelParams()))
                 )
             ),
             sequence_part(

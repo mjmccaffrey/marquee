@@ -98,9 +98,6 @@ class Twelve(MusicMode):
         set_mode(self)
         indices = iter(range(self.lights.count))
 
-        def nada():
-            pass
-
         def turn_on():
             """"""
             index = next(indices)
@@ -114,24 +111,14 @@ class Twelve(MusicMode):
             """"""
             pygame.mixer.music.play()
 
-        light_ops = (
-            (nada,) * 3 + 
-            (turn_on,) * 12 + 
-            (nada,) * 1 + 
-            (
-                partial(
-                    self.lights.set_channels,
-                    on=False,
-                ),
-            ) + 
-            (nada,) * 1 
-        )
+        light_ops = (turn_on,) * 12
+        light_ops += partial(
+            self.lights.set_channels,
+            on=False,
+        ),
         song = section(
             # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-            act_part(
-                '  ♩  ',
-                play_mp3,
-            ),
+            act_part('  ♩  ', play_mp3),
             act_part(
                 '  𝄻  |  𝄻  |  𝄻  |  '
                 '  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  |  𝄻  |  ♩  ',

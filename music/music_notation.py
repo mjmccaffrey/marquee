@@ -1,9 +1,10 @@
 """Marquee Lighted Sign Project - music_notation"""
 
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Iterable, Iterator
 from enum import IntEnum
 from itertools import cycle
 import logging
+from typing import cast
 
 from .music_elements import (
     ActionNote, BaseNote, BellNote, DrumNote,
@@ -121,7 +122,7 @@ def rest(symbols: str) -> Rest:
 
 def act(
     symbols: str, 
-    *actions: Callable, 
+    action: Callable | Iterator[Callable],
 ) -> ActionNote | Rest:
     """Validate symbols and return ActionNote or Rest."""
     duration, pitches, accent, is_rest = _interpret_symbols(symbols)
@@ -130,21 +131,30 @@ def act(
     if pitches or accent:
         # raise ValueError("Action note cannot have pitch or accent.")
         pass
-    return ActionNote(duration, actions)
+    if not callable(action):
+        action = next(action)
+    return ActionNote(duration, action)
 
 
 def act_part(
     notation: str, 
-    *actions: Callable,
+    *actions: Callable | Iterable[Callable],
     beats=4,
 ) -> Part:
     """Produce act part from notation."""
-    action_cycle = cycle(actions)
+    assert actions
+    action_cycle: Iterator[Callable]
+    if callable(actions[0]):
+        action_cycle = cycle(cast(Iterator[Callable], actions))
+    else:
+        action_cycle = iter(actions[0])
+
     def create_act(symbols: str) -> ActionNote | Rest:
         """Return ActionNote for next action in cycle."""
-        result = act(symbols, next(action_cycle))
+        result = act(symbols, action_cycle)
         print(result)
         return result
+    
     return part(
         *_interpret_notation(create_act, notation, beats)
     )
