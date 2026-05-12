@@ -125,5 +125,6 @@ class Twelve(MusicMode):
             act_part(' |  ♩ 𝄽 𝄼  |  𝄻  | ', lights_off),
             part(measure(beats=3)),
             act_part(count_to_12, *lights_on),
+            act_part(' |  𝄻  | ', lights_off),
         ).play(tempo=160)
     
