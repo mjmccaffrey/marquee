@@ -7,7 +7,7 @@ import pygame
 from typing_extensions import override
 
 from .musicmode import MusicMode
-from music import act_part, section, set_mode
+from music import act_part, measure, part, piece, section, set_mode
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -93,7 +93,7 @@ class Twelve(MusicMode):
         schedule_12(9.25 * 4 / bps)
 
 
-    def play_music(self) -> float:
+    def play_music(self):
         """"""
         set_mode(self)
         indices = iter([i for i in range(self.lights.count)] * 2)
@@ -111,21 +111,20 @@ class Twelve(MusicMode):
             """"""
             pygame.mixer.music.play()
 
-        light_ops = (
-            (turn_on,) * 12 + 
-            (partial(self.lights.set_channels, on=False),)
-        )
-        song = section(
-            # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-            act_part('  ♩  ', play_mp3),
-            act_part(
-                '  |  𝄻  |  𝄻  |  𝄻  |  '
-                '  |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩ 𝄼  |  𝄻  |  ♩  𝄼 𝄽  |  '
-                '  |  𝄻  |  '
-                '  |  𝄽 ♪ ♪ ♪ ♩ ♪ |  𝄾 ♪ ♩ ♪ ♪ ♪ 𝄾  |  ♪ 𝄾 ♩ 𝄼  |  𝄻  |  ♩  𝄼 𝄽  |  ',
-                *light_ops * 2,
+        lights_on = (turn_on,) * 12
+        lights_off = partial(self.lights.set_channels, on=False)
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        count_to_12 = '  |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  |  '
+        piece(
+            section(
+                act_part(' |  ♩  | ', play_mp3),
+                act_part(' |  𝄻  |  𝄻  |  𝄻  | '),
             ),
+            act_part(count_to_12, *lights_on),
+            part(measure(beats=2)),
+            act_part('  ♩ 𝄽 𝄼  ', lights_off),
+            part(measure(beats=3)),
+            act_part(count_to_12, *lights_on),
         )
-        restart = song.play(tempo=self.tempo)
-        return restart
+
     

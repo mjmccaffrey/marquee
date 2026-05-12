@@ -139,9 +139,9 @@ class Measure(Element):
     elements: tuple[Element, ...]
     beats: int
 
-    def __post_init__(self) -> None:
-        """Validate."""
-        assert self.elements
+    # def __post_init__(self) -> None:
+    #     """Validate."""
+    #     assert self.elements
 
 
 @dataclass(frozen=True)
@@ -188,9 +188,9 @@ class Part(Element):
         """Validate and process measures."""
         assert self.measures
         if self.default_accent:
-            self.apply_accent()
+            self._apply_accent()
 
-    def apply_accent(self) -> None:
+    def _apply_accent(self) -> None:
         """Apply default accent (drums only)."""
         for measure in self.measures:
             elements = tuple(
@@ -217,12 +217,12 @@ class Section(Element):
         """Validate and process parts so they are ready to play."""
         assert self.parts
         if self.beats is not None:
-            self.apply_beats()
+            self._apply_beats()
         object.__setattr__(
             self, 'measures', self.prepare_parts(self.parts),
         )
 
-    def apply_beats(self) -> None:
+    def _apply_beats(self) -> None:
         """Apply default # of beats to all measures in the Section."""
         for part in self.parts:
             measures = tuple(
@@ -234,4 +234,21 @@ class Section(Element):
     def play(self, tempo: int = 0) -> float:
         """Play already-generated measures comprising Section."""
         return self.play_measures(self.measures, tempo or self.tempo)
+
+
+@dataclass(frozen=True)
+class Piece(Element):
+    """Series of Sections and Parts. Number of beats may vary."""
+    groups: tuple[Section | Part, ...]
+    tempo: int
+    play_measures: Callable[[tuple[Measure, ...], int], float]
+
+    def play(self, tempo: int = 0) -> float:
+        """Play already-generated measures within 
+           Sections and Parts."""
+        delay = 0
+        for group in self.groups:
+            end = self.play_measures(group.measures, tempo or self.tempo)
+            delay += end
+        return delay
 

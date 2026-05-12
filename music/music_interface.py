@@ -6,7 +6,7 @@ from typing import Any
 
 from modes.foregroundmode import ForegroundMode
 from .music_elements import (
-    Element, Measure, Part, Section, Sequence, 
+    Element, Measure, Part, Section, Piece, Sequence, 
 )
 from .music_implementation import (
     _dimmer, _dimmer_sequence, _dimmer_sequence_flip, _light, _set_mode,
@@ -50,6 +50,18 @@ def section(
         beats=beats,
         tempo=tempo,
         prepare_parts=prepare_parts,
+        play_measures=play_measures,
+    )
+
+
+def piece(
+    *groups: Section | Part,
+    tempo: int = 60,
+) -> Piece:
+    """Produce Piece."""
+    return Piece(
+        groups,
+        tempo=tempo,
         play_measures=play_measures,
     )
 

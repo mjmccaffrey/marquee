@@ -186,7 +186,7 @@ def tasks_in_measures(
 
 def play_measures(measures: tuple[Measure, ...], tempo: int) -> float:
     """Convert measures to tasks, add to task queue.
-       Return the # of seconds when playing the last measure
+       Return the # of seconds from start when playing the last measure
        will be finished, i.e. when a repeat or the next 
        section of music could start."""
     bps = tempo / 60
@@ -197,9 +197,7 @@ def play_measures(measures: tuple[Measure, ...], tempo: int) -> float:
     for t in tasks:
         print(t.due)
         log.info(t.due)
-    print('b')
     mode.tasks.bulk_add(tasks)
-    print('c')
     return measures[0].beats * len(measures) / bps
 
 

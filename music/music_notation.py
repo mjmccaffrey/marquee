@@ -142,7 +142,8 @@ def act_part(
     beats=4,
 ) -> Part:
     """Produce act part from notation."""
-    assert actions
+    if not actions:
+        actions = (lambda: None, )
     action_cycle: Iterator[Callable]
     if callable(actions[0]):
         action_cycle = cycle(cast(Iterator[Callable], actions))
