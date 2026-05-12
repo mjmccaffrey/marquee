@@ -202,7 +202,8 @@ def play_measures(
         print(t.due)
         log.info(t.due)
     mode.tasks.bulk_add(tasks)
-    return measures[0].beats * len(measures) / bps
+    result = measures[0].beats * len(measures) / bps
+    return result
 
 
 def _dimmer(pattern: str) -> Callable:
