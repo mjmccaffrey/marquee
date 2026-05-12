@@ -199,7 +199,6 @@ def play_measures(
     tasks = tasks_in_measures(measures, bps, start)
     mode.tasks.bulk_add(tasks)
     result = measures[0].beats * len(measures) / bps
-    print('PM:', result)
     return result
 
 

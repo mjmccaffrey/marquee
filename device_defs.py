@@ -16,7 +16,6 @@ from devices.hue import HueBridge
 from devices.joystick import Joystick
 from devices.relays import NumatoRL160001, NumatoSSR80001
 from devices.shelly import ShellyController, ShellyProDimmer1PM, ShellyProDimmer2PM
-from executor import SetupDevices
 from instruments import BellSet, ClickSet, DrumSet, LightSet, RingerBell
 from light_defs import *
 
@@ -207,7 +206,7 @@ def define_devices_shelly(
     )
 
 
-define_devices: SetupDevices = define_devices_hue
+define_devices = define_devices_hue
 """Create and return objects for all physical devices."""
 
 BUTTON_TO_RELAY = {0: 11}
