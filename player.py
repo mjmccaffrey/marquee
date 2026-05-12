@@ -150,7 +150,6 @@ class Player:
     def notify_button_action(self, button: ButtonName) -> int | None:
         """Notify all background modes, and active mode, 
            of button action. Return active mode's response."""
-        print(self.active_mode)
         for mode in self.live_bg_modes.values():
             mode.button_action(button)
         return (

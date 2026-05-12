@@ -203,6 +203,7 @@ def play_measures(
         log.info(t.due)
     mode.tasks.bulk_add(tasks)
     result = measures[0].beats * len(measures) / bps
+    print(result)
     return result
 
 

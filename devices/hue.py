@@ -92,7 +92,6 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         """Build and send commands."""
         for update in updates:
             command = update.channel._make_set_command(update)
-            print(command)
             response = self.session.put(
                 url=command.url,
                 json=command.params,
@@ -115,11 +114,6 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 url=f'https://{self.ip_address}/clip/v2/resource/grouped_light/{id}',
                 json=command.params,
                 timeout=2.0,
-            )
-            print(
-                "AAO",
-                 f'https://{self.ip_address}/clip/v2/resource/grouped_light/{id}',
-                 command.params,
             )
             log.info(f"ZONE: {i} {command.params}")
             response.raise_for_status()
