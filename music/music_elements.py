@@ -6,7 +6,7 @@ from dataclasses import dataclass, field, replace
 import itertools
 import logging
 import time
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Protocol
 from typing_extensions import override
 
 from instruments import (
@@ -210,7 +210,7 @@ class Section(Element):
     beats: int
     tempo: int
     prepare_parts: Callable[[tuple[Part, ...]], tuple[Measure, ...]]
-    play_measures: Callable[[tuple[Measure, ...], int], float]
+    play_measures: 'PlayMeasures'
     measures: tuple[Measure, ...] = field(init=False)
 
     def __post_init__(self) -> None:
@@ -233,7 +233,11 @@ class Section(Element):
 
     def play(self, tempo: int = 0) -> float:
         """Play already-generated measures comprising Section."""
-        return self.play_measures(self.measures, tempo or self.tempo)
+        return self.play_measures(
+            self.measures, 
+            delay=0.0,
+            tempo=tempo or self.tempo,
+        )
 
 
 @dataclass(frozen=True)
@@ -241,14 +245,28 @@ class Piece(Element):
     """Series of Sections and Parts. Number of beats may vary."""
     groups: tuple[Section | Part, ...]
     tempo: int
-    play_measures: Callable[[tuple[Measure, ...], int], float]
+    play_measures: 'PlayMeasures'
 
     def play(self, tempo: int = 0) -> float:
         """Play already-generated measures within 
            Sections and Parts."""
         delay = 0
         for group in self.groups:
-            end = self.play_measures(group.measures, tempo or self.tempo)
-            delay += end
+            delay += self.play_measures(
+                group.measures, 
+                delay=delay,
+                tempo=tempo or self.tempo,
+            )
         return delay
+
+
+class PlayMeasures(Protocol):
+    """"""
+    def __call__(
+        self,
+        measures: tuple[Measure, ...], 
+        delay: float, 
+        tempo: int,
+    ) -> float:
+        ...
 

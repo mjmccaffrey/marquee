@@ -26,7 +26,11 @@ def play(*measures: Measure, tempo: int) -> float:
     """Process and then play a series of measures."""
     expand_sequence_measures(measures)
     validate_measures(measures)
-    return play_measures(measures, tempo=tempo)
+    return play_measures(
+        measures, 
+        delay=0.0,
+        tempo=tempo,
+    )
 
 
 def measure(*elements: Element, beats: int = 4) -> Measure:

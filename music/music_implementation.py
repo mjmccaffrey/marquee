@@ -184,13 +184,17 @@ def tasks_in_measures(
     return tasks_combined
 
 
-def play_measures(measures: tuple[Measure, ...], tempo: int) -> float:
+def play_measures(
+        measures: tuple[Measure, ...], 
+        delay: float, 
+        tempo: int,
+) -> float:
     """Convert measures to tasks, add to task queue.
        Return the # of seconds from start when playing the last measure
        will be finished, i.e. when a repeat or the next 
        section of music could start."""
     bps = tempo / 60
-    start = time.time()
+    start = time.time() + delay
     log.info(f"{start=}")
     tasks = tasks_in_measures(measures, bps, start)
     print('a')
