@@ -197,10 +197,6 @@ def play_measures(
     start = time.time() + delay
     log.info(f"{start=}")
     tasks = tasks_in_measures(measures, bps, start)
-    print('a')
-    for t in tasks:
-        print(t.due)
-        log.info(t.due)
     mode.tasks.bulk_add(tasks)
     result = measures[0].beats * len(measures) / bps
     print('PM:', result)
