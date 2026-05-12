@@ -92,7 +92,6 @@ class Twelve(MusicMode):
         schedule_12(3 * 4 / bps)
         schedule_12(9.25 * 4 / bps)
 
-
     def play_music(self):
         """"""
         set_mode(self)
@@ -114,7 +113,7 @@ class Twelve(MusicMode):
         lights_on = (turn_on,) * 12
         lights_off = partial(self.lights.set_channels, on=False)
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        count_to_12 = '  |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  |  '
+        count_to_12 = ' |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  | '
         piece(
             section(
                 act_part(' |  ♩  | ', play_mp3),
