@@ -50,7 +50,7 @@ def register_channel_modes(exec: Executor):
         ],
         # transition=0.0,
     )
-    exec.add_mode("twelve", Twelve)
+    exec.add_mode("twelve", Twelve, brightness=40)
     exec.add_mode("comet_test_1", Comet,
         length=9,
         delay=0.175,

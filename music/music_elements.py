@@ -167,7 +167,7 @@ class Sequence(Element):
     """Defines a sequence of light patterns."""
     sequence: Callable
     special: SpecialParams | None
-    measures: int
+    measure_count: int
     kwargs: dict[str, Any]
     iter: Iterator = field(init=False)
 
@@ -180,7 +180,8 @@ class Sequence(Element):
 
 @dataclass(frozen=True)
 class Part(Element):
-    """Musical part containing measures."""
+    """Musical part containing measures.
+       All measures have the same number of beats."""
     measures: tuple[Measure, ...]
     default_accent: int = 0
 
@@ -205,7 +206,8 @@ class Part(Element):
 
 @dataclass(frozen=True)
 class Section(Element):
-    """Musical section containing parts and meta info."""
+    """Musical section containing parts and meta info.
+       All measures have the same number of beats."""
     parts: tuple[Part, ...]
     beats: int
     tempo: int
@@ -242,14 +244,14 @@ class Section(Element):
 
 @dataclass(frozen=True)
 class Piece(Element):
-    """Series of Sections and Parts. Number of beats may vary."""
+    """Series of Sections and Parts. 
+       Number of beats across sections and parts may vary."""
     groups: tuple[Section | Part, ...]
     tempo: int
     play_measures: 'PlayMeasures'
 
     def play(self, tempo: int = 0) -> float:
-        """Play already-generated measures within 
-           Sections and Parts."""
+        """Play measures within Sections and Parts."""
         delay = 0
         for group in self.groups:
             delay += self.play_measures(

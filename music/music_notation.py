@@ -234,7 +234,7 @@ def sequence_part(
     def sequence_gen() -> Iterator[Sequence]:
         """Return each sequence in order."""
         for sequence in sequences:
-            for _ in range(sequence.measures):
+            for _ in range(sequence.measure_count):
                 yield sequence
         while True:
             yield sequence

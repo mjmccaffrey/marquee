@@ -26,7 +26,8 @@ def _set_mode(the_mode: ForegroundMode) -> None:
     mode = the_mode
 
 def prepare_parts(parts: tuple[Part, ...]) -> tuple[Measure, ...]:
-    """Expand SequenceMeasures.
+    """Process parts within Section.
+       Expand SequenceMeasures.
        Make all parts the same length.
        Merge parts into single sequence of Measures."""
     for part in parts:

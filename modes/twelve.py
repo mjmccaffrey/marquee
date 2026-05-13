@@ -6,29 +6,18 @@ import logging
 from pygame import mixer
 from typing_extensions import override
 
+from devices.color import Colors
 from .musicmode import MusicMode
-from music import act_part, measure, part, piece, section, set_mode
+from music import act_part, piece, set_mode
 
 log = logging.getLogger('marquee.' + __name__)
+
 
 @dataclass(kw_only=True)
 class Twelve(MusicMode):
     """"""
-    colors = (
-        (100, 0, 0),
-        (100, 50, 0),
-        (100, 100, 0),
-        (50, 80, 0),
-        (0, 100, 0),
-        (0, 100, 50),
-        (0, 100, 100),
-        (0, 60, 100),
-        (0, 0, 100),
-        (50, 0, 100),
-        (100, 0, 100),
-        (100, 0, 50),
-    )
-    tempo = 160
+    brightness: int
+    TEMPO = 160
 
     @override
     def execute(self):
@@ -38,47 +27,41 @@ class Twelve(MusicMode):
         mixer.init()
         mixer.music.load('modes/twelve.mp3')
         self.prep_lights()
-        self.play_music()
+        self.play()
 
     def prep_lights(self):
-        """"""
-        for i, (r, g, b) in enumerate(self.colors):
+        """Prepare each light for turning on."""
+        for i, color in enumerate(Colors.WHEEL):
             self.lights.set_channels(
-                brightness=40,
-                color=self.lights.colors.rgb(
-                    int(r / 100 * 255),
-                    int(g / 100 * 255),
-                    int(b / 100 * 255),
-                ),
+                brightness=self.brightness,
+                color=color,
                 indices={i},
             )
 
-    def play_music(self):
-        """"""
+    def light_on(self, index: int):
+        """Turn the next light on."""
+        self.lights.set_channels(
+            on=True,
+            transition=0.0,
+            indices={index},
+        )
+
+    def play(self):
+        """Play music and lights."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-
-        def light_on():
-            """"""
-            self.lights.set_channels(
-                on=True,
-                transition=0.0,
-                indices={(next(indices) + 2) % self.lights.count},
-            )
-
-        indices = iter([i for i in range(self.lights.count)] * 2)
-        lights_on = (light_on,) * 12
+        lights_on = tuple(
+            partial(self.light_on, (i + 2) % self.lights.count)
+            for i in range(self.lights.count)
+        )
         lights_off = partial(self.lights.set_channels, on=False)
         count_to_12 = ' |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  | '
         piece(
-            section(
-                act_part(' |  ♩  | ', mixer.music.play),
-                act_part(' |  𝄻  |  𝄻  |  𝄻  | '),
-            ),
+            act_part(' |  ♩  |  𝄻  |  𝄻  | ', mixer.music.play),
             act_part(count_to_12, *lights_on),
-            part(measure(beats=2)),
-            act_part(' |  ♩ 𝄽 𝄼  |  𝄻  | ', lights_off),
-            part(measure(beats=3)),
+            act_part('', beats=2),
+            act_part(' |  ♩  |  𝄻  | ', lights_off),
+            act_part('', beats=3),
             act_part(count_to_12, *lights_on),
             act_part(' |  𝄻  |  ♩  | ', lights_off),
-        ).play(tempo=160)
+        ).play(tempo=self.TEMPO)
     
