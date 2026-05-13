@@ -58,9 +58,9 @@ class Twelve(MusicMode):
         piece(
             act_part(' |  ♩  |  𝄻  |  𝄻  | ', mixer.music.play),
             act_part(count_to_12, *lights_on),
-            act_part('', beats=2),
+            act_part('  𝅀  ', beats=2),
             act_part(' |  ♩  |  𝄻  | ', lights_off),
-            act_part('', beats=3),
+            act_part('  𝅀  ', beats=3),
             act_part(count_to_12, *lights_on),
             act_part(' |  𝄻  |  ♩  | ', lights_off),
         ).play(tempo=self.TEMPO)
