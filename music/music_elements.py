@@ -135,13 +135,9 @@ class NoteGroup(Element):
 
 @dataclass(frozen=True)
 class Measure(Element):
-    """Musical measure containing notes."""
+    """Musical measure containing notes and / or implicit rests."""
     elements: tuple[Element, ...]
     beats: int
-
-    # def __post_init__(self) -> None:
-    #     """Validate."""
-    #     assert self.elements
 
 
 @dataclass(frozen=True)
@@ -210,9 +206,9 @@ class Section(Element):
        All measures have the same number of beats."""
     parts: tuple[Part, ...]
     beats: int
-    tempo: int
     prepare_parts: Callable[[tuple[Part, ...]], tuple[Measure, ...]]
     play_measures: 'PlayMeasures'
+    tempo: int = 0
     measures: tuple[Measure, ...] = field(init=False)
 
     def __post_init__(self) -> None:
@@ -235,10 +231,12 @@ class Section(Element):
 
     def play(self, tempo: int = 0) -> float:
         """Play already-generated measures comprising Section."""
+        tempo = tempo or self.tempo
+        assert tempo
         return self.play_measures(
             self.measures, 
             delay=0.0,
-            tempo=tempo or self.tempo,
+            tempo=tempo,
         )
 
 
@@ -247,7 +245,6 @@ class Piece(Element):
     """Series of Sections and Parts. 
        Number of beats across sections and parts may vary."""
     groups: tuple[Section | Part, ...]
-    tempo: int
     play_measures: 'PlayMeasures'
 
     def play(self, tempo: int = 0) -> float:
@@ -257,7 +254,7 @@ class Piece(Element):
             delay += self.play_measures(
                 group.measures, 
                 delay=delay,
-                tempo=tempo or self.tempo,
+                tempo=tempo,
             )
         return delay
 

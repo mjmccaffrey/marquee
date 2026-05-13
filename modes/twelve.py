@@ -8,7 +8,7 @@ from typing_extensions import override
 
 from devices.color import Colors
 from .musicmode import MusicMode
-from music import act_part, piece, set_mode
+from music import act_part, piece
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -22,7 +22,6 @@ class Twelve(MusicMode):
     @override
     def execute(self):
         """"""
-        set_mode(self)
         self.lights.set_channels(on=False)
         mixer.init()
         mixer.music.load('modes/twelve.mp3')

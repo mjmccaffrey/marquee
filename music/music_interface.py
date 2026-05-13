@@ -60,12 +60,10 @@ def section(
 
 def piece(
     *groups: Section | Part,
-    tempo: int = 60,
 ) -> Piece:
     """Produce Piece."""
     return Piece(
         groups,
-        tempo=tempo,
         play_measures=play_measures,
     )
 
