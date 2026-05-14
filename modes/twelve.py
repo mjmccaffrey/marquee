@@ -1,14 +1,13 @@
 """Marquee Lighted Sign Project - twelve"""
 
 from dataclasses import dataclass
-from functools import partial
 import logging
 from pygame import mixer
 from typing_extensions import override
 
 from devices.color import Colors
 from .musicmode import MusicMode
-from music import act_part, piece
+from music import actions, lights, piece, section
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -17,7 +16,7 @@ log = logging.getLogger('marquee.' + __name__)
 class Twelve(MusicMode):
     """"""
     brightness: int
-    TEMPO = 160
+    tempo: int = 160
 
     @override
     def execute(self):
@@ -37,30 +36,29 @@ class Twelve(MusicMode):
                 indices={i},
             )
 
-    def light_on(self, index: int):
-        """Turn the next light on."""
-        self.lights.set_channels(
-            on=True,
-            transition=0.0,
-            indices={index},
-        )
-
     def play(self):
         """Play music and lights."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         lights_on = tuple(
-            partial(self.light_on, (i + 2) % self.lights.count)
+            dict(
+                on=True,
+                transition=0.0,
+                indices={(i + 2) % self.lights.count},
+            )
             for i in range(self.lights.count)
         )
-        lights_off = partial(self.lights.set_channels, on=False)
+        lights_off = dict(on=False)
         count_to_12 = ' |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  | '
         piece(
-            act_part(' |  ♩  |  𝄻  |  𝄻  | ', mixer.music.play),
-            act_part(count_to_12, *lights_on),
-            act_part('  𝅀  ', beats=2),
-            act_part(' |  ♩  |  𝄻  | ', lights_off),
-            act_part('  𝅀  ', beats=3),
-            act_part(count_to_12, *lights_on),
-            act_part(' |  𝄻  |  ♩  | ', lights_off),
-        ).play(tempo=self.TEMPO)
+            section(
+                actions(' |  ♩  | ', mixer.music.play),
+                lights( ' |  𝄻  |  𝄻  |  𝄻  | '),
+            ),
+            lights(count_to_12, *lights_on),
+            lights('  𝅀  ', beats=2),
+            lights(' |  ♩  |  𝄻  | ', lights_off),
+            lights('  𝅀  ', beats=3),
+            lights(count_to_12, *lights_on),
+            lights(' |  𝄻  |  ♩  | ', lights_off),
+        ).play(tempo=self.tempo)
     

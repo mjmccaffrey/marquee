@@ -32,6 +32,10 @@ class ActionInstrument(Instrument, ABC):
     """Conceptual instrument that executes arbitrary actions."""
 
 
+class LightInstrument(Instrument, ABC):
+    """Conceptual instrument that executes light channel actions."""
+
+
 class RestInstrument(Instrument, ABC):
     """Conceptual instrument that executes rests."""
 

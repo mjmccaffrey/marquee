@@ -7,7 +7,7 @@ from .musicmode import MusicMode
 from .sequences import all_on, blink_all, random_each
 from music import (
     set_mode,
-    act_part, bell_part, drum_part, sequence_part,
+    actions, bells, drums, sequences,
     dimmer_sequence_flip, section, Section, sequence,
 )
 from devices.specialparams import ActionParams, ChannelParams
@@ -24,13 +24,13 @@ class ChristmasSongs(MusicMode):
             self.jingle_bells(),
         ]
         for song in songs:
-            song.play(tempo=75)
+            song.play()
 
     def jingle_bells(self) -> Section:
         """Jingle Bells."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            bell_part(
+            bells(
                 #  Jingle Bells, Jingle Bells,
                 '  b♩ b♩   b♩ 𝄽 | b♩ b♩   b♩ 𝄽 | '
                 
@@ -55,4 +55,6 @@ class ChristmasSongs(MusicMode):
                 # one horse open  sleigh
                 ' d♩  d♩    b♩ G♩ | G♩ 𝄽 𝄽 𝄽 |'
             ),
+            tempo=75,
         )
+

@@ -2,12 +2,12 @@
 
 from typing_extensions import override
 
-from device_defs import ALL_OFF, ALL_LOW, ALL_ON
+from device_defs import ALL_OFF, ALL_ON
 from .musicmode import MusicMode
 from .sequences import all_on, blink_all, random_each
 from music import (
-    act_part, bell_part, drum_part, sequence_part,
-    dimmer_sequence_flip, section, Section, sequence,
+    actions, bells, drums, sequences,
+    dimmer_sequence_flip, piece, section, Section, sequence,
 )
 from devices.specialparams import ActionParams, ChannelParams
 
@@ -21,20 +21,18 @@ class Signs(MusicMode):
         self.lights.set_channels(brightness=0, force=True)
         # time.sleep(0.75) !!!
         self.lights.set_relays(ALL_ON)
-        sections = [
+        piece(
             self.intro(),
             self.refrain(1),
             self.transition(),
             self.refrain(2),
-        ]
-        for section in sections:
-            section.play(tempo=int(75 * self.speed_factor))
+        ).play(tempo=int(75 * self.speed_factor))
 
     def intro(self) -> Section:
         """Signs song intro."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            drum_part(
+            drums(
                 '  h𝅝> | '
                  '  lh♩ lh♩ lh♩ lh♩ | l♪ h♪ l♪ h♪ l♪ h♪ l♪ h♪|  ' # And the
                  '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ |  ' # Sign says long-haired freaky people
@@ -47,7 +45,7 @@ class Signs(MusicMode):
                  '  lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ lh♪> lh♪ | ', # Me, working for you
                  
             ),  
-            bell_part(
+            bells(
                 #                     And the
                 '  𝄻 | 𝄻 |  𝄼 𝄽 𝄾 a𝅘𝅥𝅯 b𝅘𝅥𝅯 |'
                 
@@ -75,7 +73,7 @@ class Signs(MusicMode):
                 # me,   working for you,    Oh...
                 '  c♪ 𝄾  c♪      c♪ d♪  𝄾  𝄾  G♪  '  # e♪ 𝄿 e𝅘𝅥𝅯 d𝅘𝅥𝅯 e𝅘𝅥𝅯 d♪ | '
             ),
-            sequence_part(
+            sequences(
                 '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  '
                 '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  '
                 '  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  |  ',
@@ -85,7 +83,7 @@ class Signs(MusicMode):
                     special=ActionParams(action=dimmer_sequence_flip(transition=1.0)),
                 ),
             ),
-            act_part(
+            actions(
                     '  𝄻  |  ' * 10 + '  ♩ ♩  |  ',
                     lambda: self.lights.set_relays(ALL_OFF),
                     lambda: self.lights.set_relays(ALL_ON, special=ChannelParams()),
@@ -96,7 +94,7 @@ class Signs(MusicMode):
         """Signs song refrain."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            bell_part(
+            bells(
                 # Sign, sign, everywhere a sign
                 '  e♩  e♩  d𝅘𝅥𝅯 c𝅘𝅥𝅯 c𝅘𝅥𝅯 a𝅘𝅥𝅯  c♩ |  '
                 # Blockin' out the scenery, breakin' my mind
@@ -105,7 +103,7 @@ class Signs(MusicMode):
                 '  e𝅘𝅥𝅯 e𝅘𝅥𝅯 𝄿 e𝅘𝅥𝅯   𝄿 e𝅘𝅥𝅯 c𝅘𝅥𝅯 d𝅘𝅥𝅯    𝄿 de𝅘𝅥𝅯 de𝅘𝅥𝅯 de𝅘𝅥𝅯    𝄾 d♪  | '
                 '  c♪ 𝄿 d𝅘𝅥𝅯 ' + (' 𝄽 𝄼 | ' if play_thru == 1 else ' 𝄽 𝄽 𝄾 c♪ | c♩ ')
             ),
-            sequence_part(
+            sequences(
                 # Sign, sign, everywhere a sign
                 '  ♪ ♪ ♩  | 𝅝  | 𝅝  | 𝅝  | ',
                 sequence(blink_all),
@@ -122,14 +120,14 @@ class Signs(MusicMode):
         """Signs song transition."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            drum_part(
+            drums(
             '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
             # '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
             # '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
             # '  h𝅘𝅥𝅯 l𝅘𝅥𝅯 h𝅘𝅥𝅯 l𝅘𝅥𝅯   h𝅘𝅥𝅯- l𝅘𝅥𝅯- h𝅘𝅥𝅯- l𝅘𝅥𝅯-   h𝅘𝅥𝅯> l𝅘𝅥𝅯> h𝅘𝅥𝅯> l𝅘𝅥𝅯>   h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ h𝅘𝅥𝅯^ l𝅘𝅥𝅯^ |'
             # # '  lh♩ lh♩ lh♩ lh♩ | l♪ h♪ l♪ h♪ l♪ h♪ l♪ h♪|  '
             ),
-            sequence_part(
+            sequences(
                 '  𝅝  ',
                 sequence(
                     all_on,

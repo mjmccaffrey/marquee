@@ -8,12 +8,12 @@ from typing_extensions import override
 from device_defs import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
 from modes.musicmode import MusicMode
 from music import (
-    dimmer, dimmer_sequence, light, measure, part, play,
-    section, Section, sequence, set_mode
+    dimmer, dimmer_sequence, measure, part, play,
+    relay, section, Section, sequence,
 )
 from music import(
-    act, act_part, drum_part,
-    rest, sequence_measure, sequence_part
+    action, actions, drums,
+    rest, sequence_measure, sequences
 )
 from .sequences import *
 from devices.specialparams import ActionParams, ChannelParams
@@ -50,7 +50,7 @@ class Demo(MusicMode):
     def pre(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            sequence_part(
+            sequences(
                 '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  '
                 '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  '
                 '  𝅝 | 𝄻  ',
@@ -77,12 +77,12 @@ class Demo(MusicMode):
     def alternate(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            sequence_part(
+            sequences(
                 '  ♩ ♩ ♩ ♩ | ♩ ♩ ♩ ♩ | ♩  ',
                 sequence(center_alternate), 
                 sequence(blink_alternate),
             ),
-            drum_part(
+            drums(
                 '  𝄻  |  𝄻  |  𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰-  '
             ),
             tempo=75,
@@ -91,7 +91,7 @@ class Demo(MusicMode):
     def rotate(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            sequence_part(
+            sequences(
                 '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  '
                 '  ♪ ♪ ♪ ♪ ♪ ♪ ♪ ♪ |  '
                 '  𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅯 |  '
@@ -101,7 +101,7 @@ class Demo(MusicMode):
                 # sequence(build_rows, pattern='1', from_top=True),
                 # sequence(build_rows, pattern='1', from_top=False),
             ),
-            drum_part(
+            drums(
                 '  𝄻  |  𝄻  |  ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^  |  𝅘𝅥𝅰^  '
             ),
             tempo=75,
@@ -110,15 +110,15 @@ class Demo(MusicMode):
     def triplett_a(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            drum_part(
+            drums(
                 " 𝄽 𝄾 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | "
                        "♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ",
                 accent='-',
             ),
-            act_part(
+            actions(
                 "  𝄽 𝄽 | ♩ 𝄽 | ♩ 𝄽  ",
-                light(ALL_OFF),
-                light(ALL_ON, ChannelParams()),
+                relay(ALL_OFF),
+                relay(ALL_ON, ChannelParams()),
             ),
             beats=2,
             tempo=80,
@@ -127,12 +127,12 @@ class Demo(MusicMode):
     def triplett_b(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            drum_part(
+            drums(
                 " ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪> ♪ ♪ 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | "
                 " ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 ♪> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 | ♪ ♪^ ♪^ ",
                 accent='-',
             ),
-            sequence_part(
+            sequences(
                 "  𝄾 ♪ ♪ 𝄾 | 𝄾 ♪ ♪ 𝄾 | ♪ 𝄾 ♪ 𝄾 | 𝄾 ♪ ♪  ",
                 sequence(blink_all, on_first=False),
             ),
@@ -142,7 +142,7 @@ class Demo(MusicMode):
 
     def rotate_fast(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        # light(ALL_ON, ChannelParams(trans_on=6))()
+        # relay(ALL_ON, ChannelParams(trans_on=6))()
         rotations = 11
         pattern = [
             p
@@ -154,7 +154,7 @@ class Demo(MusicMode):
                     '♩', rotations * 10 + 1, lambda: iter(pattern), 
                 ),
             ),
-            drum_part(
+            drums(
                 ' ♩^ ♩ ♩ ♩ ♩ ♩^ ♩ ♩ ♩ ♩ ' * rotations + ' ♩^ '
             ),
             beats=rotations * 10 + 1,
@@ -166,10 +166,10 @@ class Demo(MusicMode):
         return section(
             part(
                 measure(
-                    act('♩', light(ALL_ON, ChannelParams()))
+                    action('♩', relay(ALL_ON, ChannelParams()))
                 )
             ),
-            sequence_part(
+            sequences(
                 '  𝄻  | ♩ ♩ ♩ ♩ ',
                 # sequence(build_rows, special=ChannelParams(trans_off=2), pattern='0'),
             ),
@@ -180,25 +180,25 @@ class Demo(MusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         play(
             measure(
-                act('♩', light(ALL_OFF)),
-                act('♩', dimmer(ALL_HIGH)),
+                action('♩', relay(ALL_OFF)),
+                action('♩', dimmer(ALL_HIGH)),
                 rest('𝅗𝅥'),
             ),
             measure(
-                act('♩', light("0100000000")),
+                action('♩', relay("0100000000")),
             ),
             measure(
-                act('♩', light("0000000000")),
+                action('♩', relay("0000000000")),
             ),
             measure(
-                act('♩', light("1110001000")),
+                action('♩', relay("1110001000")),
                 rest('♩𝅘𝅥𝅯'),
-                act('♩', light("0000000000")),
-                act('♩', dimmer(ALL_LOW)),
+                action('♩', relay("0000000000")),
+                action('♩', dimmer(ALL_LOW)),
             ),
             measure(
                 rest('♩'),
-                act('♩', light(ALL_ON)),
+                action('♩', relay(ALL_ON)),
             ),
             sequence_measure(
                 '♩', LIGHT_COUNT, random_once_each, 

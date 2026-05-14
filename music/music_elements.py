@@ -11,7 +11,7 @@ from typing_extensions import override
 
 from instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 
-    ReleaseableInstrument, RestInstrument,
+    LightInstrument, ReleaseableInstrument, RestInstrument,
 )
 from modes.foregroundmode import ForegroundMode
 from devices.specialparams import SpecialParams
@@ -38,17 +38,6 @@ class BaseNote(Element, ABC):
 
 
 @dataclass(frozen=True)
-class Rest(BaseNote):
-    """Musical rest."""
-    instrument: ClassVar[type[Instrument]] = RestInstrument
-
-    @override
-    def play(self) -> None:
-        """Play single rest (do nothing)."""
-        raise RuntimeError("PLAYING REST")
-
-
-@dataclass(frozen=True)
 class ActionNote(BaseNote):
     """Note to execute arbitrary actions."""
     instrument: ClassVar[type[Instrument]] = ActionInstrument
@@ -58,6 +47,17 @@ class ActionNote(BaseNote):
     def play(self) -> None:
         """Play single ActionNote."""
         self.action()
+
+
+@dataclass(frozen=True)
+class Rest(BaseNote):
+    """Musical rest."""
+    instrument: ClassVar[type[Instrument]] = RestInstrument
+
+    @override
+    def play(self) -> None:
+        """Play single rest (do nothing)."""
+        raise RuntimeError("PLAYING REST")
 
 
 @dataclass(frozen=True)
@@ -114,6 +114,19 @@ class DrumNote(BaseNote):
     def play(self) -> None:
         """Play single DrumNote."""
         mode.drums.play(self.accent, self.pitches)
+
+
+@dataclass(frozen=True)
+class LightNote(BaseNote):
+    """Note to execute light channel actions."""
+    instrument: ClassVar[type[Instrument]] = LightInstrument
+    kwargs: dict
+
+    @override
+    def play(self) -> None:
+        """Play single ActionNote."""
+        if self.kwargs:
+            mode.lights.set_channels(**self.kwargs)
 
 
 @dataclass(frozen=True)
@@ -229,14 +242,14 @@ class Section(Element):
             )
             object.__setattr__(part, 'measures', measures)
 
-    def play(self, tempo: int = 0) -> float:
+    def play(self) -> float:
         """Play already-generated measures comprising Section."""
-        tempo = tempo or self.tempo
-        assert tempo
+        if not self.tempo:
+            raise ValueError('Section.play requires a tempo.')
         return self.play_measures(
             self.measures, 
             delay=0.0,
-            tempo=tempo,
+            tempo=self.tempo,
         )
 
 
@@ -248,13 +261,18 @@ class Piece(Element):
     play_measures: 'PlayMeasures'
 
     def play(self, tempo: int = 0) -> float:
-        """Play measures within Sections and Parts."""
+        """Play measures within Sections and Parts.
+           If tempo is specified, it overrides any 
+           tempos specified in Sections."""
         delay = 0
         for group in self.groups:
+            _tempo = tempo or getattr(group, 'tempo', 0)
+            if not _tempo:
+                raise ValueError('Piece.play requires a tempo in this case.')
             delay += self.play_measures(
                 group.measures, 
                 delay=delay,
-                tempo=tempo,
+                tempo=_tempo,
             )
         return delay
 

@@ -9,7 +9,7 @@ from .music_elements import (
     Element, Measure, Part, Section, Piece, Sequence, 
 )
 from .music_implementation import (
-    _dimmer, _dimmer_sequence, _dimmer_sequence_flip, _light, _set_mode,
+    _dimmer, _dimmer_sequence, _dimmer_sequence_flip, _relay, _set_mode,
     expand_sequence_measures, play_measures, prepare_parts, validate_measures
 )
 from devices.specialparams import SpecialParams
@@ -94,10 +94,10 @@ def dimmer_sequence_flip(transition: float) -> Callable:
     return _dimmer_sequence_flip(transition)
 
 
-def light(
+def relay(
     pattern: Any,
     special: SpecialParams | None = None,
 ) -> Callable:
     """Return callable to effect light pattern."""
-    return _light(pattern, special)
+    return _relay(pattern, special)
 

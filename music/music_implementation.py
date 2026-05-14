@@ -105,7 +105,7 @@ def expand_sequence_measures(measures: tuple[Measure, ...]) -> None:
         elements = tuple(
             ActionNote(
                 duration=measure.step_duration,
-                action=_light(
+                action=_relay(
                     next(measure.patterns),
                     measure.special,
                 ),
@@ -196,7 +196,6 @@ def play_measures(
        section of music could start."""
     bps = tempo / 60
     start = time.time() + delay
-    log.info(f"{start=}")
     tasks = tasks_in_measures(measures, bps, start)
     mode.tasks.bulk_add(tasks)
     result = measures[0].beats * len(measures) / bps
@@ -240,7 +239,7 @@ def _dimmer_sequence_flip(transition: float) -> Callable:
     return set_channels
 
 
-def _light(
+def _relay(
     pattern: Any,
     special: SpecialParams | None = None,
 ) -> Callable:

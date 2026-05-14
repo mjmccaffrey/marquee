@@ -7,10 +7,10 @@ import logging
 from typing import cast
 
 from .music_elements import (
-    ActionNote, BaseNote, BellNote, DrumNote,
+    ActionNote, BaseNote, BellNote, DrumNote, LightNote,
     Measure, Part, Rest, Sequence, SequenceMeasure,
 )
-from .music_interface import light, part
+from .music_interface import part, relay
 from devices.specialparams import SpecialParams
 
 log = logging.getLogger('marquee.' + __name__)
@@ -120,9 +120,9 @@ def rest(symbols: str) -> Rest:
     return Rest(duration)
 
 
-def act(
+def action(
     symbols: str, 
-    action: Callable | Iterator[Callable],
+    action: Callable | Iterator[Callable]
 ) -> ActionNote | Rest:
     """Validate symbols and return ActionNote or Rest."""
     duration, pitches, accent, is_rest = _interpret_symbols(symbols)
@@ -131,28 +131,24 @@ def act(
     if pitches or accent:
         # raise ValueError("Action note cannot have pitch or accent.")
         pass
-    if not callable(action):
+    if isinstance(action, Iterator):
         action = next(action)
     return ActionNote(duration, action)
 
 
-def act_part(
+def actions(
     notation: str, 
-    *actions: Callable | Iterable[Callable],
+    *actions: Callable,
     beats=4,
 ) -> Part:
-    """Produce act part from notation."""
+    """Produce action part from notation."""
     if not actions:
         actions = (lambda: None, )
-    action_cycle: Iterator[Callable]
-    if callable(actions[0]):
-        action_cycle = cycle(cast(Iterator[Callable], actions))
-    else:
-        action_cycle = iter(actions[0])
+    action_cycle = cycle(actions)
 
     def create_act(symbols: str) -> ActionNote | Rest:
         """Return ActionNote for next action in cycle."""
-        return act(symbols, action_cycle)
+        return action(symbols, action_cycle)
     
     return part(
         *_interpret_notation(create_act, notation, beats)
@@ -174,7 +170,7 @@ def bell(symbols: str) -> BellNote | Rest:
     return BellNote(duration, pitches=pitches)
 
 
-def bell_part(notation: str, beats=4) -> Part:
+def bells(notation: str, beats=4) -> Part:
     """Produce bell part from notation."""
     return part(
         *_interpret_notation(bell, notation, beats)
@@ -195,11 +191,46 @@ def drum(symbols: str) -> DrumNote | Rest:
     return DrumNote(duration, accent, pitches)
 
 
-def drum_part(notation: str, accent: str = '', beats=4) -> "Part":
+def drums(notation: str, accent: str = '', beats=4) -> "Part":
     """Produce drum part from notation."""
     return part(
         *_interpret_notation(drum, notation, beats),
         accent=drum_accent_map[accent],
+    )
+
+
+def light(
+    symbols: str, 
+    kwargs: dict | Iterator[dict] = {}
+) -> LightNote | Rest:
+    """Validate symbols and return LightNote or Rest."""
+    duration, pitches, accent, is_rest = _interpret_symbols(symbols)
+    if is_rest:
+        return rest(symbols)
+    if pitches or accent:
+        raise ValueError("Light note cannot have pitch or accent.")
+    if isinstance(kwargs, Iterator):
+        kwargs = next(kwargs)
+    return LightNote(duration, kwargs)
+
+
+def lights(
+    notation: str, 
+    *kwargs: dict,
+    beats=4,
+) -> Part:
+    """Produce lights part from notation."""
+
+    if not kwargs:
+        kwargs = ({},)
+    kwargs_cycle = cycle(kwargs)
+
+    def create_light(symbols: str) ->LightNote | Rest:
+        """Return LightNote."""
+        return light(symbols, kwargs_cycle)
+    
+    return part(
+        *_interpret_notation(create_light, notation, beats)
     )
 
 
@@ -224,7 +255,7 @@ def sequence_measure(
     )
 
 
-def sequence_part(
+def sequences(
         notation: str, 
         *sequences: Sequence,
         beats=4,
@@ -241,9 +272,9 @@ def sequence_part(
 
     def create_note(symbol: str) -> ActionNote | Rest:
         """Return ActionNote for symbol and next pattern in sequence."""
-        return act(
+        return action(
             symbol, 
-            light(
+            relay(
                 next(sequence.iter), 
                 sequence.special,
             ),
