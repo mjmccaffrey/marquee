@@ -13,6 +13,7 @@ from .music_elements import (
     ActionNote, BaseNote, Element, Measure, NoteGroup,
     Part, Rest, SequenceMeasure,
 )
+from . import music_elements
 from devices.specialparams import (
     ActionParams, SpecialParams,
 )
@@ -24,6 +25,7 @@ def _set_mode(the_mode: ForegroundMode) -> None:
     """Set the Mode object used throughout this module."""
     global mode
     mode = the_mode
+    music_elements.mode = the_mode
 
 def prepare_parts(parts: tuple[Part, ...]) -> tuple[Measure, ...]:
     """Process parts within Section.
