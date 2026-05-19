@@ -61,12 +61,6 @@ class SequenceMode(PerformanceMode):
             params = asdict(self.baseline)
             self.lights.set_relays(params.pop('relay'))
             self.lights.set_channels(**params)
-            # self.lights.set_channels(
-            #     brightness=bl.brightness,
-            #     color=bl.color,
-            #     on=bl.on,
-            #     transition=bl.transition,
-            # )
 
     @override
     def execute(self) -> None:
@@ -90,35 +84,18 @@ class SequenceMode(PerformanceMode):
                 self.pre_delay + i * delay
             )
             self.schedule(
-                action = action,
-                due = due,
-                name = f"SequenceMode execute {i} {pattern}",
+                action=action,
+                due=due,
+                name=f"SequenceMode execute {i} {pattern}",
             )
             if delay is None:
                 return
         if self.repeat: 
             self.schedule(
-                action = self.execute,
-                due = (i + 1) * delay,
-                name = "SequenceMode continue",
+                action=self.execute,
+                due=(i + 1) * delay,
+                name="SequenceMode continue",
             )
-
-    def action_partial_old(self, pattern: str) -> Callable:
-        """"""
-        if isinstance(self.special, ActionParams):
-            action = partial(self.special.action, pattern)
-        elif self.color_set is not None:
-            action = partial(
-                self.set_color_lights,
-                pattern, 
-            )
-        else:
-            action = partial(
-                self.lights.set_relays,
-                pattern, 
-                special=self.special,
-            )
-        return action
 
     def action_partial(self, pattern: str) -> Callable:
         """"""

@@ -2,30 +2,21 @@
 
 from collections.abc import Callable
 from dataclasses import replace
-from itertools import cycle
 import logging
 import time
 from typing import Any, Iterator
 
+from devices.specialparams import ActionParams, SpecialParams
 from task import Task
 from modes.foregroundmode import ForegroundMode
 from .music_elements import (
     ActionNote, BaseNote, Element, Measure, NoteGroup,
     Part, Rest, SequenceMeasure,
 )
-from . import music_elements
-from devices.specialparams import (
-    ActionParams, SpecialParams,
-)
 
 log = logging.getLogger('marquee.' + __name__)
+mode: ForegroundMode  # See music_interface._set_mode
 
-
-def _set_mode(the_mode: ForegroundMode) -> None:
-    """Set the Mode object used throughout this module."""
-    global mode
-    mode = the_mode
-    music_elements.mode = the_mode
 
 def prepare_parts(parts: tuple[Part, ...]) -> tuple[Measure, ...]:
     """Process parts within Section.
@@ -41,6 +32,19 @@ def prepare_parts(parts: tuple[Part, ...]) -> tuple[Measure, ...]:
         merge_concurrent_measures(measure_set)
         for measure_set in concurrent_measures
     )
+
+
+def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
+    """Make all parts have the same # of measures."""
+    longest = max(len(part.measures) for part in parts)
+    for part in parts:
+        if len(part.measures) < longest:
+            pad = Measure(elements=(Rest(0.0),), beats=part.measures[-1].beats)
+            measures = tuple(
+                part.measures[i] if i < len(part.measures) else pad
+                for i in range(longest)
+            )
+            object.__setattr__(part, 'measures', measures)
 
 
 def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
@@ -131,19 +135,6 @@ def validate_measures(measures: tuple[Measure, ...]) -> None:
     # )
 
 
-def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
-    """Make all parts have the same # of measures."""
-    longest = max(len(part.measures) for part in parts)
-    for part in parts:
-        if len(part.measures) < longest:
-            pad = Measure(elements=(Rest(0.0),), beats=part.measures[-1].beats)
-            measures = tuple(
-                part.measures[i] if i < len(part.measures) else pad
-                for i in range(longest)
-            )
-            object.__setattr__(part, 'measures', measures)
-
-
 def tasks_in_measure(
     measure: Measure, 
     bps: float, 
@@ -202,43 +193,6 @@ def play_measures(
     mode.tasks.bulk_add(tasks)
     result = measures[0].beats * len(measures) / bps
     return result
-
-
-def _dimmer(pattern: str) -> Callable:
-    """Return callable to effect dimmer pattern."""
-    brightness = [
-        mode.lights.bulb_adjustments[b]
-        for b in pattern
-    ]
-    return lambda: mode.lights.set_channels(brightness=brightness)
-
-
-def _dimmer_sequence(brightness: int, transition: float) -> Callable:
-    """Return callable to effect state of specified channels."""
-
-    def set_channels(lights: list[int]):
-        """"""
-        mode.lights.set_channels(
-            brightness=brightness, 
-            transition=transition,
-            indices=set(lights),
-        )
-
-    return set_channels
-
-
-def _dimmer_sequence_flip(transition: float) -> Callable:
-    """Return callable to flip state of specified channels."""
-
-    def set_channels(lights: list[int]):
-        """"""
-        brightness = 0 if mode.lights.brightnesses()[lights[0]] else 100
-        mode.lights.set_channels(
-            brightness=brightness, 
-            transition=transition,
-            indices=set(lights),
-        )
-    return set_channels
 
 
 def _relay(

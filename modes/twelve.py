@@ -29,12 +29,10 @@ class Twelve(MusicMode):
 
     def prep_lights(self):
         """Prepare each light for turning on."""
-        for i, color in enumerate(Colors.WHEEL):
-            self.lights.set_channels(
-                brightness=self.brightness,
-                color=color,
-                indices={i},
-            )
+        self.lights.set_channels(
+            brightness=self.brightness,
+            color=Colors.WHEEL,
+        )
 
     def play(self):
         """Play music and lights."""

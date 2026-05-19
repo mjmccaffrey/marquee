@@ -18,11 +18,6 @@ class AlarmBackground(BackgroundMode):
     """"""
     
     @override
-    def execute(self) -> None:
-        """"""
-        # Nothing to do.
-
-    @override
     def button_action(self, button: ButtonName) -> int | None:
         """"""
         if button == ButtonName.CORDED_A:
@@ -49,7 +44,7 @@ class AlarmForeground(PerformanceMode):
         """"""
         self.tasks.delay_all(self.total_time)
         self.state = self.lights.current_state()
-        self.schedule(due=0.0, action=self.raise_alarm)
+        self.schedule(action=self.raise_alarm)
         self.schedule(due=self.alarm_time, action=self.restore_order)
 
     def raise_alarm(self):

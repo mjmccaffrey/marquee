@@ -1,6 +1,5 @@
 """Marquee Lighted Sign Project - pacman mode"""
 
-from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import auto, StrEnum
 from functools import partial
@@ -155,17 +154,13 @@ class PacManGame(GameMode):
         self.play_sound(Sound.BEGINNING)
         self.level = 0
         self.schedule(due=3.0, action=partial(self.init_level))
-        self.schedule(
-            due=5.0, action=partial(self.play_level)
-        )
+        self.schedule(due=5.0, action=partial(self.play_level))
 
     def pre_level_1_state(self) -> None:
         """"""
         self.level = 1
-        self.schedule(due=0.0, action=partial(self.init_level))
-        self.schedule(
-            due=2.0, action=partial(self.play_level)
-        )
+        self.schedule(action=partial(self.init_level))
+        self.schedule(due=2.0, action=partial(self.play_level))
 
     def post_level_0_state(self) -> None:
         """"""

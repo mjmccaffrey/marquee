@@ -18,7 +18,7 @@ from devices.specialparams import SpecialParams
 
 
 log = logging.getLogger('marquee.' + __name__)
-mode: ForegroundMode
+mode: ForegroundMode  # See music_interface._set_mode
 
 
 @dataclass(frozen=True)

@@ -99,7 +99,7 @@ class GameMode(PerformanceMode):
         print(f'{state=}')
         self.tasks.delete_owned_by(self)
         self.state = state
-        self.schedule(due=0, action=self.execute_state)
+        self.schedule(action=self.execute_state)
 
     def init_level(self):
         """"""

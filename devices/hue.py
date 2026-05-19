@@ -48,24 +48,14 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         assert isinstance(self.bulb_model, HueBulb)
         try:
-            self.get_state_of_channels()
+            self._create_channels()
         except requests.exceptions.Timeout as e:
             log.info(f"*** Failed to reach '{self.ip_address}' ***")
             log.info(f"*** Error: {e} ***")
             raise OSError from None
 
-    def get_state_of_channels(self) -> None:
-        """Fetch status parameters for all channels."""
-        result = self.session.get(
-            url=f'https://{self.ip_address}/clip/v2/resource/light',
-            timeout=2.0,
-        )
-        result.raise_for_status()
-        json = result.json()
-        lights = {
-            light['id']: light
-            for light in json['data']
-        }
+    def _create_channels(self) -> None:
+        lights = self._get_light_info()
         self.channels = [
             HueChannel(
                 index=i,
@@ -81,7 +71,20 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             for i, id in enumerate(self.bulb_ids)
         ]
         self.channel_count = len(self.channels)
-    
+
+    def _get_light_info(self) -> dict:
+        """Fetch status parameters for all lights."""
+        result = self.session.get(
+            url=f'https://{self.ip_address}/clip/v2/resource/light',
+            timeout=2.0,
+        )
+        result.raise_for_status()
+        json = result.json()
+        return {
+            light['id']: light
+            for light in json['data']
+        }
+
     @override
     def calibrate(self) -> None:
         """Calibrate all channels."""

@@ -40,7 +40,7 @@ class BaseMode(ABC):
         """Respond to button being pressed.
            Return index of new mode, if any."""
 
-    @abstractmethod
+    # @abstractmethod
     def execute(self) -> None:
         """Play the mode."""
 
@@ -70,8 +70,8 @@ class BaseMode(ABC):
 
     def schedule(
         self, 
-        due: float,
-        action: Callable | None = None, 
+        due: float = 0.0,
+        action: Callable | None = None,  # .execute
         name: str | None = None,
         repeat: bool = False,
     ) -> None:

@@ -32,7 +32,7 @@ def ppp(p: Sequence) -> None:
 
 def get_color_set(hue: HueBridge, name: str):
     """"""
-    hue.get_state_of_channels()
+    hue._create_channels()
     return {
         name: tuple(
             (
