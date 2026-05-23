@@ -9,7 +9,7 @@ from .modeselect import ModeSelect
 from .colorsetcycle import ColorSetCycle
 from .colorwheel import ColorWheel
 from .comet import Comet
-# from .demo import Demo
+from .demo import Demo
 from .evenoddfade import EvenOddFade
 from .fastchange import FastChange
 from .modes_misc import ModeIndex

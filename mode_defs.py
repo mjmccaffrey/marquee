@@ -14,6 +14,7 @@ def define_modes(exec: Executor) -> None:
 
     # exec.add_mode("christmas", ChristmasSongs)
     exec.add_mode("pacman", PacManGame)
+    exec.add_mode('demo', Demo)
 
     register_color_modes(exec)
     register_relay_modes(exec)
