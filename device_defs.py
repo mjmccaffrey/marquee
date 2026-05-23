@@ -31,9 +31,9 @@ HUE_BULB_IDS_0 = [
     "90a20fd0-3aef-4a57-b93d-393c0956baa1",
     "6e3c6e43-7e01-40d5-a650-acbc391b716d",
     "108dee49-9e5c-4879-83be-1c6f361a89aa",
-    "be70ec73-1aca-41a8-afaa-3e9dab07c27a",  # Label 0
-    "3d3132d3-528c-4e15-bba7-f587e1442ef2",  # Label 1
-    "35c48818-a97b-4b67-bbc8-22a68e6be153",  # Label 2
+    "be70ec73-1aca-41a8-afaa-3e9dab07c27a",  # Labeled 0
+    "3d3132d3-528c-4e15-bba7-f587e1442ef2",  # Labeled 1
+    "35c48818-a97b-4b67-bbc8-22a68e6be153",  # Labeled 2
 ]
 HUE_BULB_IDS_1 = [
     "04098e6c-f416-4ce5-b91c-06e6004b2a23",
@@ -120,7 +120,7 @@ def define_devices_hue(
     # )
 
 #    drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
-    drum_relays = NumatoRL320001("/dev/ttyACM2", bottom_mirrors_top=True)  # /dev/ttyACM0
+    drum_relays = NumatoRL320001("/dev/ttyACM1", bottom_mirrors_top=True)  # /dev/ttyACM0
     drums = DrumSet(relays=drum_relays.create_client(
         {i: i for i in range(drum_relays.relay_count // 2)})
     )
