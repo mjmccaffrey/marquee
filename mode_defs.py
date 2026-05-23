@@ -51,6 +51,7 @@ def register_channel_modes(exec: Executor):
         ],
         # transition=0.0,
     )
+    exec.add_mode("signs", Signs)
     exec.add_mode("twelve", Twelve, brightness=40)
     exec.add_mode("comet_test_1", Comet,
         length=9,
