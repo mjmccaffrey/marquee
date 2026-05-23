@@ -49,6 +49,7 @@ def _interpret_symbols(
 ) -> tuple[float, set, int, bool]:
     """Return duration, pitches, accent, and is_rest
        from a single set of symbols. """
+    print(symbols)
     def interpret(symbols: str) -> tuple[float, set, int, bool]:
         symbols = symbols.replace(' ', '')
         if not symbols:
