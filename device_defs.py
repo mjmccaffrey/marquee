@@ -14,7 +14,7 @@ from devices.devices_misc import ButtonName
 from devices.deviceset import DeviceSet
 from devices.hue import HueBridge
 from devices.joystick import Joystick
-from devices.relays import NumatoRL160001, NumatoSSR80001
+from devices.relays import NumatoRL320001, NumatoRL160001, NumatoSSR80001
 from devices.shelly import ShellyController, ShellyProDimmer1PM, ShellyProDimmer2PM
 from instruments import BellSet, ClickSet, DrumSet, LightSet, RingerBell
 from light_defs import *
@@ -118,7 +118,8 @@ def define_devices_hue(
     # bells = BellSet(relays=bell_relays.create_client(
     #     {i: i for i in range(bell_relays.relay_count)})
     # )
-    drum_relays = NumatoRL160001("/dev/ttyACM1")  # /dev/ttyACM0
+#    drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
+    drum_relays = NumatoRL320001("/dev/ttyACM1")  # /dev/ttyACM0
     drums = DrumSet(relays=drum_relays.create_client(
         {i: i for i in range(drum_relays.relay_count)})
     )
