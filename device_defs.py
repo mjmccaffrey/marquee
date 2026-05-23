@@ -118,11 +118,13 @@ def define_devices_hue(
     # bells = BellSet(relays=bell_relays.create_client(
     #     {i: i for i in range(bell_relays.relay_count)})
     # )
+
 #    drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
-    drum_relays = NumatoRL320001("/dev/ttyACM1")  # /dev/ttyACM0
+    drum_relays = NumatoRL320001("/dev/ttyACM1", bottom_mirrors_top=True)  # /dev/ttyACM0
     drums = DrumSet(relays=drum_relays.create_client(
-        {i: i for i in range(drum_relays.relay_count)})
+        {i: i for i in range(drum_relays.relay_count // 2)})
     )
+
     light_relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
     lights = LightSet(
         count=LIGHT_COUNT,
