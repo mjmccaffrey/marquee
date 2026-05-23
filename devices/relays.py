@@ -220,6 +220,7 @@ class NumatoRL320001(NumatoUSBRelayModule, relay_count=32):
     ) -> RelayPattern:
         """"""
         pat = super()._devices_to_relays(client, pattern)
+        print(pat)
         if self.bottom_mirrors_top:
             pat = RelayPattern(pat[:self.relay_count // 2] * 2)
         print(pattern)
