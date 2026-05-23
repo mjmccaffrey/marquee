@@ -195,6 +195,7 @@ def play_measures(
     return result
 
 
+# legacy
 def _relay(
     pattern: Any,
     special: SpecialParams | None = None,

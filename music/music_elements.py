@@ -11,7 +11,8 @@ from typing_extensions import override
 
 from instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 
-    LightInstrument, ReleaseableInstrument, RestInstrument,
+    LightChannelInstrument, LightRelayInstrument,
+    ReleaseableInstrument, RestInstrument,
 )
 from modes.foregroundmode import ForegroundMode
 from devices.specialparams import SpecialParams
@@ -117,14 +118,31 @@ class DrumNote(BaseNote):
 
 
 @dataclass(frozen=True)
-class LightNote(BaseNote):
-    """Note to execute light channel actions."""
-    instrument: ClassVar[type[Instrument]] = LightInstrument
+class LightNote(BaseNote, ABC):
+    """Base for Channel and Relay notes."""
     kwargs: dict
+
+
+@dataclass(frozen=True)
+class LightRelayNote(LightNote):
+    """Note to execute light relay actions."""
+    instrument: ClassVar[type[Instrument]] = LightRelayInstrument
 
     @override
     def play(self) -> None:
-        """Play single ActionNote."""
+        """Play single LightRelayNote."""
+        if self.kwargs:
+            mode.lights.set_relays(**self.kwargs)
+
+
+@dataclass(frozen=True)
+class LightChannelNote(LightNote):
+    """Note to execute light channel actions."""
+    instrument: ClassVar[type[Instrument]] = LightChannelInstrument
+
+    @override
+    def play(self) -> None:
+        """Play single LightChannelNote."""
         if self.kwargs:
             mode.lights.set_channels(**self.kwargs)
 
@@ -153,6 +171,7 @@ class Measure(Element):
     beats: int
 
 
+# legacy
 @dataclass(frozen=True)
 class SequenceMeasure(Measure):
     """Defines a measure with a sequence of light events."""
@@ -171,6 +190,7 @@ class SequenceMeasure(Measure):
         )
 
 
+# legacy
 @dataclass(frozen=True)
 class Sequence(Element):
     """Defines a sequence of light patterns."""

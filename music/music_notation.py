@@ -1,13 +1,14 @@
 """Marquee Lighted Sign Project - music_notation"""
 
-from collections.abc import Callable, Iterable, Iterator
+from collections.abc import Callable, Iterator
 from enum import IntEnum
+from functools import partial
 from itertools import cycle
 import logging
-from typing import cast
 
 from .music_elements import (
-    ActionNote, BaseNote, BellNote, DrumNote, LightNote,
+    ActionNote, BaseNote, BellNote, DrumNote, 
+    LightNote, LightChannelNote, LightRelayNote, 
     Measure, Part, Rest, Sequence, SequenceMeasure,
 )
 from .music_interface import part, relay
@@ -199,41 +200,63 @@ def drums(notation: str, accent: str = '', beats=4) -> "Part":
     )
 
 
-def light(
+def _light(
+    note_type: type[LightNote],
     symbols: str, 
     kwargs: dict | Iterator[dict] = {}
 ) -> LightNote | Rest:
-    """Validate symbols and return LightNote or Rest."""
+    """Validate symbols and return concrete LightNote or Rest."""
     duration, pitches, accent, is_rest = _interpret_symbols(symbols)
     if is_rest:
         return rest(symbols)
     if pitches or accent:
-        raise ValueError("Light note cannot have pitch or accent.")
+        raise ValueError("Light / relay note cannot have pitch or accent.")
     if isinstance(kwargs, Iterator):
         kwargs = next(kwargs)
-    return LightNote(duration, kwargs)
+    return note_type(duration, kwargs)
 
 
-def lights(
+def _lights(
+    note_type: type[LightNote],
     notation: str, 
     *kwargs: dict,
     beats=4,
 ) -> Part:
     """Produce lights part from notation."""
-
     if not kwargs:
         kwargs = ({},)
     kwargs_cycle = cycle(kwargs)
 
     def create_light(symbols: str) ->LightNote | Rest:
-        """Return LightNote."""
-        return light(symbols, kwargs_cycle)
+        """Return concrete LightNote."""
+        return _light(note_type, symbols, kwargs_cycle)
     
     return part(
         *_interpret_notation(create_light, notation, beats)
     )
 
 
+lights = partial(_lights, note_type=LightChannelNote)
+# def lights(
+#     notation: str, 
+#     beats=4,
+#     *kwargs: dict,
+# ) -> Part:
+#     """Produce lights part from notation."""
+#     return _lights(LightChannelNote, notation, *kwargs, beats=beats)
+
+
+relays = partial(_lights, note_type=LightRelayNote)
+# # def relays(
+# #     notation: str, 
+# #     beats=4,
+# #     *kwargs: dict,
+# # ) -> Part:
+# #     """Produce lights part from notation."""
+# #     return _lights(LightRelayNote, notation, kwargs, beats=beats)
+
+
+# legacy
 def sequence_measure(
     symbols: str,
     count: int,
@@ -254,7 +277,7 @@ def sequence_measure(
         special=special,
     )
 
-
+# legacy
 def sequences(
         notation: str, 
         *sequences: Sequence,

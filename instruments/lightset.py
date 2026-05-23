@@ -74,37 +74,6 @@ class LightSet:
         self.set_channels(brightness=100, force=True)
         self.controller.calibrate()
 
-    def set_relays(
-            self, 
-            light_pattern: str | Sequence[int | bool] | bool | int | None,
-            special: SpecialParams | None = None,
-            smart_bulb_override: bool = False,
-        ) -> None:
-        """Set all light relays, or channels,
-           per supplied patterns and special."""
-        
-        if light_pattern is None:
-            return  # No pattern given; nothing to do.
-        if (
-            self.smart_bulbs and 
-            not smart_bulb_override and 
-            special is None
-        ):  # Ignore relay command unless special circumstances.
-            return
-        
-        lights = self._convert_relay_pattern(light_pattern)
-
-        if isinstance(special, MirrorParams):
-            assert self.mirror is not None
-            self.mirror.set_state_of_devices(lights)
-
-        if isinstance(special, ChannelParams):
-            self._set_channels_instead_of_relays(lights, special)
-        else:
-            assert self.relays is not None
-            self.relays.set_state_of_devices(lights)
-            self.relay_pattern = lights
-
     def set_channels(
             self, 
             brightness: Sequence[int | None] | str | int | None = None,
@@ -170,6 +139,37 @@ class LightSet:
             )
         ]
         self.controller.update_channels(updates, force)
+
+    def set_relays(
+            self, 
+            light_pattern: str | Sequence[int | bool] | bool | int | None,
+            special: SpecialParams | None = None,
+            smart_bulb_override: bool = False,
+        ) -> None:
+        """Set all light relays, or channels,
+           per supplied patterns and special."""
+        
+        if light_pattern is None:
+            return  # No pattern given; nothing to do.
+        if (
+            self.smart_bulbs and 
+            not smart_bulb_override and 
+            special is None
+        ):  # Ignore relay command unless special circumstances.
+            return
+        
+        lights = self._convert_relay_pattern(light_pattern)
+
+        if isinstance(special, MirrorParams):
+            assert self.mirror is not None
+            self.mirror.set_state_of_devices(lights)
+
+        if isinstance(special, ChannelParams):
+            self._set_channels_instead_of_relays(lights, special)
+        else:
+            assert self.relays is not None
+            self.relays.set_state_of_devices(lights)
+            self.relay_pattern = lights
 
     def update_channels(self, updates: Sequence['ChannelUpdate']):
         """Effect channel updates."""
