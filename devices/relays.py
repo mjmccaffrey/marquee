@@ -71,11 +71,7 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         port_address: str, 
     ) -> None:
         """Establish connection to relay module via serial port."""
-        try:
-            hex_lengths = {8: 2, 16: 4}
-            self.relay_pattern_hex_len = hex_lengths[self.relay_count]
-        except LookupError:
-            raise RuntimeError("Unrecognized device count")
+        self.relay_pattern_hex_len = self.relay_count // 4
         self.port_address = port_address
         log.info(f"Initializing {self}")
         try:
