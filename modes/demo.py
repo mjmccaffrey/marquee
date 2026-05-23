@@ -83,7 +83,7 @@ class Demo(MusicMode):
                 sequence(blink_alternate),
             ),
             drums(
-                '  𝄻  |  𝄻  |  𝄼 𝄽 𝄾 𝄿 𝅘𝅥𝅰- 𝅘𝅥𝅰-  '
+                '  𝄻  |  𝄻  |  𝄼 𝄽 𝄾 𝄿 l𝅘𝅥𝅰 l𝅘𝅥𝅰  '
             ),
             tempo=75,
         )
@@ -102,7 +102,7 @@ class Demo(MusicMode):
                 # sequence(build_rows, pattern='1', from_top=False),
             ),
             drums(
-                '  𝄻  |  𝄻  |  ♪^ 𝄾 𝄼 𝄾 𝄿 𝅘𝅥𝅰^  |  𝅘𝅥𝅰^  '
+                '  𝄻  |  𝄻  |  ♪^ 𝄾 𝄼 𝄾 𝄿 h𝅘𝅥𝅰  |  h𝅘𝅥𝅰  '
             ),
             tempo=75,
         )

@@ -18,7 +18,7 @@ from .randomfade import RandomFade
 from .rotatereversible import RotateReversible
 from .running import Running
 from .sequencemode import SequenceMode
-# from .signs import Signs
+from .signs import Signs
 from .silentfadebuild import SilentFadeBuild
 from .tiltsensors import TiltSensors
 from .twelve import Twelve
