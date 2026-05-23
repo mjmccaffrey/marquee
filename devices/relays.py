@@ -202,7 +202,15 @@ class NumatoRL160001(NumatoUSBRelayModule, relay_count=16):
 class NumatoRL320001(NumatoUSBRelayModule, relay_count=32):
     """Supports the Numato RL160001 32 Channel USB 
        Mechanical Relay Module."""
-    bottom_mirrors_top: bool = False
+
+    def __init__(
+        self, 
+        port_address: str, 
+        bottom_mirrors_top: bool = False,
+    ):
+        """"""
+        super().__init__(port_address)
+        self.bottom_mirrors_top = bottom_mirrors_top
 
     @override
     def _devices_to_relays(
