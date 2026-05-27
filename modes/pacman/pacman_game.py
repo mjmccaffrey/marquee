@@ -21,6 +21,7 @@ from devices.lightcontroller import LightChannel, ChannelUpdate
 log = logging.getLogger('marquee.' + __name__)
 
 PACMAN_START = 7
+FRUIT_START = 1
 
 @override
 class GameState(StrEnum):
@@ -118,6 +119,8 @@ class PacManGame(GameMode):
         for d in maze_base.keys() - {PACMAN_START}:
             dot = self.register_entity(Dot(game=self, name=f"dot_{d}"))
             self.place_entity(dot, d)
+        self.fruit = self.register_entity(
+            Fruit(name='orange', game=self))
         self.pacman = self.register_entity(PacMan(game=self))
         self.blinky = self.register_entity(
             Blinky(
@@ -139,6 +142,7 @@ class PacManGame(GameMode):
     def play_level(self) -> None:
         """"""
         self.place_entity(self.pacman, PACMAN_START)
+        self.place_entity(self.fruit, FRUIT_START)
         self.update_lights(self.board)
         self.schedule(
             due=2.0, action=partial(self.change_state, GameState.PLAY_GAME)
