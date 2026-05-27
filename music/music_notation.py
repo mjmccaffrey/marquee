@@ -49,7 +49,6 @@ def _interpret_symbols(
 ) -> tuple[float, set, int, bool]:
     """Return duration, pitches, accent, and is_rest
        from a single set of symbols. """
-    print(symbols, pitch_map)
     def interpret(symbols: str) -> tuple[float, set, int, bool]:
         symbols = symbols.replace(' ', '')
         if not symbols:
@@ -97,7 +96,6 @@ def _interpret_notation(
     beats: int = 4,
 ) -> tuple[Measure, ...]:
     """Return measures from notation using create_note."""
-    print("in:", notation)
     def create_measure(measure) -> Measure:
         return Measure(
             tuple(
@@ -110,7 +108,6 @@ def _interpret_notation(
         create_measure(measure)
         for measure in _each_notation_measure(notation)
     )
-    print("out:", result)
     return result
 
 

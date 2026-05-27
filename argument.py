@@ -58,6 +58,7 @@ def str_to_bool(arg: str) -> bool:
 
 def display_help(
     mode_menu: list[tuple[int, str]], 
+    color_menu: list[tuple[int, str]],
     commands: dict[str, Callable],
 ) -> None:
     """"Display the command-line syntax."""
@@ -68,6 +69,7 @@ def display_help(
     print("                  [--speed_factor=(0 - 5.0]]")
     print("  marquee.py pattern [--dimmer=[pattern] &| --relay=[pattern]]")
     print("                     [--derive_missing=[true|false]]")
+    print("  marquee.py color [set_index | set_name]")
     print("  marquee.py command [command_name]")
     print('')
     print("Modes:")
@@ -82,6 +84,10 @@ def display_help(
     print("      the missing pattern will be assumed.")
     print("      If false, the state of the device set without a pattern")
     print("      will not be initialized at startup.")
+    print('')
+    print("Colors:")
+    for index, name in color_menu:
+        print(f'   {index}   {name}')
     print('')
     print("Commands:")
     for command in commands:
@@ -140,13 +146,19 @@ def validate_brightness_pattern(arg: str) -> str:
 
 def parse_arguments(
     mode_ids: dict[str, int], 
+    color_ids: dict[str, str],
     commands: dict[str, Callable],
 ) -> Namespace:
     """ Parse the command-line arguments. """
     top_p = ArgumentParserImproved(exit_on_error=False)
     sub_p = top_p.add_subparsers(dest='operation', required=True)
+    #
+    color_p = sub_p.add_parser('color')
+    color_p.add_argument('color_name', choices=color_ids.keys())
+    #
     command_p = sub_p.add_parser('command')
     command_p.add_argument('command_name', choices=commands.keys())
+    #
     mode_p = sub_p.add_parser('mode')
     mode_choices = mode_ids.keys()
     mode_p.add_argument('mode_id', choices=mode_choices)
@@ -156,6 +168,7 @@ def parse_arguments(
     mode_p.add_argument('speed_factor', 
         optional=True, 
         type=validate_speed_factor, default=1.0)
+    #
     pattern_p = sub_p.add_parser('pattern')
     pattern_p.add_argument('relay', 
         optional=True, type=validate_light_pattern)
@@ -163,6 +176,7 @@ def parse_arguments(
         optional=True, type=validate_brightness_pattern)
     pattern_p.add_argument('derive_missing', 
         optional=True, dest='derive_missing', type=str_to_bool, default=True)
+    #
     try:
         return top_p.parse_args()
     except (ArgumentError, ArgumentTypeError, ValueError) as err:
@@ -171,13 +185,14 @@ def parse_arguments(
 
 def process_arguments(
     mode_ids: dict[str, int], 
+    color_ids: dict[str, str],
     commands: dict[str, Callable],
 ) -> dict[str, Any]:
     """Validate and interpret the runtime arguments.
        Return dict of parameters if the arguments are valid, 
        otherwise raise an error."""
     try:
-        parsed = parse_arguments(mode_ids, commands)
+        parsed = parse_arguments(mode_ids, color_ids, commands)
     except ValueError as err:
         raise
     if parsed.operation == 'command':

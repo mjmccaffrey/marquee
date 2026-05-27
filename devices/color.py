@@ -157,7 +157,16 @@ class ColorSets:
         if name not in self.by_set_name:
             raise ValueError(f"Color set {name} not defined.")
         return self.by_set_name[name]
-    
+
+    # @staticmethod
+    # def _basic_colors() -> BySetName:
+    #     """"""
+    #     return {
+    #         key: ColorSet(key, 'basic', (value,))
+    #         for key, value in vars(Colors).items()
+    #         if isinstance(value, RGB)
+    #     }
+
     @staticmethod
     def _load_color_sets(source: Path) -> BySetName:
         """"""
@@ -169,6 +178,7 @@ class ColorSets:
             )
             for name, group, colors in data
         }
+            
 
     @staticmethod
     def _create_color_groups(sets: BySetName) -> ByGroupName:

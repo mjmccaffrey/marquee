@@ -17,7 +17,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 
 class Executor:
-    """Executes patterns and commands specified on the command line.
+    """Executes patterns, colors and commands specified on the command line.
        If a mode is specified, creates and turns control over 
        to a Player object."""
 
@@ -29,10 +29,24 @@ class Executor:
         """Init the (single) executor."""
         self.create_player = create_player
         self.define_devices = define_devices
+        #
         self.mode_ids: dict[str, int] = {}
         self.mode_menu: list[tuple[int, str]] = []
         self.modes: dict[int, ModeDefinition] = {}
+        #
         self.color_sets = ColorSets('color_sets.json')
+        color_set_names = self.color_sets.by_set_name.keys()
+        self.color_ids: dict[str, str] = {
+            s: name
+            for index, name in enumerate(color_set_names)
+            for s in (str(index), name)
+        }
+        print(self.color_ids)
+        self.color_menu: list[tuple[int, str]] = [
+            (index, name) 
+            for index, name in enumerate(color_set_names)
+        ]
+        print(self.color_menu)
         self.commands: dict[str, Callable[[], None]] = {
             'calibrate': self.command_calibrate,
             'off': self.command_off,
@@ -91,6 +105,7 @@ class Executor:
         self, 
         brightness_factor: float = 1.0,  # Must default; only
         speed_factor: float = 1.0,       # provided with mode.
+        color: str | None = None, 
         command: str | None = None, 
         mode_index: int | None = None, 
         light_pattern: str | None = None, 
@@ -100,6 +115,8 @@ class Executor:
            Return True if system shutdown requested, else False."""
         shutdown = False
         self.devices = self.define_devices(brightness_factor, speed_factor)
+        if color is not None:
+            self.execute_color(color)
         if command is not None:
             self.execute_command(command)
         elif mode_index is not None:
@@ -108,7 +125,10 @@ class Executor:
             self.execute_pattern(light_pattern, brightness_pattern)
         return shutdown
 
-    def execute_command(self, command: str):
+    def execute_color(self, color: str) -> None:
+        """"""
+
+    def execute_command(self, command: str) -> None:
         """Effects the command-line specified command."""
         self.commands[command]()
 
