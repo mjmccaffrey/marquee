@@ -120,7 +120,7 @@ def define_devices_hue(
     # )
 
 #    drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
-    drum_relays = NumatoRL320001("/dev/ttyACM1", bottom_mirrors_top=True)  # /dev/ttyACM0
+    drum_relays = NumatoRL320001("/dev/ttyACM0", bottom_mirrors_top=True)  # /dev/ttyACM0
     drums = DrumSet(relays=drum_relays.create_client(
         {i: i for i in range(drum_relays.relay_count // 2)})
     )
