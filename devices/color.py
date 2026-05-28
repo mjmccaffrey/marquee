@@ -203,7 +203,7 @@ class ColorSets:
             name: ColorSet(
                 name, 
                 group, 
-                tuple(XYB(*c) for c in set(tuple(l for l in colors))),
+                tuple(XYB(*c) for c in set(tuple(l) for l in colors)),
             )
             for name, group, colors in data
         }
