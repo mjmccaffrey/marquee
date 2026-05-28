@@ -154,7 +154,7 @@ def parse_arguments(
     sub_p = top_p.add_subparsers(dest='operation', required=True)
     #
     color_p = sub_p.add_parser('color')
-    color_p.add_argument('color_name', choices=color_ids.keys())
+    color_p.add_argument('color_id', choices=color_ids.keys())
     #
     command_p = sub_p.add_parser('command')
     command_p.add_argument('command_name', choices=commands.keys())
@@ -196,7 +196,7 @@ def process_arguments(
     except ValueError as err:
         raise
     if parsed.operation == 'color':
-        args = {"color": parsed.color_name}
+        args = {"color": color_ids[parsed.color_id]}
     elif parsed.operation == 'command':
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':
@@ -229,6 +229,5 @@ def process_arguments(
             raise ValueError()
     else:
         raise Exception("Unexpected error processing command line")
-    print(args)
     return args
 
