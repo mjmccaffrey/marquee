@@ -4,12 +4,22 @@ from abc import ABC
 import json
 import logging
 from pathlib import Path
-from typing import cast, TypedDict
+import random
+from typing import Any, Sequence, cast, TypedDict
 from typing_extensions import override
 
 from devices import rgbxy
 
 log = logging.getLogger('marquee.' + __name__)
+
+
+def balanced_distribution(values: tuple, desired_length: int) -> tuple:
+    """"""
+    full, remainder = divmod(desired_length, len(values))
+    result = list(values) * full
+    result.extend(random.sample(values, remainder))
+    random.shuffle(result)
+    return tuple(result)
 
 
 class Color(ABC):
@@ -139,18 +149,21 @@ class ColorSet:
     ) -> None:
         """"""
         self.name, self.group, self.colors = name, group, colors
-        if isinstance(self.colors[0], RGB):
-            colors = cast(tuple[RGB, ...], self.colors)
-            self.set_channels_kwargs = self.SetChannelsKwargs(
+
+    def set_channels_kwargs(self, light_count: int) -> SetChannelsKwargs:
+        colors = balanced_distribution(self.colors, light_count)
+        if isinstance(colors[0], RGB):
+            return self.SetChannelsKwargs(
                 color=colors,
                 brightness=tuple(100 for c in colors),  # !!!
             )
-        elif isinstance(self.colors[0], XYB):
-            colors = cast(tuple[XYB, ...], self.colors)
-            self.set_channels_kwargs = self.SetChannelsKwargs(
+        elif isinstance(colors[0], XYB):
+            return self.SetChannelsKwargs(
                 color=tuple(XY(c.x, c.y) for c in colors),
                 brightness=tuple(round(c.b) for c in colors),  # !!!
             )
+        else:
+            raise RuntimeError
 
 
 class ColorSets:
@@ -176,7 +189,7 @@ class ColorSets:
     def _basic_colors() -> BySetName:
         """"""
         return {
-            key.lower(): ColorSet(key.lower(), 'basic', (value,) * 12)  # !!!!!!
+            key.lower(): ColorSet(key.lower(), 'basic', (value,))
             for key, value in vars(Colors).items()
             if isinstance(value, RGB)
         }
@@ -188,7 +201,9 @@ class ColorSets:
             data = json.load(f)
         return {
             name: ColorSet(
-                name, group, tuple(XYB(*c) for c in colors),
+                name, 
+                group, 
+                tuple(XYB(*c) for c in set(colors)),
             )
             for name, group, colors in data
         }
