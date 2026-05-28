@@ -80,7 +80,10 @@ class ColorSetCycle(PerformanceMode):
             f"for {entry.seconds} seconds "
             f"({self.entry_index + 1} / {len(self.entries)})."
         )
-        self.lights.set_channels(transition=self.transition, **cs.set_channels_kwargs)
+        self.lights.set_channels(
+            transition=self.transition, 
+            **cs.set_channels_kwargs(self.lights.count)
+        )
         self.schedule(due=entry.seconds)
 
     def wrap_entry_index(self, delta: int):

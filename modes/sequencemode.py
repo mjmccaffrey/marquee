@@ -109,7 +109,7 @@ class SequenceMode(PerformanceMode):
         """"""
         assert self.color_set is not None
         assert len(pattern) == self.lights.count
-        cs_kwargs = self.color_set.set_channels_kwargs
+        cs_kwargs = self.color_set.set_channels_kwargs(self.lights.count)
         kwargs = {
             'on': tuple(False if p == '-' else True for p in pattern),
             'brightness': tuple(

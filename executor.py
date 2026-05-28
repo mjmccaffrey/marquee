@@ -130,7 +130,7 @@ class Executor:
         cs = self.color_sets.by_set_name[color]
         self.devices.lights.set_channels(
             on=True,
-            **cs.set_channels_kwargs
+            **cs.set_channels_kwargs(self.devices.lights.count)
         )
 
     def execute_command(self, command: str) -> None:

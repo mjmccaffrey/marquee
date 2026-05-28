@@ -63,7 +63,7 @@ def view_each_color_set(l: LightSet, css: ColorSets):
         for sname in sorted(s.name for s in csets):
             input(f"{gname} {sname}")
             cs = css.by_set_name[sname]
-            l.set_channels(**cs.set_channels_kwargs)
+            l.set_channels(**cs.set_channels_kwargs(l.count))
 
 
 # @dataclass(kw_only=True)
