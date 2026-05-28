@@ -138,3 +138,10 @@ class TaskSchedule:
             else:
                 wait_fn(duration)
 
+@dataclass
+class SeqTask:
+    """Sequential task."""
+    due: float = 0.0
+    action: Callable | None = None
+    name: str | None = None
+

@@ -12,7 +12,7 @@ from typing_extensions import override
 from devices.color import ColorSets
 from devices.devices_misc import ButtonName
 from event import EventSystem
-from task import Task, TaskSchedule
+from task import SeqTask, Task, TaskSchedule
 from .modes_misc import (
     ChangeMode, ModeDefinition,
 )
@@ -114,6 +114,16 @@ class BaseMode(ABC):
         else:
             _name = name
         push_event()
+
+    def schedule_sequence(self, *tasks: SeqTask, delay=0.0) -> None:
+        """"""
+        for task in tasks:
+            delay += task.due
+            self.schedule(
+                due=delay,
+                action=task.action,
+                name=task.name,
+            )
 
     @staticmethod
     def wrap_value(
