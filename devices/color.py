@@ -176,7 +176,7 @@ class ColorSets:
     def _basic_colors() -> BySetName:
         """"""
         return {
-            key: ColorSet(key, 'basic', (value,) * 12)  # !!!!!!
+            key: ColorSet(key.lower(), 'basic', (value,) * 12)  # !!!!!!
             for key, value in vars(Colors).items()
             if isinstance(value, RGB)
         }
