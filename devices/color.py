@@ -162,6 +162,7 @@ class ColorSets:
 
     def __init__(self, source: str) -> None:
         """"""
+        self._basic_colors()
         self.by_set_name = self._load_color_sets(Path(source))
         self.by_group_name = self._create_color_groups(self.by_set_name)
 
