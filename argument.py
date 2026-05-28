@@ -229,5 +229,6 @@ def process_arguments(
             raise ValueError()
     else:
         raise Exception("Unexpected error processing command line")
+    print(args)
     return args
 
