@@ -128,6 +128,7 @@ class Executor:
     def execute_color(self, color: str) -> None:
         """"""
         print('execute color')
+        print(self.color_sets.by_set_name[color].set_channels_kwargs)
         self.devices.lights.set_channels(
             **self.color_sets.by_set_name[color].set_channels_kwargs
         )
