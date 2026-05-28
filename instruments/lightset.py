@@ -75,14 +75,14 @@ class LightSet:
         self.controller.calibrate()
 
     def set_channels(
-            self, 
-            brightness: Sequence[int | None] | str | int | None = None,
-            transition: Sequence[float | None] | float | None = None,
-            color: Sequence[Color | None] | Color | None = None,
-            on: Sequence[int | bool | str | None] | bool | int | None = None,
-            indices: set[int] | None = None,
-            force: bool = False,
-        ) -> None:
+        self, 
+        brightness: Sequence[int | None] | str | int | None = None,
+        transition: Sequence[float | None] | float | None = None,
+        color: Sequence[Color | None] | Color | None = None,
+        on: Sequence[int | bool | str | None] | bool | int | None = None,
+        indices: set[int] | None = None,
+        force: bool = False,
+    ) -> None:
         """Set the channels per the supplied brightness, 
            transition times and colors. 
            Specify a subset of channels via indices.

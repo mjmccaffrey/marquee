@@ -127,6 +127,9 @@ class Executor:
 
     def execute_color(self, color: str) -> None:
         """"""
+        self.devices.lights.set_channels(
+            **self.color_sets.by_set_name[color].set_channels_kwargs
+        )
 
     def execute_command(self, command: str) -> None:
         """Effects the command-line specified command."""

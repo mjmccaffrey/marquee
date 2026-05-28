@@ -4,7 +4,7 @@ from abc import ABC
 import json
 import logging
 from pathlib import Path
-from typing import TypedDict
+from typing import cast, TypedDict
 from typing_extensions import override
 
 from devices import rgbxy
@@ -128,16 +128,29 @@ class ColorSet:
     """"""
 
     class SetChannelsKwargs(TypedDict):
-        color: tuple[XY, ...]
+        color: tuple[Color, ...]
         brightness: tuple[int, ...]
 
-    def __init__(self, name: str, group: str, colors: tuple[XYB, ...]) -> None:
+    def __init__(
+        self, 
+        name: str, 
+        group: str, 
+        colors: tuple[RGB, ...] | tuple[XYB, ...],
+    ) -> None:
         """"""
         self.name, self.group, self.colors = name, group, colors
-        self.set_channels_kwargs = self.SetChannelsKwargs(
-            color=tuple(XY(c.x, c.y) for c in self.colors),
-            brightness=tuple(round(c.b) for c in self.colors),  # !!!
-        )
+        if isinstance(self.colors[0], RGB):
+            colors = cast(tuple[RGB, ...], self.colors)
+            self.set_channels_kwargs = self.SetChannelsKwargs(
+                color=colors,
+                brightness=tuple(100 for c in colors),  # !!!
+            )
+        elif isinstance(self.colors[0], XYB):
+            colors = cast(tuple[XYB, ...], self.colors)
+            self.set_channels_kwargs = self.SetChannelsKwargs(
+                color=tuple(XY(c.x, c.y) for c in colors),
+                brightness=tuple(round(c.b) for c in colors),  # !!!
+            )
 
 
 class ColorSets:
@@ -158,14 +171,14 @@ class ColorSets:
             raise ValueError(f"Color set {name} not defined.")
         return self.by_set_name[name]
 
-    # @staticmethod
-    # def _basic_colors() -> BySetName:
-    #     """"""
-    #     return {
-    #         key: ColorSet(key, 'basic', (value,))
-    #         for key, value in vars(Colors).items()
-    #         if isinstance(value, RGB)
-    #     }
+    @staticmethod
+    def _basic_colors() -> BySetName:
+        """"""
+        return {
+            key: ColorSet(key, 'basic', (value,) * 12)  # !!!!!!
+            for key, value in vars(Colors).items()
+            if isinstance(value, RGB)
+        }
 
     @staticmethod
     def _load_color_sets(source: Path) -> BySetName:

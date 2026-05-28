@@ -120,7 +120,8 @@ class PacManGame(GameMode):
             dot = self.register_entity(Dot(game=self, name=f"dot_{d}"))
             self.place_entity(dot, d)
         self.fruit = self.register_entity(
-            Fruit(name='orange', game=self))
+            Fruit(name='orange', game=self)
+        )
         self.pacman = self.register_entity(PacMan(game=self))
         self.blinky = self.register_entity(
             Blinky(
