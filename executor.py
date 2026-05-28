@@ -130,6 +130,7 @@ class Executor:
         print('execute color')
         print(self.color_sets.by_set_name[color].set_channels_kwargs)
         self.devices.lights.set_channels(
+            on=True,
             **self.color_sets.by_set_name[color].set_channels_kwargs
         )
 
