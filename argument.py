@@ -195,7 +195,9 @@ def process_arguments(
         parsed = parse_arguments(mode_ids, color_ids, commands)
     except ValueError as err:
         raise
-    if parsed.operation == 'command':
+    if parsed.operation == 'color':
+        args = {"color": parsed.color_name}
+    elif parsed.operation == 'command':
         args = {"command": parsed.command_name}
     elif parsed.operation == 'mode':
         args = {

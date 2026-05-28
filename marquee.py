@@ -45,8 +45,6 @@ def execute(exec: Executor) -> int:
     except ValueError:
         display_help(exec.mode_menu, exec.color_menu, exec.commands)
         return 2
-    except:
-        raise
     else:
         shutdown = exec.execute(**args)
         return 3 if shutdown else 0
