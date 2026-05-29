@@ -65,7 +65,7 @@ class DoomGame(PerformanceMode):
         self.lights.set_channels(
             on=True,
             brightness=100,
-            color=Colors.MAGENTA,
+            color=Colors.GREEN,
             transition=0.0,
             indices={1},
         )
@@ -76,7 +76,7 @@ class DoomGame(PerformanceMode):
         self.lights.set_channels(
             on=True,
             brightness=100,
-            color=Colors.RED,
+            color=Colors.ROSE,
             transition=0.0,
             indices=set(LIGHTS_BY_ROW[row]),
         )
