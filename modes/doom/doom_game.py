@@ -32,7 +32,10 @@ class DoomGame(PerformanceMode):
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
-        self.lights.set_channels(on=False)
+        self.lights.set_channels(
+            brightness=100,
+            on=False,
+        )
 
     def init_sound(self):
         """"""
@@ -50,6 +53,7 @@ class DoomGame(PerformanceMode):
         """"""
         self.play_sound(Sound.TELEPORT)
         self.lights.set_channels(
+            on=True,
             color=Colors.TEAL,
             transition=1.0,
             indices={1},
@@ -59,6 +63,7 @@ class DoomGame(PerformanceMode):
         """"""
         self.play_sound(Sound.SLAYER_UMF)
         self.lights.set_channels(
+            on=True,
             color=Colors.GREEN,
             transition=0.0,
             indices={1},
@@ -68,6 +73,7 @@ class DoomGame(PerformanceMode):
         """"""
         self.play_sound(Sound.BARON_ROAR)
         self.lights.set_channels(
+            on=True,
             color=Colors.RED,
             transition=0.0,
             indices=set(LIGHTS_BY_ROW[row]),
@@ -77,6 +83,7 @@ class DoomGame(PerformanceMode):
         """"""
         self.play_sound(Sound.SLAYER_DEATH)
         self.lights.set_channels(
+            on=True,
             color=Colors.RED,
             transition=0.0,
         )
@@ -100,11 +107,11 @@ class DoomGame(PerformanceMode):
         self.schedule_sequence(
             SeqTask(self.slayer_teleports, due=1.0),
             SeqTask(self.slayer_appears, due=1.0),
-            SeqTask(partial(self.barons_appear, 4), due=1.0),
-            SeqTask(partial(self.barons_appear, 3), due=1.0),
-            SeqTask(partial(self.barons_appear, 2), due=1.0),
-            SeqTask(partial(self.barons_appear, 1), due=1.0),
-            SeqTask(self.slayer_dies, due=1.0),
+            SeqTask(partial(self.barons_appear, 4), due=2.0),
+            SeqTask(partial(self.barons_appear, 3), due=0.75),
+            SeqTask(partial(self.barons_appear, 2), due=0.75),
+            SeqTask(partial(self.barons_appear, 1), due=0.75),
+            SeqTask(self.slayer_dies, due=0.75),
             SeqTask(self.fade, due=1.0),
         )
         
