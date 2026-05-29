@@ -38,7 +38,7 @@ class DoomGame(PerformanceMode):
         """"""
         pygame.mixer.init()
         self.sounds = {
-            sound: pygame.mixer.Sound(f'modes/pacman/pacman_{sound}.wav')
+            sound: pygame.mixer.Sound(f'modes/doom/doom_{sound}.wav')
             for sound in Sound
         }
 
