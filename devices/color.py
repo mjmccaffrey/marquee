@@ -5,7 +5,7 @@ import json
 import logging
 from pathlib import Path
 import random
-from typing import Any, Sequence, cast, TypedDict
+from typing import TypedDict
 from typing_extensions import override
 
 from devices import rgbxy
