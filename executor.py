@@ -130,10 +130,12 @@ class Executor:
     def execute_color(self, color: str, brightness: int) -> None:
         """"""
         cs = self.color_sets.by_set_name[color]
-        self.devices.lights.set_channels(
+        kwargs = cs.set_channels_kwargs(self.devices.lights.count)
+        kwargs |= dict(
             on=True,
-            **cs.set_channels_kwargs(self.devices.lights.count)
+            brightness=brightness,
         )
+        self.devices.lights.set_channels(**kwargs)  # type: ignore
 
     def execute_command(self, command: str) -> None:
         """Effects the command-line specified command."""
