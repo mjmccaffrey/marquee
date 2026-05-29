@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - doom mode"""
 
 from enum import auto, StrEnum
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from functools import partial
 import logging
 import pygame
@@ -111,10 +111,10 @@ class DoomGame(PerformanceMode):
             SeqTask(self.slayer_teleports, due=1.0),
             SeqTask(self.slayer_appears, due=2.0),
             SeqTask(partial(self.barons_appear, 4), due=2.0),
-            SeqTask(partial(self.barons_appear, 3), due=0.5),
-            SeqTask(partial(self.barons_appear, 2), due=0.5),
-            SeqTask(partial(self.barons_appear, 1), due=0.5),
-            SeqTask(self.slayer_dies, due=0.5),
+            SeqTask(partial(self.barons_appear, 3), due=0.6),
+            SeqTask(partial(self.barons_appear, 2), due=0.6),
+            SeqTask(partial(self.barons_appear, 1), due=0.6),
+            SeqTask(self.slayer_dies, due=0.6),
             SeqTask(self.fade, due=0.5),
         )
         

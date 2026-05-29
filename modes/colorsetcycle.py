@@ -19,6 +19,7 @@ class ColorSetCycle(PerformanceMode):
 
     def __post_init__(self, sequence: CycleSequence) -> None:
         """Initialize."""
+        super().__post_init__()
         self.lights.set_channels(on=True)
         self.direction = +1
         self.entries = self.expand_sequence(sequence)

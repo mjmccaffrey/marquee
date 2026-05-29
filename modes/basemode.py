@@ -116,7 +116,8 @@ class BaseMode(ABC):
         push_event()
 
     def schedule_sequence(self, *tasks: SeqTask, delay=0.0) -> None:
-        """"""
+        """Schedule sequential tasks with an initial seconds delay, 
+           and due seconds before each task."""
         for task in tasks:
             delay += task.due
             self.schedule(
