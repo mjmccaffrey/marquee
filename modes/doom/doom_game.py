@@ -98,7 +98,7 @@ class DoomGame(PerformanceMode):
                 action=partial(
                     self.lights.set_channels,
                     on=False,
-                    transition=1.0,
+                    transition=0.5,
                     indices=set(row),
                 ),
                 due=i / 2,
@@ -109,7 +109,7 @@ class DoomGame(PerformanceMode):
         """"""
         self.schedule_sequence(
             SeqTask(self.slayer_teleports, due=1.0),
-            SeqTask(self.slayer_appears, due=1.0),
+            SeqTask(self.slayer_appears, due=2.0),
             SeqTask(partial(self.barons_appear, 4), due=2.0),
             SeqTask(partial(self.barons_appear, 3), due=0.75),
             SeqTask(partial(self.barons_appear, 2), due=0.75),
