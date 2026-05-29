@@ -9,6 +9,7 @@ from .modeselect import ModeSelect
 from .colorsetcycle import ColorSetCycle
 from .colorwheel import ColorWheel
 from .comet import Comet
+from .doom import DoomGame
 from .demo import Demo
 from .evenoddfade import EvenOddFade
 from .fastchange import FastChange

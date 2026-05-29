@@ -106,6 +106,7 @@ class Executor:
         brightness_factor: float = 1.0,  # Must default; only
         speed_factor: float = 1.0,       # provided with mode.
         color: str | None = None, 
+        brightness: int | None = None,
         command: str | None = None, 
         mode_index: int | None = None, 
         light_pattern: str | None = None, 
@@ -116,7 +117,8 @@ class Executor:
         shutdown = False
         self.devices = self.define_devices(brightness_factor, speed_factor)
         if color is not None:
-            self.execute_color(color)
+            assert brightness is not None
+            self.execute_color(color, brightness)
         if command is not None:
             self.execute_command(command)
         elif mode_index is not None:
@@ -125,7 +127,7 @@ class Executor:
             self.execute_pattern(light_pattern, brightness_pattern)
         return shutdown
 
-    def execute_color(self, color: str) -> None:
+    def execute_color(self, color: str, brightness: int) -> None:
         """"""
         cs = self.color_sets.by_set_name[color]
         self.devices.lights.set_channels(

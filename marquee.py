@@ -37,7 +37,7 @@ def setup_logging() -> None:
 def execute(exec: Executor) -> int:
     """Validate arguments, execute. Return exit code."""
     try:
-        args = process_arguments(
+        kwargs = process_arguments(
             exec.mode_ids,
             exec.color_ids,
             exec.commands,
@@ -46,7 +46,7 @@ def execute(exec: Executor) -> int:
         display_help(exec.mode_menu, exec.color_menu, exec.commands)
         return 2
     else:
-        shutdown = exec.execute(**args)
+        shutdown = exec.execute(**kwargs)
         return 3 if shutdown else 0
 
 

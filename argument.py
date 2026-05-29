@@ -150,33 +150,69 @@ def parse_arguments(
     commands: dict[str, Callable],
 ) -> Namespace:
     """ Parse the command-line arguments. """
+
+    def color():
+        """"""
+        color_p = sub_p.add_parser('color')
+        color_p.add_argument('color_id', choices=color_ids.keys())
+        color_p.add_argument(
+            'brightness', 
+            optional=True, 
+            type=int,
+            choices=range(0, 101),
+            default=100,
+        )
+
+    def command():
+        """"""
+        command_p = sub_p.add_parser('command')
+        command_p.add_argument('command_name', choices=commands.keys())
+
+    def mode():
+        """"""
+        mode_p = sub_p.add_parser('mode')
+        mode_choices = mode_ids.keys()
+        mode_p.add_argument('mode_id', choices=mode_choices)
+        mode_p.add_argument(
+            'brightness_factor', 
+            optional=True, 
+            type=validate_brightness_factor,
+            default=1.0,
+        )
+        mode_p.add_argument(
+            'speed_factor', 
+            optional=True, 
+            type=validate_speed_factor, 
+            default=1.0,
+        )
+
+    def pattern():
+        """"""
+        pattern_p = sub_p.add_parser('pattern')
+        pattern_p.add_argument(
+            'relay', 
+            optional=True, 
+            type=validate_light_pattern,
+            )
+        pattern_p.add_argument(
+            'dimmer', 
+            optional=True, 
+            type=validate_brightness_pattern,
+        )
+        pattern_p.add_argument(
+            'derive_missing', 
+            optional=True, 
+            dest='derive_missing', 
+            type=str_to_bool, 
+            default=True,
+        )
+
     top_p = ArgumentParserImproved(exit_on_error=False)
     sub_p = top_p.add_subparsers(dest='operation', required=True)
-    #
-    color_p = sub_p.add_parser('color')
-    color_p.add_argument('color_id', choices=color_ids.keys())
-    #
-    command_p = sub_p.add_parser('command')
-    command_p.add_argument('command_name', choices=commands.keys())
-    #
-    mode_p = sub_p.add_parser('mode')
-    mode_choices = mode_ids.keys()
-    mode_p.add_argument('mode_id', choices=mode_choices)
-    mode_p.add_argument('brightness_factor', 
-        optional=True, 
-        type=validate_brightness_factor, default=1.0)
-    mode_p.add_argument('speed_factor', 
-        optional=True, 
-        type=validate_speed_factor, default=1.0)
-    #
-    pattern_p = sub_p.add_parser('pattern')
-    pattern_p.add_argument('relay', 
-        optional=True, type=validate_light_pattern)
-    pattern_p.add_argument('dimmer', 
-        optional=True, type=validate_brightness_pattern)
-    pattern_p.add_argument('derive_missing', 
-        optional=True, dest='derive_missing', type=str_to_bool, default=True)
-    #
+    color()
+    command()
+    mode()
+    pattern()
     try:
         return top_p.parse_args()
     except (ArgumentError, ArgumentTypeError, ValueError) as err:
@@ -195,39 +231,43 @@ def process_arguments(
         parsed = parse_arguments(mode_ids, color_ids, commands)
     except ValueError as err:
         raise
-    if parsed.operation == 'color':
-        args = {"color": color_ids[parsed.color_id]}
-    elif parsed.operation == 'command':
-        args = {"command": parsed.command_name}
-    elif parsed.operation == 'mode':
-        args = {
-            "mode_index": mode_ids[parsed.mode_id],
-            "brightness_factor": parsed.brightness_factor,
-            "speed_factor": parsed.speed_factor,
-        }
-    elif parsed.operation == 'pattern':
-        args = {}
-        if parsed.relay:
-            args |= {"light_pattern": parsed.relay}
-        if parsed.dimmer:
-            args |= {"brightness_pattern": parsed.dimmer}
-        if parsed.relay:
-            if not parsed.dimmer and parsed.derive_missing:
-                pattern = ''.join(
-                    'A' if e == '1' else '0' 
-                    for e in parsed.relay
-                )
-                args |= {"brightness_pattern": pattern}
-        elif parsed.dimmer:
-            if parsed.derive_missing:
-                pattern = ''.join(
-                    '0' if e == '0' else "1"
-                    for e in parsed.dimmer
-                )
-                args |= {"light_pattern": pattern}
-        else:
-            raise ValueError()
-    else:
-        raise Exception("Unexpected error processing command line")
+    match parsed.operation:
+        case 'color':
+            args = {
+                "color": color_ids[parsed.color_id],
+                "brightness": parsed.brightness,
+            }
+        case 'command':
+            args = {"command": parsed.command_name}
+        case 'mode':
+            args = {
+                "mode_index": mode_ids[parsed.mode_id],
+                "brightness_factor": parsed.brightness_factor,
+                "speed_factor": parsed.speed_factor,
+            }
+        case 'pattern':
+            args = {}
+            if parsed.relay:
+                args |= {"light_pattern": parsed.relay}
+            if parsed.dimmer:
+                args |= {"brightness_pattern": parsed.dimmer}
+            if parsed.relay:
+                if not parsed.dimmer and parsed.derive_missing:
+                    pattern = ''.join(
+                        'A' if e == '1' else '0' 
+                        for e in parsed.relay
+                    )
+                    args |= {"brightness_pattern": pattern}
+            elif parsed.dimmer:
+                if parsed.derive_missing:
+                    pattern = ''.join(
+                        '0' if e == '0' else "1"
+                        for e in parsed.dimmer
+                    )
+                    args |= {"light_pattern": pattern}
+            else:
+                raise ValueError()
+        case _:
+            raise Exception("Unexpected error processing command line")
     return args
 

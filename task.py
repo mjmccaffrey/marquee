@@ -141,7 +141,7 @@ class TaskSchedule:
 @dataclass
 class SeqTask:
     """Sequential task."""
-    due: float = 0.0
     action: Callable | None = None
+    due: float = 0.0
     name: str | None = None
 
