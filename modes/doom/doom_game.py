@@ -9,7 +9,7 @@ from typing_extensions import override
 
 from light_defs import LIGHTS_BY_ROW
 from task import SeqTask
-from ..gamemode import GameMode
+from ..performancemode import PerformanceMode
 from devices.color import Colors, RGB
 
 log = logging.getLogger('marquee.' + __name__)
@@ -23,7 +23,7 @@ class Sound(StrEnum):
 
 
 @dataclass(kw_only=True)
-class DoomGame(GameMode):
+class DoomGame(PerformanceMode):
     """"""
 
     def __post_init__(self):
