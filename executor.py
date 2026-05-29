@@ -41,12 +41,10 @@ class Executor:
             for index, name in enumerate(color_set_names)
             for s in (str(index), name)
         }
-        print(self.color_ids)
         self.color_menu: list[tuple[int, str]] = [
             (index, name) 
             for index, name in enumerate(color_set_names)
         ]
-        print(self.color_menu)
         self.commands: dict[str, Callable[[], None]] = {
             'calibrate': self.command_calibrate,
             'off': self.command_off,
