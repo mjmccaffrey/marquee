@@ -33,7 +33,6 @@ class DoomGame(PerformanceMode):
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
         self.lights.set_channels(
-            brightness=100,
             on=False,
         )
 
@@ -54,6 +53,7 @@ class DoomGame(PerformanceMode):
         self.play_sound(Sound.TELEPORT)
         self.lights.set_channels(
             on=True,
+            brightness=100,
             color=Colors.TEAL,
             transition=1.0,
             indices={1},
@@ -64,6 +64,7 @@ class DoomGame(PerformanceMode):
         self.play_sound(Sound.SLAYER_UMF)
         self.lights.set_channels(
             on=True,
+            brightness=100,
             color=Colors.GREEN,
             transition=0.0,
             indices={1},
@@ -74,6 +75,7 @@ class DoomGame(PerformanceMode):
         self.play_sound(Sound.BARON_ROAR)
         self.lights.set_channels(
             on=True,
+            brightness=100,
             color=Colors.RED,
             transition=0.0,
             indices=set(LIGHTS_BY_ROW[row]),
@@ -84,6 +86,7 @@ class DoomGame(PerformanceMode):
         self.play_sound(Sound.SLAYER_DEATH)
         self.lights.set_channels(
             on=True,
+            brightness=100,
             color=Colors.RED,
             transition=0.0,
         )
@@ -94,7 +97,7 @@ class DoomGame(PerformanceMode):
             self.schedule(
                 action=partial(
                     self.lights.set_channels,
-                    brightness=0,
+                    on=False,
                     transition=1.0,
                     indices=set(row),
                 ),
