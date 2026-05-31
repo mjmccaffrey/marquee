@@ -52,7 +52,7 @@ class PacManGame(GameMode):
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
-        self.dot_bites_maximum = (self.lights.count - 1) * 2
+        self.dot_bites_maximum = self.lights.count * 2
         self.events.subscribe(BITE_EVENT, self.pacman_bite)
         self.state = GameState.PRE_GAME
 
@@ -88,7 +88,7 @@ class PacManGame(GameMode):
         match etype:
             case assets.Dot:
                 dot = self.board[coord][etype]
-                dot.brightness -= 50
+                dot.brightness -= 40
                 if dot.brightness <= 0:
                     del self.board[coord][Dot]
                 self.dot_bites_remaining -= 1

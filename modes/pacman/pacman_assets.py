@@ -19,7 +19,7 @@ class Dot(Entity):
     """"""
     game: GameMode
     color: ClassVar[Color] = RGB(255, 176, 124)
-    brightness: int = 80
+    brightness: int = 50
     draw_priority: int = 1
 
 
