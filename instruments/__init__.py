@@ -6,4 +6,5 @@ from .instruments import (
     ReleaseableInstrument, RestInstrument, RingerBell,
 )
 from .lightset import ClickSet, LightSet
+from .combinedlightset import CombinedLightSet
 

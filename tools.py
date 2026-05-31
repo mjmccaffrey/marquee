@@ -8,15 +8,17 @@ from typing import cast
 
 from devices.color import Color, ColorSets
 from devices.deviceset import DeviceSet
-from instruments import LightSet
+from instruments import LightSet, CombinedLightSet
 from devices.hue import HueBridge
 from device_defs import define_devices
 
 
 def setup():
-    global buttons, drums, lights, extra, clicker, ringer, joystick
+    global b, d, l, e, clicker, r, j, c
     devices = define_devices(1.0, 1.0)
-    buttons, drums, lights, extra, clicker, ringer, joystick = devices.astuple()
+    b, d, l, e, clicker, r, j = devices.astuple()
+    assert e is not None
+    c = CombinedLightSet(l, e)
 
 
 def ppp(p: Sequence) -> None:
