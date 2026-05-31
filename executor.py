@@ -182,6 +182,8 @@ class Executor:
         ):
             assert d.relays is not None
             d.relays.set_state_of_devices('0' * d.relays.count)
+        if self.devices.extra is not None:
+            self.devices.extra.set_channels(on=False)
         log.info("Marquee hardware is now partially powered off.")
         log.info('')
 

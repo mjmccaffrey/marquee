@@ -113,7 +113,7 @@ class PacManGame(GameMode):
         assert self.extra is not None
         self.extra.set_channels(brightness=0, on=True)
         self.extra.set_relays(True)
-        for index in self.maze.keys():
+        for index in self.maze.keys() - {FRUIT_START}:
             dot = self.register_entity(Dot(game=self, name=f"dot_{index}"))
             self.place_entity(dot, index)
         self.fruit = self.register_entity(Fruit(name='orange', game=self))
