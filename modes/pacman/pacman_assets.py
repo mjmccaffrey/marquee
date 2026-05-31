@@ -214,11 +214,33 @@ maze_base: Maze = {
         left=None, upleft=None,
     ),
 }
-# maze_with_passage: Maze = maze_base | {
-#     4: Square(left=14, up=3, down=5),
-#     10: Square(right=12, down=9, up=11),
-#     12: Square(left=10, right=13),
-#     13: Square(left=12, right=14),
-#     14: Square(left=13, right=4),
-# }
+maze_with_passage: Maze = maze_base | {
+    4: Square(
+        up=3, upleft=3, upright=3,
+        down=5, downleft=5, downright=5,
+        left=14,
+        right=None,
+    ),
+    10: Square(
+        down=9, downleft=9, downright=9,
+        up=11, upleft=11, upright=11,
+        right=12,
+        left=None,
+    ),
+    12: Square(
+        left=10, upleft=10, downleft=10,
+        right=13, upright=13, downright=13,
+        up=None, down=None,
+    ),
+    13: Square(
+        left=12, upleft=12, downleft=12,
+        right=14, upright=14, downright=14,
+        up=None, down=None,
+    ),
+    14: Square(
+        left=13, upleft=13, downleft=13,
+        right=4, upright=4, downright=4,
+        up=None, down=None,
+    ),
+}
 

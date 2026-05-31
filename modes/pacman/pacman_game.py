@@ -21,7 +21,7 @@ from devices.lightcontroller import LightChannel, ChannelUpdate
 log = logging.getLogger('marquee.' + __name__)
 
 PACMAN_START = 7
-FRUIT_START = 1
+FRUIT_START = 13
 
 @override
 class GameState(StrEnum):
