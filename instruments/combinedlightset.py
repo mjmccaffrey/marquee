@@ -32,10 +32,15 @@ class CombinedLightSet:
             self.secondary.set_channels(**kwargs)
         else:
             p_indices = {
-                i for i in indices
+                i 
+                for i in indices
                 if i < self.primary.count
             }
-            s_indices = indices - p_indices
+            s_indices = {
+                i - self.primary.count
+                for i in indices
+                if i >= self.primary.count
+            }
             print(f'{p_indices=} {s_indices=})')
             if p_indices:
                 kwargs['indices'] = p_indices

@@ -85,7 +85,6 @@ class LightController(ABC):
 @dataclass(kw_only=True, repr=False)
 class LightChannel(ABC):
     """Protocol for any controller channel (light)."""
-
     index: int
     id: str
     controller: LightController
