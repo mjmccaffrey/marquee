@@ -20,6 +20,9 @@ class CombinedLightSet:
 
     def __post_init__(self):
         """"""
+        self.channels = (
+            list(self.primary.channels) + list(self.secondary.channels)
+        )
         self.count = self.primary.count + self.secondary.count
         self.gamut = self.primary.gamut
 

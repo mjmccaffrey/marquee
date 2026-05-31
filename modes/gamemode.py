@@ -71,7 +71,6 @@ class GameMode(PerformanceMode):
     def __post_init__(self):
         """"""
         super().__post_init__()
-        self.light_channels = self.lights.channels  # !!!!!!
         self.state = GameState.PLAY_GAME
 
     @abstractmethod
@@ -138,7 +137,8 @@ class GameMode(PerformanceMode):
         """Send (unfiltered) desired light states to lightset."""
         desired = [
             self.desired_light_state(
-                entities=e, channel=self.light_channels[i],
+                entities=e, 
+                channel=self.lights.channels[i],
             )
             for i, e in board.items()
         ]
