@@ -13,6 +13,7 @@ from devices.bulb import SmartBulb
 from devices.lightcontroller import ChannelUpdate, LightController
 from devices.relays import RelayClient
 from devices.specialparams import ChannelParams, MirrorParams, SpecialParams
+from .lightsetinterface import SavedState
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -141,11 +142,11 @@ class LightSet:
         self.controller.update_channels(updates, force)
 
     def set_relays(
-            self, 
-            light_pattern: str | Sequence[int | bool] | bool | int | None,
-            special: SpecialParams | None = None,
-            smart_bulb_override: bool = False,
-        ) -> None:
+        self, 
+        light_pattern: str | Sequence[int | bool] | bool | int | None,
+        special: SpecialParams | None = None,
+        smart_bulb_override: bool = False,
+    ) -> None:
         """Set all light relays, or channels,
            per supplied patterns and special."""
         
@@ -243,16 +244,6 @@ class LightSet:
     def brightness_factor(self, value) -> None:
         self._brightness_factor = value
         log.info(f"Brightness factor is now {self._brightness_factor}")
-
-    @property
-    def relay_pattern(self) -> str:
-        """Return the active light pattern."""
-        return self._relay_pattern
-    
-    @relay_pattern.setter
-    def relay_pattern(self, value) -> None:
-        """Update the active light pattern."""
-        self._relay_pattern = value
 
     def _convert_brightness(
         self,
@@ -352,7 +343,4 @@ class ClickSet:
             "1" if p == "0" else "0" for p in self.relays.device_pattern
         )
         self.relays.set_state_of_devices(pattern)
-
-
-SavedState = tuple[tuple[int, ...], tuple[Color | None, ...], tuple[bool, ...]]
 

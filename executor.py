@@ -168,7 +168,7 @@ class Executor:
 
     def command_calibrate(self) -> None:
         """Calibrate all light sets supporting it."""
-        for lightset in [self.devices.lights, self.devices.aux]:
+        for lightset in [self.devices.lights, self.devices.extra]:
             try:
                 lightset.calibrate()
             except NotImplementedError:

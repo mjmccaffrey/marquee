@@ -44,14 +44,14 @@ class Character(Entity, ABC):
 
 @dataclass(kw_only=True)
 class Square:
-    left: int | None = None
-    right: int | None = None
-    up: int | None = None
-    down: int | None = None
-    # upleft: int | None = None
-    # downleft: int | None = None
-    # upright: int | None = None
-    # downright: int | None = None
+    left: int | None  # = None
+    right: int | None  # = None
+    up: int | None  # = None
+    down: int | None  # = None
+    upleft: int | None  # = None
+    downleft: int | None  # = None
+    upright: int | None  # = None
+    downright: int | None  # = None
 
 
 Board = dict[int, 'EntityGroup']
@@ -142,10 +142,6 @@ class GameMode(PerformanceMode):
             )
             for i, e in board.items()
         ]
-        self.send_desired_states_to_lights(desired)
-
-    def send_desired_states_to_lights(self, desired: Sequence[ChannelUpdate]):
-        """Override for multple light sets."""
         self.lights.update_channels(desired)
 
     def print_board(self, board: Board) -> None:

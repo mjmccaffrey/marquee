@@ -6,7 +6,7 @@ from functools import partial
 from itertools import cycle
 import logging
 import pygame
-from typing import Any, Sequence
+from typing import Any
 from typing_extensions import override
 
 from devices.color import Colors, RGB
@@ -48,6 +48,7 @@ class PacManGame(GameMode):
     def __post_init__(self):
         """Initialize board and characters."""
         super().__post_init__()
+        self.lights = self.combined
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
@@ -83,7 +84,7 @@ class PacManGame(GameMode):
         """"""
     
     def pacman_bite(self, etype: type, coord: int):
-        """Track remaining. Brighten aux bulb."""
+        """Track remaining. Brighten extra bulb."""
         match etype:
             case assets.Dot:
                 dot = self.board[coord][etype]
@@ -91,8 +92,8 @@ class PacManGame(GameMode):
                 if dot.brightness <= 0:
                     del self.board[coord][Dot]
                 self.dot_bites_remaining -= 1
-                assert self.aux is not None
-                self.aux.set_channels(
+                assert self.extra is not None
+                self.extra.set_channels(
                     brightness=int(
                         (self.dot_bites_maximum  - 
                         self.dot_bites_remaining) * 
@@ -111,15 +112,13 @@ class PacManGame(GameMode):
         """"""
         super().init_level()
         self.dot_bites_remaining = self.dot_bites_maximum
-        assert self.aux is not None
-        self.aux.set_channels(brightness=0, on=True)
-        self.aux.set_relays(True)
-        for d in maze_base.keys() - {PACMAN_START}:
-            dot = self.register_entity(Dot(game=self, name=f"dot_{d}"))
-            self.place_entity(dot, d)
-        self.fruit = self.register_entity(
-            Fruit(name='orange', game=self)
-        )
+        assert self.extra is not None
+        self.extra.set_channels(brightness=0, on=True)
+        self.extra.set_relays(True)
+        for index in maze_base.keys():
+            dot = self.register_entity(Dot(game=self, name=f"dot_{index}"))
+            self.place_entity(dot, index)
+        self.fruit = self.register_entity(Fruit(name='orange', game=self))
         self.pacman = self.register_entity(PacMan(game=self))
         self.blinky = self.register_entity(
             Blinky(
@@ -144,7 +143,8 @@ class PacManGame(GameMode):
         self.place_entity(self.fruit, FRUIT_START)
         self.update_lights(self.board)
         self.schedule(
-            due=2.0, action=partial(self.change_state, GameState.PLAY_GAME)
+            action=partial(self.change_state, GameState.PLAY_GAME), 
+            due=2.0,
         )
 
     def pre_game_state(self) -> None:
@@ -241,13 +241,6 @@ class PacManGame(GameMode):
                 self.move_character(self.pacman, self.pacman.prior_coord)
                 return True
         return False
-
-    @override
-    def send_desired_states_to_lights(self, desired: Sequence[ChannelUpdate]):
-        """"""
-        self.lights.update_channels(desired[:self.lights.count])
-        assert self.aux is not None
-        self.aux.update_channels(desired[self.lights.count:])
 
     @override
     def desired_light_state(

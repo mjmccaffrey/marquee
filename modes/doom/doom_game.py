@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - doom mode"""
 
-from enum import auto, StrEnum
+from enum import StrEnum
 from dataclasses import dataclass
 from functools import partial
 import logging
@@ -16,10 +16,11 @@ log = logging.getLogger('marquee.' + __name__)
 
 
 class Sound(StrEnum):
-    BARON_ROAR = auto()
-    SLAYER_UMF = auto()
-    SLAYER_DEATH = auto()
-    TELEPORT = auto()
+    BARON_ROAR = 'dsbrssit.wav'
+    SLAYER_UMF = 'dsoof.wav'
+    SLAYER_DEATH_1 = 'dspldeth.wav'
+    SLAYER_DEATH_2 = 'dspdiehi.wav'
+    TELEPORT = 'dstelept.wav'
 
 
 @dataclass(kw_only=True)
@@ -34,13 +35,14 @@ class DoomGame(PerformanceMode):
         self.init_sound()
         self.lights.set_channels(
             on=False,
+            brightness=100,
         )
 
     def init_sound(self):
         """"""
         pygame.mixer.init()
         self.sounds = {
-            sound: pygame.mixer.Sound(f'modes/doom/doom_{sound}.mp3')
+            sound: pygame.mixer.Sound(f'modes/doom/doom_{sound}')
             for sound in Sound
         }
 
@@ -53,7 +55,7 @@ class DoomGame(PerformanceMode):
         self.play_sound(Sound.TELEPORT)
         self.lights.set_channels(
             on=True,
-            brightness=100,
+            # brightness=100,
             color=Colors.YELLOW,
             transition=1.0,
             indices={1},
@@ -64,7 +66,7 @@ class DoomGame(PerformanceMode):
         self.play_sound(Sound.SLAYER_UMF)
         self.lights.set_channels(
             on=True,
-            brightness=100,
+            # brightness=100,
             color=Colors.GREEN,
             transition=0.0,
             indices={1},
@@ -75,7 +77,7 @@ class DoomGame(PerformanceMode):
         self.play_sound(Sound.BARON_ROAR)
         self.lights.set_channels(
             on=True,
-            brightness=100,
+            # brightness=100,
             color=Colors.ROSE,
             transition=0.0,
             indices=set(LIGHTS_BY_ROW[row]),
@@ -83,10 +85,16 @@ class DoomGame(PerformanceMode):
 
     def slayer_dies(self):
         """"""
-        self.play_sound(Sound.SLAYER_DEATH)
+        self.schedule(
+            action=partial(self.play_sound, Sound.SLAYER_DEATH_1),
+        )
+        self.schedule(
+            action=partial(self.play_sound, Sound.SLAYER_DEATH_2),
+            due=0.75,
+        )
         self.lights.set_channels(
             on=True,
-            brightness=100,
+            # brightness=100,
             color=Colors.RED,
             transition=0.0,
         )
@@ -110,10 +118,10 @@ class DoomGame(PerformanceMode):
         self.schedule_sequence(
             SeqTask(self.slayer_teleports, due=1.0),
             SeqTask(self.slayer_appears, due=2.0),
-            SeqTask(partial(self.barons_appear, 4), due=2.0),
-            SeqTask(partial(self.barons_appear, 3), due=0.6),
-            SeqTask(partial(self.barons_appear, 2), due=0.6),
-            SeqTask(partial(self.barons_appear, 1), due=0.6),
+            SeqTask(partial(self.barons_appear, row=4), due=2.0),
+            SeqTask(partial(self.barons_appear, row=3), due=0.6),
+            SeqTask(partial(self.barons_appear, row=2), due=0.6),
+            SeqTask(partial(self.barons_appear, row=1), due=0.6),
             SeqTask(self.slayer_dies, due=0.6),
             SeqTask(self.fade, due=0.5),
         )

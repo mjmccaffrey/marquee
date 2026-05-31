@@ -114,12 +114,13 @@ def define_devices_hue(
     speed_factor: float,
 ) -> DeviceSet:
     """Create and return objects for all physical devices."""
+
     # bell_relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
     # bells = BellSet(relays=bell_relays.create_client(
     #     {i: i for i in range(bell_relays.relay_count)})
     # )
+    # drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
 
-#    drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
     drum_relays = NumatoRL320001("/dev/ttyACM0", bottom_mirrors_top=True)  # /dev/ttyACM0
     drums = DrumSet(relays=drum_relays.create_client(
         {i: i for i in range(drum_relays.relay_count // 2)})
@@ -142,7 +143,7 @@ def define_devices_hue(
         speed_factor=speed_factor,
     )
 
-    aux = LightSet(
+    extra = LightSet(
         count=3,
         relays=None,
         mirror=None,
@@ -161,7 +162,7 @@ def define_devices_hue(
     clicker = ClickSet(light_relays.create_client(CLICK_TO_RELAY))
     ringer = RingerBell(light_relays.create_client(RINGER_TO_RELAY))
     return DeviceSet(
-        buttons(light_relays), drums, lights, aux, 
+        buttons(light_relays), drums, lights, extra, 
         clicker, ringer, joystick(),
     )
 
@@ -200,11 +201,11 @@ def define_devices_shelly(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
-    aux = None
+    extra = None
     clicker = ClickSet(light_relays.create_client(CLICK_TO_RELAY))
     ringer = RingerBell(light_relays.create_client(RINGER_TO_RELAY))
     return DeviceSet(
-        buttons(light_relays), drums, lights, aux, 
+        buttons(light_relays), drums, lights, extra, 
         clicker, ringer, joystick(),
     )
 

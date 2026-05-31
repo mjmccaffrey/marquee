@@ -14,9 +14,9 @@ from device_defs import define_devices
 
 
 def setup():
-    global buttons, drums, lights, aux, clicker, ringer, joystick
+    global buttons, drums, lights, extra, clicker, ringer, joystick
     devices = define_devices(1.0, 1.0)
-    buttons, drums, lights, aux, clicker, ringer, joystick = devices.astuple()
+    buttons, drums, lights, extra, clicker, ringer, joystick = devices.astuple()
 
 
 def ppp(p: Sequence) -> None:

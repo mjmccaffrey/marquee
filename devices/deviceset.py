@@ -11,7 +11,7 @@ class DeviceSet:
     buttons: ButtonSet
     drums: DrumSet
     lights: LightSet
-    aux: LightSet | None
+    extra: LightSet | None
     clicker: ClickSet
     ringer: RingerBell
     joystick: Joystick

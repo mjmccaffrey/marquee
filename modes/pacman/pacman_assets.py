@@ -42,21 +42,23 @@ class PacMan(Character):
     draw_priority: ClassVar[int] = 3
     turn_priority: ClassVar[int] = 1
 
-    @override
-    def execute(self):
-        """Take turn."""
+    def next_coord(self):
+        """"""
         dir = self.game.joystick.direction
         if dir is None:
             return
-        # log.info(f'{dir=}')
         assert self.coord is not None
-        coord = getattr(self.game.maze[self.coord], dir, None)
-        if coord is None:
-            return
-        self.game.move_character(self, coord)
-        edible = {e for e in self.game.board[coord] if e in {Dot, Fruit}}
-        for e in edible:
-            self.game.events.notify(BITE_EVENT, etype=e, coord=coord)
+        return getattr(self.game.maze[self.coord], dir, None)
+
+    @override
+    def execute(self):
+        """Take turn."""
+        coord = self.next_coord()
+        if coord is not None:
+            self.game.move_character(self, coord)
+            edible = {e for e in self.game.board[coord] if e in {Dot, Fruit}}
+            for e in edible:
+                self.game.events.notify(BITE_EVENT, etype=e, coord=coord)
 
 
 class Sound(StrEnum):
@@ -150,24 +152,73 @@ class Clyde(Ghost):
 
 
 maze_base: Maze = {
-    0: Square(right=1, down=11),
-    1: Square(left=0, right=2),
-    2: Square(left=1, down=3),
-    3: Square(down=4, left=2),       
-    4: Square(up=3, down=5),
-    5: Square(up=4, left=6),
-    6: Square(left=7, up=5),
-    7: Square(left=8, right=6),
-    8: Square(right=7, up=9),
-    9: Square(up=10, right=8),
-    10: Square(down=9, up=11),
-    11: Square(down=10, right=0),
+    # ON EACH LINE, PREFERRED / OBVIOUS / CORRECT DIRECTION FIRST
+    0: Square(
+        right=1, upright=1, downright=1,
+        left=11, down=11, downleft=11,
+        up=None, upleft=None,
+    ),
+    1: Square(
+        left=0, downleft=0, upleft=0,
+        right=2, downright=2, upright=2,
+        up=None, down=None,
+    ),
+    2: Square(
+        left=1, upleft=1, downleft=1,
+        right=3, down=3, downright=3,
+        up=None, upright=None,
+    ),
+    3: Square(
+        down=4, downright=4, upright=4,
+        left=2, up=2, upleft=2,
+        right=None, downleft=None,
+    ),       
+    4: Square(
+        up=3, upleft=3, upright=3,
+        down=5, downleft=5, downright=5,
+        left=None, right=None,
+    ),
+    5: Square(
+        up=4, upleft=4, upright=4,
+        left=6, down=6, downleft=6,
+        right=None, downright=None,
+    ),
+    6: Square(
+        left=7, downleft=7, upleft=7,
+        up=5, right=5, upright=5,
+        down=None, downright=5,
+    ),
+    7: Square(
+        left=8, upleft=8, downleft=8,
+        right=6, upright=6, downright=6,
+        up=None, down=None,
+    ),
+    8: Square(
+        right=7, downright=7, upright=7,
+        up=9, left=9, upleft=9, 
+        down=None, downleft=None,
+    ),
+    9: Square(
+        up=10, upright=10, upleft=10,
+        right=8, down=8, downright=8,
+        left=None, downleft=None,
+    ),
+    10: Square(
+        down=9, downleft=9, downright=9,
+        up=11, upleft=11, upright=11,
+        left=None, right=None,
+    ),
+    11: Square(
+        down=10, downleft=10, downright=10,
+        right=0, up=0, upright=0,
+        left=None, upleft=None,
+    ),
 }
-maze_with_passage: Maze = maze_base | {
-    4: Square(left=14, up=3, down=5),
-    10: Square(right=12, down=9, up=11),
-    12: Square(left=10, right=13),
-    13: Square(left=12, right=14),
-    14: Square(left=13, right=4),
-}
+# maze_with_passage: Maze = maze_base | {
+#     4: Square(left=14, up=3, down=5),
+#     10: Square(right=12, down=9, up=11),
+#     12: Square(left=10, right=13),
+#     13: Square(left=12, right=14),
+#     14: Square(left=13, right=4),
+# }
 
