@@ -14,7 +14,8 @@ from devices.devices_misc import ButtonName
 from ..gamemode import Entity, EntityGroup, GameMode, Maze
 from . import pacman_assets as assets
 from .pacman_assets import (
-    Dot, Fruit, BITE_EVENT, Ghost, PacMan, Pinky, Blinky, maze_base, Sound,
+    Dot, Fruit, BITE_EVENT, Ghost, PacMan, Pinky, Blinky, Sound,
+    maze_with_passage,
 )
 from devices.lightcontroller import LightChannel, ChannelUpdate
 
@@ -41,7 +42,7 @@ class PacManGame(GameMode):
     """Level 0 - Blinky."""
     """Level 2 - Blinky and Pinky."""
     # """Level 3 - add bypass."""
-    maze: Maze = field(default_factory=lambda: maze_base)
+    maze: Maze = field(default_factory=lambda: maze_with_passage)
     ticks_per_second: float = 2.0
     level: int = field(init=False)
 
@@ -112,7 +113,7 @@ class PacManGame(GameMode):
         assert self.extra is not None
         self.extra.set_channels(brightness=0, on=True)
         self.extra.set_relays(True)
-        for index in maze_base.keys():
+        for index in self.maze.keys():
             dot = self.register_entity(Dot(game=self, name=f"dot_{index}"))
             self.place_entity(dot, index)
         self.fruit = self.register_entity(Fruit(name='orange', game=self))
