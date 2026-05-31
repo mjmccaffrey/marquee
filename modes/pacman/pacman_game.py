@@ -52,7 +52,6 @@ class PacManGame(GameMode):
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
-        self.dot_bites_maximum = self.lights.count * 2
         self.events.subscribe(BITE_EVENT, self.pacman_bite)
         self.state = GameState.PRE_GAME
 
@@ -91,15 +90,14 @@ class PacManGame(GameMode):
                 dot.brightness -= 40
                 if dot.brightness <= 0:
                     del self.board[coord][Dot]
-                self.dot_bites_remaining -= 1
-                assert self.extra is not None
-                self.extra.set_channels(
-                    brightness=int(
-                        (self.dot_bites_maximum  - 
-                        self.dot_bites_remaining) * 
-                        100 / self.dot_bites_maximum
-                    )
-                )
+                # assert self.extra is not None
+                # self.extra.set_channels(
+                #     brightness=int(
+                #         (self.dot_bites_maximum  - 
+                #         self.dot_bites_remaining) * 
+                #         100 / self.dot_bites_maximum
+                #     )
+                # )
                 self.play_sound(Sound.CHOMP)
             case assets.Fruit:
                 del self.board[coord][Fruit]
@@ -111,7 +109,6 @@ class PacManGame(GameMode):
     def init_level(self) -> None:
         """"""
         super().init_level()
-        self.dot_bites_remaining = self.dot_bites_maximum
         assert self.extra is not None
         self.extra.set_channels(brightness=0, on=True)
         self.extra.set_relays(True)
@@ -220,7 +217,10 @@ class PacManGame(GameMode):
         # If ghost and Pac-Man on same square, or 
         # attempted to pass each other, game is over etc.
         assert self.pacman.coord is not None
-        if not self.dot_bites_remaining:
+        if not any(
+            Dot in entities 
+            for entities in self.board.values()
+        ):
             if self.level == 0:
                 self.change_state(GameState.POST_LEVEL_0)
             else:
