@@ -40,6 +40,7 @@ class Twelve(MusicMode):
         lights_on = tuple(
             dict(
                 on=True,
+                brightness=100,
                 transition=0.0,
                 indices={(i + 2) % self.lights.count},
             )
