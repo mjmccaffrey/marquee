@@ -40,12 +40,13 @@ class Twelve(MusicMode):
         lights_on = tuple(
             dict(
                 on=True,
-                brightness=100,
+                # brightness=100,
                 transition=0.0,
                 indices={(i + 2) % self.lights.count},
             )
             for i in range(self.lights.count)
         )
+        lights_dim = dict(brightness=0, transition=0.0)
         lights_off = dict(on=False, transition=0.0)
         lights_rotate = tuple(
             dict(
@@ -75,7 +76,7 @@ class Twelve(MusicMode):
             # lights(' |  𝄼 ♩ ♩  |  ♩ ♩ ♩ ♩  | ', *light_pairs_off),
             # lights(' |  𝄻  |  𝄻  | '),
             lights(' |  ♩ 𝄽 ♩ 𝄽  |  ♩ 𝄽 ♩ 𝄽  | ', *lights_rotate),
-            lights(' |  𝄽 ♩ 𝄽  | ', lights_off, beats=3),
+            lights(' |  𝄽 ♩ ♩  | ', lights_dim, lights_off, beats=3),
             lights(count_to_12, *lights_on),
             lights(' |  𝄻  |  ♩  | ', lights_off),
         ).play(tempo=self.tempo)
