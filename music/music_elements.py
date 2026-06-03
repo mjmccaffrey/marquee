@@ -298,7 +298,7 @@ class Piece(Element):
 
 
 class PlayMeasures(Protocol):
-    """"""
+    """Signature for playing a sequence of measures."""
     def __call__(
         self,
         measures: tuple[Measure, ...], 

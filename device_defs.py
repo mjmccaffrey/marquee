@@ -59,7 +59,7 @@ SHELLY_IP_ADDRESSES = [
 
 
 def buttons(light_relays: NumatoRL160001) -> ButtonSet:
-    """"""
+    """Define button set."""
     return ButtonSet(
         body_back = Button(
             ButtonName.BODY_BACK,
@@ -101,7 +101,7 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
 
 
 def joystick() -> Joystick:
-    """"""
+    """Define joystick."""
     return Joystick(
         up=_Button(pin=4, bounce_time=0.05),
         down=_Button(pin=17, bounce_time=0.05),

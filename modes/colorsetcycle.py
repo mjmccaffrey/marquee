@@ -88,7 +88,7 @@ class ColorSetCycle(PerformanceMode):
         self.schedule(due=entry.seconds)
 
     def wrap_entry_index(self, delta: int):
-        """"""
+        """Return current index + delta, wrapped around if needed."""
         return self.wrap_value(
             lower=0, 
             upper=len(self.entries) - 1, 

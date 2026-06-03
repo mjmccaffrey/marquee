@@ -47,7 +47,7 @@ class TaskSchedule:
         )
     
     def bulk_add(self, new: list[Task]):
-        """"""
+        """Add a chunk of tasks to the schedule."""
         self._schedule.extend(new)
         heapify(self._schedule)
         log.debug(f"{len(new)} tasks added to schedule.")

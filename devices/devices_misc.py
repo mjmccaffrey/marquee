@@ -16,7 +16,7 @@ class ButtonName(StrEnum):
     REMOTE_D = auto()
 
 class ButtonAction(StrEnum):
-    """"""
+    """Every button action."""
     HELD = auto()
     PRESSED = auto()
     RELEASED = auto()

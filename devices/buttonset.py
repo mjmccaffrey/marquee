@@ -23,7 +23,7 @@ class ButtonSet:
     remote_d: Button
 
     def __post_init__(self):
-        """"""
+        """Initialize button set."""
         log.info(f"Initializing buttons")
         for name in ButtonName:
             button = cast(Button, getattr(self, name))

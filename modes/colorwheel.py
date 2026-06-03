@@ -15,6 +15,7 @@ class ColorWheel(PerformanceMode):
     delay: float
 
     def __post_init__(self) -> None:
+        """"""
         super().__post_init__()
         self.rotation = 0
         self.lights.set_channels(on=True)

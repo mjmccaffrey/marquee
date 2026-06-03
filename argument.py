@@ -151,8 +151,8 @@ def parse_arguments(
 ) -> Namespace:
     """ Parse the command-line arguments. """
 
-    def color():
-        """"""
+    def color_op():
+        """Define color operation."""
         color_p = sub_p.add_parser('color')
         color_p.add_argument('color_id', choices=color_ids.keys())
         color_p.add_argument(
@@ -163,13 +163,13 @@ def parse_arguments(
             default=100,
         )
 
-    def command():
-        """"""
+    def command_op():
+        """Define command operation."""
         command_p = sub_p.add_parser('command')
         command_p.add_argument('command_name', choices=commands.keys())
 
-    def mode():
-        """"""
+    def mode_op():
+        """Define mode operation."""
         mode_p = sub_p.add_parser('mode')
         mode_choices = mode_ids.keys()
         mode_p.add_argument('mode_id', choices=mode_choices)
@@ -186,8 +186,8 @@ def parse_arguments(
             default=1.0,
         )
 
-    def pattern():
-        """"""
+    def pattern_op():
+        """Define pattern operation."""
         pattern_p = sub_p.add_parser('pattern')
         pattern_p.add_argument(
             'relay', 
@@ -209,10 +209,10 @@ def parse_arguments(
 
     top_p = ArgumentParserImproved(exit_on_error=False)
     sub_p = top_p.add_subparsers(dest='operation', required=True)
-    color()
-    command()
-    mode()
-    pattern()
+    color_op()
+    command_op()
+    mode_op()
+    pattern_op()
     try:
         return top_p.parse_args()
     except (ArgumentError, ArgumentTypeError, ValueError) as err:

@@ -14,7 +14,9 @@ log = logging.getLogger('marquee.' + __name__)
 
 
 def balanced_distribution(values: tuple, desired_length: int) -> tuple:
-    """"""
+    """Return tuple of randomly distributed values in which 
+       each value is present no more than one more time 
+       than any other value."""
     full, remainder = divmod(desired_length, len(values))
     result = list(values) * full
     result.extend(random.sample(values, remainder))
@@ -84,7 +86,7 @@ class RGB(Color):
 
 
 class Colors:
-    """"""
+    """Contains named colors. Instantiate for gamut-adjusted colors."""
     RED = RGB(255, 0, 0)
     ORANGE = RGB(255, 128, 0)
     YELLOW = RGB(255, 255, 0)
@@ -103,8 +105,6 @@ class Colors:
         CYAN, TEAL, BLUE, VIOLET, MAGENTA, ROSE,
     )
     INDIGO = RGB(75, 0, 130)  
-
-
 
     def __init__(self, gamut: rgbxy.Gamut) -> None:
         """Create an instance for gamut-adjusted constants.
@@ -135,7 +135,7 @@ class Colors:
 
 
 class ColorSet:
-    """"""
+    """Color theme."""
 
     class SetChannelsKwargs(TypedDict):
         color: tuple[Color, ...]
@@ -151,6 +151,7 @@ class ColorSet:
         self.name, self.group, self.colors = name, group, colors
 
     def set_channels_kwargs(self, light_count: int) -> SetChannelsKwargs:
+        """"""
         colors = balanced_distribution(self.colors, light_count)
         if isinstance(colors[0], RGB):
             return self.SetChannelsKwargs(
@@ -167,7 +168,7 @@ class ColorSet:
 
 
 class ColorSets:
-    """"""
+    """All color themes, available by name and group name."""
     BySetName = dict[str, ColorSet]
     ByGroupName = dict[str, list[ColorSet]]
     by_set_name: BySetName
@@ -180,14 +181,14 @@ class ColorSets:
         self.by_group_name = self._create_color_groups(self.by_set_name)
 
     def lookup(self, name: str) -> ColorSet:
-        """"""
+        """Return color set with name."""
         if name not in self.by_set_name:
             raise ValueError(f"Color set {name} not defined.")
         return self.by_set_name[name]
 
     @staticmethod
     def _basic_colors() -> BySetName:
-        """"""
+        """Construct color set for each basic color."""
         return {
             key.lower(): ColorSet(key.lower(), 'basic', (value,))
             for key, value in vars(Colors).items()
@@ -196,7 +197,7 @@ class ColorSets:
 
     @staticmethod
     def _load_color_sets(source: Path) -> BySetName:
-        """"""
+        """Load color sets from file."""
         with open(source) as f:
             data = json.load(f)
         return {
@@ -211,7 +212,7 @@ class ColorSets:
 
     @staticmethod
     def _create_color_groups(sets: BySetName) -> ByGroupName:
-        """"""
+        """Return color sets organized by group name."""
         return {
             group: [s for s in sets.values() if s.group == group]
             for group in set(s.group for s in sets.values())

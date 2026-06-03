@@ -86,7 +86,7 @@ class LightedButton(Button):
 
 
 class ButtonActionInterface(Protocol):
-    """"""
+    """Signature for button to call button set upon action."""
     def __call__(
         self,
         button: ButtonName,

@@ -146,7 +146,7 @@ class LightChannel(ABC):
 
 @dataclass(slots=True)
 class ChannelUpdate:
-    """"""
+    """Desired state of a light channel."""
     channel: LightChannel
     brightness: int | None = None
     transition: float | None = None

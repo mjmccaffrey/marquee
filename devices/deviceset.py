@@ -20,6 +20,7 @@ class DeviceSet:
         ButtonSet, DrumSet, LightSet, LightSet | None, 
         ClickSet, RingerBell, Joystick
     ]:
-        """"""
+        """Return devices as a tuple, since dataclasses.astuple
+           will not work in this case."""
         return tuple(getattr(self, f.name) for f in fields(self))
 

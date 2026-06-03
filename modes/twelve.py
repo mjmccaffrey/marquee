@@ -46,6 +46,13 @@ class Twelve(MusicMode):
             for i in range(self.lights.count)
         )
         lights_off = dict(on=False)
+        light_pairs_off = tuple(
+            dict(
+                on=False,
+                indices=i,
+            )
+            for i in ({0, 2}, {11, 3}, {10, 4}, {9, 5}, {8, 6}, {1, 7})
+        )
         count_to_12 = ' |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  | '
         piece(
             section(
@@ -53,9 +60,9 @@ class Twelve(MusicMode):
                 lights( ' |  𝄻  |  𝄻  |  𝄻  | '),
             ),
             lights(count_to_12, *lights_on),
-            lights('  𝅀  ', beats=2),
-            lights(' |  ♩  |  𝄻  | ', lights_off),
-            lights('  𝅀  ', beats=3),
+            lights(' |  𝄽 𝄽  | ', beats=2),
+            lights(' |  𝄼 ♩ ♩  |  ♩ ♩ ♩ ♩  | ', *light_pairs_off),
+            lights(' |  𝄽 𝄽 𝄽  | ', beats=3),
             lights(count_to_12, *lights_on),
             lights(' |  𝄻  |  ♩  | ', lights_off),
         ).play(tempo=self.tempo)

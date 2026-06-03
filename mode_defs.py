@@ -40,7 +40,6 @@ def register_special_modes(exec: Executor) -> None:
 
 def register_channel_modes(exec: Executor):
     """"""
-
     exec.add_mode('tilt', TiltSensors)
     exec.add_mode("cs_test", ColorSetCycle,
         sequence = [
@@ -48,7 +47,7 @@ def register_channel_modes(exec: Executor):
             # ("cancun", 1),
             # ("race", 1),
             # ("amber_bloom", 1),
-            ("ALL", 10)
+            ("ALL", 2)
         ],
         # transition=0.0,
     )
@@ -188,9 +187,6 @@ def register_relay_modes(exec: Executor) -> None:
         sequence_kwargs=dict(pattern = "010" * 4),
         delay=0.5, 
     )
-    exec.add_mode("rotate_reversible_1", 
-        RotateReversible, delay=0.35, 
-        pattern = "1" + "0" * (LIGHT_COUNT - 1))
     exec.add_sequence_mode("rotate_sides", rotate_sides, 
         sequence_kwargs=dict(
             pattern='1', 

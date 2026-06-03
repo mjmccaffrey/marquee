@@ -12,20 +12,26 @@ from ..gamemode import Character, Entity, GameMode, Maze, Square
 
 log = logging.getLogger('marquee.' + __name__)
 
-BITE_EVENT = "BITE_EVENT"
 
 @dataclass(kw_only=True, repr=False, eq=True)
 class Dot(Entity):
-    """"""
     game: GameMode
     color: ClassVar[Color] = RGB(255, 176, 124)
     brightness: int = 50
     draw_priority: int = 1
 
+    def bitten(self):
+        """Change state accordingly of bitten dot."""
+        self.brightness -= 40
+
+    @property
+    def consumed(self):
+        """Has the dot been completely eaten?"""
+        return self.brightness <= 0
+
 
 @dataclass(kw_only=True, repr=False, eq=True)
 class Fruit(Entity):
-    """"""
     game: GameMode
     color: RGB = Colors.ORANGE
     brightness: int = 80
@@ -34,8 +40,8 @@ class Fruit(Entity):
 
 @dataclass(kw_only=True, repr=False)
 class PacMan(Character):
-    """"""
     game: GameMode
+    bite_event: str
     name: str = "PacMan"
     color: ClassVar[Color] = RGB(252, 234, 63)
     brightness: int = 80
@@ -43,7 +49,7 @@ class PacMan(Character):
     turn_priority: ClassVar[int] = 1
 
     def next_coord(self):
-        """"""
+        """Next square, based on joystick and maze."""
         dir = self.game.joystick.direction
         if dir is None:
             return
@@ -58,7 +64,7 @@ class PacMan(Character):
             self.game.move_character(self, coord)
             edible = {e for e in self.game.board[coord] if e in {Dot, Fruit}}
             for e in edible:
-                self.game.events.notify(BITE_EVENT, etype=e, coord=coord)
+                self.game.events.notify(self.bite_event, etype=e, coord=coord)
 
 
 class Sound(StrEnum):
@@ -72,14 +78,12 @@ class Sound(StrEnum):
     
 
 class GhostState(StrEnum):
-    """"""
     WAITING = auto()
     EMERGING = auto()
     CHASING = auto()
 
 @dataclass(kw_only=True, repr=False)
 class Ghost(Character, ABC):
-    """"""
     brightness: int = 80
     draw_priority: ClassVar[int] = 2
     turn_priority: ClassVar[int] = 2
@@ -91,12 +95,12 @@ class Ghost(Character, ABC):
         self.state = GhostState.WAITING
 
     def waiting(self) -> None:
-        """"""
+        """Waiting to enter emerge."""
         if self.game.tick + 1 == self.wait_ticks:
             self.state = GhostState.EMERGING
 
     def emerging(self) -> None:
-        """"""
+        """Entering maze as soon as able."""
         assert self.coord is None
         if not any(
             issubclass(e, Character)
@@ -106,7 +110,7 @@ class Ghost(Character, ABC):
             self.state = GhostState.CHASING
 
     def chasing(self) -> None:
-        """"""
+        """In maze and chasing PacMan."""
         assert self.coord is not None
         coord = (self.coord + self.direction) % len(maze_base)
         self.game.move_character(self, coord)
@@ -125,34 +129,29 @@ class Ghost(Character, ABC):
 
 @dataclass(kw_only=True, repr=False)
 class Blinky(Ghost):
-    """"""
     name: str = "Blinky"
     color: ClassVar[Color] = Colors.RED
 
 
 @dataclass(kw_only=True, repr=False)
 class Pinky(Ghost):
-    """"""
     name: str = "Pinky"
     color: ClassVar[Color] = Colors.MAGENTA
 
 
 @dataclass(kw_only=True, repr=False)
 class Inky(Ghost):
-    """"""
     name: str = "Inky"
     color: ClassVar[Color] = Colors.TEAL
 
 
 @dataclass(kw_only=True, repr=False)
 class Clyde(Ghost):
-    """"""
     name: str = "Clyde"
     color: ClassVar[Color] = Colors.ORANGE
 
 
 maze_base: Maze = {
-    # ON EACH LINE, PREFERRED / OBVIOUS / CORRECT DIRECTION FIRST
     0: Square(
         right=1, upright=1, downright=1,
         left=11, down=11, downleft=11,

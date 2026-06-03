@@ -66,7 +66,7 @@ class Player:
         kwargs: dict[str, Any] = {},
         parent: BackgroundMode | ForegroundMode | None = None,
     ) -> BackgroundMode | ForegroundMode:
-        """"""
+        """Return a new mode instance."""
         assert (mode_index is None) ^ (mode_definition is None)
         definition = mode_definition or self.modes[cast(int, mode_index)]
         _kwargs: dict[str, Any] = dict(
@@ -92,8 +92,11 @@ class Player:
             )
         return definition.cls(**_kwargs)
 
-    def effect_new_active_mode(self, mode_index: int) -> BackgroundMode | ForegroundMode:
-        """"""
+    def effect_new_active_mode(
+        self, 
+        mode_index: int,
+    ) -> BackgroundMode | ForegroundMode:
+        """Create new mode instance, clean up old, etc."""
 
         # If there is an active mode and it is of type ForegroundMode, 
         # clean it up.
@@ -105,7 +108,7 @@ class Player:
         new_mode = self.create_mode_instance(mode_index)
         assert isinstance(new_mode, BackgroundMode | ForegroundMode)
 
-        # Note: A background mode will upon instatiation  
+        # Note: A background mode will upon instantiation  
         #       be the active mode, for a very short time.
         if isinstance(new_mode, BackgroundMode):
             # If bg mode of same type already present, clean it up.

@@ -126,7 +126,7 @@ class Executor:
         return shutdown
 
     def execute_color(self, color: str, brightness: int) -> None:
-        """"""
+        """Executes color operation."""
         cs = self.color_sets.by_set_name[color]
         kwargs = cs.set_channels_kwargs(self.devices.lights.count)
         kwargs |= dict(
@@ -136,7 +136,7 @@ class Executor:
         self.devices.lights.set_channels(**kwargs)  # type: ignore
 
     def execute_command(self, command: str) -> None:
-        """Effects the command-line specified command."""
+        """Executes command operation."""
         self.commands[command]()
 
     def execute_mode(self, mode_index: int, speed_factor: float) -> bool:
@@ -156,7 +156,7 @@ class Executor:
         light_pattern: str | None, 
         brightness_pattern: str | None,
     ) -> None:
-        """Effects the command-line specified pattern(s)."""
+        """Executes the pattern operation."""
         if brightness_pattern is not None:
             self.devices.lights.set_channels(
                 brightness=brightness_pattern,
@@ -189,7 +189,7 @@ class Executor:
 
 
 class SetupDevices(Protocol):
-    """"""
+    """Call signature to return the device set."""
     def __call__(
         self,
         brightness_factor: float,
