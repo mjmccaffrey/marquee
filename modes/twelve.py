@@ -49,6 +49,7 @@ class Twelve(MusicMode):
         light_pairs_off = tuple(
             dict(
                 on=False,
+                transition=0.0,
                 indices=i,
             )
             for i in ({0, 2}, {11, 3}, {10, 4}, {9, 5}, {8, 6}, {1, 7})
