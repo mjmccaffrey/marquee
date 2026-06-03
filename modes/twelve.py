@@ -51,7 +51,7 @@ class Twelve(MusicMode):
                 color=Colors.WHEEL[i:] + Colors.WHEEL[:1],
                 transition=0.0,
             )
-            for i in range(8)
+            for i in range(self.lights.count)
         )
 
 
@@ -73,7 +73,7 @@ class Twelve(MusicMode):
             lights(' |  𝄽 𝄽  | ', beats=2),
             # lights(' |  𝄼 ♩ ♩  |  ♩ ♩ ♩ ♩  | ', *light_pairs_off),
             # lights(' |  𝄻  |  𝄻  | '),
-            lights(' |  ♩ ♩ ♩ ♩  |  ♩ ♩ ♩ ♩  | ', *lights_rotate),
+            lights(' |  ♩ 𝄽 ♩ 𝄽  |  ♩ 𝄽 ♩ 𝄽  | ', *lights_rotate),
             lights(' |  𝄽 ♩ 𝄽  | ', lights_off, beats=3),
             lights(count_to_12, *lights_on),
             lights(' |  𝄻  |  ♩  | ', lights_off),
