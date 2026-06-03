@@ -234,24 +234,24 @@ def _lights(
     )
 
 
-lights = partial(_lights, note_type=LightChannelNote)
-# def lights(
-#     notation: str, 
-#     beats=4,
-#     *kwargs: dict,
-# ) -> Part:
-#     """Produce lights part from notation."""
-#     return _lights(LightChannelNote, notation, *kwargs, beats=beats)
+# lights = partial(_lights, note_type=LightChannelNote)
+def lights(
+    notation: str, 
+    *kwargs: dict,
+    beats=4,
+) -> Part:
+    """Produce lights part from notation."""
+    return _lights(LightChannelNote, notation, *kwargs, beats=beats)
 
 
-relays = partial(_lights, note_type=LightRelayNote)
-# # def relays(
-# #     notation: str, 
-# #     beats=4,
-# #     *kwargs: dict,
-# # ) -> Part:
-# #     """Produce lights part from notation."""
-# #     return _lights(LightRelayNote, notation, kwargs, beats=beats)
+# relays = partial(_lights, note_type=LightRelayNote)
+def relays(
+    notation: str, 
+    *kwargs: dict,
+    beats=4,
+) -> Part:
+    """Produce lights part from notation."""
+    return _lights(LightRelayNote, notation, *kwargs, beats=beats)
 
 
 # legacy
