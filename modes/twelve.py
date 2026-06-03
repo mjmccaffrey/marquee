@@ -75,10 +75,7 @@ class Twelve(MusicMode):
             # lights(' |  𝄼 ♩ ♩  |  ♩ ♩ ♩ ♩  | ', *light_pairs_off),
             # lights(' |  𝄻  |  𝄻  | '),
             lights(' |  ♩ 𝄽 ♩ 𝄽  |  ♩ 𝄽 ♩ 𝄽  | ', *lights_rotate),
-            section(
-                lights(' |  𝄽 ♩ 𝄽  | ', lights_off, beats=3),
-                actions(' |  𝄽 𝄽 ♩  | ', self.prep_lights, beats=3),
-            ),
+            lights(' |  𝄽 ♩ 𝄽  | ', lights_off, beats=3),
             lights(count_to_12, *lights_on),
             lights(' |  𝄻  |  ♩  | ', lights_off),
         ).play(tempo=self.tempo)
