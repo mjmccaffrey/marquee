@@ -33,7 +33,8 @@ class Dot(Entity):
 @dataclass(kw_only=True, repr=False, eq=True)
 class Fruit(Entity):
     game: GameMode
-    color: RGB = Colors.ORANGE
+    color: RGB
+    name: str = "Fruit"
     brightness: int = 80
     draw_priority: int = 2
 
