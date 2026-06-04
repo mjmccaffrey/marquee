@@ -66,7 +66,7 @@ class DoomGame(PerformanceMode):
             # brightness=100,
             color=Colors.YELLOW,
             transition=1.0,
-            indices={1 if self.passage else 13},
+            indices={13 if self.passage else 1},
         )
 
     def slayer_appears(self):
