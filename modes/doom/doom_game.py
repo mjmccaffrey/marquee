@@ -83,6 +83,7 @@ class DoomGame(PerformanceMode):
     def barons_appear(self, step: int):
         """"""
         self.play_sound(Sound.BARON_ROAR)
+        LIGHTS_BY_SIDE.insert(0, [])
         self.lights.set_channels(
             on=True,
             # brightness=100,

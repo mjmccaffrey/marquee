@@ -14,8 +14,8 @@ def define_modes(exec: Executor) -> None:
     register_channel_modes(exec)
 
     exec.add_mode("pacman", PacManGame, maze=passage_maze)
-    exec.add_mode("doom_1", DoomGame, passage=True)
-    exec.add_mode("doom_2", DoomGame, passage=False)
+    exec.add_mode("doom_1", DoomGame, passage=False)
+    exec.add_mode("doom_2", DoomGame, passage=True)
     exec.add_mode('demo', Demo)
 
     register_color_modes(exec)
