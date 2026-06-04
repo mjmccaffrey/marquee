@@ -244,6 +244,7 @@ class PacManGame(GameMode):
             return
         if self.tick == 16:
             self.place_entity(self.fruit, self.fruit_start)
+            self.update_lights(self.board)  # ???? !!!!
 
     def ghost_got_pacman(self) -> bool:
         """"""
