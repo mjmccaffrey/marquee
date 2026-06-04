@@ -35,7 +35,7 @@ class Fruit(Entity):
     game: GameMode
     color: RGB = Colors.ORANGE
     brightness: int = 80
-    draw_priority: int = 1
+    draw_priority: int = 2
 
 
 @dataclass(kw_only=True, repr=False)
@@ -45,7 +45,7 @@ class PacMan(Character):
     name: str = "PacMan"
     color: ClassVar[Color] = RGB(252, 234, 63)
     brightness: int = 80
-    draw_priority: ClassVar[int] = 3
+    draw_priority: ClassVar[int] = 4
     turn_priority: ClassVar[int] = 1
 
     def next_coord(self):
@@ -85,7 +85,7 @@ class GhostState(StrEnum):
 @dataclass(kw_only=True, repr=False)
 class Ghost(Character, ABC):
     brightness: int = 80
-    draw_priority: ClassVar[int] = 2
+    draw_priority: ClassVar[int] = 3
     turn_priority: ClassVar[int] = 2
     wait_ticks: int
     direction: int
