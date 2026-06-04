@@ -143,6 +143,7 @@ class GameMode(PerformanceMode):
             for i, e in board.items()
         ]
         self.lights.update_channels(desired)
+        print(len(board), self.lights.count)
 
     def print_board(self, board: Board) -> None:
         """"""
