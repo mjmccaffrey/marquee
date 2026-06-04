@@ -213,8 +213,13 @@ class ColorSets:
     @staticmethod
     def _create_color_groups(sets: BySetName) -> ByGroupName:
         """Return color sets organized by group name."""
+        group_names = sorted(set(s.group for s in sets.values()))
+        set_names = sorted(s.name for s in sets.values())
         return {
-            group: [s for s in sets.values() if s.group == group]
-            for group in set(s.group for s in sets.values())
+            group: [
+                sets[n] for n in set_names 
+                if sets[n].group == group
+            ]
+            for group in group_names
         }
 

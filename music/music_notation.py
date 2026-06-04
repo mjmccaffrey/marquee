@@ -234,7 +234,6 @@ def _lights(
     )
 
 
-# lights = partial(_lights, note_type=LightChannelNote)
 def lights(
     notation: str, 
     *kwargs: dict,
@@ -244,7 +243,6 @@ def lights(
     return _lights(LightChannelNote, notation, *kwargs, beats=beats)
 
 
-# relays = partial(_lights, note_type=LightRelayNote)
 def relays(
     notation: str, 
     *kwargs: dict,
