@@ -129,8 +129,8 @@ class GameMode(PerformanceMode):
         for character in self.characters_turn_order:
             character.execute()
         delta_board = self.compare_boards(old_board)
-        self.update_lights(delta_board)
         self.state_logic()
+        self.update_lights(delta_board)
         self.tick += 1
 
     def update_lights(self, board: Board):
