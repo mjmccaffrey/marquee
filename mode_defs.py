@@ -1,10 +1,11 @@
 """Marquee Lighted Sign Project - define_modes"""
 
 from devices.color import Colors
-from executor import Executor
-from device_defs import LIGHT_COUNT
-from modes import *
 from devices.specialparams import ChannelParams, EmulateParams, MirrorParams
+from device_defs import LIGHT_COUNT
+from executor import Executor
+from modes import *
+from modes.pacman import maze_with_passage
 
 
 def define_modes(exec: Executor) -> None:
@@ -13,7 +14,7 @@ def define_modes(exec: Executor) -> None:
     register_channel_modes(exec)
 
     # exec.add_mode("christmas", ChristmasSongs)
-    exec.add_mode("pacman", PacManGame)
+    exec.add_mode("pacman", PacManGame, maze=maze_with_passage)
     exec.add_mode("doom", DoomGame)
     exec.add_mode('demo', Demo)
 

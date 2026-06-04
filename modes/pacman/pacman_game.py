@@ -44,10 +44,10 @@ class PacManGame(GameMode):
     """"""
     squares: int = 12
     ticks_per_second: float = 2.0
-    mazes = {
-        12: maze_base,
-        15: maze_with_passage,
-    }
+    # mazes = {
+    #     12: maze_base,
+    #     15: maze_with_passage,
+    # }
     pacman_start = 7
     fruit_start = 13
 
@@ -60,7 +60,7 @@ class PacManGame(GameMode):
         self.init_sound()
         self.events.subscribe(Event.BITE, self.pacman_bite)
         self.state = GameState.PRE_GAME
-        self.maze = self.mazes[self.squares]
+        # self.maze = self.mazes[self.squares]
         self.level: int
 
     def init_sound(self):
