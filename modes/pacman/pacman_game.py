@@ -146,13 +146,13 @@ class PacManGame(GameMode):
             )
         )
         self.ghosts = (self.pinky, self.blinky)
-        self.update_lights(self.board)
+        self.update_lights()
 
     def play_level(self) -> None:
         """"""
         self.place_entity(self.pacman, self.pacman_start)
         cast(Dot, self.board[self.pacman_start][Dot]).bitten()
-        self.update_lights(self.board)
+        self.update_lights()
         self.schedule(
             action=partial(self.change_state, GameState.PLAY_GAME), 
             due=2.0,

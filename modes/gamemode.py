@@ -122,28 +122,22 @@ class GameMode(PerformanceMode):
 
     def play_game_round(self):
         """Execute a game round."""
-        old_board = {
-            k: v.copy()
-            for k, v in self.board.items()
-        }
         for character in self.characters_turn_order:
             character.execute()
-        delta_board = self.compare_boards(old_board)
         self.state_logic()
-        self.update_lights(delta_board)
+        self.update_lights()
         self.tick += 1
 
-    def update_lights(self, board: Board):
+    def update_lights(self):
         """Send (unfiltered) desired light states to lightset."""
         desired = [
             self.desired_light_state(
                 entities=e, 
                 channel=self.lights.channels[i],
             )
-            for i, e in board.items()
+            for i, e in self.board.items()
         ]
         self.lights.update_channels(desired)
-        print(len(board), self.lights.count)
 
     def print_board(self, board: Board) -> None:
         """"""
