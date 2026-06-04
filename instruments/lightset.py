@@ -51,7 +51,7 @@ class LightSet:
             else:
                 log.info("***** Smart bulbs in use - setting light relays ON. *****")
                 self.set_relays(True, smart_bulb_override=True)
-                time.sleep(3.0)  # Enough time for controller to see all bulbs.
+                time.sleep(2.0)  # Enough time for controller to see all bulbs.
 
     def _init_controller(self):
         """Initialize controller."""
@@ -60,7 +60,7 @@ class LightSet:
         RGB.adjust_incomplete_colors(self.gamut or rgbxy.GamutC)
         self.colors = Colors(self.gamut or rgbxy.GamutC)
         assert len(self.controller.channels) == self.count
-        self.update_sequence = [i for i in range(self.count)]
+        self.update_sequence = [i for i in range(self.count)] # !!!!!!!!
         # log.info(self.update_sequence)
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min

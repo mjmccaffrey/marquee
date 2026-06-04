@@ -113,7 +113,7 @@ class Ghost(Character, ABC):
     def chasing(self) -> None:
         """In maze and chasing PacMan."""
         assert self.coord is not None
-        coord = (self.coord + self.direction) % len(maze_base)
+        coord = (self.coord + self.direction) % len(base_maze)
         self.game.move_character(self, coord)
 
     @override
@@ -152,7 +152,7 @@ class Clyde(Ghost):
     color: ClassVar[Color] = Colors.ORANGE
 
 
-maze_base: Maze = {
+base_maze: Maze = {
     0: Square(
         right=1, upright=1, downright=1,
         left=11, down=11, downleft=11,
@@ -214,7 +214,7 @@ maze_base: Maze = {
         left=None, upleft=None,
     ),
 }
-maze_with_passage: Maze = maze_base | {
+passage_maze: Maze = base_maze | {
     4: Square(
         up=3, upleft=3, upright=3,
         down=5, downleft=5, downright=5,

@@ -8,7 +8,7 @@ from typing_extensions import override
 from devices.color import Colors, RGB
 from devices.lightcontroller import LightChannel, ChannelUpdate
 from .gamemode import Character, EntityGroup, GameMode, GameState, Maze
-from .pacman import maze_base
+from .pacman import base_maze
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -26,7 +26,7 @@ class Dot(Character, ABC):
         """Take turn."""
         assert self.coord is not None
         if self.game.tick and (self.game.tick % self.speed) == 0:
-            self.game.move_character(self, (self.coord + self.direction) % len(maze_base))
+            self.game.move_character(self, (self.coord + self.direction) % len(base_maze))
 
 
 @dataclass(kw_only=True, repr=False)
@@ -58,7 +58,7 @@ class Three(Dot):
 @dataclass(kw_only=True)
 class Running(GameMode):
     """"""
-    maze = maze_base
+    maze = base_maze
 
     def __post_init__(self):
         """Initialize board and characters."""

@@ -7,7 +7,7 @@ import logging
 import pygame
 from typing_extensions import override
 
-from light_defs import LIGHTS_BY_ROW
+from light_defs import LIGHTS_BY_ROW, LIGHTS_BY_SIDE
 from task import SeqTask
 from ..performancemode import PerformanceMode
 from devices.color import Colors, RGB
@@ -26,10 +26,13 @@ class Sound(StrEnum):
 @dataclass(kw_only=True)
 class DoomGame(PerformanceMode):
     """"""
+    passage: bool
 
     def __post_init__(self):
         """Initialize board and characters."""
         super().__post_init__()
+        if self.passage:
+            self.lights = self.combined
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
@@ -45,10 +48,15 @@ class DoomGame(PerformanceMode):
             sound: pygame.mixer.Sound(f'modes/doom/doom_{sound}')
             for sound in Sound
         }
-
+        pygame.mixer.music.load('modes/doom/doom_d_runni2.mp3')
+        
     def play_sound(self, sound: Sound):
         """"""
         self.sounds[sound].play()
+
+    def start_music(self):
+        """"""
+        pygame.mixer.music.play(-1)
 
     def slayer_teleports(self):
         """"""
@@ -58,7 +66,7 @@ class DoomGame(PerformanceMode):
             # brightness=100,
             color=Colors.YELLOW,
             transition=1.0,
-            indices={1},
+            indices={1 if self.passage else 13},
         )
 
     def slayer_appears(self):
@@ -72,7 +80,7 @@ class DoomGame(PerformanceMode):
             indices={1},
         )
 
-    def barons_appear(self, row: int):
+    def barons_appear(self, step: int):
         """"""
         self.play_sound(Sound.BARON_ROAR)
         self.lights.set_channels(
@@ -80,7 +88,11 @@ class DoomGame(PerformanceMode):
             # brightness=100,
             color=Colors.ROSE,
             transition=0.0,
-            indices=set(LIGHTS_BY_ROW[row]),
+            indices=set(
+                LIGHTS_BY_SIDE[step]
+                if self.passage else
+                LIGHTS_BY_ROW[step]
+            )
         )
 
     def slayer_dies(self):
@@ -117,12 +129,13 @@ class DoomGame(PerformanceMode):
     def execute(self):
         """"""
         self.schedule_sequence(
-            SeqTask(self.slayer_teleports, due=1.0),
+            SeqTask(self.start_music, due=0.0),
+            SeqTask(self.slayer_teleports, due=2.0),
             SeqTask(self.slayer_appears, due=2.0),
-            SeqTask(partial(self.barons_appear, row=4), due=2.0),
-            SeqTask(partial(self.barons_appear, row=3), due=0.6),
-            SeqTask(partial(self.barons_appear, row=2), due=0.6),
-            SeqTask(partial(self.barons_appear, row=1), due=0.6),
+            SeqTask(partial(self.barons_appear, step=4), due=2.0),
+            SeqTask(partial(self.barons_appear, step=3), due=0.6),
+            SeqTask(partial(self.barons_appear, step=2), due=0.6),
+            SeqTask(partial(self.barons_appear, step=1), due=0.6),
             SeqTask(self.slayer_dies, due=0.6),
             SeqTask(self.fade, due=0.5),
         )

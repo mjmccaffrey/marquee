@@ -15,7 +15,7 @@ from ..gamemode import Entity, EntityGroup, GameMode
 from . import pacman_assets as assets
 from .pacman_assets import (
     Dot, Fruit, Ghost, PacMan, Pinky, Blinky, Sound,
-    maze_base, maze_with_passage,
+    passage_maze,
 )
 from devices.lightcontroller import LightChannel, ChannelUpdate
 
@@ -42,25 +42,19 @@ class Event(StrEnum):
 @dataclass(kw_only=True)
 class PacManGame(GameMode):
     """"""
-    squares: int = 12
     ticks_per_second: float = 2.0
-    # mazes = {
-    #     12: maze_base,
-    #     15: maze_with_passage,
-    # }
-    pacman_start = 7
-    fruit_start = 13
 
     def __post_init__(self):
         """Initialize board and characters."""
         super().__post_init__()
+        self.pacman_coord = 7
+        self.fruit_coord = 13 if self.maze == passage_maze else 7
         self.lights = self.combined
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
         self.events.subscribe(Event.BITE, self.pacman_bite)
         self.state = GameState.PRE_GAME
-        # self.maze = self.mazes[self.squares]
         self.level: int
 
     def init_sound(self):
@@ -98,14 +92,6 @@ class PacManGame(GameMode):
                 dot.bitten()
                 if dot.consumed:
                     del self.board[coord][Dot]
-                # assert self.extra is not None
-                # self.extra.set_channels(
-                #     brightness=int(
-                #         (self.dot_bites_maximum  - 
-                #         self.dot_bites_remaining) * 
-                #         100 / self.dot_bites_maximum
-                #     )
-                # )
                 self.play_sound(Sound.CHOMP)
             case assets.Fruit:
                 del self.board[coord][Fruit]
@@ -153,8 +139,8 @@ class PacManGame(GameMode):
 
     def play_level(self) -> None:
         """"""
-        self.place_entity(self.pacman, self.pacman_start)
-        cast(Dot, self.board[self.pacman_start][Dot]).bitten()
+        self.place_entity(self.pacman, self.pacman_coord)
+        cast(Dot, self.board[self.pacman_coord][Dot]).bitten()
         self.update_lights()
         self.schedule(
             action=partial(self.change_state, GameState.PLAY_GAME), 
@@ -246,7 +232,7 @@ class PacManGame(GameMode):
             self.change_state(GameState.GAME_LOST)
             return
         if self.tick == 16:
-            self.place_entity(self.fruit, self.fruit_start)
+            self.place_entity(self.fruit, self.fruit_coord)
 
     def ghost_got_pacman(self) -> bool:
         """"""

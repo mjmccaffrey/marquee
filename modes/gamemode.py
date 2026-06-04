@@ -1,7 +1,6 @@
 """Marquee Lighted Sign Project - gamemode"""
 
 from abc import ABC, abstractmethod
-from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from enum import auto, StrEnum
 import logging
@@ -44,14 +43,14 @@ class Character(Entity, ABC):
 
 @dataclass(kw_only=True)
 class Square:
-    left: int | None  # = None
-    right: int | None  # = None
-    up: int | None  # = None
-    down: int | None  # = None
-    upleft: int | None  # = None
-    downleft: int | None  # = None
-    upright: int | None  # = None
-    downright: int | None  # = None
+    left: int | None
+    right: int | None
+    up: int | None
+    down: int | None
+    upleft: int | None
+    downleft: int | None
+    upright: int | None
+    downright: int | None
 
 
 Board = dict[int, 'EntityGroup']

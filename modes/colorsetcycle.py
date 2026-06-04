@@ -15,7 +15,8 @@ log = logging.getLogger('marquee.' + __name__)
 class ColorSetCycle(PerformanceMode):
     """Play repeating sequence of color sets."""
     sequence: InitVar[CycleSequence]  # (color_set_name, seconds)
-    transition: float | None = None
+    brightness: int | None = None
+    transition: float = 0.0
 
     def __post_init__(self, sequence: CycleSequence) -> None:
         """Initialize."""
@@ -81,9 +82,12 @@ class ColorSetCycle(PerformanceMode):
             f"for {entry.seconds} seconds "
             f"({self.entry_index + 1} / {len(self.entries)})."
         )
+        kwargs = cs.set_channels_kwargs(self.lights.count)
+        if self.brightness is not None:
+            kwargs |= dict(brightness=self.brightness)
         self.lights.set_channels(
             transition=self.transition, 
-            **cs.set_channels_kwargs(self.lights.count)
+            **kwargs,  # type: ignore
         )
         self.schedule(due=entry.seconds)
 

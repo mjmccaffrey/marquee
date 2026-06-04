@@ -5,7 +5,7 @@ from devices.specialparams import ChannelParams, EmulateParams, MirrorParams
 from device_defs import LIGHT_COUNT
 from executor import Executor
 from modes import *
-from modes.pacman import maze_with_passage
+from modes.pacman import passage_maze
 
 
 def define_modes(exec: Executor) -> None:
@@ -13,9 +13,9 @@ def define_modes(exec: Executor) -> None:
     register_special_modes(exec)
     register_channel_modes(exec)
 
-    # exec.add_mode("christmas", ChristmasSongs)
-    exec.add_mode("pacman", PacManGame, maze=maze_with_passage)
-    exec.add_mode("doom", DoomGame)
+    exec.add_mode("pacman", PacManGame, maze=passage_maze)
+    exec.add_mode("doom_1", DoomGame, passage=True)
+    exec.add_mode("doom_2", DoomGame, passage=False)
     exec.add_mode('demo', Demo)
 
     register_color_modes(exec)
@@ -50,6 +50,7 @@ def register_channel_modes(exec: Executor):
             # ("amber_bloom", 1),
             ("ALL", 2)
         ],
+        brightness=35,
         # transition=0.0,
     )
     exec.add_mode("signs", Signs)
