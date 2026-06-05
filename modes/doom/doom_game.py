@@ -52,6 +52,7 @@ class DoomGame(PerformanceMode):
             for sound in Sound
         }
         pygame.mixer.music.load('modes/doom/doom_d_runni2.mp3')
+        pygame.mixer.music.set_volume(1.0)
         
     def play_sound(self, sound: Sound):
         """"""
@@ -145,6 +146,6 @@ class DoomGame(PerformanceMode):
             SeqTask(partial(self.barons_appear, step=1), due=0.6),
             SeqTask(self.slayer_dies, due=0.6),
             SeqTask(self.fade_lights, due=0.5),
-            SeqTask(self.fade_music, due=2.0),
+            SeqTask(self.fade_music, due=3.0),
         )
         
