@@ -33,6 +33,7 @@ class DoomGame(PerformanceMode):
         super().__post_init__()
         if self.passage:
             self.lights = self.combined
+            LIGHTS_BY_ROW[2].extend([12, 13, 14])
             LIGHTS_BY_SIDE.insert(0, [])
         self.slayer_coord = {13 if self.passage else 1}
         assert self.lights.gamut is not None  # Lights are color.
