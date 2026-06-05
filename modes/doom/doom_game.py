@@ -60,6 +60,10 @@ class DoomGame(PerformanceMode):
         """"""
         pygame.mixer.music.play(-1)
 
+    def fade_music(self):
+        """"""
+        pygame.mixer.music.fadeout(2000)
+
     def slayer_teleports(self):
         """"""
         self.play_sound(Sound.TELEPORT)
@@ -114,7 +118,7 @@ class DoomGame(PerformanceMode):
             transition=0.0,
         )
 
-    def fade(self):
+    def fade_lights(self):
         """"""
         for i, row in enumerate(LIGHTS_BY_ROW):
             self.schedule(
@@ -139,6 +143,7 @@ class DoomGame(PerformanceMode):
             SeqTask(partial(self.barons_appear, step=2), due=0.6),
             SeqTask(partial(self.barons_appear, step=1), due=0.6),
             SeqTask(self.slayer_dies, due=0.6),
-            SeqTask(self.fade, due=0.5),
+            SeqTask(self.fade_lights, due=0.5),
+            SeqTask(self.fade_music, due=2.0),
         )
         
