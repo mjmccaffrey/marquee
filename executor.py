@@ -114,6 +114,8 @@ class Executor:
            Return True if system shutdown requested, else False."""
         shutdown = False
         self.devices = self.define_devices(brightness_factor, speed_factor)
+        if self.devices.extra is not None:
+            self.devices.extra.set_channels(on=False)
         if color is not None:
             assert brightness is not None
             self.execute_color(color, brightness)

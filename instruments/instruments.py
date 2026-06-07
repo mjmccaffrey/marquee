@@ -6,7 +6,7 @@ import logging
 import random
 from typing_extensions import override
 
-from devices.relays import RelayClient
+from devices.relaymodule import RelayClient
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -59,7 +59,7 @@ class RelayInstrument(Instrument, ABC):
         self.relays.set_state_of_devices("0" * self.count)
         super().close()
 
-    def select_relays(self, state: str, count: int) -> set[int]:
+    def _select_relays(self, state: str, count: int) -> set[int]:
         """Randomly select count relays in state."""
         candidates = [
             i
@@ -130,7 +130,7 @@ class DrumSet(RelayInstrument):
         desired_count = self.accent_to_relay_count[accent]
         for pitch in pitches:
             desired_state = self.pitch_to_relay_state[pitch]
-            selected = self.select_relays(desired_state, desired_count)
+            selected = self._select_relays(desired_state, desired_count)
             new_pattern = ''.join(
                 flip(p) if i in selected else p
                 for i, p in enumerate(new_pattern)

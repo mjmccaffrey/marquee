@@ -11,7 +11,7 @@ from devices import rgbxy
 from devices.color import Color, Colors, RGB
 from devices.bulb import SmartBulb
 from devices.lightcontroller import ChannelUpdate, LightController
-from devices.relays import RelayClient
+from devices.relaymodule import RelayClient
 from devices.specialparams import ChannelParams, MirrorParams, SpecialParams
 from .lightsetinterface import SavedState
 
@@ -340,7 +340,8 @@ class ClickSet:
     def click(self) -> None:
         """Click the otherwise unused light relays."""
         pattern = "".join(
-            "1" if p == "0" else "0" for p in self.relays.device_pattern
+            "1" if p == "0" else "0" 
+            for p in self.relays.device_pattern
         )
         self.relays.set_state_of_devices(pattern)
 

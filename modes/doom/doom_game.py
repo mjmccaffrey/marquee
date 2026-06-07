@@ -52,7 +52,7 @@ class DoomGame(PerformanceMode):
             for sound in Sound
         }
         pygame.mixer.music.load('modes/doom/doom_d_runni2.mp3')
-        pygame.mixer.music.set_volume(1.0)
+        # pygame.mixer.music.set_volume(1.0)
         
     def play_sound(self, sound: Sound):
         """"""

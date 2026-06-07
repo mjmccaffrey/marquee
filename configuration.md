@@ -35,9 +35,11 @@ Marquee Lighted Sign Project - configuration
         * 192.168.64.140 - 159
 
 * **USB Ports**
-SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250501R0027", SYMLINK+="marquee_lights"
-SUBSYSTEM=="tty", ATTRS{serial}=="NLRL260501R0296", SYMLINK+="marquee_drums"
-SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250409R0868", SYMLINK+="marquee_bells"
+* * /etc/udev/rules.d/99-com.rules
+* * SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250501R0027", SYMLINK+="marquee_lights"
+* * SUBSYSTEM=="tty", ATTRS{serial}=="NLRL260501R0296", SYMLINK+="marquee_drums_16"
+* * SUBSYSTEM=="tty", ATTRS{serial}=="NLRL270601R0235", SYMLINK+="marquee_drums_32"
+* * SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250409R0868", SYMLINK+="marquee_bells"
 * **Dependencies**
     * pip install aiohttp --break-system-packages
 * **Bell Physical Layout**

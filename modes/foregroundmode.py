@@ -8,6 +8,7 @@ from devices.deviceset import DeviceSet
 from devices.specialparams import SpecialParams
 from .basemode import BaseMode
 from instruments.combinedlightset import CombinedLightSet
+from instruments.lightsetinterface import LightSetInterface
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -24,6 +25,7 @@ class ForegroundMode(BaseMode, ABC):
         (   self.buttons, self.drums, self.lights, self.extra,
             self.clicker, self.ringer, self.joystick,
         ) = self.devices.astuple()
+        self.combined: LightSetInterface
         if self.extra is not None:
             self.primary = self.lights
             self.secondary = self.extra

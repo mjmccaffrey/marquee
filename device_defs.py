@@ -14,7 +14,7 @@ from devices.devices_misc import ButtonName
 from devices.deviceset import DeviceSet
 from devices.hue import HueBridge
 from devices.joystick import Joystick
-from devices.relays import NumatoRL320001, NumatoRL160001, NumatoSSR80001
+from devices.numato import NumatoRL320001, NumatoRL160001, NumatoSSR80001
 from devices.shelly import ShellyController, ShellyProDimmer1PM, ShellyProDimmer2PM
 from instruments import BellSet, ClickSet, DrumSet, LightSet, RingerBell
 from light_defs import *
@@ -109,7 +109,7 @@ def joystick() -> Joystick:
         right=_Button(pin=22, bounce_time=0.05),
     )
 
-def define_devices_hue(
+def define_devices(
     brightness_factor: float,
     speed_factor: float,
 ) -> DeviceSet:
@@ -209,9 +209,6 @@ def define_devices_shelly(
         clicker, ringer, joystick(),
     )
 
-
-define_devices = define_devices_hue
-"""Create and return objects for all physical devices."""
 
 BUTTON_TO_RELAY = {0: 11}
 CLICK_TO_RELAY = {0: 2}

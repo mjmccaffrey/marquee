@@ -11,7 +11,7 @@ from gpiozero import Button as _Button
 from .devices_misc import (
     ButtonAction, ButtonName, ButtonVirtuallyPressed
 )
-from devices.relays import RelayClient
+from devices.relaymodule import RelayClient
 
 log = logging.getLogger('marquee.' + __name__)
 

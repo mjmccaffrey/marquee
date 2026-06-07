@@ -5,12 +5,14 @@ from typing import Protocol
 
 from devices.color import Color
 from devices.lightcontroller import ChannelUpdate
+from devices.rgbxy import Gamut
 from devices.specialparams import SpecialParams
 
 
 class LightSetInterface(Protocol):
     """"""
     count: int
+    gamut: Gamut | None
     speed_factor: float
 
     def calibrate(self): ...

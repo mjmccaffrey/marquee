@@ -13,7 +13,7 @@ marquee
             HueChannel
             ShellyChannel
         RelayClient
-            RelayModule
+            RelayModuleInterface
                 NumatoUSBRelayModule
     instruments
         LightSet

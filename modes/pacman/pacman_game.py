@@ -142,10 +142,7 @@ class PacManGame(GameMode):
         self.place_entity(self.pacman, self.pacman_coord)
         cast(Dot, self.board[self.pacman_coord][Dot]).bitten()
         self.update_lights()
-        self.schedule(
-            action=partial(self.change_state, GameState.PLAY_GAME), 
-            due=2.0,
-        )
+        self.change_state(GameState.PLAY_GAME)
 
     def pre_game_state(self) -> None:
         """"""

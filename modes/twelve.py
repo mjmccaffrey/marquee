@@ -37,7 +37,7 @@ class Twelve(MusicMode):
     def play(self):
         """Play music and lights."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        lights_on = tuple(
+        each_light_on = tuple(
             dict(
                 on=True,
                 brightness=100,
@@ -46,38 +46,26 @@ class Twelve(MusicMode):
             )
             for i in range(self.lights.count)
         )
-        lights_dim = dict(brightness=0, transition=0.0)
-        lights_off = dict(on=False, transition=0.0)
-        lights_rotate = tuple(
+        lights_all_off = dict(on=False)
+        light_groups_off = tuple(
             dict(
-                color=Colors.WHEEL[i:] + Colors.WHEEL[:1],
-                transition=0.0,
+                on=False,
+                indices=i,
             )
-            for i in range(self.lights.count)
+            for i in ({11, 0, 1}, {8, 9, 10}, {5, 6, 7}, {2, 3, 4})
         )
-
-
-        # light_pairs_off = tuple(
-        #     dict(
-        #         on=False,
-        #         transition=0.0,
-        #         indices=i,
-        #     )
-        #     for i in ({0, 2}, {11, 3}, {10, 4}, {9, 5}, {8, 6}, {1, 7})
-        # )
         count_to_12 = ' |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  | '
         piece(
             section(
                 actions(' |  ♩  | ', mixer.music.play),
                 lights( ' |  𝄻  |  𝄻  |  𝄻  | '),
             ),
-            lights(count_to_12, *lights_on),
+            lights(count_to_12, *each_light_on),
             lights(' |  𝄽 𝄽  | ', beats=2),
-            # lights(' |  𝄼 ♩ ♩  |  ♩ ♩ ♩ ♩  | ', *light_pairs_off),
+            lights(' |  ♩ 𝄽 ♩ 𝄽  |  ♩ 𝄽 ♩ 𝄽  | ', *light_groups_off),
             # lights(' |  𝄻  |  𝄻  | '),
-            lights(' |  ♩ 𝄽 ♩ 𝄽  |  ♩ 𝄽 ♩ 𝄽  | ', *lights_rotate),
-            lights(' |  𝄽 ♩ ♩  | ', lights_dim, lights_off, beats=3),
-            lights(count_to_12, *lights_on),
-            lights(' |  𝄻  |  ♩  | ', lights_off),
+            lights(' |  𝄽 𝄽 𝄽  | ', beats=3),
+            lights(count_to_12, *each_light_on),
+            lights(' |  𝄻  |  ♩  | ', lights_all_off),
         ).play(tempo=self.tempo)
     
