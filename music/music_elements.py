@@ -14,7 +14,7 @@ from instruments import (
     LightChannelInstrument, LightRelayInstrument,
     ReleaseableInstrument, RestInstrument,
 )
-from modes.foregroundmode import ForegroundMode
+from modes.abstract.foregroundmode import ForegroundMode
 from devices.specialparams import SpecialParams
 
 

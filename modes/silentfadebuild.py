@@ -5,7 +5,7 @@ from functools import partial
 import random
 from typing_extensions import override
 
-from .performancemode import PerformanceMode
+from . import PerformanceMode
 from .sequences import lights_in_groups
 
 

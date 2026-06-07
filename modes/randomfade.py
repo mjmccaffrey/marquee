@@ -7,7 +7,7 @@ from typing_extensions import override
 
 from device_defs import ALL_ON
 from devices.color import XY
-from .performancemode import PerformanceMode
+from . import PerformanceMode
 
 
 @dataclass(kw_only=True)

@@ -6,7 +6,7 @@ import time
 from typing_extensions import override
 
 from device_defs import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
-from modes.musicmode import MusicMode
+from . import MusicMode
 from music import (
     dimmer, dimmer_sequence, measure, part, play,
     relay, section, Section, sequence,

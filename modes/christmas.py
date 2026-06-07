@@ -3,7 +3,7 @@
 from typing_extensions import override
 
 from device_defs import ALL_OFF, ALL_LOW, ALL_ON
-from .musicmode import MusicMode
+from . import MusicMode
 from .sequences import all_on, blink_all, random_each
 from music import (
     set_mode,

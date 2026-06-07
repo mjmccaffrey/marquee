@@ -4,7 +4,7 @@ from collections.abc import Callable
 import logging
 from typing import Any
 
-from modes.foregroundmode import ForegroundMode
+from modes.abstract.foregroundmode import ForegroundMode
 from . import music_elements
 from .music_elements import (
     Element, Measure, Part, Section, Piece, Sequence, 

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from functools import partial
 from typing_extensions import override
 
-from .performancemode import PerformanceMode
+from . import PerformanceMode
 from .sequences import opposite
 from devices.specialparams import ChannelParams
             

@@ -12,8 +12,8 @@ from devices.devices_misc import (
     ButtonAction, ButtonActionException, ButtonName,
 )
 from event import EventSystem
-from modes.backgroundmode import BackgroundMode
-from modes.foregroundmode import ForegroundMode
+from modes.abstract.backgroundmode import BackgroundMode
+from modes.abstract.foregroundmode import ForegroundMode
 from modes.modes_misc import ChangeMode, InterruptMode, ModeDefinition
 from task import TaskSchedule
 

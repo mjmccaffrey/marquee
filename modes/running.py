@@ -7,7 +7,7 @@ from typing_extensions import override
 
 from devices.color import Colors, RGB
 from devices.lightcontroller import LightChannel, ChannelUpdate
-from .gamemode import Character, EntityGroup, GameMode, GameState, Maze
+from .abstract.gamemode import Character, EntityGroup, GameMode, GameState, Maze
 from .pacman import base_maze
 
 log = logging.getLogger('marquee.' + __name__)

@@ -6,7 +6,7 @@ from pygame import mixer
 from typing_extensions import override
 
 from devices.color import Colors
-from .musicmode import MusicMode
+from . import MusicMode
 from music import actions, lights, piece, section
 
 log = logging.getLogger('marquee.' + __name__)

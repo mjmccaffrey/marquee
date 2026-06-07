@@ -8,7 +8,7 @@ from typing import Any, Iterator
 
 from devices.specialparams import ActionParams, SpecialParams
 from task import Task
-from modes.foregroundmode import ForegroundMode
+from modes.abstract.foregroundmode import ForegroundMode
 from .music_elements import (
     ActionNote, BaseNote, Element, Measure, NoteGroup,
     Part, Rest, SequenceMeasure,

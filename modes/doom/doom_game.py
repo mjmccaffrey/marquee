@@ -9,7 +9,7 @@ from typing_extensions import override
 
 from light_defs import LIGHTS_BY_ROW, LIGHTS_BY_SIDE
 from task import SeqTask
-from ..performancemode import PerformanceMode
+from .. import PerformanceMode
 from devices.color import Colors, RGB
 
 log = logging.getLogger('marquee.' + __name__)

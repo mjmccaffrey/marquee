@@ -8,8 +8,8 @@ from typing import Any, Protocol
 from device_defs import DeviceSet
 from devices.color import ColorSets
 from devices.specialparams import SpecialParams
-from modes.basemode import BaseMode
-from modes.modes_misc import ModeDefinition
+from modes import BaseMode
+from modes import ModeDefinition
 from modes.sequencemode import SequenceMode
 from player import Player
 

@@ -6,9 +6,9 @@ from typing_extensions import override
 
 from devices.color import Colors
 from devices.devices_misc import ButtonName
-from .backgroundmode import BackgroundMode
+from .abstract.backgroundmode import BackgroundMode
 from .modes_misc import ModeDefinition
-from .performancemode import PerformanceMode
+from .abstract.performancemode import PerformanceMode
 
 log = logging.getLogger('marquee.' + __name__)
 

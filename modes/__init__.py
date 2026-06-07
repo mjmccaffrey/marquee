@@ -1,10 +1,22 @@
 """Marquee Lighted Sign Project - modes __init__"""
 
-# Foreground Select concrete modes
-from .brightnessselect import BrightnessSelect
-from .modeselect import ModeSelect
+# Abstract modes
+from .abstract.backgroundmode import BackgroundMode
+from .abstract.basemode import BaseMode
+from .abstract.foregroundmode import ForegroundMode
+from .abstract.gamemode import GameMode
+from .abstract.musicmode import MusicMode
+from .abstract.performancemode import PerformanceMode
+from .abstract.selectmode import SelectMode
 
-# Foreground Performance concrete modes
+# Admin modes
+from .admin.brightnessselect import BrightnessSelect
+from .admin.modeselect import ModeSelect
+
+# Background modes
+from modecycle import ModeCycle
+
+# Performance & Game modes
 # from .christmas import ChristmasSongs
 from .colorsetcycle import ColorSetCycle
 from .colorwheel import ColorWheel
@@ -13,19 +25,18 @@ from .doom import DoomGame
 from .demo import Demo
 from .evenoddfade import EvenOddFade
 from .fastchange import FastChange
-from .modes_misc import ModeIndex
+from .sequencemode import SequenceMode
 from .pacman import PacManGame
 from .randomfade import RandomFade
 from .running import Running
-from .sequencemode import SequenceMode
 from .signs import Signs
 from .silentfadebuild import SilentFadeBuild
 from .tiltsensors import TiltSensors
 from .twelve import Twelve
 
-# Background concrete modes
-from .modecycle import ModeCycle
-
 # Sequences
 from .sequences import *
+
+# Misc
+from modes_misc import *
 

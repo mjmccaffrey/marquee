@@ -7,7 +7,7 @@ from typing_extensions import override
 from light_defs import LIGHT_COUNT, LIGHTS_BY_COLUMN
 from devices.devices_misc import ButtonName
 from devices.color import Colors
-from .performancemode import PerformanceMode
+from . import PerformanceMode
 
 log = logging.getLogger('marquee.' + __name__)
 

@@ -5,7 +5,7 @@ import logging
 from typing_extensions import override
 
 from devices.color import Colors
-from .performancemode import PerformanceMode
+from . import PerformanceMode
 
 log = logging.getLogger('marquee.' + __name__)
 
