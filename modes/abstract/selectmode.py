@@ -7,7 +7,7 @@ from typing_extensions import override
 
 from devices.devices_misc import ButtonName
 from .foregroundmode import ForegroundMode
-from modes_misc import ModeDefinition
+from ..modes_misc import ModeDefinition
 from sequencemode import SequenceMode
 from sequences import rotate_build_flip
 
