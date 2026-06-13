@@ -7,7 +7,7 @@ from typing_extensions import override
 
 from devices.devices_misc import ButtonName
 from .foregroundmode import ForegroundMode
-from modes_misc import ModeIndex
+from ..modes_misc import ModeIndex
 
 log = logging.getLogger('marquee.' + __name__)
 
