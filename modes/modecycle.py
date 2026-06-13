@@ -6,7 +6,7 @@ import logging
 from typing_extensions import override
 
 from devices.devices_misc import ButtonName
-from abstract.backgroundmode import BackgroundMode
+from .abstract.backgroundmode import BackgroundMode
 from .modes_misc import CycleEntry, CycleSequence
 
 log = logging.getLogger('marquee.' + __name__)
