@@ -8,7 +8,7 @@ from devices.color import Colors
 from devices.devices_misc import ButtonName
 from .abstract.backgroundmode import BackgroundMode
 from .modes_misc import ModeDefinition
-from .abstract.performancemode import PerformanceMode
+from .abstract.interruptionmode import InterruptionMode
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -33,19 +33,16 @@ class AlarmBackground(BackgroundMode):
 
 
 @dataclass(kw_only=True)
-class AlarmForeground(PerformanceMode):
+class AlarmForeground(InterruptionMode):
     """"""
     alarm_time = 0.5
     restore_time = 5.0
     total_time = alarm_time + restore_time
 
     @override
-    def execute(self):
+    def execute_activity(self):
         """"""
-        self.tasks.delay_all(self.total_time)
-        self.state = self.lights.current_state()
-        self.schedule(action=self.raise_alarm)
-        self.schedule(due=self.alarm_time, action=self.restore_order)
+        self.raise_alarm()
 
     def raise_alarm(self):
         """Start ringing. Set lights."""
@@ -55,9 +52,4 @@ class AlarmForeground(PerformanceMode):
             color=Colors.RED, 
             transition=self.alarm_time,
         )
-
-    def restore_order(self):
-        """Stop ringing. Restore lights."""
-        self.ringer.rest()
-        self.lights.restore_state(self.state, self.restore_time)
 

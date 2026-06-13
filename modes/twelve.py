@@ -16,23 +16,18 @@ log = logging.getLogger('marquee.' + __name__)
 class Twelve(MusicMode):
     """"""
     brightness: int
-    tempo: int = 160
 
     @override
     def execute(self):
         """"""
-        self.lights.set_channels(on=False)
-        mixer.init()
-        mixer.music.load('modes/twelve.mp3')
-        self.prep_lights()
-        self.play()
-
-    def prep_lights(self):
-        """Prepare each light for turning on."""
         self.lights.set_channels(
+            on=False,
             brightness=self.brightness,
             color=Colors.WHEEL,
         )
+        mixer.init()
+        mixer.music.load('modes/twelve.mp3')
+        self.play()
 
     def play(self):
         """Play music and lights."""
@@ -54,7 +49,7 @@ class Twelve(MusicMode):
             )
             for i in ({11, 0, 1}, {8, 9, 10}, {5, 6, 7}, {2, 3, 4})
         )
-        count_to_12 = ' |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩  | '
+        count_to_12 = ' |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩ 𝄽 𝄽  | '
         piece(
             section(
                 actions(' |  ♩  | ', mixer.music.play),
@@ -63,9 +58,9 @@ class Twelve(MusicMode):
             lights(count_to_12, *each_light_on),
             lights(' |  𝄽 𝄽  | ', beats=2),
             lights(' |  ♩ 𝄽 ♩ 𝄽  |  ♩ 𝄽 ♩ 𝄽  | ', *light_groups_off),
-            # lights(' |  𝄻  |  𝄻  | '),
+            lights(' |  𝄻  |  𝄻  | '),
             lights(' |  𝄽 𝄽 𝄽  | ', beats=3),
             lights(count_to_12, *each_light_on),
             lights(' |  𝄻  |  ♩  | ', lights_all_off),
-        ).play(tempo=self.tempo)
+        ).play(tempo=160)
     

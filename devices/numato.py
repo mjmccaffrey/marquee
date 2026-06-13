@@ -38,18 +38,6 @@ class NumatoUSBRelayModule(RelayModuleInterface, ABC):
             raise OSError from None
         self.relay_pattern = self._get_relays()
 
-    def create_client(
-        self,
-        device_to_relay: dict[int, int],
-    ) -> RelayClient:
-        """Define a client, in which device_to_relay maps 
-           device indices to relay indices."""
-        return RelayClient(
-            module=self,
-            count=len(device_to_relay),
-            device_to_relay=device_to_relay,
-            relay_to_device={v: k for k, v in device_to_relay.items()},
-        )
 
     @override
     def __str__(self) -> str:

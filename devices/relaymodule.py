@@ -2,9 +2,10 @@
 
 from typing import ClassVar, Protocol
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 from typing import NewType
+from typing_extensions import override
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -48,26 +49,39 @@ class RelayModuleInterface(Protocol):
         self, 
         client: RelayClient,
         pattern: DevicePattern,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     def get_state_of_devices(
         self, 
         client: RelayClient,
-    ) -> DevicePattern:
-        ...
+    ) -> DevicePattern: ...
+
+    def create_client(
+        self,
+        device_to_relay: dict[int, int],
+    ) -> RelayClient:
+        """Define a client, in which device_to_relay maps 
+           device indices to relay indices."""
+        return RelayClient(
+            module=self,
+            count=len(device_to_relay),
+            device_to_relay=device_to_relay,
+            relay_to_device={v: k for k, v in device_to_relay.items()},
+        )
 
 
 @dataclass
-class CombinedRelayModule:
+class CombinedRelayModule(RelayModuleInterface):
     """Virtual relay module combining 2 concrete relay modules."""
     rm1: RelayModuleInterface
     rm2: RelayModuleInterface
+    relay_count: int = field(init=False)
 
     def __post_init__(self):
         """"""
         self.relay_count = self.rm1.relay_count + self.rm2.relay_count
 
+    @override
     def set_state_of_devices(
         self, 
         client: RelayClient,
@@ -80,6 +94,7 @@ class CombinedRelayModule:
             client, DevicePattern(pattern[self.rm1.relay_count:]),
         )
 
+    @override
     def get_state_of_devices(
         self, 
         client: RelayClient,

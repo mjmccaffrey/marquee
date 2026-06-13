@@ -15,6 +15,7 @@ from devices.deviceset import DeviceSet
 from devices.hue import HueBridge
 from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001, NumatoSSR80001
+from devices.relaymodule import CombinedRelayModule
 from devices.shelly import ShellyController, ShellyProDimmer1PM, ShellyProDimmer2PM
 from instruments import BellSet, ClickSet, DrumSet, LightSet, RingerBell
 from light_defs import *
@@ -114,23 +115,21 @@ def define_devices(
     speed_factor: float,
 ) -> DeviceSet:
     """Create and return objects for all physical devices."""
-
-    # bell_relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
+    # bell_relays = NumatoSSR80001("/dev/marquee_bells")
     # bells = BellSet(relays=bell_relays.create_client(
     #     {i: i for i in range(bell_relays.relay_count)})
     # )
-    # drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
-
-    drum_relays = NumatoRL320001("/dev/ttyACM0", bottom_mirrors_top=True)  # /dev/ttyACM0
-    drums = DrumSet(relays=drum_relays.create_client(
-        {i: i for i in range(drum_relays.relay_count // 2)})
+    drum_16_relays = NumatoRL160001("/dev/marquee_drums_16")
+    drum_32_relays = NumatoRL320001("/dev/marquee_drums_32")
+    drum_48_relays = CombinedRelayModule(drum_16_relays, drum_32_relays)
+    drums = DrumSet(relays=drum_48_relays.create_client(
+        {i: i for i in range(drum_48_relays.relay_count // 2)})
     )
-
-    light_relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
+    light_relays = NumatoRL160001("/dev/marquee_lights")
     lights = LightSet(
         count=LIGHT_COUNT,
         relays=light_relays.create_client(LIGHT_TO_RELAY),
-        mirror=drum_relays.create_client(LIGHT_TO_RELAY),
+        mirror=drum_48_relays.create_client(LIGHT_TO_RELAY),
         controller_type=HueBridge,
         controller_kwargs=dict(
             application_key=HUE_APPLICATION_KEY,
