@@ -14,7 +14,7 @@ from .admin.brightnessselect import BrightnessSelect
 from .admin.modeselect import ModeSelect
 
 # Background modes
-from modecycle import ModeCycle
+from .modecycle import ModeCycle
 
 # Performance & Game modes
 # from .christmas import ChristmasSongs
@@ -38,5 +38,5 @@ from .twelve import Twelve
 from .sequences import *
 
 # Misc
-from modes_misc import *
+from .modes_misc import *
 
