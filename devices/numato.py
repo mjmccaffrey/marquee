@@ -7,7 +7,7 @@ from typing_extensions import override
 
 import serial
 
-from relaymodule import (
+from .relaymodule import (
     DevicePattern, RelayClient, RelayHex, RelayPattern,
 )
 
