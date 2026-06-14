@@ -84,7 +84,8 @@ class CombinedRelayModule:
     ) -> None:
         """"""
         CombinedRelayModule.relay_count = rm1.relay_count + rm2.relay_count
-        self.rm1, self.rm2 = rm1, rm2
+        self.rm1, self.rc1 = rm1, create_client(rm1)
+        self.rm2, self.rc2 = rm2, create_client(rm2)
 
     def set_state_of_devices(
         self, 
