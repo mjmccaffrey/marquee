@@ -93,10 +93,10 @@ class CombinedRelayModule:
         pattern: DevicePattern,
     ) -> None:
         self.rm1.set_state_of_devices(
-            client, DevicePattern(pattern[:self.rm1.relay_count]),
+            self.rc1, DevicePattern(pattern[:self.rm1.relay_count]),
         )
         self.rm2.set_state_of_devices(
-            client, DevicePattern(pattern[self.rm1.relay_count:]),
+            self.rc2, DevicePattern(pattern[self.rm1.relay_count:]),
         )
 
     def get_state_of_devices(
@@ -104,7 +104,7 @@ class CombinedRelayModule:
         client: RelayClient,
     ) -> DevicePattern:
         return DevicePattern(
-            self.rm1.get_state_of_devices(client) + 
-            self.rm2.get_state_of_devices(client)
+            self.rm1.get_state_of_devices(self.rc1) + 
+            self.rm2.get_state_of_devices(self.rc2)
         )
 
