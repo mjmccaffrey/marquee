@@ -2,19 +2,21 @@
 
 from abc import ABC
 import logging
+from typing import ClassVar
 from typing_extensions import override
 
 import serial
 
-from .relaymodule import (
-    DevicePattern, RelayClient, RelayHex, RelayPattern, RelayModuleInterface,
+from relaymodule import (
+    DevicePattern, RelayClient, RelayHex, RelayPattern,
 )
 
 log = logging.getLogger('marquee.' + __name__)
 
 
-class NumatoUSBRelayModule(RelayModuleInterface, ABC):
+class NumatoUSBRelayModule(ABC):
     """Supports Numato USB Relay Modules."""
+    relay_count: ClassVar[int]
 
     def __init_subclass__(cls, relay_count: int) -> None:
         """"""
@@ -38,7 +40,6 @@ class NumatoUSBRelayModule(RelayModuleInterface, ABC):
             raise OSError from None
         self.relay_pattern = self._get_relays()
 
-
     @override
     def __str__(self) -> str:
         return f"{type(self).__name__} @ {self.port_address}"
@@ -48,7 +49,6 @@ class NumatoUSBRelayModule(RelayModuleInterface, ABC):
         self._serial_port.close()
         log.info(f"Relay module {self} closed.")
 
-    @override
     def set_state_of_devices(
         self, 
         client: RelayClient,
@@ -62,7 +62,6 @@ class NumatoUSBRelayModule(RelayModuleInterface, ABC):
         self._set_relays(relay_hex)
         self.relay_pattern = relay_pattern
 
-    @override
     def get_state_of_devices(
         self, 
         client: RelayClient,

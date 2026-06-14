@@ -15,7 +15,7 @@ from devices.deviceset import DeviceSet
 from devices.hue import HueBridge
 from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001, NumatoSSR80001
-from devices.relaymodule import CombinedRelayModule
+from devices.relaymodule import CombinedRelayModule, create_client
 from devices.shelly import ShellyController, ShellyProDimmer1PM, ShellyProDimmer2PM
 from instruments import BellSet, ClickSet, DrumSet, LightSet, RingerBell
 from light_defs import *
@@ -79,7 +79,7 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
         game_start = LightedButton(
             ButtonName.GAME_START,
             _Button(pin=21, bounce_time=0.05),
-            relay=light_relays.create_client(BUTTON_TO_RELAY),
+            relay=create_client(light_relays, BUTTON_TO_RELAY),
         ),
         remote_a = Button(
             ButtonName.REMOTE_A,
@@ -115,21 +115,15 @@ def define_devices(
     speed_factor: float,
 ) -> DeviceSet:
     """Create and return objects for all physical devices."""
-    # bell_relays = NumatoSSR80001("/dev/marquee_bells")
-    # bells = BellSet(relays=bell_relays.create_client(
-    #     {i: i for i in range(bell_relays.relay_count)})
-    # )
     drum_16_relays = NumatoRL160001("/dev/marquee_drums_16")
     drum_32_relays = NumatoRL320001("/dev/marquee_drums_32")
     drum_48_relays = CombinedRelayModule(drum_16_relays, drum_32_relays)
-    drums = DrumSet(relays=drum_48_relays.create_client(
-        {i: i for i in range(drum_48_relays.relay_count // 2)})
-    )
+    drums = DrumSet(relays=create_client(drum_48_relays))
     light_relays = NumatoRL160001("/dev/marquee_lights")
     lights = LightSet(
         count=LIGHT_COUNT,
-        relays=light_relays.create_client(LIGHT_TO_RELAY),
-        mirror=drum_48_relays.create_client(LIGHT_TO_RELAY),
+        relays=create_client(light_relays, LIGHT_TO_RELAY),
+        mirror=create_client(drum_48_relays, LIGHT_TO_RELAY),
         controller_type=HueBridge,
         controller_kwargs=dict(
             application_key=HUE_APPLICATION_KEY,
@@ -141,7 +135,6 @@ def define_devices(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
-
     extra = LightSet(
         count=3,
         relays=None,
@@ -158,8 +151,8 @@ def define_devices(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
-    clicker = ClickSet(light_relays.create_client(CLICK_TO_RELAY))
-    ringer = RingerBell(light_relays.create_client(RINGER_TO_RELAY))
+    clicker = ClickSet(create_client(light_relays, CLICK_TO_RELAY))
+    ringer = RingerBell(create_client(light_relays, RINGER_TO_RELAY))
     return DeviceSet(
         buttons(light_relays), drums, lights, extra, 
         clicker, ringer, joystick(),
@@ -177,14 +170,12 @@ def define_devices_shelly(
     #     {i: i for i in range(bell_relays.relay_count)})
     # )
     drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
-    drums = DrumSet(relays=drum_relays.create_client(
-        {i: i for i in range(drum_relays.relay_count)})
-    )
+    drums = DrumSet(relays=create_client(drum_relays))
     light_relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
     lights = LightSet(
         count=len(LIGHT_TO_RELAY),
-        relays=light_relays.create_client(LIGHT_TO_RELAY),
-        mirror=drum_relays.create_client(LIGHT_TO_RELAY),
+        relays=create_client(light_relays, LIGHT_TO_RELAY),
+        mirror=create_client(drum_relays, LIGHT_TO_RELAY),
         controller_type=ShellyController,
         controller_kwargs=dict(
                 bulb_model=Sylvania_G25_Frosted_40,
@@ -201,8 +192,8 @@ def define_devices_shelly(
         speed_factor=speed_factor,
     )
     extra = None
-    clicker = ClickSet(light_relays.create_client(CLICK_TO_RELAY))
-    ringer = RingerBell(light_relays.create_client(RINGER_TO_RELAY))
+    clicker = ClickSet(create_client(light_relays, CLICK_TO_RELAY))
+    ringer = RingerBell(create_client(light_relays, RINGER_TO_RELAY))
     return DeviceSet(
         buttons(light_relays), drums, lights, extra, 
         clicker, ringer, joystick(),

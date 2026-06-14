@@ -2,10 +2,9 @@
 
 from typing import ClassVar, Protocol
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import logging
 from typing import NewType
-from typing_extensions import override
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -56,32 +55,37 @@ class RelayModuleInterface(Protocol):
         client: RelayClient,
     ) -> DevicePattern: ...
 
-    def create_client(
-        self,
-        device_to_relay: dict[int, int],
-    ) -> RelayClient:
-        """Define a client, in which device_to_relay maps 
-           device indices to relay indices."""
-        return RelayClient(
-            module=self,
-            count=len(device_to_relay),
-            device_to_relay=device_to_relay,
-            relay_to_device={v: k for k, v in device_to_relay.items()},
-        )
+
+def create_client(
+    relay_module: RelayModuleInterface,
+    device_to_relay: dict[int, int] | None = None,
+) -> RelayClient:
+    """Define a client, in which device_to_relay maps 
+        device indices to relay indices."""
+    if device_to_relay is None:
+        device_to_relay = {i: i for i in range(relay_module.relay_count)}
+    return RelayClient(
+        module=relay_module,
+        count=len(device_to_relay),
+        device_to_relay=device_to_relay,
+        relay_to_device={v: k for k, v in device_to_relay.items()},
+    )
 
 
-@dataclass
-class CombinedRelayModule(RelayModuleInterface):
+
+class CombinedRelayModule:
     """Virtual relay module combining 2 concrete relay modules."""
-    rm1: RelayModuleInterface
-    rm2: RelayModuleInterface
-    relay_count: int = field(init=False)
-
-    def __post_init__(self):
+    relay_count: ClassVar[int]
+    
+    def __init__(
+        self,
+        rm1: RelayModuleInterface,
+        rm2: RelayModuleInterface,
+    ) -> None:
         """"""
-        self.relay_count = self.rm1.relay_count + self.rm2.relay_count
+        CombinedRelayModule.relay_count = rm1.relay_count + rm2.relay_count
+        self.rm1, self.rm2 = rm1, rm2
 
-    @override
     def set_state_of_devices(
         self, 
         client: RelayClient,
@@ -94,7 +98,6 @@ class CombinedRelayModule(RelayModuleInterface):
             client, DevicePattern(pattern[self.rm1.relay_count:]),
         )
 
-    @override
     def get_state_of_devices(
         self, 
         client: RelayClient,
