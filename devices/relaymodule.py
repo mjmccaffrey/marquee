@@ -72,7 +72,6 @@ def create_client(
     )
 
 
-
 class CombinedRelayModule:
     """Virtual relay module combining 2 concrete relay modules."""
     relay_count: ClassVar[int]
