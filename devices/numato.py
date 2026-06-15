@@ -129,6 +129,7 @@ class NumatoUSBRelayModule(ABC):
         self._send_command(f"relay writeall {relay_hex}")
 
     def _send_command(self, command: str) -> None:
+        return
         """Send command and read resulting echo."""
         self._serial_port.reset_input_buffer()
         command_b = bytes(command + '\r', 'utf-8')

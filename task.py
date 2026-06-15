@@ -48,8 +48,10 @@ class TaskSchedule:
     
     def bulk_add(self, new: list[Task]):
         """Add a chunk of tasks to the schedule."""
+        print(' '.join(str(n.due) for n in new))
         self._schedule.extend(new)
         heapify(self._schedule)
+        print(f"{len(new)} tasks added to schedule.")
         log.debug(f"{len(new)} tasks added to schedule.")
 
     def delete_owned_by(self, owner: object) -> None:
