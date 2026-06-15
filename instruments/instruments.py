@@ -69,7 +69,7 @@ class RelayInstrument(Instrument, ABC):
         try:
             selected = set(random.sample(candidates, count))
         except ValueError:
-            log.info(f'{len(candidates)} of {count} {state} relays present.')
+            log.info(f'Using only {len(candidates)} of {count} {state} relays desired.')
             selected = set(candidates)
         return selected
 

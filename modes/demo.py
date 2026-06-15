@@ -35,10 +35,14 @@ class Demo(MusicMode):
     def execute(self) -> None:
         """Execute version 3 demo."""
         piece(
-            self.pre(),
-            self.alternate(),
-            self.rotate(),
+            # self.pre(),
+            # self.alternate(),
+            # self.rotate(),
             self.triplett_a(),
+            self.triplett_a(),
+            self.triplett_a(),
+            self.triplett_b(),
+            self.triplett_b(),
             self.triplett_b(),
             # self.rotate_fast(),
             # # self.dim(),
