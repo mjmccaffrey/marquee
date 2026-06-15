@@ -44,7 +44,7 @@ class Demo(MusicMode):
             # self.dim(),
         ]
         for section in sections:
-            time.sleep(section.play())
+            print(section.play())
         # sys.exit()
 
     def pre(self) -> Section:
