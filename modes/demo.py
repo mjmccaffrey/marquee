@@ -9,7 +9,7 @@ from device_defs import ALL_HIGH, ALL_ON, ALL_LOW, ALL_ON
 from . import MusicMode
 from music import (
     dimmer, dimmer_sequence, measure, part, play,
-    relay, section, Section, sequence,
+    relay, section, Section, sequence, piece,
 )
 from music import(
     action, actions, drums,
@@ -34,7 +34,7 @@ class Demo(MusicMode):
     @override
     def execute(self) -> None:
         """Execute version 3 demo."""
-        sections = [
+        piece(
             self.pre(),
             self.alternate(),
             self.rotate(),
@@ -42,16 +42,7 @@ class Demo(MusicMode):
             self.triplett_b(),
             # self.rotate_fast(),
             # # self.dim(),
-        ]
-        for section in sections:
-            d = section.play()
-            print(d)
-            time.sleep(d)
-            print(
-                time.time(),
-                self.tasks._schedule[0].due,
-                len(self.tasks._schedule), 
-            )
+        ).play()
 
     def pre(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀

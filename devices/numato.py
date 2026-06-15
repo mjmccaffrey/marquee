@@ -70,7 +70,6 @@ class NumatoUSBRelayModule(ABC):
            Update saved state.
            Return a client device pattern."""
         self.relay_pattern = self._get_relays()
-        print(self.relay_pattern)
         return self._relays_to_devices(client, self.relay_pattern)
 
     def _devices_to_relays(
@@ -130,7 +129,6 @@ class NumatoUSBRelayModule(ABC):
 
     def _send_command(self, command: str) -> None:
         """Send command and read resulting echo."""
-        print(command)
         self._serial_port.reset_input_buffer()
         command_b = bytes(command + '\r', 'utf-8')
         self._serial_port.write(command_b)
