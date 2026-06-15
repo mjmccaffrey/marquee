@@ -45,6 +45,7 @@ class Twelve(MusicMode):
         light_groups_off = tuple(
             dict(
                 on=False,
+                transition=1.0,
                 indices=i,
             )
             for i in ({11, 0, 1}, {8, 9, 10}, {5, 6, 7}, {2, 3, 4})

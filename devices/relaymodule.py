@@ -13,7 +13,7 @@ DevicePattern = NewType('DevicePattern', str)
 """str[n] represents the state of the nth device in RelayClient."""
 
 RelayPattern = NewType('RelayPattern', str)
-"""str[len(str) - n] represents state of nth relay in RelayModuleInterface."""
+"""str[len(str) - n] represents state of nth relay in RelayModule."""
 
 RelayHex = NewType('RelayHex', str)
 """Numato hex representation of relay pattern."""
