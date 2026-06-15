@@ -47,7 +47,7 @@ class Demo(MusicMode):
             d = section.play()
             print(d)
             time.sleep(d)
-            print("DONE")
+            print("DONE", len(self.tasks._schedule))
 
     def pre(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
