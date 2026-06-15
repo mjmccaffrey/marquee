@@ -18,11 +18,11 @@ log = logging.getLogger('marquee.' + __name__)
 
 note_duration_map: dict[str, float] = {
     '𝅝': 4,     '𝅗𝅥': 2,      '♩': 1,
-    '♪': 0.5,   '𝅘𝅥𝅯': 0.25,  '𝅘𝅥𝅰': 0.125,
+    '♪': 0.5,   '𝅘𝅥𝅯': 0.25,  '𝅘𝅥𝅰': 0.125,  '𝅘𝅥𝅱': 0.0625,
 }
 rest_duration_map: dict[str, float] = {
     '𝄻': 4,    '𝄼': 2,      '𝄽': 1,
-    '𝄾': 0.5,   '𝄿': 0.25,  '𝅀': 0.125,
+    '𝄾': 0.5,   '𝄿': 0.25,  '𝅀': 0.125,  '𝅁': 0.0625,
 }
 symbol_duration_map = note_duration_map | rest_duration_map
 
