@@ -41,7 +41,7 @@ class Demo(MusicMode):
             self.triplett_a(),
             self.triplett_b(),
             self.rotate_fast(),
-            self.dim(),
+            # self.dim(),
         ]
         for section in sections:
             section.play()
