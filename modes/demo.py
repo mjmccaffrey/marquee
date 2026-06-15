@@ -36,16 +36,18 @@ class Demo(MusicMode):
         """Execute version 3 demo."""
         sections = [
             self.pre(),
-            # self.alternate(),
-            # self.rotate(),
-            # self.triplett_a(),
-            # self.triplett_b(),
+            self.alternate(),
+            self.rotate(),
+            self.triplett_a(),
+            self.triplett_b(),
             # self.rotate_fast(),
             # # self.dim(),
         ]
         for section in sections:
-            print(section.play())
-        print("DONE")
+            d = section.play()
+            print(d)
+            time.sleep(d)
+            print("DONE")
 
     def pre(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
