@@ -59,7 +59,7 @@ class Twelve(MusicMode):
             lights(count_to_12, *each_light_on),
             lights(' |  𝄽 𝄽  | ', beats=2),
             lights(' |  ♩ 𝄽 ♩ 𝄽  |  ♩ 𝄽 ♩ 𝄽  | ', *light_groups_off),
-            lights(' |  𝄻  |  𝄻  | '),
+            lights(' |  𝄻  |  𝄻  '),
             lights(' |  𝄽 𝄽 𝄽  | ', beats=3),
             lights(count_to_12, *each_light_on),
             lights(' |  𝄻  |  ♩  | ', lights_all_off),
