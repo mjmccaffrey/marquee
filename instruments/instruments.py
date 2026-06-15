@@ -109,7 +109,7 @@ class DrumSet(RelayInstrument):
     """Set of drums."""
     accent_levels = 4
     accent_to_relay_count = {
-        0: 2, 1: 4, 2: 8, 3: 16,
+        0: 4, 1: 8, 2: 16, 3: 32,
     }
     pitch_levels = 2
     pitch_to_relay_state = {
