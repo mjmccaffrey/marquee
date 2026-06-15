@@ -45,7 +45,7 @@ class Demo(MusicMode):
         ]
         for section in sections:
             print(section.play())
-        # sys.exit()
+        sys.exit()
 
     def pre(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
