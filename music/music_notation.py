@@ -186,7 +186,8 @@ def drum(symbols: str) -> DrumNote | Rest:
     if is_rest:
         return rest(symbols)
     if not pitches:
-        raise ValueError("Drum note must have at least one pitch.")
+        # raise ValueError("Drum note must have at least one pitch.")
+        pitches={0, 1}
     return DrumNote(duration, accent, pitches)
 
 
