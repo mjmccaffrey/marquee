@@ -24,11 +24,12 @@ class ColorWheel(PerformanceMode):
     @override
     def execute(self):
         """"""
-        print(self.rotation)
+        color = Colors.WHEEL[:self.rotation][self.rotation:]
+        print(color)
         self.lights.set_channels(
             brightness=100,
-            color=Colors.WHEEL[:self.rotation][self.rotation:],
-            transition=self.delay * 2,
+            color=color,
+            transition=self.delay,
         )
         self.rotation = (self.rotation + 1) % 12
         self.schedule(due=self.delay)
