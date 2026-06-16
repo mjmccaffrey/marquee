@@ -27,7 +27,8 @@ class Twelve(MusicMode):
         )
         mixer.init()
         mixer.music.load('modes/twelve.mp3')
-        self.play()
+        mixer.music.play()
+        self.schedule(due=0.25, action=self.play)
 
     def play(self):
         """Play music and lights."""
@@ -45,17 +46,14 @@ class Twelve(MusicMode):
         each_light_off = tuple(
             dict(
                 on=False,
-                transition=1.0,
+                transition=1.5,
                 indices={i},
             )
             for i in range(self.lights.count)
         )
         count_to_12 = ' |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩ 𝄽 𝄽  | '
         piece(
-            section(
-                actions(' |  ♩  | ', mixer.music.play),
-                lights( ' |  𝄻  |  𝄻  |  𝄻  | '),
-            ),
+            lights( ' |  𝄻  |  𝄻  |  𝄻  | '),
             lights(count_to_12, *each_light_on),
             lights(' |  𝄽 𝄽  | ', beats=2),
             lights(' |  3♩ 3♩ 3♩ 3♩ 3♩ 3♩ |  3♩ 3♩ 3♩ 3♩ 3♩ 3♩  | ', *each_light_off),
