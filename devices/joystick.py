@@ -43,19 +43,19 @@ class Joystick:
     direction: Direction = field(init=False)
 
     def __post_init__(self) -> None:
-        """"""
+        """Initialize."""
         self.direction = Direction.NONE
-        self.switches = (
+        self._switches = (
             self.up, self.down, 
             self.right, self.left,
         )
-        for switch in self.switches:
+        for switch in self._switches:
             switch.when_pressed = self.update
             switch.when_released = self.update
 
     def update(self) -> None:
-        """"""
-        values = ''.join(str(s.value) for s in self.switches)
+        """Update self.direction."""
+        values = ''.join(str(s.value) for s in self._switches)
         self.direction = state_to_direction[values]
-        print(values, self.direction)
+        # print(values, self.direction)
 

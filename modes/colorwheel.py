@@ -24,6 +24,7 @@ class ColorWheel(PerformanceMode):
     @override
     def execute(self):
         """"""
+        print(self.rotation)
         self.lights.set_channels(
             brightness=100,
             color=Colors.WHEEL[:self.rotation][self.rotation:],
