@@ -4,6 +4,7 @@ from argparse import (
     Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
 )
 from collections.abc import Callable
+from itertools import groupby
 from typing import Any, NoReturn
 from typing_extensions import override
 
@@ -58,7 +59,7 @@ def str_to_bool(arg: str) -> bool:
 
 def display_help(
     mode_menu: list[tuple[int, str]], 
-    color_menu: list[tuple[int, str]],
+    color_menu: list[tuple[str, int, str]],
     commands: dict[str, Callable],
 ) -> None:
     """"Display the command-line syntax."""
@@ -86,8 +87,10 @@ def display_help(
     print("      will not be initialized at startup.")
     print('')
     print("Colors:")
-    for index, name in color_menu:
-        print(f'   {index}   {name}')
+    for group_name, sets in groupby(color_menu, lambda e: e[0]):
+        print(f'  {group_name}')
+        for _, index, set_name in sets:
+            print(f'    {index}  {set_name}')
     print('')
     print("Commands:")
     for command in commands:

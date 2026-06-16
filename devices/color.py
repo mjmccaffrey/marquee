@@ -176,9 +176,21 @@ class ColorSets:
 
     def __init__(self, source: str) -> None:
         """"""
-        self.by_set_name = self._load_color_sets(Path(source))
-        self.by_set_name |= self._basic_colors()
-        self.by_group_name = self._create_color_groups(self.by_set_name)
+        unordered = (
+            self._basic_colors() |
+            self._load_color_sets(Path(source))
+        )
+        self.by_group_name = self._create_color_groups(unordered)
+        self.by_set_name = {
+            s.name: s
+            for _, sets in self.by_group_name.items()
+            for s in sets
+        }
+        self.each_set_name = (
+            (gn, s.name)
+            for gn, sets in self.by_group_name.items()
+            for s in sets
+        )
 
     def lookup(self, name: str) -> ColorSet:
         """Return color set with name."""

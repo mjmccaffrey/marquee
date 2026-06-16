@@ -7,7 +7,7 @@ from typing_extensions import override
 
 from devices.color import Colors
 from . import MusicMode
-from music import actions, lights, piece, section
+from music import lights, piece
 
 log = logging.getLogger('marquee.' + __name__)
 
