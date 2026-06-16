@@ -127,7 +127,7 @@ class DoomGame(PerformanceMode):
                 action=partial(
                     self.lights.set_channels,
                     on=False,
-                    transition=2.0,
+                    transition=1.5,
                     indices=set(row),
                 ),
                 due=i / 4,
