@@ -123,7 +123,7 @@ def define_devices(
     lights = LightSet(
         count=LIGHT_COUNT,
         relays=create_client(light_relays, LIGHT_TO_RELAY),
-        mirror=create_client(drum_48_relays, LIGHT_TO_RELAY),
+        mirror=create_client(drum_16_relays, LIGHT_TO_RELAY),
         controller_type=HueBridge,
         controller_kwargs=dict(
             application_key=HUE_APPLICATION_KEY,
