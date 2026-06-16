@@ -88,9 +88,9 @@ def display_help(
     print('')
     print("Colors:")
     for group_name, sets in groupby(color_menu, lambda e: e[0]):
-        print(f'  {group_name}')
+        print(f'   {group_name}')
         for _, index, set_name in sets:
-            print(f'    {index}  {set_name}')
+            print(f'      {index:>3}  {set_name}')
     print('')
     print("Commands:")
     for command in commands:
