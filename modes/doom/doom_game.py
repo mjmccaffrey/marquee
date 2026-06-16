@@ -41,7 +41,7 @@ class DoomGame(PerformanceMode):
         self.init_sound()
         self.lights.set_channels(
             on=False,
-            brightness=100,
+            # brightness=100,
         )
 
     def init_sound(self):
@@ -71,7 +71,7 @@ class DoomGame(PerformanceMode):
         self.play_sound(Sound.TELEPORT)
         self.lights.set_channels(
             on=True,
-            # brightness=100,
+            brightness=100,
             color=Colors.YELLOW,
             transition=1.0,
             indices=self.slayer_coord,
@@ -82,7 +82,7 @@ class DoomGame(PerformanceMode):
         self.play_sound(Sound.SLAYER_UMF)
         self.lights.set_channels(
             on=True,
-            # brightness=100,
+            brightness=100,
             color=Colors.GREEN,
             transition=0.0,
             indices=self.slayer_coord,
@@ -93,7 +93,7 @@ class DoomGame(PerformanceMode):
         self.play_sound(Sound.BARON_ROAR)
         self.lights.set_channels(
             on=True,
-            # brightness=100,
+            brightness=100,
             color=Colors.ROSE,
             transition=0.0,
             indices=set(
@@ -115,7 +115,7 @@ class DoomGame(PerformanceMode):
         )
         self.lights.set_channels(
             on=True,
-            # brightness=100,
+            brightness=100,
             color=Colors.RED,
             transition=0.0,
         )
