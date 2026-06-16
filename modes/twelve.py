@@ -42,13 +42,13 @@ class Twelve(MusicMode):
             for i in range(self.lights.count)
         )
         lights_all_off = dict(on=False)
-        light_groups_off = tuple(
+        each_light_off = tuple(
             dict(
                 on=False,
                 transition=1.0,
                 indices=i,
             )
-            for i in ({11, 0, 1}, {8, 9, 10}, {5, 6, 7}, {2, 3, 4})
+            for i in range(self.lights.count)
         )
         count_to_12 = ' |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩ 𝄽 𝄽  | '
         piece(
@@ -58,8 +58,7 @@ class Twelve(MusicMode):
             ),
             lights(count_to_12, *each_light_on),
             lights(' |  𝄽 𝄽  | ', beats=2),
-            lights(' |  ♩ 𝄽 ♩ 𝄽  |  ♩ 𝄽 ♩ 𝄽  | ', *light_groups_off),
-            # lights(' |  𝄻  | '),
+            lights(' |  3♩ 3♩ 3♩ 3♩ 3♩ 3♩ |  3♩ 3♩ 3♩ 3♩ 3♩ 3♩  | ', *each_light_off),
             lights(' |  𝄽 𝄽 𝄽  | ', beats=3),
             lights(count_to_12, *each_light_on),
             lights(' |  𝄻  |  ♩  | ', lights_all_off),
