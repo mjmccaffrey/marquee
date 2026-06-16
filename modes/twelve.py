@@ -46,7 +46,7 @@ class Twelve(MusicMode):
         each_light_off = tuple(
             dict(
                 on=False,
-                transition=1.5,
+                transition=1.25,
                 indices={i},
             )
             for i in range(self.lights.count)
