@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - color"""
 
 from abc import ABC
+from collections.abc import Iterator
 import json
 import logging
 from pathlib import Path
@@ -186,11 +187,12 @@ class ColorSets:
             for _, sets in self.by_group_name.items()
             for s in sets
         }
-        self.each_set_name = (
-            (gn, s.name)
-            for gn, sets in self.by_group_name.items()
-            for s in sets
-        )
+    
+    def each_set_name(self) -> Iterator[tuple[str, str]]:
+        """"""
+        for gn, sets in self.by_group_name.items():
+            for s in sets:
+                yield (gn, s.name)
 
     def lookup(self, name: str) -> ColorSet:
         """Return color set with name."""

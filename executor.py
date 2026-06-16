@@ -37,12 +37,12 @@ class Executor:
         self.color_sets = ColorSets('color_sets.json')
         self.color_ids: dict[str, str] = {
             e: sn
-            for i, (gn, sn) in enumerate(self.color_sets.each_set_name)
+            for i, (gn, sn) in enumerate(self.color_sets.each_set_name())
             for e in (str(i), sn)
         }
         self.color_menu: list[tuple[str, int, str]] = [
             (gn, i, sn)
-            for i, (gn, sn) in enumerate(self.color_sets.each_set_name)
+            for i, (gn, sn) in enumerate(self.color_sets.each_set_name())
         ]
         self.commands: dict[str, Callable[[], None]] = {
             'calibrate': self.command_calibrate,
