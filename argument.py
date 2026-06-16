@@ -75,7 +75,7 @@ def display_help(
     print('')
     print("Modes:")
     for index, name in mode_menu:
-        print(f'   {index}   {name}')
+        print(f'   {index:>2}   {name}')
     print('')
     print("Patterns: Specify --dimmer, --relay, or both.")
     print(f"  dimmer: {LIGHT_COUNT} hex values, each 0..A (0%..100%)")
@@ -90,7 +90,7 @@ def display_help(
     for group_name, sets in groupby(color_menu, lambda e: e[0]):
         print(f'   {group_name}')
         for _, index, set_name in sets:
-            print(f'      {index:>3}  {set_name}')
+            print(f'     {index:>3}   {set_name}')
     print('')
     print("Commands:")
     for command in commands:
