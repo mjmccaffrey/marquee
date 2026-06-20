@@ -245,10 +245,7 @@ class LightSet:
             case Sequence():
                 result = list(index)
             case None:
-                result = (
-                    [i for i in range(self.count) if i % 2] + 
-                    [i for i in range(self.count) if not i % 2]
-                )
+                result = list(range(self.count))
             case int():
                 result = [index]
         return result
