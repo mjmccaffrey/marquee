@@ -15,9 +15,6 @@ CycleSequence = list[tuple[str, int]]
 class ChangeMode(Exception):
     """Change mode exception."""
 
-class InterruptMode(Exception):
-    """Event that mode handles itself."""
-
 @dataclass(kw_only=True)
 class ModeDefinition:
     index: int | None = None

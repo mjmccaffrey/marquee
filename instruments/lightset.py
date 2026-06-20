@@ -60,8 +60,6 @@ class LightSet:
         RGB.adjust_incomplete_colors(self.gamut or rgbxy.GamutC)
         self.colors = Colors(self.gamut or rgbxy.GamutC)
         assert len(self.controller.channels) == self.count
-        self.update_sequence = [i for i in range(self.count)] # !!!!!!!!
-        # log.info(self.update_sequence)
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
         self.bulb_adjustments = self.controller.bulb_model.adjustments
@@ -81,65 +79,47 @@ class LightSet:
         transition: Sequence[float | None] | float | None = None,
         color: Sequence[Color | None] | Color | None = None,
         on: Sequence[int | bool | str | None] | bool | int | None = None,
-        indices: set[int] | None = None,
+        index: Sequence[int] | int | None = None,
         force: bool = False,
     ) -> None:
-        """Set the channels per the supplied brightness, 
-           transition times and colors. 
+        """Set the channels per the supplied brightnesses
+           (adjusted by brightness_factor), 
+           colors, and 'on's, with transition times.
            Specify a subset of channels via indices.
-           Force all specified channels to update with force.
-           Adjust for brightness_factor."""
+           If subset of channels specified, other parameters
+           must each be a single value.
+           Force all specified channels to update with force."""
         
-        def all_at_once_possible() -> bool:
-            """Can the update be performed more-or-less all at once,
-               rather than on each channel individually."""
-            return (
-                self.controller.all_at_once_supported and 
-                (   indices is None or 
-                    len(indices) == self.count
-                ) and
+        def channel_updates() -> list[ChannelUpdate]:
+            """"""
+            _index = self._convert_index(index)
+            _channels = [self.channels[i] for i in _index]
+            _brightness = self._convert_brightness(brightness, _index)
+            _transition = self._convert_transition(transition, _index)
+            _color = self._convert_color(color, _index)
+            _on = self._convert_on(on, _index)
+            updates = [
+                ChannelUpdate(ch, br, tr, co, on)
+                for ch, br, tr, co, on in 
+                zip(_channels, _brightness, _transition, _color, _on)
+            ]
+            return [updates[i] for i in _index]
+
+        assert (  # Critical
+            index is None or (
                 not isinstance(brightness, Sequence) and
                 not isinstance(transition, Sequence) and
                 not isinstance(color, Sequence) and
                 not isinstance(on, Sequence)
             )
-        
-        if all_at_once_possible():
-            self.controller.execute_update_all_at_once(
-                ChannelUpdate(
-                    channel=self.controller.channels[0],  # Dummy
-                    brightness=self._convert_brightness(brightness)[0],
-                    transition=self._convert_transition(transition)[0],
-                    color=self._convert_color(color)[0],
-                    on=self._convert_on(on)[0],
-                )
-            )
-            return
-
-        # Update each channel individually
-        _indices = (
-            self.update_sequence
-                if indices is None else
-            indices
         )
-        _channels = [self.channels[i] for i in _indices]
-        _brightnesses = self._convert_brightness(brightness)
-        _transitions = self._convert_transition(transition)
-        _colors = self._convert_color(color)
-        _on = self._convert_on(on)
-        updates = [
-            ChannelUpdate(
-                channel=ch,
-                brightness=br,
-                transition=tr,
-                color=co,
-                on=on,
-            )
-            for ch, br, tr, co, on in zip(
-                _channels, _brightnesses, _transitions, _colors, _on,
-            )
-        ]
-        self.controller.update_channels(updates, force)
+        updates = channel_updates()
+        if index is None and self.controller.all_at_once_supported:
+            # Update channels 'all at once'.
+            self.controller.execute_update_all_at_once(updates[0])
+        else:
+            # Update each channel individually.
+            self.controller.update_channels(updates, force)
 
     def set_relays(
         self, 
@@ -238,16 +218,37 @@ class LightSet:
 
     @property
     def brightness_factor(self) -> float:
+        """Return brightness_factor."""
         return self._brightness_factor
     
     @brightness_factor.setter
     def brightness_factor(self, value) -> None:
+        """Set brightness_factor. Lights not adjusted."""
         self._brightness_factor = value
         log.info(f"Brightness factor is now {self._brightness_factor}")
 
+    def _convert_index(
+        self,
+        index: Sequence[int] | int | None,
+    ) -> list[int]:
+        """Return normalized index list.  If index is None, 
+           return complete index list in scattered order."""
+        match index:
+            case Sequence():
+                result = list(index)
+            case None:
+                result = (
+                    [i for i in range(self.count) if i % 2] + 
+                    [i for i in range(self.count) if not i % 2]
+                )
+            case int():
+                result = [index]
+        return result
+    
     def _convert_brightness(
         self,
         brightness: Sequence[int | None] | str | int | None,
+        index: Sequence[int],
     ) -> list[int | None]:
         """Return normalized brightness pattern, 
            adjusted by brightness_factor."""
@@ -260,42 +261,46 @@ class LightSet:
             case Sequence():
                 result = list(brightness)
             case _:
-                result = [brightness] * self.count
+                result = [brightness] * len(index)
         # log.info(f"{result=} {self._brightness_factor=}")
         result = [
             int(b * self._brightness_factor)
             if b is not None else None
             for b in result
         ]
+        print(f"_convert_brightness {result=}")
         return result
     
     def _convert_transition(
         self,
         transition: Sequence[float | None] | float | None,
+        index: Sequence[int],
     ) -> list[float | None]:
         """"""
         match transition:
             case Sequence():
                 result = list(transition)
             case _:
-                result = [transition] * self.count
+                result = [transition] * len(index)
         return cast(list, result)
     
     def _convert_color(
         self,
         color: Sequence[Color | None] | Color | None,
+        index: Sequence[int],
     ) -> list[Color | None]:
         """"""
         match color:
             case Sequence():
                 result = list(color)
             case _:
-                result = [color] * self.count
+                result = [color] * len(index)
         return result
     
     def _convert_on(
         self,
         on: Sequence[int | bool | str | None] | bool | int | None,
+        index: Sequence[int],
     ) -> list[bool | None]:
         """"""
         match on:
@@ -312,7 +317,7 @@ class LightSet:
             case _:
                 result = [
                     bool(on) if on is not None else None
-                ] * self.count
+                ] * len(index)
         return cast(list, result)
     
     def _convert_relay_pattern(

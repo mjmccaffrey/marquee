@@ -80,12 +80,8 @@ class PacManGame(GameMode):
         else:
             return super().button_action(button)
 
-    @override
-    def interrupt_action(self, args: tuple[Any, ...]) -> None:
-        """"""
-
     def pacman_bite(self, etype: type, coord: int):
-        """Track remaining. Brighten extra bulb."""
+        """Effect PacMan bighting something."""
         match etype:
             case assets.Dot:
                 dot = cast(Dot, self.board[coord][etype])

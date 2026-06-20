@@ -35,7 +35,7 @@ class DoomGame(PerformanceMode):
             self.lights = self.combined
             LIGHTS_BY_ROW[2].extend([12, 13, 14])
             LIGHTS_BY_SIDE.insert(0, [])
-        self.slayer_coord = {13 if self.passage else 1}
+        self.slayer_coord = 13 if self.passage else 1
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
@@ -74,7 +74,7 @@ class DoomGame(PerformanceMode):
             brightness=100,
             color=Colors.YELLOW,
             transition=1.0,
-            indices=self.slayer_coord,
+            index=self.slayer_coord,
         )
 
     def slayer_appears(self):
@@ -85,7 +85,7 @@ class DoomGame(PerformanceMode):
             brightness=100,
             color=Colors.GREEN,
             transition=0.0,
-            indices=self.slayer_coord,
+            index=self.slayer_coord,
         )
 
     def barons_appear(self, step: int):
@@ -96,7 +96,7 @@ class DoomGame(PerformanceMode):
             brightness=100,
             color=Colors.ROSE,
             transition=0.0,
-            indices=set(
+            index=(
                 LIGHTS_BY_SIDE[step]
                 if self.passage else
                 LIGHTS_BY_ROW[step]
@@ -128,7 +128,7 @@ class DoomGame(PerformanceMode):
                     self.lights.set_channels,
                     on=False,
                     transition=1.5,
-                    indices=set(row),
+                    index=row,
                 ),
                 due=i / 4,
             )

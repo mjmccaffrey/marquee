@@ -38,12 +38,8 @@ class BaseMode(ABC):
         """Respond to button being pressed.
            Return index of new mode, if any."""
 
-    # @abstractmethod
     def execute(self) -> None:
         """Play the mode."""
-
-    def interrupt_action(self, args: tuple[Any, ...]) -> None:
-        """Respond to mode interrupt exception."""
         raise RuntimeError("Method must be overridden.")
 
     @override

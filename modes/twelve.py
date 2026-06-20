@@ -38,7 +38,7 @@ class Twelve(MusicMode):
                 on=True,
                 brightness=100,
                 transition=0.0,
-                indices={(i + 2) % self.lights.count},
+                index=(i + 2) % self.lights.count,
             )
             for i in range(self.lights.count)
         )
@@ -47,7 +47,7 @@ class Twelve(MusicMode):
             dict(
                 on=False,
                 transition=1.25,
-                indices={i},
+                index=i,
             )
             for i in range(self.lights.count)
         )

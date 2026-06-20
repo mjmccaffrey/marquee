@@ -25,7 +25,7 @@ class ColorWheel(PerformanceMode):
     @override
     def execute(self):
         """"""
-        print(self.rotation)
+        self.lights.brightness_factor = 100 - self.rotation * 8
         self.lights.set_channels(
             brightness=100,
             color=(

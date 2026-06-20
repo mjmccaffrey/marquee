@@ -23,7 +23,7 @@ class LightSetInterface(Protocol):
         transition: Sequence[float | None] | float | None = None,
         color: Sequence[Color | None] | Color | None = None,
         on: Sequence[int | bool | str | None] | bool | int | None = None,
-        indices: set[int] | None = None,
+        index: Sequence[int] | int | None = None,
         force: bool = False,
     ) -> None: ...
 

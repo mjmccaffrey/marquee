@@ -101,7 +101,7 @@ def dimmer_sequence(brightness: int, transition: float) -> Callable:
         mode.lights.set_channels(
             brightness=brightness, 
             transition=transition,
-            indices=set(lights),
+            index=lights,
         )
 
     return set_channels
@@ -116,7 +116,7 @@ def dimmer_sequence_flip(transition: float) -> Callable:
         mode.lights.set_channels(
             brightness=brightness, 
             transition=transition,
-            indices=set(lights),
+            index=lights,
         )
 
     return set_channels

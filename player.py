@@ -14,7 +14,7 @@ from devices.devices_misc import (
 from event import EventSystem
 from modes.abstract.backgroundmode import BackgroundMode
 from modes.abstract.foregroundmode import ForegroundMode
-from modes.modes_misc import ChangeMode, InterruptMode, ModeDefinition
+from modes.modes_misc import ChangeMode, ModeDefinition
 from task import TaskSchedule
 
 log = logging.getLogger('marquee.' + __name__)
@@ -143,10 +143,6 @@ class Player:
             except ChangeMode as cm:
                 log.debug("ChangeMode caught")
                 new_mode_index, = cm.args
-            except InterruptMode as im:
-                log.debug("InterruptMode caught")
-                assert self.active_mode is not None
-                self.active_mode.interrupt_action(im.args)
             except SigTerm:
                 return False
 

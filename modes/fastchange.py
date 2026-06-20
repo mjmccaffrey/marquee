@@ -30,7 +30,7 @@ class FastChange(PerformanceMode):
         self.lights.set_channels(
             color=self.lights.colors.random(),
             transition=self.transition,
-            indices={self.rotation},
+            index=self.rotation,
         )
         self.schedule(due=self.delay)
 
@@ -39,7 +39,7 @@ class FastChange(PerformanceMode):
         self.lights.set_channels(
             color=self.lights.colors.random(),
             transition=self.transition,
-            indices={self.rotation},
+            index=self.rotation,
         )
         self.rotation = (self.rotation + 1) % 12
         self.schedule(due=self.delay)
