@@ -26,7 +26,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
     """Hue bridge controller."""
 
     trans_min: ClassVar[float] = 0.0  # ?????????
-    all_at_once_supported: bool = False  # !!! ClassVar
+    all_at_once_supported: bool = True  # !!! ClassVar
 
     application_key: str
     bulb_ids: Sequence[str]
@@ -95,7 +95,6 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         """Build and send commands."""
         for update in updates:
             command = update.channel._make_set_command(update)
-            print(command)
             response = self.session.put(
                 url=command.url,
                 json=command.params,
