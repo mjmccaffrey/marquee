@@ -105,16 +105,24 @@ class LightSet:
             ]
             return [updates[i] for i in _index]
 
-        assert (  # Critical
-            index is None or (
+        def no_params_are_sequences():
+            """"""
+            return (
                 not isinstance(brightness, Sequence) and
                 not isinstance(transition, Sequence) and
                 not isinstance(color, Sequence) and
                 not isinstance(on, Sequence)
             )
+
+        assert (  # Critical
+            index is None or no_params_are_sequences()
         )
         updates = channel_updates()
-        if index is None and self.controller.all_at_once_supported:
+        if (
+            self.controller.all_at_once_supported and
+            index is None and 
+            no_params_are_sequences()
+        ):
             # Update channels 'all at once'.
             self.controller.execute_update_all_at_once(updates[0])
         else:
@@ -268,7 +276,6 @@ class LightSet:
             if b is not None else None
             for b in result
         ]
-        print(f"_convert_brightness {result=}")
         return result
     
     def _convert_transition(
