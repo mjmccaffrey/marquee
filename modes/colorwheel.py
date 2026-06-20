@@ -29,9 +29,8 @@ class ColorWheel(PerformanceMode):
         self.lights.set_channels(
             brightness=100,
             color=(
-                Colors.WHEEL
-                # Colors.WHEEL[self.rotation:] + 
-                # Colors.WHEEL[:self.rotation]
+                Colors.WHEEL[self.rotation:] + 
+                Colors.WHEEL[:self.rotation]
             ),
             transition=self.delay,
         )
