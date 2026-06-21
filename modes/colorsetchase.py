@@ -53,6 +53,7 @@ class ColorSetChase(ColorSetMode):
             kwargs=dict(
                 color_set_name=entry.name,
                 delay=0.35, 
+                sequence=rotate,
                 sequence_kwargs=dict(
                     pattern="012---------", 
                     clockwise=False,
