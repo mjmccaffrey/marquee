@@ -55,6 +55,7 @@ class AlarmForeground(InterruptionMode):
         self.lights.set_channels(
             brightness=100, 
             color=Colors.RED, 
+            on=True,
             transition=self.activity_time,
         )
 
