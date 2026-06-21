@@ -5,6 +5,7 @@ import logging
 from typing_extensions import override
 
 from devices.devices_misc import ButtonName
+from devices.specialparams import ChannelParams
 from . import ColorSetMode
 from .modes_misc import CycleSequence, ModeDefinition
 from .sequences import rotate
@@ -58,6 +59,7 @@ class ColorSetChase(ColorSetMode):
                     pattern="012---------", 
                     clockwise=False,
                 ),
+                special=ChannelParams(trans_off=0.5),
             ),
             parent=self,
         ).execute()
