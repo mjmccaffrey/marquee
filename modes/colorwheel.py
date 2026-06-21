@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import logging
+import random
 from typing_extensions import override
 
 from devices.color import Colors
@@ -20,18 +21,21 @@ class ColorWheel(PerformanceMode):
         """"""
         super().__post_init__()
         self.rotation = 0
+        self.colors = list(Colors.WHEEL[:])
         self.lights.set_channels(on=True)
     
     @override
     def execute(self):
         """"""
+        random.shuffle(self.colors)
         self.lights.brightness_factor = 1 - self.rotation * .08
         self.lights.set_channels(
             brightness=100,
-            color=(
-                Colors.WHEEL[self.rotation:] + 
-                Colors.WHEEL[:self.rotation]
-            ),
+            color=self.colors,
+            # (
+            #     self.colors[self.rotation:] + 
+            #     self.colors[:self.rotation]
+            # ),
             transition=self.delay,
         )
         self.rotation = (self.rotation + self.step) % 12
