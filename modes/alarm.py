@@ -18,6 +18,10 @@ class AlarmBackground(BackgroundMode):
     """"""
     
     @override
+    def execute(self) -> None:
+        return
+    
+    @override
     def button_action(self, button: ButtonName) -> int | None:
         """"""
         if button == ButtonName.GAME_START:
