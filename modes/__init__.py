@@ -17,6 +17,7 @@ from .admin.modeselect import ModeSelect
 from .modecycle import ModeCycle
 
 # Performance & Game modes
+from .alarm import AlarmBackground, AlarmForeground
 # from .christmas import ChristmasSongs
 from .colorsetcycle import ColorSetCycle
 from .colorwheel import ColorWheel

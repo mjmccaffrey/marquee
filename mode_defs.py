@@ -72,12 +72,19 @@ def register_channel_modes(exec: Executor):
             ("random_flip_fade_medium", 30),
         ],
     )
+    exec.add_mode("alarm_bg", AlarmBackground)
+    exec.add_mode("alarm_fg", AlarmForeground)
     exec.add_sequence_mode("cs_chase", rotate, 
         sequence_kwargs=dict(pattern="012---------", clockwise=False),
         delay=0.35, 
         color_set_name='amber_bloom',
     )
-
+    exec.add_mode("alarm_test", ModeCycle,
+        sequence = [
+            ("alarm_bg", 0.1),
+            ("cs_chase", 99999),
+        ],
+    )
     exec.add_sequence_mode("rotaterc", rotate, 
         sequence_kwargs=dict(pattern="100000000000"),
         delay=2.0, 

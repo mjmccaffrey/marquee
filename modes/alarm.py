@@ -20,7 +20,7 @@ class AlarmBackground(BackgroundMode):
     @override
     def button_action(self, button: ButtonName) -> int | None:
         """"""
-        if button == ButtonName.CORDED_A:
+        if button == ButtonName.GAME_START:
             self.create_mode_instance(
                 mode_definition=ModeDefinition(
                     name='alarm_foreground',

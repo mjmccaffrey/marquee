@@ -232,6 +232,7 @@ class LightSet:
     @brightness_factor.setter
     def brightness_factor(self, value) -> None:
         """Set brightness_factor. Lights not adjusted."""
+        assert 0 <= value <= 1.0
         self._brightness_factor = value
         log.info(f"Brightness factor is now {self._brightness_factor}")
 
