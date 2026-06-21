@@ -36,7 +36,6 @@ class AlarmBackground(BackgroundMode):
             return super().button_action(button)
 
 
-@dataclass(kw_only=True)
 class AlarmForeground(InterruptionMode):
     """"""
     alarm_time = 0.5
