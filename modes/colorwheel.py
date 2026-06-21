@@ -27,7 +27,7 @@ class ColorWheel(PerformanceMode):
     @override
     def execute(self):
         """"""
-        random.shuffle(self.colors)
+        # random.shuffle(self.colors)
         self.lights.brightness_factor = 1 - self.rotation * .08
         self.lights.set_channels(
             brightness=100,
