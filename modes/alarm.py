@@ -51,7 +51,8 @@ class AlarmForeground(InterruptionMode):
 
     def raise_alarm(self):
         """Start ringing. Set lights."""
-        self.ringer.play()
+        print("***RING***")
+        # self.ringer.play()
         self.lights.set_channels(
             brightness=100, 
             color=Colors.RED, 

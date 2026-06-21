@@ -113,8 +113,10 @@ class Player:
         if isinstance(new_mode, BackgroundMode):
             # If bg mode of same type already present, clean it up.
             if (conflict := self.live_bg_modes.pop(new_mode.index, None)):
+                print(f'Deleting background mode {new_mode.index}')
                 self.tasks.delete_owned_by(conflict)
             # Add new bg mode to bg mode list
+            print(f'Adding background mode {new_mode.index}')
             self.live_bg_modes[new_mode.index] = new_mode
 
         # Return new mode instance
