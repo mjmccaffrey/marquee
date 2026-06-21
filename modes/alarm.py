@@ -39,9 +39,9 @@ class AlarmBackground(BackgroundMode):
 @dataclass(kw_only=True)
 class AlarmForeground(InterruptionMode):
     """"""
-    alarm_time: float = 0.5
+    activity_time: float = 0.5
     restore_time: float = 5.0
-    total_time: float = alarm_time + restore_time
+    total_time: float = activity_time + restore_time
 
     @override
     def execute_activity(self):
@@ -54,6 +54,6 @@ class AlarmForeground(InterruptionMode):
         self.lights.set_channels(
             brightness=100, 
             color=Colors.RED, 
-            transition=self.alarm_time,
+            transition=self.activity_time,
         )
 
