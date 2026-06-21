@@ -59,7 +59,7 @@ class ColorSetChase(ColorSetMode):
                     pattern="012---------", 
                     clockwise=False,
                 ),
-                special=ChannelParams(trans_off=0.5),
+                # special=ChannelParams(trans_off=0.3),
             ),
             parent=self,
         ).execute()
