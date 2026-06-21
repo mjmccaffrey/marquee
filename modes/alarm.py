@@ -36,11 +36,12 @@ class AlarmBackground(BackgroundMode):
             return super().button_action(button)
 
 
+@dataclass(kw_only=True)
 class AlarmForeground(InterruptionMode):
     """"""
-    alarm_time = 0.5
-    restore_time = 5.0
-    total_time = alarm_time + restore_time
+    alarm_time: float = 0.5
+    restore_time: float = 5.0
+    total_time: float = alarm_time + restore_time
 
     @override
     def execute_activity(self):
