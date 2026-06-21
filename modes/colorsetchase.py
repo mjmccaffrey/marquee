@@ -9,7 +9,7 @@ from devices.specialparams import ChannelParams
 from . import ColorSetMode
 from .modes_misc import CycleSequence, ModeDefinition
 from .sequences import rotate
-from .sequencemode import SequenceMode
+from .sequencemode import LightSetBaseline, SequenceMode
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -52,6 +52,7 @@ class ColorSetChase(ColorSetMode):
                 cls=SequenceMode,
             ),
             kwargs=dict(
+                baseline=LightSetBaseline(),
                 color_set_name=entry.name,
                 delay=0.35, 
                 sequence=rotate,
