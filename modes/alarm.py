@@ -46,7 +46,8 @@ class AlarmForeground(InterruptionMode):
     @override
     def execute_activity(self):
         """"""
-        self.raise_alarm()
+        self.schedule(action=self.raise_alarm)
+        self.schedule(action=self.quell_alarm, due=self.activity_time)
 
     def raise_alarm(self):
         """Start ringing. Set lights."""
@@ -56,4 +57,8 @@ class AlarmForeground(InterruptionMode):
             color=Colors.RED, 
             transition=self.activity_time,
         )
+
+    def quell_alarm(self):
+        """Stop ringing."""
+        self.ringer.rest()
 
