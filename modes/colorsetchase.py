@@ -52,7 +52,7 @@ class ColorSetChase(ColorSetMode):
                 cls=SequenceMode,
             ),
             kwargs=dict(
-                baseline=LightSetBaseline(),
+                baseline=LightSetBaseline(on=False),
                 color_set_name=entry.name,
                 delay=0.35, 
                 sequence=rotate,
@@ -60,7 +60,7 @@ class ColorSetChase(ColorSetMode):
                     pattern="012---------", 
                     clockwise=False,
                 ),
-                # special=ChannelParams(trans_off=0.3),
+                special=ChannelParams(),
             ),
             parent=self,
         ).execute()
