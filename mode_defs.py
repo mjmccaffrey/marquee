@@ -43,6 +43,16 @@ def register_special_modes(exec: Executor) -> None:
 def register_channel_modes(exec: Executor):
     """"""
     exec.add_mode('tilt', TiltSensors)
+    exec.add_mode("cs_chase", ColorSetChase, 
+        sequence = [
+            # ("party", 1),
+            # ("cancun", 1),
+            # ("race", 1),
+            # ("amber_bloom", 1),
+            ("ALL", 2)
+        ],
+        brightness=35,
+    )
     exec.add_mode("cs_test", ColorSetCycle,
         sequence = [
             # ("party", 1),
@@ -74,11 +84,6 @@ def register_channel_modes(exec: Executor):
     )
     exec.add_mode("alarm_bg", AlarmBackground)
     exec.add_mode("alarm_fg", AlarmForeground)
-    exec.add_sequence_mode("cs_chase", rotate, 
-        sequence_kwargs=dict(pattern="012---------", clockwise=False),
-        delay=0.35, 
-        color_set_name='amber_bloom',
-    )
     exec.add_mode("alarm_test", ModeCycle,
         sequence = [
             ("alarm_bg", 0.1),

@@ -3,6 +3,7 @@
 # Abstract modes
 from .abstract.backgroundmode import BackgroundMode
 from .abstract.basemode import BaseMode
+from .abstract.colorsetmode import ColorSetMode
 from .abstract.foregroundmode import ForegroundMode
 from .abstract.gamemode import GameMode
 from .abstract.musicmode import MusicMode
@@ -20,6 +21,7 @@ from .modecycle import ModeCycle
 from .alarm import AlarmBackground, AlarmForeground
 # from .christmas import ChristmasSongs
 from .colorsetcycle import ColorSetCycle
+from .colorsetchase import ColorSetChase
 from .colorwheel import ColorWheel
 from .comet import Comet
 from .doom import DoomGame
