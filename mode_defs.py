@@ -49,7 +49,7 @@ def register_channel_modes(exec: Executor):
             # ("cancun", 1),
             # ("race", 1),
             # ("amber_bloom", 1),
-            ("ALL", 2)
+            ("ALL", 10)
         ],
         brightness=35,
     )
