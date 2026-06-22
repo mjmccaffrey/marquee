@@ -79,7 +79,7 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
         ),
         corded_c = Button(
             ButtonName.CORDED_C,
-            _Button(pin=16, bounce_time=0.05),
+            _Button(pin=18, bounce_time=0.05),
             signal_number=signal.SIGFPE,  # type: ignore
         ),
         game_start = LightedButton(
@@ -90,6 +90,7 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
         remote_a = Button(
             ButtonName.REMOTE_A,
             _Button(pin=19, pull_up=False, bounce_time=0.10)
+
         ),
         remote_b = Button(
             ButtonName.REMOTE_B,
@@ -97,7 +98,7 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
         ),
         remote_c = Button(
             ButtonName.REMOTE_C,
-            _Button(pin=18, pull_up=False, bounce_time=0.10)
+            _Button(pin=6, pull_up=False, bounce_time=0.10)
         ),
         remote_d = Button(
             ButtonName.REMOTE_D,
