@@ -66,15 +66,16 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
             ButtonName.BODY_BACK,
             _Button(pin=26, bounce_time=0.10, hold_time=10), 
             supports_hold=True,
-            signal_number=signal.SIGUSR1,  # type: ignore
         ),
         corded_a = Button(
             ButtonName.CORDED_A,
             _Button(pin=12, bounce_time=0.05),
+            signal_number=signal.SIGUSR1,  # type: ignore
         ),
         corded_b = Button(
             ButtonName.CORDED_B,
             _Button(pin=16, bounce_time=0.05),
+            signal_number=signal.SIGUSR2,  # type: ignore
         ),
         game_start = LightedButton(
             ButtonName.GAME_START,
