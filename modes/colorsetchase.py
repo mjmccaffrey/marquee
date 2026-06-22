@@ -6,10 +6,10 @@ from typing_extensions import override
 
 from devices.devices_misc import ButtonName
 from devices.specialparams import ChannelParams
-from . import ColorSetMode
-from .modes_misc import CycleSequence, ModeDefinition
-from .sequences import rotate
-from .sequencemode import LightSetBaseline, SequenceMode
+from . import (
+    ColorSetMode, CycleSequence, ModeDefinition,
+    LightSetBaseline, SequenceMode, rotate,
+)
 
 log = logging.getLogger('marquee.' + __name__)
 

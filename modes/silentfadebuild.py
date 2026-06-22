@@ -5,8 +5,7 @@ from functools import partial
 import random
 from typing_extensions import override
 
-from . import PerformanceMode
-from .sequences import lights_in_groups
+from . import lights_in_groups, PerformanceMode
 
 
 @dataclass(kw_only=True)

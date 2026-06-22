@@ -8,9 +8,7 @@ from typing import Any, Protocol
 from device_defs import DeviceSet
 from devices.color import ColorSets
 from devices.specialparams import SpecialParams
-from modes import BaseMode
-from modes.modes_misc import ModeDefinition
-from modes.sequencemode import SequenceMode
+from modes import BaseMode, ModeDefinition, SequenceMode
 from player import Player
 
 log = logging.getLogger('marquee.' + __name__)

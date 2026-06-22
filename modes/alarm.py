@@ -7,7 +7,7 @@ from typing_extensions import override
 from devices.color import Colors
 from devices.devices_misc import ButtonName
 from .abstract.backgroundmode import BackgroundMode
-from .modes_misc import ModeDefinition
+from . import ModeDefinition
 from .abstract.interruptionmode import InterruptionMode
 
 log = logging.getLogger('marquee.' + __name__)

@@ -3,8 +3,7 @@
 from typing_extensions import override
 
 from device_defs import ALL_OFF, ALL_ON
-from . import MusicMode
-from .sequences import all_on, blink_all, random_each
+from . import MusicMode, all_on, blink_all, random_each
 from music import (
     actions, bells, drums, sequences,
     dimmer_sequence_flip, piece, section, Section, sequence,

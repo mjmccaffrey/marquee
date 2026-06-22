@@ -5,7 +5,7 @@ from functools import partial
 from typing_extensions import override
 
 from . import PerformanceMode
-from .sequences import opposite
+from . import opposite
 from devices.specialparams import ChannelParams
             
 

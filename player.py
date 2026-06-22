@@ -14,7 +14,7 @@ from devices.devices_misc import (
 from event import EventSystem
 from modes.abstract.backgroundmode import BackgroundMode
 from modes.abstract.foregroundmode import ForegroundMode
-from modes.modes_misc import ChangeMode, ModeDefinition
+from modes import ChangeMode, ModeDefinition
 from task import TaskSchedule
 
 log = logging.getLogger('marquee.' + __name__)

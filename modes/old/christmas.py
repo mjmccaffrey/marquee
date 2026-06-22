@@ -4,7 +4,7 @@ from typing_extensions import override
 
 from device_defs import ALL_OFF, ALL_LOW, ALL_ON
 from ..abstract.musicmode import MusicMode
-from ..sequences import all_on, blink_all, random_each
+from .. import all_on, blink_all, random_each
 from music import (
     set_mode,
     actions, bells, drums, sequences,

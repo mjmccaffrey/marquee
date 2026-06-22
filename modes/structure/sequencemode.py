@@ -10,7 +10,7 @@ from typing_extensions import override
 
 from devices.color import Color, Colors
 from devices.specialparams import ActionParams, EmulateParams
-from .abstract.performancemode import PerformanceMode
+from ..abstract.performancemode import PerformanceMode
 
 log = logging.getLogger('marquee.' + __name__)
 

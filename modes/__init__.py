@@ -10,16 +10,16 @@ from .abstract.musicmode import MusicMode
 from .abstract.performancemode import PerformanceMode
 from .abstract.selectmode import SelectMode
 
-# Admin modes
-from .admin.brightnessselect import BrightnessSelect
-from .admin.modeselect import ModeSelect
-
-# Background modes
-from .modecycle import ModeCycle
+# Structure modes etc.
+from .structure.brightnessselect import BrightnessSelect
+from .structure.modecycle import ModeCycle
+from .structure.modeselect import ModeSelect
+from .structure.modes_misc import *
+from .structure.sequencemode import LightSetBaseline, SequenceMode
+from .structure.sequences import *
 
 # Performance & Game modes
 from .alarm import AlarmBackground, AlarmForeground
-# from .christmas import ChristmasSongs
 from .colorsetcycle import ColorSetCycle
 from .colorsetchase import ColorSetChase
 from .colorwheel import ColorWheel
@@ -28,7 +28,6 @@ from .doom import DoomGame
 from .demo import Demo
 from .evenoddfade import EvenOddFade
 from .fastchange import FastChange
-from .sequencemode import SequenceMode
 from .pacman import PacManGame
 from .randomfade import RandomFade
 from .running import Running
@@ -36,10 +35,4 @@ from .signs import Signs
 from .silentfadebuild import SilentFadeBuild
 from .tiltsensors import TiltSensors
 from .twelve import Twelve
-
-# Sequences
-from .sequences import *
-
-# Misc
-from .modes_misc import *
 

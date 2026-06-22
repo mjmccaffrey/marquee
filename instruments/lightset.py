@@ -51,7 +51,7 @@ class LightSet:
             else:
                 log.info("***** Smart bulbs in use - setting light relays ON. *****")
                 self.set_relays(True, smart_bulb_override=True)
-                time.sleep(2.0)  # Enough time for controller to see all bulbs.
+                time.sleep(3.0)  # Enough time for controller to see all bulbs.
 
     def _init_controller(self):
         """Initialize controller."""
