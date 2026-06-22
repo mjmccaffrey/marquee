@@ -1,5 +1,6 @@
 """Marquee Lighted Sign Project - player"""
 
+from contextlib import suppress
 from dataclasses import dataclass, field
 import logging
 import signal
@@ -135,13 +136,15 @@ class Player:
                     self.active_mode.execute()
                 self.wait()
             except ButtonActionException as press:
-                if press.action == ButtonAction.HELD:
-                    return True
-                self.devices.buttons.reset()
-                assert self.active_mode is not None
-                print(f"Button {press.button} {press.action} in mode {self.active_mode}")
-                log.debug(f"Button {press.button} {press.action} in mode {self.active_mode}")
-                new_mode_index = self.notify_button_action(press.button)
+                with suppress(ButtonActionException):
+                    if press.action == ButtonAction.HELD:
+                        return True
+                    self.devices.buttons.reset()
+                    log.info(
+                        f"Button {press.button} {press.action} "
+                        f"in mode {self.active_mode}"
+                    )
+                    new_mode_index = self.notify_button_action(press.button)
             except ChangeMode as cm:
                 log.debug("ChangeMode caught")
                 new_mode_index, = cm.args
@@ -150,14 +153,11 @@ class Player:
 
     def notify_button_action(self, button: ButtonName) -> int | None:
         """Notify all background modes, and active mode, 
-           of button action. Return active mode's response."""
+           of button action. Return FG active mode's response."""
         for mode in self.live_bg_modes.values():
             mode.button_action(button)
-        return (
-            self.active_mode.button_action(button)
-            if isinstance(self.active_mode, ForegroundMode) else
-            None
-        )
+        if isinstance(self.active_mode, ForegroundMode):
+            return self.active_mode.button_action(button)
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""
