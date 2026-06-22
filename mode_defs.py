@@ -53,13 +53,13 @@ def register_channel_modes(exec: Executor):
         ],
         brightness=35,
     )
-    exec.add_mode("cs_test", ColorSetCycle,
+    exec.add_mode("cs_all", ColorSetCycle,
         sequence = [
             # ("party", 1),
             # ("cancun", 1),
             # ("race", 1),
             # ("amber_bloom", 1),
-            ("ALL", 2)
+            ("ALL", 15)
         ],
         brightness=35,
         # transition=0.0,
