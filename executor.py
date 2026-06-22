@@ -142,18 +142,18 @@ class Executor:
     def execute_mode(self, mode_index: int, speed_factor: float) -> bool:
         """Launches Player with the command-line specified mode.
            Returns the Player's exit / shutdown return value."""
-        try:
-            self.player: Player = self.create_player(
-                self.modes, 
-                self.mode_ids,
-                self.color_sets,
-                self.devices,
-                speed_factor,
-            )
-            return self.player.execute(mode_index)
-        except ButtonActionException:
-            log.info("BUTTON ACTION EXCEPTION ESCAPED")
-            return False
+        # try:
+        self.player: Player = self.create_player(
+            self.modes, 
+            self.mode_ids,
+            self.color_sets,
+            self.devices,
+            speed_factor,
+        )
+        return self.player.execute(mode_index)
+        # except ButtonActionException:
+        #     log.info("BUTTON ACTION EXCEPTION ESCAPED")
+        #     return False
 
     def execute_pattern(
         self, 
