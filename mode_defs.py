@@ -86,6 +86,7 @@ def register_channel_modes(exec: Executor):
     exec.add_mode("alarm_test", ModeCycle,
         sequence = [
             ("alarm_bg", 0.1),
+            ("twelve", 60),
             ("cs_chase", 99999),
         ],
     )
