@@ -7,7 +7,9 @@ from typing_extensions import override
 
 from devices.devices_misc import ButtonName
 from .foregroundmode import ForegroundMode
-from .. import ModeDefinition, SequenceMode, rotate_build_flip
+from ..structure.modes_misc import ModeDefinition
+from ..structure.sequencemode import SequenceMode
+from ..structure.sequences import rotate_build_flip
 
 log = logging.getLogger('marquee.' + __name__)
 
