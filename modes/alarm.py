@@ -87,6 +87,6 @@ class AlarmDive(InterruptionMode):
             on=True,
             transition=0.0,
         )
-        dive = pygame.mixer.Sound('alarm.ogg')
+        dive = pygame.mixer.Sound('modes/alarm.ogg')
         dive.play()
 
