@@ -13,7 +13,7 @@ from devices.color import ColorSets
 from devices.devices_misc import ButtonName
 from event import EventSystem
 from task import SeqTask, Task, TaskSchedule
-from .. import ChangeMode, ModeDefinition
+from ..structure.modes_misc import ChangeMode, ModeDefinition
 
 log = logging.getLogger('marquee.' + __name__)
 
