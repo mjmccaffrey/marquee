@@ -32,6 +32,7 @@ class ColorSetChase(ColorSetMode):
     @override
     def execute(self):
         """Timer-invoked change to next color set."""
+        self.tasks.delete_owned_by(self)
         self.entry_index = self.wrap_entry_index(self.direction)
         self.show_color_set()
 
