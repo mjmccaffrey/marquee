@@ -33,7 +33,7 @@ class TiltSensors(PerformanceMode):
             shift = self.shift + direction_buttons[button]
             if -5 <= shift <= 5:
                 self.shift = shift
-                self.execute()
+                self.schedule(action=self.execute)
         else:
             return super().button_action(button)
 

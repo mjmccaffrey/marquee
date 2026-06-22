@@ -16,6 +16,7 @@ class ButtonSet:
     body_back: Button
     corded_a: Button
     corded_b: Button
+    corded_c: Button
     game_start: LightedButton
     remote_a: Button
     remote_b: Button

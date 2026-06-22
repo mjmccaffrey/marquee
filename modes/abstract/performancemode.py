@@ -34,7 +34,7 @@ class PerformanceMode(ForegroundMode, ABC):
             case b.REMOTE_D:
                 self.clicker.click()
                 new_mode = self.wrap_mode_index(+1)
-            case b.CORDED_A | b.CORDED_B | b.GAME_START:
+            case _:
                 pass
         return new_mode
 

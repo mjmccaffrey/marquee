@@ -9,6 +9,7 @@ class ButtonName(StrEnum):
     BODY_BACK = auto()
     CORDED_A = auto()
     CORDED_B = auto()
+    CORDED_C = auto()
     GAME_START = auto()
     REMOTE_A = auto()
     REMOTE_B = auto()

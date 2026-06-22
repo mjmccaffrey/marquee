@@ -3,6 +3,7 @@
 from abc import ABC
 from dataclasses import dataclass
 import logging
+import pygame
 
 from devices.deviceset import DeviceSet
 from devices.specialparams import SpecialParams
@@ -22,6 +23,7 @@ class ForegroundMode(BaseMode, ABC):
 
     def __post_init__(self):
         """"""
+        pygame.mixer.init()
         (   self.buttons, self.drums, self.lights, self.extra,
             self.clicker, self.ringer, self.joystick,
         ) = self.devices.astuple()

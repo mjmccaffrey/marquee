@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 import logging
-from pygame import mixer
+import pygame
 from typing_extensions import override
 
 from devices.color import Colors
@@ -25,9 +25,9 @@ class Twelve(MusicMode):
             brightness=self.brightness,
             color=Colors.WHEEL,
         )
-        mixer.init()
-        mixer.music.load('modes/twelve.mp3')
-        mixer.music.play()
+        # pygame.mixer.init()
+        pygame.mixer.music.load('modes/twelve.mp3')
+        pygame.mixer.music.play()
         self.schedule(due=0.25, action=self.play)
 
     def play(self):

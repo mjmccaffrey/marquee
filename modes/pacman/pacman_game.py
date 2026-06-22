@@ -59,7 +59,7 @@ class PacManGame(GameMode):
 
     def init_sound(self):
         """"""
-        pygame.mixer.init()
+        # pygame.mixer.init()
         self.sounds = {
             sound: pygame.mixer.Sound(f'modes/pacman/pacman_{sound}.wav')
             for sound in Sound

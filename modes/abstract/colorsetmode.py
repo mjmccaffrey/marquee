@@ -41,7 +41,7 @@ class ColorSetMode(PerformanceMode, ABC):
             self.clicker.click()
             self.tasks.delete_owned_by(self)
             self.entry_index = self.wrap_entry_index(direction_buttons[button])
-            self.show_color_set()
+            self.schedule(action=self.show_color_set)
         else:
             return super().button_action(button)
 

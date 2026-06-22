@@ -19,7 +19,7 @@ from .structure.sequencemode import LightSetBaseline, SequenceMode
 from .structure.sequences import *
 
 # Performance & Game modes
-from .alarm import AlarmBackground, AlarmForeground
+from .alarm import AlarmBackground, AlarmBell, AlarmDive
 from .colorsetcycle import ColorSetCycle
 from .colorsetchase import ColorSetChase
 from .colorwheel import ColorWheel

@@ -47,7 +47,7 @@ class SelectMode(ForegroundMode, ABC):
                 self.desired = self.update_desired(+1)
             case b.REMOTE_B:
                 self.desired = self.update_desired(-1)
-            case b.GAME_START | b.REMOTE_C:
+            case _:
                 pass
         return None
 
