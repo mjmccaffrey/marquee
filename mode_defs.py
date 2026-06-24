@@ -72,7 +72,7 @@ def register_channel_modes(exec: Executor):
     exec.add_mode("twelve", Twelve, brightness=40)
     exec.add_mode("comet_test_1", Comet,
         length=9,
-        delay=0.1,  # 0.175,
+        delay=0.05,  # 0.175,
         wheel_divisions=2,
     )
     exec.add_mode("comet_test_2", Comet,
