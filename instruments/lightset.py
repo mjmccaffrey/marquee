@@ -42,7 +42,7 @@ class LightSet:
         self.update_order = {
             index: i for i, index in enumerate(indices)
         }
-        print(self.update_order)
+        # print(self.update_order)
         self._init_relays()
         self._init_controller()
 
