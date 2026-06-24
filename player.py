@@ -136,7 +136,7 @@ class Player:
                     self.active_mode.execute()
                 self.wait()
             except ButtonActionException as press:
-                with suppress():
+                with suppress(ButtonActionException):
                     if press.action == ButtonAction.HELD:
                         return True
                     self.devices.buttons.reset()
