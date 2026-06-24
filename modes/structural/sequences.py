@@ -111,10 +111,12 @@ def rotate_sides(pattern="1", clockwise=True) -> Iterator[str]:
 def chase(pattern: str, mask: str, clockwise: bool) -> Iterator[str]:
     """Rotate mask around pattern."""
     for rotated_mask in rotate(mask, clockwise):
-        yield ''.join(
+        result = ''.join(
             p if m == '*' else m
             for p, m in zip(pattern, rotated_mask)
         )
+        print(result)
+        yield result
 
 
 def rotate_build(clockwise=True) -> Iterator[str]:
