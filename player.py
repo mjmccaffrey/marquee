@@ -53,7 +53,7 @@ class Player:
 
     def close(self) -> None:
         """Clean up."""
-        log.info(f"Player {self} closed.")
+        log.info(f"Player closed.")
 
     def sigterm_received(self, signal_number, stack_frame) -> None:
         """Callback for SIGTERM received."""

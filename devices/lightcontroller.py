@@ -18,15 +18,14 @@ log = logging.getLogger('marquee.' + __name__)
 @dataclass(kw_only=True, repr=False)
 class LightController(ABC):
     """ABC for any light controller."""
-
     bulb_comp: ClassVar[type[Bulb]]
     channel_count: ClassVar[int]
     trans_min: ClassVar[float]
-    all_at_once_supported: bool  # !!! ClassVar
  
     ip_address: str
     bulb_model: Bulb
     channel_first_index: int
+    groups: dict[frozenset[int], str] = field(default_factory=dict)
     session: requests.Session = field(init=False)
     channels: Sequence['LightChannel'] = field(init=False)
 
@@ -76,7 +75,7 @@ class LightController(ABC):
         """Build and send commands via aiohttp asynchronously."""
 
     @abstractmethod
-    def execute_update_all_at_once(self, update: 'ChannelUpdate'):
+    def update_channel_group(self, update: 'ChannelUpdate', group: str):
         """Update the 'all' zone, rather than individual channels.
            Does not check current state."""
         raise RuntimeError("Method should not have been called.")

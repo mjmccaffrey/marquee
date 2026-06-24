@@ -11,17 +11,17 @@ from .abstract.performancemode import PerformanceMode
 from .abstract.selectmode import SelectMode
 
 # Structure modes etc.
-from .structure.brightnessselect import BrightnessSelect
-from .structure.modecycle import ModeCycle
-from .structure.modeselect import ModeSelect
-from .structure.modes_misc import *
-from .structure.sequencemode import LightSetBaseline, SequenceMode
-from .structure.sequences import *
+from .structural.brightnessselect import BrightnessSelect
+from .structural.modecycle import ModeCycle
+from .structural.modeselect import ModeSelect
+from .structural.modes_misc import *
+from .structural.sequencemode import LightSetBaseline, SequenceMode
+from .structural.sequences import *
 
 # Performance & Game modes
 from .alarm import AlarmBackground, AlarmBell, AlarmDive
-from .colorsetcycle import ColorSetCycle
-from .colorsetchase import ColorSetChase
+from .colorsetstatic import ColorSetStatic
+from .colorsetdynamic import ColorSetDynamic
 from .colorwheel import ColorWheel
 from .comet import Comet
 from .doom import DoomGame

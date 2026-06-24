@@ -5,8 +5,9 @@ import signal
 from gpiozero import Button as _Button
 
 from devices.bulb import (
-    Hue_BR30_Enhanced_Color, Sylvania_G40_Frosted_100, 
+    Hue_BR30_Enhanced_Color, 
     Sylvania_G25_Frosted_40,
+    Sylvania_G40_Frosted_100, 
 )
 from devices.button import Button, LightedButton
 from devices.buttonset import ButtonSet 
@@ -41,14 +42,23 @@ HUE_BULB_IDS_1 = [
     "a0906758-e0b5-45c3-8e19-85994f253bd7",
     "359de043-2614-443f-8e44-fad407fdc854",
 ]
-HUE_ZONE_IDS = [
+HUE_ZONE_IDS_0 = {
     # "services": [
     #     {
     #         "rid": "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
-    #         "rtype": "grouped_light"    
-    "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
-    "afbce248-f994-4f71-833d-f7c20eb96814",
-]
+    #         "rtype": "grouped_light"
+    'all': [
+        "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
+        "afbce248-f994-4f71-833d-f7c20eb96814",
+    ],
+    'top': [],
+    'right': [],
+    'bottom': [],
+    'left': [],
+}
+HUE_ZONE_IDS_1 = {
+    'all': [],
+}
 SHELLY_IP_ADDRESSES = [
     '192.168.64.111',
     '192.168.64.112',
@@ -136,7 +146,15 @@ def define_devices(
             ip_address=HUE_IP_ADDRESS,
             bulb_model=Hue_BR30_Enhanced_Color,
             bulb_ids=HUE_BULB_IDS_0,
-            zone_ids=HUE_ZONE_IDS,
+            zone_ids=HUE_ZONE_IDS_0,
+            groups={
+                frozenset(LIGHTS_CLOCKWISE): 'all',
+                frozenset(LIGHTS_TOP): 'top',
+                frozenset(LIGHTS_RIGHT): 'right',
+                frozenset(LIGHTS_BOTTOM): 'bottom',
+                frozenset(LIGHTS_LEFT): 'left',
+                frozenset(LIGHTS_MIDDLE): 'middle',
+            }
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,

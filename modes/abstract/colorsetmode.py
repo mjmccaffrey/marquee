@@ -7,7 +7,7 @@ from typing_extensions import override
 
 from devices.devices_misc import ButtonName
 from .performancemode import PerformanceMode
-from ..structure.modes_misc import CycleEntry, CycleSequence
+from ..structural.modes_misc import CycleEntry, CycleSequence
 
 log = logging.getLogger('marquee.' + __name__)
 

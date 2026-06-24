@@ -30,7 +30,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
 
     application_key: str
     bulb_ids: Sequence[str]
-    zone_ids: Sequence[str]
+    zone_ids: dict[str, Sequence[str]]
     channel_count: int = field(init=False)
     channel_first_index: None = None
 
@@ -108,11 +108,11 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             update.channel.update_state(update)
 
     @override
-    def execute_update_all_at_once(self, update: 'ChannelUpdate'):
-        """Update the 'all' zone, rather than individual channels.
+    def update_channel_group(self, update: 'ChannelUpdate', group: str):
+        """Update all zones in the specified group.
            Does not check current state."""
         command = update.channel._make_set_command(update)
-        for i, id in enumerate(self.zone_ids):
+        for i, id in enumerate(self.zone_ids[group]):
             response = self.session.put(
                 url=f'https://{self.ip_address}/clip/v2/resource/grouped_light/{id}',
                 json=command.params,

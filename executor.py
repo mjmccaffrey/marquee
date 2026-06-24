@@ -50,7 +50,7 @@ class Executor:
     def close(self) -> None:
         """Close dependencies."""
         self.player.close()
-        log.info(f"Executor {self} closed. - !!! close devices")
+        log.info(f"Executor closed.")
 
     def add_mode(
         self, 

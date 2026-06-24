@@ -36,6 +36,13 @@ class LightSet:
             self.controller_type.bulb_comp, 
             SmartBulb,
         )
+        indices = (
+            i for o in range(2) for i in range(12) if (i + o) % 2
+        )
+        self.update_order = {
+            index: i for i, index in enumerate(indices)
+        }
+        print(self.update_order)
         self._init_relays()
         self._init_controller()
 
@@ -92,18 +99,26 @@ class LightSet:
         
         def channel_updates() -> list[ChannelUpdate]:
             """"""
-            _index = self._convert_index(index)
             _channels = [self.channels[i] for i in _index]
             _brightness = self._convert_brightness(brightness, _index)
             _transition = self._convert_transition(transition, _index)
             _color = self._convert_color(color, _index)
             _on = self._convert_on(on, _index)
+            assert (
+                len(_channels) == 
+                len(_brightness) ==
+                len(_transition) ==
+                len(_color) ==
+                len(_on)
+            )
             updates = [
                 ChannelUpdate(ch, br, tr, co, on)
                 for ch, br, tr, co, on in 
                 zip(_channels, _brightness, _transition, _color, _on)
             ]
-            return [updates[i] for i in _index]
+            updates.sort(key=lambda u: self.update_order[u.channel.index])
+            print(' '.join(str(u.channel.index) for u in updates))
+            return updates
 
         def no_params_are_sequences():
             """"""
@@ -114,19 +129,15 @@ class LightSet:
                 not isinstance(on, Sequence)
             )
 
-        assert (  # Critical
-            index is None or no_params_are_sequences()
-        )
+        # index is None => all lights, no other implications
+        # no parameter sequences => group update possible
+
+        _index = self._convert_index(index)
         updates = channel_updates()
-        if (
-            self.controller.all_at_once_supported and
-            index is None and 
-            no_params_are_sequences()
-        ):
-            # Update channels 'all at once'.
-            self.controller.execute_update_all_at_once(updates[0])
+        group = self.controller.groups.get(frozenset(_index))
+        if group is not None and no_params_are_sequences():
+            self.controller.update_channel_group(updates[0], group)
         else:
-            # Update each channel individually.
             self.controller.update_channels(updates, force)
 
     def set_relays(
@@ -193,7 +204,7 @@ class LightSet:
         }
         light_pattern = [int(p) for p in light_pattern]
         self.set_channels(
-            brightness=tuple(brightness_values[p] for p in light_pattern), 
+            brightness=tuple(brightness_values[p] for p in light_pattern),
             transition=tuple(trans_values[p] for p in light_pattern),
             color=tuple(color_values[p] for p in light_pattern),
             on=tuple(on_values[p] for p in light_pattern),

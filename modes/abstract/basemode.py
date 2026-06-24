@@ -13,7 +13,7 @@ from devices.color import ColorSets
 from devices.devices_misc import ButtonName
 from event import EventSystem
 from task import SeqTask, Task, TaskSchedule
-from ..structure.modes_misc import ChangeMode, ModeDefinition
+from ..structural.modes_misc import ChangeMode, ModeDefinition
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -64,8 +64,8 @@ class BaseMode(ABC):
 
     def schedule(
         self, 
-        due: float = 0.0,
         action: Callable | None = None,  # .execute
+        due: float = 0.0,
         name: str | None = None,
         repeat: bool = False,
     ) -> None:

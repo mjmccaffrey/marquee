@@ -15,7 +15,7 @@ from music import(
     action, actions, drums,
     rest, sequence_measure, sequences
 )
-from .structure.sequences import *
+from .structural.sequences import *
 from devices.specialparams import ActionParams, ChannelParams
 
 

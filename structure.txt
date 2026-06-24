@@ -14,9 +14,12 @@ marquee
             ShellyChannel
         RelayClient
             RelayModuleInterface
+                CombinedRelayModule
                 NumatoUSBRelayModule
     instruments
-        LightSet
+        LightSetInterface
+            CombinedLightSet
+            LightSet
         ActionInstrument
         RelayInstrument
             BellSet
