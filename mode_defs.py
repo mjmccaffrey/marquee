@@ -51,7 +51,7 @@ def register_channel_modes(exec: Executor):
         ("ALL", 10),
     ]
     exec.add_mode("cs_chase_neg", ColorSetDynamic, 
-        sequence = cs_sequence,
+        sequence=cs_sequence,
         pattern='0123456789ab',
         mask='-***********',
         clockwise=True,

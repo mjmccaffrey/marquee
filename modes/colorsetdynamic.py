@@ -2,6 +2,7 @@
 
 from dataclasses import InitVar, dataclass
 import logging
+from typing import Any
 from typing_extensions import override
 
 from devices.specialparams import ChannelParams
@@ -51,13 +52,13 @@ class ColorSetDynamic(ColorSetMode):
             f"({self.entry_index + 1} / {len(self.entries)})."
         )
         self.schedule(due=entry.seconds)
-        kwargs=dict(
+        kwargs: dict[str, Any] = dict(
             baseline=LightSetBaseline(on=False),
             color_set_name=entry.name,
             delay=0.35, 
             special=ChannelParams(),
         )
-        sequence_kwargs=dict(
+        sequence_kwargs: dict[str, Any] = dict(
             clockwise=self.clockwise,
             pattern=self.pattern,
         )
@@ -66,6 +67,7 @@ class ColorSetDynamic(ColorSetMode):
         else:
             kwargs |= dict(sequence=chase)
             sequence_kwargs |= dict(mask=self.mask)
+        kwargs['sequence_kwargs'] = sequence_kwargs
         mode = self.create_mode_instance(
             mode_definition=ModeDefinition(
                 name='cs_rotate',
