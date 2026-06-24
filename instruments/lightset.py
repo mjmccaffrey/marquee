@@ -117,7 +117,7 @@ class LightSet:
                 zip(_channels, _brightness, _transition, _color, _on)
             ]
             updates.sort(key=lambda u: self.update_order[u.channel.index])
-            print(' '.join(str(u.channel.index) for u in updates))
+            # print(' '.join(str(u.channel.index) for u in updates))
             return updates
 
         def no_params_are_sequences():
