@@ -121,7 +121,7 @@ class SequenceMode(PerformanceMode):
                 None if p == '-' else cs_kwargs['color'][int(p, 16)]
                 for p in pattern
             ),
-            'transition': 0
+            'transition': 0,
         }
         self.lights.set_channels(**kwargs)
 
