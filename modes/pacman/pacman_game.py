@@ -142,7 +142,7 @@ class PacManGame(GameMode):
         )
         self.lights.set_channels(
             brightness=100, 
-            color=PacMan.color, 
+            # color=PacMan.color, 
             on=True,
             # transition=0,
             index=self.donut_index,
