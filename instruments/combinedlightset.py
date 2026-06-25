@@ -27,31 +27,46 @@ class CombinedLightSet:
         self.gamut = self.ls1.gamut
         self.speed_factor = self.ls1.speed_factor
 
+    def _convert_index(
+        self,
+        index: Sequence[int] | int | None,
+    ) -> list[int] | None:
+        """Return normalized index list.  If index is None, 
+           return complete index list in scattered order."""
+        match index:
+            case Sequence():
+                result = list(index)
+            case None:
+                result = None
+            case int():
+                result = [index]
+        print("_CONVERT: ", f"{index}", f"{result}")
+        return result
+
     def set_channels(self, *args, **kwargs) -> None:
         """"""
         assert self.ls2 is not None
-        indices = kwargs.get('indices')
-        print(f"**{indices=}")
-        if indices is None:
+        index = self._convert_index(kwargs.get('index'))
+        if index is None:
             self.ls1.set_channels(*args, **kwargs)
             self.ls2.set_channels(*args, **kwargs)
         else:
-            ls1_indices = {
+            ls1_index = {
                 i 
-                for i in indices
+                for i in index
                 if i < self.ls1.count
             }
-            ls2_indices = {
+            ls2_index = {
                 i - self.ls1.count
-                for i in indices
+                for i in index
                 if i >= self.ls1.count
             }
-            print(f'{ls1_indices=} {ls2_indices=})')
-            if ls1_indices:
-                kwargs['indices'] = ls1_indices
+            print(f'{ls1_index=} {ls2_index=})')
+            if ls1_index:
+                kwargs['index'] = ls1_index
                 self.ls1.set_channels(*args, **kwargs)
-            if ls2_indices:
-                kwargs['indices'] = ls2_indices
+            if ls2_index:
+                kwargs['index'] = ls2_index
                 self.ls2.set_channels(*args, **kwargs)
 
     def set_relays(self, *args, **kwargs) -> None:
