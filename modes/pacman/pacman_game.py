@@ -140,6 +140,13 @@ class PacManGame(GameMode):
             transition=0,
             index=self.donut_index,
         )
+        self.lights.set_channels(
+            brightness=100, 
+            color=PacMan.color, 
+            on=True,
+            transition=0,
+            index=self.donut_index,
+        )
 
     def play_level(self) -> None:
         """"""
