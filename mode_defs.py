@@ -69,7 +69,7 @@ def register_channel_modes(exec: Executor):
         sequence=cs_sequence,
         pattern='0123456789ab',
         clockwise=False,
-        delay=0.4,
+        delay=0.66,
         brightness=35,
     )
     exec.add_mode("cs_all", ColorSetStatic,
