@@ -135,14 +135,7 @@ class PacManGame(GameMode):
         self.update_lights()
         self.lights.set_channels(
             brightness=100, 
-            color=PacMan.color, 
-            on=True,
-            transition=0,
-            index=self.donut_index,
-        )
-        self.lights.set_channels(
-            brightness=100, 
-            # color=PacMan.color, 
+            color=self.primary.colors.BLUE,
             on=True,
             # transition=0,
             index=self.donut_index,
