@@ -25,6 +25,7 @@ class ColorSetDynamic(ColorSetMode):
     pattern: str
     mask: str | None = None
     clockwise: bool
+    delay: float
 
     @override
     def __post_init__(self, sequence: CycleSequence) -> None:
@@ -55,8 +56,8 @@ class ColorSetDynamic(ColorSetMode):
         kwargs: dict[str, Any] = dict(
             baseline=LightSetBaseline(on=False),
             color_set_name=entry.name,
-            delay=0.4, 
-            special=ChannelParams(trans_off=0),
+            delay=self.delay, 
+            special=ChannelParams(),
         )
         sequence_kwargs: dict[str, Any] = dict(
             clockwise=self.clockwise,

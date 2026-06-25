@@ -55,12 +55,21 @@ def register_channel_modes(exec: Executor):
         pattern='0123456789ab',
         mask='-***********',
         clockwise=True,
+        delay=0.4,
         brightness=35,
     )
-    exec.add_mode("cs_chase_pos", ColorSetDynamic, 
+    exec.add_mode("cs_chase_3", ColorSetDynamic, 
         sequence=cs_sequence,
         pattern='012---------',
         clockwise=True,
+        delay=0.4,
+        brightness=35,
+    )
+    exec.add_mode("cs_chase_12", ColorSetDynamic, 
+        sequence=cs_sequence,
+        pattern='0123456789ab',
+        clockwise=False,
+        delay=0.4,
         brightness=35,
     )
     exec.add_mode("cs_all", ColorSetStatic,
