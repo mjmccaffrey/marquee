@@ -139,7 +139,7 @@ class LightSet:
             self.controller.update_channel_group(updates[0], group)
         else:
             print("CHANNELS: ", updates)
-            self.controller.update_channels(updates, force)
+            self.controller.update_channels(updates, True)
 
     def set_relays(
         self, 
