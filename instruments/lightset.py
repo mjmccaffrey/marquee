@@ -133,13 +133,12 @@ class LightSet:
         # no parameter sequences => group update possible
 
         _index = self._convert_index(index)
-        print(_index, self.count)
         updates = channel_updates()
         group = self.controller.indices_in_group.get(frozenset(_index))
         if group is not None and no_params_are_sequences():
             self.controller.update_channel_group(updates[0], group)
         else:
-            print("CHANNELS: ", updates)
+            # print("CHANNELS: ", updates)
             self.controller.update_channels(updates, False)
 
     def set_relays(
@@ -255,7 +254,6 @@ class LightSet:
     ) -> list[int]:
         """Return normalized index list.  If index is None, 
            return complete index list in scattered order."""
-        print("_CONVERT: ", f"{index}")
         match index:
             case Sequence():
                 result = list(index)
@@ -265,7 +263,6 @@ class LightSet:
                 result = [index]
             case _:
                 raise ValueError(index)
-        print("_CONVERT: ", f"{index}", f"{result}")
         return result
     
     def _convert_brightness(

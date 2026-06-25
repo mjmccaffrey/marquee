@@ -40,7 +40,6 @@ class CombinedLightSet:
                 result = None
             case int():
                 result = [index]
-        print("_CONVERT: ", f"{index}", f"{result}")
         return result
 
     def set_channels(self, *args, **kwargs) -> None:
@@ -61,7 +60,6 @@ class CombinedLightSet:
                 for i in index
                 if i >= self.ls1.count
             ]
-            print(f'{ls1_index=} {ls2_index=})')
             if ls1_index:
                 kwargs['index'] = ls1_index
                 self.ls1.set_channels(*args, **kwargs)
