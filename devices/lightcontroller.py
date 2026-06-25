@@ -117,7 +117,7 @@ class LightChannel(ABC):
 
     def updates_needed(self, update: 'ChannelUpdate') -> 'ChannelUpdate | None':
         """Return the updates required, or None."""
-        print(update.channel.index)
+        print("*** ", update.channel.index)
         print(self.brightness, update.brightness)
         print(self.color, update.color)
         print(self.on, update.on)
@@ -130,12 +130,12 @@ class LightChannel(ABC):
         if update.on is not None and self.on != update.on:
             changes['on'] = update.on
         if changes:
+            print(changes)
             return ChannelUpdate(
                 channel=update.channel,
                 transition=update.transition,  # !!!!!!!!!!!!!!!!!!!!!!
                 **changes,
             )
-        return None
 
     def update_state(self, update: 'ChannelUpdate'):
         """Once the command has been sent without error,
