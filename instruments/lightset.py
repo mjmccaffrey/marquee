@@ -133,6 +133,7 @@ class LightSet:
         # no parameter sequences => group update possible
 
         _index = self._convert_index(index)
+        print(_index, self.channels.count)
         updates = channel_updates()
         group = self.controller.indices_in_group.get(frozenset(_index))
         if group is not None and no_params_are_sequences():
