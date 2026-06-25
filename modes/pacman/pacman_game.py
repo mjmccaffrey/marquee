@@ -6,7 +6,7 @@ from functools import partial
 from itertools import cycle
 import logging
 import pygame
-from typing import Any, cast
+from typing import cast
 from typing_extensions import override
 
 from devices.color import Colors, RGB
@@ -49,6 +49,7 @@ class PacManGame(GameMode):
         super().__post_init__()
         self.pacman_coord = 7
         self.fruit_coord = 13 if self.maze == passage_maze else 7
+        self.donut_index = 16
         self.lights = self.combined
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
@@ -132,6 +133,13 @@ class PacManGame(GameMode):
         )
         self.ghosts = (self.pinky, self.blinky)
         self.update_lights()
+        self.lights.set_channels(
+            brightness=100, 
+            color=PacMan.color, 
+            on=True,
+            transition=0,
+            index=self.donut_index,
+        )
 
     def play_level(self) -> None:
         """"""

@@ -41,7 +41,7 @@ HUE_BULB_IDS_1 = [
     "04098e6c-f416-4ce5-b91c-06e6004b2a23",
     "a0906758-e0b5-45c3-8e19-85994f253bd7",
     "359de043-2614-443f-8e44-fad407fdc854",
-    "398bd880-e870-4d00-88ee-dce5aa83c17b",
+    "398bd880-e870-4d00-88ee-dce5aa83c17b",  # Donut
 ]
 HUE_ZONE_IDS_0 = {
     # https://192.168.64.130/clip/v2/resource/zone
