@@ -31,6 +31,7 @@ class CombinedLightSet:
         """"""
         assert self.ls2 is not None
         indices = kwargs.get('indices')
+        print(f"**{indices=}")
         if indices is None:
             self.ls1.set_channels(*args, **kwargs)
             self.ls2.set_channels(*args, **kwargs)
