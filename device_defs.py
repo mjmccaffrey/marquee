@@ -43,6 +43,7 @@ HUE_BULB_IDS_1 = [
     "359de043-2614-443f-8e44-fad407fdc854",
 ]
 HUE_ZONE_IDS_0 = {
+    # https://192.168.64.130/clip/v2/resource/zone
     # "services": [
     #     {
     #         "rid": "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
@@ -51,13 +52,13 @@ HUE_ZONE_IDS_0 = {
         "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
         "afbce248-f994-4f71-833d-f7c20eb96814",
     ],
-    'top': [],
-    'right': [],
-    'bottom': [],
-    'left': [],
+    'top': ['4cfe20b3-43ae-409e-8d21-ea84f96daef8'],
+    'right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
+    'bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
+    'left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68' ],
 }
 HUE_ZONE_IDS_1 = {
-    'all': [],
+    'middle': [],
 }
 SHELLY_IP_ADDRESSES = [
     '192.168.64.111',
@@ -153,7 +154,7 @@ def define_devices(
                 frozenset(LIGHTS_RIGHT): 'right',
                 frozenset(LIGHTS_BOTTOM): 'bottom',
                 frozenset(LIGHTS_LEFT): 'left',
-                frozenset(LIGHTS_MIDDLE): 'middle',
+                # frozenset(LIGHTS_MIDDLE): 'middle',
             }
         ),
         brightness_factor_init=brightness_factor,
