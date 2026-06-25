@@ -59,7 +59,8 @@ HUE_ZONE_IDS_0 = {
     'left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68' ],
 }
 HUE_ZONE_IDS_1 = {
-    'middle': [],
+    'all': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
+    'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
 }
 SHELLY_IP_ADDRESSES = [
     '192.168.64.111',
