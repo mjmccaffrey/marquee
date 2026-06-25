@@ -31,7 +31,6 @@ class HueBridge(LightController, bulb_comp=HueBulb):
     application_key: str
     bulb_ids: Sequence[str]
     zone_ids: dict[str, Sequence[str]]
-    zone_channels: dict[str, Sequence[LightChannel]]
     channel_count: int = field(init=False)
     channel_first_index: None = None
 
