@@ -138,6 +138,7 @@ class LightSet:
         if group is not None and no_params_are_sequences():
             self.controller.update_channel_group(updates[0], group)
         else:
+            print("CHANNELS")
             self.controller.update_channels(updates, force)
 
     def set_relays(
