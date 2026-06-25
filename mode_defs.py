@@ -51,7 +51,11 @@ def register_channel_modes(exec: Executor):
         # ("ALL", 10),
     ]
     exec.add_mode("cs_chase_neg", ColorSetDynamic, 
-        sequence=cs_sequence,
+        sequence=[
+        # ("party", 1),
+        # ("cancun", 1),
+            ("race", 10),
+        ],
         pattern='0123456789ab',
         mask='-***********',
         clockwise=True,
@@ -59,21 +63,33 @@ def register_channel_modes(exec: Executor):
         brightness=35,
     )
     exec.add_mode("cs_chase_3", ColorSetDynamic, 
-        sequence=cs_sequence,
+        sequence=[
+            ("party", 1),
+        # ("cancun", 1),
+            # ("race", 10),
+        ],
         pattern='012---------',
         clockwise=True,
         delay=0.4,
         brightness=35,
     )
     exec.add_mode("cs_chase_12", ColorSetDynamic, 
-        sequence=cs_sequence,
+        sequence=[
+        # ("party", 1),
+            ("cancun", 1),
+            # ("race", 10),
+        ],
         pattern='0123456789ab',
         clockwise=False,
         delay=0.66,
         brightness=35,
     )
     exec.add_mode("cs_all", ColorSetStatic,
-        sequence = cs_sequence,
+        sequence=[
+        # ("party", 1),
+        # ("cancun", 1),
+            ("race", 10),
+        ],
         brightness=35,
         # transition=0.0,
     )
