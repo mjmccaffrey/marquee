@@ -41,7 +41,7 @@ class LightController(ABC):
             )
         self.indices_in_group: dict[frozenset, str] = {
             frozenset(i): g
-            for g, i in self.groups
+            for g, i in self.groups.items()
         }
 
     @override
