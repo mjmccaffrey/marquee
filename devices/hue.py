@@ -31,6 +31,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
     application_key: str
     bulb_ids: Sequence[str]
     zone_ids: dict[str, Sequence[str]]
+    zone_channels: dict[str, Sequence[LightChannel]]
     channel_count: int = field(init=False)
     channel_first_index: None = None
 
@@ -121,7 +122,8 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             log.info(f"{group=} {command.params}")
             print(f"{group=} {command.params}")
             response.raise_for_status()
-        for channel in self.channels:
+        for index in self.groups[group]:
+            channel = self.channels[index]
             channel.update_state(replace(update, channel=channel))
 
 

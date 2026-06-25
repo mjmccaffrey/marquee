@@ -134,7 +134,7 @@ class LightSet:
 
         _index = self._convert_index(index)
         updates = channel_updates()
-        group = self.controller.groups.get(frozenset(_index))
+        group = self.controller.indices_in_group.get(frozenset(_index))
         if group is not None and no_params_are_sequences():
             self.controller.update_channel_group(updates[0], group)
         else:

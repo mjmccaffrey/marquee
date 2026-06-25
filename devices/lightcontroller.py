@@ -25,7 +25,7 @@ class LightController(ABC):
     ip_address: str
     bulb_model: Bulb
     channel_first_index: int
-    groups: dict[frozenset[int], str] = field(default_factory=dict)
+    groups: dict[str, Sequence[int]] = field(default_factory=dict)
     session: requests.Session = field(init=False)
     channels: Sequence['LightChannel'] = field(init=False)
 
@@ -39,6 +39,10 @@ class LightController(ABC):
                 f"Incompatible bulb model {self.bulb_model} "
                 f"for controller {type(self).__name__}."
             )
+        self.indices_in_group: dict[frozenset, str] = {
+            frozenset(i): g
+            for g, i in self.groups
+        }
 
     @override
     def __str__(self) -> str:
