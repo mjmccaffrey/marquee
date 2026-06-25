@@ -262,6 +262,7 @@ class LightSet:
                 result = list(range(self.count))
             case int():
                 result = [index]
+        print("_CONVERT: ", f"{index}", f"{result}")
         return result
     
     def _convert_brightness(
