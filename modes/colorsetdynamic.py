@@ -55,7 +55,7 @@ class ColorSetDynamic(ColorSetMode):
         kwargs: dict[str, Any] = dict(
             baseline=LightSetBaseline(on=False),
             color_set_name=entry.name,
-            delay=1, 
+            delay=0.4, 
             special=ChannelParams(trans_off=0),
         )
         sequence_kwargs: dict[str, Any] = dict(
