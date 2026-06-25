@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - comet"""
 
 from dataclasses import dataclass
-from itertools import repeat
+from itertools import cycle, repeat
 import logging
 from typing_extensions import override
 
@@ -27,7 +27,10 @@ class Comet(PerformanceMode):
         if self.color is not None:
             self.colors = repeat(self.color)
         else:
-            self.colors = iter(self.lights.colors.WHEEL)
+            assert self.wheel_divisions is not None
+            self.colors = cycle(
+                self.lights.colors.wheel_colors(self.wheel_divisions)
+            )
         self.schedule(due=self.delay, repeat=True)
 
     @override

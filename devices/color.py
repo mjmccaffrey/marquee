@@ -2,7 +2,6 @@
 
 from abc import ABC
 from collections.abc import Iterator
-from itertools import cycle
 import json
 import logging
 from pathlib import Path
@@ -137,7 +136,7 @@ class Colors:
 
     def wheel_colors(self, divisions: int) -> Iterator[Color]:
         """Yield wheel colors, along with divisions in-between colors."""
-        colors = cycle(self.WHEEL)
+        colors = iter(self.WHEEL)
         previous = next(colors)
         yield previous
         for color in colors:
