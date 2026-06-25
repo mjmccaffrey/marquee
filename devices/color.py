@@ -2,6 +2,7 @@
 
 from abc import ABC
 from collections.abc import Iterator
+from itertools import cycle
 import json
 import logging
 from pathlib import Path
@@ -133,6 +134,28 @@ class Colors:
     def rgb(self, r: int, g: int, b: int) -> RGB:
         """Return RGB instance adjusted for gamut."""
         return RGB(r, g, b, self.gamut)
+
+    def wheel_colors(self, divisions: int) -> Iterator[Color]:
+        """Yield wheel colors, along with divisions in-between colors."""
+        colors = cycle(self.WHEEL)
+        previous = next(colors)
+        yield previous
+        for color in colors:
+            for i in range(divisions):
+                red = previous.red + (
+                    (color.red - previous.red) // 
+                    (divisions + 1) * (i + 1)
+                )
+                green = previous.green + (
+                    (color.green - previous.green) // 
+                    (divisions + 1) * (i + 1)
+                )
+                blue = previous.blue + (
+                    (color.blue - previous.blue) // 
+                    (divisions + 1) * (i + 1)
+                )
+                yield self.rgb(red, green, blue)
+            previous = color
 
 
 class ColorSet:

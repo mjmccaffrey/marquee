@@ -1,8 +1,7 @@
 """Marquee Lighted Sign Project - comet"""
 
-from collections.abc import Iterator
 from dataclasses import dataclass
-from itertools import cycle, repeat
+from itertools import repeat
 import logging
 from typing_extensions import override
 
@@ -28,35 +27,8 @@ class Comet(PerformanceMode):
         if self.color is not None:
             self.colors = repeat(self.color)
         else:
-            self.colors = self.wheel_colors()
+            self.colors = iter(self.lights.colors.WHEEL)
         self.schedule(due=self.delay, repeat=True)
-
-    def wheel_colors(self) -> Iterator[Color]:
-        """"""
-        assert self.wheel_divisions is not None
-        colors = cycle(self.lights.colors.WHEEL)
-        previous = next(colors)
-        log.info(previous)
-        yield previous
-        for color in colors:
-            for i in range(self.wheel_divisions):
-                red = previous.red + (
-                    (color.red - previous.red) // 
-                    (self.wheel_divisions + 1) * (i + 1)
-                )
-                green = previous.green + (
-                    (color.green - previous.green) // 
-                    (self.wheel_divisions + 1) * (i + 1)
-                )
-                blue = previous.blue + (
-                    (color.blue - previous.blue) // 
-                    (self.wheel_divisions + 1) * (i + 1)
-                )
-                log.info(self.lights.colors.rgb(red, green, blue))
-                yield self.lights.colors.rgb(red, green, blue)
-            log.info(color)
-            yield color
-            previous = color
 
     @override
     def execute(self) -> None:
