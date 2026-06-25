@@ -162,7 +162,7 @@ def define_devices(
         speed_factor=speed_factor,
     )
     extra = LightSet(
-        count=3,
+        count=4,
         relays=None,
         mirror=None,
         controller_type=HueBridge,
