@@ -133,14 +133,6 @@ class PacManGame(GameMode):
         )
         self.ghosts = (self.pinky, self.blinky)
         self.update_lights()
-        self.lights.set_channels(
-            brightness=100, 
-            color=self.primary.colors.BLUE,
-            on=True,
-            # transition=0,
-            index=self.donut_index,
-            force=True,
-        )
 
     def play_level(self) -> None:
         """"""
@@ -153,6 +145,14 @@ class PacManGame(GameMode):
         """"""
         log.info("Waiting for Start Game button press")
         self.buttons.game_start.set_light(True)
+        self.lights.set_channels(
+            brightness=100, 
+            color=self.primary.colors.BLUE,
+            on=True,
+            # transition=0,
+            index=self.donut_index,
+            force=True,
+        )
 
     def pre_level_0_state(self) -> None:
         """"""
