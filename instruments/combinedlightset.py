@@ -51,16 +51,16 @@ class CombinedLightSet:
             self.ls1.set_channels(*args, **kwargs)
             self.ls2.set_channels(*args, **kwargs)
         else:
-            ls1_index = {
+            ls1_index = [
                 i 
                 for i in index
                 if i < self.ls1.count
-            }
-            ls2_index = {
+            ]
+            ls2_index = [
                 i - self.ls1.count
                 for i in index
                 if i >= self.ls1.count
-            }
+            ]
             print(f'{ls1_index=} {ls2_index=})')
             if ls1_index:
                 kwargs['index'] = ls1_index
