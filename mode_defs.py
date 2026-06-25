@@ -46,9 +46,9 @@ def register_channel_modes(exec: Executor):
     cs_sequence = [
         # ("party", 1),
         # ("cancun", 1),
-        # ("race", 1),
+        ("race", 10),
         # ("amber_bloom", 1),
-        ("ALL", 10),
+        # ("ALL", 10),
     ]
     exec.add_mode("cs_chase_neg", ColorSetDynamic, 
         sequence=cs_sequence,
