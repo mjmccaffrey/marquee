@@ -255,6 +255,7 @@ class LightSet:
     ) -> list[int]:
         """Return normalized index list.  If index is None, 
            return complete index list in scattered order."""
+        print("_CONVERT: ", f"{index}")
         match index:
             case Sequence():
                 result = list(index)
