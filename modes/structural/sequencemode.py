@@ -107,7 +107,6 @@ class SequenceMode(PerformanceMode):
 
     def set_color_lights(self, pattern: str) -> None:
         """"""
-        print(f'{pattern=}')
         assert self.color_set is not None
         assert len(pattern) == self.lights.count
         cs_kwargs = self.color_set.set_channels_kwargs(self.lights.count)
