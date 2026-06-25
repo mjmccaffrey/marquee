@@ -263,6 +263,8 @@ class LightSet:
                 result = list(range(self.count))
             case int():
                 result = [index]
+            case _:
+                raise ValueError(index)
         print("_CONVERT: ", f"{index}", f"{result}")
         return result
     
