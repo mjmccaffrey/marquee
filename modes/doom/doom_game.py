@@ -113,6 +113,7 @@ class DoomGame(PerformanceMode):
             action=partial(self.play_sound, Sound.SLAYER_DEATH_2),
             due=0.75,
         )
+        print("DIES")
         self.lights.set_channels(
             on=True,
             brightness=100,
