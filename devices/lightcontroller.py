@@ -66,8 +66,8 @@ class LightController(ABC):
                 for update in updates
                 if (up := update.channel.updates_needed(update))
             ]
-            for u in updates_to_send:
-                print(f"{u}")
+            # for u in updates_to_send:
+            #     print(f"{u}")
         self.execute_channel_updates(updates=updates_to_send)
 
     @abstractmethod
@@ -121,10 +121,10 @@ class LightChannel(ABC):
 
     def updates_needed(self, update: 'ChannelUpdate') -> 'ChannelUpdate | None':
         """Return the updates required, or None."""
-        print("*** ", update.channel.index)
-        print(self.brightness, update.brightness)
-        print(self.color, update.color)
-        print(self.on, update.on)
+        # print("*** ", update.channel.index)
+        # print(self.brightness, update.brightness)
+        # print(self.color, update.color)
+        # print(self.on, update.on)
 
         changes = {}
         if update.brightness is not None and self.brightness != update.brightness:
@@ -134,7 +134,7 @@ class LightChannel(ABC):
         if update.on is not None and self.on != update.on:
             changes['on'] = update.on
         if changes:
-            print(changes)
+            # print(changes)
             return ChannelUpdate(
                 channel=update.channel,
                 transition=update.transition,  # !!!!!!!!!!!!!!!!!!!!!!
