@@ -139,6 +139,7 @@ class PacManGame(GameMode):
             on=True,
             # transition=0,
             index=self.donut_index,
+            force=True,
         )
 
     def play_level(self) -> None:
