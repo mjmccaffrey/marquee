@@ -264,6 +264,7 @@ class LightSet:
                 result = [index]
             case _:
                 raise ValueError(index)
+        assert all(i in range(self.count) for i in result)
         return result
     
     def _convert_brightness(
