@@ -144,7 +144,7 @@ class PacManGame(GameMode):
             brightness=100, 
             color=PacMan.color, 
             on=True,
-            transition=0,
+            # transition=0,
             index=self.donut_index,
         )
 
