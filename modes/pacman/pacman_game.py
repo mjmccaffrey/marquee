@@ -147,7 +147,7 @@ class PacManGame(GameMode):
         self.buttons.game_start.set_light(True)
         self.lights.set_channels(
             brightness=100, 
-            color=self.primary.colors.YELLOW,
+            color=self.primary.colors.BLUE,
             on=True,
             # transition=0,
             index=self.donut_index,
