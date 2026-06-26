@@ -33,7 +33,7 @@ class Twelve(MusicMode):
     def play(self):
         """Play music and lights."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        each_light_on = tuple(
+        each_on = tuple(
             dict(
                 on=True,
                 brightness=100,
@@ -42,23 +42,22 @@ class Twelve(MusicMode):
             )
             for i in range(self.lights.count)
         )
-        lights_all_off = dict(on=False, transition=0.8)
-        each_light_off = tuple(
+        all_off = dict(on=False, transition=0.8)
+        each_off = tuple(
             dict(
                 on=False,
-                transition=1.25,
+                transition=0.8,
                 index=i,
             )
             for i in range(self.lights.count)
         )
-        count_to_12 = ' |  ♪ ♪ ♪ ♩ ♩ ♪  |  ♩ ♪ ♩ ♩ ♪  |  𝄽 ♩ 𝄽 𝄽  | '
         piece(
-            lights( ' |  𝄻  |  𝄻  |  𝄻  | '),
-            lights(count_to_12, *each_light_on),
-            lights(' |  𝄽 𝄽  | ', beats=2),
-            lights(' |  3♩ 3♩ 3♩ 3♩ 3♩ 3♩ |  3♩ 3♩ 3♩ 3♩ 3♩ 3♩  | ', *each_light_off),
-            lights(' |  𝄽 𝄽 𝄽  | ', beats=3),
-            lights(count_to_12, *each_light_on),
-            lights(' |  𝄻  |  ♩  | ', lights_all_off),
+            lights('| 𝄻 | 𝄻 | 𝄻 |'),
+            lights('| ♪ ♪ ♪ ♩ ♩ ♪ | ♩ ♪ ♩ ♩ ♪ | 𝄽 ♩ 𝄽 𝄽 |', *each_on),
+            lights('| 𝄽 𝄽 |', beats=2),
+            lights('| 3♩ 3♩ 3♩ 3♩ 3♩ 3♩ | 3♩ 3♩ 3♩ 3♩ 3♩ 3♩ |', *each_off),
+            lights('| 𝄽 𝄽 𝄽 |', beats=3),
+            lights('| ♪ ♪ ♪ ♩ ♩ ♪ | ♩ ♪ ♩ ♩ ♪ | 𝄽 ♩ 𝄽 𝄽 |', *each_on),
+            lights('| 𝄻 | ♩ |', all_off),
         ).play(tempo=160)
-    
+
