@@ -87,6 +87,7 @@ class LightSet:
         on: Sequence[int | bool | str | None] | bool | int | None = None,
         index: Sequence[int] | int | None = None,
         force: bool = False,
+        group: str | None = None,
     ) -> None:
         """Set the channels per the supplied brightnesses
            (adjusted by brightness_factor), 
@@ -128,15 +129,17 @@ class LightSet:
                 not isinstance(on, Sequence)
             )
 
-        # index is None => all lights, no other implications
-        # no parameter sequences => group update possible
-
-        _index = self._convert_index(index)
-        print(f"{_index=}")
-        updates = channel_updates()
-        group = self.controller.indices_in_group.get(frozenset(_index))
-        if group is not None and no_params_are_sequences():
-            print("GROUP: ", group)
+        if group is None:
+            _index = self._convert_index(index)
+            print(f"{_index=}")
+            updates = channel_updates()
+            _group = self.controller.indices_in_group.get(frozenset(_index))
+            if _group is not None and no_params_are_sequences():
+                group = _group
+                print("DERIVED GROUP: ", group)
+        else:
+            print("SPECIFIED GROUP: ", group)
+        if group is not None:
             self.controller.update_channel_group(updates[0], group)
         else:
             print(

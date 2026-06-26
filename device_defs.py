@@ -52,6 +52,11 @@ HUE_ZONE_IDS_0 = {
     '0.all': [
         "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
         "afbce248-f994-4f71-833d-f7c20eb96814",
+        "1afc2cc8-cbf8-484b-b2d6-46575b2cef97",
+    ],
+    '0.all.all': [
+        "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
+        "afbce248-f994-4f71-833d-f7c20eb96814",
     ],
     '0.top': ['4cfe20b3-43ae-409e-8d21-ea84f96daef8'],
     '0.right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
