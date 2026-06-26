@@ -100,10 +100,10 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 json=command.params,
                 timeout=2.0,
             )
-            log.info('*********')
-            log.info(command.url)
-            log.info(command.params)
-            log.info('*********')
+            # log.info('*********')
+            # log.info(command.url)
+            # log.info(command.params)
+            # log.info('*********')
             response.raise_for_status()
             update.channel.update_state(update)
 
@@ -118,7 +118,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 json=command.params,
                 timeout=2.0,
             )
-            # print(f"{group=} {command.params}")
+            print(f"{group=} {command.params}")
             response.raise_for_status()
         for index in self.groups[group]:
             channel = self.channels[index]
