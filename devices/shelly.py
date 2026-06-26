@@ -27,7 +27,6 @@ class ShellyController(LightController, bulb_comp=DimBulb):
     """Virtual consolidated controller."""
 
     trans_min: ClassVar[float] = 0.5
-    all_at_once_supported: ClassVar[bool] = False
 
     channel_count: int = field(init=False)
     dimmers: Sequence[LightController]
@@ -119,7 +118,6 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
        Everything else handled by parent controller and child channels."""
 
     trans_min: ClassVar[float] = 0.5
-    all_at_once_supported: ClassVar[bool] = False
 
     def __init_subclass__(cls, channel_count: int) -> None:
         """Set channel count for concrete subclasses."""

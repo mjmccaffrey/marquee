@@ -49,18 +49,19 @@ HUE_ZONE_IDS_0 = {
     #     {
     #         "rid": "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
     #         "rtype": "grouped_light"
-    'all': [
+    '0.all': [
         "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
         "afbce248-f994-4f71-833d-f7c20eb96814",
     ],
-    'top': ['4cfe20b3-43ae-409e-8d21-ea84f96daef8'],
-    'right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
-    'bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
-    'left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68' ],
+    '0.top': ['4cfe20b3-43ae-409e-8d21-ea84f96daef8'],
+    '0.right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
+    '0.bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
+    '0.left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68' ],
 }
 HUE_ZONE_IDS_1 = {
-    'all': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
-    'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
+    '1.all_w_donut': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
+    '1.all': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],  # Same as middle.
+    '1.middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
 }
 SHELLY_IP_ADDRESSES = [
     '192.168.64.111',
@@ -151,12 +152,11 @@ def define_devices(
             bulb_ids=HUE_BULB_IDS_0,
             zone_ids=HUE_ZONE_IDS_0,
             groups={
-                'all': LIGHTS_CLOCKWISE,
-                'top': LIGHTS_TOP,
-                'right': LIGHTS_RIGHT,
-                'bottom': LIGHTS_BOTTOM,
-                'left': LIGHTS_LEFT,
-                # frozenset(LIGHTS_MIDDLE): 'middle',
+                '0.all': LIGHTS_CLOCKWISE,
+                '0.top': LIGHTS_TOP,
+                '0.right': LIGHTS_RIGHT,
+                '0.bottom': LIGHTS_BOTTOM,
+                '0.left': LIGHTS_LEFT,
             },
         ),
         brightness_factor_init=brightness_factor,
@@ -172,8 +172,12 @@ def define_devices(
             ip_address=HUE_IP_ADDRESS,
             bulb_model=Hue_BR30_Enhanced_Color,
             bulb_ids=HUE_BULB_IDS_1,
-            zone_ids=[],
-            all_at_once_supported=False,
+            zone_ids=[HUE_ZONE_IDS_1],
+            groups={
+                '1.all_w_donut': [0, 1, 2, 3],
+                '1.all': [0, 1, 2],  # Same as middle.
+                '1.middle': [0, 1, 2],
+            },
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
