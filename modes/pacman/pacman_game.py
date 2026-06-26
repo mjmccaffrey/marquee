@@ -175,7 +175,7 @@ class PacManGame(GameMode):
             kwargs = dict(
                 color=c, 
                 transition=0, 
-                index=range(15) if self.maze == passage_maze else range(12),
+                group='0.all.all' if self.maze == passage_maze else '0.all'
             )
             if i == 0:
                 kwargs |= dict(on=True)
