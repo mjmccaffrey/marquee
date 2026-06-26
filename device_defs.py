@@ -172,7 +172,7 @@ def define_devices(
             ip_address=HUE_IP_ADDRESS,
             bulb_model=Hue_BR30_Enhanced_Color,
             bulb_ids=HUE_BULB_IDS_1,
-            zone_ids=[HUE_ZONE_IDS_1],
+            zone_ids=HUE_ZONE_IDS_1,
             groups={
                 '1.all_w_donut': [0, 1, 2, 3],
                 '1.all': [0, 1, 2],  # Same as middle.

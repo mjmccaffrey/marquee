@@ -148,10 +148,10 @@ class PacManGame(GameMode):
         log.info("Waiting for Start Game button press")
         self.buttons.game_start.set_light(True)
         self.lights.set_channels(
+            index=self.donut_index,
             brightness=100, 
             color=PacMan.color,
             on=True,
-            index=self.donut_index,
             force=True,
         )
 
@@ -172,7 +172,11 @@ class PacManGame(GameMode):
         """"""
         self.play_sound(Sound.INTERMISSION)
         for i, c in zip(range(4), cycle((Colors.WHITE, Colors.BLUE))):
-            kwargs = dict(color=c, transition=0)
+            kwargs = dict(
+                color=c, 
+                transition=0, 
+                index=range(15) if self.maze == passage_maze else range(12),
+            )
             if i == 0:
                 kwargs |= dict(on=True)
             self.schedule(
