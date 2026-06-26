@@ -101,11 +101,13 @@ class Ghost(Character, ABC):
             self.state = GhostState.EMERGING
 
     def emerging(self) -> None:
-        """Entering maze as soon as able."""
+        """Entering maze as soon as top 2 rows
+           do not have PacMan or another Ghost."""
         assert self.coord is None
         if not any(
             issubclass(e, Character)
-            for e in self.game.board[1]
+            for s in [11, 0, 1, 2, 3]
+            for e in self.game.board[s]
         ):
             self.game.place_entity(self, 1)
             self.state = GhostState.CHASING
