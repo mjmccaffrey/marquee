@@ -180,7 +180,7 @@ class PacManGame(GameMode):
             if i == 0:
                 kwargs |= dict(on=True)
             self.schedule(
-                due=(1 + i),
+                due=(1 + i * 1.5),
                 action=partial(self.lights.set_channels, **kwargs),
             )
         self.level = 1
