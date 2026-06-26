@@ -120,6 +120,18 @@ class LightSet:
             # print(' '.join(str(u.channel.index) for u in updates))
             return updates
 
+        def determine_group() -> str | None:
+            if group is None:
+                _group = self.controller.indices_in_group.get(frozenset(_index))
+                if _group is not None and no_params_are_sequences():
+                    print("DERIVED GROUP: ", group)
+                    return _group
+                else:
+                    return None
+            else:
+                print("SPECIFIED GROUP: ", group)
+                return group
+
         def no_params_are_sequences():
             """"""
             return (
@@ -129,16 +141,10 @@ class LightSet:
                 not isinstance(on, Sequence)
             )
 
-        if group is None:
-            _index = self._convert_index(index)
-            print(f"{_index=}")
-            updates = channel_updates()
-            _group = self.controller.indices_in_group.get(frozenset(_index))
-            if _group is not None and no_params_are_sequences():
-                group = _group
-                print("DERIVED GROUP: ", group)
-        else:
-            print("SPECIFIED GROUP: ", group)
+        _index = self._convert_index(index)
+        print(f"{_index=}")
+        updates = channel_updates()
+        group = determine_group()
         if group is not None:
             self.controller.update_channel_group(updates[0], group)
         else:

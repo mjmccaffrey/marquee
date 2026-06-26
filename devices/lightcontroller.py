@@ -39,7 +39,7 @@ class LightController(ABC):
                 f"Incompatible bulb model {self.bulb_model} "
                 f"for controller {type(self).__name__}."
             )
-        self.indices_in_group: dict[frozenset, str] = {
+        self.indices_in_group: dict[frozenset[int], str] = {
             frozenset(i): g
             for g, i in self.groups.items()
         }
