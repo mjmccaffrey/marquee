@@ -133,14 +133,14 @@ class LightSet:
         # no parameter sequences => group update possible
 
         _index = self._convert_index(index)
-        print(f"{_index=}")
+        # print(f"{_index=}")
         updates = channel_updates()
         group = self.controller.indices_in_group.get(frozenset(_index))
         if group is not None and no_params_are_sequences():
-            print("GROUP: ", group)
+            # print("GROUP: ", group)
             self.controller.update_channel_group(updates[0], group)
         else:
-            print("CHANNELS: ", updates)
+            # print("CHANNELS: ", updates)
             self.controller.update_channels(updates, force)
 
     def set_relays(
