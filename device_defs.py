@@ -157,6 +157,7 @@ def define_devices(
             bulb_ids=HUE_BULB_IDS_0,
             zone_ids=HUE_ZONE_IDS_0,
             groups={
+                '0.all.all': range(15),
                 '0.all': LIGHTS_CLOCKWISE,
                 '0.top': LIGHTS_TOP,
                 '0.right': LIGHTS_RIGHT,
