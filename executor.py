@@ -112,7 +112,8 @@ class Executor:
         shutdown = False
         self.devices = self.define_devices(brightness_factor, speed_factor)
         if self.devices.extra is not None:
-            self.devices.extra.set_channels(on=False)
+            self.devices.extra.set_channels(on=False, index=[0,1,2])
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!
         if color is not None:
             assert brightness is not None
             self.execute_color(color, brightness)
