@@ -98,8 +98,9 @@ class LightSet:
            must each be a single value.
            Force all specified channels to update with force."""
         
+        _index = self._convert_index(index)
         group = self._determine_group(
-            brightness, transition, color, on, group, index
+            brightness, transition, color, on, group, _index
         )
         if group is not None:
             updates = self._channel_updates(
@@ -108,7 +109,6 @@ class LightSet:
             )
             self.controller.update_channel_group(updates[0], group)
         else:
-            _index = self._convert_index(index)
             updates = self._channel_updates(
                 brightness, transition, color, on, 
                 [self.channels[i] for i in _index],
