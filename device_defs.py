@@ -24,6 +24,7 @@ from light_defs import *
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'
 HUE_BULB_IDS_0 = [
+    # Labeled 3 in top row left
     "79d6cc75-8eaa-450a-be32-6bc14695b11a",
     "1e5bbfc7-f3f1-47e1-bba9-18e70588f1e3",
     "b0338b37-5ed1-4ec2-b4be-5f9157ba62af",
@@ -33,7 +34,7 @@ HUE_BULB_IDS_0 = [
     "90a20fd0-3aef-4a57-b93d-393c0956baa1",
     "6e3c6e43-7e01-40d5-a650-acbc391b716d",
     "108dee49-9e5c-4879-83be-1c6f361a89aa",
-    "be70ec73-1aca-41a8-afaa-3e9dab07c27a",  # Labeled 0
+    "be70ec73-1aca-41a8-afaa-3e9dab07c27a",  # Labeled 0 - right bottom
     "3d3132d3-528c-4e15-bba7-f587e1442ef2",  # Labeled 1
     "35c48818-a97b-4b67-bbc8-22a68e6be153",  # Labeled 2
 ]
@@ -49,14 +50,14 @@ HUE_ZONE_IDS_0 = {
     #     {
     #         "rid": "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
     #         "rtype": "grouped_light"
-    '0.all': [
+    '0.12': [
+        "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
+        "afbce248-f994-4f71-833d-f7c20eb96814",
+    ],
+    '0.15': [
         "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
         "afbce248-f994-4f71-833d-f7c20eb96814",
         "1afc2cc8-cbf8-484b-b2d6-46575b2cef97",
-    ],
-    '0.all.all': [
-        "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
-        "afbce248-f994-4f71-833d-f7c20eb96814",
     ],
     '0.top': ['4cfe20b3-43ae-409e-8d21-ea84f96daef8'],
     '0.right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
@@ -64,8 +65,7 @@ HUE_ZONE_IDS_0 = {
     '0.left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68' ],
 }
 HUE_ZONE_IDS_1 = {
-    '1.all_w_donut': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
-    '1.all': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],  # Same as middle.
+    '1.5': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
     '1.middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
 }
 SHELLY_IP_ADDRESSES = [
@@ -157,8 +157,8 @@ def define_devices(
             bulb_ids=HUE_BULB_IDS_0,
             zone_ids=HUE_ZONE_IDS_0,
             groups={
-                '0.all.all': range(15),
-                '0.all': LIGHTS_CLOCKWISE,
+                '0.12': LIGHTS_CLOCKWISE,
+                '0.15': range(15),
                 '0.top': LIGHTS_TOP,
                 '0.right': LIGHTS_RIGHT,
                 '0.bottom': LIGHTS_BOTTOM,
@@ -170,7 +170,7 @@ def define_devices(
     )
     extra = LightSet(
         count=4,
-        relays=None,
+        relays=create_client(light_relays, EXTRA_TO_RELAY),
         mirror=None,
         controller_type=HueBridge,
         controller_kwargs=dict(
@@ -180,15 +180,14 @@ def define_devices(
             bulb_ids=HUE_BULB_IDS_1,
             zone_ids=HUE_ZONE_IDS_1,
             groups={
-                '1.all_w_donut': [0, 1, 2, 3],
-                '1.all': [0, 1, 2],  # Same as middle.
+                '1.5': [0, 1, 2, 3, 4],
                 '1.middle': [0, 1, 2],
             },
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
-    clicker = ClickSet(create_client(light_relays, CLICK_TO_RELAY))
+    clicker = ClickSet(create_client(drum_16_relays, CLICK_TO_RELAY))
     ringer = RingerBell(create_client(light_relays, RINGER_TO_RELAY))
     return DeviceSet(
         buttons(light_relays), drums, lights, extra, 
@@ -238,10 +237,8 @@ def define_devices_shelly(
 
 
 BUTTON_TO_RELAY = {0: 11}
-CLICK_TO_RELAY = {0: 2}
 RINGER_TO_RELAY = {0: 3}
-ALL_RELAYS = (
-    LIGHT_TO_RELAY | TOP_TO_RELAY | 
-    BUTTON_TO_RELAY | CLICK_TO_RELAY | RINGER_TO_RELAY
-)
+EXTRA_TO_RELAY = {0: 2, 1: 2, 2: 3, 3: 2, 4: 2}  # Kludge.
+
+CLICK_TO_RELAY = {0: 0, 1: 1}
 

@@ -111,10 +111,9 @@ def register_channel_modes(exec: Executor):
             ("random_flip_fade_medium", 30),
         ],
     )
-    exec.add_mode("alarm_bg", AlarmBackground, bell=False)
     exec.add_mode("alarm_test", ModeCycle,
         sequence = [
-            ("alarm_bg", 0.1),
+            ("alarm_dive", 0.1),
             ("twelve", 60),
             ("cs_chase", 99999),
         ],

@@ -6,14 +6,14 @@ import logging
 from typing_extensions import override
 
 from devices.devices_misc import ButtonName
-from .foregroundmode import ForegroundMode
+from .mode import Mode
 from ..structural.modes_misc import ModeIndex
 
 log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass
-class PerformanceMode(ForegroundMode, ABC):
+class PerformanceMode(Mode, ABC):
     """Base for performance modes."""
 
     @override

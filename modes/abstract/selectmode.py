@@ -6,7 +6,7 @@ import logging
 from typing_extensions import override
 
 from devices.devices_misc import ButtonName
-from .foregroundmode import ForegroundMode
+from .mode import Mode
 from ..structural.modes_misc import ModeDefinition
 from ..structural.sequencemode import SequenceMode
 from ..structural.sequences import rotate_build_flip
@@ -15,7 +15,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(kw_only=True)
-class SelectMode(ForegroundMode, ABC):
+class SelectMode(Mode, ABC):
     """Base for the selection modes."""
 
     def setup(

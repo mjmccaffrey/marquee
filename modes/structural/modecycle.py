@@ -6,15 +6,16 @@ import logging
 from typing_extensions import override
 
 from devices.devices_misc import ButtonName
-from ..abstract.backgroundmode import BackgroundMode
+from ..abstract.mode import Mode
 from .modes_misc import CycleEntry, CycleSequence
 
 log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(kw_only=True)
-class ModeCycle(BackgroundMode):
+class ModeCycle(Mode):
     """Play repeating sequence of foreground modes."""
+    background: bool = True
     sequence: CycleSequence  # (mode_name, seconds)
 
     def __post_init__(self) -> None:

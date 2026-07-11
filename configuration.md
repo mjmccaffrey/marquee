@@ -53,10 +53,10 @@ Marquee Lighted Sign Project - configuration
 * * 26
 * Corded button A
 * * 12
-* * GROUND !!!!!!!!!!
+* * GROUND
 * Corded button B
 * * 16
-* * GROUND !!!!!!!!!!
+* * GROUND
 * Remote button A
 * * 19
 * Remote button B
@@ -65,7 +65,7 @@ Marquee Lighted Sign Project - configuration
 * * 6
 * Remote button D
 * * 5
-* * GROUND !!!!!!!!!!
+* * GROUND
 
 * Game RJ-45 on external unit
 * * GND: Orange
@@ -110,4 +110,13 @@ _
         [Install]
         WantedBy=multi-user.target
 
-sudo touch /boot/firmware/ssh
+* Enable SSH - not needed on RPi 5
+* * sudo touch /boot/firmware/ssh
+
+* Configure Audio
+* * wpctl status
+* * wpctl set-default 71
+* * alsamixer
+* * aplay -l
+* * aplay -D plughw:2,0 ...
+

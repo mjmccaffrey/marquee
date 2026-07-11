@@ -10,13 +10,14 @@ from devices import rgbxy
 
 from devices.color import Color, Colors, RGB
 from devices.bulb import SmartBulb
-from devices.lightcontroller import ChannelUpdate, LightController
+from devices.lightcontroller import ChannelUpdate, LightChannel, LightController
 from devices.relaymodule import RelayClient
 from devices.specialparams import ChannelParams, MirrorParams, SpecialParams
 from .lightsetinterface import SavedState
 
 log = logging.getLogger('marquee.' + __name__)
 
+BrightnessParam = Sequence[int | None] | str | int | None
 
 @dataclass
 class LightSet:
@@ -81,7 +82,7 @@ class LightSet:
 
     def set_channels(
         self, 
-        brightness: Sequence[int | None] | str | int | None = None,
+        brightness: BrightnessParam = None,
         transition: Sequence[float | None] | float | None = None,
         color: Sequence[Color | None] | Color | None = None,
         on: Sequence[int | bool | str | None] | bool | int | None = None,
@@ -97,62 +98,67 @@ class LightSet:
            must each be a single value.
            Force all specified channels to update with force."""
         
-        def channel_updates() -> list[ChannelUpdate]:
-            """"""
-            _channels = [self.channels[i] for i in _index]
-            _brightness = self._convert_brightness(brightness, _index)
-            _transition = self._convert_transition(transition, _index)
-            _color = self._convert_color(color, _index)
-            _on = self._convert_on(on, _index)
-            assert (
-                len(_channels) == 
-                len(_brightness) ==
-                len(_transition) ==
-                len(_color) ==
-                len(_on)
-            )
-            updates = [
-                ChannelUpdate(ch, br, tr, co, on)
-                for ch, br, tr, co, on in 
-                zip(_channels, _brightness, _transition, _color, _on)
-            ]
-            updates.sort(key=lambda u: self.update_order[u.channel.index])
-            # print(' '.join(str(u.channel.index) for u in updates))
-            return updates
-
-        def determine_group() -> str | None:
-            if group is None:
-                _group = self.controller.indices_in_group.get(frozenset(_index))
-                if _group is not None and no_params_are_sequences():
-                    print("DERIVED GROUP: ", group)
-                    return _group
-                else:
-                    return None
-            else:
-                print("SPECIFIED GROUP: ", group)
-                return group
-
-        def no_params_are_sequences():
-            """"""
-            return (
-                not isinstance(brightness, Sequence) and
-                not isinstance(transition, Sequence) and
-                not isinstance(color, Sequence) and
-                not isinstance(on, Sequence)
-            )
-
-        _index = self._convert_index(index)
-        print(f"{_index=}")
-        updates = channel_updates()
-        group = determine_group()
+        group = self._determine_group(
+            brightness, transition, color, on, group, index
+        )
         if group is not None:
+            updates = self._channel_updates(
+                brightness, transition, color, on, 
+                [self.channels[0]],
+            )
             self.controller.update_channel_group(updates[0], group)
         else:
+            _index = self._convert_index(index)
+            updates = self._channel_updates(
+                brightness, transition, color, on, 
+                [self.channels[i] for i in _index],
+            )
             print(
                 "CHANNELS: ", 
                 ' '.join(str(u.channel.index) for u in updates)
             )
             self.controller.update_channels(updates, force)
+
+    def _channel_updates(
+        self, brightness, transition, color, on,
+        channels: Sequence[LightChannel],
+    ) -> list[ChannelUpdate]:
+        """Return ChannelUpdate for each specified channel."""
+        length = len(channels)
+        _brightness = self._convert_brightness(brightness, length)
+        _transition = self._convert_transition(transition, length)
+        _color = self._convert_color(color, length)
+        _on = self._convert_on(on, length)
+        updates = [
+            ChannelUpdate(ch, br, tr, co, on)
+            for ch, br, tr, co, on in 
+            zip(channels, _brightness, _transition, _color, _on)
+        ]
+        updates.sort(key=lambda u: self.update_order[u.channel.index])
+        # print(' '.join(str(u.channel.index) for u in updates))
+        return updates
+
+    def _determine_group(
+        self, brightness, transition, color, on, group, index,
+    ) -> str | None:
+        """Return specified group, group that matches
+            the specified indices, or None."""
+        if group is None:
+            _group = self.controller.indices_in_group.get(frozenset(index))
+            if (
+                _group is not None and
+                not isinstance(brightness, Sequence) and
+                not isinstance(transition, Sequence) and
+                not isinstance(color, Sequence) and
+                not isinstance(on, Sequence)
+            ):
+                print("DERIVED GROUP: ", group)
+                return _group
+            else:
+                return None
+        else:
+            print("SPECIFIED GROUP: ", group)
+            return group
 
     def set_relays(
         self, 
@@ -276,13 +282,13 @@ class LightSet:
                 result = [index]
             case _:
                 raise ValueError(index)
-        # assert all(i in range(self.count) for i in result)
+        assert all(i in range(self.count) for i in result)
         return result
     
     def _convert_brightness(
         self,
         brightness: Sequence[int | None] | str | int | None,
-        index: Sequence[int],
+        length: int,
     ) -> list[int | None]:
         """Return normalized brightness pattern, 
            adjusted by brightness_factor."""
@@ -295,7 +301,7 @@ class LightSet:
             case Sequence():
                 result = list(brightness)
             case _:
-                result = [brightness] * len(index)
+                result = [brightness] * length
         # log.info(f"{result=} {self._brightness_factor=}")
         result = [
             int(b * self._brightness_factor)
@@ -307,33 +313,33 @@ class LightSet:
     def _convert_transition(
         self,
         transition: Sequence[float | None] | float | None,
-        index: Sequence[int],
+        length: int,
     ) -> list[float | None]:
         """"""
         match transition:
             case Sequence():
                 result = list(transition)
             case _:
-                result = [transition] * len(index)
+                result = [transition] * length
         return cast(list, result)
     
     def _convert_color(
         self,
         color: Sequence[Color | None] | Color | None,
-        index: Sequence[int],
+        length: int,
     ) -> list[Color | None]:
         """"""
         match color:
             case Sequence():
                 result = list(color)
             case _:
-                result = [color] * len(index)
+                result = [color] * length
         return result
     
     def _convert_on(
         self,
         on: Sequence[int | bool | str | None] | bool | int | None,
-        index: Sequence[int],
+        length: int,
     ) -> list[bool | None]:
         """"""
         match on:
@@ -350,7 +356,7 @@ class LightSet:
             case _:
                 result = [
                     bool(on) if on is not None else None
-                ] * len(index)
+                ] * length
         return cast(list, result)
     
     def _convert_relay_pattern(

@@ -3,7 +3,7 @@
 from collections.abc import Sequence
 from typing import Protocol
 
-from devices.color import Color
+from devices.color import Color, Colors
 from devices.lightcontroller import ChannelUpdate
 from devices.rgbxy import Gamut
 from devices.specialparams import SpecialParams
@@ -11,6 +11,7 @@ from devices.specialparams import SpecialParams
 
 class LightSetInterface(Protocol):
     """"""
+    colors: Colors
     count: int
     gamut: Gamut | None
     speed_factor: float

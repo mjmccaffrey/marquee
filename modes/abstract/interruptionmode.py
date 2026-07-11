@@ -10,7 +10,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(kw_only=True)
-class InterruptionMode(PerformanceMode, ABC):
+class InterruptMode(PerformanceMode, ABC):
     """"""
     activity_time: float
     restore_time: float

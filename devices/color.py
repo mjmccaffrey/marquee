@@ -229,6 +229,8 @@ class ColorSets:
             key.lower(): ColorSet(key.lower(), 'basic', (value,))
             for key, value in vars(Colors).items()
             if isinstance(value, RGB)
+        } | {
+            'wheel': ColorSet('wheel', 'basic', Colors.WHEEL)
         }
 
     @staticmethod

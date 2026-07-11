@@ -95,7 +95,6 @@ class LightChannel(ABC):
     color: Color | None
     on: bool
 
-
     @override
     def __repr__(self):
         return f"Channel {self.index}"
@@ -137,7 +136,7 @@ class LightChannel(ABC):
             # print(changes)
             return ChannelUpdate(
                 channel=update.channel,
-                transition=update.transition,  # !!!!!!!!!!!!!!!!!!!!!!
+                transition=update.transition,  # !!!!!!!!!!
                 **changes,
             )
 

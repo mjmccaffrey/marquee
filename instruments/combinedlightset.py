@@ -23,6 +23,7 @@ class CombinedLightSet:
         self.channels = (
             list(self.ls0.channels) + list(self.ls1.channels)
         )
+        self.colors = self.ls0.colors
         self.count = self.ls0.count + self.ls1.count
         self.gamut = self.ls0.gamut
         self.speed_factor = self.ls0.speed_factor

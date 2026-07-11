@@ -4,7 +4,7 @@ from collections.abc import Callable
 import logging
 from typing import Any
 
-from modes.abstract.foregroundmode import ForegroundMode
+from modes.abstract.mode import Mode
 from . import music_elements
 from .music_elements import (
     Element, Measure, Part, Section, Piece, Sequence, 
@@ -19,7 +19,7 @@ from devices.specialparams import SpecialParams
 log = logging.getLogger('marquee.' + __name__)
 
 
-def set_mode(the_mode: ForegroundMode) -> None:
+def set_mode(the_mode: Mode) -> None:
     """Set the Mode object used throughout the music modules."""
     global mode
     mode = the_mode

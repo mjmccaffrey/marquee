@@ -14,12 +14,12 @@ from instruments import (
     LightChannelInstrument, LightRelayInstrument,
     ReleaseableInstrument, RestInstrument,
 )
-from modes.abstract.foregroundmode import ForegroundMode
+from modes.abstract.mode import Mode
 from devices.specialparams import SpecialParams
 
 
 log = logging.getLogger('marquee.' + __name__)
-mode: ForegroundMode  # See music_interface._set_mode
+mode: Mode  # See music_interface._set_mode
 
 
 @dataclass(frozen=True)

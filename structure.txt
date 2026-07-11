@@ -29,11 +29,12 @@ marquee
         RestInstrument
     modes
         BaseMode
-            BackgroundMode
-            ForegroundMode
+            Mode
                 SelectMode
                 PerformanceMode
+                    ColorSetMode
                     GameMode
+                    InterruptMode
                     MusicMode
                     SequenceMode
     music

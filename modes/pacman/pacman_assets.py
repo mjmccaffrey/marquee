@@ -83,26 +83,37 @@ class GhostState(StrEnum):
     EMERGING = auto()
     CHASING = auto()
 
+
 @dataclass(kw_only=True, repr=False)
 class Ghost(Character, ABC):
+    state_event: str
     brightness: int = 80
     draw_priority: ClassVar[int] = 3
     turn_priority: ClassVar[int] = 2
     wait_ticks: int
+    emerge_ticks: int
     direction: int
 
     def __post_init__(self):
         """Initialize states."""
-        self.state = GhostState.WAITING
+        self.change_state(GhostState.WAITING)
+
+    def change_state(self, state: GhostState) -> None:
+        """"""
+        self.state = state
+        self.game.events.notify(self.state_event, ghost=self, state=state)
 
     def waiting(self) -> None:
         """Waiting to enter emerge."""
         if self.game.tick + 1 == self.wait_ticks:
-            self.state = GhostState.EMERGING
+            self.change_state(GhostState.EMERGING)
 
     def emerging(self) -> None:
-        """Entering maze as soon as top 2 rows
+        """Entering maze after short delay and 
+           as soon as top 2 rows
            do not have PacMan or another Ghost."""
+        if self.game.tick < self.emerge_ticks:
+            return
         assert self.coord is None
         if not any(
             issubclass(e, Character)
@@ -110,7 +121,7 @@ class Ghost(Character, ABC):
             for e in self.game.board[s]
         ):
             self.game.place_entity(self, 1)
-            self.state = GhostState.CHASING
+            self.change_state(GhostState.CHASING)
 
     def chasing(self) -> None:
         """In maze and chasing PacMan."""

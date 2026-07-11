@@ -29,14 +29,13 @@ class RandomFade(PerformanceMode):
 
     def new_transition(self) -> float:
         """Return either specified or random transition."""
-        return (
-            self.transition 
-                if self.transition is not None else
-            random.uniform(
+        if self.transition is not None:
+            return self.transition 
+        else:
+            return random.uniform(
                 self.lights.trans_min, 
                 5.0 * self.speed_factor
             )
-        )
 
     def new_duration(self) -> float:
         """Return either specified or random duration."""

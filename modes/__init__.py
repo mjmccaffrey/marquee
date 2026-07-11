@@ -1,10 +1,9 @@
 """Marquee Lighted Sign Project - modes __init__"""
 
 # Abstract modes
-from .abstract.backgroundmode import BackgroundMode
 from .abstract.basemode import BaseMode
 from .abstract.colorsetmode import ColorSetMode
-from .abstract.foregroundmode import ForegroundMode
+from .abstract.mode import Mode
 from .abstract.gamemode import GameMode
 from .abstract.musicmode import MusicMode
 from .abstract.performancemode import PerformanceMode
@@ -19,7 +18,7 @@ from .structural.sequencemode import LightSetBaseline, SequenceMode
 from .structural.sequences import *
 
 # Performance & Game modes
-from .alarm import AlarmBackground, AlarmBell, AlarmDive
+from .alarm import AlarmBell, AlarmDive
 from .colorsetstatic import ColorSetStatic
 from .colorsetdynamic import ColorSetDynamic
 from .colorwheel import ColorWheel

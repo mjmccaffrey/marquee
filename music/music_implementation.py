@@ -8,14 +8,14 @@ from typing import Any, Iterator
 
 from devices.specialparams import ActionParams, SpecialParams
 from task import Task
-from modes.abstract.foregroundmode import ForegroundMode
+from modes.abstract.mode import Mode
 from .music_elements import (
     ActionNote, BaseNote, Element, Measure, NoteGroup,
     Part, Rest, SequenceMeasure,
 )
 
 log = logging.getLogger('marquee.' + __name__)
-mode: ForegroundMode  # See music_interface._set_mode
+mode: Mode  # See music_interface._set_mode
 
 
 def prepare_parts(parts: tuple[Part, ...]) -> tuple[Measure, ...]:

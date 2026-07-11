@@ -11,10 +11,11 @@ from typing_extensions import override
 
 from devices.color import Colors, RGB
 from devices.devices_misc import ButtonName
+from light_defs import LIGHTS_CUPOLA, LIGHTS_DONUT
 from ..abstract.gamemode import Entity, EntityGroup, GameMode
 from . import pacman_assets as assets
 from .pacman_assets import (
-    Dot, Fruit, Ghost, PacMan, Pinky, Blinky, Sound,
+    Dot, Fruit, Ghost, GhostState, PacMan, Pinky, Blinky, Sound,
     passage_maze,
 )
 from devices.lightcontroller import LightChannel, ChannelUpdate
@@ -24,7 +25,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 @override
 class GameState(StrEnum):
-    """"""
+    """Game state."""
     PRE_GAME = auto()
     PLAY_GAME = auto()
     PRE_LEVEL_0 = auto()
@@ -35,13 +36,14 @@ class GameState(StrEnum):
 
 
 class Event(StrEnum):
-    """"""
-    BITE = auto()
+    """Event communicated with EventSystem."""
+    PACMAN_BITE = auto()
+    GHOST_STATE = auto()
 
 
 @dataclass(kw_only=True)
 class PacManGame(GameMode):
-    """"""
+    """Pac-Man game."""
     ticks_per_second: float = 2.0
 
     def __post_init__(self):
@@ -49,19 +51,17 @@ class PacManGame(GameMode):
         super().__post_init__()
         self.pacman_coord = 7
         self.fruit_coord = 13 if self.maze == passage_maze else 7
-        self.donut_index = 15
-        self.combined.count -= 1  # Exclude donut
-        self.secondary.count -= 1  # Exclude donut
         self.lights = self.combined
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
-        self.events.subscribe(Event.BITE, self.pacman_bite)
+        self.events.subscribe(Event.GHOST_STATE, self.ghost_state)
+        self.events.subscribe(Event.PACMAN_BITE, self.pacman_bite)
         self.state = GameState.PRE_GAME
         self.level: int
 
     def init_sound(self):
-        """"""
+        """Load sounds."""
         # pygame.mixer.init()
         self.sounds = {
             sound: pygame.mixer.Sound(f'modes/pacman/pacman_{sound}.wav')
@@ -69,12 +69,12 @@ class PacManGame(GameMode):
         }
 
     def play_sound(self, sound: Sound):
-        """"""
+        """Play sound."""
         self.sounds[sound].play()
 
     @override
     def button_action(self, button: ButtonName) -> int | None:
-        """"""
+        """Handle Game Start button push."""
         if (
             button == ButtonName.GAME_START and
             self.state == GameState.PRE_GAME
@@ -83,7 +83,25 @@ class PacManGame(GameMode):
         else:
             return super().button_action(button)
 
-    def pacman_bite(self, etype: type, coord: int):
+    def ghost_state(self, ghost: Ghost, state: GhostState) -> None:
+        """"""
+        match state:
+            case GhostState.WAITING:
+                pass
+            case GhostState.EMERGING:
+                self.lights.set_channels(
+                    index=LIGHTS_CUPOLA,
+                    on=True,
+                    color=ghost.color,
+                    brightness=80,
+                )
+            case GhostState.CHASING:
+                self.lights.set_channels(
+                    index=LIGHTS_CUPOLA,
+                    on=False,
+                )
+
+    def pacman_bite(self, etype: type, coord: int) -> None:
         """Effect PacMan bighting something."""
         match etype:
             case assets.Dot:
@@ -100,7 +118,7 @@ class PacManGame(GameMode):
 
     @override
     def init_level(self) -> None:
-        """"""
+        """Initialize either level."""
         super().init_level()
         assert self.extra is not None
         # self.extra.set_channels(brightness=0, on=True)
@@ -117,38 +135,46 @@ class PacManGame(GameMode):
             )
         )
         self.pacman = self.register_entity(
-            PacMan(game=self, bite_event=Event.BITE)
+            PacMan(game=self, bite_event=Event.PACMAN_BITE)
         )
         self.blinky = self.register_entity(
             Blinky(
                 game=self, 
+                state_event=Event.GHOST_STATE,
                 direction=+1,
-                wait_ticks=75 if self.level == 0 else 50,
+                wait_ticks=65 if self.level == 0 else 40,
+                emerge_ticks=75,
             )
         )
         self.pinky = self.register_entity(
             Pinky(
                 game=self, 
+                state_event=Event.GHOST_STATE,
                 direction=-1,
-                wait_ticks=999999 if self.level == 0 else 100,
+                wait_ticks=999999 if self.level == 0 else 90,
+                emerge_ticks=100,
             )
         )
         self.ghosts = (self.pinky, self.blinky)
         self.update_lights()
 
     def play_level(self) -> None:
-        """"""
+        """Play either level."""
         self.place_entity(self.pacman, self.pacman_coord)
         cast(Dot, self.board[self.pacman_coord][Dot]).bitten()
         self.update_lights()
         self.change_state(GameState.PLAY_GAME)
 
     def pre_game_state(self) -> None:
-        """"""
+        """Before game starts."""
         log.info("Waiting for Start Game button press")
         self.buttons.game_start.set_light(True)
         self.lights.set_channels(
-            index=self.donut_index,
+            index=LIGHTS_CUPOLA,
+            on=False,
+        )
+        self.lights.set_channels(
+            index=LIGHTS_DONUT,
             brightness=100, 
             color=PacMan.color,
             on=True,
@@ -156,26 +182,26 @@ class PacManGame(GameMode):
         )
 
     def pre_level_0_state(self) -> None:
-        """"""
+        """Before level 0 starts."""
         self.play_sound(Sound.BEGINNING)
         self.level = 0
         self.schedule(due=3.0, action=partial(self.init_level))
         self.schedule(due=5.0, action=partial(self.play_level))
 
     def pre_level_1_state(self) -> None:
-        """"""
+        """Before level 1 starts."""
         self.level = 1
         self.schedule(action=partial(self.init_level))
         self.schedule(due=2.0, action=partial(self.play_level))
 
     def post_level_0_state(self) -> None:
-        """"""
+        """Play music. Blink all maze lights. Start level 1."""
         self.play_sound(Sound.INTERMISSION)
         for i, c in zip(range(4), cycle((Colors.WHITE, Colors.BLUE))):
             kwargs = dict(
                 color=c, 
                 transition=0, 
-                group='0.all.all' if self.maze == passage_maze else '0.all'
+                group='0.15' if self.maze == passage_maze else '0.12'
             )
             if i == 0:
                 kwargs |= dict(on=True)
@@ -189,19 +215,32 @@ class PacManGame(GameMode):
         )
 
     def game_won_state(self) -> None:
-        """"""
+        """Game won."""
         log.info("You won!")
         self.play_sound(Sound.EXTRAPAC)
+        self.lights.set_channels(
+            index=LIGHTS_CUPOLA,
+            color=PacMan.color,
+            brightness=PacMan.brightness,
+            on=True,
+        )
         self.schedule(due=5.0, action=partial(self.change_state, GameState.PRE_GAME))
 
     def game_lost_state(self) -> None:
-        """"""
+        """Game lost."""
         log.info("You lost!")
         self.play_sound(Sound.DEATH)
+        self.lights.set_channels(
+            index=LIGHTS_CUPOLA,
+            color=self.lights.colors.RED,
+            brightness=80,
+            on=True,
+        )
         self.schedule(due=5.0, action=partial(self.change_state, GameState.PRE_GAME))
 
     @override
     def execute_state(self) -> None:
+        """Execute self.state."""
         assert isinstance(self.state, GameState)
         print(self.state)
         match self.state:
@@ -223,7 +262,7 @@ class PacManGame(GameMode):
 
     @override
     def state_logic(self) -> None:
-        """"""
+        """Respond to various game events."""
         # If ghost and Pac-Man on same square, or 
         # attempted to pass each other, game is over etc.
         if not any(
@@ -242,7 +281,7 @@ class PacManGame(GameMode):
             self.place_entity(self.fruit, self.fruit_coord)
 
     def ghost_got_pacman(self) -> bool:
-        """"""
+        """Ghost and PacMan entered same square, or passed each other."""
         for ghost in self.ghosts:
             if self.pacman.coord == ghost.coord:
                 return True
@@ -261,7 +300,7 @@ class PacManGame(GameMode):
             entities: EntityGroup, 
             channel: LightChannel,
         ) -> ChannelUpdate:
-        """"""
+        """Return ChannelUpdate given contents of maze square."""
         # Empty square
         if not entities:
             return ChannelUpdate(channel=channel, on=False)

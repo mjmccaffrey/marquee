@@ -144,7 +144,7 @@ class CreateModeInstance(Protocol):
         mode_definition: ModeDefinition | None = None,
         kwargs: dict[str, Any] = {},
         parent: BaseMode | None = None,  # !!! BaseMode
-    ) -> BaseMode:  # !!! BackgroundMode | ForegroundMode:
+    ) -> BaseMode:  # !!! BackgroundMode | Mode:
         ...
 
 class ReplaceKwargValues(Protocol):

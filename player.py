@@ -13,8 +13,7 @@ from devices.devices_misc import (
     ButtonAction, ButtonActionException, ButtonName,
 )
 from event import EventSystem
-from modes.abstract.backgroundmode import BackgroundMode
-from modes.abstract.foregroundmode import ForegroundMode
+from modes.abstract.mode import Mode
 from modes import ChangeMode, ModeDefinition
 from task import TaskSchedule
 
@@ -37,8 +36,8 @@ class Player:
     def __post_init__(self) -> None:
         """Initialize."""
         log.info("Initializing player")
-        self.active_mode: BackgroundMode | ForegroundMode | None = None
-        self.live_bg_modes: dict[int, BackgroundMode] = {}
+        self.active_mode: Mode | None = None
+        self.live_bg_modes: dict[int, Mode] = {}
         signal.signal(signal.SIGTERM, self.sigterm_received)
         self.events = EventSystem()
         self.tasks = TaskSchedule()
@@ -65,8 +64,8 @@ class Player:
         mode_index: int | None = None,
         mode_definition: ModeDefinition | None = None,
         kwargs: dict[str, Any] = {},
-        parent: BackgroundMode | ForegroundMode | None = None,
-    ) -> BackgroundMode | ForegroundMode:
+        parent: Mode | None = None,
+    ) -> Mode:
         """Return a new mode instance."""
         assert (mode_index is None) ^ (mode_definition is None)
         definition = mode_definition or self.modes[cast(int, mode_index)]
@@ -86,32 +85,24 @@ class Player:
         _kwargs |= (
             self.replace_kwarg_values(definition.kwargs) | kwargs
         )
-        if issubclass(definition.cls, ForegroundMode):
+        if issubclass(definition.cls, Mode):
             _kwargs |= dict(
                 devices=self.devices,
                 speed_factor=self.speed_factor,
             )
         return definition.cls(**_kwargs)
 
-    def effect_new_active_mode(
-        self, 
-        mode_index: int,
-    ) -> BackgroundMode | ForegroundMode:
+    def effect_new_active_mode(self, mode_index: int) -> Mode:
         """Create new mode instance, clean up old, etc."""
-
-        # If there is an active mode and it is of type ForegroundMode, 
-        # clean it up.
-        # Note: After startup, there is always an active mode.
-        if isinstance(self.active_mode, ForegroundMode):
-            self.tasks.delete_owned_by(self.active_mode)
+        # Notes: 
+        #  * After startup, there is always an active mode.
+        #  * A background mode will upon instantiation  
+        #    be the active mode, for a very short time.
 
         # Create new mode instance
         new_mode = self.create_mode_instance(mode_index)
-        assert isinstance(new_mode, BackgroundMode | ForegroundMode)
 
-        # Note: A background mode will upon instantiation  
-        #       be the active mode, for a very short time.
-        if isinstance(new_mode, BackgroundMode):
+        if new_mode.background:
             # If bg mode of same type already present, clean it up.
             if (conflict := self.live_bg_modes.pop(new_mode.index, None)):
                 print(f'Deleting background mode {new_mode.name}')
@@ -119,7 +110,12 @@ class Player:
             # Add new bg mode to bg mode list
             print(f'Adding background mode {new_mode.name}')
             self.live_bg_modes[new_mode.index] = new_mode
-
+        else:
+            if (
+                self.active_mode is not None and 
+                not self.active_mode.background
+            ):
+                self.tasks.delete_owned_by(self.active_mode)
         # Return new mode instance
         return new_mode
 
@@ -132,8 +128,9 @@ class Player:
                 if new_mode_index is not None:
                     self.active_mode = self.effect_new_active_mode(new_mode_index)
                     new_mode_index = None
-                    log.info(f"Executing mode {self.active_mode}")
-                    self.active_mode.execute()
+                    log.info(f"Active mode is now {self.active_mode}")
+                    if not self.active_mode.background:
+                        self.active_mode.execute()
                 self.wait()
             except ButtonActionException as press:
                 with suppress(ButtonActionException):
@@ -156,7 +153,7 @@ class Player:
            of button action. Return FG active mode's response."""
         for mode in self.live_bg_modes.values():
             mode.button_action(button)
-        if isinstance(self.active_mode, ForegroundMode):
+        if isinstance(self.active_mode, Mode):
             return self.active_mode.button_action(button)
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
