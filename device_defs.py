@@ -43,9 +43,11 @@ HUE_BULB_IDS_1 = [
     "a0906758-e0b5-45c3-8e19-85994f253bd7",
     "359de043-2614-443f-8e44-fad407fdc854",
     "398bd880-e870-4d00-88ee-dce5aa83c17b",  # Donut
+    "5bed6538-94b3-4fb9-8b14-c32c81ec80fa",  # Cupola
 ]
 HUE_ZONE_IDS_0 = {
     # https://192.168.64.130/clip/v2/resource/zone
+    # * Lists zones, with names, and included bulbs
     # "services": [
     #     {
     #         "rid": "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
