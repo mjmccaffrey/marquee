@@ -1,0 +1,42 @@
+"""Marquee Lighted Sign Project - cupolasequence"""
+
+from dataclasses import dataclass
+from itertools import cycle
+import logging
+from typing_extensions import override
+
+from light_defs import EXTRA_CUPOLA
+from . import PerformanceMode
+
+log = logging.getLogger('marquee.' + __name__)
+
+
+@dataclass(kw_only=True)
+class CupolaSequence(PerformanceMode):
+    """Set cupola light to sequence of colors."""
+    background: bool = True
+    color_set_name: str
+    brightness: int | None = None
+    transition: float = 0.0
+    delay: float
+
+    @override
+    def __post_init__(self) -> None:
+        """Initialize."""
+        super().__post_init__()
+        cs = self.color_sets.by_set_name[self.color_set_name]
+        self.colors = cycle(cs.colors)
+        self.schedule()
+
+    @override
+    def execute(self):
+        """Change to next color."""
+        assert self.extra is not None
+        self.extra.set_channels(
+            index=EXTRA_CUPOLA,
+            color=next(self.colors),
+            brightness=self.brightness,
+            transition=self.transition,
+        )
+        self.schedule(due=self.delay)
+
