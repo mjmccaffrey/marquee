@@ -19,7 +19,7 @@ class GeneratedModes(RandomFade):
                 self.generate_mode(light_index)
             self.schedule(self.exit, 120)
         else:
-            print("GM:")
+            print(f"GM: {self.light_index}")
             self.update_light_schedule_next_g(self.light_index)
 
     def update_light_schedule_next_g(self, light_index: int):
@@ -48,5 +48,5 @@ class GeneratedModes(RandomFade):
             ),
             parent=self,
         )
-        self.schedule(mode.execute)
+        self.schedule(mode.execute, light_index)
 
