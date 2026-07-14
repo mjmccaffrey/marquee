@@ -89,12 +89,12 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
         ),
         corded_a = Button(
             ButtonName.CORDED_A,
-            _Button(pin=12, bounce_time=0.05),
+            _Button(pin=2, bounce_time=0.05),
             signal_number=signal.SIGUSR1,  # type: ignore
         ),
         corded_b = Button(
             ButtonName.CORDED_B,
-            _Button(pin=16, bounce_time=0.05),
+            _Button(pin=3, bounce_time=0.05),
             signal_number=signal.SIGUSR2,  # type: ignore
         ),
         corded_c = Button(
@@ -106,23 +106,6 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
             ButtonName.GAME_START,
             _Button(pin=21, bounce_time=0.05),
             relay=create_client(light_relays, BUTTON_TO_RELAY),
-        ),
-        remote_a = Button(
-            ButtonName.REMOTE_A,
-            _Button(pin=19, pull_up=False, bounce_time=0.10)
-
-        ),
-        remote_b = Button(
-            ButtonName.REMOTE_B,
-            _Button(pin=13, pull_up=False, bounce_time=0.10)
-        ),
-        remote_c = Button(
-            ButtonName.REMOTE_C,
-            _Button(pin=6, pull_up=False, bounce_time=0.10)
-        ),
-        remote_d = Button(
-            ButtonName.REMOTE_D,
-            _Button(pin=5, pull_up=False, bounce_time=0.10)
         ),
     )
 
