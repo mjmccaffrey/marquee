@@ -19,7 +19,12 @@ class GeneratedModes(RandomFade):
                 self.generate_mode(light_index)
             self.schedule(self.exit, 120)
         else:
-            self.update_light_schedule_next(self.light_index)
+            self.update_light_schedule_next_g(self.light_index)
+
+    def update_light_schedule_next_g(self, light_index: int):
+        """"""
+        print(f"{self.light_index=} {light_index=}")
+        self.update_light_schedule_next(light_index)
 
     def exit(self) -> None:
         """"""
@@ -34,7 +39,7 @@ class GeneratedModes(RandomFade):
             ),
             kwargs=dict(
                 background=True,
-                parent=self,
+                # parent=self,
                 transition=self.transition,
                 duration=self.duration,
                 color_set_name=self.color_set_name,

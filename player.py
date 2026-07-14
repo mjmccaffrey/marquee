@@ -124,7 +124,6 @@ class Player:
         if not new_mode.background:
             new_mode.execute()
 
-
     def execute(self, starting_mode_index: int) -> bool:
         """Play the specified starting mode and all subsequent modes.
            Return whether to shut down the system, or just exit."""
