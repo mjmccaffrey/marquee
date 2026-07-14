@@ -29,8 +29,8 @@ class GeneratedModes(RandomFade):
         """"""
         mode = self.create_mode_instance(
             mode_definition=ModeDefinition(
-                name='cs_rotate',
-                cls=RandomFade,
+                name=f'generated_mode_{light_index:02}',
+                cls=GeneratedModes,
             ),
             kwargs=dict(
                 background=True,
