@@ -107,6 +107,23 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
             _Button(pin=21, bounce_time=0.05),
             relay=create_client(light_relays, BUTTON_TO_RELAY),
         ),
+        remote_a = Button(
+            ButtonName.REMOTE_A,
+            _Button(pin=19, pull_up=False, bounce_time=0.10)
+
+        ),
+        remote_b = Button(
+            ButtonName.REMOTE_B,
+            _Button(pin=13, pull_up=False, bounce_time=0.10)
+        ),
+        remote_c = Button(
+            ButtonName.REMOTE_C,
+            _Button(pin=6, pull_up=False, bounce_time=0.10)
+        ),
+        remote_d = Button(
+            ButtonName.REMOTE_D,
+            _Button(pin=5, pull_up=False, bounce_time=0.10)
+        ),
     )
 
 
