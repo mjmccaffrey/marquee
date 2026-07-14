@@ -27,6 +27,7 @@ from .doom import DoomGame
 from .demo import Demo
 from .evenoddfade import EvenOddFade
 from .fastchange import FastChange
+from .generatedmodes import GeneratedModes
 from .pacman import PacManGame
 from .randomfade import RandomFade
 from .running import Running
