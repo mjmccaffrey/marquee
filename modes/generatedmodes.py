@@ -20,12 +20,13 @@ class GeneratedModes(RandomFade):
             self.schedule(self.exit, 120)
         else:
             print(f"GM: {self.light_index}")
-            self.update_light_schedule_next_g(self.light_index)
+            self.update_light_schedule_next(self.light_index)
 
-    def update_light_schedule_next_g(self, light_index: int):
+    @override
+    def update_light_schedule_next(self, index: int) -> None:
         """"""
-        print(f"{self.light_index=} {light_index=}")
-        self.update_light_schedule_next(light_index)
+        print(f"{self.light_index=} {index=}")
+        super().update_light_schedule_next(index)
 
     def exit(self) -> None:
         """"""
