@@ -27,7 +27,6 @@ from .doom import DoomGame
 from .demo import Demo
 from .evenoddfade import EvenOddFade
 from .fastchange import FastChange
-from .generatedmodes import GeneratedModes
 from .pacman import PacManGame
 from .randomfade import RandomFade
 from .running import Running
@@ -35,4 +34,5 @@ from .signs import Signs
 from .silentfadebuild import SilentFadeBuild
 from .tiltsensors import TiltSensors
 from .twelve import Twelve
+from .generatedmodes import GeneratedModes
 
