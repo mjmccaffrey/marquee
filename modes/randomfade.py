@@ -88,6 +88,7 @@ class RandomFade(PerformanceMode):
             color=color,
             index=index,
         )
+        print(f"{brightness=} {transition=} {color=} {index=}")
         self.brightnesses[index] = brightness
         return transition + duration
 
