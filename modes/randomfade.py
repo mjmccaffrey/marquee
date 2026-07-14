@@ -26,6 +26,7 @@ class RandomFade(PerformanceMode):
         self.lights.set_relays(ALL_ON)
         self.lights.set_channels(on=True)
         self.brightnesses = self.lights.brightnesses()
+        print("END OF POST_INIT")
 
     def new_transition(self) -> float:
         """Return either specified or random transition."""
