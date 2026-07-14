@@ -70,7 +70,7 @@ class RandomFade(PerformanceMode):
         due = self.update_light(index)
         self.schedule(
             action=partial(self.update_light_schedule_next, index=index),
-            due=(due),
+            due=due,
             name=f"RandomFade update light {index}",
         )
 
