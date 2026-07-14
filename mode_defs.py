@@ -25,7 +25,6 @@ def define_modes(exec: Executor) -> None:
     register_silent_modes(exec)
     register_test_modes(exec)
     # register_pyohio_2025_presentation_modes(exec)
-    exec.add_mode("generate", GeneratedModes)
 
 def register_special_modes(exec: Executor) -> None:
     """"""
@@ -291,6 +290,7 @@ def register_silent_modes(exec: Executor) -> None:
     exec.add_mode("random_bright_fixed_trans", RandomFade, transition=0.5)
     exec.add_mode("random_bright_fixed_dur", RandomFade, duration=5.0)
     exec.add_mode("random_random_random", RandomFade)
+    exec.add_mode("generate", GeneratedModes)
     exec.add_mode("narcissa_random_random", RandomFade, color_set_name='narcissa')
     exec.add_mode(
         "fast_change", FastChange, 

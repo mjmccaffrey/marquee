@@ -9,7 +9,7 @@ from . import RandomFade, ModeDefinition
 @dataclass(kw_only=True)
 class GeneratedModes(RandomFade):
     """"""
-    light_index: int | None  # None => parent
+    light_index: int | None = None  # None => parent
 
     @override
     def execute(self) -> None:
