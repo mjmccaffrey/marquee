@@ -2,6 +2,7 @@
 
 from contextlib import suppress
 from dataclasses import dataclass, field
+from itertools import count
 import logging
 import signal
 from typing import Any, cast, NoReturn
@@ -29,15 +30,14 @@ class Player:
     devices: DeviceSet
     speed_factor: float
     pace: float = field(init=False)
-    bg_mode_instances: dict = field(init=False)
     events: EventSystem = field(init=False)
     tasks: TaskSchedule = field(init=False)
 
     def __post_init__(self) -> None:
         """Initialize."""
         log.info("Initializing player")
-        self.active_mode: Mode | None = None
-        self.live_bg_modes: dict[int, Mode] = {}
+        self.mode_instances: dict[int, Mode] = {}  # Not children.
+        self.mode_serial = count()
         signal.signal(signal.SIGTERM, self.sigterm_received)
         self.events = EventSystem()
         self.tasks = TaskSchedule()
@@ -59,6 +59,11 @@ class Player:
         log.info(f"SIGTERM received.")
         raise SigTerm
 
+    def foreground_mode_instance(self) -> Mode | None:
+        """"""
+        fg_iter = (m for m in self.mode_instances.values() if not m.background)
+        return next(fg_iter, None)
+
     def create_mode_instance(
         self, 
         mode_index: int | None = None,
@@ -72,8 +77,10 @@ class Player:
         _kwargs: dict[str, Any] = dict(
             index=definition.index,
             name=definition.name, 
+            serial=next(self.mode_serial),
             speed_factor=self.speed_factor,
             create_mode_instance=self.create_mode_instance,
+            delete_mode_instance=self.delete_mode_instance,
             replace_kwarg_values=self.replace_kwarg_values,
             events=self.events,
             tasks=self.tasks,
@@ -92,32 +99,31 @@ class Player:
             )
         return definition.cls(**_kwargs)
 
-    def effect_new_active_mode(self, mode_index: int) -> Mode:
-        """Create new mode instance, clean up old, etc."""
-        # Notes: 
-        #  * After startup, there is always an active mode.
-        #  * A background mode will upon instantiation  
-        #    be the active mode, for a very short time.
+    def delete_mode_instance(self, mode_index: int) -> None:
+        """"""
+        mode = self.mode_instances[mode_index]
+        print(f'Deleting mode {mode.name}')
+        del self.mode_instances[mode_index]
+        self.tasks.delete_owned_by(mode)
 
+    def effect_new_mode(self, mode_index: int):
+        """Create new mode instance, clean up old, etc."""
         # Create new mode instance
         new_mode = self.create_mode_instance(mode_index)
-
         if new_mode.background:
-            # If bg mode of same type already present, clean it up.
-            if (conflict := self.live_bg_modes.pop(new_mode.index, None)):
-                print(f'Deleting background mode {new_mode.name}')
-                self.tasks.delete_owned_by(conflict)
-            # Add new bg mode to bg mode list
-            print(f'Adding background mode {new_mode.name}')
-            self.live_bg_modes[new_mode.index] = new_mode
+            # If bg mode of same type already present, delete it.
+            if new_mode.index in self.mode_instances:
+                self.delete_mode_instance(new_mode.index)
         else:
-            if (
-                self.active_mode is not None and 
-                not self.active_mode.background
-            ):
-                self.tasks.delete_owned_by(self.active_mode)
-        # Return new mode instance
-        return new_mode
+            # If any fg mode already present, delete it.
+            fg_mode = self.foreground_mode_instance()
+            if fg_mode is not None:
+                self.delete_mode_instance(fg_mode.index)
+        self.mode_instances[new_mode.index] = new_mode
+        print(f'Effected new mode instance {new_mode.name}')
+        if not new_mode.background:
+            new_mode.execute()
+
 
     def execute(self, starting_mode_index: int) -> bool:
         """Play the specified starting mode and all subsequent modes.
@@ -126,21 +132,15 @@ class Player:
         while True:
             try:
                 if new_mode_index is not None:
-                    self.active_mode = self.effect_new_active_mode(new_mode_index)
+                    self.effect_new_mode(new_mode_index)
                     new_mode_index = None
-                    log.info(f"Active mode is now {self.active_mode}")
-                    if not self.active_mode.background:
-                        self.active_mode.execute()
                 self.wait()
             except ButtonActionException as press:
                 with suppress(ButtonActionException):
                     if press.action == ButtonAction.HELD:
                         return True
                     self.devices.buttons.reset()
-                    log.info(
-                        f"Button {press.button} {press.action} "
-                        f"in mode {self.active_mode}"
-                    )
+                    log.info(f"Button {press.button} {press.action}")
                     new_mode_index = self.notify_button_action(press.button)
             except ChangeMode as cm:
                 log.debug("ChangeMode caught")
@@ -151,18 +151,21 @@ class Player:
     def notify_button_action(self, button: ButtonName) -> int | None:
         """Notify all background modes, and active mode, 
            of button action. Return FG active mode's response."""
-        for mode in self.live_bg_modes.values():
-            mode.button_action(button)
-        if isinstance(self.active_mode, Mode):
-            return self.active_mode.button_action(button)
+        for mode in self.mode_instances.values():
+            if mode.background:
+                mode.button_action(button)
+        fg_mode = self.foreground_mode_instance()
+        if fg_mode is not None:
+            return mode.button_action(button)
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""
         vars: dict[str, Any] = {
             'LIGHT_PATTERN': self.devices.lights.relay_pattern,
         }
-        if self.active_mode is not None:
-            vars['PREVIOUS_MODE'] = self.active_mode.index
+        fg_mode = self.foreground_mode_instance()
+        if fg_mode is not None:
+            vars['PREVIOUS_MODE'] = fg_mode.index
         return {
             k: vars[v] if isinstance(v, str) and v in vars else v
             for k, v in kwargs.items()

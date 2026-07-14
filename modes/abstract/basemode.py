@@ -23,8 +23,10 @@ class BaseMode(ABC):
     """Base for both foreground and background modes."""
     index: int
     name: str
+    serial: int
     speed_factor: float
     create_mode_instance: 'CreateModeInstance'
+    delete_mode_instance: 'DeleteModeInstance'
     replace_kwarg_values: 'ReplaceKwargValues'
     events: EventSystem
     tasks: TaskSchedule
@@ -145,6 +147,14 @@ class CreateModeInstance(Protocol):
         kwargs: dict[str, Any] = {},
         parent: BaseMode | None = None,  # !!! BaseMode
     ) -> BaseMode:  # !!! BackgroundMode | Mode:
+        ...
+
+class DeleteModeInstance(Protocol):
+    """"""
+    def __call__(
+        self,
+        mode_index: int | None = None,
+    ) -> None:
         ...
 
 class ReplaceKwargValues(Protocol):

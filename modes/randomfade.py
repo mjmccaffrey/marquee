@@ -14,7 +14,7 @@ from . import PerformanceMode
 class RandomFade(PerformanceMode):
     """Change brightness of random bulb to a random level,
        with either random or specified transition time.
-       Remain at that brightness for either trandom or 
+       Remain at that brightness for either random or 
        specified duration."""
     transition: float | None = None
     duration: float | None = None
@@ -64,9 +64,18 @@ class RandomFade(PerformanceMode):
             new = XY(choice.x, choice.y)
         return new
 
-    def update_light(self, index: int):
+    def update_light_schedule_next(self, index: int) -> None:
+        """"""
+        due = self.update_light(index)
+        self.schedule(
+            action=partial(self.update_light_schedule_next, index=index),
+            due=(due),
+            name=f"RandomFade update light {index}",
+        )
+
+    def update_light(self, index: int) -> float:
         """Update light to random / specified values.
-           Schedule next update of light."""
+           Return relative time for next update."""
         brightness = self.new_brightness(
             current=self.brightnesses[index],
         )
@@ -80,16 +89,11 @@ class RandomFade(PerformanceMode):
             index=index,
         )
         self.brightnesses[index] = brightness
-
-        self.schedule(
-            action=partial(self.update_light, index=index),
-            due=(transition + duration),
-            name=f"RandomFade update_light {index}",
-        )
+        return transition + duration
 
     @override
     def execute(self) -> None:
         """Start each bulb off on its unique journey."""
         for light in range(self.lights.count):
-            self.update_light(light)
+            self.update_light_schedule_next(light)
 
