@@ -144,7 +144,7 @@ class LightSet:
         """Return specified group, group that matches
             the specified indices, or None."""
         print()
-        print(f"! {brightness=} {transition=} {color=} {on=} {group=} {index=}")
+        print(f"! {time.time()} {brightness=} {transition=} {color=} {on=} {group=} {index=}")
         if group is None:
             derived = self.controller.indices_in_group.get(frozenset(index))
             if (
