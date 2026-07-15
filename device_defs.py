@@ -67,7 +67,7 @@ HUE_ZONE_IDS_0 = {
     '0.left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68' ],
 }
 HUE_ZONE_IDS_1 = {
-    '1.5': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
+    '1.4': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
     '1.middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
 }
 HUE_GROUPS_0 = {
