@@ -61,7 +61,7 @@ class AlarmDive(InterruptMode):
     @override
     def button_action(self, button: ButtonName) -> int | None:
         """"""
-        if button == ButtonName.CORDED_C:
+        if button == ButtonName.CORDED_B:
             self.schedule()
         else:
             return super().button_action(button)

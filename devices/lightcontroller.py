@@ -71,18 +71,17 @@ class LightController(ABC):
         self.execute_channel_updates(updates=updates_to_send)
 
     @abstractmethod
+    def update_channel_group(self, update: Sequence['ChannelUpdate'], group: str, force: bool = False):
+        """Update a channel group, rather than individual channels."""
+        raise RuntimeError("Method should not have been called.")
+
+    @abstractmethod
     def calibrate(self) -> None:
         """Calibrate all channels."""
         
     @abstractmethod
     def execute_channel_updates(self, updates: Sequence['ChannelUpdate']) -> None:
         """Build and send commands via aiohttp asynchronously."""
-
-    @abstractmethod
-    def update_channel_group(self, update: 'ChannelUpdate', group: str):
-        """Update the 'all' zone, rather than individual channels.
-           Does not check current state."""
-        raise RuntimeError("Method should not have been called.")
 
 
 @dataclass(kw_only=True, repr=False)
@@ -118,13 +117,8 @@ class LightChannel(ABC):
     #     """Build and send command via requests.
     #        Does not check current state."""
 
-    def updates_needed(self, update: 'ChannelUpdate') -> 'ChannelUpdate | None':
-        """Return the updates required, or None."""
-        # print("*** ", update.channel.index)
-        # print(self.brightness, update.brightness)
-        # print(self.color, update.color)
-        # print(self.on, update.on)
-
+    def parameters_needing_update(self, update: 'ChannelUpdate') -> dict:
+        """"""
         changes = {}
         if update.brightness is not None and self.brightness != update.brightness:
             changes['brightness'] = update.brightness
@@ -132,12 +126,16 @@ class LightChannel(ABC):
             changes['color'] = update.color
         if update.on is not None and self.on != update.on:
             changes['on'] = update.on
-        if changes:
-            # print(changes)
+        return changes
+    
+    def updates_needed(self, update: 'ChannelUpdate') -> 'ChannelUpdate | None':
+        """Return the updates required, or None."""
+        parameters = self.parameters_needing_update(update)
+        if parameters:
             return ChannelUpdate(
                 channel=update.channel,
                 transition=update.transition,  # !!!!!!!!!!
-                **changes,
+                **parameters,
             )
 
     def update_state(self, update: 'ChannelUpdate'):

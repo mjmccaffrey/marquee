@@ -22,6 +22,7 @@ from .alarm import AlarmBell, AlarmDive
 from .colorsetstatic import ColorSetStatic
 from .colorsetdynamic import ColorSetDynamic
 from .colorwheel import ColorWheel
+from .cupolasequence import CupolaSequence
 from .comet import Comet
 from .doom import DoomGame
 from .demo import Demo

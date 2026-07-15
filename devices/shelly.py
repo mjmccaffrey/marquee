@@ -71,7 +71,7 @@ class ShellyController(LightController, bulb_comp=DimBulb):
         asyncio.run(self._execute_commands(updates))
 
     @override
-    def update_channel_group(self, update: 'ChannelUpdate', group: str):
+    def update_channel_group(self, update: Sequence['ChannelUpdate'], group: str, force: bool = False):
         """Update the 'all' zone, rather than individual channels.
            Not supported on these devices."""
         raise RuntimeError("Method should not have been called.")
@@ -169,7 +169,7 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
         raise NotImplementedError()
 
     @override
-    def update_channel_group(self, update: 'ChannelUpdate', group: str):
+    def update_channel_group(self, update: Sequence['ChannelUpdate'], group: str, force: bool = False):
         """Update the 'all' zone, rather than individual channels.
            Not supported on these devices."""
         raise RuntimeError("Method should not have been called.")

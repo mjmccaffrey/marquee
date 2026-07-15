@@ -17,7 +17,7 @@ class CupolaSequence(PerformanceMode):
     background: bool = True
     color_set_name: str
     brightness: int | None = None
-    transition: float = 0.0
+    transition: float
     delay: float
 
     @override

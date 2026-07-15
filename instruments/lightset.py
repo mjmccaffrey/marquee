@@ -102,17 +102,13 @@ class LightSet:
         _group = self._determine_group(
             brightness, transition, color, on, group, _index
         )
+        updates = self._channel_updates(
+            brightness, transition, color, on, 
+            [self.channels[i] for i in _index],
+        )
         if _group is not None:
-            updates = self._channel_updates(
-                brightness, transition, color, on, 
-                [self.channels[0]],
-            )
-            self.controller.update_channel_group(updates[0], _group)
+            self.controller.update_channel_group(updates, _group)
         else:
-            updates = self._channel_updates(
-                brightness, transition, color, on, 
-                [self.channels[i] for i in _index],
-            )
             print(
                 "CHANNELS: ", 
                 ' '.join(str(u.channel.index) for u in updates)

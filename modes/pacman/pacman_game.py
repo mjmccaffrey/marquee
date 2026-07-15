@@ -11,7 +11,7 @@ from typing_extensions import override
 
 from devices.color import Colors, RGB
 from devices.devices_misc import ButtonName
-from light_defs import LIGHTS_CUPOLA, LIGHTS_DONUT
+from light_defs import LIGHTS_CUPOLA
 from ..abstract.gamemode import Entity, EntityGroup, GameMode
 from . import pacman_assets as assets
 from .pacman_assets import (
@@ -173,13 +173,6 @@ class PacManGame(GameMode):
             index=LIGHTS_CUPOLA,
             on=False,
         )
-        self.lights.set_channels(
-            index=LIGHTS_DONUT,
-            brightness=100, 
-            color=PacMan.color,
-            on=True,
-            force=True,
-        )
 
     def pre_level_0_state(self) -> None:
         """Before level 0 starts."""
@@ -201,7 +194,7 @@ class PacManGame(GameMode):
             kwargs = dict(
                 color=c, 
                 transition=0, 
-                group='0.15' if self.maze == passage_maze else '0.12'
+                # group='0.15' if self.maze == passage_maze else '0.12'
             )
             if i == 0:
                 kwargs |= dict(on=True)

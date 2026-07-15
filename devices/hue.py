@@ -106,23 +106,49 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             response.raise_for_status()
             update.channel.update_state(update)
 
+    def _channel_group_updates(self, updates, force) -> ChannelUpdate:
+        """"""
+        if force:
+            return updates[0]
+        params_needing_update_all = [
+            u.channel.parameters_needing_update(u)
+            for u in updates
+        ]
+        params_needing_update_merged = {
+            k: v
+            for pnu in params_needing_update_all
+            for k, v in pnu.items()
+        }
+        return ChannelUpdate(
+            channel=updates[0].channel,
+            transition=updates[0].transition,
+            **params_needing_update_merged,
+        )
+
     @override
-    def update_channel_group(self, update: 'ChannelUpdate', group: str):
-        """Update all zones in the specified group.
-           Does not check current state."""
-        command = update.channel._make_set_command(update)
+    def update_channel_group(
+        self, 
+        updates: Sequence['ChannelUpdate'], 
+        group: str, 
+        force: bool = False,
+    ):
+        """Update all zones in the specified group."""
+        print(f"Update in: {updates[0]}")
+        updates_to_send = self._channel_group_updates(updates, force)
+        print(f"Update out: {updates_to_send}")
+
+        command = updates[0].channel._make_set_command(updates_to_send)
         for i, id in enumerate(self.zone_ids[group]):
             response = self.session.put(
                 url=f'https://{self.ip_address}/clip/v2/resource/grouped_light/{id}',
                 json=command.params,
                 timeout=2.0,
             )
-            print(f"{i=} {command.params=}")
-            # print(f"{group=} {i=} {command.params}")
+            print(f"{group=} {i=} {command.params}")
             response.raise_for_status()
         for index in self.groups[group]:
             channel = self.channels[index]
-            channel.update_state(replace(update, channel=channel))
+            channel.update_state(replace(updates_to_send, channel=channel))
 
 
 @dataclass(kw_only=True, repr=False)

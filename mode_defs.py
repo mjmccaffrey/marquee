@@ -111,8 +111,16 @@ def register_channel_modes(exec: Executor):
             ("random_flip_fade_medium", 30),
         ],
     )
+    exec.add_mode("alarm_dive", AlarmDive)
+    exec.add_mode("cupola_wheel", CupolaSequence,
+        color_set_name='wheel',
+        brightness=100,
+        transition=1,
+        delay=3,
+    )
     exec.add_mode("alarm_test", ModeCycle,
         sequence = [
+            ("cupola_wheel", 0.1),
             ("alarm_dive", 0.1),
             ("twelve", 60),
             ("cs_chase", 99999),
