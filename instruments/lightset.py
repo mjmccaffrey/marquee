@@ -152,7 +152,10 @@ class LightSet:
                 not isinstance(color, Sequence) and
                 not isinstance(on, Sequence)
             ):
+                print(index)
+                print(self.controller.indices_in_group)
                 print("DERIVED GROUP: ", group)
+                print()
                 return _group
             else:
                 return None
