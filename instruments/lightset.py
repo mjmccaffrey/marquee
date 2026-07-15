@@ -158,6 +158,7 @@ class LightSet:
                 print()
                 return derived
             else:
+                print(f"! {brightness=} {transition=} {color=} {on=} {group=} {index=}")
                 return None
         else:
             print("SPECIFIED GROUP: ", group)
