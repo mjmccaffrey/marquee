@@ -42,7 +42,7 @@ HUE_BULB_IDS_1 = [
     "04098e6c-f416-4ce5-b91c-06e6004b2a23",
     "a0906758-e0b5-45c3-8e19-85994f253bd7",
     "359de043-2614-443f-8e44-fad407fdc854",
-    "398bd880-e870-4d00-88ee-dce5aa83c17b",  # Donut
+    # "398bd880-e870-4d00-88ee-dce5aa83c17b",  # Donut
     "5bed6538-94b3-4fb9-8b14-c32c81ec80fa",  # Cupola
 ]
 HUE_ZONE_IDS_0 = {
@@ -70,6 +70,19 @@ HUE_ZONE_IDS_1 = {
     '1.5': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
     '1.middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
 }
+HUE_GROUPS_0 = {
+    '0.12': LIGHTS_CLOCKWISE,
+    '0.15': range(15),
+    '0.top': LIGHTS_TOP,
+    '0.right': LIGHTS_RIGHT,
+    '0.bottom': LIGHTS_BOTTOM,
+    '0.left': LIGHTS_LEFT,
+}
+HUE_GROUPS_1 = {
+    '1.4': [0, 1, 2, 3],
+    '1.middle': [0, 1, 2],
+}
+
 SHELLY_IP_ADDRESSES = [
     '192.168.64.111',
     '192.168.64.112',
@@ -165,14 +178,7 @@ def define_devices(
             bulb_model=Hue_BR30_Enhanced_Color,
             bulb_ids=HUE_BULB_IDS_0,
             zone_ids=HUE_ZONE_IDS_0,
-            groups={
-                '0.12': LIGHTS_CLOCKWISE,
-                '0.15': range(15),
-                '0.top': LIGHTS_TOP,
-                '0.right': LIGHTS_RIGHT,
-                '0.bottom': LIGHTS_BOTTOM,
-                '0.left': LIGHTS_LEFT,
-            },
+            groups=HUE_GROUPS_0,
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
@@ -188,10 +194,7 @@ def define_devices(
             bulb_model=Hue_BR30_Enhanced_Color,
             bulb_ids=HUE_BULB_IDS_1,
             zone_ids=HUE_ZONE_IDS_1,
-            groups={
-                '1.5': [0, 1, 2, 3, 4],
-                '1.middle': [0, 1, 2],
-            },
+            groups=HUE_GROUPS_1,
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
