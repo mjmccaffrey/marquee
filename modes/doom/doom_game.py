@@ -118,7 +118,7 @@ class DoomGame(PerformanceMode):
             # on=True,
             # brightness=100,
             color=Colors.RED,
-            transition=0.0,
+            # transition=0.0,
         )
 
     def fade_lights(self):
