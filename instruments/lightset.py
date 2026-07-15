@@ -144,9 +144,9 @@ class LightSet:
         """Return specified group, group that matches
             the specified indices, or None."""
         if group is None:
-            _group = self.controller.indices_in_group.get(frozenset(index))
+            derived = self.controller.indices_in_group.get(frozenset(index))
             if (
-                _group is not None and
+                derived is not None and
                 not isinstance(brightness, Sequence) and
                 not isinstance(transition, Sequence) and
                 not isinstance(color, Sequence) and
@@ -154,9 +154,9 @@ class LightSet:
             ):
                 print(index)
                 print(self.controller.indices_in_group)
-                print("DERIVED GROUP: ", group)
+                print("DERIVED GROUP: ", derived)
                 print()
-                return _group
+                return derived
             else:
                 return None
         else:
