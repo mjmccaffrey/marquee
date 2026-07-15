@@ -14,7 +14,7 @@ from device_defs import define_devices
 
 
 def setup():
-    global b, d, l, e, clicker, r, j, c
+    global b, d, l, e, clicker, r, j, t, c
     devices = define_devices(1.0, 1.0)
     b, d, l, e, clicker, r, j, t = devices.astuple()
     assert e is not None
