@@ -110,7 +110,7 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
         ),
         remote_a = Button(
             ButtonName.REMOTE_A,
-            _Button(pin=19, pull_up=False, bounce_time=0.10)
+            _Button(pin=21, pull_up=False, bounce_time=0.10)  # 19
 
         ),
         remote_b = Button(
