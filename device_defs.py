@@ -250,7 +250,7 @@ def define_devices_shelly(
 
 BUTTON_TO_RELAY = {0: 11}
 RINGER_TO_RELAY = {0: 3}
-EXTRA_TO_RELAY = {0: 10, 1: 10, 2: 10, 3: 10, 4: 10}  # Kludge.
+EXTRA_TO_RELAY = {0: 10, 1: 10, 2: 10, 3: 10}  # Kludge.
 
 CLICK_TO_RELAY = {0: 0, 1: 1}
 
