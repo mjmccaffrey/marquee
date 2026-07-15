@@ -131,7 +131,7 @@ class DoomGame(PerformanceMode):
                     transition=1.5,
                     index=row,
                 ),
-                due=i / 4,
+                due=i / 2,
             )
         
     @override
