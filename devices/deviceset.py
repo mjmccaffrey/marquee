@@ -3,6 +3,7 @@
 from dataclasses import dataclass, fields
 from devices.buttonset import ButtonSet
 from devices.joystick import Joystick
+from devices.tiltset import TiltSet
 from instruments import BellSet, ClickSet, DrumSet, LightSet, RingerBell
 
 @dataclass
@@ -15,10 +16,11 @@ class DeviceSet:
     clicker: ClickSet
     ringer: RingerBell
     joystick: Joystick
+    tilts: TiltSet
 
     def astuple(self) -> tuple[
         ButtonSet, DrumSet, LightSet, LightSet | None, 
-        ClickSet, RingerBell, Joystick
+        ClickSet, RingerBell, Joystick, TiltSet,
     ]:
         """Return devices as a tuple, since dataclasses.astuple
            will not work in this case."""

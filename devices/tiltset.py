@@ -24,7 +24,7 @@ state_to_tilt = {
 
 
 @dataclass
-class Tiltset:
+class TiltSet:
     """"""
     left: _Button
     right: _Button

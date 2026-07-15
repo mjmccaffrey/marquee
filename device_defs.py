@@ -18,6 +18,7 @@ from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001, NumatoSSR80001
 from devices.relaymodule import CombinedRelayModule, create_client
 from devices.shelly import ShellyController, ShellyProDimmer1PM, ShellyProDimmer2PM
+from devices.tiltset import TiltSet
 from instruments import BellSet, ClickSet, DrumSet, LightSet, RingerBell
 from light_defs import *
 
@@ -104,7 +105,7 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
         ),
         game_start = LightedButton(
             ButtonName.GAME_START,
-            _Button(pin=21, bounce_time=0.05),
+            _Button(pin=16, bounce_time=0.05),
             relay=create_client(light_relays, BUTTON_TO_RELAY),
         ),
         remote_a = Button(
@@ -134,6 +135,13 @@ def joystick() -> Joystick:
         down=_Button(pin=17, bounce_time=0.05),
         left=_Button(pin=27, bounce_time=0.05),
         right=_Button(pin=22, bounce_time=0.05),
+    )
+
+def tilts() -> TiltSet:
+    """"""
+    return TiltSet(
+        left=_Button(pin=13, bounce_time=0.05),
+        right=_Button(pin=19, bounce_time=0.05),
     )
 
 def define_devices(
@@ -192,7 +200,7 @@ def define_devices(
     ringer = RingerBell(create_client(light_relays, RINGER_TO_RELAY))
     return DeviceSet(
         buttons(light_relays), drums, lights, extra, 
-        clicker, ringer, joystick(),
+        clicker, ringer, joystick(), tilts(),
     )
 
 
@@ -233,7 +241,7 @@ def define_devices_shelly(
     ringer = RingerBell(create_client(light_relays, RINGER_TO_RELAY))
     return DeviceSet(
         buttons(light_relays), drums, lights, extra, 
-        clicker, ringer, joystick(),
+        clicker, ringer, joystick(), tilts(),
     )
 
 
