@@ -45,6 +45,9 @@ class CombinedLightSet:
 
     def set_channels(self, *args, **kwargs) -> None:
         """"""
+        if kwargs.get('group') is not None:  # Kludge.
+            self.ls0.set_channels(*args, **kwargs)
+            return
         assert self.ls1 is not None
         index = self._convert_index(kwargs.get('index'))
         if index is None:

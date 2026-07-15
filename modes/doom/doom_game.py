@@ -113,7 +113,7 @@ class DoomGame(PerformanceMode):
             action=partial(self.play_sound, Sound.SLAYER_DEATH_2),
             due=0.75,
         )
-        self.primary.set_channels(
+        self.lights.set_channels(
             group="0.15",
             on=True,
             brightness=100,

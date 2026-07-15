@@ -26,6 +26,7 @@ class LightSetInterface(Protocol):
         on: Sequence[int | bool | str | None] | bool | int | None = None,
         index: Sequence[int] | int | None = None,
         force: bool = False,
+        group: str | None = None,
     ) -> None: ...
 
     def set_relays(
