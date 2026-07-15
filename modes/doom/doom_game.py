@@ -39,6 +39,7 @@ class DoomGame(PerformanceMode):
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
+        print("POST_INIT")
         self.lights.set_channels(
             on=False,
             brightness=100,
