@@ -140,8 +140,8 @@ def joystick() -> Joystick:
 def tilts() -> TiltSet:
     """"""
     return TiltSet(
-        left=_Button(pin=13, bounce_time=0.05),
-        right=_Button(pin=19, bounce_time=0.05),
+        left=_Button(pin=13, pull_up=False, bounce_time=0.05),
+        right=_Button(pin=19, pull_up=False, bounce_time=0.05),
     )
 
 def define_devices(
