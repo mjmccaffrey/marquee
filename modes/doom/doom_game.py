@@ -105,6 +105,7 @@ class DoomGame(PerformanceMode):
 
     def slayer_dies(self):
         """"""
+        print("SLAYER DIES")
         self.schedule(
             action=partial(self.play_sound, Sound.SLAYER_DEATH_1),
             due=0.0,
@@ -115,8 +116,8 @@ class DoomGame(PerformanceMode):
         )
         self.lights.set_channels(
             # # group="0.15",
-            # on=True,
-            # brightness=100,
+            on=True,
+            brightness=100,
             color=Colors.RED,
             # transition=0.0,
         )
