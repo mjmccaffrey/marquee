@@ -96,7 +96,7 @@ class DoomGame(PerformanceMode):
         self.play_sound(Sound.BARON_ROAR)
         self.lights.set_channels(
             on=True,
-            # brightness=100,
+            brightness=100,
             color=Colors.ROSE,
             transition=0.0,
             index=(
