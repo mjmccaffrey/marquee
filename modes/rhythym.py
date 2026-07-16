@@ -34,7 +34,7 @@ class Rhythm(MusicMode):
     def execute(self) -> None:
         """"""
         piece(
-            self.one(),
+            self.init(),
             self.one(),
             self.one(),
             self.one(),
@@ -43,11 +43,18 @@ class Rhythm(MusicMode):
             self.one(),
         ).play(tempo=140)
 
+    def init(self) -> Section:
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        return section(
+            drums(
+                '  |  𝅝>  |  𝄻  |  𝄻  |  𝄻  |  ',
+            ),
+        )
+
     def one(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             drums(
-                '  |  𝅝>  |  𝄻  |  𝄻  |  𝄻  |  '
                 '  |  ♩ ♩ ♩ ♩  |  ♩> ♩ ♩ ♩  |  𝄾 ♪ ♪ ♪ ♪> ♪ ♪ ♪  |  ♩> ♩ ♩ ♩  |  '
                 '  |  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  |  ♩> ♩ ♩ ♩  |  '
                 '  |  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 '
