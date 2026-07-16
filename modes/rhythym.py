@@ -39,7 +39,7 @@ class Rhythm(MusicMode):
         piece(
             self.init(),
             self.one(),
-            self.one(),
+            self.two(),
             self.one(),
             self.one(),
             self.one(),
@@ -69,6 +69,20 @@ class Rhythm(MusicMode):
                 accent='-',
             ),
         )
+
+    def two(self) -> Section:
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        return section(
+            part(
+                measure(
+                    action('𝅘𝅥𝅰', self.ringer.play),
+                    action('𝅘𝅥𝅰', self.ringer.rest),
+                )
+            )
+        )
+
+
+
     #             sequence(
     #                 rotate, 4,
     #                 special=ChannelParams(
