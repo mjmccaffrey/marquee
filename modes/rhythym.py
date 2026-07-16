@@ -30,7 +30,7 @@ class Rhythm(MusicMode):
         time.sleep(0.5)
         self.lights.set_relays(ALL_ON)
         self.drums.accent_to_relay_count = {
-            0: 2, 1: 8, 2: 24, 3: 32,
+            0: 4, 1: 8, 2: 24, 3: 32,
         }
 
     @override
@@ -62,7 +62,7 @@ class Rhythm(MusicMode):
                 '  |  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  |  ♩> ♩ ♩ ♩  |  '
                 '  |  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 '
                 '     3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  |  ♩> ♩ ♩ ♩  |  ',
-                accent='-',
+                # accent='-',
             ),
         )
     #             sequence(
