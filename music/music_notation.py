@@ -182,6 +182,7 @@ def ringer_note(symbols: str) -> RingerNote | Rest:
     duration, pitches, accent, is_rest = _interpret_symbols(
         symbols,
     )
+    print("RINGERNOTE DURATION", duration)
     if is_rest:
         return rest(symbols)
     if pitches or accent:
