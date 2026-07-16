@@ -29,6 +29,9 @@ class Rhythm(MusicMode):
         self.lights.set_channels(brightness=100, on=True, force=True)
         time.sleep(0.5)
         self.lights.set_relays(ALL_ON)
+        self.drums.accent_to_relay_count = {
+            0: 4, 1: 8, 2: 24, 3: 32,
+        }
 
     @override
     def execute(self) -> None:
