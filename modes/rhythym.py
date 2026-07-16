@@ -41,13 +41,14 @@ class Rhythm(MusicMode):
             self.one(),
             self.one(),
             self.one(),
-        ).play(tempo=120)
+        ).play(tempo=140)
 
     def one(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             drums(
-                '  |  𝄽 ♩ ♩ ♩  |  ♩^ ♩ ♩ ♩  |  𝄾 ♪ ♪ ♪ ♪^ ♪ ♪ ♪  |  ♩ ♩ ♩ ♩  |  ',
+                '  |  𝄽 ♩ ♩ ♩  |  ♩^ ♩ ♩ ♩  |  𝄾 ♪ ♪ ♪ ♪^ ♪ ♪ ♪  |  ♩^ ♩ ♩ ♩  |  '
+                '  |  3♪ 3♪ 3♪  3♪ 3♪ 3♪  3♪ 3♪ 3♪  3♪ 3♪ 3♪  |  ♩^ ♩ ♩ ♩  |  ',
                 accent='-',
             ),
         )
