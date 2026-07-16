@@ -71,6 +71,7 @@ class ReleasableNote(BaseNote, ABC):
     def schedule_release(self, release_time: float) -> None:
         """Schedule release of played note."""
         assert issubclass(self.instrument, ReleaseableInstrument)
+        print(release_time * bps)
         mode.schedule(
             action = self.release,
             due = release_time * bps,  # Kludge.
