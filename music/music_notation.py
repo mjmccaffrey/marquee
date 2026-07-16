@@ -78,6 +78,7 @@ def _interpret_symbols(
                 (rest_duration_map if is_rest else note_duration_map)[s]
                 for s in symbols
             )
+            print(f"{duration=}")
             pitches, accent = set(), 0
         return duration, pitches, accent, is_rest
     return interpret(symbols)
