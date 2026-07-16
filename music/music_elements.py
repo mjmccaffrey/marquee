@@ -19,7 +19,7 @@ from devices.specialparams import SpecialParams
 
 log = logging.getLogger('marquee.' + __name__)
 mode: Mode  # See music_interface._set_mode
-
+bps: float  # Kludge.
 
 @dataclass(frozen=True)
 class Element(ABC):
@@ -73,7 +73,7 @@ class ReleasableNote(BaseNote, ABC):
         assert issubclass(self.instrument, ReleaseableInstrument)
         mode.schedule(
             action = self.release,
-            due = release_time,
+            due = release_time * bps,  # Kludge.
         )
 
 

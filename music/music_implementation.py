@@ -13,6 +13,7 @@ from .music_elements import (
     ActionNote, BaseNote, Element, Measure, NoteGroup,
     Part, Rest, SequenceMeasure,
 )
+from . import music_elements
 
 log = logging.getLogger('marquee.' + __name__)
 mode: Mode  # See music_interface._set_mode
@@ -188,6 +189,7 @@ def play_measures(
        will be finished, i.e. when a repeat or the next 
        section of music could start."""
     bps = tempo / 60
+    music_elements.bps = bps  # Kludge.
     start = time.time() + delay
     tasks = tasks_in_measures(measures, bps, start)
     mode.tasks.bulk_add(tasks)
