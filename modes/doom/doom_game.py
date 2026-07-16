@@ -43,6 +43,7 @@ class DoomGame(PerformanceMode):
         self.lights.set_channels(
             on=False,
             brightness=100,
+            color=Colors.ROSE,
             force=True,
         )
 
