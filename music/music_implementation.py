@@ -64,7 +64,7 @@ def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
                     assert isinstance(element, BaseNote)
                     beat_next[i] = beat + element.duration
                     if not isinstance(element, Rest):
-                        result.append(replace(element, duration=0))
+                        result.append(element)  # replace(element, duration=0))
         return result
 
     def convert_concurrent_notes(concurrent: list[BaseNote]) -> Element | None:
