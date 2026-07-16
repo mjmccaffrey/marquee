@@ -39,12 +39,9 @@ class DoomGame(PerformanceMode):
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
-        print("POST_INIT")
         self.lights.set_channels(
             on=False,
-            brightness=100,
-            color=Colors.ROSE,
-            force=True,
+            # brightness=100,
         )
 
     def init_sound(self):
@@ -71,10 +68,11 @@ class DoomGame(PerformanceMode):
 
     def slayer_teleports(self):
         """"""
+        print("PLAYER TELEPORTS")
         self.play_sound(Sound.TELEPORT)
         self.lights.set_channels(
             on=True,
-            # brightness=100,
+            brightness=100,
             color=Colors.YELLOW,
             transition=1.0,
             index=self.slayer_coord,
@@ -82,10 +80,11 @@ class DoomGame(PerformanceMode):
 
     def slayer_appears(self):
         """"""
+        print("PLAYER APPEARS")
         self.play_sound(Sound.SLAYER_UMF)
         self.lights.set_channels(
             on=True,
-            # brightness=100,
+            brightness=100,
             color=Colors.GREEN,
             transition=0.0,
             index=self.slayer_coord,
@@ -93,6 +92,7 @@ class DoomGame(PerformanceMode):
 
     def barons_appear(self, step: int):
         """"""
+        print("BARONS APPEAR")
         self.play_sound(Sound.BARON_ROAR)
         self.lights.set_channels(
             on=True,
@@ -120,13 +120,14 @@ class DoomGame(PerformanceMode):
         self.lights.set_channels(
             # # group="0.15",
             on=True,
-            # brightness=100,
+            brightness=100,
             color=Colors.RED,
             # transition=0.0,
         )
 
     def fade_lights(self):
         """"""
+        print("LIGHTS FADE")
         for i, row in enumerate(LIGHTS_BY_ROW):
             self.schedule(
                 action=partial(
