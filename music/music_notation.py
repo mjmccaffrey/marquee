@@ -8,7 +8,7 @@ import logging
 
 from .music_elements import (
     ActionNote, BaseNote, BellNote, DrumNote, 
-    LightNote, LightChannelNote, LightRelayNote, 
+    LightNote, LightChannelNote, LightRelayNote, RingerNote,
     Measure, Part, Rest, Sequence, SequenceMeasure,
 )
 from .music_interface import part, relay
@@ -173,6 +173,25 @@ def bells(notation: str, beats=4) -> Part:
     """Produce bell part from notation."""
     return part(
         *_interpret_notation(bell, notation, beats)
+    )
+
+
+def ringer_note(symbols: str) -> RingerNote | Rest:
+    """Validate symbols and return RingerNote or Rest."""
+    duration, pitches, accent, is_rest = _interpret_symbols(
+        symbols,
+    )
+    if is_rest:
+        return rest(symbols)
+    if pitches or accent:
+        raise ValueError("Ringer note cannot have pitch or accent.")
+    return RingerNote(duration)
+
+
+def ringer(notation: str, beats=4) -> Part:
+    """Produce ringer part from notation."""
+    return part(
+        *_interpret_notation(ringer_note, notation, beats)
     )
 
 

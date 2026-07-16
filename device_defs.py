@@ -19,7 +19,7 @@ from devices.numato import NumatoRL320001, NumatoRL160001, NumatoSSR80001
 from devices.relaymodule import CombinedRelayModule, create_client
 from devices.shelly import ShellyController, ShellyProDimmer1PM, ShellyProDimmer2PM
 from devices.tiltset import TiltSet
-from instruments import BellSet, ClickSet, DrumSet, LightSet, RingerBell
+from instruments import BellSet, ClickSet, DrumSet, LightSet, Ringer
 from light_defs import *
 
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
@@ -200,7 +200,7 @@ def define_devices(
         speed_factor=speed_factor,
     )
     clicker = ClickSet(create_client(drum_16_relays, CLICK_TO_RELAY))
-    ringer = RingerBell(create_client(light_relays, RINGER_TO_RELAY))
+    ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
     return DeviceSet(
         buttons(light_relays), drums, lights, extra, 
         clicker, ringer, joystick(), tilts(),
@@ -241,7 +241,7 @@ def define_devices_shelly(
     )
     extra = None
     clicker = ClickSet(create_client(light_relays, CLICK_TO_RELAY))
-    ringer = RingerBell(create_client(light_relays, RINGER_TO_RELAY))
+    ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
     return DeviceSet(
         buttons(light_relays), drums, lights, extra, 
         clicker, ringer, joystick(), tilts(),

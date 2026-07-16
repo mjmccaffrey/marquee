@@ -3,7 +3,7 @@
 from .instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 
     LightChannelInstrument, LightRelayInstrument,
-    ReleaseableInstrument, RestInstrument, RingerBell,
+    ReleaseableInstrument, RestInstrument, Ringer,
 )
 from .lightset import ClickSet, LightSet
 from .combinedlightset import CombinedLightSet

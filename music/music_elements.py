@@ -5,14 +5,13 @@ from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field, replace
 import itertools
 import logging
-import time
 from typing import Any, ClassVar, Protocol
 from typing_extensions import override
 
 from instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 
     LightChannelInstrument, LightRelayInstrument,
-    ReleaseableInstrument, RestInstrument,
+    ReleaseableInstrument, RestInstrument, Ringer,
 )
 from modes.abstract.mode import Mode
 from devices.specialparams import SpecialParams
@@ -69,12 +68,12 @@ class ReleasableNote(BaseNote, ABC):
     def release(self) -> None:
         """Release BellNote."""
 
-    def schedule_release(self) -> None:
+    def schedule_release(self, release_time: float) -> None:
         """Schedule release of played note."""
         assert issubclass(self.instrument, ReleaseableInstrument)
         mode.schedule(
             action = self.release,
-            due = time.time() + self.instrument.release_time,
+            due = release_time,
         )
 
 
@@ -92,12 +91,29 @@ class BellNote(ReleasableNote):
     def play(self) -> None:
         """Play BellNote."""
         # mode.bells.play(self.pitches)
-        self.schedule_release()
+        self.schedule_release(self.instrument.release_time)
 
     @override
     def release(self) -> None:
         """Release BellNote."""
         # mode.bells.release(self.pitches)
+
+
+@dataclass(frozen=True)
+class RingerNote(ReleasableNote):
+    """Note to activate the ringer bell."""
+    instrument: ClassVar[type[ReleaseableInstrument]] = Ringer
+
+    @override
+    def play(self) -> None:
+        """Play BellNote."""
+        mode.ringer.play()
+        self.schedule_release(self.duration)
+
+    @override
+    def release(self) -> None:
+        """Release BellNote."""
+        mode.ringer.release()
 
 
 @dataclass(frozen=True)
