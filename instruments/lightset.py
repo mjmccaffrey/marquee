@@ -107,7 +107,7 @@ class LightSet:
             [self.channels[i] for i in _index],
         )
         if _group is not None:
-            self.controller.update_channel_group(updates, _group)
+            self.controller.update_channel_group(updates, _group, force)
         else:
             print(
                 "CHANNELS: ", 
