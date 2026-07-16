@@ -107,12 +107,14 @@ class RingerNote(ReleasableNote):
     @override
     def play(self) -> None:
         """Play BellNote."""
+        print("PLAY")
         mode.ringer.play()
         self.schedule_release(self.duration)
 
     @override
     def release(self) -> None:
         """Release BellNote."""
+        print("RELEASE")
         mode.ringer.release()
 
 

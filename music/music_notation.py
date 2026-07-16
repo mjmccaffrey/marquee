@@ -190,9 +190,11 @@ def ringer_note(symbols: str) -> RingerNote | Rest:
 
 def ringer(notation: str, beats=4) -> Part:
     """Produce ringer part from notation."""
-    return part(
+    p = part(
         *_interpret_notation(ringer_note, notation, beats)
     )
+    print(p)
+    return p
 
 
 def drum(symbols: str) -> DrumNote | Rest:
