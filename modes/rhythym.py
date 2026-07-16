@@ -73,7 +73,7 @@ class Rhythm(MusicMode):
     def two(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            ringer('  𝅘𝅥𝅯  ')
+            ringer('  ♪  ')
             # part(
             #     measure(
             #         action('𝅘𝅥𝅱', self.ringer.play),
