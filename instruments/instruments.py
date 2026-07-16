@@ -76,13 +76,13 @@ class RelayInstrument(Instrument, ABC):
 
 class ReleaseableInstrument(Instrument, ABC):
     """Abstract instrument that has releaseable notes."""
-    release_time: float  # Abstract
+    # release_time: float  # Abstract
 
 
 class BellSet(RelayInstrument, ReleaseableInstrument):
     """Set of bells."""
     pitch_levels = 8
-    release_time = 0.09
+    release_time: float = 0.09
 
     def __init__(self, relays: RelayClient) -> None:
         super().__init__(relays)
@@ -145,9 +145,11 @@ class Ringer(RelayInstrument, ReleaseableInstrument):
     @override
     def play(self):
         """"""
+        print('instrument play')
         self.relays.set_state_of_devices("1")
 
     def release(self):
         """"""
+        print('instrument release')
         self.relays.set_state_of_devices("0")
 

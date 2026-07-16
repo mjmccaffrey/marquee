@@ -80,7 +80,7 @@ class ReleasableNote(BaseNote, ABC):
 @dataclass(frozen=True)
 class BellNote(ReleasableNote):
     """Note to strike or release 1 or more bells."""
-    instrument: ClassVar[type[ReleaseableInstrument]] = BellSet
+    instrument = BellSet  # ClassVar[type[ReleaseableInstrument]]
     pitches: set[int]
 
     def __post_init__(self) -> None:
