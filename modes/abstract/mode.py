@@ -25,12 +25,8 @@ class Mode(BaseMode, ABC):
     def __post_init__(self):
         """"""
         pygame.mixer.init()
-        (   self.buttons, self.drums, self.lights, self.extra,
+        (   self.buttons, self.drums, 
+            self.lights, self.extra, self.combined,
             self.clicker, self.ringer, self.joystick, self.tilts,
         ) = self.devices.astuple()
-        self.combined: LightSetInterface
-        if self.extra is not None:
-            self.primary = self.lights
-            self.secondary = self.extra
-            self.combined = CombinedLightSet(self.lights, self.extra)
 

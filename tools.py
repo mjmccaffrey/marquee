@@ -7,8 +7,7 @@ from pathlib import Path
 from typing import cast
 
 from devices.color import Color, ColorSets
-from devices.deviceset import DeviceSet
-from instruments import LightSet, CombinedLightSet
+from instruments import LightSet
 from devices.hue import HueBridge
 from device_defs import define_devices
 
@@ -16,9 +15,7 @@ from device_defs import define_devices
 def setup():
     global b, d, l, e, clicker, r, j, t, c
     devices = define_devices(1.0, 1.0)
-    b, d, l, e, clicker, r, j, t = devices.astuple()
-    assert e is not None
-    c = CombinedLightSet(l, e)
+    b, d, l, e, c, clicker, r, j, t = devices.astuple()
 
 
 def ppp(p: Sequence) -> None:

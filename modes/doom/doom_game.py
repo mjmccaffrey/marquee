@@ -122,19 +122,12 @@ class DoomGame(PerformanceMode):
             due=0.75,
         )
         self.lights.set_channels(
-            group='ALL',
+            # group='ALL',
             # force=True,
             on=True,
             brightness=100,
             color=Colors.RED,
             # transition=0.0,
-        )
-        self.lights.set_channels(
-            on=True,
-            brightness=100,
-            color=Colors.RED,
-            index=15,
-            force=True,
         )
 
     def fade_lights(self):

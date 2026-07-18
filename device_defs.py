@@ -24,6 +24,7 @@ from light_defs import *
 
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'
+
 HUE_BULB_IDS_0 = [
     "79d6cc75-8eaa-450a-be32-6bc14695b11a",  # Labeled 3 - top left
     "1e5bbfc7-f3f1-47e1-bba9-18e70588f1e3",
@@ -45,6 +46,15 @@ HUE_BULB_IDS_1 = [
     # "398bd880-e870-4d00-88ee-dce5aa83c17b",  # Donut
     "5bed6538-94b3-4fb9-8b14-c32c81ec80fa",  # Cupola
 ]
+HUE_BULB_IDS_2 = HUE_BULB_IDS_0 + HUE_BULB_IDS_1
+
+HUE_GROUPS_0 = {
+    '0.12': LIGHTS_CLOCKWISE,
+    '0.top': LIGHTS_TOP,
+    '0.right': LIGHTS_RIGHT,
+    '0.bottom': LIGHTS_BOTTOM,
+    '0.left': LIGHTS_LEFT,
+}
 HUE_ZONE_IDS_0 = {
     # https://192.168.64.130/clip/v2/resource/zone
     # ↑ Lists zones, with names, and included bulbs
@@ -52,39 +62,49 @@ HUE_ZONE_IDS_0 = {
     #     {
     #         "rid": "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
     #         "rtype": "grouped_light"
-    '0.12': [
-        "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
-        "afbce248-f994-4f71-833d-f7c20eb96814",
-    ],
-    '0.15': [
-        "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
-        "afbce248-f994-4f71-833d-f7c20eb96814",
-        "1afc2cc8-cbf8-484b-b2d6-46575b2cef97",
-    ],
-    '0.top': ['4cfe20b3-43ae-409e-8d21-ea84f96daef8'],
-    '0.right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
-    '0.bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
-    '0.left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68'],
-    'ALL': ['e6967d66-978f-4aae-9873-fb8e67df8683'],
+
+    # '0.12': [
+    #     "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
+    #     "afbce248-f994-4f71-833d-f7c20eb96814",
+    # ],
+    # '0.15': [
+    #     "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
+    #     "afbce248-f994-4f71-833d-f7c20eb96814",
+    #     "1afc2cc8-cbf8-484b-b2d6-46575b2cef97",
+    # ],
+
+    'top': ['4cfe20b3-43ae-409e-8d21-ea84f96daef8'],
+    'right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
+    'bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
+    'left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68'],
 }
-HUE_ZONE_IDS_1 = {
-    '1.4': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
-    '1.middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
-    'ALL': [],
-}
-HUE_GROUPS_0 = {
-    '0.12': LIGHTS_CLOCKWISE,
-    '0.15': range(15),
-    '0.top': LIGHTS_TOP,
-    '0.right': LIGHTS_RIGHT,
-    '0.bottom': LIGHTS_BOTTOM,
-    '0.left': LIGHTS_LEFT,
-    'ALL': range(12),
-}
+
 HUE_GROUPS_1 = {
     '1.4': [0, 1, 2, 3],
     '1.middle': [0, 1, 2],
-    'ALL': range(4),
+}
+HUE_ZONE_IDS_1 = {
+    '1.4': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
+    'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
+}
+
+HUE_GROUPS_2 = {
+    'top': LIGHTS_TOP,
+    'right': LIGHTS_RIGHT,
+    'bottom': LIGHTS_BOTTOM,
+    'left': LIGHTS_LEFT,
+    'middle': LIGHTS_MIDDLE,
+    '12': LIGHTS_CLOCKWISE,
+    '15': range(15),
+    'all': range(16),
+}
+HUE_ZONE_IDS_2 = {
+    'top': ['4cfe20b3-43ae-409e-8d21-ea84f96daef8'],
+    'right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
+    'bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
+    'left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68'],
+    'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
+    'all': ['e6967d66-978f-4aae-9873-fb8e67df8683'],
 }
 
 SHELLY_IP_ADDRESSES = [
@@ -203,10 +223,28 @@ def define_devices(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
+    combined = LightSet(
+        count=16,
+        relays=create_client(light_relays, LIGHT_TO_RELAY | EXTRA_TO_RELAY),
+        mirror=create_client(drum_16_relays, LIGHT_TO_RELAY | EXTRA_TO_RELAY),
+        controller_type=HueBridge,
+        controller_kwargs=dict(
+            application_key=HUE_APPLICATION_KEY,
+            ip_address=HUE_IP_ADDRESS,
+            bulb_model=Hue_BR30_Enhanced_Color,
+            bulb_ids=HUE_BULB_IDS_2,
+            zone_ids=HUE_ZONE_IDS_2,
+            groups=HUE_GROUPS_2,
+        ),
+        brightness_factor_init=brightness_factor,
+        speed_factor=speed_factor,
+    )
+
     clicker = ClickSet(create_client(drum_16_relays, CLICK_TO_RELAY))
     ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
     return DeviceSet(
-        buttons(light_relays), drums, lights, extra, 
+        buttons(light_relays), drums, 
+        lights, extra, combined, 
         clicker, ringer, joystick(), tilts(),
     )
 
@@ -247,7 +285,8 @@ def define_devices_shelly(
     clicker = ClickSet(create_client(light_relays, CLICK_TO_RELAY))
     ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
     return DeviceSet(
-        buttons(light_relays), drums, lights, extra, 
+        buttons(light_relays), drums, 
+        lights, lights, lights, 
         clicker, ringer, joystick(), tilts(),
     )
 

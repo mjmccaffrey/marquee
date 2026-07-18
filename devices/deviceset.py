@@ -12,14 +12,16 @@ class DeviceSet:
     buttons: ButtonSet
     drums: DrumSet
     lights: LightSet
-    extra: LightSet | None
+    extra: LightSet
+    combined: LightSet
     clicker: ClickSet
     ringer: Ringer
     joystick: Joystick
     tilts: TiltSet
 
     def astuple(self) -> tuple[
-        ButtonSet, DrumSet, LightSet, LightSet | None, 
+        ButtonSet, DrumSet, 
+        LightSet, LightSet, LightSet, 
         ClickSet, Ringer, Joystick, TiltSet,
     ]:
         """Return devices as a tuple, since dataclasses.astuple
