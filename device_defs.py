@@ -223,13 +223,10 @@ def define_devices(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
-    print("combined...")
-    print(LIGHT_TO_RELAY | EXTRA_TO_RELAY)
-    print(len(LIGHT_TO_RELAY | EXTRA_TO_RELAY))
     combined = LightSet(
         count=16,
-        relays=create_client(light_relays, LIGHT_TO_RELAY | EXTRA_TO_RELAY),
-        mirror=create_client(drum_16_relays, LIGHT_TO_RELAY | EXTRA_TO_RELAY),
+        relays=create_client(light_relays, COMBINED_TO_RELAY),
+        mirror=create_client(drum_16_relays, COMBINED_TO_RELAY),
         controller_type=HueBridge,
         controller_kwargs=dict(
             application_key=HUE_APPLICATION_KEY,
@@ -298,5 +295,8 @@ BUTTON_TO_RELAY = {0: 11}
 RINGER_TO_RELAY = {0: 3}
 EXTRA_TO_RELAY = {0: 10, 1: 10, 2: 10, 3: 10}  # Kludge.
 
+COMBINED_TO_RELAY = (
+    LIGHT_TO_RELAY | {12: 10, 13: 10, 14: 10, 15: 10}  # Kludge.
+)
 CLICK_TO_RELAY = {0: 0, 1: 1}
 
