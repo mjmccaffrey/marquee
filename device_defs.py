@@ -49,11 +49,11 @@ HUE_BULB_IDS_1 = [
 HUE_BULB_IDS_2 = HUE_BULB_IDS_0 + HUE_BULB_IDS_1
 
 HUE_GROUPS_0 = {
-    '0.12': LIGHTS_CLOCKWISE,
-    '0.top': LIGHTS_TOP,
-    '0.right': LIGHTS_RIGHT,
-    '0.bottom': LIGHTS_BOTTOM,
-    '0.left': LIGHTS_LEFT,
+    # '0.12': LIGHTS_CLOCKWISE,
+    'top': LIGHTS_TOP,
+    'right': LIGHTS_RIGHT,
+    'bottom': LIGHTS_BOTTOM,
+    'left': LIGHTS_LEFT,
 }
 HUE_ZONE_IDS_0 = {
     # https://192.168.64.130/clip/v2/resource/zone
@@ -81,7 +81,7 @@ HUE_ZONE_IDS_0 = {
 
 HUE_GROUPS_1 = {
     '1.4': [0, 1, 2, 3],
-    '1.middle': [0, 1, 2],
+    'middle': [0, 1, 2],
 }
 HUE_ZONE_IDS_1 = {
     '1.4': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
@@ -94,8 +94,8 @@ HUE_GROUPS_2 = {
     'bottom': LIGHTS_BOTTOM,
     'left': LIGHTS_LEFT,
     'middle': LIGHTS_MIDDLE,
-    '12': LIGHTS_CLOCKWISE,
-    '15': range(15),
+    # '12': LIGHTS_CLOCKWISE,
+    # '15': range(15),
     'all': range(16),
 }
 HUE_ZONE_IDS_2 = {
