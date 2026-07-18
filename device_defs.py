@@ -78,11 +78,12 @@ HUE_GROUPS_0 = {
     '0.right': LIGHTS_RIGHT,
     '0.bottom': LIGHTS_BOTTOM,
     '0.left': LIGHTS_LEFT,
-    'ALL': range(16),
+    'ALL': range(12),
 }
 HUE_GROUPS_1 = {
     '1.4': [0, 1, 2, 3],
     '1.middle': [0, 1, 2],
+    'ALL': range(4),
 }
 
 SHELLY_IP_ADDRESSES = [
