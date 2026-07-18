@@ -48,7 +48,7 @@ class AlarmBell(InterruptMode):
 
     def quell_alarm(self):
         """Stop ringing."""
-        self.ringer.release()
+        self.ringer.rest()
 
 
 @dataclass(kw_only=True)

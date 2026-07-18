@@ -31,8 +31,9 @@ class DoomGame(PerformanceMode):
     def __post_init__(self):
         """Initialize board and characters."""
         super().__post_init__()
-        if self.passage:
+        if self.passage:  # 12 + 3 + 1 lights
             self.lights = self.combined
+            LIGHTS_BY_ROW[0].append(15)
             LIGHTS_BY_ROW[2].extend([12, 13, 14])
             LIGHTS_BY_SIDE.insert(0, [])
         self.slayer_coord = 13 if self.passage else 1

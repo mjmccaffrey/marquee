@@ -138,18 +138,16 @@ class DrumSet(RelayInstrument):
         self.relays.set_state_of_devices(new_pattern)
 
 
-class Ringer(RelayInstrument, ReleaseableInstrument):
+class Ringer(RelayInstrument):
     """"""
     pitch_levels = 1
 
     @override
     def play(self):
         """"""
-        print('instrument play')
         self.relays.set_state_of_devices("1")
 
-    def release(self):
+    def rest(self):
         """"""
-        print('instrument release')
         self.relays.set_state_of_devices("0")
 

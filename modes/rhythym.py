@@ -12,7 +12,7 @@ from music import (
 )
 from music import(
     action, actions, drums,
-    rest, ringer, sequence_measure, sequences
+    rest, sequence_measure, sequences
 )
 from .structural.sequences import *
 from devices.specialparams import ActionParams, ChannelParams
@@ -73,12 +73,11 @@ class Rhythm(MusicMode):
     def two(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            ringer('  ♪  ')
-            # part(
-            #     measure(
-            #         action('𝅘𝅥𝅱', self.ringer.play),
-            #         action('𝅘𝅥𝅱', self.ringer.rest),
-            #     )
-            # )
+            part(
+                measure(
+                    action('𝅘𝅥𝅱', self.ringer.play),
+                    action('𝅘𝅥𝅱', self.ringer.rest),
+                )
+            )
         )
 

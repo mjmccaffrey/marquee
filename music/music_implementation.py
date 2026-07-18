@@ -13,7 +13,6 @@ from .music_elements import (
     ActionNote, BaseNote, Element, Measure, NoteGroup,
     Part, Rest, SequenceMeasure,
 )
-from . import music_elements
 
 log = logging.getLogger('marquee.' + __name__)
 mode: Mode  # See music_interface._set_mode
@@ -64,7 +63,7 @@ def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
                     assert isinstance(element, BaseNote)
                     beat_next[i] = beat + element.duration
                     if not isinstance(element, Rest):
-                        result.append(element)  # replace(element, duration=0))
+                        result.append(replace(element, duration=0))
         return result
 
     def convert_concurrent_notes(concurrent: list[BaseNote]) -> Element | None:
@@ -189,7 +188,6 @@ def play_measures(
        will be finished, i.e. when a repeat or the next 
        section of music could start."""
     bps = tempo / 60
-    music_elements.bps = bps  # Kludge.
     start = time.time() + delay
     tasks = tasks_in_measures(measures, bps, start)
     mode.tasks.bulk_add(tasks)

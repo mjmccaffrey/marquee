@@ -19,7 +19,7 @@ from devices.specialparams import SpecialParams
 
 log = logging.getLogger('marquee.' + __name__)
 mode: Mode  # See music_interface._set_mode
-bps: float  # Kludge.
+
 
 @dataclass(frozen=True)
 class Element(ABC):
@@ -71,10 +71,9 @@ class ReleasableNote(BaseNote, ABC):
     def schedule_release(self, release_time: float) -> None:
         """Schedule release of played note."""
         assert issubclass(self.instrument, ReleaseableInstrument)
-        print(release_time, bps, release_time / bps)
         mode.schedule(
             action = self.release,
-            due = release_time * bps,  # Kludge.
+            due = release_time,
         )
 
 
@@ -100,23 +99,25 @@ class BellNote(ReleasableNote):
         # mode.bells.release(self.pitches)
 
 
-@dataclass(frozen=True)
-class RingerNote(ReleasableNote):
-    """Note to activate the ringer bell."""
-    instrument: ClassVar[type[ReleaseableInstrument]] = Ringer
+# @dataclass(frozen=True)
+# class RingerNote(ReleasableNote):
+#     """Note to activate the ringer bell."""
+#     instrument: ClassVar[type[ReleaseableInstrument]] = Ringer
 
-    @override
-    def play(self) -> None:
-        """Play BellNote."""
-        print("PLAY", self.duration)
-        mode.ringer.play()
-        self.schedule_release(self.duration)
+#     @override
+#     def play(self) -> None:
+#         """Play BellNote."""
+#         print("PLAY")
+#         mode.ringer.play()
+#         self.schedule_release(0.05)
+#         # Kludge.  Module music_notation module does not support
+#         # sustained notes.
 
-    @override
-    def release(self) -> None:
-        """Release BellNote."""
-        print("RELEASE")
-        mode.ringer.release()
+#     @override
+#     def release(self) -> None:
+#         """Release BellNote."""
+#         print("RELEASE")
+#         mode.ringer.release()
 
 
 @dataclass(frozen=True)

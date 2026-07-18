@@ -1,5 +1,9 @@
 """Marquee Lighted Sign Project - music_notation"""
 
+# NOTE: This module does not support sustained notes.
+#       All instruments / notes are percussive, 
+#       and in effect have zero length.
+
 from collections.abc import Callable, Iterator
 from enum import IntEnum
 from functools import partial
@@ -8,7 +12,7 @@ import logging
 
 from .music_elements import (
     ActionNote, BaseNote, BellNote, DrumNote, 
-    LightNote, LightChannelNote, LightRelayNote, RingerNote,
+    LightNote, LightChannelNote, LightRelayNote,
     Measure, Part, Rest, Sequence, SequenceMeasure,
 )
 from .music_interface import part, relay
@@ -78,7 +82,6 @@ def _interpret_symbols(
                 (rest_duration_map if is_rest else note_duration_map)[s]
                 for s in symbols
             )
-            print(f"{duration=}")
             pitches, accent = set(), 0
         return duration, pitches, accent, is_rest
     return interpret(symbols)
@@ -177,26 +180,23 @@ def bells(notation: str, beats=4) -> Part:
     )
 
 
-def ringer_note(symbols: str) -> RingerNote | Rest:
-    """Validate symbols and return RingerNote or Rest."""
-    duration, pitches, accent, is_rest = _interpret_symbols(
-        symbols,
-    )
-    print("RINGERNOTE DURATION", duration)
-    if is_rest:
-        return rest(symbols)
-    if pitches or accent:
-        raise ValueError("Ringer note cannot have pitch or accent.")
-    return RingerNote(duration)
+# def ringer_note(symbols: str) -> RingerNote | Rest:
+#     """Validate symbols and return RingerNote or Rest."""
+#     duration, pitches, accent, is_rest = _interpret_symbols(
+#         symbols,
+#     )
+#     if is_rest:
+#         return rest(symbols)
+#     if pitches or accent:
+#         raise ValueError("Ringer note cannot have pitch or accent.")
+#     return RingerNote(duration)
 
 
-def ringer(notation: str, beats=4) -> Part:
-    """Produce ringer part from notation."""
-    p = part(
-        *_interpret_notation(ringer_note, notation, beats)
-    )
-    print(p)
-    return p
+# def ringer(notation: str, beats=4) -> Part:
+#     """Produce ringer part from notation."""
+#     return part(
+#         *_interpret_notation(ringer_note, notation, beats)
+#     )
 
 
 def drum(symbols: str) -> DrumNote | Rest:
