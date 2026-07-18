@@ -89,6 +89,7 @@ class LightSet:
         index: Sequence[int] | int | None = None,
         force: bool = False,
         group: str | None = None,
+        state_only: bool = False,
     ) -> None:
         """Set the channels per the supplied brightnesses
            (adjusted by brightness_factor), 
@@ -107,7 +108,9 @@ class LightSet:
             [self.channels[i] for i in _index],
         )
         if _group is not None:
-            self.controller.update_channel_group(updates, _group, force)
+            self.controller.update_channel_group(
+                updates, _group, force, state_only,
+            )
         else:
             print(
                 "CHANNELS: ", 

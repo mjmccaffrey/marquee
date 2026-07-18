@@ -64,7 +64,8 @@ HUE_ZONE_IDS_0 = {
     '0.top': ['4cfe20b3-43ae-409e-8d21-ea84f96daef8'],
     '0.right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
     '0.bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
-    '0.left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68' ],
+    '0.left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68'],
+    'ALL': ['e6967d66-978f-4aae-9873-fb8e67df8683'],
 }
 HUE_ZONE_IDS_1 = {
     '1.4': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
@@ -77,6 +78,7 @@ HUE_GROUPS_0 = {
     '0.right': LIGHTS_RIGHT,
     '0.bottom': LIGHTS_BOTTOM,
     '0.left': LIGHTS_LEFT,
+    'ALL': range(16),
 }
 HUE_GROUPS_1 = {
     '1.4': [0, 1, 2, 3],

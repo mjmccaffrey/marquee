@@ -122,7 +122,7 @@ class DoomGame(PerformanceMode):
             due=0.75,
         )
         self.lights.set_channels(
-            # # group="0.15",
+            group='ALL',
             on=True,
             brightness=100,
             color=Colors.RED,

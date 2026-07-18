@@ -47,6 +47,7 @@ class CombinedLightSet:
         """"""
         if kwargs.get('group') is not None:  # Kludge.
             self.ls0.set_channels(*args, **kwargs)
+            self.ls1.set_channels(*args, **kwargs | dict(state_only=True))
             return
         assert self.ls1 is not None
         index = self._convert_index(kwargs.get('index'))

@@ -71,7 +71,13 @@ class LightController(ABC):
         self.execute_channel_updates(updates=updates_to_send)
 
     @abstractmethod
-    def update_channel_group(self, update: Sequence['ChannelUpdate'], group: str, force: bool = False):
+    def update_channel_group(
+        self, 
+        updates: Sequence['ChannelUpdate'], 
+        group: str, 
+        force: bool = False,
+        state_only: bool = False,
+    ):
         """Update a channel group, rather than individual channels."""
         raise RuntimeError("Method should not have been called.")
 
