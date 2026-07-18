@@ -223,6 +223,7 @@ def define_devices(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
+    print("combined...")
     combined = LightSet(
         count=16,
         relays=create_client(light_relays, LIGHT_TO_RELAY | EXTRA_TO_RELAY),
