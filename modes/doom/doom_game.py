@@ -43,10 +43,6 @@ class DoomGame(PerformanceMode):
         self.lights.set_channels(
             on=False,
         )
-        self.lights.set_channels(
-            color=self.lights.colors.ROSE,
-            brightness=100,
-        )
 
     def init_sound(self):
         """"""
