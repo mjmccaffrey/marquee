@@ -36,6 +36,7 @@ class DoomGame(PerformanceMode):
             LIGHTS_BY_ROW[0].append(15)
             LIGHTS_BY_ROW[2].extend([12, 13, 14])
             LIGHTS_BY_SIDE.insert(0, [])
+            LIGHTS_BY_SIDE[1].append(15)
         self.slayer_coord = 13 if self.passage else 1
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
@@ -123,7 +124,7 @@ class DoomGame(PerformanceMode):
         )
         self.lights.set_channels(
             group='ALL',
-            force=True,
+            # force=True,
             on=True,
             brightness=100,
             color=Colors.RED,
