@@ -70,6 +70,7 @@ HUE_ZONE_IDS_0 = {
 HUE_ZONE_IDS_1 = {
     '1.4': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
     '1.middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
+    'ALL': [],
 }
 HUE_GROUPS_0 = {
     '0.12': LIGHTS_CLOCKWISE,
