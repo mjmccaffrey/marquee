@@ -7,7 +7,7 @@ import logging
 import pygame
 from typing_extensions import override
 
-from light_defs import LIGHTS_BY_ROW, LIGHTS_BY_SIDE
+from light_defs import LIGHTS_BY_ROW, LIGHTS_BY_SIDE, LIGHTS_CUPOLA
 from task import SeqTask
 from .. import PerformanceMode
 from devices.color import Colors, RGB
@@ -116,6 +116,12 @@ class DoomGame(PerformanceMode):
         self.schedule(
             action=partial(self.play_sound, Sound.SLAYER_DEATH_2),
             due=0.75,
+        )
+        self.lights.set_channels(
+            on=True,
+            brightness=100,
+            color=Colors.RED,
+            index=LIGHTS_CUPOLA,
         )
         self.lights.set_channels(
             # group='ALL',
