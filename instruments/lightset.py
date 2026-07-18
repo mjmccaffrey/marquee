@@ -38,7 +38,7 @@ class LightSet:
             SmartBulb,
         )
         indices = (
-            i for o in range(2) for i in range(12) if (i + o) % 2
+            i for o in range(2) for i in range(self.count) if (i + o) % 2
         )
         self.update_order = {
             index: i for i, index in enumerate(indices)
