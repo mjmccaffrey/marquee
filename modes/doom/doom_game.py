@@ -151,7 +151,7 @@ class DoomGame(PerformanceMode):
         self.schedule_sequence(
             SeqTask(self.start_music, due=0.0),
             SeqTask(self.slayer_teleports, due=2.0),
-            SeqTask(self.slayer_appears, due=4.0),
+            SeqTask(self.slayer_appears, due=3.0),
             SeqTask(partial(self.barons_appear, step=4), due=2.0),
             SeqTask(partial(self.barons_appear, step=3), due=0.75),
             SeqTask(partial(self.barons_appear, step=2), due=0.75),
