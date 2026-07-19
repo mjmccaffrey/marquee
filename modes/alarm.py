@@ -54,7 +54,7 @@ class AlarmBell(InterruptMode):
 class AlarmDive(InterruptMode):
     """"""
     background: bool = True
-    activity_time: float = 0.5
+    activity_time: float = 3.0
     restore_time: float = 4.0
 
     @override
