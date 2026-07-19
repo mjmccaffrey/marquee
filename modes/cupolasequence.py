@@ -36,7 +36,6 @@ class CupolaSequence(PerformanceMode):
         """Change to next color."""
         assert self.extra is not None
         color = next(self.colors)
-        print(color)
         self.extra.set_channels(
             index=EXTRA_CUPOLA,
             color=color,

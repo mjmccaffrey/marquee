@@ -112,10 +112,10 @@ class LightSet:
                 updates, _group, force, state_only,
             )
         else:
-            print(
-                "CHANNELS: ", 
-                ' '.join(str(u.channel.index) for u in updates)
-            )
+            # print(
+            #     "CHANNELS: ", 
+            #     ' '.join(str(u.channel.index) for u in updates)
+            # )
             self.controller.update_channels(updates, force)
 
     def _channel_updates(
@@ -142,8 +142,8 @@ class LightSet:
     ) -> str | None:
         """Return specified group, group that matches
             the specified indices, or None."""
-        print()
-        print(f"! {time.time()} {brightness=} {transition=} {color=} {on=} {group=} {index=}")
+        # print()
+        # print(f"! {time.time()} {brightness=} {transition=} {color=} {on=} {group=} {index=}")
         if group is None:
             derived = self.controller.indices_in_group.get(frozenset(index))
             if (

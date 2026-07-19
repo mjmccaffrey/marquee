@@ -62,6 +62,7 @@ class AlarmDive(InterruptMode):
     def button_action(self, button: ButtonName) -> int | None:
         """"""
         if button == ButtonName.CORDED_B:
+            print("PRESSED")
             self.schedule()
         else:
             return super().button_action(button)

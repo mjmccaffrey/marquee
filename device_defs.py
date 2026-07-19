@@ -127,12 +127,12 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
         ),
         corded_a = Button(
             ButtonName.CORDED_A,
-            _Button(pin=3, bounce_time=0.05),
+            _Button(pin=2, bounce_time=0.05),
             signal_number=signal.SIGUSR1,  # type: ignore
         ),
         corded_b = Button(
             ButtonName.CORDED_B,
-            _Button(pin=2, bounce_time=0.05),
+            _Button(pin=3, bounce_time=0.05),
             signal_number=signal.SIGUSR2,  # type: ignore
         ),
         corded_c = Button(
