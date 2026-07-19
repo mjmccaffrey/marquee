@@ -128,7 +128,7 @@ def register_channel_modes(exec: Executor):
     exec.add_mode("rhythm", Rhythm)
     exec.add_mode("alarm_test", ModeCycle,
         sequence = [
-            ("cupola_wheel", 0.1),
+            ("cupola_wheel_3", 0.1),
             ("alarm_dive", 0.1),
             ("twelve", 60),
             ("random_random_random", 99999),
