@@ -123,7 +123,7 @@ def register_channel_modes(exec: Executor):
         brightness=100,
         transition=1,
         delay=1,
-        divisions=3,
+        wheel_divisions=3,
     )
     exec.add_mode("rhythm", Rhythm)
     exec.add_mode("alarm_test", ModeCycle,
