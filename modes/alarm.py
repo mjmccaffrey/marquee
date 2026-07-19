@@ -56,7 +56,6 @@ class AlarmDive(InterruptMode):
     background: bool = True
     activity_time: float = 0.5
     restore_time: float = 4.0
-    total_time: float = activity_time + restore_time
 
     @override
     def button_action(self, button: ButtonName) -> int | None:
