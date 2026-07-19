@@ -16,6 +16,10 @@ class InterruptMode(PerformanceMode, ABC):
     activity_time: float  # Length of activity.
     restore_time: float  # Length of state restoration.
 
+    def __post_init__(self):
+        self.total_time = self.activity_time + self.restore_time
+        super().__post_init__()
+    
     @abstractmethod
     def execute_activity(self) -> None:
         """"""
@@ -24,16 +28,20 @@ class InterruptMode(PerformanceMode, ABC):
         """"""
         self.save_and_pause()
         self.schedule(self.execute_activity)
-        self.schedule(self.restore_and_resume, self.activity_time)
+        self.schedule(self.restore, self.activity_time)
+        self.schedule(self.resume, self.total_time)
 
     def save_and_pause(self):
         """"""
-        self.tasks.delay_all(self.activity_time + self.restore_time)
+        self.tasks.delay_all(self.total_time)
         pygame.mixer.music.pause()
         self.state = self.lights.current_state()
 
-    def restore_and_resume(self):
+    def restore(self):
         """"""
         self.lights.restore_state(self.state, self.restore_time)
+
+    def resume(self):
+        """"""
         pygame.mixer.music.unpause()
 
