@@ -19,13 +19,17 @@ class CupolaSequence(PerformanceMode):
     brightness: int | None = None
     transition: float
     delay: float
+    wheel_divisions: int | None = None
 
     @override
     def __post_init__(self) -> None:
         """Initialize."""
         super().__post_init__()
-        cs = self.color_sets.by_set_name[self.color_set_name]
-        self.colors = cycle(cs.colors)
+        if self.wheel_divisions is not None:
+            self.colors = self.lights.colors.wheel_colors(self.wheel_divisions)
+        else:
+            cs = self.color_sets.by_set_name[self.color_set_name]
+            self.colors = cycle(cs.colors)
         self.schedule()
 
     @override
