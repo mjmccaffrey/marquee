@@ -20,8 +20,7 @@ class InterruptMode(PerformanceMode, ABC):
     def execute_activity(self) -> None:
         """"""
 
-    @override
-    def execute(self):
+    def execute_interrupt(self):
         """"""
         self.tasks.delay_all(self.total_time)
         self.state = self.lights.current_state()

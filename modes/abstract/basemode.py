@@ -42,7 +42,7 @@ class BaseMode(ABC):
 
     def execute(self) -> None:
         """Play the mode."""
-        raise RuntimeError("Method must be overridden.")
+        # raise RuntimeError("Method must be overridden.")
 
     @override
     def __repr__(self) -> str:
