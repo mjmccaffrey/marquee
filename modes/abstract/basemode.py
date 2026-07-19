@@ -20,7 +20,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 @dataclass()
 class BaseMode(ABC):
-    """Base for both foreground and background modes."""
+    """Base for (foreground and background) modes."""
     index: int
     name: str
     serial: int

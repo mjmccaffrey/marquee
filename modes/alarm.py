@@ -7,9 +7,7 @@ from typing_extensions import override
 
 from devices.color import Colors
 from devices.devices_misc import ButtonName
-from . import ModeDefinition
 from .abstract.interruptmode import InterruptMode
-from .abstract.mode import Mode
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -17,6 +15,7 @@ log = logging.getLogger('marquee.' + __name__)
 @dataclass(kw_only=True)
 class AlarmBell(InterruptMode):
     """"""
+    background: bool = True
     activity_time: float = 0.5
     restore_time: float = 5.0
     total_time: float = activity_time + restore_time
@@ -24,7 +23,7 @@ class AlarmBell(InterruptMode):
     @override
     def button_action(self, button: ButtonName) -> int | None:
         """"""
-        if button == ButtonName.CORDED_C:
+        if button == ButtonName.CORDED_B:
             self.schedule()
         else:
             return super().button_action(button)
@@ -54,6 +53,7 @@ class AlarmBell(InterruptMode):
 @dataclass(kw_only=True)
 class AlarmDive(InterruptMode):
     """"""
+    background: bool = True
     activity_time: float = 0.5
     restore_time: float = 4.0
     total_time: float = activity_time + restore_time

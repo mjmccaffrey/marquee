@@ -30,7 +30,6 @@ class CupolaSequence(PerformanceMode):
         else:
             cs = self.color_sets.by_set_name[self.color_set_name]
             self.colors = cycle(cs.colors)
-        self.schedule()
 
     @override
     def execute(self):

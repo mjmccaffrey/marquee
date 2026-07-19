@@ -121,8 +121,7 @@ class Player:
                 self.delete_mode_instance(fg_mode.index)
         self.mode_instances[new_mode.index] = new_mode
         print(f'Effected new mode instance {new_mode.name}')
-        if not new_mode.background:
-            new_mode.execute()
+        new_mode.execute()
 
     def execute(self, starting_mode_index: int) -> bool:
         """Play the specified starting mode and all subsequent modes.
