@@ -119,10 +119,11 @@ def register_channel_modes(exec: Executor):
         delay=3,
     )
     exec.add_mode("cupola_wheel_3", CupolaSequence,
-        color_set_name='WHEEL',
+        color_set_name='',
         brightness=100,
         transition=1,
         delay=1,
+        divisions=3,
     )
     exec.add_mode("rhythm", Rhythm)
     exec.add_mode("alarm_test", ModeCycle,
