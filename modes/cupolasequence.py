@@ -36,6 +36,7 @@ class CupolaSequence(PerformanceMode):
             index=EXTRA_CUPOLA,
             color=next(self.colors),
             brightness=self.brightness,
+            on=True,
             transition=self.transition,
         )
         self.schedule(due=self.delay)
