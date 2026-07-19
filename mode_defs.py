@@ -124,7 +124,7 @@ def register_channel_modes(exec: Executor):
             ("cupola_wheel", 0.1),
             ("alarm_dive", 0.1),
             ("twelve", 60),
-            ("cs_chase", 99999),
+            ("random_random_random", 99999),
         ],
     )
     exec.add_sequence_mode("rotaterc", rotate, 
