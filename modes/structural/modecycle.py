@@ -22,6 +22,7 @@ class ModeCycle(Mode):
         """Initialize."""
         self.create_mode_sequence()
         self.mode_cycle = cycle(self.mode_sequence)
+        self.execute()
 
     def create_mode_sequence(self) -> None:
         """Create mode sequence."""
