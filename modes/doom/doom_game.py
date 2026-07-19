@@ -105,7 +105,8 @@ class DoomGame(PerformanceMode):
                 LIGHTS_BY_SIDE[step]
                 if self.passage else
                 LIGHTS_BY_ROW[step]
-            )
+            ),
+            force=True,
         )
 
     def slayer_dies(self):
