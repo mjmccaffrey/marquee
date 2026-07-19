@@ -18,8 +18,8 @@ log = logging.getLogger('marquee.' + __name__)
 class Sound(StrEnum):
     BARON_ROAR = 'dsbrssit.wav'
     SLAYER_UMF = 'dsoof.wav'
-    SLAYER_DEATH_1 = 'dspldeth.wav'
-    SLAYER_DEATH_2 = 'dspdiehi.wav'
+    SLAYER_DEATH_1 = 'dspldeth_dbllength.wav'
+    SLAYER_DEATH_2 = 'dspdiehi_dbllength.wav'
     TELEPORT = 'dstelept.wav'
 
 
@@ -113,12 +113,8 @@ class DoomGame(PerformanceMode):
         """"""
         print("SLAYER DIES")
         self.schedule(
-            action=partial(self.play_sound, Sound.SLAYER_DEATH_1),
-            due=0.0,
-        )
-        self.schedule(
             action=partial(self.play_sound, Sound.SLAYER_DEATH_2),
-            due=0.75,
+            due=0.0,
         )
         # self.lights.set_channels(
         #     on=True,
