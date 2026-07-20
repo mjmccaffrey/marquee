@@ -318,8 +318,9 @@ def register_test_modes(exec: Executor) -> None:
     # exec.add_mode("bell_test", BellTest)
 
 
-def register_pyohio_2025_presentation_modes(exec: Executor) -> None:
-    """PyOhio 2025 presentation."""
+def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
+    """PyOhio 2026 presentation."""
+    exec.add_mode("signs", Signs)
     exec.add_sequence_mode("section_1", all_off)
     exec.add_sequence_mode("10_on", lambda: iter(["101111101111"]),
         special=MirrorParams(),
@@ -354,6 +355,5 @@ def register_pyohio_2025_presentation_modes(exec: Executor) -> None:
         special=ChannelParams(concurrent=True),
     )
     exec.add_sequence_mode("section_3", all_off)
-    exec.add_mode("signs", Signs)
     exec.add_sequence_mode("section_4", all_off)
 

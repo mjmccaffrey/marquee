@@ -105,7 +105,9 @@ class Colors:
         RED, ORANGE, YELLOW, LIME, GREEN, SPRING,
         CYAN, TEAL, BLUE, VIOLET, MAGENTA, ROSE,
     )
-    INDIGO = RGB(75, 0, 130)  
+    INDIGO = RGB(75, 0, 130)
+    DEEP_GOLD = XY(0.495, 0.468)
+    BRIGHT_GOLD = XY(0.481, 0.449)
 
     def __init__(self, gamut: rgbxy.Gamut) -> None:
         """Create an instance for gamut-adjusted constants.
