@@ -26,7 +26,7 @@ class Signs(MusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         pygame.mixer.music.play()
         even = [i for i in range(self.lights.count) if not i % 2]
-        odd = [i for i in range(self.lights.count) if i % 2]
+        odd = set(i for i in range(self.lights.count) if i % 2)
         sequence = [
             dict(
                 on=True, 
@@ -44,10 +44,18 @@ class Signs(MusicMode):
                 color=self.lights.colors.RED, 
                 transition=0.0,
             ),
+            dict(
+                color=[
+                    self.lights.colors.RED if i in odd else
+                    self.lights.colors.DEEP_GOLD
+                    for i in range(self.lights.count)
+                ],
+                transition=0.0,
+            ),
         ]
         piece(
             lights(
-                ' | ♩  ♩  𝅘𝅥𝅯 𝄿 𝄿 𝄿  𝄽 | ', 
+                ' | ♩  ♩  𝅘𝅥𝅯 𝄿 𝅘𝅥𝅯 𝄿  𝄽 | ', 
                 *sequence,
             ),
         ).play(tempo=75)
