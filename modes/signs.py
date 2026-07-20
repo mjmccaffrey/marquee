@@ -41,6 +41,7 @@ class Signs(MusicMode):
             dict(
                 index=even,
                 color=self.lights.colors.RED, 
+                transition=0.0,
             ),
         ]
         piece(
