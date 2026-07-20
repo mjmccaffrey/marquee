@@ -26,13 +26,13 @@ class Signs(MusicMode):
         """Play music and lights."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         pygame.mixer.music.play()
-        even = [i for i in range(self.lights.count) if not i % 2]
-        odd = [i for i in range(self.lights.count) if i % 2]
+        even = [0, 2, 4, 6, 8, 10]
+        odd = [1, 3, 5, 7, 9, 11]
         sequence = [
             dict(
                 on=True, 
                 color=self.lights.colors.RED, 
-                brightness=50,
+                brightness=100,
                 transition=0.0,
                 force=True,
             ),
