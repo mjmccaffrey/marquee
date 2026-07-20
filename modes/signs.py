@@ -56,7 +56,7 @@ class Signs(MusicMode):
             ),
             dict(
                 on=False,
-                transition=4.0,
+                transition=6.0,
             ),
         ]
         piece(
