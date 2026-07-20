@@ -18,6 +18,7 @@ class Signs(MusicMode):
     def execute(self) -> None:
         """Perform Signs song."""
         pygame.mixer.music.load('modes/signs_3.wav')
+        self.lights = self.combined
         self.lights.set_channels(on=False, transition=0.0)
         self.schedule(action=self.play, due=0.25)
 
