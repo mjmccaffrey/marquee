@@ -18,12 +18,13 @@ class Signs(MusicMode):
     def execute(self) -> None:
         """Perform Signs song."""
         pygame.mixer.music.load('modes/signs_3.wav')
-        pygame.mixer.music.play()
-        self.schedule(action=self.play)
+        self.lights.set_channels(on=False)
+        self.schedule(action=self.play, due=0.25)
 
     def play(self):
         """Play music and lights."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        pygame.mixer.music.play()
         even = [i for i in range(self.lights.count) if not i % 2]
         odd = [i for i in range(self.lights.count) if i % 2]
         sequence = [
