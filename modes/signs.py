@@ -44,7 +44,7 @@ class Signs(MusicMode):
         ]
         piece(
             lights(
-                ' | ♩  ♩  𝅘𝅥𝅯 𝄿 𝄿 𝄿  ♩ | ', 
+                ' | ♩  ♩  𝅘𝅥𝅯 𝄿 𝄿 𝄿  𝄽 | ', 
                 *sequence,
             ),
         ).play(tempo=75)
