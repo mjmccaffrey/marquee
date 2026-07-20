@@ -31,7 +31,7 @@ class Signs(MusicMode):
             dict(
                 on=True, 
                 color=self.lights.colors.RED, 
-                brightness=100,
+                brightness=50,
                 transition=0.0,
                 force=True,
             ),
