@@ -19,7 +19,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 BrightnessParam = Sequence[int | None] | str | int | None
 
-def simplify_parameter[T](p: tuple[T]) -> tuple[T] | T:
+def simplify_parameter(p: Any) -> Any:
     """"""
     if all(e == p[0] for e in p):
         return p[0]
@@ -234,7 +234,7 @@ class LightSet:
         light_pattern = [int(p) for p in light_pattern]
         self.set_channels(
             brightness=simplify_parameter(
-                tuple(brightness_values[p] for p in light_pattern
+                tuple(brightness_values[p] for p in light_pattern)
             ),
             transition=simplify_parameter(
                 tuple(trans_values[p] for p in light_pattern)
