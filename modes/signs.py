@@ -17,7 +17,7 @@ class Signs(MusicMode):
     @override
     def execute(self) -> None:
         """Perform Signs song."""
-        pygame.mixer.music.load('modes/signs_3.mp3')
+        pygame.mixer.music.load('modes/signs_3.wav')
         pygame.mixer.music.play()
         self.schedule(action=self.play)
 
