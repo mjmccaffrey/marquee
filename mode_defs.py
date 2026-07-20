@@ -235,7 +235,7 @@ def register_relay_modes(exec: Executor) -> None:
         special=EmulateParams(),
     )
     exec.add_sequence_mode("rotate", rotate, 
-        sequence_kwargs=dict(pattern="1111111111100"),
+        sequence_kwargs=dict(pattern="111111111100"),
         delay=0.25, 
     )
     exec.add_sequence_mode("random_flip", random_flip, 
