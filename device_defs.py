@@ -7,7 +7,6 @@ from gpiozero import Button as _Button
 from devices.bulb import (
     Hue_BR30_Enhanced_Color, 
     Sylvania_G25_Frosted_40,
-    Sylvania_G40_Frosted_100, 
 )
 from devices.button import Button, LightedButton
 from devices.buttonset import ButtonSet 
@@ -17,9 +16,9 @@ from devices.hue import HueBridge
 from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001, NumatoSSR80001
 from devices.relaymodule import CombinedRelayModule, create_client
-from devices.shelly import ShellyController, ShellyProDimmer1PM, ShellyProDimmer2PM
+from devices.shelly import ShellyController, ShellyProDimmer2PM
 from devices.tiltset import TiltSet
-from instruments import BellSet, ClickSet, DrumSet, LightSet, Ringer
+from instruments import BellSet, Buzzer, ClickSet, DrumSet, LightSet, Ringer
 from light_defs import *
 
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
@@ -225,10 +224,11 @@ def define_devices(
 
     clicker = ClickSet(create_client(drum_16_relays, CLICK_TO_RELAY))
     ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
+    buzzer = Buzzer(create_client(light_relays, BUZZER_TO_RELAY))
     return DeviceSet(
         buttons(light_relays), drums, 
         lights, extra, combined, 
-        clicker, ringer, joystick(), tilts(),
+        clicker, ringer, buzzer, joystick(), tilts(),
     )
 
 
@@ -267,15 +267,17 @@ def define_devices_shelly(
     extra = None
     clicker = ClickSet(create_client(light_relays, CLICK_TO_RELAY))
     ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
+    buzzer = Buzzer(create_client(light_relays, BUZZER_TO_RELAY))
     return DeviceSet(
         buttons(light_relays), drums, 
         lights, lights, lights, 
-        clicker, ringer, joystick(), tilts(),
+        clicker, ringer, buzzer, joystick(), tilts(),
     )
 
 
 BUTTON_TO_RELAY = {0: 11}
 RINGER_TO_RELAY = {0: 3}
+BUZZER_TO_RELAY = {0: 2}
 EXTRA_TO_RELAY = {0: 10, 1: 10, 2: 10, 3: 10}  # Kludge.
 
 COMBINED_TO_RELAY = (

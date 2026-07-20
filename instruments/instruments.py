@@ -139,7 +139,7 @@ class DrumSet(RelayInstrument):
 
 
 class Ringer(RelayInstrument):
-    """"""
+    """Rapidly repeating strike ringer bell."""
     pitch_levels = 1
 
     @override
@@ -150,4 +150,8 @@ class Ringer(RelayInstrument):
     def rest(self):
         """"""
         self.relays.set_state_of_devices("0")
+
+
+class Buzzer(Ringer):
+    """Simple door buzzer."""
 

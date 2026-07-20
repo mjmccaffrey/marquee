@@ -37,12 +37,12 @@ class Rhythm(MusicMode):
         """"""
         piece(
             self.init(),
-            self.one(),
-            self.two(),
-            self.one(),
-            self.two(),
-            self.one(),
-            self.two(),
+            self.play_drums(),
+            self.play_ringer(),
+            self.play_drums(),
+            self.play_buzzer(),
+            self.play_drums(),
+            self.play_ringer(),
         ).play(tempo=140)
 
     def init(self) -> Section:
@@ -53,7 +53,7 @@ class Rhythm(MusicMode):
             ),
         )
 
-    def one(self) -> Section:
+    def play_drums(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝅘𝅥𝅱 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀 𝅁
         return section(
             drums(
@@ -70,13 +70,24 @@ class Rhythm(MusicMode):
             ),
         )
 
-    def two(self) -> Section:
+    def play_ringer(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             part(
                 measure(
                     action('𝅘𝅥𝅱', self.ringer.play),
                     action('𝅘𝅥𝅱', self.ringer.rest),
+                )
+            )
+        )
+
+    def play_buzzer(self) -> Section:
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        return section(
+            part(
+                measure(
+                    action('𝅘𝅥𝅰', self.buzzer.play),
+                    action('𝅘𝅥𝅰', self.buzzer.rest),
                 )
             )
         )

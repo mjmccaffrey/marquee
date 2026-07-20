@@ -27,6 +27,7 @@ class Mode(BaseMode, ABC):
         pygame.mixer.init()
         (   self.buttons, self.drums, 
             self.lights, self.extra, self.combined,
-            self.clicker, self.ringer, self.joystick, self.tilts,
+            self.clicker, self.ringer, self.buzzer, 
+            self.joystick, self.tilts,
         ) = self.devices.astuple()
 
