@@ -54,10 +54,14 @@ class Signs(MusicMode):
                 color=self.lights.colors.RED,
                 transition=0.0,
             ),
+            dict(
+                on=False,
+                transition=4.0,
+            ),
         ]
         piece(
             lights(
-                ' | ♩  ♩  ♩  𝅘𝅥𝅱 𝅘𝅥𝅱 𝅀 𝄿 𝄾 | ', 
+                ' | ♩  ♩  ♩  𝅘𝅥𝅱 𝅘𝅥𝅱 𝅀 𝄿 𝄾 | 𝄻 | 𝅝 | ', 
                 *sequence,
             ),
         ).play(tempo=75)
