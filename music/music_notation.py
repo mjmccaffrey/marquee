@@ -21,12 +21,14 @@ from devices.specialparams import SpecialParams
 log = logging.getLogger('marquee.' + __name__)
 
 note_duration_map: dict[str, float] = {
-    '𝅝': 4,     '𝅗𝅥': 2,      '♩': 1,
-    '♪': 0.5,   '𝅘𝅥𝅯': 0.25,  '𝅘𝅥𝅰': 0.125,  '𝅘𝅥𝅱': 0.0625,
+    '𝅝': 4,      '𝅗𝅥': 2,       '♩': 1,
+    '♪': 0.5,    '𝅘𝅥𝅯': 0.25,   '𝅘𝅥𝅰': 0.125,  
+    '𝅘𝅥𝅱': 0.0625, '𝅘𝅥𝅲': 0.03125,
 }
 rest_duration_map: dict[str, float] = {
-    '𝄻': 4,    '𝄼': 2,      '𝄽': 1,
-    '𝄾': 0.5,   '𝄿': 0.25,  '𝅀': 0.125,  '𝅁': 0.0625,
+    '𝄻': 4,     '𝄼': 2,       '𝄽': 1,
+    '𝄾': 0.5,    '𝄿': 0.25,   '𝅀': 0.125,  
+    '𝅁': 0.0625, '𝅂': 0.03125,
 }
 symbol_duration_map = note_duration_map | rest_duration_map
 
