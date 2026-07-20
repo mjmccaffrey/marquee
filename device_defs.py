@@ -48,73 +48,48 @@ HUE_BULB_IDS_1 = [
 ]
 HUE_BULB_IDS_2 = HUE_BULB_IDS_0 + HUE_BULB_IDS_1
 
-HUE_GROUPS_0 = {
-    # '0.12': LIGHTS_CLOCKWISE,
+HUE_GROUPS_0: dict[str, list[int]] = {
     'top': LIGHTS_TOP,
     'right': LIGHTS_RIGHT,
     'bottom': LIGHTS_BOTTOM,
     'left': LIGHTS_LEFT,
     'even': [0, 2, 4, 6, 8, 10],
     'odd': [1, 3, 5, 7, 9, 11],
+    '12': LIGHTS_CLOCKWISE,
+    '13': LIGHTS_CLOCKWISE + [LIGHTS_CUPOLA]
 }
-HUE_ZONE_IDS_0 = {
+HUE_ZONE_IDS_0: dict[str, list[str]] = {
     # https://192.168.64.130/clip/v2/resource/zone
     # ↑ Lists zones, with names, and included bulbs
     # "services": [
     #     {
     #         "rid": "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
     #         "rtype": "grouped_light"
-
-    # '0.12': [
-    #     "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
-    #     "afbce248-f994-4f71-833d-f7c20eb96814",
-    # ],
-    # '0.15': [
-    #     "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
-    #     "afbce248-f994-4f71-833d-f7c20eb96814",
-    #     "1afc2cc8-cbf8-484b-b2d6-46575b2cef97",
-    # ],
-
     'top': ['4cfe20b3-43ae-409e-8d21-ea84f96daef8'],
     'right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
     'bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
     'left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68'],
     'even': ['166bcc4f-9598-49e7-b853-a239be50b514'],
     'odd': ['587dddb8-bec3-4555-9f3b-b12b2fca918d'],
+    '12': ['21c66184-6be0-4c79-832e-9308ee4501eb'],
+    '13': ['af193689-f8a4-4ace-9cef-87264c9f5129'],
 }
-
 HUE_GROUPS_1 = {
-    '1.4': [0, 1, 2, 3],
     'middle': [0, 1, 2],
 }
 HUE_ZONE_IDS_1 = {
-    '1.4': ['fca0fb37-bd2b-4f8a-b6b0-f58d7546f071'],
     'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
 }
-
-HUE_GROUPS_2 = {
-    'top': LIGHTS_TOP,
-    'right': LIGHTS_RIGHT,
-    'bottom': LIGHTS_BOTTOM,
-    'left': LIGHTS_LEFT,
-    'middle': LIGHTS_MIDDLE,
-    'even': [0, 2, 4, 6, 8, 10],
-    'odd': [1, 3, 5, 7, 9, 11],
-    # '12': LIGHTS_CLOCKWISE,
-    # '15': range(15),
-    'all': range(16),
+HUE_GROUPS_2 = HUE_GROUPS_0 | {
+    'middle': [12, 13, 14],
+    '15': range(15),
+    '16': range(16),
 }
-HUE_ZONE_IDS_2 = {
-    'top': ['4cfe20b3-43ae-409e-8d21-ea84f96daef8'],
-    'right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
-    'bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
-    'left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68'],
+HUE_ZONE_IDS_2 = HUE_ZONE_IDS_0 | {
     'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
-    'even': ['166bcc4f-9598-49e7-b853-a239be50b514'],
-    'odd': ['587dddb8-bec3-4555-9f3b-b12b2fca918d'],
-    'all': ['e6967d66-978f-4aae-9873-fb8e67df8683'],
+    '15': ['e896f871-f666-4d40-a61c-f0b789f48330'],
+    '16': ['82204b9c-610c-4975-8e40-e6882ce39118'],
 }
-
 SHELLY_IP_ADDRESSES = [
     '192.168.64.111',
     '192.168.64.112',
