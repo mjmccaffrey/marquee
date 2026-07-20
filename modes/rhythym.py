@@ -8,7 +8,7 @@ from device_defs import ALL_HIGH, ALL_LOW, ALL_ON
 from . import MusicMode
 from music import (
     dimmer, dimmer_sequence, measure, part, play,
-    relay, section, Section, sequence, piece,
+    relay, rest, section, Section, sequence, piece,
 )
 from music import(
     action, actions, drums,
@@ -86,8 +86,23 @@ class Rhythm(MusicMode):
         return section(
             part(
                 measure(
+                    # 1
+                    rest('𝄾'),
+                    # and
+                    action('𝅘𝅥𝅯', self.buzzer.play),
+                    action('𝅘𝅥𝅯', self.buzzer.rest),
+                    # 2
                     action('♪', self.buzzer.play),
                     action('♪', self.buzzer.rest),
+                    # 3
+                    action('♪', self.buzzer.play),
+                    action('♪', self.buzzer.rest),
+                    action('𝅘𝅥𝅰', self.buzzer.play),
+                    action('𝅘𝅥𝅰', self.buzzer.rest),
+                    action('𝅘𝅥𝅰', self.buzzer.play),
+                    action('𝅘𝅥𝅰', self.buzzer.rest),
+                    # action('♪', self.buzzer.play),
+                    # action('♪', self.buzzer.rest),
                 )
             )
         )
