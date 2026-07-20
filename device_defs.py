@@ -54,6 +54,8 @@ HUE_GROUPS_0 = {
     'right': LIGHTS_RIGHT,
     'bottom': LIGHTS_BOTTOM,
     'left': LIGHTS_LEFT,
+    'even': [0, 2, 4, 6, 8, 10],
+    'odd': [1, 3, 5, 7, 9, 11],
 }
 HUE_ZONE_IDS_0 = {
     # https://192.168.64.130/clip/v2/resource/zone
@@ -77,6 +79,8 @@ HUE_ZONE_IDS_0 = {
     'right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
     'bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
     'left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68'],
+    'even': ['166bcc4f-9598-49e7-b853-a239be50b514'],
+    'odd': ['587dddb8-bec3-4555-9f3b-b12b2fca918d'],
 }
 
 HUE_GROUPS_1 = {
