@@ -97,10 +97,10 @@ class Rhythm(MusicMode):
                     # 3
                     action('♪', self.buzzer.play),
                     action('♪', self.buzzer.rest),
-                    action('𝅘𝅥𝅰', self.buzzer.play),
-                    action('𝅘𝅥𝅰', self.buzzer.rest),
-                    action('𝅘𝅥𝅰', self.buzzer.play),
-                    action('𝅘𝅥𝅰', self.buzzer.rest),
+                    action('𝅘𝅥𝅯', self.buzzer.play),
+                    action('𝅘𝅥𝅯', self.buzzer.rest),
+                    action('𝅘𝅥𝅯', self.buzzer.play),
+                    action('𝅘𝅥𝅯', self.buzzer.rest),
                     # action('♪', self.buzzer.play),
                     # action('♪', self.buzzer.rest),
                 )
