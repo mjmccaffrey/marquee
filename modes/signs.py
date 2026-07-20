@@ -33,6 +33,7 @@ class Signs(MusicMode):
                 color=self.lights.colors.RED, 
                 brightness=100,
                 transition=0.0,
+                force=True,
             ),
             dict(
                 color=self.lights.colors.DEEP_GOLD, 
