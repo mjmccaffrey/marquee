@@ -4,7 +4,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass, InitVar
 import logging
 import time
-from typing import cast
+from typing import cast, Any
 
 from devices import rgbxy
 
@@ -18,6 +18,12 @@ from .lightsetinterface import SavedState
 log = logging.getLogger('marquee.' + __name__)
 
 BrightnessParam = Sequence[int | None] | str | int | None
+
+def simplify_parameter[T](p: tuple[T]) -> tuple[T] | T:
+    """"""
+    if all(e == p[0] for e in p):
+        return p[0]
+    return p
 
 @dataclass
 class LightSet:
@@ -227,10 +233,18 @@ class LightSet:
         }
         light_pattern = [int(p) for p in light_pattern]
         self.set_channels(
-            brightness=tuple(brightness_values[p] for p in light_pattern),
-            transition=tuple(trans_values[p] for p in light_pattern),
-            color=tuple(color_values[p] for p in light_pattern),
-            on=tuple(on_values[p] for p in light_pattern),
+            brightness=simplify_parameter(
+                tuple(brightness_values[p] for p in light_pattern
+            ),
+            transition=simplify_parameter(
+                tuple(trans_values[p] for p in light_pattern)
+            ),
+            color=simplify_parameter(
+                tuple(color_values[p] for p in light_pattern)
+            ),
+            on=simplify_parameter(
+                tuple(on_values[p] for p in light_pattern)
+            ),
         )
             
     def brightnesses(self) -> list[int]:
