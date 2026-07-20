@@ -86,8 +86,8 @@ class Rhythm(MusicMode):
         return section(
             part(
                 measure(
-                    action('𝅘𝅥𝅰', self.buzzer.play),
-                    action('𝅘𝅥𝅰', self.buzzer.rest),
+                    action('♪', self.buzzer.play),
+                    action('♪', self.buzzer.rest),
                 )
             )
         )
