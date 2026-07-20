@@ -233,6 +233,7 @@ class LightSet:
         }
         light_pattern = [int(p) for p in light_pattern]
         self.set_channels(
+            force=True,
             brightness=simplify_parameter(
                 tuple(brightness_values[p] for p in light_pattern)
             ),
