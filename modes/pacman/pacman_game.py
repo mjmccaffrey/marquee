@@ -171,8 +171,9 @@ class PacManGame(GameMode):
         log.info("Waiting for Start Game button press")
         self.buttons.game_start.set_light(True)
         self.lights.set_channels(
-            index=LIGHTS_CUPOLA,
-            on=False,
+            on=True,
+            brightness=50,
+            color=PacMan.color,
         )
 
     def pre_level_0_state(self) -> None:
