@@ -76,7 +76,7 @@ class Sound(StrEnum):
     EATGHOST = auto()
     EXTRAPAC = auto()
     INTERMISSION = auto()
-    
+    SIREN = auto()
 
 class GhostState(StrEnum):
     WAITING = auto()

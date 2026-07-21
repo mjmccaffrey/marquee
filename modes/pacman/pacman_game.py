@@ -121,8 +121,7 @@ class PacManGame(GameMode):
         """Initialize either level."""
         super().init_level()
         assert self.extra is not None
-        # self.extra.set_channels(brightness=0, on=True)
-        # self.extra.set_relays(True)
+        self.extra.set_channels(brightness=0, on=True)
         for index in self.maze.keys():
             dot = self.register_entity(
                 Dot(game=self, name=f"dot_{index}")
@@ -163,6 +162,7 @@ class PacManGame(GameMode):
         self.place_entity(self.pacman, self.pacman_coord)
         cast(Dot, self.board[self.pacman_coord][Dot]).bitten()
         self.update_lights()
+        self.sounds[Sound.SIREN].play(-1)
         self.change_state(GameState.PLAY_GAME)
 
     def pre_game_state(self) -> None:
@@ -189,6 +189,7 @@ class PacManGame(GameMode):
 
     def post_level_0_state(self) -> None:
         """Play music. Blink all maze lights. Start level 1."""
+        self.sounds[Sound.SIREN].stop()
         self.play_sound(Sound.INTERMISSION)
         for i, c in zip(range(4), cycle((Colors.WHITE, Colors.BLUE))):
             kwargs = dict(
@@ -210,6 +211,7 @@ class PacManGame(GameMode):
     def game_won_state(self) -> None:
         """Game won."""
         log.info("You won!")
+        self.sounds[Sound.SIREN].play(-1)
         self.play_sound(Sound.EXTRAPAC)
         self.lights.set_channels(
             index=LIGHTS_CUPOLA,
@@ -222,6 +224,7 @@ class PacManGame(GameMode):
     def game_lost_state(self) -> None:
         """Game lost."""
         log.info("You lost!")
+        self.sounds[Sound.SIREN].play(-1)
         self.play_sound(Sound.DEATH)
         self.lights.set_channels(
             index=LIGHTS_CUPOLA,
