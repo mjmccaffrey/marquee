@@ -69,7 +69,7 @@ class Rhythm(MusicMode):
                 accent='-',
             ),
             lights(
-                ' |  ♩ 𝄽 𝄽 𝄽  | ' * 8,
+                ' |  ♩  | ' * 8,
                 *[
                     dict(
                         on=True,
