@@ -160,6 +160,10 @@ class PacManGame(GameMode):
 
     def play_level(self) -> None:
         """Play either level."""
+        self.lights.set_channels(
+            on=False,
+            index=LIGHTS_CUPOLA,
+        )
         self.place_entity(self.pacman, self.pacman_coord)
         cast(Dot, self.board[self.pacman_coord][Dot]).bitten()
         self.update_lights()
@@ -213,7 +217,7 @@ class PacManGame(GameMode):
     def game_won_state(self) -> None:
         """Game won."""
         log.info("You won!")
-        self.sounds[Sound.SIREN].play(-1)
+        self.sounds[Sound.SIREN].stop
         self.play_sound(Sound.EXTRAPAC)
         self.lights.set_channels(
             index=LIGHTS_CUPOLA,
@@ -226,7 +230,7 @@ class PacManGame(GameMode):
     def game_lost_state(self) -> None:
         """Game lost."""
         log.info("You lost!")
-        self.sounds[Sound.SIREN].play(-1)
+        self.sounds[Sound.SIREN].stop()
         self.play_sound(Sound.DEATH)
         self.lights.set_channels(
             index=LIGHTS_CUPOLA,
