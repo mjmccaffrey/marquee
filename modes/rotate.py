@@ -42,8 +42,8 @@ class RotateSides(PerformanceMode):
         )
         self.lights.set_channels(
             on=False,
-            transition=EmulateParams.trans_off,
+            # transition=EmulateParams.trans_off,
             index=self.previous,
         )
         self.previous = current
-        
+
