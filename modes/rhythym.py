@@ -82,12 +82,12 @@ class Rhythm(MusicMode):
         )
 
     def play_ringer(self) -> Section:
-        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝅘𝅥𝅱 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
             part(
                 measure(
-                    action('𝅘𝅥𝅱', self.ringer.play),
-                    action('𝅘𝅥𝅱', self.ringer.rest),
+                    action('𝅘𝅥𝅲', self.ringer.play),
+                    action('𝅘𝅥𝅲', self.ringer.rest),
                 )
             )
         )
