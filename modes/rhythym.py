@@ -74,9 +74,12 @@ class Rhythm(MusicMode):
                     dict(
                         on=True,
                         brightness=100,
-                        color=self.lights.colors.random(),
+                        color=[
+                            self.lights.colors.random()
+                            for c in self.lights.channels
+                        ],
                     )
-                    for _ in self.lights.channels
+                    for i in range(8)
                 ],
             ),
         )
