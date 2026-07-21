@@ -23,7 +23,11 @@ class RotateSides(PerformanceMode):
         super().__post_init__()
         self.sides = cycle(LIGHTS_BY_SIDE)
         self.previous = next(self.sides)
-        self.lights.set_channels(on=False)
+        self.lights.set_channels(
+            on=True,
+            brightness=0,
+            color=EmulateParams.color_on,
+        )
 
     @override
     def execute(self) -> None:
@@ -34,7 +38,7 @@ class RotateSides(PerformanceMode):
         """"""
         current = next(self.sides)
         self.lights.set_channels(
-            on=True,
+            # on=True,
             brightness=EmulateParams.brightness_on,
             color=EmulateParams.color_on,
             transition=EmulateParams.trans_on,
