@@ -154,14 +154,14 @@ class PacManGame(GameMode):
             )
         )
         self.ghosts = (self.pinky, self.blinky)
-        self.update_lights()
-
-    def play_level(self) -> None:
-        """Play either level."""
         self.lights.set_channels(
             on=False,
             index=LIGHTS_CUPOLA,
         )
+        self.update_lights()
+
+    def play_level(self) -> None:
+        """Play either level."""
         self.place_entity(self.pacman, self.pacman_coord)
         cast(Dot, self.board[self.pacman_coord][Dot]).bitten()
         self.update_lights()
