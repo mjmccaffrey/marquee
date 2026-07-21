@@ -7,7 +7,7 @@ from typing_extensions import override
 from device_defs import ALL_HIGH, ALL_LOW, ALL_ON
 from . import MusicMode
 from music import (
-    dimmer, dimmer_sequence, measure, part, play,
+    lights, measure, part,
     relay, rest, section, Section, sequence, piece,
 )
 from music import(
@@ -67,6 +67,17 @@ class Rhythm(MusicMode):
                 # '     3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  |  ♩> ♩ ♩ ♩  |  '
                 ,
                 accent='-',
+            ),
+            lights(
+                ' |  ♩ 𝄽 𝄽 𝄽  | ' * 8,
+                *[
+                    dict(
+                        on=True,
+                        brightness=100,
+                        color=self.lights.colors.random(),
+                    )
+                    for _ in self.lights.channels
+                ],
             ),
         )
 
