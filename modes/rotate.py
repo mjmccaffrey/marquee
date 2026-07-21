@@ -43,10 +43,10 @@ class RotateSides(PerformanceMode):
         current = next(self.sides)
         assert self.lights.mirror is not None
         self.lights.mirror.set_state_of_devices(
-            str([
+            ''.join(
                 '1' if i in current else '0' 
                 for i in range(self.lights.count)
-            ])
+            )
         )
         self.lights.set_channels(
             # on=True,
