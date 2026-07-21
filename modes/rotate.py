@@ -40,7 +40,7 @@ class RotateSides(PerformanceMode):
         self.lights.set_channels(
             # on=True,
             brightness=EmulateParams.brightness_on,
-            color=EmulateParams.color_on,
+            # color=EmulateParams.color_on,
             transition=EmulateParams.trans_on,
             index=current,
             # force=True,
