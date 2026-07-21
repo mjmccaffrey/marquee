@@ -19,9 +19,7 @@ def define_modes(exec: Executor) -> None:
 
     register_color_modes(exec)
     register_relay_modes(exec)
-    # register_interactive_modes(exec)
     register_silent_modes(exec)
-    # register_pyohio_2025_presentation_modes(exec)
 
 def register_special_modes(exec: Executor) -> None:
     """"""
@@ -95,7 +93,7 @@ def register_channel_modes(exec: Executor):
     exec.add_mode("comet_test_1", Comet,
         length=9,
         delay=0.175,
-        wheel_divisions=4,
+        wheel_divisions=3,
     )
     exec.add_mode("comet_test_2", Comet,
         length=4,
@@ -131,10 +129,6 @@ def register_channel_modes(exec: Executor):
             ("random_random_random", 99999),
         ],
     )
-    exec.add_sequence_mode("rotaterc", rotate, 
-        sequence_kwargs=dict(pattern="100000000000"),
-        delay=2.0, 
-    )
     exec.add_mode(
         'colorwheel',
         ColorWheel,
@@ -142,7 +136,7 @@ def register_channel_modes(exec: Executor):
         step=-1,
     )
     exec.add_mode('running', Running, ticks_per_second=2)
-    
+    exec.add_mode('rotate_sides', RotateSides, delay=1.0)
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=10, 
         special=ChannelParams(
@@ -309,21 +303,6 @@ def register_silent_modes(exec: Executor) -> None:
 def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
     """PyOhio 2026 presentation."""
     exec.add_mode("signs", Signs)
-    exec.add_sequence_mode("section_1", all_off)
-    exec.add_sequence_mode("10_on", lambda: iter(["101111101111"]),
-        special=MirrorParams(),
-    )
-    exec.add_sequence_mode("10_rotate", rotate, 
-        sequence_kwargs=dict(
-            pattern="110111110111", 
-            stop=3,
-        ),
-        delay=1.0,
-        special=MirrorParams(),
-    )
-    exec.add_sequence_mode("12_on", all_on,
-        special=MirrorParams(),
-    )
     exec.add_sequence_mode("rotate_sides", rotate_sides, 
         sequence_kwargs=dict(
             pattern='1', 
@@ -334,14 +313,5 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
     )
     exec.add_sequence_mode("section_2", all_off)
     exec.add_mode("12_random_random_trans", RandomFade)
-    exec.add_sequence_mode("blink_all_fade_sequential",
-        blink_all, delay=1,
-        special=ChannelParams(concurrent=False),
-    )
-    exec.add_sequence_mode("blink_all_fade_consecutive", 
-        blink_all, delay=1,
-        special=ChannelParams(concurrent=True),
-    )
-    exec.add_sequence_mode("section_3", all_off)
-    exec.add_sequence_mode("section_4", all_off)
+
 

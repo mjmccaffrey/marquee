@@ -49,7 +49,7 @@ class Twelve(MusicMode):
             )
             for i in range(self.lights.count)
         )
-        all_off = dict(on=False, transition=0.8)
+        all_off = dict(on=False, transition=1.6)
         piece(
             lights('| 𝄻 | 𝄻 | 𝄻 |'),
             lights('| ♪ ♪ ♪ ♩ ♩ ♪ | ♩ ♪ ♩ ♩ ♪ | 𝄽 ♩ 𝄽 𝄽 |', *each_on),
