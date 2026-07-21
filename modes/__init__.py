@@ -25,9 +25,7 @@ from .colorwheel import ColorWheel
 from .cupolasequence import CupolaSequence
 from .comet import Comet
 from .doom import DoomGame
-from .demo import Demo
 from .evenoddfade import EvenOddFade
-from .fastchange import FastChange
 from .pacman import PacManGame
 from .randomfade import RandomFade
 from .running import Running

@@ -23,7 +23,9 @@ marquee
         ActionInstrument
         RelayInstrument
             BellSet
+            Buzzer
             DrumSet
+            Ringer
         Releaseable Instrument
             BellSet
         RestInstrument

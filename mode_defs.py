@@ -2,7 +2,6 @@
 
 from devices.color import Colors
 from devices.specialparams import ChannelParams, EmulateParams, MirrorParams
-from device_defs import LIGHT_COUNT
 from executor import Executor
 from modes import *
 from modes.pacman import base_maze, passage_maze
@@ -17,13 +16,11 @@ def define_modes(exec: Executor) -> None:
     exec.add_mode("pacman_15", PacManGame, maze=passage_maze)
     exec.add_mode("doom_12", DoomGame, passage=False)
     exec.add_mode("doom_15", DoomGame, passage=True)
-    exec.add_mode('demo', Demo)
 
     register_color_modes(exec)
     register_relay_modes(exec)
     # register_interactive_modes(exec)
     register_silent_modes(exec)
-    register_test_modes(exec)
     # register_pyohio_2025_presentation_modes(exec)
 
 def register_special_modes(exec: Executor) -> None:
@@ -98,7 +95,7 @@ def register_channel_modes(exec: Executor):
     exec.add_mode("comet_test_1", Comet,
         length=9,
         delay=0.175,
-        wheel_divisions=3,
+        wheel_divisions=4,
     )
     exec.add_mode("comet_test_2", Comet,
         length=4,
@@ -308,15 +305,6 @@ def register_silent_modes(exec: Executor) -> None:
     exec.add_mode("random_random_random", RandomFade)
     exec.add_mode("generate", GeneratedModes)
     exec.add_mode("narcissa_random_random", RandomFade, color_set_name='narcissa')
-    exec.add_mode(
-        "fast_change", FastChange, 
-        delay=0.0025, transition=0.25,  # Rotation: Seems To MAYBE Occasionally Miss
-    )
-
-def register_test_modes(exec: Executor) -> None:
-    """"""
-    # exec.add_mode("bell_test", BellTest)
-
 
 def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
     """PyOhio 2026 presentation."""
