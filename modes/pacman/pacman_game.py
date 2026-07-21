@@ -121,8 +121,6 @@ class PacManGame(GameMode):
     def init_level(self) -> None:
         """Initialize either level."""
         super().init_level()
-        assert self.extra is not None
-        self.extra.set_channels(brightness=0, on=True)
         for index in self.maze.keys():
             dot = self.register_entity(
                 Dot(game=self, name=f"dot_{index}")
