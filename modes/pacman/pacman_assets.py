@@ -72,6 +72,8 @@ class Sound(StrEnum):
     BEGINNING = auto()
     CHOMP = auto()
     DEATH = auto()
+    EATDOT0 = auto()
+    EATDOT1 = auto()
     EATFRUIT = auto()
     EATGHOST = auto()
     EXTRAPAC = auto()

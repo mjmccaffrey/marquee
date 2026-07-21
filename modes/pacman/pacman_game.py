@@ -109,7 +109,8 @@ class PacManGame(GameMode):
                 dot.bitten()
                 if dot.consumed:
                     del self.board[coord][Dot]
-                self.play_sound(Sound.CHOMP)
+                channel = self.sounds[Sound.EATDOT0].play()
+                channel.queue(self.sounds[Sound.EATDOT1])
             case assets.Fruit:
                 del self.board[coord][Fruit]
                 self.play_sound(Sound.EATFRUIT)
