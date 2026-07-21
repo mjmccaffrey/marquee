@@ -28,6 +28,10 @@ class RotateSides(PerformanceMode):
             brightness=0,
             color=EmulateParams.color_on,
         )
+        assert self.lights.mirror is not None
+        self.lights.mirror.set_state_of_devices(
+            '1' * self.lights.count
+        )
 
     @override
     def execute(self) -> None:
@@ -37,6 +41,13 @@ class RotateSides(PerformanceMode):
     def rotate(self) -> None:
         """"""
         current = next(self.sides)
+        assert self.lights.mirror is not None
+        self.lights.mirror.set_state_of_devices(
+            str([
+                '1' if i in current else '0' 
+                for i in range(self.lights.count)
+            ])
+        )
         self.lights.set_channels(
             # on=True,
             brightness=EmulateParams.brightness_on,
