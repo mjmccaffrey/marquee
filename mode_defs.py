@@ -136,7 +136,7 @@ def register_channel_modes(exec: Executor):
         step=-1,
     )
     exec.add_mode('running', Running, ticks_per_second=2)
-    exec.add_mode('rotate_sides', RotateSides, delay=1.0)
+    exec.add_mode('rotate_sides_emulate', RotateSides, delay=1.0)
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=10, 
         special=ChannelParams(
