@@ -136,7 +136,7 @@ def register_channel_modes(exec: Executor):
         step=-1,
     )
     exec.add_mode('running', Running, ticks_per_second=2)
-    exec.add_mode('rotate_sides_emulate', RotateSides, delay=1.0)
+    exec.add_mode('rotate_sides_emulate', RotateSides, delay=2.0)
     exec.add_sequence_mode("blink_alternate_medium",
         blink_alternate, delay=10, 
         special=ChannelParams(
@@ -225,18 +225,10 @@ def register_relay_modes(exec: Executor) -> None:
         delay=2,
         special=EmulateParams(),
     )
-    exec.add_sequence_mode("rotate", rotate, 
-        sequence_kwargs=dict(pattern="111111111100"),
-        delay=0.75, 
-    )
     exec.add_sequence_mode("random_flip", random_flip, 
         sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
         delay=0.5, 
         baseline=None,
-    )
-    exec.add_sequence_mode("center_rotate_fade", rotate, 
-        sequence_kwargs=dict(pattern = "010" * 4),
-        delay=0.5, 
     )
     exec.add_sequence_mode("rotate_sides", rotate_sides, 
         sequence_kwargs=dict(
@@ -284,16 +276,16 @@ def register_silent_modes(exec: Executor) -> None:
     exec.add_mode("silent_fade_build", 
         SilentFadeBuild,
     )
-    exec.add_sequence_mode("silent_rotate_slight_fade",
-        rotate,  
-        sequence_kwargs=dict(pattern='110000000000'),
-        delay=0.5,
-        special=ChannelParams(
-            concurrent=False,
-            brightness_on = 100,
-            brightness_off = 20,
-        ),
-    )
+    # exec.add_sequence_mode("silent_rotate_slight_fade",
+    #     rotate,  
+    #     sequence_kwargs=dict(pattern='110000000000'),
+    #     delay=0.5,
+    #     special=ChannelParams(
+    #         concurrent=False,
+    #         brightness_on = 100,
+    #         brightness_off = 20,
+    #     ),
+    # )
     exec.add_mode("random_bright_fixed_trans", RandomFade, transition=0.5)
     exec.add_mode("random_bright_fixed_dur", RandomFade, duration=5.0)
     exec.add_mode("random_random_random", RandomFade)
