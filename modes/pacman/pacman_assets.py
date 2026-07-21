@@ -127,6 +127,8 @@ class Ghost(Character, ABC):
 
     def chasing(self) -> None:
         """In maze and chasing PacMan."""
+        if self.game.tick % 2:
+            return
         assert self.coord is not None
         coord = (self.coord + self.direction) % len(base_maze)
         self.game.move_character(self, coord)
