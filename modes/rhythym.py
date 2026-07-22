@@ -62,7 +62,7 @@ class Rhythm(MusicMode):
             ),
             actions(
                 ' |  𝄻 |  ' * 7 + 
-                ' |  ♩ ♩ ♩ 𝅘𝅥𝅲 𝅘𝅥𝅲 | ',
+                ' |  𝄽 𝄽 𝄽 𝅘𝅥𝅲 𝅘𝅥𝅲 | ',
                 self.ringer.play if bell else lambda: None,
                 self.ringer.rest if bell else lambda: None,
             ),
