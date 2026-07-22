@@ -64,6 +64,15 @@ def view_each_color_set(l: LightSet, css: ColorSets):
             cs = css.by_set_name[sname]
             l.set_channels(**cs.set_channels_kwargs(l.count))
 
+def apply_color_set_fixes():
+    """"""
+    broken = json.load(open('color_sets.json'))
+    fixes = json.load(open('color_fixes.json'))
+    for k, v in fixes.items():
+        gn, sn = k.split('.')
+        bi = [i for i, b in enumerate(broken) if b[0] == sn]
+        broken[bi] = [sn, gn]
+    json.dump(broken, open('color_sets_fixed.json', 'w'))
 
 # @dataclass(kw_only=True)
 # class BellTest(MusicMode):

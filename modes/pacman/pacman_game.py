@@ -128,7 +128,7 @@ class PacManGame(GameMode):
         self.fruit = self.register_entity(
             Fruit(
                 game=self,
-                color=Colors.MAGENTA if self.level == 0 else Colors.ORANGE,
+                color=Colors.VIOLET if self.level == 0 else Colors.ORANGE,
             )
         )
         self.pacman = self.register_entity(
