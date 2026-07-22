@@ -83,7 +83,7 @@ def register_channel_modes(exec: Executor):
         sequence=[
         # ("party", 1),
         # ("cancun", 1),
-            ("race", 10),
+            ("ALL", 10),
         ],
         brightness=35,
         # transition=0.0,

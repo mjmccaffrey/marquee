@@ -141,7 +141,7 @@ class PacManGame(GameMode):
                 state_event=Event.GHOST_STATE,
                 direction=+1,
                 wait_ticks=65 if self.level == 0 else 40,
-                emerge_ticks=75,
+                emerge_ticks=75 if self.level == 0 else 50,
             )
         )
         self.pinky = self.register_entity(
@@ -149,8 +149,8 @@ class PacManGame(GameMode):
                 game=self, 
                 state_event=Event.GHOST_STATE,
                 direction=-1,
-                wait_ticks=999999 if self.level == 0 else 90,
-                emerge_ticks=100,
+                wait_ticks=999989 if self.level == 0 else 90,
+                emerge_ticks=999999 if self.level == 0 else 100,
             )
         )
         self.ghosts = (self.pinky, self.blinky)
@@ -215,8 +215,8 @@ class PacManGame(GameMode):
     def game_won_state(self) -> None:
         """Game won."""
         log.info("You won!")
-        self.sounds[Sound.SIREN].stop
-        self.play_sound(Sound.EXTRAPAC)
+        self.sounds[Sound.SIREN].stop()
+        self.sounds[Sound.EXTRAPAC].play(4)
         self.lights.set_channels(
             index=LIGHTS_CUPOLA,
             color=PacMan.color,
