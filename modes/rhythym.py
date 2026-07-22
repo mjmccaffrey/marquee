@@ -35,14 +35,6 @@ class Rhythm(MusicMode):
     @override
     def execute(self) -> None:
         """"""
-        self.random_colors = [
-            dict(
-                on=True,
-                brightness=100,
-                color=self.lights.colors.random(),
-            )
-            for _ in range(50)
-        ]
         piece(
             self.init(),
             self.section_a(bell=True),
@@ -72,7 +64,7 @@ class Rhythm(MusicMode):
             ),
             lights(
                 ' |  ♩  | ' * 8,
-                *self.random_colors[:8],
+                *[self.random_color() for _ in range(8)]
             ),
             part(
                 measure(
@@ -145,7 +137,14 @@ class Rhythm(MusicMode):
             ),
             lights(
                 ' |  ♩  | ' * 4,
-                *self.random_colors[:4],
+                *[self.random_color() for _ in range(4)]
             ),
         )
 
+    def random_color(self):
+        return dict(
+            on=True,
+            brightness=100,
+            color=self.lights.colors.random(),
+        )
+    

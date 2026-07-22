@@ -37,7 +37,6 @@ def register_special_modes(exec: Executor) -> None:
 
 def register_channel_modes(exec: Executor):
     """"""
-    exec.add_mode('tilt', TiltSensors)
     cs_sequence = [
         # ("party", 1),
         # ("cancun", 1),
