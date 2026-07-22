@@ -109,8 +109,8 @@ class Rhythm(MusicMode):
         return section(
             part(
                 measure(
-                    action('♩', self.ringer.play),
-                    action('♩', self.ringer.rest),
+                    action('𝅗𝅥', self.ringer.play),
+                    action('𝅗𝅥', self.ringer.rest),
                 ),
             )
         )
