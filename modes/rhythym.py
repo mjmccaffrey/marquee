@@ -60,14 +60,18 @@ class Rhythm(MusicMode):
                 '  |  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  |  ♩> ♩ ♩ ♩  |  '
                 '  |  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 '
                 '     3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  |  ♩> ♩ ♩ ♩  |  ',
-                accent='-',
+                # accent='-',
             ),
             lights(
                 ' |  ♩  | ' * 8,
                 *[self.random_color() for _ in range(8)]
             ),
             part(
+                *([measure(rest('𝄻'))] * 7),
                 measure(
+                    rest('♩'),
+                    rest('♩'),
+                    rest('♩'),
                     action('𝅘𝅥𝅲', self.ringer.play if bell else lambda: None),
                     action('𝅘𝅥𝅲', self.ringer.rest if bell else lambda: None),
                 ),
@@ -133,7 +137,7 @@ class Rhythm(MusicMode):
                 '     3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  | '
                 '  |  ♩> ♩ ♩ ♩  |  '
                 ,
-                accent='-',
+                # accent='-',
             ),
             lights(
                 ' |  ♩  | ' * 4,
