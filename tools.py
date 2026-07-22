@@ -72,7 +72,7 @@ def apply_color_set_fixes():
         gn, sn = k.split('.')
         print(gn, sn)
         bi = next(i for i, b in enumerate(broken) if b[0] == sn)
-        broken[bi] = [sn, gn]
+        broken[bi] = [sn, gn, v]
     json.dump(broken, open('color_sets/color_sets_fixed.json', 'w'))
 
 # @dataclass(kw_only=True)
