@@ -44,7 +44,7 @@ class Event(StrEnum):
 @dataclass(kw_only=True)
 class PacManGame(GameMode):
     """Pac-Man game."""
-    ticks_per_second: float = 1.9
+    ticks_per_second: float = 1.8
 
     def __post_init__(self):
         """Initialize board and characters."""
