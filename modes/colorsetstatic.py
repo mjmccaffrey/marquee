@@ -4,7 +4,7 @@ from dataclasses import InitVar, dataclass
 import logging
 from typing_extensions import override
 
-from devices.devices_misc import ButtonName
+from light_defs import EXTRA_CUPOLA
 from . import ColorSetMode, CycleSequence
 
 log = logging.getLogger('marquee.' + __name__)
@@ -41,12 +41,17 @@ class ColorSetStatic(ColorSetMode):
             f"for {entry.seconds} seconds "
             f"({self.entry_index + 1} / {len(self.entries)})."
         )
-        kwargs = cs.set_channels_kwargs(self.lights.count)
+        kwargs = cs.set_channels_kwargs(self.lights.count + 1)
         if self.brightness is not None:
             kwargs |= dict(brightness=self.brightness)
         self.lights.set_channels(
             transition=self.transition, 
-            **kwargs,  # type: ignore
+            **kwargs[:-1],  # type: ignore
+        )
+        self.extra.set_channels(
+            transition=self.transition, 
+            **kwargs[-1],  # type: ignore
+            index=EXTRA_CUPOLA,
         )
         self.schedule(due=entry.seconds)
 

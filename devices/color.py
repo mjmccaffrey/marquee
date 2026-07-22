@@ -176,7 +176,7 @@ class ColorSet:
         self.name, self.group, self.colors = name, group, colors
 
     def set_channels_kwargs(self, light_count: int) -> SetChannelsKwargs:
-        """"""
+        """Return balanced distribution of colors for light_count lights."""
         colors = balanced_distribution(self.colors, light_count)
         if isinstance(colors[0], (RGB, XY)):
             return self.SetChannelsKwargs(
