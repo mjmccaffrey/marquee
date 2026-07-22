@@ -4,16 +4,10 @@ from dataclasses import dataclass
 import time
 from typing_extensions import override
 
-from device_defs import ALL_HIGH, ALL_LOW, ALL_ON
+from device_defs import ALL_ON
 from . import MusicMode
-from music import (
-    lights, measure, part,
-    relay, rest, section, Section, sequence, piece,
-)
-from music import(
-    action, actions, drums,
-    rest, sequence_measure, sequences
-)
+from music import lights, measure, part, rest, section, Section, piece
+from music import action, actions, drums, rest 
 from .structural.sequences import *
 from devices.specialparams import ActionParams, ChannelParams
 
@@ -66,15 +60,11 @@ class Rhythm(MusicMode):
                 ' |  ♩  | ' * 8,
                 *[self.random_color() for _ in range(8)]
             ),
-            part(
-                *([measure(rest('𝄻'))] * 7),
-                measure(
-                    rest('♩'),
-                    rest('♩'),
-                    rest('♩'),
-                    action('𝅘𝅥𝅲', self.ringer.play if bell else lambda: None),
-                    action('𝅘𝅥𝅲', self.ringer.rest if bell else lambda: None),
-                ),
+            actions(
+                ' |  𝄻 |  ' * 7 + 
+                ' |  ♩ ♩ ♩ 𝅘𝅥𝅲 𝅘𝅥𝅲 | ',
+                self.ringer.play if bell else lambda: None,
+                self.ringer.rest if bell else lambda: None,
             ),
         )
 
@@ -107,11 +97,10 @@ class Rhythm(MusicMode):
     def ringer_measure(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            part(
-                measure(
-                    action('𝅗𝅥', self.ringer.play),
-                    action('𝅗𝅥', self.ringer.rest),
-                ),
+            actions(
+                ' |  𝅗𝅥 𝅗𝅥  | ',
+                self.ringer.play,
+                self.ringer.rest,
             )
         )
 
