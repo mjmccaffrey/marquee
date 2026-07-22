@@ -170,7 +170,7 @@ class ColorSet:
         self, 
         name: str, 
         group: str, 
-        colors: tuple[RGB, ...] | tuple[XYB, ...],
+        colors: tuple[Color, ...],
     ) -> None:
         """"""
         self.name, self.group, self.colors = name, group, colors
@@ -178,7 +178,7 @@ class ColorSet:
     def set_channels_kwargs(self, light_count: int) -> SetChannelsKwargs:
         """"""
         colors = balanced_distribution(self.colors, light_count)
-        if isinstance(colors[0], RGB):
+        if isinstance(colors[0], (RGB, XY)):
             return self.SetChannelsKwargs(
                 color=colors,
                 brightness=tuple(100 for c in colors),  # !!!
@@ -230,7 +230,7 @@ class ColorSets:
         return {
             key.lower(): ColorSet(key.lower(), 'basic', (value,))
             for key, value in vars(Colors).items()
-            if isinstance(value, RGB)
+            if isinstance(value, Color)
         } | {
             'wheel': ColorSet('wheel', 'basic', Colors.WHEEL)
         }

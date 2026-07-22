@@ -9,7 +9,6 @@ from . import MusicMode
 from music import lights, measure, part, rest, section, Section, piece
 from music import action, actions, drums, rest 
 from .structural.sequences import *
-from devices.specialparams import ActionParams, ChannelParams
 
 @dataclass
 class Rhythm(MusicMode):
