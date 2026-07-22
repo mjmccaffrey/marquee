@@ -2,6 +2,7 @@
 
 from enum import StrEnum
 from dataclasses import dataclass
+from copy import deepcopy
 from functools import partial
 import logging
 import pygame
@@ -33,11 +34,12 @@ class DoomGame(PerformanceMode):
         super().__post_init__()
         if self.passage:  # 12 + 3 + 1 lights
             self.lights = self.combined
-            LIGHTS_BY_ROW[0].append(15)
-            LIGHTS_BY_ROW[2].extend([12, 13, 14])
-            LIGHTS_BY_SIDE.insert(0, [])
-            LIGHTS_BY_SIDE[1].append(15)
-            LIGHTS_BY_SIDE[4].extend([12, 14])
+            self.lights_by_row = deepcopy(LIGHTS_BY_ROW)
+            self.lights_by_side = deepcopy(LIGHTS_BY_SIDE)
+            self.lights_by_row[0].append(15)
+            self.lights_by_row[2].extend([12, 13, 14])
+            self.lights_by_side.insert(0, [])
+            self.lights_by_side[1].extend([12, 14, 15])
         self.slayer_coord = 13 if self.passage else 1
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
@@ -102,9 +104,9 @@ class DoomGame(PerformanceMode):
             color=Colors.ROSE,
             transition=0.0,
             index=(
-                LIGHTS_BY_SIDE[step]
+                self.lights_by_side[step]
                 if self.passage else
-                LIGHTS_BY_ROW[step]
+                self.lights_by_row[step]
             ),
             force=True,
         )
@@ -134,7 +136,7 @@ class DoomGame(PerformanceMode):
     def fade_lights(self):
         """"""
         print("LIGHTS FADE")
-        for i, row in enumerate(LIGHTS_BY_ROW):
+        for i, row in enumerate(self.lights_by_row):
             self.schedule(
                 action=partial(
                     self.lights.set_channels,
@@ -151,7 +153,7 @@ class DoomGame(PerformanceMode):
         self.schedule_sequence(
             SeqTask(self.start_music, due=0.0),
             SeqTask(self.slayer_teleports, due=2.0),
-            SeqTask(self.slayer_appears, due=3.0),
+            SeqTask(self.slayer_appears, due=2.0),
             SeqTask(partial(self.barons_appear, step=4), due=2.0),
             SeqTask(partial(self.barons_appear, step=3), due=0.75),
             SeqTask(partial(self.barons_appear, step=2), due=0.75),
