@@ -21,6 +21,7 @@ class ColorSetStatic(ColorSetMode):
     def __post_init__(self, sequence: CycleSequence) -> None:
         """Initialize."""
         super().__post_init__(sequence)
+        self.lights = self.combined
         self.lights.set_channels(on=True)
         self.direction = +1
         self.entry_index = -self.direction
@@ -41,17 +42,12 @@ class ColorSetStatic(ColorSetMode):
             f"for {entry.seconds} seconds "
             f"({self.entry_index + 1} / {len(self.entries)})."
         )
-        kwargs = cs.set_channels_kwargs(self.lights.count + 1)
+        kwargs = cs.set_channels_kwargs(self.lights.count)
         if self.brightness is not None:
             kwargs |= dict(brightness=self.brightness)
         self.lights.set_channels(
             transition=self.transition, 
-            **kwargs[:-1],  # type: ignore
-        )
-        self.extra.set_channels(
-            transition=self.transition, 
-            **kwargs[-1],  # type: ignore
-            index=EXTRA_CUPOLA,
+            **kwargs,  # type: ignore
         )
         self.schedule(due=entry.seconds)
 
