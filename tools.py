@@ -70,7 +70,7 @@ def apply_color_set_fixes():
     fixes = json.load(open('color_sets/color_fixes.json'))
     for k, v in fixes.items():
         gn, sn = k.split('.')
-        bi = [i for i, b in enumerate(broken) if b[0] == sn]
+        bi = next(i for i, b in enumerate(broken) if b[0] == sn)
         broken[bi] = [sn, gn]
     json.dump(broken, open('color_sets/color_sets_fixed.json', 'w'))
 
