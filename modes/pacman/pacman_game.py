@@ -215,7 +215,7 @@ class PacManGame(GameMode):
         """Game won."""
         log.info("You won!")
         self.sounds[Sound.SIREN].stop()
-        self.sounds[Sound.EXTRAPAC].play(4)
+        self.sounds[Sound.EXTRAPAC].play(2)
         self.lights.set_channels(
             index=LIGHTS_CUPOLA,
             color=PacMan.color,

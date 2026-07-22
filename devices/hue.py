@@ -134,9 +134,9 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         state_only: bool = False,
     ):
         """Update all zones in the specified group."""
-        print(f"Update in: {updates[0]}")
+        # print(f"Update in: {updates[0]}")
         updates_to_send = self._channel_group_updates(updates, force)
-        print(f"Update out: {updates_to_send}")
+        # print(f"Update out: {updates_to_send}")
 
         if not state_only:
             command = updates[0].channel._make_set_command(updates_to_send)
@@ -147,7 +147,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                     json=command.params,
                     timeout=2.0,
                 )
-                print(f"{group=} {i=} {command.params}")
+                # print(f"{group=} {i=} {command.params}")
                 response.raise_for_status()
         for index in self.groups[group]:
             channel = self.channels[index]
