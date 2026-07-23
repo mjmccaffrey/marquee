@@ -38,6 +38,7 @@ class Twelve(MusicMode):
                 brightness=100,
                 transition=0.0,
                 index=(i + 2) % self.lights.count,
+                force=True,
             )
             for i in range(self.lights.count)
         )
