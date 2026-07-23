@@ -21,7 +21,6 @@ from .structural.sequences import *
 from .alarm import AlarmBell, AlarmDive
 from .colorsetstatic import ColorSetStatic
 from .colorsetdynamic import ColorSetDynamic
-from .colorwheel import ColorWheel
 from .cupolacycle import CupolaSequence
 from .comet import Comet
 from .doom import DoomGame

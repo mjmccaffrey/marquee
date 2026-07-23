@@ -36,6 +36,7 @@ class Rhythm(MusicMode):
             self.section_b(),
             self.ringer_measure(),
         ).play(tempo=140)
+        self.lights.set_channels(brightness=0, transition=8.0)
 
     def init(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
