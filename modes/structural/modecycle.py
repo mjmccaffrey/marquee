@@ -14,7 +14,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 @dataclass(kw_only=True)
 class ModeCycle(Mode):
-    """Play repeating sequence of foreground modes."""
+    """Execute repeating sequence of modes."""
     background: bool = True
     sequence: CycleSequence  # (mode_name, seconds)
 
@@ -46,7 +46,10 @@ class ModeCycle(Mode):
     
     @override
     def button_action(self, button: ButtonName) -> None:
-        """"""
+        """Switch to next mode.
+           But first, delete the scheduled task 
+           for the timed switch."""
         if button == ButtonName.CORDED_A:
+            self.tasks.delete_owned_by(self)
             self.schedule()
 
