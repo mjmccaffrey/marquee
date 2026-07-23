@@ -44,7 +44,7 @@ class Comet(PerformanceMode):
                 index=EXTRA_CUPOLA,
             )
         else:
-            self.lights.set_channels(
+            self.extra.set_channels(
                 brightness=100,
                 transition=5.0,
                 color=self.color,
@@ -52,6 +52,7 @@ class Comet(PerformanceMode):
                 index=EXTRA_CUPOLA,
                 force=True,
             )
+        self.cupola_lit = not self.cupola_lit
 
     def execute_12(self) -> None:
         """"""
