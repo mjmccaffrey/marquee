@@ -21,6 +21,7 @@ class ModeCycle(Mode):
 
     def __post_init__(self) -> None:
         """Initialize."""
+        super().__post_init__()
         self.create_mode_sequence()
         self.mode_cycle = cycle(self.mode_sequence)
 
