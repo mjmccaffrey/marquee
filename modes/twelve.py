@@ -39,6 +39,7 @@ class Twelve(MusicMode):
                 color=c,
                 transition=0.0,
                 index=(i + 2) % self.lights.count,
+                force=True,
             )
             for i, c in enumerate(Colors.WHEEL)
         )
