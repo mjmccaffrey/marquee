@@ -32,7 +32,8 @@ class Comet(PerformanceMode):
                 self.lights.colors.wheel_colors(self.wheel_divisions)
             )
         self.cupola_lit = False
-        self.schedule(due=self.delay, repeat=True)
+        self.schedule(self.execute_12, due=self.delay, repeat=True)
+        self.schedule(self.execute_cupola, due=5.0, repeat=True)
 
     def execute_cupola(self) -> None:
         """Cycle cupola."""
