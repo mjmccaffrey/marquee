@@ -18,6 +18,7 @@ class Comet(PerformanceMode):
     delay: float
     color: Color | None = None
     wheel_divisions: int | None = None
+    cupola_delay: float = 10.0
 
     def __post_init__(self) -> None:
         """"""
@@ -32,21 +33,25 @@ class Comet(PerformanceMode):
                 self.lights.colors.wheel_colors(self.wheel_divisions)
             )
         self.cupola_lit = False
-        self.schedule(self.execute_12, due=self.delay, repeat=True)
-        self.schedule(self.execute_cupola, due=5.0, repeat=True)
+        self.schedule(
+            self.execute_12, due=self.delay, repeat=True,
+        )
+        self.schedule(
+            self.execute_cupola, due=self.cupola_delay, repeat=True,
+        )
 
     def execute_cupola(self) -> None:
         """Cycle cupola."""
         if self.cupola_lit:
             self.extra.set_channels(
                 brightness=0,
-                transition=5.0,
+                transition=self.cupola_delay,
                 index=EXTRA_CUPOLA,
             )
         else:
             self.extra.set_channels(
                 brightness=100,
-                transition=5.0,
+                transition=self.cupola_delay,
                 color=self.color,
                 on=True,
                 index=EXTRA_CUPOLA,
