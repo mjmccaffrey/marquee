@@ -12,6 +12,7 @@ def define_modes(exec: Executor) -> None:
     register_special_modes(exec)
     register_channel_modes(exec)
     register_pyohio_2026_presentation_modes(exec)
+    register_pyohio_2026_sign_modes(exec)
     
     exec.add_mode("pacman_12", PacManGame, maze=base_maze)
     exec.add_mode("pacman_15", PacManGame, maze=passage_maze)
