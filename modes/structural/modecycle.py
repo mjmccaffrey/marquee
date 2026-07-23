@@ -47,6 +47,6 @@ class ModeCycle(Mode):
     @override
     def button_action(self, button: ButtonName) -> None:
         """"""
-        if button == self.buttons.corded_a:
+        if button == ButtonName.CORDED_A:
             self.schedule()
 
