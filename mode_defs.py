@@ -42,10 +42,10 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
         delay=0.175,
         wheel_divisions=3,
     )
-    exec.add_mode("comet_red", Comet,
+    exec.add_mode("comet_violet", Comet,
         length=4,
         delay=0.1875,
-        color=Colors.RED,
+        color=Colors.VIOLET,
     )
     exec.add_mode("cupola_wheel", CupolaSequence,
         color_set_name='wheel',
