@@ -67,8 +67,8 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
         sequence = [
             ("cupola_wheel_divisions", 0.1),
             ("alarm_dive", 0.1),
-            ("twelve", 6),
-            ("signs", 6),
+            ("twelve", 60),
+            ("signs", 60),
             ("random_random_random", 99999),
         ],
     )
