@@ -46,6 +46,7 @@ class ModeCycle(Mode):
     
     @override
     def button_action(self, button: ButtonName) -> None:
-        """Close the instance in response to any button press."""
-        # self.player.delete_mode_instance(bg_index=self.index)
-        # !!!!!!!!!!!!!!1
+        """"""
+        if button == self.buttons.corded_a:
+            self.schedule()
+
