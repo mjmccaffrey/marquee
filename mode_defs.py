@@ -43,12 +43,6 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
         wheel_divisions=3,
         direction=-1,
     )
-    exec.add_mode("comet_violet", Comet,
-        length=4,
-        delay=0.1875,
-        color=Colors.VIOLET,
-        cupola_delay=10.0,
-    )
     exec.add_mode("cupola_wheel", CupolaSequence,
         color_set_name='wheel',
         brightness=100,
@@ -66,7 +60,7 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
     exec.add_mode("rhythm", Rhythm)
     exec.add_mode("signs", Signs)
     exec.add_mode("twelve", Twelve, brightness=40)
-    exec.add_mode("presentation", ModeCycle,
+    exec.add_mode("2026_presentation", ModeCycle,
         sequence = [
             ("cupola_wheel_divisions", 0.1),
             ("alarm_dive", 0.1),
@@ -78,8 +72,18 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
 
 def register_pyohio_2026_sign_modes(exec: Executor) -> None:
     """PyOhio 2026 presentation."""
-
-
+    exec.add_mode("comet_violet", Comet,
+        length=4,
+        delay=0.1875,
+        color=Colors.VIOLET,
+        cupola_delay=10.0,
+    )
+    exec.add_mode("2026_sign", ModeCycle,
+        sequence = [
+            ("comet_violet", 300),
+            ("random_random_random", 300),
+        ],
+    )
 
 def register_channel_modes(exec: Executor):
     """"""
