@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from itertools import cycle
 import logging
+import pygame
 from typing_extensions import override
 
 from devices.devices_misc import ButtonName
@@ -37,6 +38,7 @@ class ModeCycle(Mode):
     @override
     def execute(self):
         """Change to next mode in sequence. Schedule next next mode."""
+        pygame.mixer.music.stop()  # !!! Move this to player?
         new = next(self.mode_cycle)
         log.info(
             f"Next mode in sequence is {new.name} for {new.seconds} seconds."
