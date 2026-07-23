@@ -22,8 +22,8 @@ class Twelve(MusicMode):
         """"""
         self.lights.set_channels(
             on=False,
-            brightness=self.brightness,
-            color=Colors.WHEEL,
+            # brightness=self.brightness,
+            # color=Colors.WHEEL,
         )
         pygame.mixer.music.load('modes/twelve.mp3')
         pygame.mixer.music.play()
