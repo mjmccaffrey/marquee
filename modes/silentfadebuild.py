@@ -23,8 +23,8 @@ class SilentFadeBuild(PerformanceMode):
         due = 0.0
         for rows in (False, True):
             for from_top_left, brightness in (
-                (True, random.randrange(70, 101)), (False, random.randrange(0, 40)),
-                (False, random.randrange(70, 101)), (True, random.randrange(0, 40)),
+                (True, random.randrange(70, 101)), (False, random.randrange(0, 0)),
+                (False, random.randrange(70, 101)), (True, random.randrange(0, 0)),
             ):
                 for lights in lights_in_groups(rows, from_top_left):
                     self.schedule(
