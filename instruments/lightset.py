@@ -191,13 +191,13 @@ class LightSet:
 
         if isinstance(special, MirrorParams):
             assert self.mirror is not None
-            self.mirror.set_state_of_devices(lights)
+            # self.mirror.set_state_of_devices(lights)
 
         if isinstance(special, ChannelParams):
             self._set_channels_instead_of_relays(lights, special)
         else:
             assert self.relays is not None
-            self.relays.set_state_of_devices(lights)
+            # self.relays.set_state_of_devices(lights)
             self.relay_pattern = lights
 
     def update_channels(self, updates: Sequence['ChannelUpdate']):

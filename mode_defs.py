@@ -66,6 +66,7 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
             ("cupola_wheel_divisions", 0.1),
             ("alarm_dive", 0.1),
             ("rotate_sides_emulate", 60),
+            # ("random_flip_fade_medium", 60),
             ("silent_random_flip_medium", 60),
             ("twelve", 60),
             ("signs", 60),
@@ -153,7 +154,7 @@ def register_channel_modes(exec: Executor):
     exec.add_sequence_mode("random_flip_fade_medium", 
         random_flip, 
         sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
-        delay=1.0,
+        delay=0.5,
         # special=ChannelParams(),
         baseline=None,
     )
