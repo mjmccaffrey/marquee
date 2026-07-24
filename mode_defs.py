@@ -177,7 +177,7 @@ def register_channel_modes(exec: Executor):
             trans_off=2,
         )
     )
-    exec.add_mode("even_odd_fade", EvenOddFade, delay=0.5)
+    exec.add_mode("even_odd_fade", EvenOddFade, delay=2.0)
     exec.add_sequence_mode("rotate_sides_silent", rotate_sides, 
         sequence_kwargs=dict(
             pattern='0', 

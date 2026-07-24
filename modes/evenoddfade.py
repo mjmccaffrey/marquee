@@ -29,8 +29,8 @@ class EvenOddFade(PerformanceMode):
                     pattern, 
                     special=ChannelParams(
                         concurrent=True,
-                        brightness_on = 90,
-                        brightness_off = 10,
+                        brightness_on = 100,
+                        brightness_off = 0,
                         trans_on=self.delay,
                         trans_off=self.delay,
                     )
