@@ -14,6 +14,7 @@ class SilentFadeBuild(PerformanceMode):
 
     def __post_init__(self) -> None:
         """Initialize."""
+        super().__post_init__()
         self.lights.set_channels(brightness=0)
  
     @override
