@@ -37,6 +37,19 @@ def register_special_modes(exec: Executor) -> None:
 
 def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
     """PyOhio 2026 presentation."""
+    exec.add_mode("2026_presentation", ModeCycle,
+        sequence = [
+            ("cupola_wheel_divisions", 0.1),
+            ("alarm_dive", 0.1),
+            ("rotate_sides_emulate", 60),
+            ("even_odd_fade", 60),
+            # ("random_flip_fade_medium", 60),
+            ("silent_random_flip_medium", 60),
+            ("twelve", 60),
+            ("signs", 60),
+            ("random_random_random", 99999),
+        ],
+    )
     exec.add_mode("alarm_dive", AlarmDive)
     exec.add_mode("comet_wheel", Comet,
         length=9,
@@ -61,18 +74,6 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
     exec.add_mode("rhythm", Rhythm)
     exec.add_mode("signs", Signs)
     exec.add_mode("twelve", Twelve, brightness=40)
-    exec.add_mode("2026_presentation", ModeCycle,
-        sequence = [
-            ("cupola_wheel_divisions", 0.1),
-            ("alarm_dive", 0.1),
-            ("rotate_sides_emulate", 60),
-            # ("random_flip_fade_medium", 60),
-            ("silent_random_flip_medium", 60),
-            ("twelve", 60),
-            ("signs", 60),
-            ("random_random_random", 99999),
-        ],
-    )
 
 def register_pyohio_2026_sign_modes(exec: Executor) -> None:
     """PyOhio 2026 presentation."""
