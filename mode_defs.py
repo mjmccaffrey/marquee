@@ -65,6 +65,8 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
         sequence = [
             ("cupola_wheel_divisions", 0.1),
             ("alarm_dive", 0.1),
+            ("rotate_sides_emulate", 60),
+            ("silent_random_flip_medium", 60),
             ("twelve", 60),
             ("signs", 60),
             ("random_random_random", 99999),
@@ -81,8 +83,9 @@ def register_pyohio_2026_sign_modes(exec: Executor) -> None:
     )
     exec.add_mode("2026_sign", ModeCycle,
         sequence = [
-            ("comet_violet", 300),
-            ("random_random_random", 300),
+            ("comet_violet", 180),
+            ("random_random_random", 180),
+            ("silent_fade_build", 180),
         ],
     )
 
@@ -150,8 +153,8 @@ def register_channel_modes(exec: Executor):
     exec.add_sequence_mode("random_flip_fade_medium", 
         random_flip, 
         sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
-        delay=2.0,
-        special=ChannelParams(),
+        delay=1.0,
+        # special=ChannelParams(),
         baseline=None,
     )
     exec.add_sequence_mode("blink_all_fade_fast", 
