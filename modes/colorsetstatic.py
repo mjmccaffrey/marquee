@@ -22,7 +22,7 @@ class ColorSetStatic(ColorSetMode):
         """Initialize."""
         super().__post_init__(sequence)
         self.lights = self.combined
-        self.lights.set_channels(on=True)
+        self.lights.set_channels(on=True, force=True)
         self.direction = +1
         self.entry_index = -self.direction
 

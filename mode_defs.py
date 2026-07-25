@@ -237,8 +237,8 @@ def register_silent_modes(exec: Executor) -> None:
         sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
         delay=2.0,
         special=ChannelParams(
-            trans_on=2.0,
-            trans_off=2.0,
+            trans_on=1.0,
+            trans_off=1.0,
             concurrent=False,
         ),
         baseline=None,
