@@ -42,18 +42,22 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
             ("rotate_sides_emulate", 60),
             ("pause", 999),
             ("even_odd_fade", 60),
-            # ("pause", 999),
-            # ("silent_random_flip_medium", 60),
-            ("pause", 999),
-            ("color_sets_presentation", 60),
             ("pause", 999),
             ("signs", 60),
             ("pause", 999),
+            ("color_sets_presentation", 60),
+            ("pause", 999),
             ("twelve", 60),
+            ("pause", 999),
+            ("rhythm", 60),
             ("pause", 999),
             ("cupola_wheel_divisions", 0.1),
             ("alarm_dive", 0.1),
             ("twelve", 60),
+            ("pause", 999),
+            ("doom_15", 60),
+            ("pause", 999),
+            ("pacman_15", 60),
             ("pause", 999),
             ("random_random_random", 99999),
         ],
@@ -83,6 +87,7 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
     exec.add_mode("rhythm", Rhythm)
     exec.add_mode("signs", Signs)
     exec.add_mode("twelve", Twelve, brightness=40)
+
 
 def register_pyohio_2026_sign_modes(exec: Executor) -> None:
     """PyOhio 2026 presentation."""
@@ -155,6 +160,7 @@ def register_channel_modes(exec: Executor):
             ("cancun", 5),
             ("party", 5),
         ],
+        transition=1.0,
     )
     exec.add_mode('rotate_sides_emulate', RotateSides, delay=0.8)
     exec.add_sequence_mode("blink_alternate_medium",
