@@ -45,6 +45,7 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
             ("even_odd_fade", 60),
             # ("random_flip_fade_medium", 60),
             ("silent_random_flip_medium", 60),
+            ("color_sets_presentation", 60),
             ("twelve", 60),
             ("signs", 60),
             ("random_random_random", 99999),
@@ -87,7 +88,7 @@ def register_pyohio_2026_sign_modes(exec: Executor) -> None:
         sequence = [
             ("comet_violet", 180),
             ("random_random_random", 180),
-            ("silent_fade_build", 180),
+            # ("silent_fade_build", 180),
         ],
     )
 
@@ -134,14 +135,16 @@ def register_channel_modes(exec: Executor):
         delay=0.66,
         brightness=35,
     )
-    exec.add_mode("cs_all", ColorSetStatic,
+    exec.add_mode("color_sets_all", ColorSetStatic,
         sequence=[
-        # ("party", 1),
-        # ("cancun", 1),
             ("ALL", 10),
         ],
-        brightness=35,
-        # transition=0.0,
+    )
+    exec.add_mode("color_sets_presentation", ColorSetStatic,
+        sequence=[
+            ("party", 5),
+            ("cancun", 5),
+        ],
     )
     exec.add_mode('rotate_sides_emulate', RotateSides, delay=0.8)
     exec.add_sequence_mode("blink_alternate_medium",

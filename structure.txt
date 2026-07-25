@@ -9,6 +9,7 @@ marquee
         LightController
             HueBridge
             ShellyController
+            ShellyDimmer
         LightChannel
             HueChannel
             ShellyChannel
@@ -40,15 +41,16 @@ marquee
                     MusicMode
                     SequenceMode
     music
-        Section
-            Part
-                Measure
-                    Element
-                        BaseNote
-                            ActionNote
-                            BellNote
-                            DrumNote
-                            Rest
-                        NoteGroup
-                SequenceMeasure
-                Sequence
+        Piece
+            Section
+                Part
+                    Measure
+                        Element
+                            BaseNote
+                                ActionNote
+                                BellNote
+                                DrumNote
+                                Rest
+                            NoteGroup
+                    SequenceMeasure
+                    Sequence
