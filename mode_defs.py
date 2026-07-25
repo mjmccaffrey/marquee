@@ -39,18 +39,26 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
     """PyOhio 2026 presentation."""
     exec.add_mode("2026_presentation", ModeCycle,
         sequence = [
+            ("rotate_sides_emulate", 60),
+            ("pause", 999),
+            ("even_odd_fade", 60),
+            ("pause", 999),
+            ("silent_random_flip_medium", 60),
+            ("pause", 999),
+            ("color_sets_presentation", 60),
+            ("pause", 999),
+            ("signs", 60),
+            ("pause", 999),
+            ("twelve", 60),
+            ("pause", 999),
             ("cupola_wheel_divisions", 0.1),
             ("alarm_dive", 0.1),
-            ("rotate_sides_emulate", 60),
-            ("even_odd_fade", 60),
-            # ("random_flip_fade_medium", 60),
-            ("silent_random_flip_medium", 60),
-            ("color_sets_presentation", 60),
             ("twelve", 60),
-            ("signs", 60),
+            ("pause", 999),
             ("random_random_random", 99999),
         ],
     )
+    exec.add_mode("pause", Pause)
     exec.add_mode("alarm_dive", AlarmDive)
     exec.add_mode("comet_wheel", Comet,
         length=9,
@@ -142,8 +150,8 @@ def register_channel_modes(exec: Executor):
     )
     exec.add_mode("color_sets_presentation", ColorSetStatic,
         sequence=[
-            ("party", 5),
-            ("cancun", 5),
+            ("vibrant", 5),
+            ("lush", 5),
         ],
     )
     exec.add_mode('rotate_sides_emulate', RotateSides, delay=0.8)
@@ -237,8 +245,8 @@ def register_silent_modes(exec: Executor) -> None:
         sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
         delay=2.0,
         special=ChannelParams(
-            trans_on=1.0,
-            trans_off=1.0,
+            trans_on=0.5,
+            trans_off=0.5,
             concurrent=False,
         ),
         baseline=None,

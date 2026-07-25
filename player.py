@@ -120,7 +120,7 @@ class Player:
             if fg_mode is not None:
                 self.delete_mode_instance(fg_mode.index)
         self.mode_instances[new_mode.index] = new_mode
-        print(f'Effected new mode instance {new_mode.name}')
+        print(f'Effected new mode instance {new_mode.name.upper()}')
         new_mode.execute()
 
     def execute(self, starting_mode_index: int) -> bool:
