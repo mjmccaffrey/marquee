@@ -101,10 +101,13 @@ class Player:
 
     def delete_mode_instance(self, mode_index: int) -> None:
         """"""
-        mode = self.mode_instances[mode_index]
-        print(f'Deleting mode {mode.name}')
-        del self.mode_instances[mode_index]
-        self.tasks.delete_owned_by(mode)
+        try:
+            mode = self.mode_instances[mode_index]
+            print(f'Deleting mode {mode.name}')
+            del self.mode_instances[mode_index]
+            self.tasks.delete_owned_by(mode)
+        except KeyError:
+            pass
 
     def effect_new_mode(self, mode_index: int):
         """Create new mode instance, clean up old, etc."""
