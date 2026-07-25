@@ -82,7 +82,7 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
         brightness=100,
         transition=1,
         delay=1,
-        wheel_divisions=8,
+        wheel_divisions=4,
     )
     exec.add_mode("rhythm", Rhythm)
     exec.add_mode("signs", Signs)
