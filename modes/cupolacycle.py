@@ -43,6 +43,7 @@ class CupolaSequence(PerformanceMode):
             brightness=self.brightness,
             on=True,
             transition=self.transition,
+            force=True,
         )
         self.schedule(due=self.delay)
 

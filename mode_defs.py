@@ -42,8 +42,8 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
             ("rotate_sides_emulate", 60),
             ("pause", 999),
             ("even_odd_fade", 60),
-            ("pause", 999),
-            ("silent_random_flip_medium", 60),
+            # ("pause", 999),
+            # ("silent_random_flip_medium", 60),
             ("pause", 999),
             ("color_sets_presentation", 60),
             ("pause", 999),
@@ -150,8 +150,10 @@ def register_channel_modes(exec: Executor):
     )
     exec.add_mode("color_sets_presentation", ColorSetStatic,
         sequence=[
-            ("vibrant", 5),
+            # ("vibrant", 5),
             ("lush", 5),
+            ("cancun", 5),
+            ("party", 5),
         ],
     )
     exec.add_mode('rotate_sides_emulate', RotateSides, delay=0.8)

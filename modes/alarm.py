@@ -43,6 +43,7 @@ class AlarmBell(InterruptMode):
             color=Colors.RED, 
             on=True,
             transition=self.activity_time,
+            force=True,
         )
 
     def quell_alarm(self):
@@ -73,6 +74,7 @@ class AlarmDive(InterruptMode):
             color=Colors.RED, 
             on=True,
             transition=0.0,
+            force=True,
         )
         dive = pygame.mixer.Sound('modes/alarm.ogg')
         dive.play()
