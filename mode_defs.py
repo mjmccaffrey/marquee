@@ -99,9 +99,9 @@ def register_pyohio_2026_sign_modes(exec: Executor) -> None:
     )
     exec.add_mode("2026_sign", ModeCycle,
         sequence = [
-            ("comet_violet", 300),
+            # ("comet_violet", 300),
             # ("color_sets_all", 999999)
-            ("random_random_random", 300),
+            ("random_random_random", 999999),
             # ("silent_fade_build", 180),
         ],
     )
