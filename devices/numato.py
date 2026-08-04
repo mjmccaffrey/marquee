@@ -1,0 +1,172 @@
+"""Marquee Lighted Sign Project - numato"""
+
+from abc import ABC
+import logging
+from typing import ClassVar
+from typing_extensions import override
+
+import serial
+
+from .relaymodule import (
+    DevicePattern, RelayClient, RelayHex, RelayPattern,
+)
+
+log = logging.getLogger('marquee.' + __name__)
+
+
+class NumatoUSBRelayModule(ABC):
+    """Supports Numato USB Relay Modules."""
+    relay_count: ClassVar[int]
+
+    def __init_subclass__(cls, relay_count: int) -> None:
+        """"""
+        cls.relay_count = relay_count
+
+    def __init__(
+        self, 
+        port_address: str, 
+    ) -> None:
+        """Establish connection to relay module via serial port."""
+        self.relay_pattern_hex_len = self.relay_count // 4
+        self.port_address = port_address
+        log.info(f"Initializing {self}")
+        try:
+            self._serial_port = serial.Serial(self.port_address, timeout=2)
+        except serial.serialutil.SerialException as e:  # type: ignore
+            log.info('')
+            log.info(f"*** Failed to open '{self.port_address}' ***")
+            log.info(f"*** Error: {e} ***")
+            log.info('')
+            raise OSError from None
+        self.relay_pattern = self._get_relays()
+
+    @override
+    def __str__(self) -> str:
+        return f"{type(self).__name__} @ {self.port_address}"
+    
+    def close(self) -> None:
+        """Clean up."""
+        self._serial_port.close()
+        log.info(f"Relay module {self} closed.")
+
+    def set_state_of_devices(
+        self, 
+        client: RelayClient,
+        pattern: DevicePattern,
+    ) -> None:
+        """Set the physical relays per client device pattern.
+           Do not change relays not assigned to client."""
+        assert len(pattern) == client.count
+        relay_pattern = self._devices_to_relays(client, pattern)
+        relay_hex = self._relays_to_relay_hex(relay_pattern)
+        self._set_relays(relay_hex)
+        self.relay_pattern = relay_pattern
+
+    def get_state_of_devices(
+        self, 
+        client: RelayClient,
+    ) -> DevicePattern:
+        """Get the state of all relays from the module.
+           Update saved state.
+           Return a client device pattern."""
+        self.relay_pattern = self._get_relays()
+        return self._relays_to_devices(client, self.relay_pattern)
+
+    def _devices_to_relays(
+            self,
+            client: RelayClient,
+            pattern: DevicePattern,
+        ) -> RelayPattern:
+        """Build relay pattern using client device pattern and
+           current state for relays not used by this client."""
+        top = self.relay_count - 1
+        return RelayPattern(
+            ''.join(
+                    pattern[client.relay_to_device[top - i]]
+                        if top - i in client.relay_to_device else
+                    relay
+                for i, relay in enumerate(self.relay_pattern)
+            )
+        )
+
+    def _relays_to_devices(
+            self,
+            client: RelayClient,
+            pattern: RelayPattern,
+        ) -> DevicePattern:
+        """Convert a relay pattern to a device pattern."""
+        top = self.relay_count - 1
+        return DevicePattern(
+            ''.join(
+                pattern[top - client.device_to_relay[d]]
+                for d in range(client.count)
+            )
+        )
+
+    def _relays_to_relay_hex(self, pattern: RelayPattern) -> RelayHex:
+        """Return relay hex pattern corresponding to relay pattern."""
+        val = hex(int(''.join(str(e) for e in pattern), 2))[2:]
+        return RelayHex(f"{val:>0{self.relay_pattern_hex_len}}")
+
+    def _response_to_relays(self, response: bytes) -> RelayPattern:
+        """Return relay pattern corresponding to relay module response."""
+        # Response example: b'0000\n\r>'
+        val = response[:self.relay_pattern_hex_len].decode('utf-8')
+        val = bin(int(val, base=16))[2:]
+        return RelayPattern(f"{val:>0{self.relay_count}}")
+    
+    def _get_relays(self) -> RelayPattern:
+        """Get the state of relays and output a relay pattern."""
+        self._serial_port.reset_input_buffer()
+        self._send_command("relay readall")
+        # Response example: b'0000\n\r>'
+        response = self._serial_port.read(self.relay_pattern_hex_len + 3)
+        return self._response_to_relays(response)
+
+    def _set_relays(self, relay_hex: RelayHex) -> None:
+        """Send command to relay board to set all relays."""
+        self._send_command(f"relay writeall {relay_hex}")
+
+    def _send_command(self, command: str) -> None:
+        """Send command and read resulting echo."""
+        self._serial_port.reset_input_buffer()
+        command_b = bytes(command + '\r', 'utf-8')
+        self._serial_port.write(command_b)
+        self._serial_port.read(len(command_b) + 1)
+
+
+class NumatoRL160001(NumatoUSBRelayModule, relay_count=16):
+    """Supports the Numato RL160001 16 Channel USB 
+       Mechanical Relay Module."""
+
+
+class NumatoRL320001(NumatoUSBRelayModule, relay_count=32):
+    """Supports the Numato RL160001 32 Channel USB 
+       Mechanical Relay Module."""
+
+    def __init__(
+        self, 
+        port_address: str, 
+        bottom_mirrors_top: bool = False,
+    ):
+        """"""
+        super().__init__(port_address)
+        self.bottom_mirrors_top = bottom_mirrors_top
+
+    @override
+    def _devices_to_relays(
+        self,
+        client: RelayClient,
+        pattern: DevicePattern,
+    ) -> RelayPattern:
+        """"""
+        pat = super()._devices_to_relays(client, pattern)
+        if self.bottom_mirrors_top:
+            pat = RelayPattern(pat[self.relay_count // 2:] * 2)
+        return pat
+
+
+class NumatoSSR80001(NumatoUSBRelayModule, relay_count=8):
+    """Supports the Numato SSR80001 8 Channel USB 
+       Solid State Relay Module."""
+

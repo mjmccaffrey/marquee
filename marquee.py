@@ -1,68 +1,83 @@
 """Marquee Lighted Sign Project - marquee (main)"""
-"""
-marquee
-    arguments
-    Executor
-        Player
-            BellSet
-            ButtonSet
-                Buttons
-            DrumSet
-            LightSet
-                Dimmers
-                Relays
-            AutoMode
-            SelectMode
-            PlayMode
-            PlaySequenceMode
-            PlayMusicMode
-                Instrument
-                    ActionInstrument
-                    RelayInstrument
-                        BellSet
-                        DrumSet
-                    RestInstrument
-                Section
-                    Part
-                        Measure
-                            Element
-                                BaseNote
-                                    ActionNote
-                                    BellNote
-                                    DrumNote
-                                    Rest
-                                NoteGroup
-                        SequenceMeasure
-                        Sequence
-            sequences
-"""
-from arguments import display_help, process_arguments
-from definitions import Shutdown
-from executors import Executor, setup_devices
-import os
-from players import Player
-from register_modes import register_modes
 
-def main():
-    """Execute Marquee application."""
+import logging
+import sys
+
+from argument import display_help, process_arguments
+from executor import Executor
+from player import Player
+from device_defs import define_devices
+from mode_defs import define_modes
+
+
+def setup() -> Executor:
+    """Setup logging, executor, modes. Return executor."""
+    setup_logging()
+    exec = Executor(Player, define_devices)
+    define_modes(exec)
+    return exec
+
+
+def setup_logging() -> None:
+    """Setup logging."""
+    global log
+    log = logging.getLogger('marquee')
+    log.setLevel(logging.DEBUG)
+    filelog = logging.FileHandler('marquee.log')
+    filelog.setLevel(logging.DEBUG)
+    conlog = logging.StreamHandler()
+    conlog.setLevel(logging.INFO)
+    format = logging.Formatter('%(asctime)s - %(name)s - %(message)s')
+    filelog.setFormatter(format)
+    conlog.setFormatter(format)
+    log.addHandler(filelog)
+    log.addHandler(conlog)
+
+
+def execute(exec: Executor) -> int:
+    """Validate arguments, execute. Return exit code."""
     try:
-        exec = Executor(Player, setup_devices)
-        register_modes(exec)
-        try:
-            args = process_arguments(exec.mode_ids, exec.commands)
-        except ValueError:
-            display_help(exec.mode_menu, exec.commands)
-        else:
-            try:
-                exec.execute(**args)
-            except Shutdown:
-                print("Shutting down.")
-                os.system("sudo shutdown --halt")
+        kwargs = process_arguments(
+            exec.mode_ids,
+            exec.color_ids,
+            exec.commands,
+        )
+    except ValueError:
+        display_help(exec.mode_menu, exec.color_menu, exec.commands)
+        return 2
+    else:
+        shutdown = exec.execute(**kwargs)
+        return 3 if shutdown else 0
+
+
+def cleanup(exec: Executor) -> None:
+    """Attempt cleanup through executor."""
+    try:
+        exec.close()
+    except Exception:
+        pass
+
+
+def main() -> int:
+    """Execute Marquee application."""
+    result = 1
+    try:
+        exec = setup()
+        result = execute(exec)
     finally:
-        try:
-            exec.close()
-        except Exception:
-            pass
+        cleanup(exec)
+        match result:
+            case 0: log.error("Exiting without shutdown.")
+            case 1: 
+                log.error("Exiting with unexpected error.")
+                raise
+            case 2: log.error("Invalid arguments.")
+            case 3: log.error("Exiting with shutdown.")
+            case _:
+                raise RuntimeError
+    return result
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
+

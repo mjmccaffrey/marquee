@@ -22,8 +22,8 @@ While the Raspberry Pi and other electronics are relatively modern, the incandes
 
 <br><br>
 
-Version 3.0.0 represented a substantial amount of hardware and software work, including the following:
-* Added dimmers, allowing independent control of each bulb's brightness.
+<b>Version 3.0.0 represents a substantial amount of hardware and software work, including the following:
+* Added channels, allowing independent control of each bulb's brightness.
 * Added new Dimmer, Executor and Mode classes.
 * Added a 4-button remote control and receiver.
 * Revamped the wiring and electrical components.
@@ -36,7 +36,13 @@ Version 3 demo video
 <img src="readme/marquee_v3_back_open.jpg" height=400>
 </figure>
 
-Version 2.2.0 included the following:
+<b>Version 3.0.0 represents a substantial amount of hardware and software work, including the following:
+* Added channels, allowing independent control of each bulb's brightness.
+* Added new Dimmer, Executor and Mode classes.
+* Added a 4-button remote control and receiver.
+* Revamped the wiring and electrical components.</b>
+
+Version 2.2.0 includes the following:
 * Moved most of the main application code into the new class Player.
 * Added the initial fetching and subsequent tracking of the state of the lights.
 * Added random light sequences, along with a new mode random_flip that utilizes the new state tracking feature.

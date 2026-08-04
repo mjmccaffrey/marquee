@@ -1,0 +1,122 @@
+Marquee Lighted Sign Project - configuration
+
+* **Ethernet Devices**
+    * Raspberry Pi Zero 2
+        * WiFi
+            * sudo nmcli connection down "preconfigured"
+        * Ethernet
+            * 192.168.64.101
+            * sudo nmcli con mod "Wired connection 1" ipv4.address "192.168.64.101/24"
+            * sudo nmcli con mod "Wired connection 1" ipv4.method manual
+
+    * AP
+        * 192.168.64.104
+        * PW: 42.............
+    * Laptop
+        * 192.168.64.105
+
+        * 192.168.64.110
+
+    * Shelly ProDimmer2PM FCE8C0D8ED98| 1.4.4| 679fcca9
+        * 192.168.64.111
+    * Shelly ProDimmer2PM 2CBCBB9F5470| 1.4.4| 679fcca9
+        * 192.168.64.112
+    * Shelly ProDimmer2PM 2CBCBB9EBE8C| 1.4.4| 679fcca9
+        * 192.168.64.113
+    * Shelly ProDimmer2PM 2CBCBBA247DC| 1.4.4| 679fcca9
+        * 192.168.64.114
+    * Shelly ProDimmer2PM 2CBCBBA21C5C| 1.4.4| 679fcca9
+        * 192.168.64.115
+    * Shelly ProDimmer2PM A0DD6C9F72D0| 1.4.4| 679fcca9
+        * 192.168.64.116
+    * Hue Bridge Pro
+        * 192.168.64.130
+    * DHCP Pool
+        * 192.168.64.140 - 159
+
+* **USB Ports**
+* * /etc/udev/rules.d/99-com.rules
+* * SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250501R0027", SYMLINK+="marquee_lights"
+* * SUBSYSTEM=="tty", ATTRS{serial}=="NLRL260501R0296", SYMLINK+="marquee_drums_16"
+* * SUBSYSTEM=="tty", ATTRS{serial}=="NLRL270601R0235", SYMLINK+="marquee_drums_32"
+* * SUBSYSTEM=="tty", ATTRS{serial}=="NLRL250409R0868", SYMLINK+="marquee_bells"
+* **Dependencies**
+    * pip install aiohttp --break-system-packages
+* **Bell Physical Layout**
+* * >   c   d   e
+* * >   b   a   G
+* * >   D   E
+
+**GPIO Pins**
+* Back button
+* * GND
+* * 26
+* Corded button A
+* * 12
+* * GROUND
+* Corded button B
+* * 16
+* * GROUND
+* Remote button A
+* * 19
+* Remote button B
+* * 13
+* Remote button C
+* * 6
+* Remote button D
+* * 5
+* * GROUND
+
+* Game RJ-45 on external unit
+* * GND: Orange
+* * Button switch
+* * * OrangeWhite, GND
+* * Button light (5 volt)
+* * * +: Green, -: GreenWhite
+* * Joystick
+* * * Green: Brow
+* * * Yellow: BrownWhite
+* * * Orange: Blue
+* * * Red: BlueWhite
+* * * Black: GND
+
+* Game RJ-45 on main body
+* * OrangeWhite: IO21
+* * Orange: GND
+* * GreenWhite: GND
+* * Green: 5V
+* * BrownWhite: IO17
+* * Brown: IO4
+* * BlueWhite: IO22
+* * Blue: IO27
+
+
+* RS-232
+
+_
+* **Auto Start**
+* /etc/systemd/system/marquee.service
+
+        [Unit]
+        Description=Marquee
+        After=multi-user.target
+
+        [Service]
+        Type=idle
+        ExecStart=/usr/bin/python /home/mjmccaffrey/marquee/marquee.py mode 1
+        WorkingDirectory=/home/mjmccaffrey/marquee
+        User=mjmccaffrey
+
+        [Install]
+        WantedBy=multi-user.target
+
+* Enable SSH - not needed on RPi 5
+* * sudo touch /boot/firmware/ssh
+
+* Configure Audio
+* * wpctl status
+* * wpctl set-default 71
+* * alsamixer
+* * aplay -l
+* * aplay -D plughw:2,0 ...
+

@@ -1,0 +1,69 @@
+"""Marquee Lighted Sign Project - signs 2026"""
+
+from typing_extensions import override
+
+from device_defs import ALL_OFF, ALL_ON
+from . import MusicMode, all_on, blink_all, random_each
+from music import (
+    actions, bells, drums, lights,
+    dimmer_sequence_flip, piece, section, Section, sequence,
+)
+import pygame
+
+
+class Signs(MusicMode):
+    """Signs song excerpt."""
+
+    @override
+    def execute(self) -> None:
+        """Perform Signs song."""
+        pygame.mixer.music.load('modes/signs_3.wav')
+        self.lights = self.combined
+        self.lights.set_channels(on=False, transition=0.0)
+        self.schedule(action=self.play, due=0.25)
+
+    def play(self):
+        """Play music and lights."""
+        # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
+        pygame.mixer.music.play()
+        even = [0, 2, 4, 6, 8, 10]
+        odd = [1, 3, 5, 7, 9, 11]
+        sequence = [
+            dict(
+                on=True, 
+                color=self.lights.colors.RED, 
+                brightness=100,
+                transition=0.0,
+                force=True,
+            ),
+            dict(
+                color=self.lights.colors.DEEP_GOLD, 
+                transition=0.0,
+            ),
+            dict(
+                index=even,
+                color=self.lights.colors.RED, 
+                transition=0.0,
+            ),
+            dict(
+                index=even,
+                color=self.lights.colors.DEEP_GOLD,
+                transition=0.0,
+            ),
+            dict(
+                index=odd,
+                color=self.lights.colors.RED,
+                transition=0.0,
+            ),
+            dict(
+                on=False,
+                transition=6.0,
+            ),
+        ]
+        piece(
+            lights(
+                ' | ♩  ♩  ♩  𝅘𝅥𝅲 𝅘𝅥𝅲 𝅁 𝅀 𝄿 𝄾 | 𝄻 | 𝅝 | ', 
+                *sequence,
+            ),
+        ).play(tempo=75)
+

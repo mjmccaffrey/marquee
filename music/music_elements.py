@@ -1,0 +1,329 @@
+"""Marquee Lighted Sign Project - music_elements"""
+
+from abc import ABC, abstractmethod
+from collections.abc import Callable, Iterator
+from dataclasses import dataclass, field, replace
+import itertools
+import logging
+from typing import Any, ClassVar, Protocol
+from typing_extensions import override
+
+from instruments import (
+    Instrument, ActionInstrument, BellSet, DrumSet, 
+    LightChannelInstrument, LightRelayInstrument,
+    ReleaseableInstrument, RestInstrument, Ringer,
+)
+from modes.abstract.mode import Mode
+from devices.specialparams import SpecialParams
+
+
+log = logging.getLogger('marquee.' + __name__)
+mode: Mode  # See music_interface._set_mode
+
+
+@dataclass(frozen=True)
+class Element(ABC):
+    """Base for all musical items."""
+
+
+@dataclass(frozen=True)
+class BaseNote(Element, ABC):
+    """Base for all musical notes."""
+    instrument: ClassVar[type[Instrument]]
+    duration: float
+
+    @abstractmethod
+    def play(self) -> None:
+        """Play single BaseNote (abstract)."""
+
+
+@dataclass(frozen=True)
+class ActionNote(BaseNote):
+    """Note to execute arbitrary actions."""
+    instrument: ClassVar[type[Instrument]] = ActionInstrument
+    action: Callable
+
+    @override
+    def play(self) -> None:
+        """Play single ActionNote."""
+        self.action()
+
+
+@dataclass(frozen=True)
+class Rest(BaseNote):
+    """Musical rest."""
+    instrument: ClassVar[type[Instrument]] = RestInstrument
+
+    @override
+    def play(self) -> None:
+        """Play single rest (do nothing)."""
+        raise RuntimeError("PLAYING REST")
+
+
+@dataclass(frozen=True)
+class ReleasableNote(BaseNote, ABC):
+    """Note that requires releasing after playing."""
+
+    @abstractmethod
+    def release(self) -> None:
+        """Release BellNote."""
+
+    def schedule_release(self, release_time: float) -> None:
+        """Schedule release of played note."""
+        assert issubclass(self.instrument, ReleaseableInstrument)
+        mode.schedule(
+            action = self.release,
+            due = release_time,
+        )
+
+
+@dataclass(frozen=True)
+class BellNote(ReleasableNote):
+    """Note to strike or release 1 or more bells."""
+    instrument: ClassVar[type[BellSet]] = BellSet
+    pitches: set[int]
+
+    def __post_init__(self) -> None:
+        """Validate."""
+        assert self.pitches
+
+    @override
+    def play(self) -> None:
+        """Play BellNote."""
+        # mode.bells.play(self.pitches)
+        self.schedule_release(self.instrument.release_time)
+
+    @override
+    def release(self) -> None:
+        """Release BellNote."""
+        # mode.bells.release(self.pitches)
+
+
+# @dataclass(frozen=True)
+# class RingerNote(ReleasableNote):
+#     """Note to activate the ringer bell."""
+#     instrument: ClassVar[type[ReleaseableInstrument]] = Ringer
+
+#     @override
+#     def play(self) -> None:
+#         """Play BellNote."""
+#         print("PLAY")
+#         mode.ringer.play()
+#         self.schedule_release(0.05)
+#         # Kludge.  Module music_notation module does not support
+#         # sustained notes.
+
+#     @override
+#     def release(self) -> None:
+#         """Release BellNote."""
+#         print("RELEASE")
+#         mode.ringer.release()
+
+
+@dataclass(frozen=True)
+class DrumNote(BaseNote):
+    """Note to sound relays."""
+    instrument: ClassVar[type[Instrument]] = DrumSet
+    accent: int
+    pitches: set
+    
+    def __post_init__(self) -> None:
+        """Validate."""
+        assert self.pitches
+
+    @override
+    def play(self) -> None:
+        """Play single DrumNote."""
+        mode.drums.play(self.accent, self.pitches)
+
+
+@dataclass(frozen=True)
+class LightNote(BaseNote, ABC):
+    """Base for Channel and Relay notes."""
+    kwargs: dict
+
+
+@dataclass(frozen=True)
+class LightRelayNote(LightNote):
+    """Note to execute light relay actions."""
+    instrument: ClassVar[type[Instrument]] = LightRelayInstrument
+
+    @override
+    def play(self) -> None:
+        """Play single LightRelayNote."""
+        if self.kwargs:
+            mode.lights.set_relays(**self.kwargs)
+
+
+@dataclass(frozen=True)
+class LightChannelNote(LightNote):
+    """Note to execute light channel actions."""
+    instrument: ClassVar[type[Instrument]] = LightChannelInstrument
+
+    @override
+    def play(self) -> None:
+        """Play single LightChannelNote."""
+        if self.kwargs:
+            mode.lights.set_channels(**self.kwargs)
+
+
+@dataclass(frozen=True)
+class NoteGroup(Element):
+    """Contains notes to play concurrently."""
+    notes: tuple[BaseNote, ...]
+    duration: float = 0.0
+
+    def __post_init__(self) -> None:
+        """Validate."""
+        assert self.notes
+        assert all(n.duration == 0.0 for n in self.notes)
+
+    def play(self) -> None:
+        """Play all notes in group, not quite concurrently."""
+        for note in self.notes:
+            note.play()
+
+
+@dataclass(frozen=True)
+class Measure(Element):
+    """Musical measure containing notes and / or implicit rests."""
+    elements: tuple[Element, ...]
+    beats: int
+
+
+# legacy
+@dataclass(frozen=True)
+class SequenceMeasure(Measure):
+    """Defines a measure with a sequence of light events."""
+    sequence: Callable
+    kwargs: dict[str, Any]
+    step_duration: float
+    count: int
+    special: SpecialParams | None
+    beats: int
+    patterns: Iterator = field(init=False)
+
+    def __post_init__(self) -> None:
+        """Create iterator."""
+        object.__setattr__(
+            self, 'patterns', itertools.cycle(self.sequence(**self.kwargs)),
+        )
+
+
+# legacy
+@dataclass(frozen=True)
+class Sequence(Element):
+    """Defines a sequence of light patterns."""
+    sequence: Callable
+    special: SpecialParams | None
+    measure_count: int
+    kwargs: dict[str, Any]
+    iter: Iterator = field(init=False)
+
+    def __post_init__(self) -> None:
+        """Create iterator."""
+        object.__setattr__(
+            self, 'iter', itertools.cycle(self.sequence(**self.kwargs)),
+        )
+
+
+@dataclass(frozen=True)
+class Part(Element):
+    """Musical part containing measures.
+       All measures have the same number of beats."""
+    measures: tuple[Measure, ...]
+    default_accent: int = 0
+
+    def __post_init__(self) -> None:
+        """Validate and process measures."""
+        assert self.measures
+        if self.default_accent:
+            self._apply_accent()
+
+    def _apply_accent(self) -> None:
+        """Apply default accent (drums only)."""
+        for measure in self.measures:
+            elements = tuple(
+                replace(element, accent=self.default_accent)
+                    if (        isinstance(element, DrumNote) 
+                        and not element.accent) else
+                element
+                for element in measure.elements
+            )
+            object.__setattr__(measure, 'elements', elements)
+
+
+@dataclass(frozen=True)
+class Section(Element):
+    """Musical section containing parts and meta info.
+       All measures have the same number of beats."""
+    parts: tuple[Part, ...]
+    beats: int
+    prepare_parts: Callable[[tuple[Part, ...]], tuple[Measure, ...]]
+    play_measures: 'PlayMeasures'
+    tempo: int = 0
+    measures: tuple[Measure, ...] = field(init=False)
+
+    def __post_init__(self) -> None:
+        """Validate and process parts so they are ready to play."""
+        assert self.parts
+        if self.beats is not None:
+            self._apply_beats()
+        object.__setattr__(
+            self, 'measures', self.prepare_parts(self.parts),
+        )
+
+    def _apply_beats(self) -> None:
+        """Apply default # of beats to all measures in the Section."""
+        for part in self.parts:
+            measures = tuple(
+                replace(measure, beats=self.beats)
+                for measure in part.measures
+            )
+            object.__setattr__(part, 'measures', measures)
+
+    def play(self) -> float:
+        """Play already-generated measures comprising Section."""
+        if not self.tempo:
+            raise ValueError('Section.play requires a tempo.')
+        return self.play_measures(
+            self.measures, 
+            delay=0.0,
+            tempo=self.tempo,
+        )
+
+
+@dataclass(frozen=True)
+class Piece(Element):
+    """Series of Sections and Parts. 
+       Number of beats across sections and parts may vary."""
+    groups: tuple[Section | Part, ...]
+    play_measures: 'PlayMeasures'
+
+    def play(self, tempo: int = 0) -> float:
+        """Play measures within Sections and Parts.
+           If tempo is specified, it overrides any 
+           tempos specified in Sections."""
+        delay = 0
+        for group in self.groups:
+            _tempo = tempo or getattr(group, 'tempo', 0)
+            if not _tempo:
+                raise ValueError('Piece.play requires a tempo in this case.')
+            delay += self.play_measures(
+                group.measures, 
+                delay=delay,
+                tempo=_tempo,
+            )
+        return delay
+
+
+class PlayMeasures(Protocol):
+    """Signature for playing a sequence of measures."""
+    def __call__(
+        self,
+        measures: tuple[Measure, ...], 
+        delay: float, 
+        tempo: int,
+    ) -> float:
+        ...
+

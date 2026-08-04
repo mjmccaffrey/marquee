@@ -1,0 +1,55 @@
+"""Marquee Lighted Sign Project - lightsetinterface"""
+
+from collections.abc import Sequence
+from typing import Protocol
+
+from devices.color import Color, Colors
+from devices.lightcontroller import ChannelUpdate
+from devices.rgbxy import Gamut
+from devices.specialparams import SpecialParams
+
+
+class LightSetInterface(Protocol):
+    """"""
+    colors: Colors
+    count: int
+    gamut: Gamut | None
+    speed_factor: float
+
+    def calibrate(self): ...
+
+    def set_channels(
+        self, 
+        brightness: Sequence[int | None] | str | int | None = None,
+        transition: Sequence[float | None] | float | None = None,
+        color: Sequence[Color | None] | Color | None = None,
+        on: Sequence[int | bool | str | None] | bool | int | None = None,
+        index: Sequence[int] | int | None = None,
+        force: bool = False,
+        group: str | None = None,
+    ) -> None: ...
+
+    def set_relays(
+        self, 
+        light_pattern: str | Sequence[int | bool] | bool | int | None,
+        special: SpecialParams | None = None,
+        smart_bulb_override: bool = False,
+    ) -> None: ...
+
+    def update_channels(self, updates: Sequence['ChannelUpdate']): ...
+
+    def brightnesses(self) -> list[int]: ...
+
+    def current_state(self) -> 'SavedState': ...
+
+    def restore_state(self, state: 'SavedState', transition: float) -> None: ...
+
+    @property
+    def brightness_factor(self) -> float: ...
+    
+    @brightness_factor.setter
+    def brightness_factor(self, value) -> None: ...
+
+
+SavedState = tuple[tuple[int, ...], tuple[Color | None, ...], tuple[bool, ...]]
+

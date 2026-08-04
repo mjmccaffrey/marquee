@@ -1,0 +1,10 @@
+{
+    "exclude": [
+        "modes/old",
+    ],
+    "reportIncompatibleMethodOverride": false,
+    "reportIncompatibleVariableOverride": false,
+    "reportPossiblyUnboundVariable": false,
+    "reportMatchNotExhaustive": true,
+    "reportImplicitOverride": true,
+}

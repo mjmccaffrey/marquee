@@ -1,0 +1,102 @@
+"""Marquee Lighted Sign Project - running mode"""
+
+from abc import ABC
+from dataclasses import dataclass
+import logging
+from typing_extensions import override
+
+from devices.color import Colors, RGB
+from devices.lightcontroller import LightChannel, ChannelUpdate
+from .abstract.gamemode import Character, EntityGroup, GameMode, GameState, Maze
+from .pacman import base_maze
+
+log = logging.getLogger('marquee.' + __name__)
+
+
+class Dot(Character, ABC):
+    """"""
+    brightness = 100
+    draw_priority = 1
+    turn_priority = 1
+    direction: int
+    speed: int
+
+    @override
+    def execute(self) -> None:
+        """Take turn."""
+        assert self.coord is not None
+        if self.game.tick and (self.game.tick % self.speed) == 0:
+            self.game.move_character(self, (self.coord + self.direction) % len(base_maze))
+
+
+@dataclass(kw_only=True, repr=False)
+class OneTwo(Dot, ABC):
+    """Grouped dots."""
+    color = Colors.YELLOW
+    direction = +1
+    speed = 5
+
+@dataclass(kw_only=True, repr=False)
+class One(OneTwo):
+    """Grouped dots."""
+    name: str = "One"
+
+@dataclass(kw_only=True, repr=False)
+class Two(OneTwo):
+    """Grouped dots."""
+    name: str = "Two"
+
+@dataclass(kw_only=True, repr=False)
+class Three(Dot):
+    """Solitary dot."""
+    name: str = "Three"
+    color = Colors.BLUE
+    direction = -1
+    speed = 1
+
+
+@dataclass(kw_only=True)
+class Running(GameMode):
+    """"""
+    maze = base_maze
+
+    def __post_init__(self):
+        """Initialize board and characters."""
+        super().__post_init__()
+        assert self.lights.gamut is not None  # Color lights
+        RGB.adjust_incomplete_colors(self.lights.gamut)
+        self.init_level()
+        self.one = self.register_entity(One(game=self))
+        self.two = self.register_entity(Two(game=self))
+        self.three = self.register_entity(Three(game=self))
+        self.place_entity(self.one, 0)
+        self.place_entity(self.two, 1)
+        self.place_entity(self.three, 6)
+        self.state = GameState.PLAY_GAME
+
+    @override
+    def state_logic(self) -> None:
+        """No state logic required."""
+        pass
+
+    @override
+    def desired_light_state(
+            self, 
+            entities: EntityGroup, 
+            channel: LightChannel,
+        ) -> ChannelUpdate:
+        """Return desired light state given entities on square."""
+        if not entities:
+            return ChannelUpdate(channel=channel, on=False)
+        elif len(entities) == 1:
+            brightness, color = 100, list(entities.values())[0].color
+        else:   
+            brightness, color = 100, Colors.GREEN
+        return ChannelUpdate(
+            channel=channel,
+            brightness=brightness,
+            transition=0.1,
+            color=color,
+            on=True,
+        )
+
