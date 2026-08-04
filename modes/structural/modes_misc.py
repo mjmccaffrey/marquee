@@ -7,10 +7,10 @@ from typing import Any
 @dataclass
 class CycleEntry:
     name: str
-    seconds: float
+    seconds: float | None
     index: int = -1
 
-CycleSequence = list[tuple[str, int]]
+CycleSequence = list[tuple[str, int | None]]
 
 class ChangeMode(Exception):
     """Change mode exception."""

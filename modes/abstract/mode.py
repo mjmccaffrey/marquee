@@ -8,8 +8,6 @@ import pygame
 from devices.deviceset import DeviceSet
 from devices.specialparams import SpecialParams
 from .basemode import BaseMode
-from instruments.combinedlightset import CombinedLightSet
-from instruments.lightsetinterface import LightSetInterface
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -30,4 +28,9 @@ class Mode(BaseMode, ABC):
             self.clicker, self.ringer, self.buzzer, 
             self.joystick, self.tilts,
         ) = self.devices.astuple()
+        self.combined.channels = [
+            channel
+            for lightset in (self.lights, self.extra)
+            for channel in lightset.channels
+          ]  # Kludge.
 

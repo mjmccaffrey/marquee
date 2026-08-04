@@ -36,7 +36,7 @@ class Player:
     def __post_init__(self) -> None:
         """Initialize."""
         log.info("Initializing player")
-        self.mode_instances: dict[int, Mode] = {}  # Not children.
+        self.mode_instances: dict[int, Mode] = {}
         self.mode_serial = count()
         signal.signal(signal.SIGTERM, self.sigterm_received)
         self.events = EventSystem()
@@ -71,7 +71,8 @@ class Player:
         kwargs: dict[str, Any] = {},
         parent: Mode | None = None,
     ) -> Mode:
-        """Return a new mode instance."""
+        """Return a new mode instance.
+           Does not update self.mode_instances."""
         assert (mode_index is None) ^ (mode_definition is None)
         definition = mode_definition or self.modes[cast(int, mode_index)]
         _kwargs: dict[str, Any] = dict(
@@ -100,14 +101,18 @@ class Player:
         return definition.cls(**_kwargs)
 
     def delete_mode_instance(self, mode_index: int) -> None:
-        """"""
-        try:
-            mode = self.mode_instances[mode_index]
-            print(f'Deleting mode {mode.name}')
-            del self.mode_instances[mode_index]
-            self.tasks.delete_owned_by(mode)
-        except KeyError:
-            pass
+        """Delete the instance of mode_index, along
+           with any mode instances with instance as parent."""
+        mode = self.mode_instances[mode_index]
+        # Delete children of specified.
+        for instance in self.mode_instances.values():
+            if instance.parent == mode:
+                self.delete_mode_instance(instance.index)
+        # Delete specified.
+        print(f'Deleting mode {mode.name} with parent {mode.parent}')
+        mode.close()
+        del self.mode_instances[mode_index]
+        self.tasks.delete_owned_by(mode)
 
     def effect_new_mode(self, mode_index: int):
         """Create new mode instance, clean up old, etc."""

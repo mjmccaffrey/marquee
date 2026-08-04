@@ -217,6 +217,7 @@ def define_devices(
             bulb_ids=HUE_BULB_IDS_2,
             zone_ids=HUE_ZONE_IDS_2,
             groups=HUE_GROUPS_2,
+            channel_sources=(lights, extra),
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,

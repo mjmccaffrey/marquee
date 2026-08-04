@@ -17,13 +17,6 @@ from .lightsetinterface import SavedState
 
 log = logging.getLogger('marquee.' + __name__)
 
-BrightnessParam = Sequence[int | None] | str | int | None
-
-def simplify_parameter(p: Any) -> Any:
-    """"""
-    if all(e == p[0] for e in p):
-        return p[0]
-    return p
 
 @dataclass
 class LightSet:
@@ -58,6 +51,7 @@ class LightSet:
             return
         assert self.relays.count == self.count
         self.relay_pattern = self.relays.get_state_of_devices()
+        print(f"{self.relay_pattern}")
         if self.smart_bulbs:
             if all(r == '1' for r in self.relay_pattern):
                 log.info("***** Smart bulbs in use - light relays already ON. *****")
@@ -88,7 +82,7 @@ class LightSet:
 
     def set_channels(
         self, 
-        brightness: BrightnessParam = None,
+        brightness: Sequence[int | None] | str | int | None = None,
         transition: Sequence[float | None] | float | None = None,
         color: Sequence[Color | None] | Color | None = None,
         on: Sequence[int | bool | str | None] | bool | int | None = None,
@@ -210,6 +204,13 @@ class LightSet:
     ) -> None:
         """Set channels per the specified pattern and special.
            Adjust for brightness_factor."""
+
+        def simplify_parameter(p: Any) -> Any:
+            """"""
+            if all(e == p[0] for e in p):
+                return p[0]
+            return p
+
         brightness_values: dict[int, int | None] = {
             0: (int(special.brightness_off * self._brightness_factor)
                 if special.brightness_off is not None else None),

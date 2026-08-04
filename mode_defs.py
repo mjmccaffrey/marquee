@@ -40,26 +40,24 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
     exec.add_mode("2026_presentation", ModeCycle,
         sequence = [
             ("rotate_sides_emulate", 60),
-            ("pause", 999),
+            ("pause", None),
             ("even_odd_fade", 60),
-            ("pause", 999),
+            ("pause", None),
             ("signs", 60),
-            ("pause", 999),
+            ("pause", None),
             ("color_sets_presentation", 60),
-            ("pause", 999),
+            ("pause", None),
             ("twelve", 60),
-            ("pause", 999),
+            ("pause", None),
             ("rhythm", 60),
-            ("pause", 999),
-            ("cupola_wheel_divisions", 0.1),
-            ("alarm_dive", 0.1),
-            ("twelve", 60),
-            ("pause", 999),
+            ("pause", None),
+            ("background_events", 60),            
+            ("pause", None),
             ("doom_15", 60),
-            ("pause", 999),
+            ("pause", None),
             ("pacman_15", 60),
-            ("pause", 999),
-            ("random_random_random", 99999),
+            ("pause", None),
+            ("random_random_random", None),
         ],
     )
     exec.add_mode("pause", Pause)
@@ -84,6 +82,12 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
         delay=1,
         wheel_divisions=4,
     )
+    exec.add_mode("background_events", Twelve,
+        children=(
+            "alarm_dive",
+            "cupola_wheel_divisions", 
+        ),
+    )
     exec.add_mode("rhythm", Rhythm)
     exec.add_mode("signs", Signs)
     exec.add_mode("twelve", Twelve, brightness=40)
@@ -100,8 +104,8 @@ def register_pyohio_2026_sign_modes(exec: Executor) -> None:
     exec.add_mode("2026_sign", ModeCycle,
         sequence = [
             # ("comet_violet", 300),
-            # ("color_sets_all", 999999)
-            ("random_random_random", 999999),
+            # ("color_sets_all", None)
+            ("random_random_random", None),
             # ("silent_fade_build", 180),
         ],
     )

@@ -17,7 +17,7 @@ log = logging.getLogger('marquee.' + __name__)
 class ModeCycle(Mode):
     """Execute repeating sequence of modes."""
     background: bool = True
-    sequence: CycleSequence  # (mode_name, seconds)
+    sequence: CycleSequence
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -44,7 +44,8 @@ class ModeCycle(Mode):
         log.info(
             f"Next mode in sequence is {new.name} for {new.seconds} seconds."
         )
-        self.schedule(due=new.seconds)
+        if new.seconds is not None:
+            self.schedule(due=new.seconds)
         self.change_mode(new.index)
     
     @override
