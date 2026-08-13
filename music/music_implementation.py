@@ -2,6 +2,7 @@
 
 from collections.abc import Callable
 from dataclasses import replace
+from functools import partial
 import logging
 import time
 from typing import Any, Iterator
@@ -11,7 +12,7 @@ from task import Task
 from modes.abstract.mode import Mode
 from .music_elements import (
     ActionNote, BaseNote, Element, Measure, NoteGroup,
-    Part, Rest, SequenceMeasure,
+    Part, Rest, SequenceMeasure, SustainedNote,
 )
 
 log = logging.getLogger('marquee.' + __name__)
@@ -62,6 +63,8 @@ def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
                 else:
                     assert isinstance(element, BaseNote)
                     beat_next[i] = beat + element.duration
+                    if isinstance(element, SustainedNote):
+                        replace(element, sustain=element.duration)
                     if not isinstance(element, Rest):
                         result.append(replace(element, duration=0))
         return result
@@ -149,7 +152,7 @@ def tasks_in_measure(
             result.append(
                 Task(
                     due = start + beat / bps,
-                    action = element.play,
+                    action = partial(element.play, bps),
                     owner = mode,
                 )
             )

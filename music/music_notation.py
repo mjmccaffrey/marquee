@@ -1,12 +1,14 @@
 """Marquee Lighted Sign Project - music_notation"""
 
-# NOTE: This module does not support sustained notes.
-#       All instruments / notes are percussive, 
+# NOTE: This module does not truly support sustained notes.
+#       Essentially all instruments / notes are percussive, 
 #       and in effect have zero length.
+#       Exceptions are BellSet, Ringer, and Buzzer,
+#       whose play methods schedule the 'release'
+#       of the played note(s).
 
 from collections.abc import Callable, Iterator
 from enum import IntEnum
-from functools import partial
 from itertools import cycle
 import logging
 

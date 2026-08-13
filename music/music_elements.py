@@ -33,7 +33,7 @@ class BaseNote(Element, ABC):
     duration: float
 
     @abstractmethod
-    def play(self) -> None:
+    def play(self, bps: float) -> None:
         """Play single BaseNote (abstract)."""
 
 
@@ -41,10 +41,10 @@ class BaseNote(Element, ABC):
 class ActionNote(BaseNote):
     """Note to execute arbitrary actions."""
     instrument: ClassVar[type[Instrument]] = ActionInstrument
-    action: Callable
+    action: Callable[[], None]
 
     @override
-    def play(self) -> None:
+    def play(self, bps: float) -> None:
         """Play single ActionNote."""
         self.action()
 
@@ -55,18 +55,18 @@ class Rest(BaseNote):
     instrument: ClassVar[type[Instrument]] = RestInstrument
 
     @override
-    def play(self) -> None:
+    def play(self, bps: float) -> None:
         """Play single rest (do nothing)."""
         raise RuntimeError("PLAYING REST")
 
 
 @dataclass(frozen=True)
 class ReleasableNote(BaseNote, ABC):
-    """Note that requires releasing after playing."""
+    """Note that involves releasing after playing."""
 
     @abstractmethod
     def release(self) -> None:
-        """Release BellNote."""
+        """Release note."""
 
     def schedule_release(self, release_time: float) -> None:
         """Schedule release of played note."""
@@ -75,6 +75,12 @@ class ReleasableNote(BaseNote, ABC):
             action = self.release,
             due = release_time,
         )
+
+
+@dataclass(frozen=True)
+class SustainedNote(ReleasableNote, ABC):
+    """Note that releases when a its duration is complete."""
+    sustain_duration: float
 
 
 @dataclass(frozen=True)
@@ -88,7 +94,7 @@ class BellNote(ReleasableNote):
         assert self.pitches
 
     @override
-    def play(self) -> None:
+    def play(self, bps: float) -> None:
         """Play BellNote."""
         # mode.bells.play(self.pitches)
         self.schedule_release(self.instrument.release_time)
@@ -99,25 +105,16 @@ class BellNote(ReleasableNote):
         # mode.bells.release(self.pitches)
 
 
-# @dataclass(frozen=True)
-# class RingerNote(ReleasableNote):
-#     """Note to activate the ringer bell."""
-#     instrument: ClassVar[type[ReleaseableInstrument]] = Ringer
+@dataclass(frozen=True)
+class RingerNote(SustainedNote):
+    """Note to activate the ringer bell."""
+    instrument: ClassVar[type[Ringer]] = Ringer
 
-#     @override
-#     def play(self) -> None:
-#         """Play BellNote."""
-#         print("PLAY")
-#         mode.ringer.play()
-#         self.schedule_release(0.05)
-#         # Kludge.  Module music_notation module does not support
-#         # sustained notes.
-
-#     @override
-#     def release(self) -> None:
-#         """Release BellNote."""
-#         print("RELEASE")
-#         mode.ringer.release()
+    @override
+    def play(self, bps: float) -> None:
+        """Play BellNote."""
+        mode.ringer.play()
+        self.schedule_release(self.sustain_duration / bps)
 
 
 @dataclass(frozen=True)
@@ -132,7 +129,7 @@ class DrumNote(BaseNote):
         assert self.pitches
 
     @override
-    def play(self) -> None:
+    def play(self, bps: float) -> None:
         """Play single DrumNote."""
         mode.drums.play(self.accent, self.pitches)
 
@@ -149,7 +146,7 @@ class LightRelayNote(LightNote):
     instrument: ClassVar[type[Instrument]] = LightRelayInstrument
 
     @override
-    def play(self) -> None:
+    def play(self, bps: float) -> None:
         """Play single LightRelayNote."""
         if self.kwargs:
             mode.lights.set_relays(**self.kwargs)
@@ -161,7 +158,7 @@ class LightChannelNote(LightNote):
     instrument: ClassVar[type[Instrument]] = LightChannelInstrument
 
     @override
-    def play(self) -> None:
+    def play(self, bps: float) -> None:
         """Play single LightChannelNote."""
         if self.kwargs:
             mode.lights.set_channels(**self.kwargs)
@@ -178,10 +175,10 @@ class NoteGroup(Element):
         assert self.notes
         assert all(n.duration == 0.0 for n in self.notes)
 
-    def play(self) -> None:
+    def play(self, bps: float) -> None:
         """Play all notes in group, not quite concurrently."""
         for note in self.notes:
-            note.play()
+            note.play(bps)
 
 
 @dataclass(frozen=True)
