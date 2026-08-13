@@ -1,4 +1,5 @@
 {
+    "typeCheckingMode": "standard",
     "exclude": [
         "modes/old",
     ],
@@ -7,4 +8,6 @@
     "reportPossiblyUnboundVariable": false,
     "reportMatchNotExhaustive": true,
     "reportImplicitOverride": true,
+    "reportImportCycles": true,
+    "reportPrivateLocalImportUsage": true,
 }

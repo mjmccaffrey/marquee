@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from enum import auto, StrEnum
 import logging
 
-from gpiozero import Button as _Button
+import gpiozero
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -36,10 +36,10 @@ state_to_direction = {
 @dataclass
 class Joystick:
     """"""
-    up: _Button
-    down: _Button
-    left: _Button
-    right: _Button
+    up: gpiozero.Button
+    down: gpiozero.Button
+    left: gpiozero.Button
+    right: gpiozero.Button
     direction: Direction = field(init=False)
 
     def __post_init__(self) -> None:

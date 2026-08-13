@@ -1,15 +1,17 @@
 """Marquee Lighted Sign Project - deviceset"""
 
 from dataclasses import dataclass, fields
-from devices.buttonset import ButtonSet
+from devices.controlset import ControlSet
 from devices.joystick import Joystick
 from devices.tiltset import TiltSet
-from instruments import BellSet, Buzzer, ClickSet, DrumSet, LightSet, Ringer
+from instruments import (
+    BellSet, Buzzer, ClickSet, DrumSet, LightSet, Ringer
+)
 
 @dataclass
 class DeviceSet:
     # bells: BellSet
-    buttons: ButtonSet
+    controls: ControlSet
     drums: DrumSet
     lights: LightSet
     extra: LightSet
@@ -18,12 +20,12 @@ class DeviceSet:
     ringer: Ringer
     buzzer: Buzzer
     joystick: Joystick
-    tilts: TiltSet
+    # tilts: TiltSet
 
     def astuple(self) -> tuple[
-        ButtonSet, DrumSet, 
+        ControlSet, DrumSet, 
         LightSet, LightSet, LightSet, 
-        ClickSet, Ringer, Buzzer, Joystick, TiltSet,
+        ClickSet, Ringer, Buzzer, Joystick,
     ]:
         """Return devices as a tuple, since dataclasses.astuple
            will not work in this case."""

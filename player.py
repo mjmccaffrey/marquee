@@ -11,7 +11,7 @@ from typing_extensions import override
 from devices.color import ColorSets
 from devices.deviceset import DeviceSet
 from devices.devices_misc import (
-    ButtonAction, ButtonActionException, ButtonName,
+    ButtonAction, ControlActionException, ControlName,
 )
 from event import EventSystem
 from modes.abstract.mode import Mode
@@ -141,28 +141,28 @@ class Player:
                     self.effect_new_mode(new_mode_index)
                     new_mode_index = None
                 self.wait()
-            except ButtonActionException as press:
-                with suppress(ButtonActionException):
+            except ControlActionException as press:
+                with suppress(ControlActionException):
                     if press.action == ButtonAction.HELD:
-                        return True
-                    self.devices.buttons.reset()
-                    log.info(f"Button {press.button} {press.action}")
-                    new_mode_index = self.notify_button_action(press.button)
+                        return True  # Power off.
+                    self.devices.controls.reset()
+                    log.info(f"Button {press.control} {press.action}")
+                    new_mode_index = self.notify_modes(press.control)
             except ChangeMode as cm:
                 log.debug("ChangeMode caught")
                 new_mode_index, = cm.args
             except SigTerm:
                 return False
 
-    def notify_button_action(self, button: ButtonName) -> int | None:
+    def notify_modes(self, control: ControlName) -> int | None:
         """Notify all background modes, and active mode, 
            of button action. Return FG active mode's response."""
         for mode in self.mode_instances.values():
             if mode.background:
-                mode.button_action(button)
+                mode.control_action(control)
         fg_mode = self.foreground_mode_instance()
         if fg_mode is not None:
-            return mode.button_action(button)
+            return mode.control_action(control)
 
     def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Replace variables with current runtime values."""
@@ -189,7 +189,7 @@ class Player:
 
         if seconds is not None:
             seconds *= self.speed_factor
-        self.tasks.wait(seconds, self.devices.buttons.wait)
+        self.tasks.wait(seconds, self.devices.controls.wait)
 
 
 class SigTerm(Exception):

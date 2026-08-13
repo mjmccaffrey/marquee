@@ -2,15 +2,15 @@
 
 import signal
 
-from gpiozero import Button as _Button
+import gpiozero
 
 from devices.bulb import (
     Hue_BR30_Enhanced_Color, 
     Sylvania_G25_Frosted_40,
 )
 from devices.button import Button, LightedButton
-from devices.buttonset import ButtonSet 
-from devices.devices_misc import ButtonName
+from devices.controlset import ControlSet 
+from devices.devices_misc import ControlName
 from devices.deviceset import DeviceSet
 from devices.hue import HueBridge
 from devices.joystick import Joystick
@@ -55,7 +55,7 @@ HUE_GROUPS_0: dict[str, list[int]] = {
     'even': [0, 2, 4, 6, 8, 10],
     'odd': [1, 3, 5, 7, 9, 11],
     '12': LIGHTS_CLOCKWISE,
-    '13': LIGHTS_CLOCKWISE + [LIGHTS_CUPOLA]
+    '13': LIGHTS_CLOCKWISE + [Light.CP]
 }
 HUE_ZONE_IDS_0: dict[str, list[str]] = {
     # https://192.168.64.130/clip/v2/resource/zone
@@ -99,50 +99,37 @@ SHELLY_IP_ADDRESSES = [
 ]
 
 
-def buttons(light_relays: NumatoRL160001) -> ButtonSet:
+def controls(light_relays: NumatoRL160001) -> ControlSet:
     """Define button set."""
-    return ButtonSet(
+    return ControlSet(
         body_back = Button(
-            ButtonName.BODY_BACK,
-            _Button(pin=26, bounce_time=0.10, hold_time=10), 
+            ControlName.BODY_BACK,
+            gpiozero.Button(pin=26, bounce_time=0.10, hold_time=10), 
             supports_hold=True,
         ),
+        rotary_a = gpiozero.RotaryEncoder(
+            a=2, b=3,
+            max_steps=100,
+        ),
         corded_a = Button(
-            ButtonName.CORDED_A,
-            _Button(pin=2, bounce_time=0.05),
+            ControlName.CORDED_A,
+            gpiozero.Button(pin=2, bounce_time=0.05),
             signal_number=signal.SIGUSR1,  # type: ignore
         ),
         corded_b = Button(
-            ButtonName.CORDED_B,
-            _Button(pin=3, bounce_time=0.05),
+            ControlName.CORDED_B,
+            gpiozero.Button(pin=3, bounce_time=0.05),
             signal_number=signal.SIGUSR2,  # type: ignore
         ),
         corded_c = Button(
-            ButtonName.CORDED_C,
-            _Button(pin=18, bounce_time=0.05),
+            ControlName.CORDED_C,
+            gpiozero.Button(pin=18, bounce_time=0.05),
             signal_number=signal.SIGFPE,  # type: ignore
         ),
         game_start = LightedButton(
-            ButtonName.GAME_START,
-            _Button(pin=16, bounce_time=0.05),
+            ControlName.GAME_START,
+            gpiozero.Button(pin=16, bounce_time=0.05),
             relay=create_client(light_relays, BUTTON_TO_RELAY),
-        ),
-        remote_a = Button(
-            ButtonName.REMOTE_A,
-            _Button(pin=21, pull_up=False, bounce_time=0.10)  # 19
-
-        ),
-        remote_b = Button(
-            ButtonName.REMOTE_B,
-            _Button(pin=20, pull_up=False, bounce_time=0.10)  # 13
-        ),
-        remote_c = Button(
-            ButtonName.REMOTE_C,
-            _Button(pin=6, pull_up=False, bounce_time=0.10)
-        ),
-        remote_d = Button(
-            ButtonName.REMOTE_D,
-            _Button(pin=5, pull_up=False, bounce_time=0.10)
         ),
     )
 
@@ -150,17 +137,17 @@ def buttons(light_relays: NumatoRL160001) -> ButtonSet:
 def joystick() -> Joystick:
     """Define joystick."""
     return Joystick(
-        up=_Button(pin=4, bounce_time=0.05),
-        down=_Button(pin=17, bounce_time=0.05),
-        left=_Button(pin=27, bounce_time=0.05),
-        right=_Button(pin=22, bounce_time=0.05),
+        up=gpiozero.Button(pin=4, bounce_time=0.05),
+        down=gpiozero.Button(pin=17, bounce_time=0.05),
+        left=gpiozero.Button(pin=27, bounce_time=0.05),
+        right=gpiozero.Button(pin=22, bounce_time=0.05),
     )
 
 def tilts() -> TiltSet:
     """"""
     return TiltSet(
-        left=_Button(pin=13, pull_up=False, bounce_time=0.05),
-        right=_Button(pin=19, pull_up=False, bounce_time=0.05),
+        left=gpiozero.Button(pin=13, pull_up=False, bounce_time=0.05),
+        right=gpiozero.Button(pin=19, pull_up=False, bounce_time=0.05),
     )
 
 def define_devices(
@@ -217,7 +204,6 @@ def define_devices(
             bulb_ids=HUE_BULB_IDS_2,
             zone_ids=HUE_ZONE_IDS_2,
             groups=HUE_GROUPS_2,
-            channel_sources=(lights, extra),
         ),
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
@@ -227,9 +213,9 @@ def define_devices(
     ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
     buzzer = Buzzer(create_client(light_relays, BUZZER_TO_RELAY))
     return DeviceSet(
-        buttons(light_relays), drums, 
+        controls(light_relays), drums, 
         lights, extra, combined, 
-        clicker, ringer, buzzer, joystick(), tilts(),
+        clicker, ringer, buzzer, joystick(),
     )
 
 
@@ -270,9 +256,9 @@ def define_devices_shelly(
     ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
     buzzer = Buzzer(create_client(light_relays, BUZZER_TO_RELAY))
     return DeviceSet(
-        buttons(light_relays), drums, 
+        controls(light_relays), drums, 
         lights, lights, lights, 
-        clicker, ringer, buzzer, joystick(), tilts(),
+        clicker, ringer, buzzer, joystick(),
     )
 
 

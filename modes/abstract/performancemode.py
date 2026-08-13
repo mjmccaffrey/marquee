@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import logging
 from typing_extensions import override
 
-from devices.devices_misc import ButtonName
+from devices.devices_misc import ControlName
 from .mode import Mode
 from ..structural.modes_misc import ModeIndex
 
@@ -17,23 +17,23 @@ class PerformanceMode(Mode, ABC):
     """Base for performance modes."""
 
     @override
-    def button_action(self, button: ButtonName) -> int | None:
+    def control_action(self, control: ControlName) -> int | None:
         """Respond to button being pressed.
            Return index of new mode, if any."""
         new_mode = None
-        b = ButtonName
-        match button:
-            case b.REMOTE_A | b.BODY_BACK:
+        b = ControlName
+        match control:
+            case b.BODY_BACK:
                 new_mode = ModeIndex.MODE_SELECT
-            case b.REMOTE_C:
-                self.clicker.click()
-                new_mode = ModeIndex.BRIGHTNESS_SELECT
-            case b.REMOTE_B:
-                self.clicker.click()
-                new_mode = self.wrap_mode_index(-1)
-            case b.REMOTE_D:
-                self.clicker.click()
-                new_mode = self.wrap_mode_index(+1)
+            # case b.REMOTE_C:
+            #     self.clicker.click()
+            #     new_mode = ModeIndex.BRIGHTNESS_SELECT
+            # case b.REMOTE_B:
+            #     self.clicker.click()
+            #     new_mode = self.wrap_mode_index(-1)
+            # case b.REMOTE_D:
+            #     self.clicker.click()
+            #     new_mode = self.wrap_mode_index(+1)
             case _:
                 pass
         return new_mode

@@ -4,7 +4,7 @@ marquee
         Event
         Task
     devices
-        ButtonSet
+        ControlSet
             Button
         LightController
             HueBridge

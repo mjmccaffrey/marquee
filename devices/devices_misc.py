@@ -4,17 +4,15 @@ from dataclasses import dataclass
 from enum import auto, StrEnum
 
 
-class ButtonName(StrEnum):
-    """Every button."""
+class ControlName(StrEnum):
+    """Every control."""
     BODY_BACK = auto()
+    BRIGHTNESS = auto()
     CORDED_A = auto()
     CORDED_B = auto()
     CORDED_C = auto()
     GAME_START = auto()
-    REMOTE_A = auto()
-    REMOTE_B = auto()
-    REMOTE_C = auto()
-    REMOTE_D = auto()
+    ROTARY_A = auto()
 
 class ButtonAction(StrEnum):
     """Every button action."""
@@ -23,14 +21,14 @@ class ButtonAction(StrEnum):
     RELEASED = auto()
 
 @dataclass
-class ButtonActionException(Exception):
+class ControlActionException(Exception):
     """Button action base exception."""
-    button: ButtonName
+    control: ControlName
     action: ButtonAction
 
-class ButtonPhysicallyChanged(ButtonActionException):
+class ControlPhysicallyChanged(ControlActionException):
     """Physical button pressed exception."""
 
-class ButtonVirtuallyPressed(ButtonActionException):
+class ControlVirtuallyChanged(ControlActionException):
     """Virtual button pressed (IPC signal received) exception."""
 

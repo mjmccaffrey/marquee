@@ -10,8 +10,7 @@ from typing import cast
 from typing_extensions import override
 
 from devices.color import Colors, RGB
-from devices.devices_misc import ButtonName
-from light_defs import LIGHTS_CUPOLA
+from devices.devices_misc import ControlName
 from ..abstract.gamemode import Entity, EntityGroup, GameMode
 from . import pacman_assets as assets
 from .pacman_assets import (
@@ -73,15 +72,15 @@ class PacManGame(GameMode):
         self.sounds[sound].play()
 
     @override
-    def button_action(self, button: ButtonName) -> int | None:
+    def control_action(self, control: ControlName) -> int | None:
         """Handle Game Start button push."""
         if (
-            button == ButtonName.GAME_START and
+            control == ControlName.GAME_START and
             self.state == GameState.PRE_GAME
         ):
             self.change_state(GameState.PRE_LEVEL_0)
         else:
-            return super().button_action(button)
+            return super().control_action(control)
 
     def ghost_state(self, ghost: Ghost, state: GhostState) -> None:
         """"""
@@ -90,14 +89,14 @@ class PacManGame(GameMode):
                 pass
             case GhostState.EMERGING:
                 self.lights.set_channels(
-                    index=LIGHTS_CUPOLA,
+                    index=self.lights.CP,
                     on=True,
                     color=ghost.color,
                     brightness=80,
                 )
             case GhostState.CHASING:
                 self.lights.set_channels(
-                    index=LIGHTS_CUPOLA,
+                    index=self.lights.CP,
                     on=False,
                 )
 
@@ -155,7 +154,7 @@ class PacManGame(GameMode):
         self.ghosts = (self.pinky, self.blinky)
         self.lights.set_channels(
             on=False,
-            index=LIGHTS_CUPOLA,
+            index=self.lights.CP,
         )
         self.update_lights()
 
@@ -170,7 +169,7 @@ class PacManGame(GameMode):
     def pre_game_state(self) -> None:
         """Before game starts."""
         log.info("Waiting for Start Game button press")
-        self.buttons.game_start.set_light(True)
+        self.controls.game_start.set_light(True)
         self.lights.set_channels(
             on=True,
             brightness=50,
@@ -217,7 +216,7 @@ class PacManGame(GameMode):
         self.sounds[Sound.SIREN].stop()
         self.sounds[Sound.EXTRAPAC].play(2)
         self.lights.set_channels(
-            index=LIGHTS_CUPOLA,
+            index=self.lights.CP,
             color=PacMan.color,
             brightness=PacMan.brightness,
             on=True,
@@ -230,7 +229,7 @@ class PacManGame(GameMode):
         self.sounds[Sound.SIREN].stop()
         self.play_sound(Sound.DEATH)
         self.lights.set_channels(
-            index=LIGHTS_CUPOLA,
+            index=self.lights.CP,
             color=self.lights.colors.RED,
             brightness=80,
             on=True,

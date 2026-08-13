@@ -3,10 +3,9 @@
 from dataclasses import dataclass
 from itertools import cycle
 import logging
-import pygame
 from typing_extensions import override
 
-from devices.devices_misc import ButtonName
+from devices.devices_misc import ControlName
 from ..abstract.mode import Mode
 from .modes_misc import CycleEntry, CycleSequence
 
@@ -39,7 +38,6 @@ class ModeCycle(Mode):
     @override
     def execute(self):
         """Change to next mode in sequence. Schedule next next mode."""
-        pygame.mixer.music.stop()  # !!! Move this to player?
         new = next(self.mode_cycle)
         log.info(
             f"Next mode in sequence is {new.name} for {new.seconds} seconds."
@@ -49,11 +47,11 @@ class ModeCycle(Mode):
         self.change_mode(new.index)
     
     @override
-    def button_action(self, button: ButtonName) -> None:
+    def control_action(self, control: ControlName) -> None:
         """Switch to next mode.
            But first, delete the scheduled task 
            for the timed switch."""
-        if button == ButtonName.CORDED_A:
+        if control == ControlName.CORDED_A:
             self.tasks.delete_owned_by(self)
             self.schedule()
 

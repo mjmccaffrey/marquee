@@ -10,7 +10,7 @@ from typing import Any, NoReturn, Protocol, Self
 from typing_extensions import override
 
 from devices.color import ColorSets
-from devices.devices_misc import ButtonName
+from devices.devices_misc import ControlName
 from event import EventSystem
 from task import SeqTask, Task, TaskSchedule
 from ..structural.modes_misc import ChangeMode, ModeDefinition
@@ -23,7 +23,7 @@ class BaseMode(ABC):
     """Base for (foreground and background) modes."""
     index: int
     name: str
-    serial: int
+    serial: int  # Unique ID for every instance.
     speed_factor: float
     create_mode_instance: 'CreateModeInstance'
     delete_mode_instance: 'DeleteModeInstance'
@@ -50,7 +50,7 @@ class BaseMode(ABC):
             print(f"Created mode {child} {mode.index} {mode.name}")
 
     @abstractmethod
-    def button_action(self, button: ButtonName) -> int | None:
+    def control_action(self, control: ControlName) -> int | None:
         """Respond to button being pressed.
            Return index of new mode, if any."""
 

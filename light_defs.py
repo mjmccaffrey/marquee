@@ -1,5 +1,46 @@
 """Marquee Lighted Sign Project - light_defs"""
 
+from enum import IntEnum
+
+class Light(IntEnum):
+    TL =  0
+    TM =  1
+    TR =  2
+    RT =  3
+    RM =  4
+    RB =  5
+    BR =  6
+    BM =  7
+    BL =  8
+    LB =  9
+    LM = 10
+    LU = 11
+    CP = 15
+
+class Extra(IntEnum):
+    ML = 0
+    MM = 1
+    MR = 2
+    CP = 3
+
+class Combined(IntEnum):
+    TL =  0
+    TM =  1
+    TR =  2
+    RT =  3
+    RM =  4
+    RB =  5
+    BR =  6
+    BM =  7
+    BL =  8
+    LB =  9
+    LM = 10
+    LU = 11
+    ML = 12
+    MM = 13
+    MR = 14
+    CP = 15
+
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],
     [ 11,         3, ],
@@ -35,9 +76,6 @@ TOP_TO_RELAY = {
     0: 10,
 }
 LIGHT_COUNT = len(LIGHT_TO_RELAY)
-
-LIGHTS_CUPOLA = 15
-EXTRA_CUPOLA = 3
 
 ALL_HIGH = "A" * LIGHT_COUNT
 ALL_LOW = "0" * LIGHT_COUNT

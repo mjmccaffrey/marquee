@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import logging
 from typing_extensions import override
 
-from devices.devices_misc import ButtonName
+from devices.devices_misc import ControlName
 from .mode import Mode
 from ..structural.modes_misc import ModeDefinition
 from ..structural.sequencemode import SequenceMode
@@ -36,17 +36,17 @@ class SelectMode(Mode, ABC):
         return self.wrap_value(self.lower, self.upper, self.desired, delta)
 
     @override
-    def button_action(self, button: ButtonName) -> None:
+    def control_action(self, control: ControlName) -> None:
         """Respond to button being pressed.
            But first, delete the scheduled task which 
            would have finalized the selection."""
         self.tasks.delete_owned_by(self)
-        b = ButtonName
-        match button:
-            case b.BODY_BACK | b.CORDED_A | b.CORDED_B | b.REMOTE_A | b.REMOTE_D:
+        b = ControlName
+        match control:
+            case b.BODY_BACK | b.CORDED_A | b.CORDED_B:
                 self.desired = self.update_desired(+1)
-            case b.REMOTE_B:
-                self.desired = self.update_desired(-1)
+            # case b.REMOTE_B:
+            #     self.desired = self.update_desired(-1)
             case _:
                 pass
         return None
