@@ -1,7 +1,8 @@
 """Marquee Lighted Sign Project - music_notation"""
 
 # NOTE: This module does not truly support sustained notes.
-#       Essentially all instruments / notes are percussive, 
+#       Essentially all instruments / notes 
+#       in the music package are percussive, 
 #       and in effect have zero length.
 #       Exceptions are BellSet, Ringer, and Buzzer,
 #       whose play methods schedule the 'release'
