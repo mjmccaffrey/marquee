@@ -6,9 +6,9 @@ from typing_extensions import override
 
 from device_defs import ALL_ON
 from . import MusicMode
-from music import lights, measure, part, rest, section, Section, piece
-from music import action, actions, drums, rest 
-from .structural.sequences import *
+from music import section, Section, piece
+from music import buzzer, drums, lights, ringer
+# from .structural.sequences import *
 
 @dataclass
 class Rhythm(MusicMode):
@@ -50,58 +50,66 @@ class Rhythm(MusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝅘𝅥𝅱 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀 𝅁
         return section(
             drums(
-                '  |  ♩ ♩ ♩ ♩  |  ♩> ♩ ♩ ♩  |  𝄾 ♪ ♪ ♪ ♪> ♪ ♪ ♪  |  ♩> ♩ ♩ ♩  |  '
-                '  |  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  |  ♩> ♩ ♩ ♩  |  '
-                '  |  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 '
-                '     3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  |  ♩> ♩ ♩ ♩  |  ',
+                ' |  ♩ ♩ ♩ ♩  |  ♩> ♩ ♩ ♩  |  𝄾 ♪ ♪ ♪ ♪> ♪ ♪ ♪  |  ♩> ♩ ♩ ♩  | '
+                ' |  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  |  ♩> ♩ ♩ ♩  | '
+                ' |  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 '
+                '    3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  |  ♩> ♩ ♩ ♩  | ',
                 accent='-',
             ),
             lights(
                 ' |  ♩  | ' * 8,
                 *[self.random_color() for _ in range(8)]
             ),
-            actions(
-                ' |  𝄻 |  ' * 7 + 
-                ' |  𝄽 𝄽 𝄽 𝅘𝅥𝅲 𝅘𝅥𝅲 | ',
-                self.ringer.play if bell else lambda: None,
-                self.ringer.rest if bell else lambda: None,
+            ringer(
+                ' |  𝄻 | ' * 7 + 
+                ' |  𝄽 𝄽 𝄽 ' + ('𝅘𝅥𝅲' if bell else '𝅁')
             ),
+            # actions(
+            #     ' |  𝄻 |  ' * 7 + 
+            #     ' |  𝄽 𝄽 𝄽 𝅘𝅥𝅲 𝅘𝅥𝅲 | ',
+            #     self.ringer.play if bell else lambda: None,
+            #     self.ringer.rest if bell else lambda: None,
+            # ),
         )
 
     def buzzer_measure(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            part(
-                measure(
-                    # 1
-                    rest('𝄾'),
-                    # and
-                    action('𝅘𝅥𝅯', self.buzzer.play),
-                    action('𝅘𝅥𝅯', self.buzzer.rest),
-                    # 2
-                    action('♪', self.buzzer.play),
-                    action('♪', self.buzzer.rest),
-                    # 3
-                    action('♪', self.buzzer.play),
-                    action('♪', self.buzzer.rest),
-                    # and
-                    action('𝅘𝅥𝅯', self.buzzer.play),
-                    action('𝅘𝅥𝅯', self.buzzer.rest),
-                    # a
-                    action('𝅘𝅥𝅯', self.buzzer.play),
-                    action('𝅘𝅥𝅯', self.buzzer.rest),
-                )
-            )
+            buzzer(' |  𝄾 𝅘𝅥𝅯 𝄿   ♪ 𝄾   ♪ 𝄾   𝅘𝅥𝅯 𝄿 𝅘𝅥𝅯 𝄿  | '),
+            # part(
+            #     measure(
+            #         # 1
+            #         rest('𝄾'),
+            #         # and
+            #         action('𝅘𝅥𝅯', self.buzzer.play),
+            #         action('𝅘𝅥𝅯', self.buzzer.rest),
+            #         # 2
+            #         action('♪', self.buzzer.play),
+            #         action('♪', self.buzzer.rest),
+            #         # 3
+            #         action('♪', self.buzzer.play),
+            #         action('♪', self.buzzer.rest),
+            #         # and
+            #         action('𝅘𝅥𝅯', self.buzzer.play),
+            #         action('𝅘𝅥𝅯', self.buzzer.rest),
+            #         # a
+            #         action('𝅘𝅥𝅯', self.buzzer.play),
+            #         action('𝅘𝅥𝅯', self.buzzer.rest),
+            #     )
+            # )
         )
 
     def ringer_measure(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            actions(
-                ' |  𝅗𝅥 𝅗𝅥  | ',
-                self.ringer.play,
-                self.ringer.rest,
-            )
+            ringer(
+                ' |  𝅗𝅥 𝄼  | ',
+            ),
+            # actions(
+            #     ' |  𝅗𝅥 𝅗𝅥  | ',
+            #     self.ringer.play,
+            #     self.ringer.rest,
+            # )
         )
 
     def section_b(self) -> Section:

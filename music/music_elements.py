@@ -11,7 +11,8 @@ from typing_extensions import override
 from instruments import (
     Instrument, ActionInstrument, BellSet, DrumSet, 
     LightChannelInstrument, LightRelayInstrument,
-    ReleaseableInstrument, RestInstrument, Ringer,
+    ReleaseableInstrument, RestInstrument, 
+    DinInstrument, Ringer, Buzzer,
 )
 from modes.abstract.mode import Mode
 from devices.specialparams import SpecialParams
@@ -31,6 +32,11 @@ class BaseNote(Element, ABC):
     """Base for all musical notes."""
     instrument: ClassVar[type[Instrument]]
     duration: float
+    original_duration: float = field(init=False)
+
+    def __post_init__(self) -> None:
+        """"""
+        object.__setattr__(self, 'original_duration', self.duration)
 
     @abstractmethod
     def play(self, bps: float) -> None:
@@ -78,19 +84,14 @@ class ReleasableNote(BaseNote, ABC):
 
 
 @dataclass(frozen=True)
-class SustainedNote(ReleasableNote, ABC):
-    """Note that releases when a its duration is complete."""
-    sustain_duration: float
-
-
-@dataclass(frozen=True)
 class BellNote(ReleasableNote):
-    """Note to strike or release 1 or more bells."""
+    """Note to strike and release 1 or more bells."""
     instrument: ClassVar[type[BellSet]] = BellSet
     pitches: set[int]
 
     def __post_init__(self) -> None:
         """Validate."""
+        super().__post_init__()
         assert self.pitches
 
     @override
@@ -106,15 +107,46 @@ class BellNote(ReleasableNote):
 
 
 @dataclass(frozen=True)
-class RingerNote(SustainedNote):
-    """Note to activate the ringer bell."""
-    instrument: ClassVar[type[Ringer]] = Ringer
+class DinNote(ReleasableNote):
+    """Note to play and rest a buzzer, ringer, etc."""
+    instrument: ClassVar[type[DinInstrument]]
 
     @override
     def play(self, bps: float) -> None:
-        """Play BellNote."""
+        """Play note."""
+        self.schedule_release(self.original_duration / bps)
+
+
+@dataclass(frozen=True)
+class BuzzerNote(DinNote):
+    """"""
+
+    @override
+    def play(self, bps: float) -> None:
+        """Play note."""
+        mode.buzzer.play()
+        super().play(bps)
+
+    @override
+    def release(self) -> None:
+        """Release note."""
+        mode.buzzer.release()
+
+
+@dataclass(frozen=True)
+class RingerNote(DinNote):
+    """"""
+
+    @override
+    def play(self, bps: float) -> None:
+        """Play note."""
         mode.ringer.play()
-        self.schedule_release(self.sustain_duration / bps)
+        super().play(bps)
+
+    @override
+    def release(self) -> None:
+        """Release note."""
+        mode.ringer.release()
 
 
 @dataclass(frozen=True)
@@ -126,6 +158,7 @@ class DrumNote(BaseNote):
     
     def __post_init__(self) -> None:
         """Validate."""
+        super().__post_init__()
         assert self.pitches
 
     @override

@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - instruments __init__"""
 
 from .instruments_abstract import (
-    Instrument, ActionInstrument, 
+    Instrument, ActionInstrument, DinInstrument,
     LightChannelInstrument, LightRelayInstrument,
     ReleaseableInstrument, RestInstrument, 
 )

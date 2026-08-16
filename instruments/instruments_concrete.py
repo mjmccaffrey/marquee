@@ -5,7 +5,9 @@ import logging
 from typing_extensions import override
 
 from devices.relaymodule import RelayClient
-from .instruments_abstract import RelayInstrument, ReleaseableInstrument
+from .instruments_abstract import (
+    RelayInstrument, ReleaseableInstrument, DinInstrument,
+)
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -70,24 +72,10 @@ class DrumSet(RelayInstrument):
         self.relays.set_state_of_devices(new_pattern)
 
 
-class Ringer(RelayInstrument, ReleaseableInstrument):
-    """Rapidly repeating strike ringer bell."""
-    pitch_levels = 1
+class Ringer(DinInstrument):
+    """Rapidly repeating ringer bell."""
 
-    @override
-    def play(self):
-        """"""
-        self.relays.set_state_of_devices("1")
 
-    @override
-    def release(self):
-        """"""
-        self.relays.set_state_of_devices("0")
-
-    def rest(self) -> None:
-        """Rest via release."""
-        self.release()
-
-class Buzzer(Ringer):
+class Buzzer(DinInstrument):
     """Simple door buzzer."""
 

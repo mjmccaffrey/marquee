@@ -79,3 +79,22 @@ class ReleaseableInstrument(Instrument, ABC):
     def release(self, pitches: set[int]) -> None:
         """Release specified pitches."""
 
+
+class DinInstrument(RelayInstrument, ReleaseableInstrument, ABC):
+    """Simple sustained noise instrument."""
+    pitch_levels = 1
+
+    @override
+    def play(self) -> None:
+        """"""
+        self.relays.set_state_of_devices("1")
+
+    @override
+    def release(self) -> None:
+        """"""
+        self.relays.set_state_of_devices("0")
+
+    def rest(self) -> None:
+        """Rest via release."""
+        self.release()
+

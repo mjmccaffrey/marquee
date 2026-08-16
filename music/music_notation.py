@@ -16,6 +16,7 @@ import logging
 from .music_elements import (
     ActionNote, BaseNote, BellNote, DrumNote, 
     LightNote, LightChannelNote, LightRelayNote,
+    DinNote, BuzzerNote, RingerNote,
     Measure, Part, Rest, Sequence, SequenceMeasure,
 )
 from .music_interface import part, relay
@@ -185,25 +186,6 @@ def bells(notation: str, beats=4) -> Part:
     )
 
 
-# def ringer_note(symbols: str) -> RingerNote | Rest:
-#     """Validate symbols and return RingerNote or Rest."""
-#     duration, pitches, accent, is_rest = _interpret_symbols(
-#         symbols,
-#     )
-#     if is_rest:
-#         return rest(symbols)
-#     if pitches or accent:
-#         raise ValueError("Ringer note cannot have pitch or accent.")
-#     return RingerNote(duration)
-
-
-# def ringer(notation: str, beats=4) -> Part:
-#     """Produce ringer part from notation."""
-#     return part(
-#         *_interpret_notation(ringer_note, notation, beats)
-#     )
-
-
 def drum(symbols: str) -> DrumNote | Rest:
     """Validate symbols and return DrumNote or Rest."""
     duration, pitches, accent, is_rest = _interpret_symbols(
@@ -254,7 +236,7 @@ def _lights(
         kwargs = ({},)
     kwargs_cycle = cycle(kwargs)
 
-    def create_light(symbols: str) ->LightNote | Rest:
+    def create_light(symbols: str) -> LightNote | Rest:
         """Return concrete LightNote."""
         return _light(note_type, symbols, kwargs_cycle)
     
@@ -279,6 +261,50 @@ def relays(
 ) -> Part:
     """Produce lights part from notation."""
     return _lights(LightRelayNote, notation, *kwargs, beats=beats)
+
+
+def _din_note(
+    note_type: type[DinNote],
+    symbols: str, 
+) -> DinNote | Rest:
+    """Validate symbols and return concrete DinNote or Rest."""
+    duration, pitches, accent, is_rest = _interpret_symbols(symbols)
+    if is_rest:
+        return rest(symbols)
+    if pitches or accent:
+        raise ValueError("Buzzer / ringer note cannot have pitch or accent.")
+    return note_type(duration)
+
+def _din(
+    note_type: type[DinNote],
+    notation: str, 
+    beats=4,
+) -> Part:
+    """Produce din part from notation."""
+
+    def create_din(symbols: str) -> DinNote | Rest:
+        """Return concrete DinNote."""
+        return _din_note(note_type, symbols)
+
+    return part(
+        *_interpret_notation(create_din, notation, beats)
+    )
+
+
+def buzzer(
+    notation: str, 
+    beats=4,
+) -> Part:
+    """Produce buzzer part from notation."""
+    return _din(BuzzerNote, notation, beats=beats)
+
+
+def ringer(
+    notation: str, 
+    beats=4,
+) -> Part:
+    """Produce ringer part from notation."""
+    return _din(RingerNote, notation, beats=beats)
 
 
 # legacy

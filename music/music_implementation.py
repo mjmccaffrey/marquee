@@ -12,7 +12,7 @@ from task import Task
 from modes.abstract.mode import Mode
 from .music_elements import (
     ActionNote, BaseNote, Element, Measure, NoteGroup,
-    Part, Rest, SequenceMeasure, SustainedNote,
+    Part, Rest, SequenceMeasure,
 )
 
 log = logging.getLogger('marquee.' + __name__)
@@ -63,8 +63,6 @@ def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
                 else:
                     assert isinstance(element, BaseNote)
                     beat_next[i] = beat + element.duration
-                    if isinstance(element, SustainedNote):
-                        replace(element, sustain=element.duration)
                     if not isinstance(element, Rest):
                         result.append(replace(element, duration=0))
         return result
