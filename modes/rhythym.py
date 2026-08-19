@@ -28,14 +28,15 @@ class Rhythm(MusicMode):
     @override
     def execute(self) -> None:
         """"""
-        piece(
+        music = piece(
             self.init(),
             self.section_a(bell=True),
             self.section_a(bell=False),
             self.buzzer_measure(),
             self.section_b(),
             self.ringer_measure(),
-        ).play(tempo=140)
+        )
+        self.play(music, tempo=140)
         self.lights.set_channels(brightness=0, transition=8.0)
 
     def init(self) -> Section:

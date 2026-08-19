@@ -5,9 +5,10 @@ import logging
 import time
 from typing import Any, Protocol
 
-from device_defs import DeviceSet
 from devices.color import ColorSets
+from devices.devices_misc import Device, DeviceSet
 from devices.specialparams import SpecialParams
+from instruments import LightSet
 from modes import BaseMode, ModeDefinition, SequenceMode
 from player import Player
 
@@ -111,8 +112,10 @@ class Executor:
            Return True if system shutdown requested, else False."""
         shutdown = False
         self.devices = self.define_devices(brightness_factor, speed_factor)
-        if self.devices.extra is not None:
-            self.devices.extra.set_channels(on=False, index=[0,1,2])
+        self.lights: LightSet = self.devices[Device.LIGHTS]
+        self.extra: LightSet | None = self.devices.get(Device.EXTRA)
+        if self.extra is not None:
+            self.extra.set_channels(on=False, index=[0,1,2])
             # !!!!!!!!!!!!!!!!!!!!!!!!!!!
         if color is not None:
             assert brightness is not None
@@ -128,7 +131,7 @@ class Executor:
     def execute_color(self, color: str, brightness: int) -> None:
         """Executes color operation."""
         cs = self.color_sets.by_set_name[color]
-        kwargs = cs.set_channels_kwargs(self.devices.lights.count)
+        kwargs = cs.set_channels_kwargs(self.lights.count)
         kwargs |= dict(
             on=True,
             brightness=brightness,
@@ -158,32 +161,32 @@ class Executor:
     ) -> None:
         """Executes the pattern operation."""
         if brightness_pattern is not None:
-            self.devices.lights.set_channels(
+            self.lights.set_channels(
                 brightness=brightness_pattern,
-                transition=self.devices.lights.trans_min,
+                transition=self.lights.trans_min,
             )
-            time.sleep(self.devices.lights.trans_min)
+            time.sleep(self.lights.trans_min)
         if light_pattern is not None:
-            self.devices.lights.set_relays(light_pattern)
+            self.lights.set_relays(light_pattern)
 
     def command_calibrate(self) -> None:
         """Calibrate all light sets supporting it."""
-        for lightset in [self.devices.lights, self.devices.extra]:
-            try:
-                lightset.calibrate()
-            except NotImplementedError:
-                pass
-
+        for lightset in [self.lights, self.extra]:
+            if lightset is not None:
+                try:
+                    lightset.calibrate()
+                except NotImplementedError:
+                    pass
     def command_off(self) -> None:
         """Turn off all relays and potentially other devices."""
-        for d in (
-            # self.devices.bells, 
-            self.devices.drums, self.devices.lights,
+        for dn in (
+            Device.BELLS, Device.DRUMS, Device.LIGHTS,
         ):
-            assert d.relays is not None
-            d.relays.set_state_of_devices('0' * d.relays.count)
-        if self.devices.extra is not None:
-            self.devices.extra.set_channels(on=False)
+            device = self.devices.get(dn)
+            if device is not None:
+                device.relays.set_state_of_devices('0' * device.relays.count)
+        if self.extra is not None:
+            self.extra.set_channels(on=False)
         log.info("Marquee hardware is now partially powered off.")
         log.info('')
 

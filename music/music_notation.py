@@ -14,13 +14,12 @@ from itertools import cycle
 import logging
 
 from .music_elements import (
-    ActionNote, BaseNote, BellNote, DrumNote, 
+    ActionNote, Note, BellNote, DrumNote, 
     LightNote, LightChannelNote, LightRelayNote,
-    DinNote, BuzzerNote, RingerNote,
-    Measure, Part, Rest, Sequence, SequenceMeasure,
+    DinNote, BuzzerNote, RingerNote, Rest,
 )
-from .music_interface import part, relay
-from devices.specialparams import SpecialParams
+from .music_collections import Measure, Part
+from .music_processing import part
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -101,7 +100,7 @@ def _each_notation_measure(notation: str) -> Iterator[str]:
 
 
 def _interpret_notation(
-    create_note: Callable[[str], BaseNote],
+    create_note: Callable[[str], Note],
     notation: str, 
     beats: int = 4,
 ) -> tuple[Measure, ...]:
@@ -138,11 +137,11 @@ def action(
     if is_rest:
         return rest(symbols)
     if pitches or accent:
-        # raise ValueError("Action note cannot have pitch or accent.")
+        raise ValueError("Action note cannot have pitch or accent.")
         pass
     if isinstance(action, Iterator):
         action = next(action)
-    return ActionNote(duration, action)
+    return ActionNote(duration=duration, action=action)
 
 
 def actions(
@@ -198,7 +197,7 @@ def drum(symbols: str) -> DrumNote | Rest:
     if not pitches:
         # raise ValueError("Drum note must have at least one pitch.")
         pitches={0, 1}
-    return DrumNote(duration, accent, pitches)
+    return DrumNote(duration, accent=accent, pitches=pitches)
 
 
 def drums(notation: str, accent: str = '', beats=4) -> "Part":
@@ -222,7 +221,7 @@ def _light(
         raise ValueError("Light / relay note cannot have pitch or accent.")
     if isinstance(kwargs, Iterator):
         kwargs = next(kwargs)
-    return note_type(duration, kwargs)
+    return note_type(duration, kwargs=kwargs)
 
 
 def _lights(
@@ -305,65 +304,4 @@ def ringer(
 ) -> Part:
     """Produce ringer part from notation."""
     return _din(RingerNote, notation, beats=beats)
-
-
-# legacy
-def sequence_measure(
-    symbols: str,
-    count: int,
-    sequence: Callable,
-    special: SpecialParams | None = None,
-    beats: int = 4,
-    **kwargs,
-) -> SequenceMeasure:
-    """Produce a SequenceMeasure."""
-    step_duration, _, _, _ = _interpret_symbols(symbols)
-    return SequenceMeasure(
-        elements=(),
-        beats=beats,
-        sequence=sequence, 
-        kwargs=kwargs,
-        step_duration=step_duration, 
-        count=count, 
-        special=special,
-    )
-
-# legacy
-def sequences(
-        notation: str, 
-        *sequences: Sequence,
-        beats=4,
-) -> Part:
-    """Produce sequence part from notation."""
-
-    def sequence_gen() -> Iterator[Sequence]:
-        """Return each sequence in order."""
-        for sequence in sequences:
-            for _ in range(sequence.measure_count):
-                yield sequence
-        while True:
-            yield sequence
-
-    def create_note(symbol: str) -> ActionNote | Rest:
-        """Return ActionNote for symbol and next pattern in sequence."""
-        return action(
-            symbol, 
-            relay(
-                next(sequence.iter), 
-                sequence.special,
-            ),
-        )
-    
-    each_sequence = sequence_gen()
-    measures = []
-    for notation in _each_notation_measure(notation):
-        sequence = next(each_sequence)
-        measure_tuple = _interpret_notation(
-            create_note, 
-            notation, 
-            beats,
-        )
-        assert len(measure_tuple) == 1
-        measures.append(measure_tuple[0])
-    return part(*measures)
 

@@ -15,7 +15,7 @@ from device_defs import define_devices
 def setup():
     global b, d, l, e, clicker, r, z, j, t, c
     devices = define_devices(1.0, 1.0)
-    b, d, l, e, c, clicker, r, z, j, t = devices.astuple()
+    # b, d, l, e, c, clicker, r, z, j, t = devices.astuple()
 
 
 def ppp(p: Sequence) -> None:

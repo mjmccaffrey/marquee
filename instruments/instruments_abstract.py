@@ -5,6 +5,7 @@ import logging
 import random
 from typing_extensions import override
 
+from devices.devices_misc import Device
 from devices.relaymodule import RelayClient
 
 log = logging.getLogger('marquee.' + __name__)
@@ -12,6 +13,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 class Instrument(ABC):
     """Base class for an instrument."""
+    device: Device
     accent_levels = 0
     pitch_levels = 0
 
@@ -27,20 +29,12 @@ class Instrument(ABC):
         """Play specified pitches."""
 
 
-class ActionInstrument(Instrument, ABC):
-    """Conceptual instrument that executes arbitrary actions."""
-
-
 class LightChannelInstrument(Instrument, ABC):
     """Conceptual instrument that executes light channel actions."""
 
 
 class LightRelayInstrument(Instrument, ABC):
     """Conceptual instrument that executes light relay actions."""
-
-
-class RestInstrument(Instrument, ABC):
-    """Conceptual instrument that executes rests."""
 
 
 class RelayInstrument(Instrument, ABC):
@@ -76,7 +70,7 @@ class RelayInstrument(Instrument, ABC):
 class ReleaseableInstrument(Instrument, ABC):
     """Abstract instrument that has releaseable notes."""
 
-    def release(self, pitches: set[int]) -> None:
+    def release(self) -> None:
         """Release specified pitches."""
 
 
@@ -95,6 +89,6 @@ class DinInstrument(RelayInstrument, ReleaseableInstrument, ABC):
         self.relays.set_state_of_devices("0")
 
     def rest(self) -> None:
-        """Rest via release."""
+        """"""
         self.release()
 

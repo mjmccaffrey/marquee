@@ -46,7 +46,7 @@ marquee
                 Part
                     Measure
                         Element
-                            BaseNote
+                            Note
                                 ActionNote
                                 BellNote
                                 DrumNote

@@ -10,7 +10,7 @@ from typing import cast
 from typing_extensions import override
 
 from devices.color import Colors, RGB
-from devices.devices_misc import ButtonName
+from devices.devices_misc import ButtonName, Device
 from light_defs import LIGHTS_CUPOLA
 from ..abstract.gamemode import Entity, EntityGroup, GameMode
 from . import pacman_assets as assets
@@ -62,7 +62,6 @@ class PacManGame(GameMode):
 
     def init_sound(self):
         """Load sounds."""
-        # pygame.mixer.init()
         self.sounds = {
             sound: pygame.mixer.Sound(f'modes/pacman/pacman_{sound}.wav')
             for sound in Sound
@@ -132,7 +131,11 @@ class PacManGame(GameMode):
             )
         )
         self.pacman = self.register_entity(
-            PacMan(game=self, bite_event=Event.PACMAN_BITE)
+            PacMan(
+                game=self, 
+                bite_event=Event.PACMAN_BITE,
+                joystick=self.devices[Device.JOYSTICK],
+            )
         )
         self.blinky = self.register_entity(
             Blinky(
