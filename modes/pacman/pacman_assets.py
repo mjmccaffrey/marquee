@@ -8,6 +8,7 @@ from typing import ClassVar
 from typing_extensions import override
 
 from devices.color import Color, Colors, RGB
+from devices.joystick import Joystick
 from ..abstract.gamemode import Character, Entity, GameMode, Maze, Square
 
 log = logging.getLogger('marquee.' + __name__)
@@ -43,6 +44,7 @@ class Fruit(Entity):
 class PacMan(Character):
     game: GameMode
     bite_event: str
+    joystick: Joystick
     name: str = "PacMan"
     color: ClassVar[Color] = RGB(252, 234, 63)
     brightness: int = 80

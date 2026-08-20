@@ -27,7 +27,6 @@ class BaseMode(ABC):
     speed_factor: float
     create_mode_instance: 'CreateModeInstance'
     delete_mode_instance: 'DeleteModeInstance'
-    replace_kwarg_values: 'ReplaceKwargValues'
     events: EventSystem
     tasks: TaskSchedule
     modes: dict[int, ModeDefinition]

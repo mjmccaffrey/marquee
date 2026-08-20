@@ -29,7 +29,7 @@ class Twelve(MusicMode):
         pygame.mixer.music.play()
         self.schedule(due=0.25, action=self.play)
 
-    def play(self):
+    def perform(self):
         """Play music and lights."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         each_on = tuple(
@@ -52,7 +52,7 @@ class Twelve(MusicMode):
             for i in range(self.lights.count)
         )
         all_off = dict(on=False, transition=1.6)
-        piece(
+        music = piece(
             lights('| 𝄻 | 𝄻 | 𝄻 |'),
             lights('| ♪ ♪ ♪ ♩ ♩ ♪ | ♩ ♪ ♩ ♩ ♪ | 𝄽 ♩ 𝄽 𝄽 |', *each_on),
             lights('| 𝄽 𝄽 |', beats=2),
@@ -60,5 +60,6 @@ class Twelve(MusicMode):
             lights('| 𝄽 𝄽 𝄽 |', beats=3),
             lights('| ♪ ♪ ♪ ♩ ♩ ♪ | ♩ ♪ ♩ ♩ ♪ | 𝄽 ♩ 𝄽 𝄽 |', *each_on),
             lights('| 𝄻 | ♩ |', all_off),
-        ).play(tempo=160)
+        )
+        self.play(music, tempo=160)
 

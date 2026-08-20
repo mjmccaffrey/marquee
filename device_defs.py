@@ -10,8 +10,7 @@ from devices.bulb import (
 )
 from devices.button import Button, LightedButton
 from devices.buttonset import ButtonSet 
-from devices.devices_misc import ButtonName
-from devices.deviceset import DeviceSet
+from devices.devices_misc import ButtonName, Device, DeviceSet
 from devices.hue import HueBridge
 from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001, NumatoSSR80001
@@ -221,15 +220,20 @@ def define_devices(
         brightness_factor_init=brightness_factor,
         speed_factor=speed_factor,
     )
-
     clicker = ClickSet(create_client(drum_16_relays, CLICK_TO_RELAY))
     ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
     buzzer = Buzzer(create_client(light_relays, BUZZER_TO_RELAY))
-    return DeviceSet(
-        buttons(light_relays), drums, 
-        lights, extra, combined, 
-        clicker, ringer, buzzer, joystick(), tilts(),
-    )
+    return {
+        Device.CONTROLS: buttons(light_relays),
+        Device.DRUMS: drums, 
+        Device.LIGHTS: lights, 
+        Device.EXTRA: extra, 
+        Device.COMBINED: combined, 
+        Device.CLICKER: clicker, 
+        Device.RINGER: ringer, 
+        Device.BUZZER: buzzer, 
+        Device.JOYSTICK: joystick(), 
+    }
 
 
 def define_devices_shelly(
@@ -268,12 +272,15 @@ def define_devices_shelly(
     clicker = ClickSet(create_client(light_relays, CLICK_TO_RELAY))
     ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
     buzzer = Buzzer(create_client(light_relays, BUZZER_TO_RELAY))
-    return DeviceSet(
-        buttons(light_relays), drums, 
-        lights, lights, lights, 
-        clicker, ringer, buzzer, joystick(), tilts(),
-    )
-
+    return {
+        Device.CONTROLS: buttons(light_relays),
+        Device.DRUMS: drums, 
+        Device.LIGHTS: lights, 
+        Device.CLICKER: clicker, 
+        Device.RINGER: ringer, 
+        Device.BUZZER: buzzer, 
+        Device.JOYSTICK: joystick(), 
+    }
 
 BUTTON_TO_RELAY = {0: 11}
 RINGER_TO_RELAY = {0: 3}

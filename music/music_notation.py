@@ -1,22 +1,25 @@
 """Marquee Lighted Sign Project - music_notation"""
 
-# NOTE: This module does not support sustained notes.
-#       All instruments / notes are percussive, 
+# NOTE: This module does not truly support sustained notes.
+#       Essentially all instruments / notes 
+#       in the music package are percussive, 
 #       and in effect have zero length.
+#       Exceptions are BellSet, Ringer, and Buzzer,
+#       whose play methods schedule the 'release'
+#       of the played note(s).
 
 from collections.abc import Callable, Iterator
 from enum import IntEnum
-from functools import partial
 from itertools import cycle
 import logging
 
 from .music_elements import (
-    ActionNote, BaseNote, BellNote, DrumNote, 
+    ActionNote, Note, BellNote, DrumNote, 
     LightNote, LightChannelNote, LightRelayNote,
-    Measure, Part, Rest, Sequence, SequenceMeasure,
+    DinNote, BuzzerNote, RingerNote, Rest,
 )
-from .music_interface import part, relay
-from devices.specialparams import SpecialParams
+from .music_collections import Measure, Part
+from .music_processing import part
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -97,7 +100,7 @@ def _each_notation_measure(notation: str) -> Iterator[str]:
 
 
 def _interpret_notation(
-    create_note: Callable[[str], BaseNote],
+    create_note: Callable[[str], Note],
     notation: str, 
     beats: int = 4,
 ) -> tuple[Measure, ...]:
@@ -134,11 +137,11 @@ def action(
     if is_rest:
         return rest(symbols)
     if pitches or accent:
-        # raise ValueError("Action note cannot have pitch or accent.")
+        raise ValueError("Action note cannot have pitch or accent.")
         pass
     if isinstance(action, Iterator):
         action = next(action)
-    return ActionNote(duration, action)
+    return ActionNote(duration=duration, action=action)
 
 
 def actions(
@@ -182,25 +185,6 @@ def bells(notation: str, beats=4) -> Part:
     )
 
 
-# def ringer_note(symbols: str) -> RingerNote | Rest:
-#     """Validate symbols and return RingerNote or Rest."""
-#     duration, pitches, accent, is_rest = _interpret_symbols(
-#         symbols,
-#     )
-#     if is_rest:
-#         return rest(symbols)
-#     if pitches or accent:
-#         raise ValueError("Ringer note cannot have pitch or accent.")
-#     return RingerNote(duration)
-
-
-# def ringer(notation: str, beats=4) -> Part:
-#     """Produce ringer part from notation."""
-#     return part(
-#         *_interpret_notation(ringer_note, notation, beats)
-#     )
-
-
 def drum(symbols: str) -> DrumNote | Rest:
     """Validate symbols and return DrumNote or Rest."""
     duration, pitches, accent, is_rest = _interpret_symbols(
@@ -213,7 +197,7 @@ def drum(symbols: str) -> DrumNote | Rest:
     if not pitches:
         # raise ValueError("Drum note must have at least one pitch.")
         pitches={0, 1}
-    return DrumNote(duration, accent, pitches)
+    return DrumNote(duration, accent=accent, pitches=pitches)
 
 
 def drums(notation: str, accent: str = '', beats=4) -> "Part":
@@ -237,7 +221,7 @@ def _light(
         raise ValueError("Light / relay note cannot have pitch or accent.")
     if isinstance(kwargs, Iterator):
         kwargs = next(kwargs)
-    return note_type(duration, kwargs)
+    return note_type(duration, kwargs=kwargs)
 
 
 def _lights(
@@ -251,7 +235,7 @@ def _lights(
         kwargs = ({},)
     kwargs_cycle = cycle(kwargs)
 
-    def create_light(symbols: str) ->LightNote | Rest:
+    def create_light(symbols: str) -> LightNote | Rest:
         """Return concrete LightNote."""
         return _light(note_type, symbols, kwargs_cycle)
     
@@ -278,63 +262,46 @@ def relays(
     return _lights(LightRelayNote, notation, *kwargs, beats=beats)
 
 
-# legacy
-def sequence_measure(
-    symbols: str,
-    count: int,
-    sequence: Callable,
-    special: SpecialParams | None = None,
-    beats: int = 4,
-    **kwargs,
-) -> SequenceMeasure:
-    """Produce a SequenceMeasure."""
-    step_duration, _, _, _ = _interpret_symbols(symbols)
-    return SequenceMeasure(
-        elements=(),
-        beats=beats,
-        sequence=sequence, 
-        kwargs=kwargs,
-        step_duration=step_duration, 
-        count=count, 
-        special=special,
+def _din_note(
+    note_type: type[DinNote],
+    symbols: str, 
+) -> DinNote | Rest:
+    """Validate symbols and return concrete DinNote or Rest."""
+    duration, pitches, accent, is_rest = _interpret_symbols(symbols)
+    if is_rest:
+        return rest(symbols)
+    if pitches or accent:
+        raise ValueError("Buzzer / ringer note cannot have pitch or accent.")
+    return note_type(duration)
+
+def _din(
+    note_type: type[DinNote],
+    notation: str, 
+    beats=4,
+) -> Part:
+    """Produce din part from notation."""
+
+    def create_din(symbols: str) -> DinNote | Rest:
+        """Return concrete DinNote."""
+        return _din_note(note_type, symbols)
+
+    return part(
+        *_interpret_notation(create_din, notation, beats)
     )
 
-# legacy
-def sequences(
-        notation: str, 
-        *sequences: Sequence,
-        beats=4,
+
+def buzzer(
+    notation: str, 
+    beats=4,
 ) -> Part:
-    """Produce sequence part from notation."""
+    """Produce buzzer part from notation."""
+    return _din(BuzzerNote, notation, beats=beats)
 
-    def sequence_gen() -> Iterator[Sequence]:
-        """Return each sequence in order."""
-        for sequence in sequences:
-            for _ in range(sequence.measure_count):
-                yield sequence
-        while True:
-            yield sequence
 
-    def create_note(symbol: str) -> ActionNote | Rest:
-        """Return ActionNote for symbol and next pattern in sequence."""
-        return action(
-            symbol, 
-            relay(
-                next(sequence.iter), 
-                sequence.special,
-            ),
-        )
-    
-    each_sequence = sequence_gen()
-    measures = []
-    for notation in _each_notation_measure(notation):
-        sequence = next(each_sequence)
-        measure_tuple = _interpret_notation(
-            create_note, 
-            notation, 
-            beats,
-        )
-        assert len(measure_tuple) == 1
-        measures.append(measure_tuple[0])
-    return part(*measures)
+def ringer(
+    notation: str, 
+    beats=4,
+) -> Part:
+    """Produce ringer part from notation."""
+    return _din(RingerNote, notation, beats=beats)
 

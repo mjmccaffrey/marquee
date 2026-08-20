@@ -1,37 +1,67 @@
-"""Marquee Lighted Sign Project - music_implementation"""
+"""Marquee Lighted Sign Project - music_processing"""
 
-from collections.abc import Callable
 from dataclasses import replace
+from functools import partial
 import logging
 import time
-from typing import Any, Iterator
+from typing import Any, cast, Iterator
 
-from devices.specialparams import ActionParams, SpecialParams
-from task import Task
-from modes.abstract.mode import Mode
-from .music_elements import (
-    ActionNote, BaseNote, Element, Measure, NoteGroup,
-    Part, Rest, SequenceMeasure,
-)
+from devices.devices_misc import DeviceSet
+from modes import Mode
+from .music_elements import Note, Element, ScheduledNote, Rest
+from .music_collections import Measure, NoteGroup, Part, Section, Piece
+from task import Task, TaskSchedule
+
 
 log = logging.getLogger('marquee.' + __name__)
-mode: Mode  # See music_interface._set_mode
 
 
-def prepare_parts(parts: tuple[Part, ...]) -> tuple[Measure, ...]:
-    """Process parts within Section.
-       Expand SequenceMeasures.
-       Make all parts the same length.
-       Merge parts into single sequence of Measures."""
-    for part in parts:
-        expand_sequence_measures(part.measures)
-        validate_measures(part.measures)
-    equalize_part_lengths(parts)
-    concurrent_measures = zip(*(part.measures for part in parts))
-    return tuple(
-        merge_concurrent_measures(measure_set)
-        for measure_set in concurrent_measures
+def play_measures(
+        measures: tuple[Measure, ...], 
+        delay: float, 
+        tempo: int,
+        schedule: TaskSchedule,
+        owner: Mode,
+) -> float:
+    """Convert measures to tasks, add to task queue.
+       Return the # of seconds from start when playing the last measure
+       will be finished, i.e. when a repeat or the next 
+       section of music could start."""
+    bps = tempo / 60
+    start = time.time() + delay
+    tasks = tasks_in_measures(measures, bps, start, owner)
+    schedule.bulk_add(tasks)
+    result = measures[0].beats * len(measures) / bps
+    return result
+
+def measure(*elements: Element, beats: int = 4) -> Measure:
+    """Produce Measure."""
+    return Measure(elements, beats=beats)
+
+
+def part(*measures: Measure, accent: int = 0) -> Part:
+    """Produce Part."""
+    return Part(measures, accent)
+
+
+def section(
+    *parts: Part,
+    beats: int = 4,
+    tempo: int = 60,
+) -> Section:
+    """Produce Section."""
+    return Section(
+        parts, 
+        beats=beats,
+        tempo=tempo,
     )
+
+
+def piece(
+    *groups: Section | Part,
+) -> Piece:
+    """Produce Piece."""
+    return Piece(groups)
 
 
 def equalize_part_lengths(parts: tuple[Part, ...]) -> None:
@@ -51,7 +81,7 @@ def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
     """Convert measure from each part into single measure
     of (non-rest) notes with 0 duration, padded with rests."""
 
-    def get_concurrent_notes(beat: float) -> list[BaseNote]:
+    def get_concurrent_notes(beat: float) -> list[Note]:
         """Return all notes occuring on beat."""
         result = []
         for i, _ in enumerate(measures):
@@ -60,13 +90,13 @@ def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
                 if element is None:
                     beat_next[i] = None
                 else:
-                    assert isinstance(element, BaseNote)
+                    assert isinstance(element, Note)
                     beat_next[i] = beat + element.duration
                     if not isinstance(element, Rest):
                         result.append(replace(element, duration=0))
         return result
 
-    def convert_concurrent_notes(concurrent: list[BaseNote]) -> Element | None:
+    def convert_concurrent_notes(concurrent: list[Note]) -> Element | None:
         """Return > 1 notes as NoteGroup, 
             1 note as itself, and 0 notes as None."""
         if len(concurrent) > 1:
@@ -102,55 +132,83 @@ def merge_concurrent_measures(measures: tuple[Measure, ...]) -> Measure:
     return Measure(tuple(elements_out), beats=beats)
 
 
-def expand_sequence_measures(measures: tuple[Measure, ...]) -> None:
-    """Populate SequenceMeasures with ActionNotes."""
-    sequence_measures = (
-        m for m in measures if isinstance(m, SequenceMeasure)
-    )
-    for measure in sequence_measures:
+def resource_assignments(
+    element: Element, 
+    devices: DeviceSet,
+    schedule: TaskSchedule,
+) -> dict[str, Any]:
+    """Return dict of attribute assignments."""
+    note = cast(Note, element)
+    result = dict(instrument=devices[note.instrument.device])
+    if isinstance(note, ScheduledNote):
+        result |= dict(schedule=schedule)
+    return result
+
+
+def assign_resources(
+    measures: tuple[Measure, ...], 
+    devices: DeviceSet,
+    schedule: TaskSchedule,
+) -> None:
+    """"""
+    for measure in measures:
         elements = tuple(
-            ActionNote(
-                duration=measure.step_duration,
-                action=_relay(
-                    next(measure.patterns),
-                    measure.special,
-                ),
-            )
-            for _ in range(measure.count)
+            replace(e, **resource_assignments(e, devices, schedule))
+            for e in measure.elements
         )
         object.__setattr__(measure, 'elements', elements)
 
 
-def validate_measures(measures: tuple[Measure, ...]) -> None:
-    """Confirm that measures are ready to play."""
-    assert all(
-        isinstance(element, BaseNote)
-        for measure in measures
-        for element in measure.elements
+def prepare_parts(
+    parts: tuple[Part, ...], 
+    devices: DeviceSet,
+    schedule: TaskSchedule,
+) -> tuple[Measure, ...]:
+    """Process parts: prepare measures; make each part the same
+       number of measures; merge parts into single sequence of Measures."""
+    for part in parts:
+        prepare_measures(part.measures, devices, schedule)
+    equalize_part_lengths(parts)
+    concurrent_measures = zip(*(part.measures for part in parts))
+    return tuple(
+        merge_concurrent_measures(measure_set)
+        for measure_set in concurrent_measures
     )
+
+
+def prepare_measures(
+    measures: tuple[Measure, ...],
+    devices: DeviceSet,
+    schedule: TaskSchedule,
+) -> tuple[Measure, ...]:
+    """Assign an instrument to each note.
+       Confirm that measures are ready to play."""
+    assign_resources(measures, devices, schedule)
     # assert all(
     #     sum(note.duration) <= measure.beats  # type: ignore
     #     for measure in measures
     #     for note in measure.elements
     # )
+    return measures
 
 
 def tasks_in_measure(
     measure: Measure, 
     bps: float, 
     start: float,
+    owner: object,
 ) -> list[Task]:
     """Return tasks for all notes in measure."""
     beat = 0.0 
     result = []
     for element in measure.elements:
-        assert isinstance(element, (BaseNote, NoteGroup))
+        assert isinstance(element, (Note, NoteGroup))
         if not isinstance(element, Rest):
             result.append(
                 Task(
                     due = start + beat / bps,
-                    action = element.play,
-                    owner = mode,
+                    action = partial(element.play, bps),
+                    owner = owner,
                 )
             )
         beat += element.duration
@@ -163,11 +221,12 @@ def tasks_in_measures(
     measures: tuple[Measure, ...], 
     bps: float,
     start: float,
+    owner: object,
 ) -> list[Task]:
     """Return tasks for all notes in all measures."""
     duration = measures[0].beats / bps
     tasks_by_measure = (
-        tasks_in_measure(measure, bps, start + i * duration)
+        tasks_in_measure(measure, bps, start + i * duration, owner)
         for i, measure in enumerate(measures)
     )
     tasks_combined = [
@@ -176,37 +235,4 @@ def tasks_in_measures(
         for task in measure
     ]
     return tasks_combined
-
-
-def play_measures(
-        measures: tuple[Measure, ...], 
-        delay: float, 
-        tempo: int,
-) -> float:
-    """Convert measures to tasks, add to task queue.
-       Return the # of seconds from start when playing the last measure
-       will be finished, i.e. when a repeat or the next 
-       section of music could start."""
-    bps = tempo / 60
-    start = time.time() + delay
-    tasks = tasks_in_measures(measures, bps, start)
-    mode.tasks.bulk_add(tasks)
-    result = measures[0].beats * len(measures) / bps
-    return result
-
-
-# legacy
-def _relay(
-    pattern: Any,
-    special: SpecialParams | None = None,
-) -> Callable:
-    """Return callable to effect light pattern."""
-    if isinstance(special, ActionParams):
-        result = lambda: special.action(pattern)
-    else:
-        result = lambda: mode.lights.set_relays(
-            light_pattern=pattern,
-            special=special,
-        )
-    return result
 

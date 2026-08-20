@@ -9,9 +9,9 @@ from typing import Any, cast, NoReturn
 from typing_extensions import override
 
 from devices.color import ColorSets
-from devices.deviceset import DeviceSet
 from devices.devices_misc import (
     ButtonAction, ButtonActionException, ButtonName,
+    DeviceSet,
 )
 from event import EventSystem
 from modes.abstract.mode import Mode
@@ -81,16 +81,12 @@ class Player:
             speed_factor=self.speed_factor,
             create_mode_instance=self.create_mode_instance,
             delete_mode_instance=self.delete_mode_instance,
-            replace_kwarg_values=self.replace_kwarg_values,
             events=self.events,
             tasks=self.tasks,
             modes=self.modes,
             mode_ids=self.mode_ids,
             color_sets=self.color_sets,
             parent=parent,
-        )
-        _kwargs |= (
-            self.replace_kwarg_values(definition.kwargs) | kwargs
         )
         if issubclass(definition.cls, Mode):
             _kwargs |= dict(
@@ -158,19 +154,6 @@ class Player:
         fg_mode = self.foreground_mode_instance()
         if fg_mode is not None:
             return mode.button_action(button)
-
-    def replace_kwarg_values(self, kwargs: dict[str, Any]) -> dict[str, Any]:
-        """Replace variables with current runtime values."""
-        vars: dict[str, Any] = {
-            'LIGHT_PATTERN': self.devices.lights.relay_pattern,
-        }
-        fg_mode = self.foreground_mode_instance()
-        if fg_mode is not None:
-            vars['PREVIOUS_MODE'] = fg_mode.index
-        return {
-            k: vars[v] if isinstance(v, str) and v in vars else v
-            for k, v in kwargs.items()
-        }
 
     def wait(
         self, 

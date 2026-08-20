@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from enum import auto, StrEnum
+from typing import Any
 
 
 class ButtonName(StrEnum):
@@ -21,6 +22,22 @@ class ButtonAction(StrEnum):
     HELD = auto()
     PRESSED = auto()
     RELEASED = auto()
+
+class Device(StrEnum):
+    """"""
+    BELLS = auto()
+    CONTROLS = auto()
+    DRUMS = auto()
+    LIGHTS = auto()
+    EXTRA = auto()
+    COMBINED = auto()
+    CLICKER = auto()
+    RINGER = auto()
+    BUZZER = auto()
+    JOYSTICK = auto()
+    TILTS = auto()
+
+type DeviceSet = dict[Device, Any]
 
 @dataclass
 class ButtonActionException(Exception):

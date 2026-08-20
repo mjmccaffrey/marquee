@@ -6,9 +6,9 @@ from typing_extensions import override
 
 from device_defs import ALL_ON
 from . import MusicMode
-from music import lights, measure, part, rest, section, Section, piece
-from music import action, actions, drums, rest 
-from .structural.sequences import *
+from music import section, Section, piece
+from music import buzzer, drums, lights, ringer
+# from .structural.sequences import *
 
 @dataclass
 class Rhythm(MusicMode):
@@ -28,14 +28,15 @@ class Rhythm(MusicMode):
     @override
     def execute(self) -> None:
         """"""
-        piece(
+        music = piece(
             self.init(),
             self.section_a(bell=True),
             self.section_a(bell=False),
             self.buzzer_measure(),
             self.section_b(),
             self.ringer_measure(),
-        ).play(tempo=140)
+        )
+        self.play(music, tempo=140)
         self.lights.set_channels(brightness=0, transition=8.0)
 
     def init(self) -> Section:
@@ -50,58 +51,66 @@ class Rhythm(MusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝅘𝅥𝅱 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀 𝅁
         return section(
             drums(
-                '  |  ♩ ♩ ♩ ♩  |  ♩> ♩ ♩ ♩  |  𝄾 ♪ ♪ ♪ ♪> ♪ ♪ ♪  |  ♩> ♩ ♩ ♩  |  '
-                '  |  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  |  ♩> ♩ ♩ ♩  |  '
-                '  |  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 '
-                '     3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  |  ♩> ♩ ♩ ♩  |  ',
+                ' |  ♩ ♩ ♩ ♩  |  ♩> ♩ ♩ ♩  |  𝄾 ♪ ♪ ♪ ♪> ♪ ♪ ♪  |  ♩> ♩ ♩ ♩  | '
+                ' |  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  |  ♩> ♩ ♩ ♩  | '
+                ' |  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 '
+                '    3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  |  ♩> ♩ ♩ ♩  | ',
                 accent='-',
             ),
             lights(
                 ' |  ♩  | ' * 8,
                 *[self.random_color() for _ in range(8)]
             ),
-            actions(
-                ' |  𝄻 |  ' * 7 + 
-                ' |  𝄽 𝄽 𝄽 𝅘𝅥𝅲 𝅘𝅥𝅲 | ',
-                self.ringer.play if bell else lambda: None,
-                self.ringer.rest if bell else lambda: None,
+            ringer(
+                ' |  𝄻 | ' * 7 + 
+                ' |  𝄽 𝄽 𝄽 ' + ('𝅘𝅥𝅲' if bell else '𝅁')
             ),
+            # actions(
+            #     ' |  𝄻 |  ' * 7 + 
+            #     ' |  𝄽 𝄽 𝄽 𝅘𝅥𝅲 𝅘𝅥𝅲 | ',
+            #     self.ringer.play if bell else lambda: None,
+            #     self.ringer.rest if bell else lambda: None,
+            # ),
         )
 
     def buzzer_measure(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            part(
-                measure(
-                    # 1
-                    rest('𝄾'),
-                    # and
-                    action('𝅘𝅥𝅯', self.buzzer.play),
-                    action('𝅘𝅥𝅯', self.buzzer.rest),
-                    # 2
-                    action('♪', self.buzzer.play),
-                    action('♪', self.buzzer.rest),
-                    # 3
-                    action('♪', self.buzzer.play),
-                    action('♪', self.buzzer.rest),
-                    # and
-                    action('𝅘𝅥𝅯', self.buzzer.play),
-                    action('𝅘𝅥𝅯', self.buzzer.rest),
-                    # a
-                    action('𝅘𝅥𝅯', self.buzzer.play),
-                    action('𝅘𝅥𝅯', self.buzzer.rest),
-                )
-            )
+            buzzer(' |  𝄾 𝅘𝅥𝅯 𝄿   ♪ 𝄾   ♪ 𝄾   𝅘𝅥𝅯 𝄿 𝅘𝅥𝅯 𝄿  | '),
+            # part(
+            #     measure(
+            #         # 1
+            #         rest('𝄾'),
+            #         # and
+            #         action('𝅘𝅥𝅯', self.buzzer.play),
+            #         action('𝅘𝅥𝅯', self.buzzer.rest),
+            #         # 2
+            #         action('♪', self.buzzer.play),
+            #         action('♪', self.buzzer.rest),
+            #         # 3
+            #         action('♪', self.buzzer.play),
+            #         action('♪', self.buzzer.rest),
+            #         # and
+            #         action('𝅘𝅥𝅯', self.buzzer.play),
+            #         action('𝅘𝅥𝅯', self.buzzer.rest),
+            #         # a
+            #         action('𝅘𝅥𝅯', self.buzzer.play),
+            #         action('𝅘𝅥𝅯', self.buzzer.rest),
+            #     )
+            # )
         )
 
     def ringer_measure(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            actions(
-                ' |  𝅗𝅥 𝅗𝅥  | ',
-                self.ringer.play,
-                self.ringer.rest,
-            )
+            ringer(
+                ' |  𝅗𝅥 𝄼  | ',
+            ),
+            # actions(
+            #     ' |  𝅗𝅥 𝅗𝅥  | ',
+            #     self.ringer.play,
+            #     self.ringer.rest,
+            # )
         )
 
     def section_b(self) -> Section:

@@ -5,11 +5,14 @@ from dataclasses import dataclass
 import logging
 import pygame
 
-from devices.deviceset import DeviceSet
+from devices.devices_misc import DeviceSet, Device
+from devices.joystick import Joystick
 from devices.specialparams import SpecialParams
 from .basemode import BaseMode
-from instruments.combinedlightset import CombinedLightSet
-from instruments.lightsetinterface import LightSetInterface
+from instruments import (
+    Buzzer, BellSet, ClickSet, DrumSet, 
+    LightSet, LightSetInterface, Ringer,
+)
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -25,9 +28,16 @@ class Mode(BaseMode, ABC):
     def __post_init__(self):
         """"""
         pygame.mixer.init()
-        (   self.buttons, self.drums, 
-            self.lights, self.extra, self.combined,
-            self.clicker, self.ringer, self.buzzer, 
-            self.joystick, self.tilts,
-        ) = self.devices.astuple()
+        # Assign critical devices
+        self.buttons = self.devices[Device.CONTROLS]
+        self.lights: LightSet = self.devices[Device.LIGHTS]
+        self.extra: LightSet = self.devices[Device.EXTRA]
+        self.combined: LightSet = self.devices[Device.COMBINED]
+        self.clicker: ClickSet = self.devices[Device.CLICKER]
+        # Not assigned: bells, drums, ringer, buzzer, joystick, tilts
+        self.bells: BellSet
+        self.drums: DrumSet
+        self.buzzer: Buzzer
+        self.joystick: Joystick
+        self.ringer: Ringer
 

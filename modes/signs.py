@@ -2,12 +2,9 @@
 
 from typing_extensions import override
 
-from device_defs import ALL_OFF, ALL_ON
-from . import MusicMode, all_on, blink_all, random_each
-from music import (
-    actions, bells, drums, lights,
-    dimmer_sequence_flip, piece, section, Section, sequence,
-)
+from . import MusicMode
+from music import lights, piece
+
 import pygame
 
 
@@ -20,9 +17,9 @@ class Signs(MusicMode):
         pygame.mixer.music.load('modes/signs_3.wav')
         self.lights = self.combined
         self.lights.set_channels(on=False, transition=0.0)
-        self.schedule(action=self.play, due=0.25)
+        self.schedule(action=self.perform, due=0.25)
 
-    def play(self):
+    def perform(self):
         """Play music and lights."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         pygame.mixer.music.play()
@@ -60,10 +57,11 @@ class Signs(MusicMode):
                 transition=6.0,
             ),
         ]
-        piece(
+        music = piece(
             lights(
                 ' | ♩  ♩  ♩  𝅘𝅥𝅲 𝅘𝅥𝅲 𝅁 𝅀 𝄿 𝄾 | 𝄻 | 𝅝 | ', 
                 *sequence,
             ),
-        ).play(tempo=75)
+        )
+        self.play(music, tempo=75)
 

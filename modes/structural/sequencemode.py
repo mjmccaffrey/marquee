@@ -53,7 +53,6 @@ class SequenceMode(PerformanceMode):
             self.color_sets.lookup(color_set_name)
             if color_set_name is not None else None
         )
-        self.sequence_kwargs = self.replace_kwarg_values(self.sequence_kwargs)
         if self.lights.smart_bulbs and self.special is None:
             log.info("SequenceMode: emulating incandescent.")
             self.special = EmulateParams()
@@ -67,7 +66,6 @@ class SequenceMode(PerformanceMode):
         """Execute sequence with delay seconds between steps.
            If stop is specified, end the sequence 
            just before the nth pattern."""
-        # self.player.replace_kwarg_values(self.kwargs)
         delay_iter = (
             itertools.cycle(self.delay) 
             if isinstance(self.delay, Iterable) else
