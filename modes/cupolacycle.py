@@ -5,7 +5,6 @@ from itertools import cycle
 import logging
 from typing_extensions import override
 
-from light_defs import EXTRA_CUPOLA
 from . import PerformanceMode
 
 log = logging.getLogger('marquee.' + __name__)
@@ -38,7 +37,7 @@ class CupolaSequence(PerformanceMode):
         assert self.extra is not None
         color = next(self.colors)
         self.extra.set_channels(
-            index=EXTRA_CUPOLA,
+            index=self.lights.CP,
             color=color,
             brightness=self.brightness,
             on=True,

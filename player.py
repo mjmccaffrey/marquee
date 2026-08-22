@@ -10,8 +10,8 @@ from typing_extensions import override
 
 from devices.color import ColorSets
 from devices.devices_misc import (
-    ButtonAction, ButtonActionException, ButtonName,
-    DeviceSet,
+    ControlAction, ControlActionException, Control,
+    Device, DeviceSet,
 )
 from event import EventSystem
 from modes.abstract.mode import Mode
@@ -36,7 +36,7 @@ class Player:
     def __post_init__(self) -> None:
         """Initialize."""
         log.info("Initializing player")
-        self.mode_instances: dict[int, Mode] = {}  # Not children.
+        self.mode_instances: dict[int, Mode] = {}
         self.mode_serial = count()
         signal.signal(signal.SIGTERM, self.sigterm_received)
         self.events = EventSystem()
@@ -71,7 +71,8 @@ class Player:
         kwargs: dict[str, Any] = {},
         parent: Mode | None = None,
     ) -> Mode:
-        """Return a new mode instance."""
+        """Return a new mode instance.
+           Does not update self.mode_instances."""
         assert (mode_index is None) ^ (mode_definition is None)
         definition = mode_definition or self.modes[cast(int, mode_index)]
         _kwargs: dict[str, Any] = dict(
@@ -96,14 +97,18 @@ class Player:
         return definition.cls(**_kwargs)
 
     def delete_mode_instance(self, mode_index: int) -> None:
-        """"""
-        try:
-            mode = self.mode_instances[mode_index]
-            print(f'Deleting mode {mode.name}')
-            del self.mode_instances[mode_index]
-            self.tasks.delete_owned_by(mode)
-        except KeyError:
-            pass
+        """Delete the instance of mode_index, along
+           with any mode instances with instance as parent."""
+        mode = self.mode_instances[mode_index]
+        # Delete children of specified.
+        for instance in self.mode_instances.values():
+            if instance.parent == mode:
+                self.delete_mode_instance(instance.index)
+        # Delete specified.
+        print(f'Deleting mode {mode.name} with parent {mode.parent}')
+        mode.close()
+        del self.mode_instances[mode_index]
+        self.tasks.delete_owned_by(mode)
 
     def effect_new_mode(self, mode_index: int):
         """Create new mode instance, clean up old, etc."""
@@ -132,28 +137,28 @@ class Player:
                     self.effect_new_mode(new_mode_index)
                     new_mode_index = None
                 self.wait()
-            except ButtonActionException as press:
-                with suppress(ButtonActionException):
-                    if press.action == ButtonAction.HELD:
+            except ControlActionException as act:
+                with suppress(ControlActionException):
+                    if act.action == ControlAction.BUTTON_HELD:
                         return True
-                    self.devices.buttons.reset()
-                    log.info(f"Button {press.button} {press.action}")
-                    new_mode_index = self.notify_button_action(press.button)
+                    self.devices[Device.CONTROLS].reset()
+                    log.info(f"Button {act.control} {act.action}")
+                    new_mode_index = self.notify_control_action(act.control)
             except ChangeMode as cm:
                 log.debug("ChangeMode caught")
                 new_mode_index, = cm.args
             except SigTerm:
                 return False
 
-    def notify_button_action(self, button: ButtonName) -> int | None:
+    def notify_control_action(self, control: Control) -> int | None:
         """Notify all background modes, and active mode, 
-           of button action. Return FG active mode's response."""
+           of control action. Return FG active mode's response."""
         for mode in self.mode_instances.values():
             if mode.background:
-                mode.button_action(button)
+                mode.control_action(control)
         fg_mode = self.foreground_mode_instance()
         if fg_mode is not None:
-            return mode.button_action(button)
+            return mode.control_action(control)
 
     def wait(
         self, 
@@ -163,11 +168,11 @@ class Player:
            If seconds is None, wait indefinitely (in this case,
            the current mode instance will never be returned to).
            While waiting, execute any tasks that come due; 
-           any button press will terminate waiting."""
+           any control activity will terminate waiting."""
 
         if seconds is not None:
             seconds *= self.speed_factor
-        self.tasks.wait(seconds, self.devices.buttons.wait)
+        self.tasks.wait(seconds, self.devices[Device.CONTROLS].wait)
 
 
 class SigTerm(Exception):

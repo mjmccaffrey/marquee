@@ -1,8 +1,8 @@
 """Marquee Lighted Sign Project - basemode"""
 
 from abc import ABC, abstractmethod
-from collections.abc import Callable
-from dataclasses import dataclass
+from collections.abc import Callable, Sequence
+from dataclasses import dataclass, field
 import logging
 import sys
 import time
@@ -10,7 +10,7 @@ from typing import Any, NoReturn, Protocol, Self
 from typing_extensions import override
 
 from devices.color import ColorSets
-from devices.devices_misc import ButtonName
+from devices.devices_misc import Control
 from event import EventSystem
 from task import SeqTask, Task, TaskSchedule
 from ..structural.modes_misc import ChangeMode, ModeDefinition
@@ -23,7 +23,7 @@ class BaseMode(ABC):
     """Base for (foreground and background) modes."""
     index: int
     name: str
-    serial: int
+    serial: int  # Unique ID for every instance.
     speed_factor: float
     create_mode_instance: 'CreateModeInstance'
     delete_mode_instance: 'DeleteModeInstance'
@@ -33,15 +33,32 @@ class BaseMode(ABC):
     mode_ids: dict[str, int]
     color_sets: ColorSets
     parent: Self | None = None
+    children: Sequence[str] = field(default_factory=tuple)
+
+    def __post_init__(self) -> None:
+        """Initialize."""
+        self._create_children()
+
+    def _create_children(self) -> None:
+        """Create child mode(s) specified."""
+        for child in self.children:
+            mode = self.create_mode_instance(
+                mode_index=self.lookup_mode_index(child),
+                parent=self,
+            )
+            print(f"Created mode {child} {mode.index} {mode.name}")
 
     @abstractmethod
-    def button_action(self, button: ButtonName) -> int | None:
+    def control_action(self, control: Control) -> int | None:
         """Respond to button being pressed.
            Return index of new mode, if any."""
 
+    def close(self) -> None:
+        """Clean up before instance is discarded."""
+        print(f"BaseMode close called: {self.name}")
+        
     def execute(self) -> None:
         """Play the mode."""
-        # raise RuntimeError("Method must be overridden.")
 
     @override
     def __repr__(self) -> str:
@@ -144,8 +161,8 @@ class CreateModeInstance(Protocol):
         mode_index: int | None = None,
         mode_definition: ModeDefinition | None = None,
         kwargs: dict[str, Any] = {},
-        parent: BaseMode | None = None,  # !!! BaseMode
-    ) -> BaseMode:  # !!! BackgroundMode | Mode:
+        parent: BaseMode | None = None,
+    ) -> BaseMode:
         ...
 
 class DeleteModeInstance(Protocol):

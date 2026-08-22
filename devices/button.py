@@ -6,10 +6,10 @@ import signal
 from typing import Protocol
 from typing_extensions import override
 
-from gpiozero import Button as _Button
+import gpiozero
 
 from .devices_misc import (
-    ButtonAction, ButtonName, ButtonVirtuallyPressed
+    ControlAction, Control, ControlVirtuallyChanged
 )
 from devices.relaymodule import RelayClient
 
@@ -19,12 +19,12 @@ log = logging.getLogger('marquee.' + __name__)
 @dataclass
 class Button:
     """Supports physical buttons on remote and sign."""
-    name: ButtonName
-    button: _Button
+    name: Control
+    button: gpiozero.Button
     supports_hold: bool = False
     supports_release: bool = False
     signal_number: int | None = None
-    action_in_button_set: 'ButtonActionInterface' = field(init=False)
+    action_in_control_set: 'ButtonActionInterface' = field(init=False)
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -54,20 +54,20 @@ class Button:
 
     def button_physically_held(self) -> None:
         """Callback for physical button hold."""
-        self.action_in_button_set(self.name, ButtonAction.HELD)
+        self.action_in_control_set(self.name, ControlAction.BUTTON_HELD)
 
     def button_physically_pressed(self) -> None:
         """Callback for physical button press."""
-        self.action_in_button_set(self.name, ButtonAction.PRESSED)
+        self.action_in_control_set(self.name, ControlAction.BUTTON_PRESSED)
 
     def button_physically_released(self) -> None:
         """Callback for physical button release."""
-        self.action_in_button_set(self.name, ButtonAction.RELEASED)
+        self.action_in_control_set(self.name, ControlAction.BUTTON_RELEASED)
 
     def button_virtually_pressed(self, signal_number, stack_frame) -> None:
         """Callback for virtual button press."""
         log.info(f"Button <{self}> vitually pressed")
-        raise ButtonVirtuallyPressed(button=self.name, action=ButtonAction.PRESSED)
+        raise ControlVirtuallyChanged(control=self.name, action=ControlAction.BUTTON_PRESSED)
 
 
 @dataclass(kw_only=True)
@@ -89,8 +89,8 @@ class ButtonActionInterface(Protocol):
     """Signature for button to call button set upon action."""
     def __call__(
         self,
-        button: ButtonName,
-        action: ButtonAction
+        control: Control,
+        action: ControlAction
     ) -> None:
         ...
 

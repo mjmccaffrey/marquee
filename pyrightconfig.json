@@ -1,6 +1,6 @@
 {
     "exclude": [
-        "modes/old",
+        "modes/old/*.py",
     ],
     "reportIncompatibleMethodOverride": false,
     "reportIncompatibleVariableOverride": false,

@@ -6,7 +6,7 @@ import logging
 import pygame
 from typing_extensions import override
 
-from devices.devices_misc import ButtonName
+from devices.devices_misc import Control
 from ..abstract.mode import Mode
 from .modes_misc import CycleEntry, CycleSequence
 
@@ -17,7 +17,7 @@ log = logging.getLogger('marquee.' + __name__)
 class ModeCycle(Mode):
     """Execute repeating sequence of modes."""
     background: bool = True
-    sequence: CycleSequence  # (mode_name, seconds)
+    sequence: CycleSequence
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -39,20 +39,20 @@ class ModeCycle(Mode):
     @override
     def execute(self):
         """Change to next mode in sequence. Schedule next next mode."""
-        pygame.mixer.music.stop()  # !!! Move this to player?
         new = next(self.mode_cycle)
         log.info(
             f"Next mode in sequence is {new.name} for {new.seconds} seconds."
         )
-        self.schedule(due=new.seconds)
+        if new.seconds is not None:
+            self.schedule(due=new.seconds)
         self.change_mode(new.index)
-    
+
     @override
-    def button_action(self, button: ButtonName) -> None:
+    def control_action(self, control: Control) -> None:
         """Switch to next mode.
            But first, delete the scheduled task 
            for the timed switch."""
-        if button == ButtonName.CORDED_A:
+        if control == Control.CORDED_A:
             self.tasks.delete_owned_by(self)
             self.schedule()
 

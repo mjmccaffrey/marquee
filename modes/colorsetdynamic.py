@@ -19,7 +19,7 @@ class ColorSetDynamic(ColorSetMode):
     """Play repeating sequence of color sets.
        If mask is specified, it will rotate.
        Otherwise, pattern will rotate."""
-    sequence: InitVar[CycleSequence]  # (color_set_name, seconds)
+    sequence: InitVar[CycleSequence]
     brightness: int | None = None
     transition: float = 0.0
     pattern: str
@@ -52,7 +52,8 @@ class ColorSetDynamic(ColorSetMode):
             f"for {entry.seconds} seconds "
             f"({self.entry_index + 1} / {len(self.entries)})."
         )
-        self.schedule(due=entry.seconds)
+        if entry.seconds is not None:
+            self.schedule(due=entry.seconds)
         kwargs: dict[str, Any] = dict(
             baseline=LightSetBaseline(on=False),
             color_set_name=entry.name,

@@ -4,7 +4,6 @@ from dataclasses import InitVar, dataclass
 import logging
 from typing_extensions import override
 
-from light_defs import EXTRA_CUPOLA
 from . import ColorSetMode, CycleSequence
 
 log = logging.getLogger('marquee.' + __name__)
@@ -13,7 +12,7 @@ log = logging.getLogger('marquee.' + __name__)
 @dataclass(kw_only=True)
 class ColorSetStatic(ColorSetMode):
     """Play repeating sequence of color sets."""
-    sequence: InitVar[CycleSequence]  # (color_set_name, seconds)
+    sequence: InitVar[CycleSequence]
     brightness: int | None = None
     transition: float = 0.0
 
@@ -49,5 +48,6 @@ class ColorSetStatic(ColorSetMode):
             transition=self.transition, 
             **kwargs,  # type: ignore
         )
-        self.schedule(due=entry.seconds)
+        if entry.seconds is not None:
+            self.schedule(due=entry.seconds)
 

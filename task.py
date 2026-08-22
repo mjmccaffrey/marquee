@@ -108,18 +108,24 @@ class TaskSchedule:
                     self.pop()
                     return task, 0
                 elif seconds is None or task.due < end:
-                    log.debug(f"Waiting for {task} or button push")
-                    log.debug(f"Waiting for {task.due - now} or button push")
+                    log.debug(f"Waiting for {task} or control activity")
+                    log.debug(f"Waiting for {task.due - now} or control activity")
                     return None, task.due - now
                 else:
-                    log.debug(f"Waiting for remaining {remaining} or button push; schedule not empty")
+                    log.debug(
+                        f"Waiting for remaining {remaining} "
+                         "or control activity; schedule not empty"
+                    )
                     return None, remaining
             else:
                 if seconds is None:
-                    log.debug(f"Waiting for button push")
+                    log.debug(f"Waiting for control activity")
                     return None, None
                 else:
-                    log.debug(f"Waiting for remaining {remaining} or button push; schedule empty")
+                    log.debug(
+                        f"Waiting for remaining {remaining} "
+                         "or control activity; schedule empty"
+                    )
                     return None, remaining
 
         log.debug(f"Waiting {seconds=}")

@@ -76,7 +76,6 @@ class LightController(ABC):
         updates: Sequence['ChannelUpdate'], 
         group: str, 
         force: bool = False,
-        state_only: bool = False,
     ):
         """Update a channel group, rather than individual channels."""
         raise RuntimeError("Method should not have been called.")

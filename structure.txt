@@ -4,7 +4,7 @@ marquee
         Event
         Task
     devices
-        ButtonSet
+        ControlSet
             Button
         LightController
             HueBridge
@@ -54,3 +54,9 @@ marquee
                             NoteGroup
                     SequenceMeasure
                     Sequence
+    Device
+        Control
+        Instrument
+        Clicker
+        Joystick
+        Tilts

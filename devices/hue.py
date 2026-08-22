@@ -131,24 +131,22 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         updates: Sequence['ChannelUpdate'], 
         group: str, 
         force: bool = False,
-        state_only: bool = False,
     ):
         """Update all zones in the specified group."""
         # print(f"Update in: {updates[0]}")
         updates_to_send = self._channel_group_updates(updates, force)
         # print(f"Update out: {updates_to_send}")
 
-        if not state_only:
-            command = updates[0].channel._make_set_command(updates_to_send)
-            for i, id in enumerate(self.zone_ids[group]):
-                response = self.session.put(
-                    url=f'https://{self.ip_address}'
-                        f'/clip/v2/resource/grouped_light/{id}',
-                    json=command.params,
-                    timeout=2.0,
-                )
-                # print(f"{group=} {i=} {command.params}")
-                response.raise_for_status()
+        command = updates[0].channel._make_set_command(updates_to_send)
+        for i, id in enumerate(self.zone_ids[group]):
+            response = self.session.put(
+                url=f'https://{self.ip_address}'
+                    f'/clip/v2/resource/grouped_light/{id}',
+                json=command.params,
+                timeout=2.0,
+            )
+            # print(f"{group=} {i=} {command.params}")
+            response.raise_for_status()
         for index in self.groups[group]:
             channel = self.channels[index]
             channel.update_state(replace(updates_to_send, channel=channel))
