@@ -20,7 +20,7 @@ class ControlSet:
     corded_b: Button
     corded_c: Button
     game_start: LightedButton
-    rotary_a: gpiozero.RotaryEncoder
+    # rotary_a: gpiozero.RotaryEncoder
 
     def __post_init__(self):
         """Initialize control set."""
