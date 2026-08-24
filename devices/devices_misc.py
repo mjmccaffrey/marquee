@@ -34,7 +34,7 @@ class Device(StrEnum):
     JOYSTICK = auto()
     TILTS = auto()
 
-type DeviceSet = dict[Device, Any]
+DeviceSet = dict[Device, Any]
 
 @dataclass
 class ControlActionException(Exception):
