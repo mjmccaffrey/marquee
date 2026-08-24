@@ -34,6 +34,8 @@ class CombinedLightSet:
     ) -> list[int] | None:
         """Return normalized index list.  If index is None, 
            return complete index list in scattered order."""
+        print(index)
+        print(type(index))
         match index:
             case Sequence():
                 result = list(index)
