@@ -77,7 +77,6 @@ class ReleasableNote(Note, ScheduledNote, ABC):
     """Note that involves releasing after playing."""
     instrument: ReleaseableInstrument = field(init=False)
 
-    @abstractmethod
     def release(self) -> None:
         """Release note."""
         self.instrument.release()
