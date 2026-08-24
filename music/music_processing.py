@@ -139,7 +139,9 @@ def resource_assignments(
 ) -> dict[str, Any]:
     """Return dict of attribute assignments."""
     note = cast(Note, element)
-    result = dict(instrument=devices[note.instrument.device])
+    result = dict(
+        instrument=devices[note.instrument.device]
+    )
     if isinstance(note, ScheduledNote):
         result |= dict(schedule=schedule)
     return result

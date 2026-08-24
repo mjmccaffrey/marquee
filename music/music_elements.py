@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 import logging
 from typing_extensions import override
 
+from devices.devices_misc import Device
 from instruments import (
     Instrument, BellSet, DrumSet, LightSet, ReleaseableInstrument,
 )
@@ -21,6 +22,7 @@ class Element(ABC):
 @dataclass(frozen=True)
 class Note(Element, ABC):
     """Base for all musical notes."""
+    device: Device
     duration: float = 0.0
     instrument: Instrument = field(init=False)
     duration_original: float = field(init=False)
@@ -38,6 +40,8 @@ class Note(Element, ABC):
 @dataclass(frozen=True, kw_only=True)
 class ActionNote(Note):
     """Note to execute arbitrary actions."""
+    device: None = field(init=False)
+    instrument: None = field(init=False)
     action: Callable[[], None]
 
     @override
@@ -49,6 +53,7 @@ class ActionNote(Note):
 @dataclass(frozen=True)
 class Rest(Note):
     """Musical rest."""
+    device: None = field(init=False)
     instrument: None = field(init=False)
 
     @override
@@ -106,7 +111,9 @@ class BellNote(ReleasableNote, PitchedNote):
 @dataclass(frozen=True)
 class DrumNote(Note, AccentedNote, PitchedNote):
     """Note to sound relays."""
+    device: Device = field(init=False, default=Device.DRUMS)
     instrument: DrumSet = field(init=False)
+
 
     @override
     def play(self, bps: float) -> None:
@@ -117,6 +124,7 @@ class DrumNote(Note, AccentedNote, PitchedNote):
 @dataclass(frozen=True, kw_only=True)
 class LightNote(Note, ABC):
     """Base for Channel and Relay notes."""
+    device: Device = field(init=False, default=Device.LIGHTS)
     instrument: LightSet = field(init=False)
     kwargs: dict
 
@@ -146,6 +154,7 @@ class LightChannelNote(LightNote):
 @dataclass(frozen=True)
 class DinNote(ReleasableNote):
     """Note to play and rest a buzzer, ringer, etc."""
+    device: Device = field(init=False)
 
     @override
     def play(self, bps: float) -> None:
@@ -157,9 +166,11 @@ class DinNote(ReleasableNote):
 @dataclass(frozen=True)
 class BuzzerNote(DinNote):
     """"""
+    device: Device = field(init=False, default=Device.BUZZER)
 
 
 @dataclass(frozen=True)
 class RingerNote(DinNote):
     """"""
+    device: Device = field(init=False, default=Device.RINGER)
 
