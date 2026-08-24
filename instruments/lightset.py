@@ -296,6 +296,8 @@ class LightSet:
     ) -> list[int]:
         """Return normalized index list.  If index is None, 
            return complete index list in scattered order."""
+        print(index)
+        print(type(index))
         match index:
             case tuple() if not index:
                 result = list(range(self.count))
