@@ -42,10 +42,10 @@ class Mode(BaseMode, ABC):
           ]  # Kludge.
         # Type annotate non-critical devices
         self.bells: BellSet
-        self.drums: DrumSet
-        self.buzzer: Buzzer
-        self.joystick: Joystick
-        self.ringer: Ringer
+        self.drums: DrumSet = self.devices[Device.DRUMS]
+        self.buzzer: Buzzer = self.devices[Device.BUZZER]
+        self.joystick: Joystick = self.devices[Device.JOYSTICK]
+        self.ringer: Ringer = self.devices[Device.RINGER]
 
     @override
     def close(self) -> None:
