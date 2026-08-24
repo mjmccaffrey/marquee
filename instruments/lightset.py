@@ -98,7 +98,7 @@ class LightSet:
         color: Sequence[Color | None] | Color | None = None,
         on: Sequence[int | bool | str | None] | bool | int | None = None,
         transition: Sequence[float | None] | float | None = None,
-        index: Sequence[int] | int = field(default_factory=tuple),
+        index: Sequence[int] | int = (),
         group: str = "",
         force: bool = False,
     ) -> None:
