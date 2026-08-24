@@ -15,7 +15,7 @@ class Control(StrEnum):
     ROTARY_A = auto()
 
 class ControlAction(StrEnum):
-    """Every button action."""
+    """Every control action."""
     BUTTON_HELD = auto()
     BUTTON_PRESSED = auto()
     BUTTON_RELEASED = auto()
