@@ -29,17 +29,17 @@ class Mode(BaseMode, ABC):
     def __post_init__(self):
         """"""
         pygame.mixer.init()
+        # Assign critical devices
+        self.controls = self.devices[Device.CONTROLS]
+        self.lights: LightSet = self.devices[Device.LIGHTS]
+        self.extra: LightSet = self.devices[Device.EXTRA]
+        self.clicker: ClickSet = self.devices[Device.CLICKER]
+        self.combined: LightSet = self.devices[Device.COMBINED]
         self.combined.channels = [
             channel
             for lightset in (self.lights, self.extra)
             for channel in lightset.channels
           ]  # Kludge.
-        # Assign critical devices
-        self.controls = self.devices[Device.CONTROLS]
-        self.lights: LightSet = self.devices[Device.LIGHTS]
-        self.extra: LightSet = self.devices[Device.EXTRA]
-        self.combined: LightSet = self.devices[Device.COMBINED]
-        self.clicker: ClickSet = self.devices[Device.CLICKER]
         # Type annotate non-critical devices
         self.bells: BellSet
         self.drums: DrumSet
