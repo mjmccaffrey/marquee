@@ -112,6 +112,7 @@ class Player:
 
     def effect_new_mode(self, mode_index: int):
         """Create new mode instance, clean up old, etc."""
+        print("EFFECTING", mode_index)
         # Create new mode instance
         new_mode = self.create_mode_instance(mode_index)
         if new_mode.background:
