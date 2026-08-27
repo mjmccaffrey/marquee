@@ -13,12 +13,12 @@ from enum import IntEnum
 from itertools import cycle
 import logging
 
-from .music_elements import (
+from .music_concrete import (
     ActionNote, Note, BellNote, DrumNote, 
     LightNote, LightChannelNote, LightRelayNote,
     DinNote, BuzzerNote, RingerNote, Rest,
+    Measure, Part,
 )
-from .music_collections import Measure, Part
 from .music_processing import part
 
 log = logging.getLogger('marquee.' + __name__)
@@ -125,7 +125,7 @@ def rest(symbols: str) -> Rest:
     duration, pitches, accent, is_rest = _interpret_symbols(symbols)
     if pitches or accent:
         raise ValueError("Rest cannot have pitch or accent.")
-    return Rest(duration)
+    return Rest(duration=duration)
 
 
 def action(
@@ -175,7 +175,7 @@ def bell(symbols: str) -> BellNote | Rest:
         raise ValueError("Bell note cannot have accent.")
     if not pitches:
         raise ValueError("Bell note must have at least one pitch.")
-    return BellNote(duration, pitches=pitches)
+    return BellNote(duration=duration, pitches=pitches)
 
 
 def bells(notation: str, beats=4) -> Part:
@@ -197,7 +197,7 @@ def drum(symbols: str) -> DrumNote | Rest:
     if not pitches:
         # raise ValueError("Drum note must have at least one pitch.")
         pitches={0, 1}
-    return DrumNote(duration, accent=accent, pitches=pitches)
+    return DrumNote(duration=duration, accent=accent, pitches=pitches)
 
 
 def drums(notation: str, accent: str = '', beats=4) -> "Part":
@@ -221,7 +221,7 @@ def _light(
         raise ValueError("Light / relay note cannot have pitch or accent.")
     if isinstance(kwargs, Iterator):
         kwargs = next(kwargs)
-    return note_type(duration, kwargs=kwargs)
+    return note_type(duration=duration, kwargs=kwargs)
 
 
 def _lights(
@@ -272,7 +272,7 @@ def _din_note(
         return rest(symbols)
     if pitches or accent:
         raise ValueError("Buzzer / ringer note cannot have pitch or accent.")
-    return note_type(duration)
+    return note_type(duration=duration)
 
 def _din(
     note_type: type[DinNote],
