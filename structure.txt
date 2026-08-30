@@ -54,8 +54,8 @@ marquee
                             NoteGroup
                     SequenceMeasure
                     Sequence
-    Device
-        Control
+    DeviceName
+        ControlName
         Instrument
         Clicker
         Joystick

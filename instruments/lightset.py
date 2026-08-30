@@ -6,6 +6,7 @@ from enum import IntEnum
 import logging
 import time
 from typing import Any, cast, TYPE_CHECKING
+from typing_extensions import override
 
 from devices import rgbxy
 
@@ -13,14 +14,16 @@ from devices.color import Color, Colors, RGB
 from devices.bulb import SmartBulb
 from devices.lightcontroller import ChannelUpdate, LightChannel, LightController
 from devices.relaymodule import RelayClient
+from devices.device_schemas import DeviceName
 from devices.specialparams import ChannelParams, MirrorParams, SpecialParams
 from .lightsetinterface import SavedState
+from .instruments_abstract import Instrument
 
 log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass
-class LightSet:
+class LightSet(Instrument):
     """Supports all of the light-related devices."""
     count: int
     relays: RelayClient | None
@@ -30,6 +33,7 @@ class LightSet:
     brightness_factor_init: InitVar[float]
     channel_enum: InitVar[type[IntEnum]]
     speed_factor: float
+    device: DeviceName = DeviceName.LIGHTS
 
     if TYPE_CHECKING:
         def __getattr__(self, name: str) -> IntEnum: ...
@@ -81,6 +85,11 @@ class LightSet:
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
         self.bulb_adjustments = self.controller.bulb_model.adjustments
+
+    @override
+    def play(self) -> None:
+        """Should never be called."""
+        raise NotImplementedError
 
     def calibrate(self):
         """Calibrate lights, if supported by controller.
@@ -402,18 +411,4 @@ class LightSet:
             case _:
                 result = ("1" if pattern else "0") * self.count
         return result
-
-
-@dataclass
-class ClickSet:
-    """"""
-    relays: RelayClient
-
-    def click(self) -> None:
-        """Click the otherwise unused light relays."""
-        pattern = "".join(
-            "1" if p == "0" else "0" 
-            for p in self.relays.device_pattern
-        )
-        self.relays.set_state_of_devices(pattern)
 

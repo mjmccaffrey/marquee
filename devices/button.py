@@ -8,8 +8,8 @@ from typing_extensions import override
 
 import gpiozero
 
-from .devices_misc import (
-    ControlAction, Control, ControlVirtuallyChanged
+from .device_schemas import (
+    Control, ControlAction, ControlName, ControlVirtuallyChanged
 )
 from devices.relaymodule import RelayClient
 
@@ -17,9 +17,8 @@ log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass
-class Button:
+class Button(Control):
     """Supports physical buttons on remote and sign."""
-    name: Control
     button: gpiozero.Button
     supports_hold: bool = False
     supports_release: bool = False
@@ -89,7 +88,7 @@ class ButtonActionInterface(Protocol):
     """Signature for button to call button set upon action."""
     def __call__(
         self,
-        control: Control,
+        control: ControlName,
         action: ControlAction
     ) -> None:
         ...

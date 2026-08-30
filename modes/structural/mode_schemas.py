@@ -1,8 +1,12 @@
-"""Marquee Lighted Sign Project - modes_misc"""
+"""Marquee Lighted Sign Project - mode_schemas"""
 
 from dataclasses import dataclass, field
 from enum import IntEnum
 from typing import Any
+
+
+class ChangeMode(Exception):
+    """Change mode exception."""
 
 @dataclass
 class CycleEntry:
@@ -11,9 +15,6 @@ class CycleEntry:
     index: int = -1
 
 CycleSequence = list[tuple[str, int | None]]
-
-class ChangeMode(Exception):
-    """Change mode exception."""
 
 @dataclass(kw_only=True)
 class ModeDefinition:

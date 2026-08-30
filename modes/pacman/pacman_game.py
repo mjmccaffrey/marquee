@@ -9,8 +9,10 @@ import pygame
 from typing import cast
 from typing_extensions import override
 
+from devices.button import LightedButton
 from devices.color import Colors, RGB
-from devices.devices_misc import Control, Device
+from devices.device_schemas import ControlName, DeviceName
+from devices.joystick import Joystick
 from ..abstract.gamemode import Entity, EntityGroup, GameMode
 from . import pacman_assets as assets
 from .pacman_assets import (
@@ -71,10 +73,10 @@ class PacManGame(GameMode):
         self.sounds[sound].play()
 
     @override
-    def control_action(self, control: Control) -> int | None:
+    def control_action(self, control: ControlName) -> int | None:
         """Handle Game Start button push."""
         if (
-            control == Control.GAME_START and
+            control == ControlName.GAME_START and
             self.state == GameState.PRE_GAME
         ):
             self.change_state(GameState.PRE_LEVEL_0)
@@ -133,7 +135,7 @@ class PacManGame(GameMode):
             PacMan(
                 game=self, 
                 bite_event=Event.PACMAN_BITE,
-                joystick=self.devices[Device.JOYSTICK],
+                joystick=cast(Joystick, self.devices[DeviceName.JOYSTICK]),
             )
         )
         self.blinky = self.register_entity(
@@ -172,7 +174,9 @@ class PacManGame(GameMode):
     def pre_game_state(self) -> None:
         """Before game starts."""
         log.info("Waiting for Start Game button press")
-        self.controls.game_start.set_light(True)
+        cast(
+            LightedButton, self.controls[ControlName.GAME_START],
+        ).set_light(True)
         self.lights.set_channels(
             on=True,
             brightness=50,

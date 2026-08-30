@@ -1,39 +1,33 @@
 """Marquee Lighted Sign Project - controlset"""
 
-from dataclasses import dataclass
+from collections import UserDict
 import logging
 import threading
-from typing import cast
 
-import gpiozero
-
-from .button import Button, LightedButton
-from .devices_misc import ControlAction, Control, ControlPhysicallyChanged
+from .button import Button
+from .device_schemas import (
+    Control, ControlAction, ControlName, ControlPhysicallyChanged
+)
 
 log = logging.getLogger('marquee.' + __name__)
 
-@dataclass
-class ControlSet:
-    """Every control."""
-    body_back: Button
-    corded_a: Button
-    corded_b: Button
-    corded_c: Button
-    game_start: LightedButton
-    # rotary_a: gpiozero.RotaryEncoder
+class ControlSet(UserDict[ControlName, Control], Control):
+    """Note: Do not modify the dict after creation."""
 
-    def __post_init__(self):
+    def __init__(self, *args, **kwargs):
         """Initialize control set."""
-        log.info(f"Initializing controls")
-        for control in Control:
+        log.info(f"Initializing control set")
+        super().__init__(*args, **kwargs)
+        for control in self.data.values():
+            if not isinstance(control, Control):
+                raise TypeError(control)
             if isinstance(control, Button):
-                button = cast(Button, getattr(self, control))
-                button.action_in_control_set = self.action_in_control_set
+                control.action_in_control_set = self.action
         self.reset()
 
-    def action_in_control_set(
+    def action(
         self, 
-        control: Control, 
+        control: ControlName, 
         action: ControlAction,
     ) -> None:
         """Called by Button that had action."""

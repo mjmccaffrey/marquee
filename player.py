@@ -9,9 +9,9 @@ from typing import Any, cast, NoReturn
 from typing_extensions import override
 
 from devices.color import ColorSets
-from devices.devices_misc import (
-    ControlAction, ControlActionException, Control,
-    Device, DeviceSet,
+from devices.device_schemas import (
+    ControlAction, ControlActionException, ControlName,
+    DeviceName, DeviceSet,
 )
 from event import EventSystem
 from modes.abstract.mode import Mode
@@ -142,7 +142,7 @@ class Player:
                 with suppress(ControlActionException):
                     if act.action == ControlAction.BUTTON_HELD:
                         return True
-                    self.devices[Device.CONTROLS].reset()
+                    self.devices[DeviceName.CONTROLS].reset()
                     log.info(f"Button {act.control} {act.action}")
                     new_mode_index = self.notify_control_action(act.control)
             except ChangeMode as cm:
@@ -151,7 +151,7 @@ class Player:
             except SigTerm:
                 return False
 
-    def notify_control_action(self, control: Control) -> int | None:
+    def notify_control_action(self, control: ControlName) -> int | None:
         """Notify all background modes, and active mode, 
            of control action. Return FG active mode's response."""
         for mode in self.mode_instances.values():
@@ -173,7 +173,7 @@ class Player:
 
         if seconds is not None:
             seconds *= self.speed_factor
-        self.tasks.wait(seconds, self.devices[Device.CONTROLS].wait)
+        self.tasks.wait(seconds, self.devices[DeviceName.CONTROLS].wait)
 
 
 class SigTerm(Exception):

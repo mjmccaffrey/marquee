@@ -4,14 +4,16 @@ from abc import ABC
 from dataclasses import dataclass
 import logging
 import pygame
+from typing import cast
 from typing_extensions import override
 
-from devices.devices_misc import Control, DeviceSet, Device
+from devices.controlset import ControlSet
+from devices.device_schemas import ControlName, DeviceSet, DeviceName
 from devices.joystick import Joystick
 from devices.specialparams import SpecialParams
 from .basemode import BaseMode
 from instruments import (
-    Buzzer, BellSet, ClickSet, DrumSet, 
+    Buzzer, BellSet, Clicker, DrumSet, 
     LightSet, Ringer,
 )
 
@@ -30,11 +32,11 @@ class Mode(BaseMode, ABC):
         """"""
         pygame.mixer.init()
         # Assign critical devices
-        self.controls = self.devices[Device.CONTROLS]
-        self.lights: LightSet = self.devices[Device.LIGHTS]
-        self.extra: LightSet = self.devices[Device.EXTRA]
-        self.clicker: ClickSet = self.devices[Device.CLICKER]
-        self.combined: LightSet = self.devices[Device.COMBINED]
+        self.controls = cast(ControlSet, self.devices[DeviceName.CONTROLS])
+        self.lights = cast(LightSet, self.devices[DeviceName.LIGHTS])
+        self.extra = cast(LightSet, self.devices[DeviceName.EXTRA])
+        self.clicker = cast(Clicker, self.devices[DeviceName.CLICKER])
+        self.combined = cast(LightSet, self.devices[DeviceName.COMBINED])
         self.combined.channels = [
             channel
             for lightset in (self.lights, self.extra)
@@ -42,10 +44,10 @@ class Mode(BaseMode, ABC):
           ]  # Kludge.
         # Type annotate non-critical devices
         self.bells: BellSet
-        self.drums: DrumSet = self.devices[Device.DRUMS]
-        self.buzzer: Buzzer = self.devices[Device.BUZZER]
-        self.joystick: Joystick = self.devices[Device.JOYSTICK]
-        self.ringer: Ringer = self.devices[Device.RINGER]
+        self.drums = cast(DrumSet, self.devices[DeviceName.DRUMS])
+        self.buzzer = cast(Buzzer, self.devices[DeviceName.BUZZER])
+        self.joystick = cast(Joystick, self.devices[DeviceName.JOYSTICK])
+        self.ringer = cast(Ringer, self.devices[DeviceName.RINGER])
 
     @override
     def close(self) -> None:
@@ -55,12 +57,12 @@ class Mode(BaseMode, ABC):
         pygame.mixer.music.stop()
         super().close()
 
-    @override
-    def control_action(self, control: Control) -> int | None:
-        """"""
-        if control == Control.ROTARY_A:
-            self.change_brightness(self.controls.rotary_a.steps)
-            self.lights.brightness_factor = 0
+    # @override
+    # def control_action(self, control: ControlName) -> int | None:
+    #     """"""
+    #     if control == ControlName.ROTARY_A:
+    #         self.change_brightness(self.controls.rotary_a.steps)
+    #         self.lights.brightness_factor = 0
 
     def change_brightness(self, factor: float) -> None:
         """"""

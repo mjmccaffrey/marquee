@@ -1,22 +1,21 @@
-"""Marquee Lighted Sign Project - device_defs"""
+"""Marquee Lighted Sign Project - device_defs - TESTING"""
 
 import signal
 
 import gpiozero
 
-from devices.bulb import (
-    Hue_BR30_Enhanced_Color, 
-    Sylvania_G25_Frosted_40,
-)
+from devices.bulb import Hue_BR30_Enhanced_Color
 from devices.button import Button, LightedButton
 from devices.controlset import ControlSet
-from devices.devices_misc import Control, Device, DeviceSet
+from devices.device_schemas import ControlName, DeviceName, DeviceSet
 from devices.hue import HueBridge
 from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001
-from devices.relaymodule import CombinedRelayModule, create_client
-from devices.shelly import ShellyController, ShellyProDimmer2PM
-from instruments import Buzzer, ClickSet, DrumSet, LightSet, Ringer
+from devices.relaymodule import (
+    CombinedRelayModule, create_client,
+    MockRelay16, MockRelay32,
+)
+from instruments import Buzzer, Clicker, DrumSet, LightSet, Ringer
 from light_defs import *
 
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
@@ -87,55 +86,44 @@ HUE_ZONE_IDS_2 = HUE_ZONE_IDS_0 | {
     '15': ['e896f871-f666-4d40-a61c-f0b789f48330'],
     '16': ['82204b9c-610c-4975-8e40-e6882ce39118'],
 }
-SHELLY_IP_ADDRESSES = [
-    '192.168.64.111',
-    '192.168.64.112',
-    '192.168.64.113',
-    '192.168.64.114',
-    '192.168.64.115',
-    '192.168.64.116',
-]
 
 
 def controls(light_relays: NumatoRL160001) -> ControlSet:
     """Define control set."""
-    return ControlSet(
-        body_back = Button(
-            Control.BODY_BACK,
-            gpiozero.Button(pin=26, bounce_time=0.10, hold_time=10), 
-            supports_hold=True,
-        ),
-        corded_a = Button(
-            Control.CORDED_A,
-            gpiozero.Button(pin=2, bounce_time=0.05),
-            signal_number=signal.SIGUSR1,  # type: ignore
-        ),
-        corded_b = Button(
-            Control.CORDED_B,
-            gpiozero.Button(pin=3, bounce_time=0.05),
-            signal_number=signal.SIGUSR2,  # type: ignore
-        ),
-        corded_c = Button(
-            Control.CORDED_C,
-            gpiozero.Button(pin=18, bounce_time=0.05),
-            signal_number=signal.SIGFPE,  # type: ignore
-        ),
-        game_start = LightedButton(
-            Control.GAME_START,
-            gpiozero.Button(pin=16, bounce_time=0.05),
-            relay=create_client(light_relays, BUTTON_TO_RELAY),
-        ),
-    )
-
-
-def joystick() -> Joystick:
-    """Define joystick."""
-    return Joystick(
-        up=gpiozero.Button(pin=4, bounce_time=0.05),
-        down=gpiozero.Button(pin=17, bounce_time=0.05),
-        left=gpiozero.Button(pin=27, bounce_time=0.05),
-        right=gpiozero.Button(pin=22, bounce_time=0.05),
-    )
+    return ControlSet(**{
+        ControlName.BODY_BACK: 
+            Button(
+                ControlName.BODY_BACK,
+                gpiozero.Button(pin=26, bounce_time=0.10, hold_time=10), 
+                supports_hold=True,
+            ),
+        ControlName.CORDED_A:
+            Button(
+                ControlName.CORDED_A,
+                gpiozero.Button(pin=2, bounce_time=0.05),
+                signal_number=signal.SIGUSR1,  # type: ignore
+            ),
+        ControlName.CORDED_B:
+            Button(
+                ControlName.CORDED_B,
+                gpiozero.Button(pin=3, bounce_time=0.05),
+                signal_number=signal.SIGUSR2,  # type: ignore
+            ),
+        ControlName.GAME_START:
+            LightedButton(
+                ControlName.GAME_START,
+                gpiozero.Button(pin=16, bounce_time=0.05),
+                relay=create_client(light_relays, BUTTON_TO_RELAY),
+            ),
+        ControlName.JOYSTICK:
+            Joystick(
+                name=ControlName.JOYSTICK,
+                up=gpiozero.Button(pin=4, bounce_time=0.05),
+                down=gpiozero.Button(pin=17, bounce_time=0.05),
+                left=gpiozero.Button(pin=27, bounce_time=0.05),
+                right=gpiozero.Button(pin=22, bounce_time=0.05),
+            ),
+    })
 
 
 def define_devices(
@@ -143,8 +131,8 @@ def define_devices(
     speed_factor: float,
 ) -> DeviceSet:
     """Create and return objects for all physical devices."""
-    drum_16_relays = NumatoRL160001("/dev/marquee_drums_16")
-    drum_32_relays = NumatoRL320001("/dev/marquee_drums_32")
+    drum_16_relays = MockRelay16()
+    drum_32_relays = MockRelay32()
     drum_48_relays = CombinedRelayModule(drum_16_relays, drum_32_relays)
     drums = DrumSet(relays=create_client(drum_48_relays))
     light_relays = NumatoRL160001("/dev/marquee_lights")
@@ -165,110 +153,21 @@ def define_devices(
         channel_enum=Light,
         speed_factor=speed_factor,
     )
-    extra = LightSet(
-        count=4,
-        relays=create_client(light_relays, EXTRA_TO_RELAY),
-        mirror=None,
-        controller_type=HueBridge,
-        controller_kwargs=dict(
-            application_key=HUE_APPLICATION_KEY,
-            ip_address=HUE_IP_ADDRESS,
-            bulb_model=Hue_BR30_Enhanced_Color,
-            bulb_ids=HUE_BULB_IDS_1,
-            zone_ids=HUE_ZONE_IDS_1,
-            groups=HUE_GROUPS_1,
-        ),
-        brightness_factor_init=brightness_factor,
-        channel_enum=Extra,
-        speed_factor=speed_factor,
-    )
-    combined = LightSet(
-        count=16,
-        relays=create_client(light_relays, COMBINED_TO_RELAY),
-        mirror=create_client(drum_16_relays, COMBINED_TO_RELAY),
-        controller_type=HueBridge,
-        controller_kwargs=dict(
-            application_key=HUE_APPLICATION_KEY,
-            ip_address=HUE_IP_ADDRESS,
-            bulb_model=Hue_BR30_Enhanced_Color,
-            bulb_ids=HUE_BULB_IDS_2,
-            zone_ids=HUE_ZONE_IDS_2,
-            groups=HUE_GROUPS_2,
-        ),
-        brightness_factor_init=brightness_factor,
-        channel_enum=Combined,
-        speed_factor=speed_factor,
-    )
-    clicker = ClickSet(create_client(drum_16_relays, CLICK_TO_RELAY))
+    clicker = Clicker(create_client(drum_16_relays, CLICKER_TO_RELAY))
     ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
     buzzer = Buzzer(create_client(light_relays, BUZZER_TO_RELAY))
     return {
-        Device.CONTROLS: controls(light_relays),
-        Device.DRUMS: drums, 
-        Device.LIGHTS: lights, 
-        Device.EXTRA: extra, 
-        Device.COMBINED: combined, 
-        Device.CLICKER: clicker, 
-        Device.RINGER: ringer, 
-        Device.BUZZER: buzzer, 
-        Device.JOYSTICK: joystick(), 
+        DeviceName.CONTROLS: controls(light_relays),
+        DeviceName.DRUMS: drums, 
+        DeviceName.LIGHTS: lights, 
+        DeviceName.CLICKER: clicker, 
+        DeviceName.RINGER: ringer, 
+        DeviceName.BUZZER: buzzer, 
     }
 
-
-def define_devices_shelly(
-    brightness_factor: float,
-    i: int,
-    speed_factor: float,
-) -> DeviceSet:
-    """Create and return objects for all physical devices."""
-    # bell_relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
-    # bells = BellSet(relays=bell_relays.create_client(
-    #     {i: i for i in range(bell_relays.relay_count)})
-    # )
-    drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
-    drums = DrumSet(relays=create_client(drum_relays))
-    light_relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
-    lights = LightSet(
-        count=len(LIGHT_TO_RELAY),
-        relays=create_client(light_relays, LIGHT_TO_RELAY),
-        mirror=create_client(drum_relays, LIGHT_TO_RELAY),
-        controller_type=ShellyController,
-        controller_kwargs=dict(
-                bulb_model=Sylvania_G25_Frosted_40,
-                dimmers=[
-                    ShellyProDimmer2PM(
-                        ip_address=ip,
-                        bulb_model=Sylvania_G25_Frosted_40,
-                        channel_first_index=i * 2,
-                    )
-                    for i, ip in enumerate(SHELLY_IP_ADDRESSES)
-                ],
-        ),
-        brightness_factor_init=brightness_factor,
-        channel_enum=Light,
-        speed_factor=speed_factor,
-    )
-    extra = None
-    clicker = ClickSet(create_client(light_relays, CLICK_TO_RELAY))
-    ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
-    buzzer = Buzzer(create_client(light_relays, BUZZER_TO_RELAY))
-    return {
-        Device.CONTROLS: controls(light_relays),
-        Device.DRUMS: drums, 
-        Device.LIGHTS: lights, 
-        Device.CLICKER: clicker, 
-        Device.RINGER: ringer, 
-        Device.BUZZER: buzzer, 
-        Device.JOYSTICK: joystick(), 
-    }
 
 BUTTON_TO_RELAY = {0: 11}
 RINGER_TO_RELAY = {0: 3}
 BUZZER_TO_RELAY = {0: 2}
-EXTRA_TO_RELAY = {0: 10, 1: 10, 2: 10, 3: 10}  # Kludge.
-
-COMBINED_TO_RELAY = (
-    LIGHT_TO_RELAY | {12: 10, 13: 10, 14: 10, 15: 10}  # Kludge.
-)
-CLICK_TO_RELAY = {0: 0, 1: 1}
+CLICKER_TO_RELAY = {0: 0, 1: 1}
 

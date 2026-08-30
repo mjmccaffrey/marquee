@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import logging
 from typing_extensions import override
 
-from devices.devices_misc import Control
+from devices.device_schemas import ControlName
 from .mode import Mode
 from ..structural.modes_misc import ModeIndex
 
@@ -17,11 +17,11 @@ class PerformanceMode(Mode, ABC):
     """Base for performance modes."""
 
     @override
-    def control_action(self, control: Control) -> int | None:
+    def control_action(self, control: ControlName) -> int | None:
         """Respond to button being pressed.
            Return index of new mode, if any."""
         new_mode = None
-        b = Control
+        b = ControlName
         match control:
             case b.BODY_BACK:
                 new_mode = ModeIndex.MODE_SELECT

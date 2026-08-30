@@ -6,6 +6,8 @@ import logging
 
 import gpiozero
 
+from .device_schemas import Control
+
 log = logging.getLogger('marquee.' + __name__)
 
 class Direction(StrEnum):
@@ -34,7 +36,7 @@ state_to_direction = {
 
 
 @dataclass
-class Joystick:
+class Joystick(Control):
     """"""
     up: gpiozero.Button
     down: gpiozero.Button

@@ -6,14 +6,13 @@ import logging
 import time
 from typing import cast
 
-from devices.devices_misc import DeviceSet
+from devices.device_schemas import DeviceSet
 from modes import Mode
 from .music_abstract import Scheduled
 from .music_concrete import (
-    Note, Element, Rest, NOTE_CONVERSIONS,
+    Note, Element, NOTE_CONVERSIONS,
     Part, Section, Piece, Measure, 
-    PlayableMeasure, PlayableNoteGroup, 
-    PlayableRest, PlayableNote,
+    PlayableMeasure, PlayableNote, PlayableRest, 
 )
 from task import Task, TaskSchedule
 
@@ -80,15 +79,18 @@ def _convert_note_to_playable(
 ) -> PlayableNote:
     """Return dict of attribute assignments."""
     note = cast(Note, element)
-    args = (
-        asdict(note) | 
-        dict(instrument=devices[note.device]) |
-        (
-            dict(schedule=schedule) 
-            if isinstance(note, Scheduled) else 
-            {}
+    try:
+        args = (
+            asdict(note) | 
+            dict(instrument=devices[note.device]) |
+            (
+                dict(schedule=schedule) 
+                if isinstance(note, Scheduled) else 
+                {}
+            )
         )
-    )
+    except ValueError:
+        raise ValueError(f"No {note.device} instrument present.")
     return NOTE_CONVERSIONS[type(element)](**args)  # type: ignore
 
 

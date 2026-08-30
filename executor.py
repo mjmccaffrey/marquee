@@ -6,7 +6,7 @@ import time
 from typing import Any, Protocol
 
 from devices.color import ColorSets
-from devices.devices_misc import Device, DeviceSet
+from devices.device_schemas import DeviceName, DeviceSet
 from devices.specialparams import SpecialParams
 from instruments import LightSet
 from modes import BaseMode, ModeDefinition, SequenceMode
@@ -112,8 +112,8 @@ class Executor:
            Return True if system shutdown requested, else False."""
         shutdown = False
         self.devices = self.define_devices(brightness_factor, speed_factor)
-        self.lights: LightSet = self.devices[Device.LIGHTS]
-        self.extra: LightSet | None = self.devices.get(Device.EXTRA)
+        self.lights: LightSet = self.devices[DeviceName.LIGHTS]
+        self.extra: LightSet | None = self.devices.get(DeviceName.EXTRA)
         if self.extra is not None:
             self.extra.set_channels(on=False, index=[0,1,2])
             # !!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -180,7 +180,7 @@ class Executor:
     def command_off(self) -> None:
         """Turn off all relays and potentially other devices."""
         for dn in (
-            Device.BELLS, Device.DRUMS, Device.LIGHTS,
+            DeviceName.BELLS, DeviceName.DRUMS, DeviceName.LIGHTS,
         ):
             device = self.devices.get(dn)
             if device is not None:

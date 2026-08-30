@@ -5,15 +5,15 @@ import logging
 import random
 from typing_extensions import override
 
-from devices.devices_misc import Device
+from devices.device_schemas import Device, DeviceName
 from devices.relaymodule import RelayClient
 
 log = logging.getLogger('marquee.' + __name__)
 
 
-class Instrument(ABC):
+class Instrument(Device, ABC):
     """Base class for an instrument."""
-    device: Device
+    device: DeviceName
     accent_levels = 0
     pitch_levels = 0
 

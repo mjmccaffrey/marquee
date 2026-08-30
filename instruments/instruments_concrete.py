@@ -4,7 +4,7 @@ from collections.abc import Collection
 import logging
 from typing_extensions import override
 
-from devices.devices_misc import Device
+from devices.device_schemas import DeviceName
 from devices.relaymodule import RelayClient
 from .instruments_abstract import (
     RelayInstrument, ReleaseableInstrument, DinInstrument,
@@ -15,7 +15,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 class BellSet(RelayInstrument, ReleaseableInstrument):
     """Set of bells."""
-    device = Device.BELLS
+    device = DeviceName.BELLS
     pitch_levels = 8
     release_time = 0.09
 
@@ -41,9 +41,22 @@ class BellSet(RelayInstrument, ReleaseableInstrument):
         self._update_relays('0', pitches)
 
 
+class Clicker(RelayInstrument):
+    """Simple producer of clicks."""
+
+    @override
+    def play(self) -> None:
+        """Flip the relays."""
+        pattern = "".join(
+            "1" if p == "0" else "0" 
+            for p in self.relays.device_pattern
+        )
+        self.relays.set_state_of_devices(pattern)
+
+
 class DrumSet(RelayInstrument):
     """Set of drums."""
-    device = Device.DRUMS
+    device = DeviceName.DRUMS
     accent_levels = 4
     accent_to_relay_count = {
         0: 4, 1: 8, 2: 16, 3: 32,
@@ -77,10 +90,10 @@ class DrumSet(RelayInstrument):
 
 class Ringer(DinInstrument):
     """Rapidly repeating ringer bell."""
-    device = Device.RINGER
+    device = DeviceName.RINGER
 
 
 class Buzzer(DinInstrument):
     """Simple door buzzer."""
-    device = Device.BUZZER
+    device = DeviceName.BUZZER
 
