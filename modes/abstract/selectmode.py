@@ -7,7 +7,7 @@ from typing_extensions import override
 
 from devices.device_schemas import ControlName
 from .mode import Mode
-from ..structural.modes_misc import ModeDefinition
+from ..structural.mode_schemas import ModeDefinition
 from ..structural.sequencemode import SequenceMode
 from ..structural.sequences import rotate_build_flip
 

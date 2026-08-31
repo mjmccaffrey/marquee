@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 import logging
 from typing import ClassVar
 from typing_extensions import override
@@ -22,6 +22,7 @@ class LightController(ABC):
     channel_count: ClassVar[int]
     trans_min: ClassVar[float]
  
+    http: Callable 
     ip_address: str
     bulb_model: Bulb
     channel_first_index: int
@@ -152,6 +153,16 @@ class LightChannel(ABC):
             self.color = update.color
         if update.on is not None:
             self.on = update.on
+
+
+@dataclass(kw_only=True, repr=False)
+class MockLightController(LightController, bulb_comp=Bulb):
+    """"""
+
+
+@dataclass(kw_only=True, repr=False)
+class MockLightChannel(LightChannel):
+    """"""
 
 
 @dataclass(slots=True)

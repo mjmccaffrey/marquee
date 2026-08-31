@@ -7,7 +7,7 @@ from typing_extensions import override
 
 from devices.device_schemas import ControlName
 from .performancemode import PerformanceMode
-from ..structural.modes_misc import CycleEntry, CycleSequence
+from ..structural.mode_schemas import CycleEntry, CycleSequence
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -38,7 +38,7 @@ class ColorSetMode(PerformanceMode, ABC):
             ControlName.CORDED_B: -1,
         }
         if control in direction_buttons:
-            self.clicker.click()
+            self.clicker.play()
             self.tasks.delete_owned_by(self)
             self.entry_index = self.wrap_entry_index(direction_buttons[control])
             self.schedule(action=self.show_color_set)

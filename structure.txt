@@ -16,6 +16,7 @@ marquee
         RelayClient
             RelayModuleInterface
                 CombinedRelayModule
+            RelayModule
                 NumatoUSBRelayModule
     instruments
         LightSetInterface

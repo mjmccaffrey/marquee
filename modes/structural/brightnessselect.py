@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import logging
 from typing_extensions import override
 
-from .modes_misc import ModeIndex
+from .mode_schemas import ModeIndex
 from ..abstract.selectmode import SelectMode
 
 log = logging.getLogger('marquee.' + __name__)

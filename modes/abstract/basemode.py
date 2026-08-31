@@ -13,7 +13,7 @@ from devices.color import ColorSets
 from devices.device_schemas import ControlName
 from event import EventSystem
 from task import SeqTask, Task, TaskSchedule
-from ..structural.modes_misc import ChangeMode, ModeDefinition
+from ..structural.mode_schemas import ChangeMode, ModeDefinition
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -171,13 +171,5 @@ class DeleteModeInstance(Protocol):
         self,
         mode_index: int | None = None,
     ) -> None:
-        ...
-
-class ReplaceKwargValues(Protocol):
-    """"""
-    def __call__(
-        self, 
-        kwargs: dict[str, Any],
-    ) -> dict[str, Any]:
         ...
 

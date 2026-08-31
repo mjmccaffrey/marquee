@@ -3,7 +3,7 @@
 from .instruments_abstract import (
     Instrument, DinInstrument,
     LightChannelInstrument, LightRelayInstrument,
-    ReleaseableInstrument,
+    RelayInstrument, ReleaseableInstrument,
 )
 from .instruments_concrete import BellSet, Buzzer, Clicker, DrumSet, Ringer
 from .lightset import LightSet

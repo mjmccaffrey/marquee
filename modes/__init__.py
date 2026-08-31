@@ -13,7 +13,7 @@ from .abstract.selectmode import SelectMode
 from .structural.brightnessselect import BrightnessSelect
 from .structural.modecycle import ModeCycle
 from .structural.modeselect import ModeSelect
-from .structural.modes_misc import *
+from .structural.mode_schemas import *
 from .structural.sequencemode import LightSetBaseline, SequenceMode
 from .structural.sequences import *
 

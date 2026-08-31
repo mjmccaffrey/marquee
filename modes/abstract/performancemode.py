@@ -7,7 +7,7 @@ from typing_extensions import override
 
 from devices.device_schemas import ControlName
 from .mode import Mode
-from ..structural.modes_misc import ModeIndex
+from ..structural.mode_schemas import ModeIndex
 
 log = logging.getLogger('marquee.' + __name__)
 

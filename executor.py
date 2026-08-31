@@ -3,12 +3,12 @@
 from collections.abc import Callable
 import logging
 import time
-from typing import Any, Protocol
+from typing import Any, cast, Protocol
 
 from devices.color import ColorSets
 from devices.device_schemas import DeviceName, DeviceSet
 from devices.specialparams import SpecialParams
-from instruments import LightSet
+from instruments import LightSet, RelayInstrument
 from modes import BaseMode, ModeDefinition, SequenceMode
 from player import Player
 
@@ -112,8 +112,8 @@ class Executor:
            Return True if system shutdown requested, else False."""
         shutdown = False
         self.devices = self.define_devices(brightness_factor, speed_factor)
-        self.lights: LightSet = self.devices[DeviceName.LIGHTS]
-        self.extra: LightSet | None = self.devices.get(DeviceName.EXTRA)
+        self.lights = cast(LightSet, self.devices[DeviceName.LIGHTS])
+        self.extra = cast(LightSet | None, self.devices.get(DeviceName.EXTRA))
         if self.extra is not None:
             self.extra.set_channels(on=False, index=[0,1,2])
             # !!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -182,8 +182,8 @@ class Executor:
         for dn in (
             DeviceName.BELLS, DeviceName.DRUMS, DeviceName.LIGHTS,
         ):
-            device = self.devices.get(dn)
-            if device is not None:
+            device = cast(RelayInstrument | None, self.devices.get(dn))
+            if device is not None and device.relays is not None:
                 device.relays.set_state_of_devices('0' * device.relays.count)
         if self.extra is not None:
             self.extra.set_channels(on=False)

@@ -8,7 +8,7 @@ from typing_extensions import override
 
 from devices.device_schemas import ControlName
 from ..abstract.mode import Mode
-from .modes_misc import CycleEntry, CycleSequence
+from .mode_schemas import CycleEntry, CycleSequence
 
 log = logging.getLogger('marquee.' + __name__)
 

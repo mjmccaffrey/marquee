@@ -17,13 +17,13 @@ from devices.relaymodule import RelayClient
 from devices.device_schemas import DeviceName
 from devices.specialparams import ChannelParams, MirrorParams, SpecialParams
 from .lightsetinterface import SavedState
-from .instruments_abstract import Instrument
+from .instruments_abstract import RelayInstrument
 
 log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass
-class LightSet(Instrument):
+class LightSet(RelayInstrument):
     """Supports all of the light-related devices."""
     count: int
     relays: RelayClient | None

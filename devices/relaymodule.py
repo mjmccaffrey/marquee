@@ -101,7 +101,7 @@ class RelayModule(RelayModuleInterface, ABC):
 
 
 class MockRelayModule(RelayModule):
-    """Mocked relay module for testing."""
+    """Mock relay module for testing."""
     relay_count: ClassVar[int]
 
     def __init_subclass__(cls, relay_count: int) -> None:
@@ -132,22 +132,6 @@ class MockRelay16(MockRelayModule, relay_count=16):
 
 class MockRelay32(MockRelayModule, relay_count=16):
     """"""
-
-
-def create_client(
-    relay_module: RelayModuleInterface,
-    device_to_relay: dict[int, int] | None = None,
-) -> RelayClient:
-    """Define a client, in which device_to_relay maps 
-        device indices to relay indices."""
-    if device_to_relay is None:
-        device_to_relay = {i: i for i in range(relay_module.relay_count)}
-    return RelayClient(
-        module=relay_module,
-        count=len(device_to_relay),
-        device_to_relay=device_to_relay,
-        relay_to_device={v: k for k, v in device_to_relay.items()},
-    )
 
 
 class CombinedRelayModule:
@@ -184,4 +168,20 @@ class CombinedRelayModule:
             self.rm1.get_state_of_devices(self.rc1) + 
             self.rm2.get_state_of_devices(self.rc2)
         )
+
+
+def create_client(
+    relay_module: RelayModuleInterface,
+    device_to_relay: dict[int, int] | None = None,
+) -> RelayClient:
+    """Define a client, in which device_to_relay maps 
+        device indices to relay indices."""
+    if device_to_relay is None:
+        device_to_relay = {i: i for i in range(relay_module.relay_count)}
+    return RelayClient(
+        module=relay_module,
+        count=len(device_to_relay),
+        device_to_relay=device_to_relay,
+        relay_to_device={v: k for k, v in device_to_relay.items()},
+    )
 

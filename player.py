@@ -9,6 +9,7 @@ from typing import Any, cast, NoReturn
 from typing_extensions import override
 
 from devices.color import ColorSets
+from devices.controlset import ControlSet
 from devices.device_schemas import (
     ControlAction, ControlActionException, ControlName,
     DeviceName, DeviceSet,
@@ -142,7 +143,7 @@ class Player:
                 with suppress(ControlActionException):
                     if act.action == ControlAction.BUTTON_HELD:
                         return True
-                    self.devices[DeviceName.CONTROLS].reset()
+                    cast(ControlSet, self.devices[DeviceName.CONTROLS]).reset()
                     log.info(f"Button {act.control} {act.action}")
                     new_mode_index = self.notify_control_action(act.control)
             except ChangeMode as cm:
@@ -173,7 +174,10 @@ class Player:
 
         if seconds is not None:
             seconds *= self.speed_factor
-        self.tasks.wait(seconds, self.devices[DeviceName.CONTROLS].wait)
+        self.tasks.wait(
+            seconds, 
+            cast(ControlSet, self.devices[DeviceName.CONTROLS]).wait,
+        )
 
 
 class SigTerm(Exception):

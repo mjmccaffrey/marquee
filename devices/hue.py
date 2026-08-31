@@ -3,14 +3,13 @@
 # https://192.168.64.121/clip/v2/resource/light/ca051ade-5842-4c15-aacf-b1e795feb1ad?on=on&dynamics=duration
 # on state not being saved
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field, replace
 import logging
 from typing import ClassVar
 from typing_extensions import override
 
 import requests
-import urllib3
 
 from .color import Color, XY
 from .bulb import HueBulb
@@ -21,17 +20,31 @@ from .lightcontroller import (
 log = logging.getLogger('marquee.' + __name__)
 
 
+def http(method: Callable, **kwargs) -> requests.Response:
+    """"""
+    response: requests.Response = method(**kwargs)
+    response.raise_for_status()
+    return response
+
+
+def http_mock(method: Callable, **kwargs) -> requests.Response:
+    """"""
+    response = requests.Response()
+    return response
+
+
 @dataclass(kw_only=True, repr=False)
 class HueBridge(LightController, bulb_comp=HueBulb):
     """Hue bridge controller."""
 
     trans_min: ClassVar[float] = 0.0  # ?????????
 
-    application_key: str
+    session: requests.Session
+    http = http
     bulb_ids: Sequence[str]
     zone_ids: dict[str, Sequence[str]]
-    channel_count: int = field(init=False)
     channel_first_index: None = None
+    channel_count: int = field(init=False)
 
     def __init_subclass__(cls, channel_count: int) -> None:
         """Set channel count for concrete subclasses."""
@@ -41,19 +54,19 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         """Initialize."""
         log.info(f"Initializing {self}")
         super().__post_init__()
-        self.session = requests.Session()
-        self.session.headers = {'hue-application-key': self.application_key}
-        self.session.verify = False
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         assert isinstance(self.bulb_model, HueBulb)
-        try:
-            self._create_channels()
-        except requests.exceptions.Timeout as e:
-            log.info(f"*** Failed to reach '{self.ip_address}' ***")
-            log.info(f"*** Error: {e} ***")
-            raise OSError from None
+        if self.http == http_mock:
+            self._create_mock_channels()
+        else:
+            try:
+                self._create_channels()
+            except requests.exceptions.Timeout as e:
+                log.info(f"*** Failed to reach '{self.ip_address}' ***")
+                log.info(f"*** Error: {e} ***")
+                raise OSError from None
 
     def _create_channels(self) -> None:
+        """Create channels with current state."""
         lights = self._get_light_info()
         self.channels = [
             HueChannel(
@@ -71,13 +84,27 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         ]
         self.channel_count = len(self.channels)
 
+    def _create_mock_channels(self) -> None:
+        """!!!!!!"""
+        self.channels = [
+            HueChannel(
+                index=i,
+                id=str(i),
+                controller=self,
+                brightness=100,
+                color=XY(100, 100),
+                on=True,
+            )
+            for i in range(16)
+        ]
+
     def _get_light_info(self) -> dict:
         """Fetch status parameters for all lights."""
-        result = self.session.get(
+        result = http(
+            method=self.session.get, 
             url=f'https://{self.ip_address}/clip/v2/resource/light',
             timeout=2.0,
         )
-        result.raise_for_status()
         json = result.json()
         return {
             light['id']: light
@@ -94,7 +121,8 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         """Build and send commands."""
         for update in updates:
             command = update.channel._make_set_command(update)
-            response = self.session.put(
+            self.http(
+                method=self.session.put,
                 url=command.url,
                 json=command.params,
                 timeout=2.0,
@@ -103,7 +131,6 @@ class HueBridge(LightController, bulb_comp=HueBulb):
             # log.info(command.url)
             # log.info(command.params)
             # log.info('*********')
-            response.raise_for_status()
             update.channel.update_state(update)
 
     def _channel_group_updates(self, updates, force) -> ChannelUpdate:
@@ -139,14 +166,14 @@ class HueBridge(LightController, bulb_comp=HueBulb):
 
         command = updates[0].channel._make_set_command(updates_to_send)
         for i, id in enumerate(self.zone_ids[group]):
-            response = self.session.put(
+            self.http(
+                method=self.session.put,
                 url=f'https://{self.ip_address}'
                     f'/clip/v2/resource/grouped_light/{id}',
                 json=command.params,
                 timeout=2.0,
             )
             # print(f"{group=} {i=} {command.params}")
-            response.raise_for_status()
         for index in self.groups[group]:
             channel = self.channels[index]
             channel.update_state(replace(updates_to_send, channel=channel))
@@ -207,11 +234,11 @@ class HueChannel(LightChannel):
             on=on,
         )
         command = self._make_set_command(update)
-        response = self.controller.session.put(
+        self.controller.http(
+            method=self.controller.session.put,
             url=command.url,
             params=command.params,
             timeout=2.0,
         )
-        response.raise_for_status()
         self.update_state(update)
 
