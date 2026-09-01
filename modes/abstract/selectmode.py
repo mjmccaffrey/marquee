@@ -3,10 +3,11 @@
 from abc import ABC
 from dataclasses import dataclass
 import logging
+from typing import cast
 from typing_extensions import override
 
 from devices.device_schemas import ControlName
-from .mode import Mode
+from .mode import BaseMode, Mode
 from ..structural.mode_schemas import ModeDefinition
 from ..structural.sequencemode import SequenceMode
 from ..structural.sequences import rotate_build_flip
@@ -40,7 +41,7 @@ class SelectMode(Mode, ABC):
         """Respond to button being pressed.
            But first, delete the scheduled task which 
            would have finalized the selection."""
-        self.tasks.delete_owned_by(self)
+        self.player.tasks.delete_owned_by(self)
         b = ControlName
         match control:
             case b.BODY_BACK | b.CORDED_A | b.CORDED_B:
@@ -67,20 +68,23 @@ class SelectMode(Mode, ABC):
             # Show user what desired mode number is currently selected.
             log.info(f"Desired is now {self.desired}")
             # self.lights.set_relays(ALL_OFF, special=self.special)
-            counter = self.create_mode_instance(
-                mode_definition=ModeDefinition(
-                    name='counter',
-                    cls=SequenceMode,
-                ),
-                parent=self,
-                kwargs=dict(
-                    sequence=rotate_build_flip,
-                    sequence_kwargs=dict(count=self.desired),
-                    pre_delay=0.5,
-                    delay=0.25, 
-                    repeat=False,
-                    special=self.special,
-                ),
+            counter = cast(
+                BaseMode, 
+                self.player.create_mode_instance(
+                    mode_definition=ModeDefinition(
+                        name='counter',
+                        cls=SequenceMode,
+                    ),
+                    parent=self,
+                    kwargs=dict(
+                        sequence=rotate_build_flip,
+                        sequence_kwargs=dict(count=self.desired),
+                        pre_delay=0.5,
+                        delay=0.25, 
+                        repeat=False,
+                        special=self.special,
+                    ),
+                )
             )
             self.schedule(counter.execute)
             self.previous_desired = self.desired

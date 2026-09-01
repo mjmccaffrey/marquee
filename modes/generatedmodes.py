@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - generatedmodes"""
 
 from dataclasses import dataclass
+from typing import cast
 from typing_extensions import override
 
 from . import RandomFade, ModeDefinition
@@ -17,7 +18,7 @@ class GeneratedModes(RandomFade):
         """Delete all tasks by all created instances."""
         assert self.light_index is None
         for instance in self.instances:
-            self.tasks.delete_owned_by(instance)
+            self.player.tasks.delete_owned_by(instance)
         super().close()
 
     @override
@@ -34,19 +35,22 @@ class GeneratedModes(RandomFade):
 
     def generate_mode(self, light_index: int) -> BaseMode:
         """"""
-        mode = self.create_mode_instance(
-            mode_definition=ModeDefinition(
-                name=f'generated_mode_{light_index:02}',
-                cls=GeneratedModes,
-            ),
-            kwargs=dict(
-                background=True,
-                transition=self.transition,
-                duration=self.duration,
-                color_set_name=self.color_set_name,
-                light_index=light_index,
-            ),
-            parent=self,
+        mode = cast(
+            BaseMode,
+            self.player.create_mode_instance(
+                mode_definition=ModeDefinition(
+                    name=f'generated_mode_{light_index:02}',
+                    cls=GeneratedModes,
+                ),
+                kwargs=dict(
+                    background=True,
+                    transition=self.transition,
+                    duration=self.duration,
+                    color_set_name=self.color_set_name,
+                    light_index=light_index,
+                ),
+                parent=self,
+            )
         )
         self.schedule(mode.execute, light_index * 2)
         return mode

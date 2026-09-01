@@ -56,8 +56,8 @@ class PacManGame(GameMode):
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
-        self.events.subscribe(Event.GHOST_STATE, self.ghost_state)
-        self.events.subscribe(Event.PACMAN_BITE, self.pacman_bite)
+        self.player.events.subscribe(Event.GHOST_STATE, self.ghost_state)
+        self.player.events.subscribe(Event.PACMAN_BITE, self.pacman_bite)
         self.state = GameState.PRE_GAME
         self.level: int
 

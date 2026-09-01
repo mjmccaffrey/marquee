@@ -39,7 +39,7 @@ class ColorSetMode(PerformanceMode, ABC):
         }
         if control in direction_buttons:
             self.clicker.play()
-            self.tasks.delete_owned_by(self)
+            self.player.tasks.delete_owned_by(self)
             self.entry_index = self.wrap_entry_index(direction_buttons[control])
             self.schedule(action=self.show_color_set)
         else:
@@ -58,15 +58,15 @@ class ColorSetMode(PerformanceMode, ABC):
         if name == 'ALL':
             sequence = [
                 (n, seconds)
-                for n in self.color_sets.by_group_name
+                for n in self.lights.color_sets.by_group_name
             ]
         cs_sequence = []
         for name, seconds in sequence:
-            if name in self.color_sets.by_group_name:
-                for cs in self.color_sets.by_group_name[name]:
+            if name in self.lights.color_sets.by_group_name:
+                for cs in self.lights.color_sets.by_group_name[name]:
                     cs_sequence.append(CycleEntry(cs.name, seconds))
             else:
-                _ = self.color_sets.lookup(name)
+                _ = self.lights.color_sets.lookup(name)
                 cs_sequence.append(CycleEntry(name, seconds))
         return cs_sequence
 

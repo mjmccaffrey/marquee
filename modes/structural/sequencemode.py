@@ -50,7 +50,7 @@ class SequenceMode(PerformanceMode):
         super().__post_init__()
         self.baseline = self.baseline or DEFAULT_BASELINE
         self.color_set = (
-            self.color_sets.lookup(color_set_name)
+            self.lights.color_sets.lookup(color_set_name)
             if color_set_name is not None else None
         )
         if self.lights.smart_bulbs and self.special is None:

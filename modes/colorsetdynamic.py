@@ -2,12 +2,12 @@
 
 from dataclasses import InitVar, dataclass
 import logging
-from typing import Any
+from typing import Any, cast
 from typing_extensions import override
 
 from devices.specialparams import ChannelParams
 from . import (
-    ColorSetMode, CycleSequence, ModeDefinition,
+    BaseMode, ColorSetMode, CycleSequence, ModeDefinition,
     LightSetBaseline, SequenceMode, chase, rotate,
 )
 
@@ -38,7 +38,7 @@ class ColorSetDynamic(ColorSetMode):
     @override
     def execute(self):
         """Timer-invoked change to next color set."""
-        self.tasks.delete_owned_by(self)
+        self.player.tasks.delete_owned_by(self)
         self.entry_index = self.wrap_entry_index(self.direction)
         self.show_color_set()
 
@@ -46,7 +46,7 @@ class ColorSetDynamic(ColorSetMode):
     def show_color_set(self):
         """Show color set."""
         entry = self.entries[self.entry_index]
-        cs = self.color_sets.by_set_name[entry.name]
+        cs = self.lights.color_sets.by_set_name[entry.name]
         log.info(
             f"Chasing color set {cs.group}.{cs.name} "
             f"for {entry.seconds} seconds "
@@ -70,13 +70,16 @@ class ColorSetDynamic(ColorSetMode):
             kwargs |= dict(sequence=chase)
             sequence_kwargs |= dict(mask=self.mask)
         kwargs['sequence_kwargs'] = sequence_kwargs
-        mode = self.create_mode_instance(
-            mode_definition=ModeDefinition(
-                name='cs_rotate',
-                cls=SequenceMode,
-            ),
-            kwargs=kwargs,
-            parent=self,
+        mode = cast(
+            BaseMode,
+            self.player.create_mode_instance(
+                mode_definition=ModeDefinition(
+                    name='cs_rotate',
+                    cls=SequenceMode,
+                ),
+                kwargs=kwargs,
+                parent=self,
+            )
         )
         self.schedule(mode.execute)
 

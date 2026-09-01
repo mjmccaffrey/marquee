@@ -95,7 +95,7 @@ class GameMode(PerformanceMode):
     def change_state(self, state: StrEnum):
         """"""
         print(f'{state=}')
-        self.tasks.delete_owned_by(self)
+        self.player.tasks.delete_owned_by(self)
         self.state = state
         self.schedule(action=self.execute_state)
 

@@ -18,7 +18,7 @@ class ModeSelect(SelectMode):
         """Initialize."""
         super().setup(
             lower=1, 
-            upper=max(self.modes),
+            upper=max(self.player.modes),
             previous=self.previous,
         )
 

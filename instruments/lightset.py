@@ -10,7 +10,7 @@ from typing_extensions import override
 
 from devices import rgbxy
 
-from devices.color import Color, Colors, RGB
+from devices.color import Color, Colors, ColorSets, RGB
 from devices.bulb import SmartBulb
 from devices.lightcontroller import ChannelUpdate, LightChannel, LightController
 from devices.relaymodule import RelayClient
@@ -57,6 +57,7 @@ class LightSet(RelayInstrument):
         self.update_order = {
             index: i for i, index in enumerate(indices)
         }
+        self.color_sets = ColorSets()
         self._init_relays()
         self._init_controller()
 

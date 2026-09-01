@@ -35,7 +35,7 @@ class ColorSetStatic(ColorSetMode):
     def show_color_set(self):
         """Show color set. Schedule next set."""
         entry = self.entries[self.entry_index]
-        cs = self.color_sets.by_set_name[entry.name]
+        cs = self.lights.color_sets.by_set_name[entry.name]
         log.info(
             f"Displaying color set {cs.group}.{cs.name} "
             f"for {entry.seconds} seconds "

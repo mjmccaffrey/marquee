@@ -67,7 +67,7 @@ class PacMan(Character):
             self.game.move_character(self, coord)
             edible = {e for e in self.game.board[coord] if e in {Dot, Fruit}}
             for e in edible:
-                self.game.events.notify(self.bite_event, etype=e, coord=coord)
+                self.game.player.events.notify(self.bite_event, etype=e, coord=coord)
 
 
 class Sound(StrEnum):
@@ -104,7 +104,7 @@ class Ghost(Character, ABC):
     def change_state(self, state: GhostState) -> None:
         """"""
         self.state = state
-        self.game.events.notify(self.state_event, ghost=self, state=state)
+        self.game.player.events.notify(self.state_event, ghost=self, state=state)
 
     def waiting(self) -> None:
         """Waiting to enter emerge."""

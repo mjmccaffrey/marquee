@@ -53,6 +53,6 @@ class ModeCycle(Mode):
            But first, delete the scheduled task 
            for the timed switch."""
         if control == ControlName.CORDED_A:
-            self.tasks.delete_owned_by(self)
+            self.player.tasks.delete_owned_by(self)
             self.schedule()
 

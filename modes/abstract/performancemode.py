@@ -42,7 +42,7 @@ class PerformanceMode(Mode, ABC):
         """"""
         return self.wrap_value(
             lower=1, 
-            upper=max(self.modes), 
+            upper=max(self.player.modes), 
             current=self.index,
             delta=delta,
         )

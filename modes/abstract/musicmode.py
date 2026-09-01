@@ -40,7 +40,7 @@ class MusicMode(PerformanceMode, ABC):
             delay=delay,
             tempo=tempo,
             devices=self.devices,
-            schedule=self.tasks,
+            schedule=self.player.tasks,
             owner=self,
         )
 

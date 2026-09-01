@@ -28,7 +28,7 @@ class CupolaSequence(PerformanceMode):
             wheel = self.lights.colors.wheel_colors(self.wheel_divisions)
             self.colors = cycle(wheel)
         else:
-            cs = self.color_sets.by_set_name[self.color_set_name]
+            cs = self.lights.color_sets.by_set_name[self.color_set_name]
             self.colors = cycle(cs.colors)
 
     @override

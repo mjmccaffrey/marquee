@@ -33,20 +33,25 @@ class Executor:
         self.mode_menu: list[tuple[int, str]] = []
         self.modes: dict[int, ModeDefinition] = {}
         #
-        self.color_sets = ColorSets('color_sets.json')
-        self.color_ids: dict[str, str] = {
-            e: sn
-            for i, (gn, sn) in enumerate(self.color_sets.each_set_name())
-            for e in (str(i), sn)
-        }
-        self.color_menu: list[tuple[str, int, str]] = [
-            (gn, i, sn)
-            for i, (gn, sn) in enumerate(self.color_sets.each_set_name())
-        ]
+        self._load_color_set_names()
         self.commands: dict[str, Callable[[], None]] = {
             'calibrate': self.command_calibrate,
             'off': self.command_off,
         }
+
+    def _load_color_set_names(self) -> None:
+        """Load color set identifiers.
+           Discard the actual colors. Kludge."""
+        color_sets = ColorSets()
+        self.color_ids: dict[str, str] = {
+            e: sn
+            for i, (gn, sn) in enumerate(color_sets.each_set_name())
+            for e in (str(i), sn)
+        }
+        self.color_menu: list[tuple[str, int, str]] = [
+            (gn, i, sn)
+            for i, (gn, sn) in enumerate(color_sets.each_set_name())
+        ]
 
     def close(self) -> None:
         """Close dependencies."""
@@ -130,7 +135,9 @@ class Executor:
 
     def execute_color(self, color: str, brightness: int) -> None:
         """Executes color operation."""
-        cs = self.color_sets.by_set_name[color]
+        cs = cast(
+            LightSet, self.devices[DeviceName.LIGHTS]
+        ).color_sets.by_set_name[color]
         kwargs = cs.set_channels_kwargs(self.lights.count)
         kwargs |= dict(
             on=True,
@@ -148,7 +155,6 @@ class Executor:
         self.player: Player = self.create_player(
             self.modes, 
             self.mode_ids,
-            self.color_sets,
             self.devices,
             speed_factor,
         )

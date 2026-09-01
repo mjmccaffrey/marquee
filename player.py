@@ -25,12 +25,10 @@ log = logging.getLogger('marquee.' + __name__)
 @dataclass
 class Player:
     """Executes one mode at a time. Contains the task queue."""
-    modes: dict[int, ModeDefinition]
-    mode_ids: dict[str, int]
-    color_sets: ColorSets
     devices: DeviceSet
+    mode_ids: dict[str, int]
+    modes: dict[int, ModeDefinition]
     speed_factor: float
-    pace: float = field(init=False)
     events: EventSystem = field(init=False)
     tasks: TaskSchedule = field(init=False)
 
@@ -80,14 +78,7 @@ class Player:
             index=definition.index,
             name=definition.name, 
             serial=next(self.mode_serial),
-            speed_factor=self.speed_factor,
-            create_mode_instance=self.create_mode_instance,
-            delete_mode_instance=self.delete_mode_instance,
-            events=self.events,
-            tasks=self.tasks,
-            modes=self.modes,
-            mode_ids=self.mode_ids,
-            color_sets=self.color_sets,
+            player=self,
             parent=parent,
         )
         if issubclass(definition.cls, Mode):

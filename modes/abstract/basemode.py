@@ -6,14 +6,13 @@ from dataclasses import dataclass, field
 import logging
 import sys
 import time
-from typing import Any, NoReturn, Protocol, Self
+from typing import cast, NoReturn, Self
 from typing_extensions import override
 
-from devices.color import ColorSets
 from devices.device_schemas import ControlName
-from event import EventSystem
-from task import SeqTask, Task, TaskSchedule
-from ..structural.mode_schemas import ChangeMode, ModeDefinition
+from playerresources import PlayerResources
+from task import SeqTask, Task
+from ..structural.mode_schemas import ChangeMode
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -24,14 +23,7 @@ class BaseMode(ABC):
     index: int
     name: str
     serial: int  # Unique ID for every instance.
-    speed_factor: float
-    create_mode_instance: 'CreateModeInstance'
-    delete_mode_instance: 'DeleteModeInstance'
-    events: EventSystem
-    tasks: TaskSchedule
-    modes: dict[int, ModeDefinition]
-    mode_ids: dict[str, int]
-    color_sets: ColorSets
+    player: PlayerResources
     parent: Self | None = None
     children: Sequence[str] = field(default_factory=tuple)
 
@@ -42,9 +34,12 @@ class BaseMode(ABC):
     def _create_children(self) -> None:
         """Create child mode(s) specified."""
         for child in self.children:
-            mode = self.create_mode_instance(
-                mode_index=self.lookup_mode_index(child),
-                parent=self,
+            mode = cast(
+                'BaseMode', 
+                self.player.create_mode_instance(
+                    mode_index=self.lookup_mode_index(child),
+                    parent=self,
+                )
             )
             print(f"Created mode {child} {mode.index} {mode.name}")
 
@@ -76,7 +71,7 @@ class BaseMode(ABC):
     def lookup_mode_index(self, name: str) -> int:
         """Return the index for the mode with name."""
         try:
-            return self.mode_ids[name]
+            return self.player.mode_ids[name]
         except LookupError:
             raise ValueError(f"Mode {name} not defined.")
 
@@ -94,7 +89,7 @@ class BaseMode(ABC):
         def push_event():
             """Push task onto queue."""
             assert _action is not None
-            self.tasks.push(
+            self.player.tasks.push(
                 Task(
                     action=_action,
                     due=_due,
@@ -111,7 +106,7 @@ class BaseMode(ABC):
             assert action is not None
             action()
 
-        due = due * self.speed_factor
+        due = due * self.player.speed_factor
         _due = time.time() + due
         if action is None:
             action = getattr(self, 'execute')
@@ -153,23 +148,4 @@ class BaseMode(ABC):
         elif (dif := value - lower) < 0:
             value = upper + dif + 1
         return value
-
-class CreateModeInstance(Protocol):
-    """"""
-    def __call__(
-        self,
-        mode_index: int | None = None,
-        mode_definition: ModeDefinition | None = None,
-        kwargs: dict[str, Any] = {},
-        parent: BaseMode | None = None,
-    ) -> BaseMode:
-        ...
-
-class DeleteModeInstance(Protocol):
-    """"""
-    def __call__(
-        self,
-        mode_index: int | None = None,
-    ) -> None:
-        ...
 
