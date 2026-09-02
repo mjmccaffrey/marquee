@@ -8,5 +8,4 @@ from .instruments_abstract import (
 from .instruments_concrete import BellSet, Buzzer, Clicker, DrumSet, Ringer
 from .lightset import LightSet
 from .lightsetinterface import LightSetInterface
-from .combinedlightset import CombinedLightSet
 

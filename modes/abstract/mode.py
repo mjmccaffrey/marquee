@@ -34,19 +34,11 @@ class Mode(BaseMode, ABC):
         # Assign critical devices
         self.controls = cast(ControlSet, self.devices[DeviceName.CONTROLS])
         self.lights = cast(LightSet, self.devices[DeviceName.LIGHTS])
-        self.extra = cast(LightSet, self.devices[DeviceName.EXTRA])
         self.clicker = cast(Clicker, self.devices[DeviceName.CLICKER])
-        self.combined = cast(LightSet, self.devices[DeviceName.COMBINED])
-        self.combined.channels = [
-            channel
-            for lightset in (self.lights, self.extra)
-            for channel in lightset.channels
-          ]  # Kludge.
-        # Type annotate non-critical devices
         self.bells: BellSet
         self.drums = cast(DrumSet, self.devices[DeviceName.DRUMS])
         self.buzzer = cast(Buzzer, self.devices[DeviceName.BUZZER])
-        self.joystick = cast(Joystick, self.devices[DeviceName.JOYSTICK])
+        # self.joystick = cast(Joystick, self.devices[DeviceName.JOYSTICK])
         self.ringer = cast(Ringer, self.devices[DeviceName.RINGER])
 
     @override

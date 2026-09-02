@@ -15,27 +15,6 @@ class Light(IntEnum):
     LB =  9
     LM = 10
     LU = 11
-    CP = 15
-
-class Extra(IntEnum):
-    ML = 0
-    MM = 1
-    MR = 2
-    CP = 3
-
-class Combined(IntEnum):
-    TL =  0
-    TM =  1
-    TR =  2
-    RT =  3
-    RM =  4
-    RB =  5
-    BR =  6
-    BM =  7
-    BL =  8
-    LB =  9
-    LM = 10
-    LU = 11
     ML = 12
     MM = 13
     MR = 14

@@ -3,6 +3,8 @@
 import signal
 
 import gpiozero
+from gpiozero import Device
+from gpiozero.pins.mock import MockFactory
 import requests
 import urllib3
 
@@ -14,7 +16,7 @@ from devices.hue import HueChannel, HueBridge, http_mock
 from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001
 from devices.relaymodule import (
-    CombinedRelayModule, create_client,
+    RelayModule, CombinedRelayModule, create_client,
     MockRelay16, MockRelay32,
 )
 from instruments import Buzzer, Clicker, DrumSet, LightSet, Ringer
@@ -90,7 +92,7 @@ HUE_ZONE_IDS_2 = HUE_ZONE_IDS_0 | {
 }
 
 
-def controls(light_relays: NumatoRL160001) -> ControlSet:
+def controls(light_relays: RelayModule) -> ControlSet:
     """Define control set."""
     return ControlSet(**{
         ControlName.BODY_BACK: 
@@ -103,13 +105,13 @@ def controls(light_relays: NumatoRL160001) -> ControlSet:
             Button(
                 ControlName.CORDED_A,
                 gpiozero.Button(pin=2, bounce_time=0.05),
-                signal_number=signal.SIGUSR1,  # type: ignore
+                # signal_number=signal.SIGUSR1,  # type: ignore
             ),
         ControlName.CORDED_B:
             Button(
                 ControlName.CORDED_B,
                 gpiozero.Button(pin=3, bounce_time=0.05),
-                signal_number=signal.SIGUSR2,  # type: ignore
+                # signal_number=signal.SIGUSR2,  # type: ignore
             ),
         ControlName.GAME_START:
             LightedButton(
@@ -137,11 +139,15 @@ def define_devices(
     drum_32_relays = MockRelay32()
     drum_48_relays = CombinedRelayModule(drum_16_relays, drum_32_relays)
     drums = DrumSet(relays=create_client(drum_48_relays))
-    light_relays = NumatoRL160001("/dev/marquee_lights")
+    light_relays = MockRelay16()
+    #
     session = requests.Session()
     session.headers = {'hue-application-key': HUE_APPLICATION_KEY}
     session.verify = False
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    #
+    Device.pin_factory = MockFactory()
+    #
     lights = LightSet(
         count=LIGHT_COUNT,
         relays=create_client(light_relays, LIGHT_TO_RELAY),

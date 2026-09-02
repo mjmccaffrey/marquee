@@ -33,7 +33,7 @@ class NumatoUSBRelayModule(RelayModule, ABC):
         log.info(f"Initializing {self}")
         try:
             self._serial_port = serial.Serial(self.port_address, timeout=2)
-        except serial.serialutil.SerialException as e:  # type: ignore
+        except serial.SerialException as e:
             log.info('')
             log.info(f"*** Failed to open '{self.port_address}' ***")
             log.info(f"*** Error: {e} ***")

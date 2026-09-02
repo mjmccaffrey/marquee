@@ -30,8 +30,6 @@ class DeviceName(StrEnum):
     CONTROLS = auto()
     DRUMS = auto()
     LIGHTS = auto()
-    EXTRA = auto()
-    COMBINED = auto()
     CLICKER = auto()
     RINGER = auto()
     BUZZER = auto()

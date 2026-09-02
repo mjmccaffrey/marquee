@@ -110,7 +110,7 @@ class MockRelayModule(RelayModule):
 
     def __init__(self):
         """"""
-        self.relay_pattern = RelayPattern('0' * self.relay_count)
+        self.relay_pattern = RelayPattern('1' * self.relay_count)
 
     @override
     def set_state_of_devices(

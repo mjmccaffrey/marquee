@@ -20,7 +20,6 @@ class ColorSetStatic(ColorSetMode):
     def __post_init__(self, sequence: CycleSequence) -> None:
         """Initialize."""
         super().__post_init__(sequence)
-        self.lights = self.combined
         self.lights.set_channels(on=True, force=True)
         self.direction = +1
         self.entry_index = -self.direction

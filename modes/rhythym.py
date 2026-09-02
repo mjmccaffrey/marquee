@@ -17,7 +17,6 @@ class Rhythm(MusicMode):
     def __post_init__(self) -> None:
         """Initialize."""
         super().__post_init__()
-        self.lights = self.combined
         self.lights.set_channels(brightness=100, on=True, force=True)
         time.sleep(0.5)
         self.lights.set_relays(ALL_ON)

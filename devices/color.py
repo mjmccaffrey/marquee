@@ -238,6 +238,7 @@ class ColorSets:
     @staticmethod
     def _load_color_sets(source: Path) -> BySetName:
         """Load color sets from file."""
+        return {}
         with open(source) as f:
             data = json.load(f)
         return {

@@ -19,4 +19,4 @@ class Pause(PerformanceMode):
     def __post_init__(self):
         super().__post_init__()
         self.lights.set_channels(on=False, force=True)
-        self.extra.set_channels(on=False, force=True)
+

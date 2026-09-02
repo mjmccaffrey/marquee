@@ -82,6 +82,7 @@ class LightSet(RelayInstrument):
         self.gamut = self.controller.bulb_model.gamut
         RGB.adjust_incomplete_colors(self.gamut or rgbxy.GamutC)
         self.colors = Colors(self.gamut or rgbxy.GamutC)
+        print(self.controller.channels, self.count)
         assert len(self.controller.channels) == self.count
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
@@ -129,7 +130,7 @@ class LightSet(RelayInstrument):
             brightness, transition, color, on, 
             [self.channels[i] for i in _index],
         )
-        if _group is not None:
+        if _group:
             self.controller.update_channel_group(updates, _group, force)
         else:
             self.controller.update_channels(updates, force)

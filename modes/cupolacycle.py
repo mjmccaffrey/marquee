@@ -34,7 +34,6 @@ class CupolaSequence(PerformanceMode):
     @override
     def execute(self):
         """Change to next color."""
-        assert self.extra is not None
         color = next(self.colors)
         self.extra.set_channels(
             index=self.lights.CP,

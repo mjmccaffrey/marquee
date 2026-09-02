@@ -52,7 +52,6 @@ class PacManGame(GameMode):
         super().__post_init__()
         self.pacman_coord = 7
         self.fruit_coord = 13 if self.maze == passage_maze else 7
-        self.lights = self.combined
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()

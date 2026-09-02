@@ -89,13 +89,13 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         self.channels = [
             HueChannel(
                 index=i,
-                id=str(i),
+                id=id,
                 controller=self,
                 brightness=100,
                 color=XY(100, 100),
                 on=True,
             )
-            for i in range(16)
+            for i, id in enumerate(self.bulb_ids)
         ]
 
     def _get_light_info(self) -> dict:

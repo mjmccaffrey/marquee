@@ -33,7 +33,6 @@ class DoomGame(PerformanceMode):
         """Initialize board and characters."""
         super().__post_init__()
         if self.passage:  # 12 + 3 + 1 lights
-            self.lights = self.combined
             self.lights_by_row = deepcopy(LIGHTS_BY_ROW)
             self.lights_by_side = deepcopy(LIGHTS_BY_SIDE)
             self.lights_by_row[0].append(15)

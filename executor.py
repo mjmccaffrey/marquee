@@ -118,10 +118,6 @@ class Executor:
         shutdown = False
         self.devices = self.define_devices(brightness_factor, speed_factor)
         self.lights = cast(LightSet, self.devices[DeviceName.LIGHTS])
-        self.extra = cast(LightSet | None, self.devices.get(DeviceName.EXTRA))
-        if self.extra is not None:
-            self.extra.set_channels(on=False, index=[0,1,2])
-            # !!!!!!!!!!!!!!!!!!!!!!!!!!!
         if color is not None:
             assert brightness is not None
             self.execute_color(color, brightness)
@@ -153,10 +149,10 @@ class Executor:
         """Launches Player with the command-line specified mode.
            Returns the Player's exit / shutdown return value."""
         self.player: Player = self.create_player(
-            self.modes, 
-            self.mode_ids,
-            self.devices,
-            speed_factor,
+            devices=self.devices,
+            mode_ids=self.mode_ids,
+            modes=self.modes, 
+            speed_factor=speed_factor,
         )
         return self.player.execute(mode_index)
 
@@ -177,7 +173,7 @@ class Executor:
 
     def command_calibrate(self) -> None:
         """Calibrate all light sets supporting it."""
-        for lightset in [self.lights, self.extra]:
+        for lightset in [self.lights]:
             if lightset is not None:
                 try:
                     lightset.calibrate()
@@ -191,8 +187,6 @@ class Executor:
             device = cast(RelayInstrument | None, self.devices.get(dn))
             if device is not None and device.relays is not None:
                 device.relays.set_state_of_devices('0' * device.relays.count)
-        if self.extra is not None:
-            self.extra.set_channels(on=False)
         log.info("Marquee hardware is now partially powered off.")
         log.info('')
 
