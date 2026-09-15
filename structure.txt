@@ -4,8 +4,10 @@ marquee
         Event
         Task
     devices
-        ControlSet
+        Control
             Button
+            Joystick
+            TiltSet
         LightController
             HueBridge
             ShellyController
@@ -56,7 +58,7 @@ marquee
                     SequenceMeasure
                     Sequence
     DeviceName
-        ControlName
+        DeviceName
         Instrument
         Clicker
         Joystick

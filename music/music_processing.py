@@ -6,7 +6,6 @@ import logging
 import time
 from typing import cast
 
-from devices.device_schemas import DeviceSet
 from modes import Mode
 from .music_abstract import Scheduled
 from .music_concrete import (
@@ -14,6 +13,7 @@ from .music_concrete import (
     Part, Section, Piece, Measure, 
     PlayableMeasure, PlayableNote, PlayableRest, 
 )
+from schemas import DeviceSet
 from task import Task, TaskSchedule
 
 
@@ -82,7 +82,7 @@ def _convert_note_to_playable(
     try:
         args = (
             asdict(note) | 
-            dict(instrument=devices[note.device]) |
+            dict(instrument=devices[note.device.value]) |
             (
                 dict(schedule=schedule) 
                 if isinstance(note, Scheduled) else 

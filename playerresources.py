@@ -3,9 +3,8 @@
 import logging
 from typing import Any, Protocol
 
-from devices.device_schemas import DeviceSet
 from event import EventSystem
-from modes.structural.mode_schemas import ModeDefinition
+from schemas import DeviceSet, ModeDefinition
 from task import TaskSchedule
 
 log = logging.getLogger('marquee.' + __name__)

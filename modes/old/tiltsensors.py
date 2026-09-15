@@ -5,9 +5,9 @@ import logging
 from typing_extensions import override
 
 from light_defs import LIGHT_COUNT, LIGHTS_BY_COLUMN
-from devices.device_schemas import ControlName
+from schemas import DeviceName
 from devices.color import Colors
-from . import PerformanceMode
+from modes import PerformanceMode
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -21,12 +21,13 @@ class TiltSensors(PerformanceMode):
         self.shift = 1
         self.lights.set_channels(on=False)
         self.lights.set_channels(color=Colors.WHITE)
-    
-    def control_action(self, control: ControlName) -> int | None:
+
+    @override
+    def control_action(self, control: DeviceName) -> None:
         """"""
         direction_buttons = {
-            ControlName.CORDED_A: +1,
-            ControlName.CORDED_B: -1,
+            DeviceName.BUTTON_CORDED_A: +1,
+            DeviceName.BUTTON_CORDED_B: -1,
         }
         if control in direction_buttons:
             shift = self.shift + direction_buttons[control]
@@ -34,7 +35,7 @@ class TiltSensors(PerformanceMode):
                 self.shift = shift
                 self.schedule(action=self.execute)
         else:
-            return super().control_action(control)
+            super().control_action(control)
 
     @staticmethod
     def on_parameter(shift: int) -> tuple[bool, ...]:
@@ -47,6 +48,7 @@ class TiltSensors(PerformanceMode):
         lights_on = set(i for c in LIGHTS_BY_COLUMN[cols_on] for i in c)
         return tuple(i in lights_on for i in range(LIGHT_COUNT))
 
+    @override
     def execute(self):
         """"""
         self.lights.set_channels(on=self.on_parameter(self.shift))

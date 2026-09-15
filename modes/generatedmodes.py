@@ -4,8 +4,9 @@ from dataclasses import dataclass
 from typing import cast
 from typing_extensions import override
 
-from . import RandomFade, ModeDefinition
+from . import RandomFade
 from .abstract.mode import BaseMode
+from schemas import ModeDefinition
 
 
 @dataclass(kw_only=True)

@@ -24,7 +24,7 @@ class ModeSelect(SelectMode):
 
     @override
     def execute(self) -> None:
-        """Set current brightness_factor."""
+        """Set current mode."""
         new = super().execute()
         if new is not None:  # Final selection made.
             self.change_mode(new)

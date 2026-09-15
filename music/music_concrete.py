@@ -5,13 +5,15 @@ from dataclasses import dataclass, field, replace
 import logging
 from typing_extensions import override
 
-from devices.device_schemas import DeviceName
 from instruments import BellSet, Buzzer, DrumSet, Ringer
 from .music_abstract import (
     Element, Note, Accented, Pitched,
     PlayableNote, ReleasableNote, PlayableReleasableNote,
     DinNote, PlayableDinNote, LightNote, PlayableLightNote,
 )
+from schemas import DeviceName
+
+
 log = logging.getLogger('marquee.' + __name__)
 
 

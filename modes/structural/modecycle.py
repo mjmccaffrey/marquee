@@ -6,9 +6,9 @@ import logging
 import pygame
 from typing_extensions import override
 
-from devices.device_schemas import ControlName
 from ..abstract.mode import Mode
-from .mode_schemas import CycleEntry, CycleSequence
+from schemas import DeviceName, CycleEntry, CycleSequence
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -48,11 +48,11 @@ class ModeCycle(Mode):
         self.change_mode(new.index)
 
     @override
-    def control_action(self, control: ControlName) -> None:
+    def control_action(self, control: DeviceName) -> None:
         """Switch to next mode.
            But first, delete the scheduled task 
            for the timed switch."""
-        if control == ControlName.CORDED_A:
+        if control == DeviceName.BUTTON_CORDED_A:
             self.player.tasks.delete_owned_by(self)
             self.schedule()
 

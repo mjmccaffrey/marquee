@@ -10,7 +10,7 @@ from devices.bulb import (
 )
 from devices.button import Button, LightedButton
 from devices.controlset import ControlSet
-from devices.device_schemas import ControlName, DeviceName, DeviceSet
+from devices.device_schemas import DeviceName, DeviceName, DeviceSet
 from devices.hue import HueBridge
 from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001
@@ -101,27 +101,27 @@ def controls(light_relays: NumatoRL160001) -> ControlSet:
     """Define control set."""
     return ControlSet(
         body_back = Button(
-            ControlName.BODY_BACK,
+            DeviceName.BODY_BACK,
             gpiozero.Button(pin=26, bounce_time=0.10, hold_time=10), 
             supports_hold=True,
         ),
         corded_a = Button(
-            ControlName.CORDED_A,
+            DeviceName.CORDED_A,
             gpiozero.Button(pin=2, bounce_time=0.05),
             signal_number=signal.SIGUSR1,  # type: ignore
         ),
         corded_b = Button(
-            ControlName.CORDED_B,
+            DeviceName.CORDED_B,
             gpiozero.Button(pin=3, bounce_time=0.05),
             signal_number=signal.SIGUSR2,  # type: ignore
         ),
         corded_c = Button(
-            ControlName.CORDED_C,
+            DeviceName.CORDED_C,
             gpiozero.Button(pin=18, bounce_time=0.05),
             signal_number=signal.SIGFPE,  # type: ignore
         ),
         game_start = LightedButton(
-            ControlName.GAME_START,
+            DeviceName.GAME_START,
             gpiozero.Button(pin=16, bounce_time=0.05),
             relay=create_client(light_relays, BUTTON_TO_RELAY),
         ),
@@ -131,7 +131,7 @@ def controls(light_relays: NumatoRL160001) -> ControlSet:
 def joystick() -> Joystick:
     """Define joystick."""
     return Joystick(
-        name=ControlName.JOYSTICK,
+        name=DeviceName.JOYSTICK,
         up=gpiozero.Button(pin=4, bounce_time=0.05),
         down=gpiozero.Button(pin=17, bounce_time=0.05),
         left=gpiozero.Button(pin=27, bounce_time=0.05),

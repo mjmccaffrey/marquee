@@ -7,8 +7,6 @@ import pygame
 from typing import cast
 from typing_extensions import override
 
-from devices.controlset import ControlSet
-from devices.device_schemas import ControlName, DeviceSet, DeviceName
 from devices.joystick import Joystick
 from devices.specialparams import SpecialParams
 from .basemode import BaseMode
@@ -16,6 +14,8 @@ from instruments import (
     Buzzer, BellSet, Clicker, DrumSet, 
     LightSet, Ringer,
 )
+from schemas import DeviceName, DeviceSet, DeviceName
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -28,18 +28,19 @@ class Mode(BaseMode, ABC):
     speed_factor: float
     special: SpecialParams | None = None
 
+    class C:
+        LIGHTS = 'lights'
+        
     def __post_init__(self):
         """"""
         pygame.mixer.init()
         # Assign critical devices
-        self.controls = cast(ControlSet, self.devices[DeviceName.CONTROLS])
-        self.lights = cast(LightSet, self.devices[DeviceName.LIGHTS])
-        self.clicker = cast(Clicker, self.devices[DeviceName.CLICKER])
-        self.bells: BellSet
-        self.drums = cast(DrumSet, self.devices[DeviceName.DRUMS])
-        self.buzzer = cast(Buzzer, self.devices[DeviceName.BUZZER])
-        # self.joystick = cast(Joystick, self.devices[DeviceName.JOYSTICK])
-        self.ringer = cast(Ringer, self.devices[DeviceName.RINGER])
+        self.lights = self.devices[DeviceName.LIGHTS.value]
+        self.clicker = self.devices[DeviceName.CLICKER.value]
+        # self.bells: BellSet
+        self.drums = self.devices[DeviceName.DRUMS.value]
+        self.buzzer = self.devices[DeviceName.BUZZER.value]
+        self.ringer = self.devices[DeviceName.RINGER.value]
 
     @override
     def close(self) -> None:
@@ -50,9 +51,9 @@ class Mode(BaseMode, ABC):
         super().close()
 
     # @override
-    # def control_action(self, control: ControlName) -> int | None:
+    # def control_action(self, control: DeviceName) -> int | None:
     #     """"""
-    #     if control == ControlName.ROTARY_A:
+    #     if control == DeviceName.ROTARY_A:
     #         self.change_brightness(self.controls.rotary_a.steps)
     #         self.lights.brightness_factor = 0
 

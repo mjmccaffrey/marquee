@@ -9,10 +9,10 @@ import time
 from typing import cast, NoReturn, Self
 from typing_extensions import override
 
-from devices.device_schemas import ControlName
+from schemas import ChangeModeInterrupt, DeviceName, InterruptSource
 from playerresources import PlayerResources
 from task import SeqTask, Task
-from ..structural.mode_schemas import ChangeMode
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -44,9 +44,8 @@ class BaseMode(ABC):
             print(f"Created mode {child} {mode.index} {mode.name}")
 
     @abstractmethod
-    def control_action(self, control: ControlName) -> int | None:
-        """Respond to button being pressed.
-           Return index of new mode, if any."""
+    def control_action(self, control: DeviceName) -> None:
+        """Respond to control action."""
 
     def close(self) -> None:
         """Clean up before instance is discarded."""
@@ -63,10 +62,16 @@ class BaseMode(ABC):
     def __str__(self) -> str:
         return f"Mode {self.index} {self.name}"
 
-    def change_mode(self, mode_index: int) -> NoReturn:
-        """Effects changing active mode to mode_index."""
-        log.info(f"Changing to mode {mode_index}")
-        raise ChangeMode(mode_index)
+    def change_mode(self, mode_index: int) -> None:
+        """Effects changing (active) mode to mode_index."""
+        def _change_mode() -> NoReturn:
+            """Raise ChangeModeInterrupt."""
+            log.info(f"Changing to mode {mode_index}")
+            raise ChangeModeInterrupt(
+                source=InterruptSource.MODE,
+                mode_index=mode_index,
+            )
+        self.schedule(_change_mode)
 
     def lookup_mode_index(self, name: str) -> int:
         """Return the index for the mode with name."""
@@ -74,6 +79,22 @@ class BaseMode(ABC):
             return self.player.mode_ids[name]
         except LookupError:
             raise ValueError(f"Mode {name} not defined.")
+
+    def next_entry(self) -> None:
+        """Change to the next entry."""
+        print("NEXT ENTRY")
+
+    def previous_entry(self) -> None:
+        """Change to the previous entry."""
+        print("PREVIOUS ENTRY")
+        
+    def next_mode(self) -> None:
+        """Change to the next mode."""
+        print("NEXT MODE")
+        
+    def previous_mode(self) -> None:
+        """Change to the previous mode."""
+        print("PREVIOUS MODE")
 
     def schedule(
         self, 

@@ -11,7 +11,8 @@ from mode_defs import define_modes
 
 
 def setup() -> Executor:
-    """Setup logging, executor, modes. Return executor."""
+    """Setup logging, executor, and mode definitions. 
+       Return executor."""
     setup_logging()
     exec = Executor(Player, define_devices)
     define_modes(exec)
@@ -63,6 +64,7 @@ def main() -> int:
     result = 1
     try:
         exec = setup()
+
         result = execute(exec)
     finally:
         cleanup(exec)

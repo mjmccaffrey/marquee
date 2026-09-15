@@ -5,9 +5,9 @@ from dataclasses import InitVar, dataclass
 import logging
 from typing_extensions import override
 
-from devices.device_schemas import ControlName
+from schemas import CycleEntry, CycleSequence, DeviceName
 from .performancemode import PerformanceMode
-from ..structural.mode_schemas import CycleEntry, CycleSequence
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -30,12 +30,12 @@ class ColorSetMode(PerformanceMode, ABC):
         """Show color set. Schedule next set."""
 
     @override
-    def control_action(self, control: ControlName) -> int | None:
+    def control_action(self, control: DeviceName) -> None:
         """If direction button pushed, change displayed color set.
            Otherwise, call parent's button handler."""
         direction_buttons = {
-            ControlName.CORDED_A: +1,
-            ControlName.CORDED_B: -1,
+            DeviceName.BUTTON_CORDED_A: +1,
+            DeviceName.BUTTON_CORDED_B: -1,
         }
         if control in direction_buttons:
             self.clicker.play()
@@ -43,7 +43,7 @@ class ColorSetMode(PerformanceMode, ABC):
             self.entry_index = self.wrap_entry_index(direction_buttons[control])
             self.schedule(action=self.show_color_set)
         else:
-            return super().control_action(control)
+            super().control_action(control)
 
     def expand_sequence(
         self, 

@@ -6,11 +6,11 @@ import time
 from typing import Any, cast, Protocol
 
 from devices.color import ColorSets
-from devices.device_schemas import DeviceName, DeviceSet
 from devices.specialparams import SpecialParams
 from instruments import LightSet, RelayInstrument
-from modes import BaseMode, ModeDefinition, SequenceMode
+from modes import BaseMode, SequenceMode
 from player import Player
+from schemas import DeviceName, DeviceSet, ModeDefinition
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -117,7 +117,7 @@ class Executor:
            Return True if system shutdown requested, else False."""
         shutdown = False
         self.devices = self.define_devices(brightness_factor, speed_factor)
-        self.lights = cast(LightSet, self.devices[DeviceName.LIGHTS])
+        self.lights = self.devices['lights']
         if color is not None:
             assert brightness is not None
             self.execute_color(color, brightness)
@@ -131,9 +131,7 @@ class Executor:
 
     def execute_color(self, color: str, brightness: int) -> None:
         """Executes color operation."""
-        cs = cast(
-            LightSet, self.devices[DeviceName.LIGHTS]
-        ).color_sets.by_set_name[color]
+        cs = self.devices['lights'].color_sets.by_set_name[color]
         kwargs = cs.set_channels_kwargs(self.lights.count)
         kwargs |= dict(
             on=True,
@@ -179,6 +177,7 @@ class Executor:
                     lightset.calibrate()
                 except NotImplementedError:
                     pass
+
     def command_off(self) -> None:
         """Turn off all relays and potentially other devices."""
         for dn in (

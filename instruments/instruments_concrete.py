@@ -4,11 +4,12 @@ from collections.abc import Collection
 import logging
 from typing_extensions import override
 
-from devices.device_schemas import DeviceName
 from devices.relaymodule import RelayClient
 from .instruments_abstract import (
     RelayInstrument, ReleaseableInstrument, DinInstrument,
 )
+from schemas import DeviceName
+
 
 log = logging.getLogger('marquee.' + __name__)
 

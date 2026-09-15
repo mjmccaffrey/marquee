@@ -14,10 +14,11 @@ from devices.color import Color, Colors, ColorSets, RGB
 from devices.bulb import SmartBulb
 from devices.lightcontroller import ChannelUpdate, LightChannel, LightController
 from devices.relaymodule import RelayClient
-from devices.device_schemas import DeviceName
 from devices.specialparams import ChannelParams, MirrorParams, SpecialParams
 from .lightsetinterface import SavedState
 from .instruments_abstract import RelayInstrument
+from schemas import DeviceName
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -227,7 +228,7 @@ class LightSet(RelayInstrument):
     ) -> None:
         """Set channels per the specified pattern and special.
            Adjust for brightness_factor."""
-
+        print(light_pattern)
         brightness_values: dict[int, int | None] = {
             0: (int(special.brightness_off * self._brightness_factor)
                 if special.brightness_off is not None else None),

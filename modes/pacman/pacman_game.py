@@ -11,7 +11,6 @@ from typing_extensions import override
 
 from devices.button import LightedButton
 from devices.color import Colors, RGB
-from devices.device_schemas import ControlName, DeviceName
 from devices.joystick import Joystick
 from ..abstract.gamemode import Entity, EntityGroup, GameMode
 from . import pacman_assets as assets
@@ -20,6 +19,8 @@ from .pacman_assets import (
     passage_maze,
 )
 from devices.lightcontroller import LightChannel, ChannelUpdate
+from schemas import DeviceName, DeviceName
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -72,15 +73,15 @@ class PacManGame(GameMode):
         self.sounds[sound].play()
 
     @override
-    def control_action(self, control: ControlName) -> int | None:
+    def control_action(self, control: DeviceName) -> None:
         """Handle Game Start button push."""
         if (
-            control == ControlName.GAME_START and
+            control == DeviceName.BUTTON_GAME_START and
             self.state == GameState.PRE_GAME
         ):
             self.change_state(GameState.PRE_LEVEL_0)
         else:
-            return super().control_action(control)
+            super().control_action(control)
 
     def ghost_state(self, ghost: Ghost, state: GhostState) -> None:
         """"""
@@ -134,7 +135,7 @@ class PacManGame(GameMode):
             PacMan(
                 game=self, 
                 bite_event=Event.PACMAN_BITE,
-                joystick=cast(Joystick, self.devices[DeviceName.JOYSTICK]),
+                joystick=self.devices[DeviceName.JOYSTICK.value],
             )
         )
         self.blinky = self.register_entity(
@@ -173,9 +174,7 @@ class PacManGame(GameMode):
     def pre_game_state(self) -> None:
         """Before game starts."""
         log.info("Waiting for Start Game button press")
-        cast(
-            LightedButton, self.controls[ControlName.GAME_START],
-        ).set_light(True)
+        self.devices[DeviceName.BUTTON_GAME_START.value].set_light(True)
         self.lights.set_channels(
             on=True,
             brightness=50,

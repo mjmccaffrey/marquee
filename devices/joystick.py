@@ -6,7 +6,7 @@ import logging
 
 import gpiozero
 
-from .device_schemas import Control
+from schemas import Control
 
 log = logging.getLogger('marquee.' + __name__)
 

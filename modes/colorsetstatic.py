@@ -4,7 +4,9 @@ from dataclasses import InitVar, dataclass
 import logging
 from typing_extensions import override
 
-from . import ColorSetMode, CycleSequence
+from . import ColorSetMode
+from schemas import CycleSequence
+
 
 log = logging.getLogger('marquee.' + __name__)
 

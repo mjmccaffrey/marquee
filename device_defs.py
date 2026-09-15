@@ -10,8 +10,6 @@ import urllib3
 
 from devices.bulb import Hue_BR30_Enhanced_Color
 from devices.button import Button, LightedButton
-from devices.controlset import ControlSet
-from devices.device_schemas import ControlName, DeviceName, DeviceSet
 from devices.hue import HueChannel, HueBridge, http_mock
 from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001
@@ -21,6 +19,7 @@ from devices.relaymodule import (
 )
 from instruments import Buzzer, Clicker, DrumSet, LightSet, Ringer
 from light_defs import *
+from schemas import DeviceName, DeviceSet
 
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'
@@ -91,45 +90,6 @@ HUE_ZONE_IDS_2 = HUE_ZONE_IDS_0 | {
     '16': ['82204b9c-610c-4975-8e40-e6882ce39118'],
 }
 
-
-def controls(light_relays: RelayModule) -> ControlSet:
-    """Define control set."""
-    return ControlSet(**{
-        ControlName.BODY_BACK: 
-            Button(
-                ControlName.BODY_BACK,
-                gpiozero.Button(pin=26, bounce_time=0.10, hold_time=10), 
-                supports_hold=True,
-            ),
-        ControlName.CORDED_A:
-            Button(
-                ControlName.CORDED_A,
-                gpiozero.Button(pin=2, bounce_time=0.05),
-                # signal_number=signal.SIGUSR1,  # type: ignore
-            ),
-        ControlName.CORDED_B:
-            Button(
-                ControlName.CORDED_B,
-                gpiozero.Button(pin=3, bounce_time=0.05),
-                # signal_number=signal.SIGUSR2,  # type: ignore
-            ),
-        ControlName.GAME_START:
-            LightedButton(
-                ControlName.GAME_START,
-                gpiozero.Button(pin=16, bounce_time=0.05),
-                relay=create_client(light_relays, BUTTON_TO_RELAY),
-            ),
-        ControlName.JOYSTICK:
-            Joystick(
-                name=ControlName.JOYSTICK,
-                up=gpiozero.Button(pin=4, bounce_time=0.05),
-                down=gpiozero.Button(pin=17, bounce_time=0.05),
-                left=gpiozero.Button(pin=27, bounce_time=0.05),
-                right=gpiozero.Button(pin=22, bounce_time=0.05),
-            ),
-    })
-
-
 def define_devices(
     brightness_factor: float,
     speed_factor: float,
@@ -170,12 +130,43 @@ def define_devices(
     ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
     buzzer = Buzzer(create_client(light_relays, BUZZER_TO_RELAY))
     return {
-        DeviceName.CONTROLS: controls(light_relays),
         DeviceName.DRUMS: drums, 
         DeviceName.LIGHTS: lights, 
         DeviceName.CLICKER: clicker, 
         DeviceName.RINGER: ringer, 
         DeviceName.BUZZER: buzzer, 
+        DeviceName.BUTTON_REAR:
+            Button(
+                DeviceName.BUTTON_REAR,
+                gpiozero.Button(pin=26, bounce_time=0.10, hold_time=10), 
+                supports_hold=True,
+            ),
+        DeviceName.BUTTON_CORDED_A:
+            Button(
+                DeviceName.BUTTON_CORDED_A,
+                gpiozero.Button(pin=2, bounce_time=0.05),
+                # signal_number=signal.SIGUSR1,  # type: ignore
+            ),
+        DeviceName.BUTTON_CORDED_B:
+            Button(
+                DeviceName.BUTTON_CORDED_B,
+                gpiozero.Button(pin=3, bounce_time=0.05),
+                # signal_number=signal.SIGUSR2,  # type: ignore
+            ),
+        DeviceName.BUTTON_GAME_START:
+            LightedButton(
+                DeviceName.BUTTON_GAME_START,
+                gpiozero.Button(pin=16, bounce_time=0.05),
+                relay=create_client(light_relays, BUTTON_TO_RELAY),
+            ),
+        DeviceName.JOYSTICK:
+            Joystick(
+                name=DeviceName.JOYSTICK,
+                up=gpiozero.Button(pin=4, bounce_time=0.05),
+                down=gpiozero.Button(pin=17, bounce_time=0.05),
+                left=gpiozero.Button(pin=27, bounce_time=0.05),
+                right=gpiozero.Button(pin=22, bounce_time=0.05),
+            ),
     }
 
 

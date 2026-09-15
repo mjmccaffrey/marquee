@@ -1,15 +1,15 @@
 """Marquee Lighted Sign Project - button"""
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 import logging
 import signal
-from typing import Protocol
 from typing_extensions import override
 
 import gpiozero
 
-from .device_schemas import (
-    Control, ControlAction, ControlName, ControlVirtuallyChanged
+from schemas import (
+    Control, ControlInterrupt, ControlAction, InterruptSource, Interrupt,
 )
 from devices.relaymodule import RelayClient
 
@@ -21,21 +21,17 @@ class Button(Control):
     """Supports physical buttons on remote and sign."""
     button: gpiozero.Button
     supports_hold: bool = False
-    supports_release: bool = False
     signal_number: int | None = None
-    action_in_control_set: 'ButtonActionInterface' = field(init=False)
+    execute_interrupt: Callable[[Interrupt], None] = field(init=False)
 
     def __post_init__(self) -> None:
         """Initialize."""
-        self.button.when_pressed = self.button_physically_pressed
+        self.button.when_pressed = self.pressed_via_gpio
         if self.supports_hold:
-            self.button.when_held = self.button_physically_held
-        if self.supports_release:
-            self.button.when_released = self.button_physically_released
+            self.button.when_held = self.held_via_gpio
         if self.signal_number is not None:
             signal.signal(
-                self.signal_number,
-                self.button_virtually_pressed,
+                self.signal_number, self.pressed_via_signal,
             )
     
     @override
@@ -51,22 +47,49 @@ class Button(Control):
         self.button.close()
         log.info(f"Button {self} closed.")
 
-    def button_physically_held(self) -> None:
-        """Callback for physical button hold."""
-        self.action_in_control_set(self.name, ControlAction.BUTTON_HELD)
+    def held_via_gpio(self) -> None:
+        """Callback for button held via gpio."""
+        log.info(f"Button <{self}> held via gpio.")
+        self.execute_interrupt(
+            ControlInterrupt(
+                action=ControlAction.BUTTON_HELD,
+                control=self.name, 
+                source=InterruptSource.GPIO,
+            )
+        )
 
-    def button_physically_pressed(self) -> None:
-        """Callback for physical button press."""
-        self.action_in_control_set(self.name, ControlAction.BUTTON_PRESSED)
+    def pressed_via_api(self) -> None:
+        """Callback for button pressed via api."""
+        log.info(f"Button <{self}> pressed via api.")
+        self.execute_interrupt(
+            ControlInterrupt(
+                action=ControlAction.BUTTON_PRESSED,
+                control=self.name, 
+                source=InterruptSource.API,
+            )
+        )
 
-    def button_physically_released(self) -> None:
-        """Callback for physical button release."""
-        self.action_in_control_set(self.name, ControlAction.BUTTON_RELEASED)
+    def pressed_via_gpio(self) -> None:
+        """Callback for button pressed via gpio."""
+        log.info(f"Button <{self}> pressed via gpio.")
+        self.execute_interrupt(
+            ControlInterrupt(
+                action=ControlAction.BUTTON_PRESSED,
+                control=self.name, 
+                source=InterruptSource.GPIO,
+            )
+        )
 
-    def button_virtually_pressed(self, signal_number, stack_frame) -> None:
-        """Callback for virtual button press."""
-        log.info(f"Button <{self}> vitually pressed")
-        raise ControlVirtuallyChanged(control=self.name, action=ControlAction.BUTTON_PRESSED)
+    def pressed_via_signal(self, signal_number, stack_frame) -> None:
+        """Callback for button pressed via signal."""
+        log.info(f"Button <{self}> pressed via signal.")
+        self.execute_interrupt(
+            ControlInterrupt(
+                action=ControlAction.BUTTON_PRESSED,
+                control=self.name,
+                source=InterruptSource.SIGNAL,
+            )
+        )
 
 
 @dataclass(kw_only=True)
@@ -82,14 +105,4 @@ class LightedButton(Button):
     def set_light(self, on: bool) -> None:
         """Set state of light."""
         self.relay.set_state_of_devices('1' if on else '0')
-
-
-class ButtonActionInterface(Protocol):
-    """Signature for button to call button set upon action."""
-    def __call__(
-        self,
-        control: ControlName,
-        action: ControlAction
-    ) -> None:
-        ...
 

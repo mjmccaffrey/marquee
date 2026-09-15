@@ -27,6 +27,7 @@ class Task:
     def __str__(self) -> str:
         return f"'{self.name}' {self.owner}"
 
+
 @dataclass
 class TaskSchedule:
     """Task schedule."""
@@ -86,63 +87,34 @@ class TaskSchedule:
         heapify(self._schedule)
         log.debug(f"{len(self._schedule)} tasks delayed by {delta} seconds.")
 
-    def wait(
-        self, 
-        seconds: float | None, 
-        wait_fn: Callable[[float | None], None | NoReturn],
-    ):
+    def _next_task_or_wait(self) -> tuple[Task | None, float | None]:
+        """If the next task is due, return (task, 0).
+            Else return seconds until the next task (None, seconds).
+            Except if there are no more tasks, return (None, None)."""
+        now = time.time()
+        if self._schedule:
+            task = self.peek()
+            if task.due < now:
+                log.debug(f"Running {task} {now - task.due} late")
+                self.pop()
+                return task, 0
+            else:
+                log.debug(f"Waiting for {task.due - now} or control activity")
+                return None, task.due - now
+        else:
+            log.debug(f"Waiting for control activity")
+            return None, None
+
+    def wait(self, wait_fn: Callable) -> NoReturn:
         """Call wait_fn to wait seconds, or indefinitely if seconds is None.
            wait_fn calls a threading.Task.wait method or equivalent."""
-        now: float
-        remaining: float
-        start: float
-        end: float
-
-        def next_task_or_wait() -> tuple[Task | None, float | None]:
-            """Return the next task if it is due, 
-               otherwise return seconds to wait."""
-            if self._schedule:
-                task = self.peek()
-                if task.due < now:
-                    log.debug(f"Running {task} {now - task.due} late")
-                    self.pop()
-                    return task, 0
-                elif seconds is None or task.due < end:
-                    log.debug(f"Waiting for {task} or control activity")
-                    log.debug(f"Waiting for {task.due - now} or control activity")
-                    return None, task.due - now
-                else:
-                    log.debug(
-                        f"Waiting for remaining {remaining} "
-                         "or control activity; schedule not empty"
-                    )
-                    return None, remaining
-            else:
-                if seconds is None:
-                    log.debug(f"Waiting for control activity")
-                    return None, None
-                else:
-                    log.debug(
-                        f"Waiting for remaining {remaining} "
-                         "or control activity; schedule empty"
-                    )
-                    return None, remaining
-
-        log.debug(f"Waiting {seconds=}")
-        start = time.time()
         while True:
-            now = time.time()
-            if seconds is not None:
-                remaining = start + seconds - now
-                end = now + remaining
-                if now > end:
-                    log.debug(f"Exiting wait {now - end} late")
-                    break
-            task, duration = next_task_or_wait()
+            task, duration = self._next_task_or_wait()
             if task is not None:
                 task.action()
             else:
                 wait_fn(duration)
+
 
 @dataclass
 class SeqTask:

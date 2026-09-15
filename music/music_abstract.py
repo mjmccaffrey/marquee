@@ -6,8 +6,9 @@ from dataclasses import dataclass, field
 import logging
 from typing_extensions import override
 
-from devices.device_schemas import DeviceName
 from instruments import Instrument, LightSet, ReleaseableInstrument
+from schemas import DeviceName
+
 
 log = logging.getLogger('marquee.' + __name__)
 

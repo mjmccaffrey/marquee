@@ -4,8 +4,10 @@ from dataclasses import dataclass, field
 from enum import auto, StrEnum
 import logging
 
-from .device_schemas import Control
 import gpiozero
+
+from schemas import Control
+
 
 log = logging.getLogger('marquee.' + __name__)
 

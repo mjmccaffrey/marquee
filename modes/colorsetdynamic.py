@@ -7,9 +7,11 @@ from typing_extensions import override
 
 from devices.specialparams import ChannelParams
 from . import (
-    BaseMode, ColorSetMode, CycleSequence, ModeDefinition,
+    BaseMode, ColorSetMode, 
     LightSetBaseline, SequenceMode, chase, rotate,
 )
+from schemas import CycleSequence, ModeDefinition
+
 
 log = logging.getLogger('marquee.' + __name__)
 

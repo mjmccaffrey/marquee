@@ -5,6 +5,7 @@ from devices.specialparams import ChannelParams, EmulateParams, MirrorParams
 from executor import Executor
 from modes import *
 from modes.pacman import base_maze, passage_maze
+from schemas import ModeIndex
 
 
 def define_modes(exec: Executor) -> None:
@@ -28,9 +29,9 @@ def register_special_modes(exec: Executor) -> None:
         index=ModeIndex.MODE_SELECT, hidden=True,
         previous="PREVIOUS_MODE",
     )
-    exec.add_mode("select_brightness", BrightnessSelect, 
-        index=ModeIndex.BRIGHTNESS_SELECT, hidden=True,
-    )
+    # exec.add_mode("select_brightness", BrightnessSelect, 
+    #     index=ModeIndex.BRIGHTNESS_SELECT, hidden=True,
+    # )
     exec.add_sequence_mode("all_off", all_off,
         index=ModeIndex.DEFAULT,
     )
@@ -180,7 +181,7 @@ def register_channel_modes(exec: Executor):
     )
     exec.add_sequence_mode("random_flip_fade_medium", 
         random_flip, 
-        sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
+        sequence_kwargs=dict(light_pattern=ALL_OFF),
         delay=0.5,
         # special=ChannelParams(),
         baseline=None,
@@ -234,7 +235,7 @@ def register_relay_modes(exec: Executor) -> None:
         special=EmulateParams(),
     )
     exec.add_sequence_mode("random_flip", random_flip, 
-        sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
+        sequence_kwargs=dict(light_pattern=ALL_OFF),
         delay=0.5, 
         baseline=None,
     )
@@ -257,7 +258,7 @@ def register_silent_modes(exec: Executor) -> None:
         )
     )
     exec.add_sequence_mode("silent_random_flip_medium", random_flip, 
-        sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
+        sequence_kwargs=dict(light_pattern=ALL_OFF),
         delay=2.0,
         special=ChannelParams(
             trans_on=0.5,
@@ -267,7 +268,7 @@ def register_silent_modes(exec: Executor) -> None:
         baseline=None,
     )
     exec.add_sequence_mode("silent_random_flip_fast", random_flip, 
-        sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
+        sequence_kwargs=dict(light_pattern=ALL_OFF),
         delay=0.25,
         special=ChannelParams(),
         baseline=None,

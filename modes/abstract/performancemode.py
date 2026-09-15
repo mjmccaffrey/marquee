@@ -1,13 +1,14 @@
 """Marquee Lighted Sign Project - performancemode"""
 
 from abc import ABC
+from collections.abc import Callable
 from dataclasses import dataclass
 import logging
 from typing_extensions import override
 
-from devices.device_schemas import ControlName
 from .mode import Mode
-from ..structural.mode_schemas import ModeIndex
+from schemas import APICommand, DeviceName, ModeIndex
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -17,28 +18,29 @@ class PerformanceMode(Mode, ABC):
     """Base for performance modes."""
 
     @override
-    def control_action(self, control: ControlName) -> int | None:
+    def control_action(self, control: DeviceName) -> None:
         """Respond to button being pressed.
            Return index of new mode, if any."""
         new_mode = None
-        b = ControlName
+        b = DeviceName
         match control:
-            case b.BODY_BACK:
+            case b.BUTTON_REAR:
                 new_mode = ModeIndex.MODE_SELECT
             # case b.REMOTE_C:
             #     self.clicker.click()
             #     new_mode = ModeIndex.BRIGHTNESS_SELECT
-            # case b.REMOTE_B:
-            #     self.clicker.click()
-            #     new_mode = self.wrap_mode_index(-1)
-            # case b.REMOTE_D:
-            #     self.clicker.click()
-            #     new_mode = self.wrap_mode_index(+1)
+            case DeviceName.BUTTON_CORDED_A:
+                self.clicker.play()
+                new_mode = self._wrap_mode_index(-1)
+            case DeviceName.BUTTON_CORDED_B:
+                self.clicker.play()
+                new_mode = self._wrap_mode_index(+1)
             case _:
                 pass
-        return new_mode
+        if new_mode is not None:
+            self.change_mode(new_mode)
 
-    def wrap_mode_index(self, delta: int) -> int:
+    def _wrap_mode_index(self, delta: int) -> int:
         """"""
         return self.wrap_value(
             lower=1, 

@@ -5,8 +5,8 @@ import logging
 import random
 from typing_extensions import override
 
-from devices.device_schemas import Device, DeviceName
 from devices.relaymodule import RelayClient
+from schemas import Device, DeviceName
 
 log = logging.getLogger('marquee.' + __name__)
 

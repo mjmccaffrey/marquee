@@ -53,7 +53,7 @@ class PacMan(Character):
 
     def next_coord(self):
         """Next square, based on joystick and maze."""
-        dir = self.game.joystick.direction
+        dir = self.joystick.direction
         if dir is None:
             return
         assert self.coord is not None
