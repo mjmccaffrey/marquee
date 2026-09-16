@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 import logging
 import sys
 import time
-from typing import cast, NoReturn, Self
+from typing import NoReturn, Self
 from typing_extensions import override
 
 from schemas import ChangeModeInterrupt, DeviceName, InterruptSource
@@ -34,12 +34,9 @@ class BaseMode(ABC):
     def _create_children(self) -> None:
         """Create child mode(s) specified."""
         for child in self.children:
-            mode = cast(
-                'BaseMode', 
-                self.player.create_mode_instance(
-                    mode_index=self.lookup_mode_index(child),
-                    parent=self,
-                )
+            mode = self.player.create_mode_instance(
+                mode_index=self.lookup_mode_index(child),
+                parent=self,
             )
             print(f"Created mode {child} {mode.index} {mode.name}")
 
@@ -50,7 +47,7 @@ class BaseMode(ABC):
     def close(self) -> None:
         """Clean up before instance is discarded."""
         print(f"BaseMode close called: {self.name}")
-        
+
     def execute(self) -> None:
         """Play the mode."""
 

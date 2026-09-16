@@ -3,8 +3,9 @@
 import logging
 from typing import Any, Protocol
 
+from devices.deviceset import DeviceSet
 from event import EventSystem
-from schemas import DeviceSet, ModeDefinition
+from schemas import BaseModeInterface, ModeDefinition
 from task import TaskSchedule
 
 log = logging.getLogger('marquee.' + __name__)
@@ -28,8 +29,8 @@ class PlayerResources(Protocol):
         mode_index: int | None = None,
         mode_definition: ModeDefinition | None = None,
         kwargs: dict[str, Any] = {},
-        parent: object | None = None,  # BaseMode
-    ) -> object: ...  # BaseMode
+        parent: BaseModeInterface | None = None,
+    ) -> BaseModeInterface: ...
 
     def delete_mode_instance(
         self,

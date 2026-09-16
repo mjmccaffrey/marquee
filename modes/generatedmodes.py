@@ -5,8 +5,7 @@ from typing import cast
 from typing_extensions import override
 
 from . import RandomFade
-from .abstract.mode import BaseMode
-from schemas import ModeDefinition
+from schemas import BaseModeInterface, ModeDefinition
 
 
 @dataclass(kw_only=True)
@@ -34,24 +33,21 @@ class GeneratedModes(RandomFade):
             print(f"GM: {self.light_index}")
             self.update_light_schedule_next(self.light_index)
 
-    def generate_mode(self, light_index: int) -> BaseMode:
+    def generate_mode(self, light_index: int) -> BaseModeInterface:
         """"""
-        mode = cast(
-            BaseMode,
-            self.player.create_mode_instance(
-                mode_definition=ModeDefinition(
-                    name=f'generated_mode_{light_index:02}',
-                    cls=GeneratedModes,
-                ),
-                kwargs=dict(
-                    background=True,
-                    transition=self.transition,
-                    duration=self.duration,
-                    color_set_name=self.color_set_name,
-                    light_index=light_index,
-                ),
-                parent=self,
-            )
+        mode = self.player.create_mode_instance(
+            mode_definition=ModeDefinition(
+                name=f'generated_mode_{light_index:02}',
+                cls=GeneratedModes,
+            ),
+            kwargs=dict(
+                background=True,
+                transition=self.transition,
+                duration=self.duration,
+                color_set_name=self.color_set_name,
+                light_index=light_index,
+            ),
+            parent=self,
         )
         self.schedule(mode.execute, light_index * 2)
         return mode

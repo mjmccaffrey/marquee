@@ -10,6 +10,7 @@ import urllib3
 
 from devices.bulb import Hue_BR30_Enhanced_Color
 from devices.button import Button, LightedButton
+from devices.deviceset import DeviceSet
 from devices.hue import HueChannel, HueBridge, http_mock
 from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001
@@ -19,7 +20,7 @@ from devices.relaymodule import (
 )
 from instruments import Buzzer, Clicker, DrumSet, LightSet, Ringer
 from light_defs import *
-from schemas import DeviceName, DeviceSet
+from schemas import DeviceName
 
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'

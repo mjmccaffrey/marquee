@@ -14,11 +14,12 @@ from fastapi.responses import JSONResponse
 
 from apiserver import APIServer
 from devices.button import Button
+from devices.deviceset import DeviceSet
 from schemas import (
     Interrupt, ChangeModeInterrupt, 
     APICommand, CommandInterrupt, 
     ControlAction, ControlInterrupt, 
-    DeviceName, DeviceSet, Exit,
+    DeviceName, Exit,
     InterruptSource, ModeDefinition,
 )
 from event import EventSystem
@@ -95,7 +96,7 @@ class Player:
         self, 
         mode_index: int | None = None,
         mode_definition: ModeDefinition | None = None,
-        kwargs: dict[str, Any] = {},
+        # kwargs: dict[str, Any] = {},
         parent: Mode | None = None,
     ) -> Mode:
         """Return a new mode instance.

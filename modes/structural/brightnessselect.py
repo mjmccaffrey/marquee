@@ -33,7 +33,7 @@ class BrightnessSelect(SelectMode):
     def execute(self) -> None:
         """Set current brightness_factor."""
         self.set_brightness_level(self.desired)
-        new = super().execute()
+        new = self.step()
         if new is not None:  # Final selection made.
             self.change_mode(ModeIndex.DEFAULT)
 

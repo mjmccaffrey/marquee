@@ -52,8 +52,7 @@ class SelectMode(Mode, ABC):
                 pass
         return None
 
-    @override
-    def execute(self) -> int | None:
+    def step(self) -> int | None:
         """Return user's final selection if made, otherwise 
            schedule next execute and return None."""
         log.info(
@@ -68,23 +67,20 @@ class SelectMode(Mode, ABC):
             # Show user what desired mode number is currently selected.
             log.info(f"Desired is now {self.desired}")
             # self.lights.set_relays(ALL_OFF, special=self.special)
-            counter = cast(
-                BaseMode, 
-                self.player.create_mode_instance(
-                    mode_definition=ModeDefinition(
-                        name='counter',
-                        cls=SequenceMode,
-                    ),
-                    parent=self,
-                    kwargs=dict(
-                        sequence=rotate_build_flip,
-                        sequence_kwargs=dict(count=self.desired),
-                        pre_delay=0.5,
-                        delay=0.25, 
-                        repeat=False,
-                        special=self.special,
-                    ),
-                )
+            counter = self.player.create_mode_instance(
+                mode_definition=ModeDefinition(
+                    name='counter',
+                    cls=SequenceMode,
+                ),
+                parent=self,
+                kwargs=dict(
+                    sequence=rotate_build_flip,
+                    sequence_kwargs=dict(count=self.desired),
+                    pre_delay=0.5,
+                    delay=0.25, 
+                    repeat=False,
+                    special=self.special,
+                ),
             )
             self.schedule(counter.execute)
             self.previous_desired = self.desired

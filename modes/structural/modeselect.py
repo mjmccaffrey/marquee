@@ -25,7 +25,7 @@ class ModeSelect(SelectMode):
     @override
     def execute(self) -> None:
         """Set current mode."""
-        new = super().execute()
+        new = self.step()
         if new is not None:  # Final selection made.
             self.change_mode(new)
 

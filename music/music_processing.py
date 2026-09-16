@@ -6,6 +6,7 @@ import logging
 import time
 from typing import cast
 
+from devices.deviceset import DeviceSet
 from modes import Mode
 from .music_abstract import Scheduled
 from .music_concrete import (
@@ -13,7 +14,6 @@ from .music_concrete import (
     Part, Section, Piece, Measure, 
     PlayableMeasure, PlayableNote, PlayableRest, 
 )
-from schemas import DeviceSet
 from task import Task, TaskSchedule
 
 

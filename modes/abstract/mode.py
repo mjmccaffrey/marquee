@@ -7,14 +7,10 @@ import pygame
 from typing import cast
 from typing_extensions import override
 
-from devices.joystick import Joystick
+from devices.deviceset import DeviceSet
 from devices.specialparams import SpecialParams
 from .basemode import BaseMode
-from instruments import (
-    Buzzer, BellSet, Clicker, DrumSet, 
-    LightSet, Ringer,
-)
-from schemas import DeviceName, DeviceSet, DeviceName
+from schemas import DeviceName
 
 
 log = logging.getLogger('marquee.' + __name__)
@@ -28,9 +24,6 @@ class Mode(BaseMode, ABC):
     speed_factor: float
     special: SpecialParams | None = None
 
-    class C:
-        LIGHTS = 'lights'
-        
     def __post_init__(self):
         """"""
         pygame.mixer.init()

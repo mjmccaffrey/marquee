@@ -3,14 +3,7 @@
 from abc import ABC
 from dataclasses import dataclass, field
 from enum import auto, IntEnum, StrEnum
-from typing import Any, Callable, NotRequired, TypedDict
-
-from devices.button import Button
-from devices.joystick import Joystick
-from devices.tiltset import TiltSet
-from instruments import (
-    BellSet, Buzzer, Clicker, DrumSet, LightSet, Ringer,
-)
+from typing import Any, Callable, Protocol
 
 
 class Device(ABC):
@@ -31,20 +24,6 @@ class DeviceName(StrEnum):
     LIGHTS = auto()
     RINGER = auto()
     TILTS = auto()
-
-
-class DeviceSet(TypedDict, closed=True):
-    button_rear: Button
-    button_corded_a: Button
-    button_corded_b: Button
-    button_game_start: NotRequired[Button]
-    buzzer: NotRequired[Buzzer]
-    clicker: Clicker
-    drums: DrumSet
-    joystick: NotRequired[Joystick]
-    lights: LightSet
-    ringer: NotRequired[Ringer]
-    tilts: NotRequired[TiltSet]
 
 
 class APICommand(StrEnum):
@@ -114,6 +93,15 @@ class CycleEntry:
 
 
 CycleSequence = list[tuple[str, int | None]]
+
+
+class BaseModeInterface(Protocol):
+    """Minimum required of output from create_mode_instance."""
+    index: int
+    name: str
+    serial: int
+
+    def execute(self) -> None: ...
 
 
 @dataclass(kw_only=True)

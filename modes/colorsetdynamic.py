@@ -72,16 +72,13 @@ class ColorSetDynamic(ColorSetMode):
             kwargs |= dict(sequence=chase)
             sequence_kwargs |= dict(mask=self.mask)
         kwargs['sequence_kwargs'] = sequence_kwargs
-        mode = cast(
-            BaseMode,
-            self.player.create_mode_instance(
-                mode_definition=ModeDefinition(
-                    name='cs_rotate',
-                    cls=SequenceMode,
-                ),
-                kwargs=kwargs,
-                parent=self,
-            )
+        mode = self.player.create_mode_instance(
+            mode_definition=ModeDefinition(
+                name='cs_rotate',
+                cls=SequenceMode,
+            ),
+            kwargs=kwargs,
+            parent=self,
         )
         self.schedule(mode.execute)
 
