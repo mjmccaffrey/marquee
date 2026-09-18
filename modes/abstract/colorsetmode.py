@@ -33,17 +33,31 @@ class ColorSetMode(PerformanceMode, ABC):
     def control_action(self, control: DeviceName) -> None:
         """If direction button pushed, change displayed color set.
            Otherwise, call parent's button handler."""
-        direction_buttons = {
-            DeviceName.BUTTON_CORDED_A: +1,
-            DeviceName.BUTTON_CORDED_B: -1,
-        }
-        if control in direction_buttons:
-            self.clicker.play()
-            self.player.tasks.delete_owned_by(self)
-            self.entry_index = self.wrap_entry_index(direction_buttons[control])
-            self.schedule(action=self.show_color_set)
-        else:
-            super().control_action(control)
+        match control:
+            case DeviceName.BUTTON_CORDED_A:
+                self.clicker.play()
+                self.next_entry()
+            case DeviceName.BUTTON_CORDED_B:
+                self.clicker.play()
+                self.previous_entry()
+            case _:
+                super().control_action(control)
+
+    @override
+    def next_entry(self) -> None:
+        self._change_entry(+1)
+        return super().next_entry()
+
+    @override
+    def previous_entry(self) -> None:
+        self._change_entry(-1)
+        return super().previous_entry()
+
+    def _change_entry(self, delta: int) -> None:
+        """"""
+        self.player.tasks.delete_owned_by(self)
+        self.entry_index = self.wrap_entry_index(delta)
+        self.schedule(action=self.show_color_set)
 
     def expand_sequence(
         self, 

@@ -100,6 +100,14 @@ def define_devices(
     session.verify = False
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     #
+    LIGHT_TO_RELAY = {
+                        15: 10, 
+                0:  6,  1:  7,  2:  8,
+        11:  5,                         3:  9,
+        10:  4, 12: 10, 13: 10, 14: 10, 4: 12,
+        9:  1,                         5: 13,
+                8:  0,  7: 15,  6: 14,
+    }
     lights = LightSet(
         count=LIGHT_COUNT,
         relays=create_client(light_relays, LIGHT_TO_RELAY),
@@ -118,9 +126,9 @@ def define_devices(
         channel_enum=Light,
         speed_factor=speed_factor,
     )
-    clicker = Clicker(create_client(drum_16_relays, CLICKER_TO_RELAY))
-    ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
-    buzzer = Buzzer(create_client(light_relays, BUZZER_TO_RELAY))
+    clicker = Clicker(create_client(drum_16_relays, {0: 0, 1: 1}))
+    ringer = Ringer(create_client(light_relays, {0: 3}))
+    buzzer = Buzzer(create_client(light_relays, {0: 2}))
     return {
         DeviceName.DRUMS: drums, 
         DeviceName.LIGHTS: lights, 
@@ -149,7 +157,7 @@ def define_devices(
             LightedButton(
                 DeviceName.BUTTON_GAME_START,
                 gpiozero.Button(pin=16, bounce_time=0.05),
-                relay=create_client(light_relays, BUTTON_TO_RELAY),
+                relay=create_client(light_relays, {0: 11}),
             ),
         DeviceName.JOYSTICK:
             Joystick(
@@ -160,10 +168,4 @@ def define_devices(
                 right=gpiozero.Button(pin=22, bounce_time=0.05),
             ),
     }
-
-
-BUTTON_TO_RELAY = {0: 11}
-RINGER_TO_RELAY = {0: 3}
-BUZZER_TO_RELAY = {0: 2}
-CLICKER_TO_RELAY = {0: 0, 1: 1}
 
