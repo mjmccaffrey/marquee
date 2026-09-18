@@ -7,7 +7,7 @@ from typing import cast
 
 from devices.color import Color, ColorSets
 from devices.hue import HueBridge
-from device_defs import define_devices
+from device_defs_test import define_devices
 from instruments import LightSet
 from schemas import DeviceName
 

@@ -6,7 +6,7 @@ import sys
 from argument import display_help, process_arguments
 from executor import Executor
 from player import Player
-from device_defs import define_devices
+from device_defs_test import define_devices
 from mode_defs import define_modes
 
 
