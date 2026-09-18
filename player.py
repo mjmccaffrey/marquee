@@ -112,7 +112,7 @@ class Player:
             devices=self.devices,
             speed_factor=self.speed_factor,
             ) | definition.kwargs
-        return definition.cls(**_kwargs)
+        return definition.cls(**_kwargs)  # type: ignore
 
     def delete_mode_instance(self, mode_index: int) -> None:
         """Delete the instance of mode_index, along

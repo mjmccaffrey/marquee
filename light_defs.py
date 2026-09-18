@@ -3,22 +3,22 @@
 from enum import IntEnum
 
 class Light(IntEnum):
-    TL =  0
+    TL =  0  # Top
     TM =  1
     TR =  2
-    RT =  3
+    RT =  3  # Right
     RM =  4
     RB =  5
-    BR =  6
+    BR =  6  # Bottom
     BM =  7
     BL =  8
-    LB =  9
+    LB =  9  # Left
     LM = 10
     LU = 11
-    ML = 12
+    ML = 12  # Middle
     MM = 13
     MR = 14
-    CP = 15
+    CP = 15  # Cupola
 
 LIGHTS_BY_ROW = [
     [    0, 1, 2,    ],

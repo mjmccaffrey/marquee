@@ -1,11 +1,13 @@
 marquee
     Executor
-    Player
+    Player / PlayerResources
+        APIServer
         Event
         Task
     devices
         Control
             Button
+                LightedButton
             Joystick
             TiltSet
         LightController
@@ -34,7 +36,7 @@ marquee
             BellSet
         RestInstrument
     modes
-        BaseMode
+        BaseMode / BaseModeInterface
             Mode
                 SelectMode
                 PerformanceMode
@@ -63,3 +65,4 @@ marquee
         Clicker
         Joystick
         Tilts
+

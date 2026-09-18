@@ -3,12 +3,11 @@
 from collections.abc import Callable
 import logging
 import time
-from typing import Any, cast, Protocol
+from typing import Any, Protocol
 
 from devices.color import ColorSets
 from devices.deviceset import DeviceSet
 from devices.specialparams import SpecialParams
-from instruments import LightSet, RelayInstrument
 from modes import BaseMode, SequenceMode
 from player import Player
 from schemas import DeviceName, ModeDefinition
@@ -105,8 +104,8 @@ class Executor:
 
     def execute(
         self, 
-        brightness_factor: float = 1.0,  # Must default; only
-        speed_factor: float = 1.0,       # provided with mode.
+        brightness_factor: float = 1.0,  # Must have defaults, because values 
+        speed_factor: float = 1.0,       # are only provided with 'mode'.
         color: str | None = None, 
         brightness: int | None = None,
         command: str | None = None, 

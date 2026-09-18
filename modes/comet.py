@@ -44,13 +44,13 @@ class Comet(PerformanceMode):
     def execute_cupola(self) -> None:
         """Cycle cupola."""
         if self.cupola_lit:
-            self.extra.set_channels(
+            self.lights.set_channels(
                 brightness=0,
                 transition=self.cupola_delay,
                 index=self.lights.CP,
             )
         else:
-            self.extra.set_channels(
+            self.lights.set_channels(
                 brightness=100,
                 transition=self.cupola_delay,
                 color=self.color,

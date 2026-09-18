@@ -35,7 +35,7 @@ class CupolaSequence(PerformanceMode):
     def execute(self):
         """Change to next color."""
         color = next(self.colors)
-        self.extra.set_channels(
+        self.lights.set_channels(
             index=self.lights.CP,
             color=color,
             brightness=self.brightness,

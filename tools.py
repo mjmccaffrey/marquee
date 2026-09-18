@@ -1,21 +1,24 @@
 """Marquee Lighted Sign Project - tools"""
 
 from collections.abc import Sequence
-from dataclasses import astuple, fields
 import json
 from pathlib import Path
 from typing import cast
 
 from devices.color import Color, ColorSets
-from instruments import LightSet
 from devices.hue import HueBridge
 from device_defs import define_devices
+from instruments import LightSet
+from schemas import DeviceName
 
 
 def setup():
-    global b, d, l, e, clicker, r, z, j, t, c
-    devices = define_devices(1.0, 1.0)
-    # b, d, l, e, c, clicker, r, z, j, t = devices.astuple()
+    global d, l, c, b, j, r
+    d = define_devices(1.0, 1.0)
+    b = d[DeviceName.BUZZER.value]
+    l = d[DeviceName.LIGHTS.value]
+    c = d[DeviceName.CLICKER.value]
+    r = d[DeviceName.RINGER.value]
 
 
 def ppp(p: Sequence) -> None:

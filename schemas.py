@@ -108,7 +108,7 @@ class BaseModeInterface(Protocol):
 class ModeDefinition:
     index: int | None = None
     name: str
-    cls: type  # !!!
+    cls: type[BaseModeInterface]
     kwargs: dict[str, Any] = field(default_factory=dict)
 
 
