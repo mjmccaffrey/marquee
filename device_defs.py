@@ -1,23 +1,19 @@
-"""Marquee Lighted Sign Project - device_defs - TESTING"""
+"""Marquee Lighted Sign Project - device_defs"""
 
 import signal
 
 import gpiozero
-from gpiozero import Device
-from gpiozero.pins.mock import MockFactory
-import requests
-import urllib3
 
-from devices.bulb import Hue_BR30_Enhanced_Color
+from devices.bulb import (
+    Hue_BR30_Enhanced_Color, 
+)
 from devices.button import Button, LightedButton
 from devices.deviceset import DeviceSet
-from devices.hue import HueChannel, HueBridge, http_mock
+from devices.hue import HueBridge
 from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001
-from devices.relaymodule import (
-    RelayModule, CombinedRelayModule, create_client,
-    MockRelay16, MockRelay32,
-)
+from devices.relaymodule import CombinedRelayModule, create_client
+from devices.shelly import ShellyController, ShellyProDimmer2PM
 from instruments import Buzzer, Clicker, DrumSet, LightSet, Ringer
 from light_defs import *
 from schemas import DeviceName
@@ -90,35 +86,34 @@ HUE_ZONE_IDS_2 = HUE_ZONE_IDS_0 | {
     '15': ['e896f871-f666-4d40-a61c-f0b789f48330'],
     '16': ['82204b9c-610c-4975-8e40-e6882ce39118'],
 }
+SHELLY_IP_ADDRESSES = [
+    '192.168.64.111',
+    '192.168.64.112',
+    '192.168.64.113',
+    '192.168.64.114',
+    '192.168.64.115',
+    '192.168.64.116',
+]
 
 def define_devices(
     brightness_factor: float,
     speed_factor: float,
 ) -> DeviceSet:
     """Create and return objects for all physical devices."""
-    drum_16_relays = MockRelay16()
-    drum_32_relays = MockRelay32()
+    drum_16_relays = NumatoRL160001("/dev/marquee_drums_16")
+    drum_32_relays = NumatoRL320001("/dev/marquee_drums_32")
     drum_48_relays = CombinedRelayModule(drum_16_relays, drum_32_relays)
     drums = DrumSet(relays=create_client(drum_48_relays))
-    light_relays = MockRelay16()
-    #
-    session = requests.Session()
-    session.headers = {'hue-application-key': HUE_APPLICATION_KEY}
-    session.verify = False
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    #
-    Device.pin_factory = MockFactory()
-    #
+    light_relays = NumatoRL160001("/dev/marquee_lights")
     lights = LightSet(
         count=LIGHT_COUNT,
         relays=create_client(light_relays, LIGHT_TO_RELAY),
         mirror=create_client(drum_16_relays, LIGHT_TO_RELAY),
         controller_type=HueBridge,
         controller_kwargs=dict(
+            application_key=HUE_APPLICATION_KEY,
             ip_address=HUE_IP_ADDRESS,
             bulb_model=Hue_BR30_Enhanced_Color,
-            session=session,
-            http=http_mock,
             bulb_ids=HUE_BULB_IDS_0,
             zone_ids=HUE_ZONE_IDS_0,
             groups=HUE_GROUPS_0,
