@@ -11,7 +11,7 @@ from devices.bulb import (
 )
 from devices.button import Button, LightedButton
 from devices.deviceset import DeviceSet
-from devices.hue import HueBridge
+from devices.hue import HueBridge, http
 from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001
 from devices.relaymodule import CombinedRelayModule, create_client
@@ -122,6 +122,7 @@ def define_devices(
             ip_address=HUE_IP_ADDRESS,
             bulb_model=Hue_BR30_Enhanced_Color,
             session=session,
+            http=http,
             bulb_ids=HUE_BULB_IDS_0,
             zone_ids=HUE_ZONE_IDS_0,
             groups=HUE_GROUPS_0,
