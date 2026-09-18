@@ -3,6 +3,8 @@
 import signal
 
 import gpiozero
+import requests
+import urllib3
 
 from devices.bulb import (
     Hue_BR30_Enhanced_Color, 
@@ -105,15 +107,21 @@ def define_devices(
     drum_48_relays = CombinedRelayModule(drum_16_relays, drum_32_relays)
     drums = DrumSet(relays=create_client(drum_48_relays))
     light_relays = NumatoRL160001("/dev/marquee_lights")
+    #
+    session = requests.Session()
+    session.headers = {'hue-application-key': HUE_APPLICATION_KEY}
+    session.verify = False
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    #
     lights = LightSet(
         count=LIGHT_COUNT,
         relays=create_client(light_relays, LIGHT_TO_RELAY),
         mirror=create_client(drum_16_relays, LIGHT_TO_RELAY),
         controller_type=HueBridge,
         controller_kwargs=dict(
-            application_key=HUE_APPLICATION_KEY,
             ip_address=HUE_IP_ADDRESS,
             bulb_model=Hue_BR30_Enhanced_Color,
+            session=session,
             bulb_ids=HUE_BULB_IDS_0,
             zone_ids=HUE_ZONE_IDS_0,
             groups=HUE_GROUPS_0,
