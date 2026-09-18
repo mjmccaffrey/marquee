@@ -5,7 +5,7 @@ from functools import partial
 import random
 from typing_extensions import override
 
-from device_defs_test import ALL_ON
+from device_defs import ALL_ON
 from devices.color import XY
 from . import PerformanceMode
 

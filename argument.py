@@ -8,7 +8,7 @@ from itertools import groupby
 from typing import Any, NoReturn
 from typing_extensions import override
 
-from device_defs_test import LIGHT_COUNT
+from device_defs import LIGHT_COUNT
 
 
 class ArgumentParserImproved(ArgumentParser):

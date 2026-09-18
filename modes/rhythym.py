@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import time
 from typing_extensions import override
 
-from device_defs_test import ALL_ON
+from device_defs import ALL_ON
 from . import MusicMode
 from music import section, Section, piece
 from music import buzzer, drums, lights, ringer
