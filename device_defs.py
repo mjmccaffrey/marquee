@@ -1,6 +1,7 @@
 """Marquee Lighted Sign Project - device_defs"""
 
 import signal
+from collections.abc import Sequence
 
 import gpiozero
 import requests
@@ -23,7 +24,7 @@ from schemas import DeviceName
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'
 
-HUE_BULB_IDS_0 = [
+HUE_BULB_IDS = [
     "79d6cc75-8eaa-450a-be32-6bc14695b11a",  # Labeled 3 - top left
     "1e5bbfc7-f3f1-47e1-bba9-18e70588f1e3",
     "b0338b37-5ed1-4ec2-b4be-5f9157ba62af",
@@ -36,27 +37,26 @@ HUE_BULB_IDS_0 = [
     "be70ec73-1aca-41a8-afaa-3e9dab07c27a",  # Labeled 0 - right bottom
     "3d3132d3-528c-4e15-bba7-f587e1442ef2",  # Labeled 1
     "35c48818-a97b-4b67-bbc8-22a68e6be153",  # Labeled 2
-]
-HUE_BULB_IDS_1 = [
-    "04098e6c-f416-4ce5-b91c-06e6004b2a23",
-    "a0906758-e0b5-45c3-8e19-85994f253bd7",
-    "359de043-2614-443f-8e44-fad407fdc854",
+    "04098e6c-f416-4ce5-b91c-06e6004b2a23",  # 13
+    "a0906758-e0b5-45c3-8e19-85994f253bd7",  # 14
+    "359de043-2614-443f-8e44-fad407fdc854",  # 15
     # "398bd880-e870-4d00-88ee-dce5aa83c17b",  # Donut
-    "5bed6538-94b3-4fb9-8b14-c32c81ec80fa",  # Cupola
+    "5bed6538-94b3-4fb9-8b14-c32c81ec80fa",  # 16 Cupola
 ]
-HUE_BULB_IDS_2 = HUE_BULB_IDS_0 + HUE_BULB_IDS_1
-
-HUE_GROUPS_0: dict[str, list[int]] = {
+HUE_GROUPS: dict[str, Sequence[int]] = {
     'top': LIGHTS_TOP,
     'right': LIGHTS_RIGHT,
     'bottom': LIGHTS_BOTTOM,
     'left': LIGHTS_LEFT,
+    'middle': [12, 13, 14],
     'even': [0, 2, 4, 6, 8, 10],
     'odd': [1, 3, 5, 7, 9, 11],
     '12': LIGHTS_CLOCKWISE,
-    '13': LIGHTS_CLOCKWISE + [Light.CP]
+    '13': LIGHTS_CLOCKWISE + [Light.CP],
+    '15': range(15),
+    '16': range(16),
 }
-HUE_ZONE_IDS_0: dict[str, list[str]] = {
+HUE_ZONE_IDS: dict[str, list[str]] = {
     # https://192.168.64.130/clip/v2/resource/zone
     # ↑ Lists zones, with names, and included bulbs
     # "services": [
@@ -67,24 +67,11 @@ HUE_ZONE_IDS_0: dict[str, list[str]] = {
     'right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
     'bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
     'left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68'],
+    'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
     'even': ['166bcc4f-9598-49e7-b853-a239be50b514'],
     'odd': ['587dddb8-bec3-4555-9f3b-b12b2fca918d'],
     '12': ['21c66184-6be0-4c79-832e-9308ee4501eb'],
     '13': ['af193689-f8a4-4ace-9cef-87264c9f5129'],
-}
-HUE_GROUPS_1 = {
-    'middle': [0, 1, 2],
-}
-HUE_ZONE_IDS_1 = {
-    'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
-}
-HUE_GROUPS_2 = HUE_GROUPS_0 | {
-    'middle': [12, 13, 14],
-    '15': range(15),
-    '16': range(16),
-}
-HUE_ZONE_IDS_2 = HUE_ZONE_IDS_0 | {
-    'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
     '15': ['e896f871-f666-4d40-a61c-f0b789f48330'],
     '16': ['82204b9c-610c-4975-8e40-e6882ce39118'],
 }
@@ -123,9 +110,9 @@ def define_devices(
             bulb_model=Hue_BR30_Enhanced_Color,
             session=session,
             http=http,
-            bulb_ids=HUE_BULB_IDS_0,
-            zone_ids=HUE_ZONE_IDS_0,
-            groups=HUE_GROUPS_0,
+            bulb_ids=HUE_BULB_IDS,
+            zone_ids=HUE_ZONE_IDS,
+            groups=HUE_GROUPS,
         ),
         brightness_factor_init=brightness_factor,
         channel_enum=Light,
