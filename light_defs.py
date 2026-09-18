@@ -45,7 +45,7 @@ LIGHTS_CLOCKWISE = [
     i for side in LIGHTS_BY_SIDE for i in side
 ]
 LIGHT_TO_RELAY = {
-                    16: 10, 
+                    15: 10, 
              0:  6,  1:  7,  2:  8,
     11:  5,                         3:  9,
     10:  4, 12: 10, 13: 10, 14: 10, 4: 12,
