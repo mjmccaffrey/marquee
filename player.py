@@ -133,7 +133,6 @@ class Player:
         self._effect_new_mode(starting_mode_index)
         try:
             while True:
-                log.info('player execute loop top')
                 try:
                     self.tasks.wait(wait_fn=self.wait)
                 except Interrupt as it:
@@ -150,6 +149,8 @@ class Player:
         print(f"{interrupt=}")
         print()
         self.interrupt = interrupt
+        if self.interrupt_trigger.is_set():
+            raise RuntimeError
         self.interrupt_trigger.set()
 
     def reset_interrupt(self):
