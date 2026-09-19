@@ -128,7 +128,7 @@ def register_channel_modes(exec: Executor):
         # ("cancun", 1),
             ("race", 10),
         ],
-        pattern='0123456789ab',
+        pattern='0123456789abcdef',
         mask='-***********',
         clockwise=True,
         delay=0.4,
