@@ -163,6 +163,7 @@ class Player:
             print("RAISING", self.interrupt)
             raise self.interrupt
         else:
+            print("NOT TRIGGERED")
             return None
 
     def _effect_new_mode(self, mode_index: int):
