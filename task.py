@@ -95,14 +95,14 @@ class TaskSchedule:
         if self._schedule:
             task = self.peek()
             if task.due < now:
-                log.debug(f"Running {task} {now - task.due} late")
+                log.info(f"Running {task} {now - task.due} late")
                 self.pop()
                 return task, 0
             else:
-                log.debug(f"Waiting for {task.due - now} or control activity")
+                log.info(f"Waiting for {task.due - now} or control activity")
                 return None, task.due - now
         else:
-            log.debug(f"Waiting for control activity")
+            log.info(f"Waiting for control activity")
             return None, None
 
     def wait(self, wait_fn: Callable) -> None:
