@@ -137,6 +137,7 @@ class Player:
                     # !!!!!!!!!!!!11
                     if self.interrupt_trigger.is_set():
                         assert self.interrupt is not None
+                        print("RAISING INTERRUPT W/O WAITING")
                         raise self.interrupt
                     # !!!!!!!!!!!!11
                     self.tasks.wait(wait_fn=self.wait)
