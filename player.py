@@ -146,7 +146,7 @@ class Player:
     def execute_interrupt(self, interrupt: Interrupt) -> None:
         """"""
         print()
-        print("Thread ID", threading.get_ident())
+        print("Execute interrupt thread ID", threading.get_ident())
         print(f"{interrupt=}")
         print()
         self.interrupt = interrupt
@@ -154,6 +154,7 @@ class Player:
 
     def reset_interrupt(self):
         """Prepare for another interrupt."""
+        print("Reset interrupt thread ID", threading.get_ident())
         self.interrupt = None
         self.interrupt_trigger = threading.Event()
 

@@ -4,6 +4,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field, replace
 from heapq import heapify, heappop, heappush
 import logging
+import threading
 import time
 from typing import NoReturn
 from typing_extensions import override
@@ -102,18 +103,17 @@ class TaskSchedule:
                 log.info(f"Waiting for {task.due - now} or interrupt")
                 return None, task.due - now
         else:
-            log.info(f"Waiting for control activity")
+            log.info(f"Waiting for interrupt")
             return None, None
 
     def wait(self, wait_fn: Callable) -> None:
         """Call wait_fn to wait seconds, or indefinitely if seconds is None.
            wait_fn calls a threading.Task.wait method or equivalent."""
+        print("Task.wait thread ID", threading.get_ident())
         task, duration = self._next_task_or_wait()
         if task is not None:
-            log.info("calling task")
             task.action()
         else:
-            log.info("task about to call wait_fn")
             wait_fn(duration)
 
 
