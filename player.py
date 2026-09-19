@@ -193,7 +193,7 @@ class Player:
 
     def _handle_interrupt(self, it: Interrupt) -> None | NoReturn:
         """"""
-        print(it)
+        print("handling: ", it)
         match it:
             case CommandInterrupt():
                 self._execute_api_command(it)
