@@ -131,7 +131,7 @@ def register_channel_modes(exec: Executor):
         pattern='0123456789abcdef',
         mask='-***************',
         clockwise=True,
-        delay=2.0,
+        delay=0.4,
         brightness=35,
     )
     exec.add_mode("cs_chase_3", ColorSetDynamic, 
