@@ -159,10 +159,10 @@ class Player:
 
     def wait(self, seconds: float | None) -> None | NoReturn:
         """"""
-        log.info("PLAYER.WAIT")
+        print("PLAYER.WAIT")
         if self.interrupt_trigger.wait(seconds):
             assert self.interrupt is not None
-            log.info("RAISING", self.interrupt)
+            print("RAISING", self.interrupt)
             raise self.interrupt
         else:
             log.info("NOT TRIGGERED")
