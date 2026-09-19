@@ -159,13 +159,10 @@ class Player:
 
     def wait(self, seconds: float | None) -> None | NoReturn:
         """"""
-        log.info("PLAYER.WAIT")
         if self.interrupt_trigger.wait(seconds):
             assert self.interrupt is not None
-            print("RAISING", self.interrupt)
             raise self.interrupt
         else:
-            log.info("NOT TRIGGERED")
             return None
 
     def _effect_new_mode(self, mode_index: int):
