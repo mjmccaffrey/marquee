@@ -105,15 +105,14 @@ class TaskSchedule:
             log.debug(f"Waiting for control activity")
             return None, None
 
-    def wait(self, wait_fn: Callable) -> NoReturn:
+    def wait(self, wait_fn: Callable) -> None:
         """Call wait_fn to wait seconds, or indefinitely if seconds is None.
            wait_fn calls a threading.Task.wait method or equivalent."""
-        while True:
-            task, duration = self._next_task_or_wait()
-            if task is not None:
-                task.action()
-            else:
-                wait_fn(duration)
+        task, duration = self._next_task_or_wait()
+        if task is not None:
+            task.action()
+        else:
+            wait_fn(duration)
 
 
 @dataclass
