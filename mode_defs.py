@@ -129,7 +129,7 @@ def register_channel_modes(exec: Executor):
             ("race", 10),
         ],
         pattern='0123456789abcdef',
-        mask='-***********',
+        mask='-***************',
         clockwise=True,
         delay=0.4,
         brightness=35,
