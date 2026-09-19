@@ -146,7 +146,7 @@ class Player:
         """"""
         print()
         print("Thread ID", threading.get_ident())
-        print(interrupt)
+        print(f"{interrupt=}")
         print()
         self.interrupt = interrupt
         self.interrupt_trigger.set()
