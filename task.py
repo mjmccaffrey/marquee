@@ -67,7 +67,7 @@ class TaskSchedule:
     def pop(self) -> Task:
         """Remove and return next task from schedule."""
         task = heappop(self._schedule)
-        # log.debug(f"Task {task} removed from schedule.")
+        log.info(f"Task {task} removed from schedule.")
         return task
 
     def push(self, task: Task) -> None:
