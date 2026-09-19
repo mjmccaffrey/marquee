@@ -112,6 +112,7 @@ class TaskSchedule:
         if task is not None:
             task.action()
         else:
+            print("task about to call wait_fn")
             wait_fn(duration)
 
 
