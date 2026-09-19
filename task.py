@@ -110,6 +110,7 @@ class TaskSchedule:
            wait_fn calls a threading.Task.wait method or equivalent."""
         task, duration = self._next_task_or_wait()
         if task is not None:
+            log.info("calling task")
             task.action()
         else:
             log.info("task about to call wait_fn")
