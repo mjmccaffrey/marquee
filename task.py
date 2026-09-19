@@ -95,7 +95,7 @@ class TaskSchedule:
         if self._schedule:
             task = self.peek()
             if task.due < now:
-                log.info(f"Running {task} {now - task.due} late")
+                log.info(f"Running {task}")  # {now - task.due} late")
                 self.pop()
                 return task, 0
             else:
@@ -112,7 +112,7 @@ class TaskSchedule:
         if task is not None:
             task.action()
         else:
-            print("task about to call wait_fn")
+            log.info("task about to call wait_fn")
             wait_fn(duration)
 
 
