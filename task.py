@@ -68,7 +68,7 @@ class TaskSchedule:
     def pop(self) -> Task:
         """Remove and return next task from schedule."""
         task = heappop(self._schedule)
-        log.info(f"Task {task} removed from schedule.")
+        # log.info(f"Task {task} removed from schedule.")
         return task
 
     def push(self, task: Task) -> None:
@@ -96,7 +96,7 @@ class TaskSchedule:
         if self._schedule:
             task = self.peek()
             if task.due < now:
-                log.info(f"Running {task} {now - task.due} late")
+                # log.info(f"Running {task} {now - task.due} late")
                 self.pop()
                 return task, 0
             else:

@@ -150,6 +150,7 @@ class Player:
         print()
         self.interrupt = interrupt
         if self.interrupt_trigger.is_set():
+            print("TRIGGER IS ALREADY SET!")
             raise RuntimeError
         self.interrupt_trigger.set()
 
