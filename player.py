@@ -134,6 +134,11 @@ class Player:
         try:
             while True:
                 try:
+                    # !!!!!!!!!!!!11
+                    if self.interrupt_trigger.is_set():
+                        assert self.interrupt is not None
+                        raise self.interrupt
+                    # !!!!!!!!!!!!11
                     self.tasks.wait(wait_fn=self.wait)
                 except Interrupt as it:
                     self._handle_interrupt(it)
