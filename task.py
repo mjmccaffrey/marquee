@@ -99,7 +99,7 @@ class TaskSchedule:
                 self.pop()
                 return task, 0
             else:
-                log.info(f"Waiting for {task.due - now} or control activity")
+                log.info(f"Waiting for {task.due - now} or interrupt")
                 return None, task.due - now
         else:
             log.info(f"Waiting for control activity")
