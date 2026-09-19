@@ -133,7 +133,7 @@ class Player:
         self._effect_new_mode(starting_mode_index)
         try:
             while True:
-                print('player execute loop top')
+                log.info('player execute loop top')
                 try:
                     self.tasks.wait(wait_fn=self.wait)
                 except Interrupt as it:
