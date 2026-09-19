@@ -96,7 +96,6 @@ class Player:
         self, 
         mode_index: int | None = None,
         mode_definition: ModeDefinition | None = None,
-        # kwargs: dict[str, Any] = {},
         parent: Mode | None = None,
     ) -> Mode:
         """Return a new mode instance.

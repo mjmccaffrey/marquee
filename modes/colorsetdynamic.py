@@ -76,8 +76,8 @@ class ColorSetDynamic(ColorSetMode):
             mode_definition=ModeDefinition(
                 name='cs_rotate',
                 cls=SequenceMode,
+                kwargs=kwargs,
             ),
-            kwargs=kwargs,
             parent=self,
         )
         self.schedule(mode.execute)
