@@ -68,7 +68,7 @@ class LightSet(RelayInstrument):
             return
         assert self.relays.count == self.count
         self.relay_pattern = self.relays.get_state_of_devices()
-        print(f"{self.relay_pattern}")
+        # print(f"{self.relay_pattern}")
         if self.smart_bulbs:
             if all(r == '1' for r in self.relay_pattern):
                 log.info("***** Smart bulbs in use - light relays already ON. *****")
@@ -228,7 +228,7 @@ class LightSet(RelayInstrument):
     ) -> None:
         """Set channels per the specified pattern and special.
            Adjust for brightness_factor."""
-        print(light_pattern)
+        # print(light_pattern)
         brightness_values: dict[int, int | None] = {
             0: (int(special.brightness_off * self._brightness_factor)
                 if special.brightness_off is not None else None),
@@ -309,8 +309,8 @@ class LightSet(RelayInstrument):
     ) -> list[int]:
         """Return normalized index list.  If index is None, 
            return complete index list in scattered order."""
-        print(index)
-        print(type(index))
+        # print(index)
+        # print(type(index))
         match index:
             case tuple() if not index:
                 result = list(range(self.count))
