@@ -34,7 +34,7 @@ class ColorSetMode(PerformanceMode, ABC):
         """If direction button pushed, change displayed color set.
            Otherwise, call parent's button handler."""
         match control:
-            case DeviceName.BUTTON_CORDED_A, DeviceName.BUTTON_REAR:
+            case DeviceName.BUTTON_CORDED_A | DeviceName.BUTTON_REAR:
                 self.clicker.play()
                 self.next_entry()
             case DeviceName.BUTTON_CORDED_B:
