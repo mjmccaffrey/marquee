@@ -7,8 +7,7 @@ from typing_extensions import override
 
 from devices.specialparams import ChannelParams
 from . import (
-    BaseMode, ColorSetMode, 
-    LightSetBaseline, SequenceMode, chase, rotate,
+    ColorSetMode, LightSetBaseline, SequenceMode, chase, rotate,
 )
 from schemas import CycleSequence, ModeDefinition
 
