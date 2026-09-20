@@ -58,7 +58,7 @@ class ColorSetMode(PerformanceMode, ABC):
         self.player.tasks.delete_owned_by(self)
         self.entry_index = self.wrap_entry_index(delta)
         print(f"{self.entry_index=}")
-        self.schedule()
+        self.schedule(self.show_color_set)
 
     def expand_sequence(
         self, 
