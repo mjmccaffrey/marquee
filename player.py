@@ -24,7 +24,7 @@ from schemas import (
 )
 from event import EventSystem
 from modes.abstract.mode import Mode
-from task import TaskSchedule
+from task import Task, TaskSchedule
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -48,7 +48,7 @@ class Player:
         self.mode_serial = count()
         self.interrupt: Interrupt | None
         self.interrupt_trigger: threading.Event
-        self.reset_interrupt()
+        self._reset_interrupt()
         signal.signal(signal.SIGTERM, self._sigterm_received)
         self.events = EventSystem()
         self.tasks = TaskSchedule()
@@ -134,16 +134,16 @@ class Player:
         try:
             while True:
                 try:
-                    # !!!!!!!!!!!!11
                     if self.interrupt_trigger.is_set():
                         assert self.interrupt is not None
-                        print("RAISING INTERRUPT W/O WAITING")
                         raise self.interrupt
-                    # !!!!!!!!!!!!11
-                    self.tasks.wait(wait_fn=self.wait)
+                    what = self.tasks.now_what()
+                    if isinstance(what, Task):
+                        what.action()
+                    else:
+                        self.wait(what)
                 except Interrupt as it:
                     self._handle_interrupt(it)
-                    self.reset_interrupt()
         except Exit as ex:
             return ex.shutdown
         assert_never()
@@ -159,12 +159,6 @@ class Player:
             print("TRIGGER IS ALREADY SET!")
             raise RuntimeError
         self.interrupt_trigger.set()
-
-    def reset_interrupt(self):
-        """Prepare for another interrupt."""
-        print("Reset interrupt thread ID", threading.get_ident())
-        self.interrupt = None
-        self.interrupt_trigger = threading.Event()
 
     def wait(self, seconds: float | None) -> None | NoReturn:
         """"""
@@ -197,7 +191,7 @@ class Player:
         fg_iter = (m for m in self.mode_instances.values() if not m.background)
         return next(fg_iter, None)
 
-    def _handle_interrupt(self, it: Interrupt) -> None | NoReturn:
+    def _handle_interrupt(self, it: Interrupt) -> None:
         """"""
         print("handling: ", it)
         match it:
@@ -212,6 +206,13 @@ class Player:
                 self._send_control_action(it.control)
             case _:
                 raise ValueError(it)
+        self._reset_interrupt()
+
+    def _reset_interrupt(self):
+        """Prepare for another interrupt."""
+        print("Reset interrupt thread ID", threading.get_ident())
+        self.interrupt = None
+        self.interrupt_trigger = threading.Event()
 
     def _api_get_mode_ids(self) -> dict:
         """"""

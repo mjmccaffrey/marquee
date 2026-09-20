@@ -74,10 +74,6 @@ class TaskSchedule:
     def push(self, task: Task) -> None:
         """Add task to schedule."""
         heappush(self._schedule, task)
-        # log.debug(self)
-        # log.debug('')
-        # log.debug(f"schedule length: {len(self._schedule)}")
-        # log.debug(f"Task {task} added to schedule.")
 
     def delay_all(self, delta: float):
         """Push all scheduled tasks back by delta seconds."""
@@ -88,33 +84,23 @@ class TaskSchedule:
         heapify(self._schedule)
         log.debug(f"{len(self._schedule)} tasks delayed by {delta} seconds.")
 
-    def _next_task_or_wait(self) -> tuple[Task | None, float | None]:
-        """If the next task is due, return (task, 0).
-            Else return seconds until the next task (None, seconds).
-            Except if there are no more tasks, return (None, None)."""
+    def now_what(self) -> Task | float | None:
+        """If the next task is due, return task.
+           Else return seconds until the next task.
+           Except if there are no more tasks, return None."""
         now = time.time()
         if self._schedule:
             task = self.peek()
             if task.due < now:
                 # log.info(f"Running {task} {now - task.due} late")
                 self.pop()
-                return task, 0
+                return task
             else:
                 log.info(f"Waiting for {task.due - now} or interrupt")
-                return None, task.due - now
+                return task.due - now
         else:
             log.info(f"Waiting for interrupt")
-            return None, None
-
-    def wait(self, wait_fn: Callable) -> None:
-        """Call wait_fn to wait seconds, or indefinitely if seconds is None.
-           wait_fn calls a threading.Task.wait method or equivalent."""
-        print("Task.wait thread ID", threading.get_ident())
-        task, duration = self._next_task_or_wait()
-        if task is not None:
-            task.action()
-        else:
-            wait_fn(duration)
+            return None
 
 
 @dataclass
