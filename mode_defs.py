@@ -126,7 +126,7 @@ def register_channel_modes(exec: Executor):
         sequence=[
         # ("party", 1),
         # ("cancun", 1),
-            ("race", 10),
+            ("race", 60),
         ],
         pattern='0123456789abcdef',
         mask='-***************',

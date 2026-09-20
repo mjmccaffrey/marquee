@@ -137,7 +137,7 @@ class Player:
                     if self.interrupt_trigger.is_set():
                         assert self.interrupt is not None
                         raise self.interrupt
-                    what = self.tasks.now_what()
+                    what = self.tasks.next_task_or_wait_duration()
                     if isinstance(what, Task):
                         what.action()
                     else:
@@ -156,8 +156,7 @@ class Player:
         print()
         self.interrupt = interrupt
         if self.interrupt_trigger.is_set():
-            print("TRIGGER IS ALREADY SET!")
-            raise RuntimeError
+            raise RuntimeError("TRIGGER IS ALREADY SET!")
         self.interrupt_trigger.set()
 
     def wait(self, seconds: float | None) -> None | NoReturn:
@@ -170,7 +169,7 @@ class Player:
 
     def _effect_new_mode(self, mode_index: int):
         """Create new mode instance, clean up old, etc."""
-        print("EFFECTING", mode_index)
+        # print("EFFECTING", mode_index)
         # Create new mode instance
         new_mode = self.create_mode_instance(mode_index)
         if new_mode.background:

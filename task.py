@@ -84,7 +84,7 @@ class TaskSchedule:
         heapify(self._schedule)
         log.debug(f"{len(self._schedule)} tasks delayed by {delta} seconds.")
 
-    def now_what(self) -> Task | float | None:
+    def next_task_or_wait_duration(self) -> Task | float | None:
         """If the next task is due, return task.
            Else return seconds until the next task.
            Except if there are no more tasks, return None."""
