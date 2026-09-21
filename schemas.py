@@ -1,13 +1,17 @@
 """Marquee Lighted Sign Project - schemas"""
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import auto, IntEnum, StrEnum
 from typing import Any, Callable, Protocol
+from typing_extensions import override
 
 
 class Device(ABC):
     """"""
+    @abstractmethod
+    def off(self) -> None:
+        """Turn off device to the extent possible."""
 
 
 class DeviceName(StrEnum):
@@ -39,6 +43,10 @@ class Control(Device, ABC):
     """"""
     name: DeviceName
     execute_interrupt: Callable = field(init=False)
+
+    @override
+    def off(self) -> None:
+        """Do nothing; most controls cannot turn off."""
 
 
 class ControlAction(StrEnum):

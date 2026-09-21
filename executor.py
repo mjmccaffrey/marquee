@@ -3,14 +3,14 @@
 from collections.abc import Callable
 import logging
 import time
-from typing import Any, Protocol
+from typing import Any, cast, Protocol
 
 from devices.color import ColorSets
 from devices.deviceset import DeviceSet
 from devices.specialparams import SpecialParams
 from modes import BaseMode, SequenceMode
 from player import Player
-from schemas import DeviceName, ModeDefinition
+from schemas import Device, DeviceName, ModeDefinition
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -180,12 +180,8 @@ class Executor:
 
     def command_off(self) -> None:
         """Turn off all relays and potentially other devices."""
-        for dn in (
-            DeviceName.BELLS, DeviceName.DRUMS, DeviceName.LIGHTS,
-        ):
-            device = self.devices.get(dn)
-            if device is not None and device.relays is not None:
-                device.relays.set_state_of_devices('0' * device.relays.count)
+        for device in self.devices.values():
+            cast(Device, device).off()
         log.info("Marquee hardware is now partially powered off.")
         log.info('')
 

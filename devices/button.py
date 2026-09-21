@@ -106,3 +106,8 @@ class LightedButton(Button):
         """Set state of light."""
         self.relay.set_state_of_devices('1' if on else '0')
 
+    @override
+    def off(self) -> None:
+        """Turn off light."""
+        self.set_light(on=False)
+        

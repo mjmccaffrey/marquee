@@ -90,6 +90,12 @@ class LightSet(RelayInstrument):
         self.bulb_adjustments = self.controller.bulb_model.adjustments
 
     @override
+    def off(self) -> None:
+        """Turn lights off logically, and then via relays as applicable."""
+        self.set_channels(on=False)
+        super().off()
+        
+    @override
     def play(self) -> None:
         """Should never be called."""
         raise NotImplementedError

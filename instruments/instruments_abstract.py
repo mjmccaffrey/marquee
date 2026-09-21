@@ -46,11 +46,16 @@ class RelayInstrument(Instrument, ABC):
         self.relays.set_state_of_devices("0" * self.count)
         assert self.relays.device_pattern == "0" * self.count
 
+    # @override
+    # def close(self) -> None:
+    #     """Close."""
+    #     self.relays.set_state_of_devices("0" * self.count)
+    #     super().close()
+
     @override
-    def close(self) -> None:
-        """Close."""
-        self.relays.set_state_of_devices("0" * self.count)
-        super().close()
+    def off(self) -> None:
+        """Turn relays off."""
+        self.relays.set_state_of_devices('0' * self.relays.count)
 
     def _select_relays(self, state: str, count: int) -> set[int]:
         """Randomly select count relays in state."""
