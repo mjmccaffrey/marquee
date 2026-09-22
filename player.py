@@ -9,16 +9,13 @@ import threading
 from typing import Any, assert_never, cast, NoReturn
 from typing_extensions import override
 
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
-
-from apiserver import APIServer
+from api import API
 from devices.button import Button
 from devices.deviceset import DeviceSet
 from schemas import (
     Interrupt, ChangeModeInterrupt, 
     APICommand, CommandInterrupt, 
-    ControlAction, ControlInterrupt, 
+    BaseModeInterface, ControlAction, ControlInterrupt, 
     DeviceName, Exit,
     InterruptSource, ModeDefinition,
 )
@@ -27,7 +24,6 @@ from modes.abstract.mode import Mode
 from task import Task, TaskSchedule
 
 log = logging.getLogger('marquee.' + __name__)
-
 
 @dataclass
 class Player:
@@ -38,8 +34,7 @@ class Player:
     speed_factor: float
     events: EventSystem = field(init=False)
     tasks: TaskSchedule = field(init=False)
-    api: FastAPI = field(init=False)
-    api_server: APIServer = field(init=False)
+    api: API = field(init=False)
 
     def __post_init__(self) -> None:
         """Initialize."""
@@ -52,23 +47,8 @@ class Player:
         signal.signal(signal.SIGTERM, self._sigterm_received)
         self.events = EventSystem()
         self.tasks = TaskSchedule()
-        self._start_api_server()
-        self._register_api_routes()
+        self.api = API(self)
         self._set_controls_callback()
-
-    def _start_api_server(self) -> None:
-        """"""
-        self.api = FastAPI()
-        self.api_server = APIServer(app=self.api, host="127.0.0.1", port=8000)
-        self.api_server.start()
-        print("API server started.")
-
-    def _register_api_routes(self) -> None:
-        """"""
-        self.api.get("/mode_ids")(self._api_get_mode_ids)
-        self.api.get("/press_button/{name}")(self._api_press_button)
-        self.api.get("/give_command/{name}")(self._api_give_command)
-        self.api.get("/set_mode/{mode_id}")(self._api_set_mode)
 
     def _set_controls_callback(self) -> None:
         """"""
@@ -88,7 +68,7 @@ class Player:
     def close(self) -> None:
         """Clean up."""
         print("Stopping server...")
-        self.api_server.stop()
+        self.api.close()
         print("Server stopped.")
         log.info(f"Player closed.")
 
@@ -96,7 +76,7 @@ class Player:
         self, 
         mode_index: int | None = None,
         mode_definition: ModeDefinition | None = None,
-        parent: Mode | None = None,
+        parent: BaseModeInterface | None = None,
     ) -> Mode:
         """Return a new mode instance.
            Does not update self.mode_instances."""
@@ -212,48 +192,6 @@ class Player:
         print("Reset interrupt thread ID", threading.get_ident())
         self.interrupt = None
         self.interrupt_trigger = threading.Event()
-
-    def _api_get_mode_ids(self) -> dict:
-        """"""
-        return self.mode_ids
-
-    # def _api_get_lights(self) -> dict:
-    #     """"""
-    #     # index, channel_enum_name, brightness, color, on
-
-    def _api_set_mode(self, mode_id: str) -> JSONResponse:
-        """"""
-        try:
-            mode_index = self.mode_ids[mode_id]
-        except LookupError:
-            return JSONResponse({'status': 'lookup failure'}, status_code=404)
-        else:
-            self.execute_interrupt(
-                ChangeModeInterrupt(
-                    source=InterruptSource.API,
-                    mode_index=mode_index,
-                )
-            )
-            return JSONResponse(None)
-        
-    # def _api_set_brightness_factor(self) -> None:
-    #     """"""
-        
-    # def _api_set_speed_factor(self) -> None:
-    #     """"""
-        
-    def _api_press_button(self, name: DeviceName) -> None:
-        """"""
-        self.devices[name.value].pressed_via_api()
-
-    def _api_give_command(self, name: str) -> None:
-        """"""
-        self.execute_interrupt(
-            CommandInterrupt(
-                source=InterruptSource.API,
-                command=APICommand(name),
-            )
-        )
 
     def _execute_api_command(self, it: CommandInterrupt) -> None:
         """"""

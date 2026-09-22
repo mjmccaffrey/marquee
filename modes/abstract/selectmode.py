@@ -71,16 +71,16 @@ class SelectMode(Mode, ABC):
                 mode_definition=ModeDefinition(
                     name='counter',
                     cls=SequenceMode,
+                    kwargs=dict(
+                        sequence=rotate_build_flip,
+                        sequence_kwargs=dict(count=self.desired),
+                        pre_delay=0.5,
+                        delay=0.25, 
+                        repeat=False,
+                        special=self.special,
+                    ),
                 ),
                 parent=self,
-                kwargs=dict(
-                    sequence=rotate_build_flip,
-                    sequence_kwargs=dict(count=self.desired),
-                    pre_delay=0.5,
-                    delay=0.25, 
-                    repeat=False,
-                    special=self.special,
-                ),
             )
             self.schedule(counter.execute)
             self.previous_desired = self.desired

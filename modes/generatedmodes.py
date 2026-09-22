@@ -39,13 +39,13 @@ class GeneratedModes(RandomFade):
             mode_definition=ModeDefinition(
                 name=f'generated_mode_{light_index:02}',
                 cls=GeneratedModes,
-            ),
-            kwargs=dict(
-                background=True,
-                transition=self.transition,
-                duration=self.duration,
-                color_set_name=self.color_set_name,
-                light_index=light_index,
+                kwargs=dict(
+                    background=True,
+                    transition=self.transition,
+                    duration=self.duration,
+                    color_set_name=self.color_set_name,
+                    light_index=light_index,
+                ),
             ),
             parent=self,
         )

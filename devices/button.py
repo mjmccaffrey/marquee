@@ -58,17 +58,6 @@ class Button(Control):
             )
         )
 
-    def pressed_via_api(self) -> None:
-        """Callback for button pressed via api."""
-        log.info(f"Button <{self}> pressed via api.")
-        self.execute_interrupt(
-            ControlInterrupt(
-                action=ControlAction.BUTTON_PRESSED,
-                control=self.name, 
-                source=InterruptSource.API,
-            )
-        )
-
     def pressed_via_gpio(self) -> None:
         """Callback for button pressed via gpio."""
         log.info(f"Button <{self}> pressed via gpio.")

@@ -51,6 +51,13 @@ class BaseMode(ABC):
     def execute(self) -> None:
         """Play the mode."""
 
+    def lookup_mode_index(self, mode_id: str) -> int:
+        """Return index of the mode definition with id."""
+        try:
+            return self.player.mode_ids[mode_id]
+        except LookupError:
+            raise ValueError(f"Mode {mode_id} not defined.")
+
     @override
     def __repr__(self) -> str:
         return f"<{self}>"
@@ -69,13 +76,6 @@ class BaseMode(ABC):
                 mode_index=mode_index,
             )
         self.schedule(_change_mode)
-
-    def lookup_mode_index(self, name: str) -> int:
-        """Return the index for the mode with name."""
-        try:
-            return self.player.mode_ids[name]
-        except LookupError:
-            raise ValueError(f"Mode {name} not defined.")
 
     def next_entry(self) -> None:
         """Change to the next entry."""
