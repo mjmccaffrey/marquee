@@ -37,12 +37,12 @@ class API:
         self.server.start()
         print("API server started.")
 
-    def _register_api_routes(self) -> None:
-        """"""
-        self.app.get("/mode_ids")(self.get_mode_ids)
-        self.app.get("/press_button/{name}")(self.press_button)
-        self.app.get("/give_command/{name}")(self.give_command)
-        self.app.get("/set_mode/{mode_id}")(self.set_mode)
+    def _lookup_mode_index(self, mode_id: str) -> int | None:
+        """Return index of the mode definition with id."""
+        try:
+            return self.player.mode_ids[mode_id]
+        except LookupError:
+            return None
 
     def close(self) -> None:
         """Clean up."""
@@ -51,30 +51,56 @@ class API:
         print("Server stopped.")
         log.info(f"API closed.")
 
-    def delete_mode_instance(self, mode_id: str) -> JSONResponse:
+    def _register_api_routes(self) -> None:
         """"""
+        self.app.get("/delete_mode/{mode_id}")(self.delete_mode)
+        self.app.get("/active_modes")(self.get_active_modes)
+        self.app.get("/mode_ids")(self.get_mode_ids)
+        self.app.get("/give_command/{name}")(self.give_command)
+        self.app.get("/press_button/{name}")(self.press_button)
+        self.app.get("/set_mode/{mode_id}")(self.set_mode)
+
+    #
+
+    def delete_mode(self, mode_id: str) -> JSONResponse:
+        """Delete the specified mode instance."""
         mode_index = self._lookup_mode_index(mode_id)
         if mode_index is None:
             return LookupFailure
         self.player.delete_mode_instance(mode_index)
         return Success
         
+    def get_active_modes(self) -> dict:
+        """Get mode instances."""
+        return self.player.mode_instances
+
     def get_mode_ids(self) -> dict:
-        """"""
+        """Get IDs of all mode definitions."""
         return self.player.mode_ids
 
-    # def _api_get_lights(self) -> dict:
-    #     """"""
-    #     # index, channel_enum_name, brightness, color, on
+    def give_command(self, name: str) -> None:
+        """Issue the specified command."""
+        self.player.execute_interrupt(
+            CommandInterrupt(
+                source=InterruptSource.API,
+                command=APICommand(name),
+            )
+        )
 
-    # def _api_set_brightness_factor(self) -> None:
-    #     """"""
-        
-    # def _api_set_speed_factor(self) -> None:
-    #     """"""
-        
+    def press_button(self, name: DeviceName) -> None:
+        """Press the specified button."""
+        self.player.execute_interrupt(
+            ControlInterrupt(
+                action=ControlAction.BUTTON_PRESSED,
+                control=name, 
+                source=InterruptSource.API,
+            )
+        )
+        self.player.devices[name.value].pressed_via_api()
+
     def set_mode(self, mode_id: str) -> JSONResponse:
-        """"""
+        """Create new instance of specified mode definition.
+           If an instance of that definition already exists, delete it."""
         mode_index = self._lookup_mode_index(mode_id)
         if mode_index is None:
             return LookupFailure
@@ -86,30 +112,13 @@ class API:
         )
         return Success
         
-    def press_button(self, name: DeviceName) -> None:
-        """"""
-        self.player.execute_interrupt(
-            ControlInterrupt(
-                action=ControlAction.BUTTON_PRESSED,
-                control=name, 
-                source=InterruptSource.API,
-            )
-        )
-        self.player.devices[name.value].pressed_via_api()
+    # def _api_get_lights(self) -> dict:
+    #     """"""
+    #     # index, channel_enum_name, brightness, color, on
 
-    def give_command(self, name: str) -> None:
-        """"""
-        self.player.execute_interrupt(
-            CommandInterrupt(
-                source=InterruptSource.API,
-                command=APICommand(name),
-            )
-        )
-
-    def _lookup_mode_index(self, mode_id: str) -> int | None:
-        """Return index of the mode definition with id."""
-        try:
-            return self.player.mode_ids[mode_id]
-        except LookupError:
-            return None
-
+    # def _api_set_brightness_factor(self) -> None:
+    #     """"""
+        
+    # def _api_set_speed_factor(self) -> None:
+    #     """"""
+        

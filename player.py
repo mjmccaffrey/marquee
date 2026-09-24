@@ -40,7 +40,6 @@ class Player:
         """Initialize."""
         log.info("Initializing player")
         self.mode_instances: dict[int, Mode] = {}
-        self.mode_serial = count()
         self.interrupt: Interrupt | None
         self.interrupt_trigger: threading.Event
         self._reset_interrupt()
@@ -48,6 +47,7 @@ class Player:
         self.events = EventSystem()
         self.tasks = TaskSchedule()
         self.api = API(self)
+        self._mode_serial = count()
         self._set_controls_callback()
 
     def _set_controls_callback(self) -> None:
@@ -85,7 +85,7 @@ class Player:
         _kwargs: dict[str, Any] = dict(
             index=definition.index,
             name=definition.name, 
-            serial=next(self.mode_serial),
+            serial=next(self._mode_serial),
             player=self,
             parent=parent,
             devices=self.devices,
@@ -158,21 +158,17 @@ class Player:
                 self.delete_mode_instance(new_mode.index)
         else:
             # If any fg mode already present, delete it.
-            fg_mode = self._foreground_mode_instance()
+            modes = self.mode_instances.values()
+            fg_mode = next((m for m in modes if not m.background), None)
             if fg_mode is not None:
                 self.delete_mode_instance(fg_mode.index)
         self.mode_instances[new_mode.index] = new_mode
         print(f'Effected new mode instance {new_mode.name.upper()}')
         new_mode.execute()
 
-    def _foreground_mode_instance(self) -> Mode | None:
-        """"""
-        fg_iter = (m for m in self.mode_instances.values() if not m.background)
-        return next(fg_iter, None)
-
     def _handle_interrupt(self, it: Interrupt) -> None:
         """"""
-        print("handling: ", it)
+        print("Handling Interrupt: ", it)
         match it:
             case CommandInterrupt():
                 self._execute_api_command(it)
@@ -194,31 +190,24 @@ class Player:
         self.interrupt_trigger = threading.Event()
 
     def _execute_api_command(self, it: CommandInterrupt) -> None:
-        """"""
-        fg_mode = self._foreground_mode_instance()
-        if fg_mode is None:
-            return
-        match it.command:
-            case APICommand.NEXT_ENTRY:
-                fg_mode.next_entry()
-            case APICommand.PREVIOUS_ENTRY:
-                fg_mode.previous_entry()
-            case APICommand.NEXT_MODE:
-                fg_mode.next_mode()
-            case APICommand.PREVIOUS_MODE:
-                fg_mode.previous_mode()
-            case _:
-                raise ValueError(it)
+        """Execute command in every mode instance."""
+        for mode in self.mode_instances.values():
+            match it.command:
+                case APICommand.NEXT_ENTRY:
+                    mode.next_entry()
+                case APICommand.PREVIOUS_ENTRY:
+                    mode.previous_entry()
+                case APICommand.NEXT_MODE:
+                    mode.next_mode()
+                case APICommand.PREVIOUS_MODE:
+                    mode.previous_mode()
+                case _:
+                    raise ValueError(it)
 
     def _send_control_action(self, control: DeviceName) -> None:
-        """Notify all background modes, and active mode, 
-           of control action."""
+        """Execute control action in every mode instance."""
         for mode in self.mode_instances.values():
-            if mode.background:
-                mode.control_action(control)
-        fg_mode = self._foreground_mode_instance()
-        if fg_mode is not None:
-            fg_mode.control_action(control)
+            mode.control_action(control)
 
     def _sigterm_received(self, signal_number, stack_frame) -> None:
         """Callback for SIGTERM received."""
