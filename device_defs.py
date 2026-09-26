@@ -1,9 +1,14 @@
 """Marquee Lighted Sign Project - device_defs"""
 
+TEST = True
+
 import signal
 from collections.abc import Sequence
 
 import gpiozero
+if TEST:
+    from gpiozero import Device
+    from gpiozero.pins.mock import MockFactory
 import requests
 import urllib3
 
@@ -12,9 +17,11 @@ from devices.bulb import (
 )
 from devices.button import Button, LightedButton
 from devices.deviceset import DeviceSet
-from devices.hue import HueBridge, http
+from devices.hue import HueBridge, http, http_mock
 from devices.joystick import Joystick
 from devices.numato import NumatoRL320001, NumatoRL160001
+if TEST:
+    from devices.relaymodule import MockRelay16, MockRelay32
 from devices.relaymodule import CombinedRelayModule, create_client
 from devices.shelly import ShellyController, ShellyProDimmer2PM
 from instruments import Buzzer, Clicker, DrumSet, LightSet, Ringer
@@ -89,16 +96,25 @@ def define_devices(
     speed_factor: float,
 ) -> DeviceSet:
     """Create and return objects for all physical devices."""
-    drum_16_relays = NumatoRL160001("/dev/marquee_drums_16")
-    drum_32_relays = NumatoRL320001("/dev/marquee_drums_32")
-    drum_48_relays = CombinedRelayModule(drum_16_relays, drum_32_relays)
+    if TEST:
+        drum_16_relays = MockRelay16()
+        drum_32_relays = MockRelay32()
+        drum_48_relays = CombinedRelayModule(drum_16_relays, drum_32_relays)
+        light_relays = MockRelay16()
+    else:
+        drum_16_relays = NumatoRL160001("/dev/marquee_drums_16")
+        drum_32_relays = NumatoRL320001("/dev/marquee_drums_32")
+        drum_48_relays = CombinedRelayModule(drum_16_relays, drum_32_relays)
+        light_relays = NumatoRL160001("/dev/marquee_lights")
     drums = DrumSet(relays=create_client(drum_48_relays))
-    light_relays = NumatoRL160001("/dev/marquee_lights")
     #
     session = requests.Session()
     session.headers = {'hue-application-key': HUE_APPLICATION_KEY}
     session.verify = False
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    #
+    if TEST:
+        Device.pin_factory = MockFactory()
     #
     LIGHT_TO_RELAY = {
                         15: 10, 
@@ -117,7 +133,7 @@ def define_devices(
             ip_address=HUE_IP_ADDRESS,
             bulb_model=Hue_BR30_Enhanced_Color,
             session=session,
-            http=http,
+            http=http_mock if TEST else http,
             bulb_ids=HUE_BULB_IDS,
             zone_ids=HUE_ZONE_IDS,
             groups=HUE_GROUPS,

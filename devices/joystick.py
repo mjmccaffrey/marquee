@@ -10,9 +10,10 @@ from schemas import Control
 
 log = logging.getLogger('marquee.' + __name__)
 
+
 class Direction(StrEnum):
     """"""
-    NONE = auto()
+    CENTER = auto()
     UP = auto()
     DOWN = auto()
     LEFT = auto()
@@ -22,8 +23,9 @@ class Direction(StrEnum):
     DOWNRIGHT = auto()
     DOWNLEFT = auto()
 
+
 state_to_direction = {
-    '0000': Direction.NONE,
+    '0000': Direction.CENTER,
     '0001': Direction.LEFT,
     '0010': Direction.RIGHT,
     '0100': Direction.DOWN,
@@ -42,22 +44,25 @@ class Joystick(Control):
     down: gpiozero.Button
     left: gpiozero.Button
     right: gpiozero.Button
-    direction: Direction = field(init=False)
+    override: Direction | None = field(init=False)
 
     def __post_init__(self) -> None:
         """Initialize."""
-        self.direction = Direction.NONE
+        self.direction_override = None
         self._switches = (
             self.up, self.down, 
             self.right, self.left,
         )
         for switch in self._switches:
-            switch.when_pressed = self.update
-            switch.when_released = self.update
+            switch.when_pressed = lambda: print(self.direction)
+            switch.when_released = lambda: print(self.direction)
 
-    def update(self) -> None:
-        """Update self.direction."""
-        values = ''.join(str(s.value) for s in self._switches)
-        self.direction = state_to_direction[values]
-        # print(values, self.direction)
+    @property
+    def direction(self) -> Direction:
+        """Return override direction, or actual direction."""
+        if self.override is not None:
+            return self.override
+        else:
+            values = ''.join(str(s.value) for s in self._switches)
+            return state_to_direction[values]
 

@@ -5,7 +5,7 @@ from dataclasses import InitVar, dataclass
 import logging
 from typing_extensions import override
 
-from schemas import CycleEntry, CycleSequence, DeviceName
+from schemas import CycleEntry, CycleSequence, ControlName
 from .performancemode import PerformanceMode
 
 
@@ -30,14 +30,14 @@ class ColorSetMode(PerformanceMode, ABC):
         """Show color set. Schedule next set."""
 
     @override
-    def control_action(self, control: DeviceName) -> None:
+    def control_action(self, control: ControlName) -> None:
         """If direction button pushed, change displayed color set.
            Otherwise, call parent's button handler."""
         match control:
-            case DeviceName.BUTTON_CORDED_A | DeviceName.BUTTON_REAR:
+            case ControlName.BUTTON_CORDED_A | ControlName.BUTTON_REAR:
                 self.clicker.play()
                 self.next_entry()
-            case DeviceName.BUTTON_CORDED_B:
+            case ControlName.BUTTON_CORDED_B:
                 self.clicker.play()
                 self.previous_entry()
             case _:

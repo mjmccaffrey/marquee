@@ -9,7 +9,8 @@ from typing_extensions import override
 import gpiozero
 
 from schemas import (
-    Control, ControlInterrupt, ControlAction, InterruptSource, Interrupt,
+    Control, ControlInterrupt, ControlAction, ControlName,
+    InterruptSource, Interrupt,
 )
 from devices.relaymodule import RelayClient
 
@@ -53,7 +54,7 @@ class Button(Control):
         self.execute_interrupt(
             ControlInterrupt(
                 action=ControlAction.BUTTON_HELD,
-                control=self.name, 
+                control=ControlName(self.name), 
                 source=InterruptSource.GPIO,
             )
         )
@@ -64,7 +65,7 @@ class Button(Control):
         self.execute_interrupt(
             ControlInterrupt(
                 action=ControlAction.BUTTON_PRESSED,
-                control=self.name, 
+                control=ControlName(self.name), 
                 source=InterruptSource.GPIO,
             )
         )
@@ -75,7 +76,7 @@ class Button(Control):
         self.execute_interrupt(
             ControlInterrupt(
                 action=ControlAction.BUTTON_PRESSED,
-                control=self.name,
+                control=ControlName(self.name), 
                 source=InterruptSource.SIGNAL,
             )
         )

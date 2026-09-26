@@ -5,7 +5,6 @@ from typing import Protocol
 
 from devices.deviceset import DeviceSet
 from event import EventSystem
-from modes.abstract.mode import Mode
 from schemas import BaseModeInterface, Interrupt, ModeDefinition
 from task import TaskSchedule
 
@@ -19,7 +18,7 @@ class PlayerResources(Protocol):
     devices: DeviceSet
     mode_ids: dict[str, int]
     modes: dict[int, ModeDefinition]
-    mode_instances: dict[int, Mode]
+    mode_instances: dict[int, BaseModeInterface]
 
     # Read & write
     speed_factor: float

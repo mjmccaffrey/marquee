@@ -14,8 +14,36 @@ class Device(ABC):
         """Turn off device to the extent possible."""
 
 
+class ButtonName(StrEnum):
+    """Every button."""
+    REAR = auto()
+    CORDED_A = auto()
+    CORDED_B = auto()
+    GAME_START = auto()
+
+
+class ControlName(StrEnum):
+    """Every control."""
+    BUTTON_REAR = auto()
+    BUTTON_CORDED_A = auto()
+    BUTTON_CORDED_B = auto()
+    BUTTON_GAME_START = auto()
+    JOYSTICK = auto()
+    TILTS = auto()
+
+
+class InstrumentName(StrEnum):
+    """Every instrument."""
+    BELLS = auto()
+    BUZZER = auto()
+    CLICKER = auto()
+    DRUMS = auto()
+    LIGHTS = auto()
+    RINGER = auto()
+
+
 class DeviceName(StrEnum):
-    """Every device."""
+    """Every device (controls | instruments)."""
     BELLS = auto()
     BUTTON_REAR = auto()
     BUTTON_CORDED_A = auto()
@@ -85,7 +113,7 @@ class ChangeModeInterrupt(Interrupt):
 class ControlInterrupt(Interrupt):
     """"""
     action: ControlAction
-    control: DeviceName
+    control: ControlName
 
 
 @dataclass
@@ -104,10 +132,18 @@ CycleSequence = list[tuple[str, int | None]]
 
 
 class BaseModeInterface(Protocol):
-    """Minimum required of output from create_mode_instance."""
+    """Interface to BaseMode."""
+    background: bool
     index: int
     name: str
+    parent: 'BaseModeInterface | None'
     serial: int
+
+    def close(self) -> None: ...
+
+    def command_action(self, command: APICommand) -> None: ...
+
+    def control_action(self, control: ControlName) -> None: ...
 
     def execute(self) -> None: ...
 

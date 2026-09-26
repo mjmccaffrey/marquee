@@ -19,7 +19,7 @@ from .pacman_assets import (
     passage_maze,
 )
 from devices.lightcontroller import LightChannel, ChannelUpdate
-from schemas import DeviceName, DeviceName
+from schemas import ControlName, DeviceName
 
 
 log = logging.getLogger('marquee.' + __name__)
@@ -73,10 +73,10 @@ class PacManGame(GameMode):
         self.sounds[sound].play()
 
     @override
-    def control_action(self, control: DeviceName) -> None:
+    def control_action(self, control: ControlName) -> None:
         """Handle Game Start button push."""
         if (
-            control == DeviceName.BUTTON_GAME_START and
+            control == ControlName.BUTTON_GAME_START and
             self.state == GameState.PRE_GAME
         ):
             self.change_state(GameState.PRE_LEVEL_0)
@@ -174,7 +174,7 @@ class PacManGame(GameMode):
     def pre_game_state(self) -> None:
         """Before game starts."""
         log.info("Waiting for Start Game button press")
-        self.devices[DeviceName.BUTTON_GAME_START.value].set_light(True)
+        self.devices[ControlName.BUTTON_GAME_START.value].set_light(True)
         self.lights.set_channels(
             on=True,
             brightness=50,

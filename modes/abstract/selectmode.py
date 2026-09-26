@@ -9,7 +9,7 @@ from typing_extensions import override
 from .mode import BaseMode, Mode
 from ..structural.sequencemode import SequenceMode
 from ..structural.sequences import rotate_build_flip
-from schemas import DeviceName, ModeDefinition
+from schemas import ControlName, DeviceName, ModeDefinition
 
 
 log = logging.getLogger('marquee.' + __name__)
@@ -37,7 +37,7 @@ class SelectMode(Mode, ABC):
         return self.wrap_value(self.lower, self.upper, self.desired, delta)
 
     @override
-    def control_action(self, control: DeviceName) -> None:
+    def control_action(self, control: ControlName) -> None:
         """Respond to button being pressed.
            But first, delete the scheduled task which 
            would have finalized the selection."""

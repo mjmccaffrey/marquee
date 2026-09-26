@@ -202,8 +202,8 @@ class ColorSets:
     def __init__(self) -> None:
         """"""
         unordered = (
-            self._basic_colors() |
-            self._load_color_sets(Path('color_sets.json'))
+            self._basic_colors() # |
+            # self._load_color_sets(Path('color_sets.json'))
         )
         self.by_group_name = self._create_color_groups(unordered)
         self.by_set_name = {

@@ -15,9 +15,9 @@ from devices.deviceset import DeviceSet
 from schemas import (
     Interrupt, ChangeModeInterrupt, 
     APICommand, CommandInterrupt, 
-    BaseModeInterface, ControlAction, ControlInterrupt, 
+    ControlAction, ControlInterrupt, ControlName,
     DeviceName, Exit,
-    InterruptSource, ModeDefinition,
+    InterruptSource, BaseModeInterface, ModeDefinition,
 )
 from event import EventSystem
 from modes.abstract.mode import Mode
@@ -39,7 +39,7 @@ class Player:
     def __post_init__(self) -> None:
         """Initialize."""
         log.info("Initializing player")
-        self.mode_instances: dict[int, Mode] = {}
+        self.mode_instances: dict[int, BaseModeInterface] = {}
         self.interrupt: Interrupt | None
         self.interrupt_trigger: threading.Event
         self._reset_interrupt()
@@ -141,11 +141,24 @@ class Player:
 
     def wait(self, seconds: float | None) -> None | NoReturn:
         """"""
-        if self.interrupt_trigger.wait(seconds):
+        if self._interrupt_trigger_wait(seconds):
             assert self.interrupt is not None
             raise self.interrupt
         else:
             return None
+        
+    def _interrupt_trigger_wait(self, seconds: float | None) -> bool:
+        """Allows Ctrl-C to interrupt indefinite w"""
+        if seconds is not None:
+            return self.interrupt_trigger.wait(seconds)
+        try:
+            while True:
+                if self.interrupt_trigger.wait(0.1):
+                    break
+        except KeyboardInterrupt:
+            raise
+        else:
+            return True
 
     def _effect_new_mode(self, mode_index: int):
         """Create new mode instance, clean up old, etc."""
@@ -171,7 +184,7 @@ class Player:
         print("Handling Interrupt: ", it)
         match it:
             case CommandInterrupt():
-                self._execute_api_command(it)
+                self._send_api_command(it)
             case ChangeModeInterrupt():
                 self._effect_new_mode(it.mode_index)
             case ControlInterrupt():
@@ -189,22 +202,12 @@ class Player:
         self.interrupt = None
         self.interrupt_trigger = threading.Event()
 
-    def _execute_api_command(self, it: CommandInterrupt) -> None:
+    def _send_api_command(self, it: CommandInterrupt) -> None:
         """Execute command in every mode instance."""
         for mode in self.mode_instances.values():
-            match it.command:
-                case APICommand.NEXT_ENTRY:
-                    mode.next_entry()
-                case APICommand.PREVIOUS_ENTRY:
-                    mode.previous_entry()
-                case APICommand.NEXT_MODE:
-                    mode.next_mode()
-                case APICommand.PREVIOUS_MODE:
-                    mode.previous_mode()
-                case _:
-                    raise ValueError(it)
+            mode.command_action(it.command)
 
-    def _send_control_action(self, control: DeviceName) -> None:
+    def _send_control_action(self, control: ControlName) -> None:
         """Execute control action in every mode instance."""
         for mode in self.mode_instances.values():
             mode.control_action(control)

@@ -5,7 +5,7 @@ import logging
 from typing_extensions import override
 
 from light_defs import LIGHT_COUNT, LIGHTS_BY_COLUMN
-from schemas import DeviceName
+from schemas import ControlName
 from devices.color import Colors
 from modes import PerformanceMode
 
@@ -23,11 +23,11 @@ class TiltSensors(PerformanceMode):
         self.lights.set_channels(color=Colors.WHITE)
 
     @override
-    def control_action(self, control: DeviceName) -> None:
+    def control_action(self, control: ControlName) -> None:
         """"""
         direction_buttons = {
-            DeviceName.BUTTON_CORDED_A: +1,
-            DeviceName.BUTTON_CORDED_B: -1,
+            ControlName.BUTTON_CORDED_A: +1,
+            ControlName.BUTTON_CORDED_B: -1,
         }
         if control in direction_buttons:
             shift = self.shift + direction_buttons[control]

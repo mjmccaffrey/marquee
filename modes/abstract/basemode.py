@@ -6,10 +6,13 @@ from dataclasses import dataclass, field
 import logging
 import sys
 import time
-from typing import NoReturn, Self
+from typing import NoReturn
 from typing_extensions import override
 
-from schemas import ChangeModeInterrupt, DeviceName, InterruptSource
+from schemas import (
+    APICommand, BaseModeInterface, ChangeModeInterrupt, ControlName, 
+    InterruptSource,
+)
 from playerresources import PlayerResources
 from task import SeqTask, Task
 
@@ -24,7 +27,8 @@ class BaseMode(ABC):
     name: str
     serial: int  # Unique ID for every instance.
     player: PlayerResources
-    parent: Self | None = None
+    background: bool = False
+    parent: BaseModeInterface | None = None
     children: Sequence[str] = field(default_factory=tuple)
 
     def __post_init__(self) -> None:
@@ -41,8 +45,12 @@ class BaseMode(ABC):
             print(f"Created mode {child} {mode.index} {mode.name}")
 
     @abstractmethod
-    def control_action(self, control: DeviceName) -> None:
+    def control_action(self, control: ControlName) -> None:
         """Respond to control action."""
+
+    @abstractmethod
+    def command_action(self, command: APICommand) -> None:
+        """Respond to command."""
 
     def close(self) -> None:
         """Clean up before instance is discarded."""
@@ -76,22 +84,6 @@ class BaseMode(ABC):
                 mode_index=mode_index,
             )
         self.schedule(_change_mode)
-
-    def next_entry(self) -> None:
-        """Change to the next entry."""
-        print("NEXT ENTRY")
-
-    def previous_entry(self) -> None:
-        """Change to the previous entry."""
-        print("PREVIOUS ENTRY")
-        
-    def next_mode(self) -> None:
-        """Change to the next mode."""
-        print("NEXT MODE")
-        
-    def previous_mode(self) -> None:
-        """Change to the previous mode."""
-        print("PREVIOUS MODE")
 
     def schedule(
         self, 

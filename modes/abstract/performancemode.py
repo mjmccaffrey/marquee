@@ -7,7 +7,7 @@ import logging
 from typing_extensions import override
 
 from .mode import Mode
-from schemas import APICommand, DeviceName, ModeIndex
+from schemas import APICommand, ControlName, DeviceName, ModeIndex
 
 
 log = logging.getLogger('marquee.' + __name__)
@@ -18,7 +18,7 @@ class PerformanceMode(Mode, ABC):
     """Base for performance modes."""
 
     @override
-    def control_action(self, control: DeviceName) -> None:
+    def control_action(self, control: ControlName) -> None:
         """Respond to button being pressed.
            Return index of new mode, if any."""
         new_mode = None
@@ -29,10 +29,10 @@ class PerformanceMode(Mode, ABC):
             # case b.REMOTE_C:
             #     self.clicker.click()
             #     new_mode = ModeIndex.BRIGHTNESS_SELECT
-            case DeviceName.BUTTON_CORDED_A:
+            case ControlName.BUTTON_CORDED_A:
                 self.clicker.play()
                 new_mode = self._wrap_mode_index(-1)
-            case DeviceName.BUTTON_CORDED_B:
+            case ControlName.BUTTON_CORDED_B:
                 self.clicker.play()
                 new_mode = self._wrap_mode_index(+1)
             case _:
