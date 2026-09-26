@@ -48,7 +48,7 @@ class Joystick(Control):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        self.direction_override = None
+        self.override = None
         self._switches = (
             self.up, self.down, 
             self.right, self.left,
