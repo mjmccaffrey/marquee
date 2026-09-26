@@ -33,7 +33,7 @@ class API:
         """"""
         self.app = FastAPI()
         self.server = APIServer(
-            app=self.app, host="127.0.0.1", port=8000,
+            app=self.app, host="0.0.0.0", port=8000,
         )
         self.server.start()
         print("API server started.")
