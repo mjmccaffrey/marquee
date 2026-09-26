@@ -234,14 +234,14 @@ base_maze: Maze = {
 }
 passage_maze: Maze = base_maze | {
     4: Square(
-        up=3, upleft=3, upright=3,
-        down=5, downleft=5, downright=5,
+        up=3, upleft=14, upright=3,
+        down=5, downleft=14, downright=5,
         left=14,
         right=None,
     ),
     10: Square(
-        down=9, downleft=9, downright=9,
-        up=11, upleft=11, upright=11,
+        down=9, downleft=9, downright=12,
+        up=11, upleft=11, upright=12,
         right=12,
         left=None,
     ),
