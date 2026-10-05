@@ -48,11 +48,11 @@ class ModeCycle(Mode):
         self.change_mode(new.index)
 
     @override
-    def control_action(self, control: ControlName) -> None:
-        """Switch to next mode.
-           But first, delete the scheduled task 
-           for the timed switch."""
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
         if control == ControlName.BUTTON_CORDED_A:
             self.player.tasks.delete_owned_by(self)
             self.schedule()
+            return True
+        return False
 

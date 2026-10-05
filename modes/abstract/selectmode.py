@@ -37,20 +37,18 @@ class SelectMode(Mode, ABC):
         return self.wrap_value(self.lower, self.upper, self.desired, delta)
 
     @override
-    def control_action(self, control: ControlName) -> None:
-        """Respond to button being pressed.
-           But first, delete the scheduled task which 
-           would have finalized the selection."""
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
         self.player.tasks.delete_owned_by(self)
         b = DeviceName
         match control:
             case b.BUTTON_REAR | b.BUTTON_CORDED_A | b.BUTTON_CORDED_B:
                 self.desired = self.update_desired(+1)
+                return True
             # case b.REMOTE_B:
             #     self.desired = self.update_desired(-1)
             case _:
-                pass
-        return None
+                return False
 
     def step(self) -> int | None:
         """Return user's final selection if made, otherwise 
@@ -67,7 +65,7 @@ class SelectMode(Mode, ABC):
             # Show user what desired mode number is currently selected.
             log.info(f"Desired is now {self.desired}")
             # self.lights.set_relays(ALL_OFF, special=self.special)
-            counter = self.player.create_mode_instance(
+            counter = self.player.create_active_mode(
                 mode_definition=ModeDefinition(
                     name='counter',
                     cls=SequenceMode,

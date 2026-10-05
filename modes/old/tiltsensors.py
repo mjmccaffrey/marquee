@@ -23,8 +23,8 @@ class TiltSensors(PerformanceMode):
         self.lights.set_channels(color=Colors.WHITE)
 
     @override
-    def control_action(self, control: ControlName) -> None:
-        """"""
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
         direction_buttons = {
             ControlName.BUTTON_CORDED_A: +1,
             ControlName.BUTTON_CORDED_B: -1,
@@ -34,8 +34,8 @@ class TiltSensors(PerformanceMode):
             if -5 <= shift <= 5:
                 self.shift = shift
                 self.schedule(action=self.execute)
-        else:
-            super().control_action(control)
+                return True
+        return super().control_action(control)
 
     @staticmethod
     def on_parameter(shift: int) -> tuple[bool, ...]:

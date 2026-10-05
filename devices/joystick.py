@@ -48,7 +48,7 @@ class Joystick(Control):
 
     def __post_init__(self) -> None:
         """Initialize."""
-        self.override = None
+        self.reset()
         self._switches = (
             self.up, self.down, 
             self.right, self.left,
@@ -65,4 +65,8 @@ class Joystick(Control):
         else:
             values = ''.join(str(s.value) for s in self._switches)
             return state_to_direction[values]
+
+    def reset(self) -> None:
+        """"""
+        self.override = None
 

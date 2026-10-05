@@ -1,6 +1,5 @@
 """Marquee Lighted Sign Project - player"""
 
-from contextlib import suppress
 from dataclasses import dataclass, field
 from itertools import count
 import logging
@@ -13,11 +12,9 @@ from api import API
 from devices.button import Button
 from devices.deviceset import DeviceSet
 from schemas import (
-    Interrupt, ChangeModeInterrupt, 
-    APICommand, CommandInterrupt, 
+    Interrupt, ChangeModeInterrupt, CommandInterrupt, Exit,
     ControlAction, ControlInterrupt, ControlName,
-    DeviceName, Exit,
-    InterruptSource, BaseModeInterface, ModeDefinition,
+    BaseModeInterface, ModeDefinition,
 )
 from event import EventSystem
 from modes.abstract.mode import Mode
@@ -39,7 +36,7 @@ class Player:
     def __post_init__(self) -> None:
         """Initialize."""
         log.info("Initializing player")
-        self.mode_instances: dict[int, BaseModeInterface] = {}
+        self.active_modes: dict[int, BaseModeInterface] = {}
         self.interrupt: Interrupt | None
         self.interrupt_trigger: threading.Event
         self._reset_interrupt()
@@ -72,14 +69,14 @@ class Player:
         print("Server stopped.")
         log.info(f"Player closed.")
 
-    def create_mode_instance(
+    def create_active_mode(
         self, 
         mode_index: int | None = None,
         mode_definition: ModeDefinition | None = None,
         parent: BaseModeInterface | None = None,
     ) -> Mode:
         """Return a new mode instance.
-           Does not update self.mode_instances."""
+           Does not update self.active_modes."""
         assert (mode_index is None) ^ (mode_definition is None)
         definition = mode_definition or self.modes[cast(int, mode_index)]
         _kwargs: dict[str, Any] = dict(
@@ -93,23 +90,23 @@ class Player:
             ) | definition.kwargs
         return definition.cls(**_kwargs)  # type: ignore
 
-    def delete_mode_instance(self, mode_index: int) -> None:
+    def delete_active_mode(self, mode_index: int) -> None:
         """Delete the instance of mode_index, along
            with any mode instances with instance as parent."""
-        mode = self.mode_instances[mode_index]
+        mode = self.active_modes[mode_index]
         # Delete children of specified.
-        for instance in self.mode_instances.values():
+        for instance in self.active_modes.values():
             if instance.parent == mode:
-                self.delete_mode_instance(instance.index)
+                self.delete_active_mode(instance.index)
         # Delete specified.
         print(f'Deleting mode {mode.name} with parent {mode.parent}')
         mode.close()
-        del self.mode_instances[mode_index]
+        del self.active_modes[mode_index]
         self.tasks.delete_owned_by(mode)
 
     def execute(self, starting_mode_index: int) -> bool:
-        """Play the specified starting mode and all subsequent modes.
-           Return whether to shut down the system, or just exit."""
+        """Main event loop.  Return whether to shut down 
+           the system, or to just exit."""
         self._effect_new_mode(starting_mode_index)
         try:
             while True:
@@ -162,21 +159,20 @@ class Player:
 
     def _effect_new_mode(self, mode_index: int):
         """Create new mode instance, clean up old, etc."""
-        # print("EFFECTING", mode_index)
         # Create new mode instance
-        new_mode = self.create_mode_instance(mode_index)
+        new_mode = self.create_active_mode(mode_index)
         if new_mode.background:
             # If bg mode of same type already present, delete it.
-            if new_mode.index in self.mode_instances:
-                self.delete_mode_instance(new_mode.index)
+            if new_mode.index in self.active_modes:
+                self.delete_active_mode(new_mode.index)
         else:
             # If any fg mode already present, delete it.
-            modes = self.mode_instances.values()
+            modes = self.active_modes.values()
             fg_mode = next((m for m in modes if not m.background), None)
             if fg_mode is not None:
-                self.delete_mode_instance(fg_mode.index)
-        self.mode_instances[new_mode.index] = new_mode
-        print(f'Effected new mode instance {new_mode.name.upper()}')
+                self.delete_active_mode(fg_mode.index)
+        self.active_modes[new_mode.index] = new_mode
+        print(f'Effected new active mode {new_mode.name.upper()}')
         new_mode.execute()
 
     def _handle_interrupt(self, it: Interrupt) -> None:
@@ -202,15 +198,33 @@ class Player:
         self.interrupt = None
         self.interrupt_trigger = threading.Event()
 
+    def _modes_in_send_order(self) -> list[BaseModeInterface]:
+        """Return background mode instances in creation order,
+           followed by foreground mode instance if it exists."""
+        print(f"{len(self.active_modes)=}")
+        return sorted(
+            self.active_modes.values(), key=lambda m: not m.background,
+        )
+
     def _send_api_command(self, it: CommandInterrupt) -> None:
-        """Execute command in every mode instance."""
-        for mode in self.mode_instances.values():
-            mode.command_action(it.command)
+        """Execute command on mode instances in send order,
+           stopping if one returns True, presumably
+           meaning that they handled the command."""
+        for mode in self._modes_in_send_order():
+            print(f"Sending API command to {mode.name}")
+            if mode.command_action(it.command):
+                print("Received True; stopping sending.")
+                break
 
     def _send_control_action(self, control: ControlName) -> None:
-        """Execute control action in every mode instance."""
-        for mode in self.mode_instances.values():
-            mode.control_action(control)
+        """Notify mode instances of control action in send order,
+           stopping if one returns True, presumably
+           meaning that they handled the control action."""
+        for mode in self._modes_in_send_order():
+            print(f"Sending control action to {mode.name}")
+            if mode.control_action(control):
+                print("Received True; stopping sending.")
+                break
 
     def _sigterm_received(self, signal_number, stack_frame) -> None:
         """Callback for SIGTERM received."""

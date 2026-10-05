@@ -62,6 +62,8 @@ def play(
        Return the # of seconds from start when playing the last measure
        will be finished, i.e. when a repeat or the next 
        section of music could start."""
+    if not measures:
+        return 0.0
     bps = tempo / 60
     start = time.time() + delay
     playable = convert_measures_to_playable(
@@ -82,7 +84,12 @@ def _convert_note_to_playable(
     try:
         args = (
             asdict(note) | 
-            dict(instrument=devices[note.device.value]) |
+            dict(
+                instrument=
+                    None 
+                    if note.device is None else 
+                    devices[note.device.value]
+            ) |
             (
                 dict(schedule=schedule) 
                 if isinstance(note, Scheduled) else 
@@ -100,6 +107,7 @@ def _convert_measure_to_playable(
     schedule: TaskSchedule,
 ) -> PlayableMeasure:
     """"""
+    print(f"{measure=}")
     notes = tuple(
         _convert_note_to_playable(e, devices, schedule)
         for e in measure.elements
@@ -152,6 +160,8 @@ def convert_measures_to_tasks(
 ) -> list[Task]:
     """Return tasks for all notes in all measures.
        Begin playing at start; play at speed bps."""
+    if not measures:
+        return []
     duration = measures[0].beats / bps
     tasks_by_measure = (
         _tasks_in_measure(measure, bps, start + i * duration, owner)

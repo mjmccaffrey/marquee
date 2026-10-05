@@ -5,7 +5,7 @@
     "exclude": [
         "modes/old/*.py",
     ],
-    "reportIncompatibleMethodOverride": false,
+    "reportIncompatibleMethodOverride": true,
     "reportIncompatibleVariableOverride": false,
     "reportPossiblyUnboundVariable": false,
     "reportMatchNotExhaustive": true,

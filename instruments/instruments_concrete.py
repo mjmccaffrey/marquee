@@ -32,12 +32,12 @@ class BellSet(RelayInstrument, ReleaseableInstrument):
         self.relays.set_state_of_devices(pattern)
 
     @override
-    def play(self, pitches: set[int]) -> None:
+    def play(self, pitches: set[int]) -> None:  # type: ignore Liskov
         """Play specified pitches."""
         self._update_relays('1', pitches)
 
     @override
-    def release(self, pitches: set[int]) -> None:
+    def release(self, pitches: set[int]) -> None:  # type: ignore Liskov
         """Release specified pitches."""
         self._update_relays('0', pitches)
 
@@ -71,7 +71,7 @@ class DrumSet(RelayInstrument):
         super().__init__(relays)
 
     @override
-    def play(self, accent: int, pitches: set[int]) -> None:
+    def play(self, accent: int, pitches: set[int]) -> None:  # type: ignore Liskov
         """Play specified pitches."""
 
         def flip(s: str) -> str:

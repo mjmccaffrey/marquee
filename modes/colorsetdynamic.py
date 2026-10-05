@@ -71,7 +71,7 @@ class ColorSetDynamic(ColorSetMode):
             kwargs |= dict(sequence=chase)
             sequence_kwargs |= dict(mask=self.mask)
         kwargs['sequence_kwargs'] = sequence_kwargs
-        mode = self.player.create_mode_instance(
+        mode = self.player.create_active_mode(
             mode_definition=ModeDefinition(
                 name='cs_rotate',
                 cls=SequenceMode,

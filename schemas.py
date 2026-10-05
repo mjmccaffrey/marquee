@@ -141,9 +141,9 @@ class BaseModeInterface(Protocol):
 
     def close(self) -> None: ...
 
-    def command_action(self, command: APICommand) -> None: ...
+    def command_action(self, command: APICommand) -> bool: ...
 
-    def control_action(self, control: ControlName) -> None: ...
+    def control_action(self, control: ControlName) -> bool: ...
 
     def execute(self) -> None: ...
 
@@ -159,4 +159,9 @@ class ModeDefinition:
 class ModeIndex(IntEnum):
     MODE_SELECT = 0
     DEFAULT = 1
+
+
+# class ModeType(StrEnum):
+#     BACKGROUND = auto()
+#     FOREGROUND = auto()
 

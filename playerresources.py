@@ -12,27 +12,27 @@ log = logging.getLogger('marquee.' + __name__)
 
 
 class PlayerResources(Protocol):
-    """Limited resources for use by mode."""
+    """Limited resources for use by mode instances."""
 
     # Read only
     devices: DeviceSet
     mode_ids: dict[str, int]
     modes: dict[int, ModeDefinition]
-    mode_instances: dict[int, BaseModeInterface]
+    active_modes: dict[int, BaseModeInterface]
 
     # Read & write
     speed_factor: float
     events: EventSystem
     tasks: TaskSchedule
 
-    def create_mode_instance(
+    def create_active_mode(
         self,
         mode_index: int | None = None,
         mode_definition: ModeDefinition | None = None,
         parent: BaseModeInterface | None = None,
     ) -> BaseModeInterface: ...
 
-    def delete_mode_instance(self, mode_index: int) -> None: ...
+    def delete_active_mode(self, mode_index: int) -> None: ...
     
     def execute_interrupt(self, interrupt: Interrupt) -> None: ...
 

@@ -1,6 +1,8 @@
 """Marquee Lighted Sign Project - api"""
 
+from enum import IntEnum, StrEnum
 import logging
+from typing import TYPE_CHECKING
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -9,15 +11,23 @@ from apiserver import APIServer
 from devices import joystick
 from playerresources import PlayerResources
 from schemas import (
-    ButtonName, ControlName, DeviceName,
+    ButtonName, ControlName,
     ChangeModeInterrupt, ControlAction, ControlInterrupt, 
     APICommand, CommandInterrupt, InterruptSource,
+    ModeDefinition,
 )
 
 log = logging.getLogger('marquee.' + __name__)
 
 LookupFailure = JSONResponse({'status': 'lookup failure'}, status_code=404)
 Success = JSONResponse(None)
+
+
+class Tag(StrEnum):
+    MODES = "Modes"
+    INPUTS = "Inputs"
+    COMMANDS = "Commands"
+
 
 class API:
     """"""
@@ -26,8 +36,22 @@ class API:
         """Initialize."""
         log.info("Initializing API")
         self.player = player
+        self._build_mode_def_enum()
         self._start_api_server()
         self._register_api_routes()
+
+    def _build_mode_def_enum(self) -> None:
+        """"""
+        if TYPE_CHECKING:
+            class ModeDefEnum(IntEnum):
+                ONE = 1
+        else:
+            ModeDefEnum = IntEnum(
+                "ModeDefEnum", [
+                    (self._mode_description(m), m.index)
+                    for m in self.player.modes.values()
+                ]
+            )
 
     def _start_api_server(self) -> None:
         """"""
@@ -38,13 +62,6 @@ class API:
         self.server.start()
         print("API server started.")
 
-    def _lookup_mode_index(self, mode_id: str) -> int | None:
-        """Return index of the mode definition with id."""
-        try:
-            return self.player.mode_ids[mode_id]
-        except LookupError:
-            return None
-
     def close(self) -> None:
         """Clean up."""
         print("Stopping API server...")
@@ -52,76 +69,47 @@ class API:
         print("Server stopped.")
         log.info(f"API closed.")
 
+    def _lookup_mode_index(self, mode_id: str) -> int | None:
+        """Return index of the mode definition with id."""
+        try:
+            return self.player.mode_ids[mode_id]
+        except LookupError:
+            return None
+
+    @staticmethod
+    def _mode_description(mode: ModeDefinition) -> str:
+        """"""
+        return (
+            f"{mode.index} {mode.name}"
+            f"{' (background)' if mode.cls.background else ''}"
+        )
+    
     def _register_api_routes(self) -> None:
         """"""
-        self.app.delete("/mode/{mode_id}")(self.delete_mode)
-        self.app.get("/modes")(self.get_active_modes)
-        self.app.get("/mode_definitions")(self.get_mode_definitions)
-        self.app.post("/mode/{mode_id}")(self.post_mode)
-        #
-        self.app.post("/button/{button}")(self.post_button)
-        self.app.post("/command/{command}")(self.post_command)
-        self.app.post("/joystick/stop")(self.post_joystick_stop)
-        self.app.post("/joystick/{direction}")(self.post_joystick)
+        # Modes
+        self.app.post("/mode/{mode_id}", tags=[Tag.MODES]) \
+                     (self.create_active_mode)
+        self.app.get("/modes", tags=[Tag.MODES]) \
+                    (self.get_active_modes)
+        self.app.get("/mode_definitions", tags=[Tag.MODES]) \
+                    (self.get_mode_definitions)
+        self.app.delete("/mode/{mode_id}", tags=[Tag.MODES]) \
+                       (self.delete_active_mode)
+        # Inputs
+        self.app.post("/button/{button}", tags=[Tag.INPUTS]) \
+                     (self.press_button)
+        self.app.post("/joystick/stop", tags=[Tag.INPUTS]) \
+                     (self.stop_overriding_joystick)
+        self.app.post("/joystick/{direction}", tags=[Tag.INPUTS]) \
+                     (self.override_joystick)
+        # Commands
+        self.app.post("/command/{command}", tags=[Tag.COMMANDS]) \
+                     (self.issue_command)
 
-    # ***** API Methods *****
 
-    def delete_mode(self, mode_id: str) -> JSONResponse:
-        """Delete the specified mode instance."""
-        mode_index = self._lookup_mode_index(mode_id)
-        if mode_index is None:
-            return LookupFailure
-        self.player.delete_mode_instance(mode_index)
-        return Success
-        
-    def get_active_modes(self) -> dict:
-        """Get mode instances."""
-        return {
-            m.index: 
-            f"{m.name}{' (background)' if m.background else ''}"
-            for m in self.player.mode_instances.values()
-        }
+    # ***** Modes *****
 
-    def get_mode_definitions(self) -> dict:
-        """Get IDs of all mode definitions."""
-        return {
-            m.index:
-            f"{m.name}{' (background)' if m.cls.background else ''}"
-            for i, m in self.player.modes.items()
-        }
-
-    def post_command(self, command: APICommand) -> None:
-        """Issue the specified command."""
-        self.player.execute_interrupt(
-            CommandInterrupt(
-                source=InterruptSource.API,
-                command=command,
-            )
-        )
-
-    def post_button(self, button: ButtonName) -> None:
-        """Press the specified button."""
-        self.player.execute_interrupt(
-            ControlInterrupt(
-                action=ControlAction.BUTTON_PRESSED,
-                control=ControlName("button_" + button), 
-                source=InterruptSource.API,
-            )
-        )
-
-    def post_joystick(self, direction: joystick.Direction) -> None:
-        """"""
-        print(f"JOYSTICK {direction}")
-        assert 'joystick' in self.player.devices
-        self.player.devices['joystick'].override = direction
-
-    def post_joystick_stop(self) -> None:
-        """"""
-        print("JOYSTICK STOP")
-        assert 'joystick' in self.player.devices
-        self.player.devices['joystick'].override = None
-
-    def post_mode(self, mode_id: str) -> JSONResponse:
+    def create_active_mode(self, mode_id: str) -> JSONResponse:
         """Create new instance of specified mode definition.
            If an instance of that definition already exists, delete it."""
         mode_index = self._lookup_mode_index(mode_id)
@@ -135,13 +123,64 @@ class API:
         )
         return Success
         
-    # def _api_get_lights(self) -> dict:
-    #     """"""
-    #     # index, channel_enum_name, brightness, color, on
+    def get_active_modes(self) -> list[str]:
+        """Get mode instances."""
+        return [
+            self._mode_description(self.player.modes[index])
+            for index in self.player.active_modes
+        ]
 
-    # def _api_set_brightness_factor(self) -> None:
-    #     """"""
-        
-    # def _api_set_speed_factor(self) -> None:
-    #     """"""
-        
+    def get_mode_definitions(self) -> list[str]:
+        """Get mode definitions."""
+        return [
+            self._mode_description(m)
+            for m in self.player.modes.values()
+        ]
+
+    def delete_active_mode(self, mode_id: str) -> JSONResponse:
+        """Delete the specified mode instance."""
+        mode_index = self._lookup_mode_index(mode_id)
+        if mode_index is None:
+            return LookupFailure
+        self.player.delete_active_mode(mode_index)
+        return Success
+       
+
+    # ***** Inputs *****
+
+    def press_button(self, button: ButtonName) -> None:
+        """Press the specified button."""
+        self.player.execute_interrupt(
+            ControlInterrupt(
+                action=ControlAction.BUTTON_PRESSED,
+                control=ControlName("button_" + button), 
+                source=InterruptSource.API,
+            )
+        )
+
+    def stop_overriding_joystick(self) -> None:
+        """"""
+        print("JOYSTICK STOP")
+        assert 'joystick' in self.player.devices
+        self.player.devices['joystick'].override = None
+
+    def override_joystick(self, direction: joystick.Direction) -> None:
+        """"""
+        print(f"JOYSTICK {direction}")
+        assert 'joystick' in self.player.devices
+        self.player.devices['joystick'].override = direction
+        print(f"Joystick: {direction}")
+
+
+    # ***** Commands *****
+
+    def issue_command(self, command: APICommand) -> None:
+        """Issue the specified command."""
+        self.player.execute_interrupt(
+            CommandInterrupt(
+                source=InterruptSource.API,
+                command=command,
+            )
+        )
+
+

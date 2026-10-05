@@ -22,12 +22,12 @@ class AlarmBell(InterruptMode):
     total_time: float = activity_time + restore_time
 
     @override
-    def control_action(self, control: ControlName) -> None:
-        """"""
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
         if control == ControlName.BUTTON_CORDED_B:
             self.schedule()
-        else:
-            super().control_action(control)
+            return True
+        return super().control_action(control)
 
     @override
     def execute_activity(self):
@@ -60,12 +60,12 @@ class AlarmDive(InterruptMode):
     restore_time: float = 4.0
 
     @override
-    def control_action(self, control: ControlName) -> None:
-        """"""
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
         if control == ControlName.BUTTON_CORDED_B:
             self.schedule(self.execute_interrupt)
-        else:
-            super().control_action(control)
+            return True
+        return super().control_action(control)
 
     @override
     def execute_activity(self):

@@ -26,14 +26,14 @@ def define_modes(exec: Executor) -> None:
 def register_special_modes(exec: Executor) -> None:
     """"""
     exec.add_mode("select_mode", ModeSelect, 
-        index=ModeIndex.MODE_SELECT, hidden=True,
+        index=ModeIndex.MODE_SELECT.value, hidden=True,
         previous="PREVIOUS_MODE",
     )
     # exec.add_mode("select_brightness", BrightnessSelect, 
     #     index=ModeIndex.BRIGHTNESS_SELECT, hidden=True,
     # )
     exec.add_sequence_mode("all_off", all_off,
-        index=ModeIndex.DEFAULT,
+        index=ModeIndex.DEFAULT.value,
     )
 
 def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
@@ -76,7 +76,6 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
         brightness=100,
         transition=1,
         delay=3,
-        direction=-1,
     )
     exec.add_mode("cupola_wheel_divisions", CupolaSequence,
         color_set_name='',

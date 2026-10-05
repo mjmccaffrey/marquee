@@ -35,7 +35,7 @@ class GeneratedModes(RandomFade):
 
     def generate_mode(self, light_index: int) -> BaseModeInterface:
         """"""
-        mode = self.player.create_mode_instance(
+        mode = self.player.create_active_mode(
             mode_definition=ModeDefinition(
                 name=f'generated_mode_{light_index:02}',
                 cls=GeneratedModes,

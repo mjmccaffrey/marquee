@@ -30,28 +30,29 @@ class ColorSetMode(PerformanceMode, ABC):
         """Show color set. Schedule next set."""
 
     @override
-    def control_action(self, control: ControlName) -> None:
-        """If direction button pushed, change displayed color set.
-           Otherwise, call parent's button handler."""
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
         match control:
             case ControlName.BUTTON_CORDED_A | ControlName.BUTTON_REAR:
                 self.clicker.play()
                 self.next_entry()
+                return True
             case ControlName.BUTTON_CORDED_B:
                 self.clicker.play()
                 self.previous_entry()
+                return True
             case _:
-                super().control_action(control)
+                return super().control_action(control)
 
     @override
-    def next_entry(self) -> None:
+    def next_entry(self) -> bool:
         self._change_entry(+1)
-        return super().next_entry()
+        return True
 
     @override
-    def previous_entry(self) -> None:
+    def previous_entry(self) -> bool:
         self._change_entry(-1)
-        return super().previous_entry()
+        return True
 
     def _change_entry(self, delta: int) -> None:
         """"""

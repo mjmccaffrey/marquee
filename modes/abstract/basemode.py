@@ -38,18 +38,18 @@ class BaseMode(ABC):
     def _create_children(self) -> None:
         """Create child mode(s) specified."""
         for child in self.children:
-            mode = self.player.create_mode_instance(
+            mode = self.player.create_active_mode(
                 mode_index=self.lookup_mode_index(child),
                 parent=self,
             )
             print(f"Created mode {child} {mode.index} {mode.name}")
 
     @abstractmethod
-    def control_action(self, control: ControlName) -> None:
-        """Respond to control action."""
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
 
     @abstractmethod
-    def command_action(self, command: APICommand) -> None:
+    def command_action(self, command: APICommand) -> bool:
         """Respond to command."""
 
     def close(self) -> None:
@@ -158,4 +158,13 @@ class BaseMode(ABC):
         elif (dif := value - lower) < 0:
             value = upper + dif + 1
         return value
+
+    def _wrap_mode_index(self, delta: int) -> int:
+        """"""
+        return self.wrap_value(
+            lower=1, 
+            upper=max(self.player.modes), 
+            current=self.index,
+            delta=delta,
+        )
 

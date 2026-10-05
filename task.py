@@ -4,9 +4,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field, replace
 from heapq import heapify, heappop, heappush
 import logging
-import threading
 import time
-from typing import NoReturn
 from typing_extensions import override
 
 log = logging.getLogger('marquee.' + __name__)
@@ -96,7 +94,7 @@ class TaskSchedule:
                 self.pop()
                 return task
             else:
-                log.info(f"Waiting for {task.due - now} or interrupt")
+                # log.info(f"Waiting for {task.due - now} or interrupt")
                 return task.due - now
         else:
             log.info(f"Waiting for interrupt")

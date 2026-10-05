@@ -10,7 +10,7 @@ from devices.deviceset import DeviceSet
 from devices.specialparams import SpecialParams
 from modes import BaseMode, SequenceMode
 from player import Player
-from schemas import Device, DeviceName, ModeDefinition
+from schemas import Device, ModeDefinition
 
 log = logging.getLogger('marquee.' + __name__)
 

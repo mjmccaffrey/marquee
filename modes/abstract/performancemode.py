@@ -1,13 +1,12 @@
 """Marquee Lighted Sign Project - performancemode"""
 
 from abc import ABC
-from collections.abc import Callable
 from dataclasses import dataclass
 import logging
 from typing_extensions import override
 
 from .mode import Mode
-from schemas import APICommand, ControlName, DeviceName, ModeIndex
+from schemas import ControlName, DeviceName, ModeIndex
 
 
 log = logging.getLogger('marquee.' + __name__)
@@ -18,34 +17,34 @@ class PerformanceMode(Mode, ABC):
     """Base for performance modes."""
 
     @override
-    def control_action(self, control: ControlName) -> None:
-        """Respond to button being pressed.
-           Return index of new mode, if any."""
-        new_mode = None
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
         b = DeviceName
         match control:
             case b.BUTTON_REAR:
-                new_mode = ModeIndex.MODE_SELECT
+                self.change_mode(ModeIndex.MODE_SELECT)
+                return True
             # case b.REMOTE_C:
             #     self.clicker.click()
             #     new_mode = ModeIndex.BRIGHTNESS_SELECT
             case ControlName.BUTTON_CORDED_A:
                 self.clicker.play()
-                new_mode = self._wrap_mode_index(-1)
+                self.previous_mode()
+                return True
             case ControlName.BUTTON_CORDED_B:
                 self.clicker.play()
-                new_mode = self._wrap_mode_index(+1)
+                self.next_mode()
+                return True
             case _:
-                pass
-        if new_mode is not None:
-            self.change_mode(new_mode)
+                return False
 
-    def _wrap_mode_index(self, delta: int) -> int:
-        """"""
-        return self.wrap_value(
-            lower=1, 
-            upper=max(self.player.modes), 
-            current=self.index,
-            delta=delta,
-        )
+    @override
+    def next_mode(self) -> bool:
+        self.change_mode(self._wrap_mode_index(+1))
+        return True
+    
+    @override
+    def previous_mode(self) -> bool:
+        self.change_mode(self._wrap_mode_index(-1))
+        return True
 

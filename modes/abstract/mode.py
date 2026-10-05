@@ -60,33 +60,37 @@ class Mode(BaseMode, ABC):
     #         self.lights.brightness_factor = 0
 
     @override
-    def command_action(self, command: APICommand) -> None:
+    def command_action(self, command: APICommand) -> bool:
         """Respond to command."""
         match command:
             case APICommand.NEXT_ENTRY:
-                self.next_entry()
+                return self.next_entry()
             case APICommand.PREVIOUS_ENTRY:
-                self.previous_entry()
+                return self.previous_entry()
             case APICommand.NEXT_MODE:
-                self.next_mode()
+                return self.next_mode()
             case APICommand.PREVIOUS_MODE:
-                self.previous_mode()
+                return self.previous_mode()
             case _:
                 raise ValueError(it)
 
-    def next_entry(self) -> None:
+    def next_entry(self) -> bool:
         """Change to the next entry."""
         print("NEXT ENTRY")
+        return False
 
-    def previous_entry(self) -> None:
+    def previous_entry(self) -> bool:
         """Change to the previous entry."""
         print("PREVIOUS ENTRY")
+        return False
         
-    def next_mode(self) -> None:
+    def next_mode(self) -> bool:
         """Change to the next mode."""
         print("NEXT MODE")
+        return False
         
-    def previous_mode(self) -> None:
+    def previous_mode(self) -> bool:
         """Change to the previous mode."""
         print("PREVIOUS MODE")
+        return False
 
