@@ -70,7 +70,6 @@ class DoomGame(PerformanceMode):
 
     def slayer_teleports(self):
         """"""
-        print("PLAYER TELEPORTS")
         self.play_sound(Sound.TELEPORT)
         self.lights.set_channels(
             on=True,
@@ -82,7 +81,6 @@ class DoomGame(PerformanceMode):
 
     def slayer_appears(self):
         """"""
-        print("PLAYER APPEARS")
         self.play_sound(Sound.SLAYER_UMF)
         self.lights.set_channels(
             on=True,
@@ -94,7 +92,6 @@ class DoomGame(PerformanceMode):
 
     def barons_appear(self, step: int):
         """"""
-        print("BARONS APPEAR")
         self.play_sound(Sound.BARON_ROAR)
         self.lights.set_channels(
             on=True,
@@ -111,7 +108,6 @@ class DoomGame(PerformanceMode):
 
     def slayer_dies(self):
         """"""
-        print("SLAYER DIES")
         self.schedule(
             action=partial(self.play_sound, Sound.SLAYER_DEATH_2),
             due=0.0,
@@ -133,7 +129,6 @@ class DoomGame(PerformanceMode):
 
     def fade_lights(self):
         """"""
-        print("LIGHTS FADE")
         for i, row in enumerate(self.lights_by_row):
             self.schedule(
                 action=partial(
