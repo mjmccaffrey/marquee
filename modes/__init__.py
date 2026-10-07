@@ -28,7 +28,6 @@ from .pacman import PacManGame
 from .pause import Pause
 from .randomfade import RandomFade
 from .rotate import RotateSides
-from .running import Running
 from .rhythym import Rhythm
 from .signs import Signs
 from .silentfadebuild import SilentFadeBuild
