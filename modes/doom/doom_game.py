@@ -153,6 +153,6 @@ class DoomGame(PerformanceMode):
             SeqTask(partial(self.barons_appear, step=1), due=0.75),
             SeqTask(self.slayer_dies, due=0.75),
             SeqTask(self.fade_lights, due=0.5),
-            SeqTask(self.fade_music, due=3.0),
+            SeqTask(self.fade_music, due=3.5),
         )
         
