@@ -139,10 +139,10 @@ class DoomGame(PerformanceMode):
                 action=partial(
                     self.lights.set_channels,
                     on=False,
-                    transition=2.5,
+                    transition=3.0,
                     index=row,
                 ),
-                due=i / 2,
+                due=i,
             )
         
     @override
