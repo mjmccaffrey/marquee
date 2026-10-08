@@ -52,13 +52,6 @@ class Mode(BaseMode, ABC):
         pygame.mixer.music.stop()
         super().close()
 
-    # @override
-    # def control_action(self, control: ControlName) -> int | None:
-    #     """"""
-    #     if control == DeviceName.ROTARY_A:
-    #         self.change_brightness(self.controls.rotary_a.steps)
-    #         self.lights.brightness_factor = 0
-
     @override
     def command_action(self, command: APICommand) -> bool:
         """Respond to command."""

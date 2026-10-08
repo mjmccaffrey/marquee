@@ -54,7 +54,6 @@ class BaseMode(ABC):
 
     def close(self) -> None:
         """Clean up before instance is discarded."""
-        print(f"BaseMode close called: {self.name}")
 
     def execute(self) -> None:
         """Play the mode."""

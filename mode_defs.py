@@ -1,7 +1,7 @@
 """Marquee Lighted Sign Project - define_modes"""
 
 from devices.color import Colors
-from devices.specialparams import ChannelParams, EmulateParams, MirrorParams
+from devices.specialparams import ChannelParams, EmulateParams
 from executor import Executor
 from modes import *
 from modes.pacman import base_maze, passage_maze
@@ -39,31 +39,22 @@ def register_special_modes(exec: Executor) -> None:
 def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
     """PyOhio 2026 presentation."""
     exec.add_mode("2026_presentation", ModeCycle,
-        sequence = [
+        # pause_before_each=True,
+        sequence=[
+            (None, None),
+            (None, 10),
             ("rotate_sides_emulate", 60),
-            ("pause", None),
             ("even_odd_fade", 60),
-            ("pause", None),
             ("signs", 60),
-            ("pause", None),
             ("color_sets_presentation", 60),
-            ("pause", None),
             ("twelve", 60),
-            ("pause", None),
             ("rhythm", 60),
-            ("pause", None),
-            ("cupola_wheel_divisions", 0.1),
-            ("alarm_dive", 0.1),
-            ("twelve", 60),
-            ("pause", None),
+            ("twelve_reprise", 60),
             ("doom_15", 60),
-            ("pause", None),
             ("pacman_15", 60),
-            ("pause", None),
             ("random_random_random", None),
         ],
     )
-    exec.add_mode("pause", Pause)
     exec.add_mode("alarm_dive", AlarmDive)
     exec.add_mode("comet_wheel", Comet,
         length=9,
@@ -84,7 +75,7 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
         delay=1,
         wheel_divisions=4,
     )
-    exec.add_mode("background_events", Twelve,
+    exec.add_mode("twelve_reprise", Twelve,
         children=(
             "alarm_dive",
             "cupola_wheel_divisions", 

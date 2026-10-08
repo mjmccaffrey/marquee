@@ -168,9 +168,9 @@ class Player:
         else:
             # If any fg mode already present, delete it.
             modes = self.active_modes.values()
-            fg_mode = next((m for m in modes if not m.background), None)
-            if fg_mode is not None:
-                self.delete_active_mode(fg_mode.index)
+            fg_mode = [m for m in modes if not m.background]
+            if fg_mode:
+                self.delete_active_mode(fg_mode[0].index)
         self.active_modes[new_mode.index] = new_mode
         print(f'Effected new active mode {new_mode.name.upper()}')
         new_mode.execute()

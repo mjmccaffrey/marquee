@@ -123,9 +123,9 @@ class Exit(Exception):
 
 @dataclass
 class CycleEntry:
-    name: str
+    name: str | None
     seconds: float | None
-    index: int = -1
+    index: int | None = None
 
 
 CycleSequence = list[tuple[str, int | None]]
@@ -159,9 +159,4 @@ class ModeDefinition:
 class ModeIndex(IntEnum):
     MODE_SELECT = 0
     DEFAULT = 1
-
-
-# class ModeType(StrEnum):
-#     BACKGROUND = auto()
-#     FOREGROUND = auto()
 

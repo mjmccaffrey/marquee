@@ -25,7 +25,6 @@ from .comet import Comet
 from .doom import DoomGame
 from .evenoddfade import EvenOddFade
 from .pacman import PacManGame
-from .pause import Pause
 from .randomfade import RandomFade
 from .rotate import RotateSides
 from .rhythym import Rhythm
