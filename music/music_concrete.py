@@ -177,6 +177,7 @@ NOTE_CONVERSIONS: dict[type[Element], type[PlayableNote]] = {
     LightRelayNote: PlayableLightRelayNote,
     BuzzerNote: PlayableBuzzerNote,
     RingerNote: PlayableRingerNote,
+    NoteGroup: PlayableNoteGroup,
 }
 
 
