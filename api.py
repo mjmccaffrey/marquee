@@ -26,6 +26,7 @@ Success = JSONResponse(None)
 class Tag(StrEnum):
     MODES = "Modes"
     INPUTS = "Inputs"
+    OUTPUTS = "Outputs"
     COMMANDS = "Commands"
 
 
@@ -102,6 +103,9 @@ class API:
                      (self.stop_overriding_joystick)
         self.app.post("/joystick/{direction}", tags=[Tag.INPUTS]) \
                      (self.override_joystick)
+        # Outputs
+        self.app.post("/brightness/{factor}", tags=[Tag.OUTPUTS]) \
+                     (self.set_brightness)
         # Commands
         self.app.post("/command/{command}", tags=[Tag.COMMANDS]) \
                      (self.issue_command)
@@ -170,6 +174,13 @@ class API:
         assert 'joystick' in self.player.devices
         self.player.devices['joystick'].override = direction
         print(f"Joystick: {direction}")
+
+
+    # ***** Outputs *****
+
+    def set_brightness(self, factor: float) -> None:
+        """"""
+        self.player.devices['lights'].change_brightness_factor(factor)
 
 
     # ***** Commands *****

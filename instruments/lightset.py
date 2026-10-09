@@ -297,6 +297,16 @@ class LightSet(RelayInstrument):
             transition=transition,
         )
 
+    def change_brightness_factor(self, value: float) -> None:
+        """Set brightness_factor and adjust lights."""
+        original = [
+            int(self.brightness_factor / channel.brightness)
+            for channel in self.channels
+        ]
+        print(original)
+        self.brightness_factor = value
+        self.set_channels(brightness=original)
+
     @property
     def brightness_factor(self) -> float:
         """Return brightness_factor."""

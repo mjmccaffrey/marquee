@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - device_defs"""
 
-TEST = True
+TEST = False
 
 import signal
 from collections.abc import Sequence

@@ -34,16 +34,6 @@ class Mode(BaseMode, ABC):
         self.buzzer = self.devices[DeviceName.BUZZER.value]
         self.ringer = self.devices[DeviceName.RINGER.value]
 
-    def change_brightness(self, factor: float) -> None:
-        """"""
-        original = [
-            int(self.lights.brightness_factor / channel.brightness)
-            for channel in self.lights.channels
-        ]
-        print(original)
-        self.lights.brightness_factor = factor
-        self.lights.set_channels(brightness=original)
-
     @override
     def close(self) -> None:
         """Stop any sounds and music. Assumption is that 
