@@ -88,6 +88,7 @@ def _convert_note_to_playable(
             instrument = devices[note.device.value]
         except KeyError:
             raise ValueError(f"No {note.device} instrument present.")
+    print(f"{instrument=}")
     args = (
         asdict(note) | 
         dict(instrument=instrument) | (
