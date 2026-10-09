@@ -88,17 +88,12 @@ def _convert_note_to_playable(
             instrument = devices[note.device.value]
         except KeyError:
             raise ValueError(f"No {note.device} instrument present.")
-    print(f"{instrument=}")
-    args = (
-        asdict(note) | 
-        dict(instrument=instrument) | (
-            dict(schedule=schedule) 
-            if instrument is not None and 
-               issubclass(instrument, Scheduled) else 
-            {}
-        )
-    )
-    return NOTE_CONVERSIONS[type(element)](**args)  # type: ignore
+    playable = NOTE_CONVERSIONS[type(element)]
+    playable_args = dict(instrument=instrument)
+    if issubclass(playable, Scheduled):
+        playable_args |= dict(schedule=schedule) 
+    args = asdict(note) | playable_args
+    return playable(**args)  # type: ignore
 
 
 def _convert_measure_to_playable(
