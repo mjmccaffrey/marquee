@@ -245,14 +245,15 @@ class Section(Element):
             )
             object.__setattr__(part, 'measures', measures)
 
-    def _convert_parts_to_measures(self) -> tuple[Measure, ...]:
+    def _convert_parts_to_measures(self) -> None:
         """Merge parts into single sequence of measures."""
         self._equalize_part_lengths()
         concurrent_measures = zip(*(part.measures for part in self.parts))
-        return tuple(
+        measures = tuple(
             self._merge_measures(measure_set)
             for measure_set in concurrent_measures
         )
+        object.__setattr__(self, 'measures', measures)
 
     def _equalize_part_lengths(self) -> None:
         """Make all parts have the same # of measures."""
