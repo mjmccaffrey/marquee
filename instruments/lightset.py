@@ -301,7 +301,7 @@ class LightSet(RelayInstrument):
         """Set brightness_factor and adjust lights."""
         print("Channels: ", [c.brightness for c in self.channels])
         original = [
-            int(channel.brightness / self.brightness_factor)
+            min(int(channel.brightness / self.brightness_factor), 1)
             for channel in self.channels
         ]
         print("Original: ", original)
