@@ -164,6 +164,7 @@ class PlayableNoteGroup(PlayableNote):
     @override
     def play(self, bps: float) -> None:
         """Play all notes in group, not quite concurrently."""
+        print(f"{self.notes=}")
         for note in self.notes:
             note.play(bps)
 
