@@ -27,9 +27,8 @@ class MusicMode(PerformanceMode, ABC):
             raise ValueError('A tempo is required.')
         match group:
             case Piece():
-                delay += self._play_group(
-                    *group.groups, delay=delay, tempo=tempo,
-                )
+                for _group in group.groups:
+                    delay += self._play_group(_group, delay, tempo)
                 measures = ()
             case Section() | Part():
                 measures = group.measures
