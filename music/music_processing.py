@@ -81,23 +81,22 @@ def _convert_note_to_playable(
 ) -> PlayableNote:
     """Return dict of attribute assignments."""
     note = cast(Note, element)
-    try:
-        args = (
-            asdict(note) | 
-            dict(
-                instrument=
-                    None 
-                    if note.device is None else 
-                    devices[note.device.value]
-            ) |
-            (
-                dict(schedule=schedule) 
-                if isinstance(note, Scheduled) else 
-                {}
-            )
+    if note.device is None:
+        instrument = None 
+    else:
+        try:
+            instrument = devices[note.device.value]
+        except KeyError:
+            raise ValueError(f"No {note.device} instrument present.")
+    args = (
+        asdict(note) | 
+        dict(instrument=instrument) | (
+            dict(schedule=schedule) 
+            if instrument is not None and 
+               issubclass(instrument, Scheduled) else 
+            {}
         )
-    except ValueError:
-        raise ValueError(f"No {note.device} instrument present.")
+    )
     return NOTE_CONVERSIONS[type(element)](**args)  # type: ignore
 
 
