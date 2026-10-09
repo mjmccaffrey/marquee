@@ -39,10 +39,8 @@ def register_special_modes(exec: Executor) -> None:
 def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
     """PyOhio 2026 presentation."""
     exec.add_mode("2026_presentation", ModeCycle,
-        # pause_before_each=True,
+        pause_before_each=True,
         sequence=[
-            (None, None),
-            (None, 10),
             ("rotate_sides_emulate", 60),
             ("even_odd_fade", 60),
             ("signs", 60),
@@ -154,9 +152,9 @@ def register_channel_modes(exec: Executor):
     exec.add_mode("color_sets_presentation", ColorSetStatic,
         sequence=[
             # ("vibrant", 5),
-            ("lush", 5),
-            ("cancun", 5),
-            ("party", 5),
+            ("lush", 55),
+            ("cancun", 55),
+            ("party", 55),
         ],
         transition=1.0,
     )
