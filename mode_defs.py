@@ -152,9 +152,9 @@ def register_channel_modes(exec: Executor):
     exec.add_mode("color_sets_presentation", ColorSetStatic,
         sequence=[
             # ("vibrant", 5),
-            ("lush", 55),
-            ("cancun", 55),
-            ("party", 55),
+            ("lush", 255),
+            ("cancun", 255),
+            ("party", 255),
         ],
         transition=1.0,
     )

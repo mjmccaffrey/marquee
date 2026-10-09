@@ -305,13 +305,6 @@ class LightSet(RelayInstrument):
             for channel in self.channels
         ]
         print("Original: ", original)
-
-        # ab = db * bf
-        # ab / bf = db
-
-        # 25 = 50 * 0.5
-        # 25 / 0.5 = 50
-
         self.brightness_factor = value
         self.set_channels(brightness=original)
 
