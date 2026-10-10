@@ -53,8 +53,15 @@ class Pitched(ABC):
 
 
 @dataclass(frozen=True, kw_only=True)
+class MusicTask:
+    """"""
+    action: Callable
+    due: float
+
+
+@dataclass(frozen=True, kw_only=True)
 class Scheduled(ABC):
-    schedule: Callable[[Callable[[], None], float], None]
+    schedule: Callable[[MusicTask], None]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -73,7 +80,7 @@ class PlayableReleasableNote(ReleasableNote, PlayableNote, Scheduled, ABC):
 
     def schedule_release(self, release_time: float) -> None:
         """Schedule release of played note."""
-        self.schedule(self.release, release_time)
+        self.schedule(MusicTask(action=self.release, due=release_time))
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -104,13 +111,6 @@ class PlayableDinNote(DinNote, PlayableReleasableNote, ABC):
         """Play note."""
         super().play(bps)
         self.schedule_release(self.duration_original / bps)
-
-
-@dataclass(frozen=True, kw_only=True)
-class MusicTask:
-    """"""
-    action: Callable
-    due: float
 
 
 class ScheduleTask(Protocol):
