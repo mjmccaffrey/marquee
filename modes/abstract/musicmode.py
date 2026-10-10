@@ -30,7 +30,9 @@ class MusicMode(PerformanceMode, ABC):
         match group:
             case Piece():
                 for _group in group.groups:
-                    delay += self._play_group(_group, delay, tempo)
+                    _delay = self._play_group(_group, delay, tempo)
+                    delay += _delay
+                    print("Piece", _delay, delay)
                 measures = ()
             case Section() | Part():
                 measures = group.measures
@@ -64,6 +66,7 @@ class MusicMode(PerformanceMode, ABC):
            Return seconds until music stops playing."""
         delay = 0.0
         for group in groups:
+            print("musicmode.play")
             delay += self._play_group(group, delay, tempo)
             # print(
             #     len(self.player.tasks), 
