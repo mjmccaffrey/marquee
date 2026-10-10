@@ -55,7 +55,6 @@ def play(
         tempo: int,
         devices: DeviceSet,
         schedule: ScheduleTask,
-        owner: Mode,
 ) -> float:
     """Convert measures to tasks, add to task queue.
        Return the # of seconds from start when playing the last measure
@@ -68,7 +67,7 @@ def play(
     playable = convert_measures_to_playable(
         measures, devices, schedule,
     )
-    tasks = convert_measures_to_tasks(playable, bps, start, owner)
+    tasks = convert_measures_to_tasks(playable, bps, start)
     print(len(tasks))
     print(time.time())
     for task in tasks:
@@ -168,6 +167,8 @@ def _tasks_in_measure(
         beat += note.duration
         if beat > measure.beats:
             raise ValueError("Too many actual beats in measure.")
+    for r in result:
+        print(r)
     return result
 
 
@@ -175,7 +176,6 @@ def convert_measures_to_tasks(
     measures: tuple[PlayableMeasure, ...], 
     bps: float,
     start: float,
-    owner: object,
 ) -> list[MusicTask]:
     """Return tasks for all notes in all measures.
        Begin playing at start; play at speed bps."""

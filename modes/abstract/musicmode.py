@@ -40,7 +40,6 @@ class MusicMode(PerformanceMode, ABC):
             tempo=tempo,
             devices=self.devices,
             schedule=self._schedule_task,
-            owner=self,
         )
 
     def _schedule_task(self, task: MusicTask) -> None:
