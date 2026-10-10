@@ -167,8 +167,9 @@ def _tasks_in_measure(
         beat += note.duration
         if beat > measure.beats:
             raise ValueError("Too many actual beats in measure.")
-    for r in result:
-        print(r)
+    print(len(result))
+    for i, r in enumerate(result):
+        print(i, r)
         print()
     return result
 
