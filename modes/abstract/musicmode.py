@@ -58,6 +58,10 @@ class MusicMode(PerformanceMode, ABC):
         delay = 0.0
         for group in groups:
             delay += self._play_group(group, delay, tempo)
-            print(len(self.player.tasks), self.player.tasks._schedule[0].due)
+            print(
+                len(self.player.tasks), 
+                self.player.tasks._schedule[0].action,
+                self.player.tasks._schedule[0].due,
+            )
         return delay
 
