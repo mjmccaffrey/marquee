@@ -44,6 +44,7 @@ class MusicMode(PerformanceMode, ABC):
 
     def _schedule_task(self, task: MusicTask) -> None:
         """"""
+        print("_schedule_task", task.due)
         self.schedule(task.action, task.due)
 
     def play(
