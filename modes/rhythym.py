@@ -35,7 +35,8 @@ class Rhythm(MusicMode):
             # self.section_b(),
             # self.ringer_measure(),
         )
-        self.play(music, tempo=140)
+        delay = self.play(music, tempo=140)
+        print("MusicMode.play returned", delay)
         self.lights.set_channels(brightness=0, transition=8.0)
 
     def init(self) -> Section:
