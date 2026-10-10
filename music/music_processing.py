@@ -69,6 +69,7 @@ def play(
         measures, devices, schedule,
     )
     tasks = convert_measures_to_tasks(playable, bps, start, owner)
+    print(len(tasks))
     print(time.time())
     for task in tasks:
         schedule(task)
