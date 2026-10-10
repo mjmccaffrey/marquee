@@ -87,7 +87,7 @@ class PlayableReleasableNote(ReleasableNote, PlayableNote, Scheduled, ABC):
                 due=EpochTime(time.time() + release_time),
             )
         )
-        print(time.time(), release_time)
+        print("SCHEDULE RELEASE", time.time(), release_time)
 
 @dataclass(frozen=True, kw_only=True)
 class LightNote(Note, ABC):
