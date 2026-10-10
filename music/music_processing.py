@@ -52,79 +52,39 @@ def piece(
     return Piece(groups)
 
 
-def play(
-        measures: tuple[Measure, ...], 
-        delay: float, 
-        tempo: int,
-        devices: DeviceSet,
-        schedule: ScheduleTask,
+def play_measures(
+    measures: tuple[Measure, ...], 
+    delay: float, 
+    tempo: int,
+    devices: DeviceSet,
+    schedule: ScheduleTask,
 ) -> float:
-    """Convert measures to tasks, add to task queue.
-       Return the # of seconds from start when playing the last measure
-       will be finished, i.e. when a repeat or the next 
-       section of music could start."""
+    """Play measures at tempo, using devices and schedule callable.
+       Return the length of the music in seconds."""
     if not measures:
         return 0.0
     bps = tempo / 60
     start = time.time() + delay
-    playable = convert_measures_to_playable(
-        measures, devices, schedule,
-    )
-    tasks = convert_measures_to_tasks(playable, bps, start)
-    print(len(tasks))
-    print(time.time())
+    playable = _measures_to_playable(measures, devices, schedule)
+    tasks = _measures_to_tasks(playable, bps, start)
     for task in tasks:
         schedule(task)
-    print(time.time())
     return measures[0].beats * len(measures) / bps
 
 
-def _convert_note_to_playable(
-    element: Element, 
+def _measures_to_playable(
+    measures: tuple[Measure, ...], 
     devices: DeviceSet,
     schedule: ScheduleTask,
-) -> PlayableNote:
-    """Return dict of attribute assignments."""
-    if type(element) == NoteGroup:
-        return _convert_note_group_to_playable(element, devices, schedule)
-    else:
-        return _convert_single_note_to_playable(element, devices, schedule)
-
-
-def _convert_single_note_to_playable(
-    element, devices, schedule,
-) -> PlayableNote:
+) -> tuple[PlayableMeasure, ...]:
     """"""
-    playable_type = NOTE_CONVERSIONS[type(element)]
-    note = cast(Note, element)
-    if note.device is None:
-        instrument = None 
-    else:
-        try:
-            instrument = devices[note.device.value]
-        except KeyError:
-            raise ValueError(f"No {note.device} instrument present.")
-    playable_args = dict(instrument=instrument)
-    if issubclass(playable_type, Scheduled):
-        playable_args |= dict(schedule=schedule) 
-    args = asdict(note) | playable_args
-    return playable_type(**args)  # type: ignore
-
-
-def _convert_note_group_to_playable(
-        element, devices, schedule,
-) -> PlayableNoteGroup:
-    """"""
-    note = cast(NoteGroup, element)
-    playable_notes = tuple(
-        _convert_note_to_playable(n, devices, schedule)
-        for n in note.notes
+    return tuple(
+        _measure_to_playable(measure, devices, schedule)
+        for measure in measures
     )
-    args = asdict(note) | dict(notes=playable_notes)
-    return PlayableNoteGroup(**args)  # type: ignore
 
 
-def _convert_measure_to_playable(
+def _measure_to_playable(
     measure: Measure,
     devices: DeviceSet,
     schedule: ScheduleTask,
@@ -132,26 +92,33 @@ def _convert_measure_to_playable(
     """"""
     # print(f"{measure=}")
     notes = tuple(
-        _convert_note_to_playable(e, devices, schedule)
+        _note_to_playable(e, devices, schedule)
         for e in measure.elements
     )
     return PlayableMeasure(notes=notes, beats=measure.beats)
 
 
-def convert_measures_to_playable(
-    measures: tuple[Measure, ...], 
-    devices: DeviceSet,
-    schedule: ScheduleTask,
-) -> tuple[PlayableMeasure, ...]:
-
-    """"""
-    return tuple(
-        _convert_measure_to_playable(measure, devices, schedule)
-        for measure in measures
+def _measures_to_tasks(
+    measures: tuple[PlayableMeasure, ...], 
+    bps: float,
+    start: float,
+) -> list[MusicTask]:
+    """Return tasks for all notes in all measures.
+       Begin playing at start; play at speed bps."""
+    # if not measures:
+    #     return []
+    duration = measures[0].beats / bps
+    tasks_by_measure = (
+        _measure_to_tasks(measure, bps, start + i * duration)
+        for i, measure in enumerate(measures)
     )
+    return [
+        task
+        for measure in tasks_by_measure
+        for task in measure
+    ]
 
-
-def _tasks_in_measure(
+def _measure_to_tasks(
     measure: PlayableMeasure, 
     bps: float, 
     start: float,
@@ -177,23 +144,48 @@ def _tasks_in_measure(
     return result
 
 
-def convert_measures_to_tasks(
-    measures: tuple[PlayableMeasure, ...], 
-    bps: float,
-    start: float,
-) -> list[MusicTask]:
-    """Return tasks for all notes in all measures.
-       Begin playing at start; play at speed bps."""
-    if not measures:
-        return []
-    duration = measures[0].beats / bps
-    tasks_by_measure = (
-        _tasks_in_measure(measure, bps, start + i * duration)
-        for i, measure in enumerate(measures)
+def _note_to_playable(
+    element: Element, 
+    devices: DeviceSet,
+    schedule: ScheduleTask,
+) -> PlayableNote:
+    """Return dict of attribute assignments."""
+    if type(element) == NoteGroup:
+        return _note_group_to_playable(element, devices, schedule)
+    else:
+        return _single_note_to_playable(element, devices, schedule)
+
+
+def _single_note_to_playable(
+    element, devices, schedule,
+) -> PlayableNote:
+    """"""
+    playable_type = NOTE_CONVERSIONS[type(element)]
+    note = cast(Note, element)
+    if note.device is None:
+        instrument = None 
+    else:
+        try:
+            instrument = devices[note.device.value]
+        except KeyError:
+            raise ValueError(f"No {note.device} instrument present.")
+    playable_args = dict(instrument=instrument)
+    if issubclass(playable_type, Scheduled):
+        playable_args |= dict(schedule=schedule) 
+    args = asdict(note) | playable_args
+    return playable_type(**args)  # type: ignore
+
+
+def _note_group_to_playable(
+        element, devices, schedule,
+) -> PlayableNoteGroup:
+    """"""
+    note = cast(NoteGroup, element)
+    playable_notes = tuple(
+        _note_to_playable(n, devices, schedule)
+        for n in note.notes
     )
-    return [
-        task
-        for measure in tasks_by_measure
-        for task in measure
-    ]
+    args = asdict(note) | dict(notes=playable_notes)
+    return PlayableNoteGroup(**args)  # type: ignore
+
 
