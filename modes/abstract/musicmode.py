@@ -23,16 +23,16 @@ class MusicMode(PerformanceMode, ABC):
         tempo: int,
     ):
         """Play provided musical notation.
-           Tempo is used if no tempo is specified elsewhere."""
+           Tempo is used if no tempo is specified elsewhere.
+           Return seconds until music stops playing."""
         tempo = tempo or getattr(group, 'tempo', 0)
         if not tempo:
             raise ValueError('A tempo is required.')
         match group:
             case Piece():
                 for _group in group.groups:
-                    _delay = self._play_group(_group, delay, tempo)
-                    delay += _delay
-                    print("Section " + _group.name if isinstance(_group, Section) else "group in piece", _delay, delay)
+                    delay = self._play_group(_group, delay, tempo)
+                    print("Section " + _group.name if isinstance(_group, Section) else "group in piece", delay)
                 measures = ()
             case Section() | Part():
                 measures = group.measures
@@ -67,7 +67,7 @@ class MusicMode(PerformanceMode, ABC):
         delay = 0.0
         for group in groups:
             print("musicmode.play")
-            delay += self._play_group(group, delay, tempo)
+            delay = self._play_group(group, delay, tempo)
             # print(
             #     len(self.player.tasks), 
             #     self.player.tasks._schedule[0].action,
