@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass, field
 import logging
+from typing import Protocol
 from typing_extensions import override
 
 from instruments import Instrument, LightSet, ReleaseableInstrument
@@ -103,4 +104,20 @@ class PlayableDinNote(DinNote, PlayableReleasableNote, ABC):
         """Play note."""
         super().play(bps)
         self.schedule_release(self.duration_original / bps)
+
+
+@dataclass(frozen=True, kw_only=True)
+class MusicTask:
+    """"""
+    action: Callable
+    due: float
+
+
+class ScheduleTask(Protocol):
+    """Call signature to schedule a task."""
+    def __call__(
+        self,
+        task: MusicTask,
+    ) -> None:
+        ...
 

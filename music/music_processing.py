@@ -8,13 +8,12 @@ from typing import cast
 
 from devices.deviceset import DeviceSet
 from modes import Mode
-from .music_abstract import Scheduled
+from .music_abstract import MusicTask, Scheduled, ScheduleTask
 from .music_concrete import (
     Note, NoteGroup, Element, NOTE_CONVERSIONS,
     Part, Section, Piece, Measure, 
     PlayableMeasure, PlayableNote, PlayableNoteGroup, PlayableRest,
 )
-from task import Task, TaskSchedule
 
 
 log = logging.getLogger('marquee.' + __name__)
@@ -55,7 +54,7 @@ def play(
         delay: float, 
         tempo: int,
         devices: DeviceSet,
-        schedule: TaskSchedule,
+        schedule: ScheduleTask,
         owner: Mode,
 ) -> float:
     """Convert measures to tasks, add to task queue.
@@ -70,44 +69,62 @@ def play(
         measures, devices, schedule,
     )
     tasks = convert_measures_to_tasks(playable, bps, start, owner)
-    schedule.bulk_add(tasks)
+    print(time.time())
+    for task in tasks:
+        schedule(task)
+    print(time.time())
     return measures[0].beats * len(measures) / bps
 
 
 def _convert_note_to_playable(
     element: Element, 
     devices: DeviceSet,
-    schedule: TaskSchedule,
+    schedule: ScheduleTask,
 ) -> PlayableNote:
     """Return dict of attribute assignments."""
-    playable = NOTE_CONVERSIONS[type(element)]
-    if playable == PlayableNoteGroup:
-        note = cast(NoteGroup, element)
-        playable_notes = tuple(
-            _convert_note_to_playable(n, devices, schedule)
-            for n in note.notes
-        )
-        args = asdict(note) | dict(notes=playable_notes)
+    if type(element) == NoteGroup:
+        return _convert_note_group_to_playable(element, devices, schedule)
     else:
-        note = cast(Note, element)
-        if note.device is None:
-            instrument = None 
-        else:
-            try:
-                instrument = devices[note.device.value]
-            except KeyError:
-                raise ValueError(f"No {note.device} instrument present.")
-        playable_args = dict(instrument=instrument)
-        if issubclass(playable, Scheduled):
-            playable_args |= dict(schedule=schedule) 
-        args = asdict(note) | playable_args
-    return playable(**args)  # type: ignore
+        return _convert_single_note_to_playable(element, devices, schedule)
+
+
+def _convert_single_note_to_playable(
+    element, devices, schedule,
+) -> PlayableNote:
+    """"""
+    playable_type = NOTE_CONVERSIONS[type(element)]
+    note = cast(Note, element)
+    if note.device is None:
+        instrument = None 
+    else:
+        try:
+            instrument = devices[note.device.value]
+        except KeyError:
+            raise ValueError(f"No {note.device} instrument present.")
+    playable_args = dict(instrument=instrument)
+    if issubclass(playable_type, Scheduled):
+        playable_args |= dict(schedule=schedule) 
+    args = asdict(note) | playable_args
+    return playable_type(**args)  # type: ignore
+
+
+def _convert_note_group_to_playable(
+        element, devices, schedule,
+) -> PlayableNoteGroup:
+    """"""
+    note = cast(NoteGroup, element)
+    playable_notes = tuple(
+        _convert_note_to_playable(n, devices, schedule)
+        for n in note.notes
+    )
+    args = asdict(note) | dict(notes=playable_notes)
+    return PlayableNoteGroup(**args)  # type: ignore
 
 
 def _convert_measure_to_playable(
     measure: Measure,
     devices: DeviceSet,
-    schedule: TaskSchedule,
+    schedule: ScheduleTask,
 ) -> PlayableMeasure:
     """"""
     print(f"{measure=}")
@@ -121,7 +138,7 @@ def _convert_measure_to_playable(
 def convert_measures_to_playable(
     measures: tuple[Measure, ...], 
     devices: DeviceSet,
-    schedule: TaskSchedule,
+    schedule: ScheduleTask,
 ) -> tuple[PlayableMeasure, ...]:
 
     """"""
@@ -135,18 +152,16 @@ def _tasks_in_measure(
     measure: PlayableMeasure, 
     bps: float, 
     start: float,
-    owner: object,
-) -> list[Task]:
+) -> list[MusicTask]:
     """Return tasks for all (non-rest) notes in measure."""
     beat = 0.0 
     result = []
     for note in measure.notes:
         if not isinstance(note, PlayableRest):
             result.append(
-                Task(
-                    due = start + beat / bps,
+                MusicTask(
                     action = partial(note.play, bps),
-                    owner = owner,
+                    due = start + beat / bps,
                 )
             )
         beat += note.duration
@@ -160,14 +175,14 @@ def convert_measures_to_tasks(
     bps: float,
     start: float,
     owner: object,
-) -> list[Task]:
+) -> list[MusicTask]:
     """Return tasks for all notes in all measures.
        Begin playing at start; play at speed bps."""
     if not measures:
         return []
     duration = measures[0].beats / bps
     tasks_by_measure = (
-        _tasks_in_measure(measure, bps, start + i * duration, owner)
+        _tasks_in_measure(measure, bps, start + i * duration)
         for i, measure in enumerate(measures)
     )
     return [

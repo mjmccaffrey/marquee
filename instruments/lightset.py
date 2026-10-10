@@ -314,7 +314,7 @@ class LightSet(RelayInstrument):
         return self._brightness_factor
     
     @brightness_factor.setter
-    def brightness_factor(self, value) -> None:
+    def brightness_factor(self, value: float) -> None:
         """Set brightness_factor. Lights not adjusted."""
         assert 0 <= value <= 1.0
         self._brightness_factor = value
