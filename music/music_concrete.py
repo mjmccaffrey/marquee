@@ -226,6 +226,7 @@ class Part(Element):
 class Section(Element):
     """Musical section containing parts and meta info.
        All measures have the same number of beats."""
+    name: str
     parts: tuple[Part, ...]
     beats: int
     tempo: int = 0

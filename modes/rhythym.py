@@ -44,6 +44,7 @@ class Rhythm(MusicMode):
     def init(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
+            'init',
             drums(
                 '  |  𝅝>  |  𝄻  |  𝄻  |  𝄻  |  ',
             ),
@@ -52,6 +53,7 @@ class Rhythm(MusicMode):
     def section_a(self, bell: bool) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝅘𝅥𝅱 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀 𝅁
         return section(
+            'section_a',
             drums(
                 ' |  ♩ ♩ ♩ ♩  |  ♩> ♩ ♩ ♩  |  𝄾 ♪ ♪ ♪ ♪> ♪ ♪ ♪  |  ♩> ♩ ♩ ♩  | '
                 ' |  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  |  ♩> ♩ ♩ ♩  | '
@@ -78,6 +80,7 @@ class Rhythm(MusicMode):
     def buzzer_measure(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
+            'buzzer',
             buzzer(' |  𝄾 𝅘𝅥𝅯 𝄿   ♪ 𝄾   ♪ 𝄾   𝅘𝅥𝅯 𝄿 𝅘𝅥𝅯 𝄿  | '),
             # part(
             #     measure(
@@ -105,6 +108,7 @@ class Rhythm(MusicMode):
     def ringer_measure(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
+            'ringer',
             ringer(
                 ' |  𝅗𝅥 𝄼  | ',
             ),
@@ -118,6 +122,7 @@ class Rhythm(MusicMode):
     def section_b(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝅘𝅥𝅱 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀 𝅁
         return section(
+            'section_b',
             drums(
                 '  |  3𝅘𝅥𝅰> 3𝅘𝅥𝅰 3𝅘𝅥𝅰 3𝅘𝅥𝅰 3𝅘𝅥𝅰 3𝅘𝅥𝅰  3𝅘𝅥𝅰> 3𝅘𝅥𝅰 3𝅘𝅥𝅰 3𝅘𝅥𝅰 3𝅘𝅥𝅰 3𝅘𝅥𝅰 '
                 '     3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  '
