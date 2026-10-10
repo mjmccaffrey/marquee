@@ -50,7 +50,7 @@ class MusicMode(PerformanceMode, ABC):
     def play(
         self, 
         *groups: Piece | Section | Part | Measure,
-        tempo = 0,
+        tempo=0,
     ) -> float:
         """Play provided musical notation.
            Tempo is used if no tempo is specified elsewhere.
@@ -58,5 +58,6 @@ class MusicMode(PerformanceMode, ABC):
         delay = 0.0
         for group in groups:
             delay += self._play_group(group, delay, tempo)
+            print(len(self.player.tasks), self.player.tasks._schedule[0])
         return delay
 
