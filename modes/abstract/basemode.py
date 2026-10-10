@@ -11,7 +11,7 @@ from typing_extensions import override
 
 from schemas import (
     APICommand, BaseModeInterface, ChangeModeInterrupt, ControlName, 
-    InterruptSource,
+    EpochTime, InterruptSource,
 )
 from playerresources import PlayerResources
 from task import SeqTask, Task
@@ -110,13 +110,13 @@ class BaseMode(ABC):
         def repeater():
             """Schedule next task. Call action."""
             nonlocal _due
-            _due += due
+            _due = EpochTime(_due + due)
             push_event()
             assert action is not None
             action()
 
         due = due * self.player.speed_factor
-        _due = time.time() + due
+        _due = EpochTime(time.time() + due)
         if action is None:
             action = getattr(self, 'execute')
         _action = repeater if repeat else action

@@ -14,6 +14,7 @@ from .music_concrete import (
     Part, Section, Piece, Measure, 
     PlayableMeasure, PlayableNote, PlayableNoteGroup, PlayableRest,
 )
+from schemas import EpochTime
 
 
 log = logging.getLogger('marquee.' + __name__)
@@ -160,8 +161,8 @@ def _tasks_in_measure(
         if not isinstance(note, PlayableRest):
             result.append(
                 MusicTask(
-                    action = partial(note.play, bps),
-                    due = start + beat / bps,
+                    action=partial(note.play, bps),
+                    due=EpochTime(start + beat / bps),
                 )
             )
         beat += note.duration

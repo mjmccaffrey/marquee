@@ -6,6 +6,7 @@ import logging
 
 from .performancemode import PerformanceMode
 from music import Piece, Section, Part, Measure, MusicTask, play
+from schemas import EpochTime
 from task import Task
 
 log = logging.getLogger('marquee.' + __name__)

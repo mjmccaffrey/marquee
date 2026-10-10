@@ -4,11 +4,12 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass, field
 import logging
+import time
 from typing import Protocol
 from typing_extensions import override
 
 from instruments import Instrument, LightSet, ReleaseableInstrument
-from schemas import DeviceName
+from schemas import DeviceName, EpochTime
 
 
 log = logging.getLogger('marquee.' + __name__)
@@ -56,7 +57,7 @@ class Pitched(ABC):
 class MusicTask:
     """"""
     action: Callable
-    due: float
+    due: EpochTime
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -80,7 +81,12 @@ class PlayableReleasableNote(ReleasableNote, PlayableNote, Scheduled, ABC):
 
     def schedule_release(self, release_time: float) -> None:
         """Schedule release of played note."""
-        self.schedule(MusicTask(action=self.release, due=release_time))
+        self.schedule(
+            MusicTask(
+                action=self.release, 
+                due=EpochTime(time.time() + release_time),
+            )
+        )
 
 
 @dataclass(frozen=True, kw_only=True)

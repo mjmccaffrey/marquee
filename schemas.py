@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import auto, IntEnum, StrEnum
-from typing import Any, Callable, Protocol
+from typing import Any, Callable, NewType, Protocol
 from typing_extensions import override
 
 
@@ -159,4 +159,7 @@ class ModeDefinition:
 class ModeIndex(IntEnum):
     MODE_SELECT = 0
     DEFAULT = 1
+
+
+EpochTime = NewType("EpochTime", float)
 

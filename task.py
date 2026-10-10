@@ -7,13 +7,15 @@ import logging
 import time
 from typing_extensions import override
 
+from schemas import EpochTime
+
 log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(order=True, frozen=True, repr=False)
 class Task:
     """Scheduled task."""
-    due: float
+    due: EpochTime
     owner: object 
     action: Callable = field(compare=False)
     name: str = ''
