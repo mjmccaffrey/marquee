@@ -66,6 +66,7 @@ class MusicMode(PerformanceMode, ABC):
                 devices=self.devices,
                 schedule=self._schedule_task,
             )
+            print(f"{duration=}")
         return duration
 
     def _schedule_task(self, task: MusicTask) -> None:
