@@ -25,17 +25,13 @@ class Note(Element, ABC):
     """Base for all musical notes."""
     device: DeviceName
     duration: float = 0.0
+    duration_original: float = 0.0
 
 
 @dataclass(frozen=True, kw_only=True)
 class PlayableNote(Note, ABC):
     """Note that has necessary resources assigned."""
     instrument: Instrument
-    duration_original: float = field(init=False)
-
-    def __post_init__(self) -> None:
-        """"""
-        object.__setattr__(self, 'duration_original', self.duration)
 
     @abstractmethod
     def play(self, bps: float) -> None:
