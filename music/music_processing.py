@@ -169,6 +169,7 @@ def _tasks_in_measure(
             raise ValueError("Too many actual beats in measure.")
     for r in result:
         print(r)
+        print()
     return result
 
 
