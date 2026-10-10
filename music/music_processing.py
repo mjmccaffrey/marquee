@@ -10,9 +10,9 @@ from devices.deviceset import DeviceSet
 from modes import Mode
 from .music_abstract import Scheduled
 from .music_concrete import (
-    Note, Element, NOTE_CONVERSIONS,
+    Note, NoteGroup, Element, NOTE_CONVERSIONS,
     Part, Section, Piece, Measure, 
-    PlayableMeasure, PlayableNote, PlayableRest, 
+    PlayableMeasure, PlayableNote, PlayableNoteGroup, PlayableRest,
 )
 from task import Task, TaskSchedule
 
@@ -80,19 +80,27 @@ def _convert_note_to_playable(
     schedule: TaskSchedule,
 ) -> PlayableNote:
     """Return dict of attribute assignments."""
-    note = cast(Note, element)
-    if note.device is None:
-        instrument = None 
-    else:
-        try:
-            instrument = devices[note.device.value]
-        except KeyError:
-            raise ValueError(f"No {note.device} instrument present.")
     playable = NOTE_CONVERSIONS[type(element)]
-    playable_args = dict(instrument=instrument)
-    if issubclass(playable, Scheduled):
-        playable_args |= dict(schedule=schedule) 
-    args = asdict(note) | playable_args
+    if playable == PlayableNoteGroup:
+        note = cast(NoteGroup, element)
+        playable_notes = tuple(
+            _convert_note_to_playable(n, devices, schedule)
+            for n in note.notes
+        )
+        args = asdict(note) | dict(notes=playable_notes)
+    else:
+        note = cast(Note, element)
+        if note.device is None:
+            instrument = None 
+        else:
+            try:
+                instrument = devices[note.device.value]
+            except KeyError:
+                raise ValueError(f"No {note.device} instrument present.")
+        playable_args = dict(instrument=instrument)
+        if issubclass(playable, Scheduled):
+            playable_args |= dict(schedule=schedule) 
+        args = asdict(note) | playable_args
     return playable(**args)  # type: ignore
 
 
