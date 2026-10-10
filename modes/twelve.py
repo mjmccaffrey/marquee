@@ -20,21 +20,21 @@ class Twelve(MusicMode):
     @override
     def execute(self):
         """"""
-        # self.lights.set_channels(
-        #     on=False,
-        #     # brightness=self.brightness,
-        #     # color=Colors.WHEEL,
-        # )
+        self.lights.set_channels(
+            on=False,
+            # brightness=self.brightness,
+            # color=Colors.WHEEL,
+        )
         pygame.mixer.music.load('modes/twelve.mp3')
         pygame.mixer.music.play()
-        self.schedule(due=0.25, action=self.play)
+        self.schedule(due=0.25, action=self.perform)
 
     def perform(self):
         """Play music and lights."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         each_on = tuple(
             dict(
-                # on=True,
+                on=True,
                 brightness=100,
                 color=c,
                 transition=0.0,
