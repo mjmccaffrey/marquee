@@ -128,7 +128,7 @@ def _convert_measure_to_playable(
     schedule: ScheduleTask,
 ) -> PlayableMeasure:
     """"""
-    print(f"{measure=}")
+    # print(f"{measure=}")
     notes = tuple(
         _convert_note_to_playable(e, devices, schedule)
         for e in measure.elements
@@ -168,10 +168,10 @@ def _tasks_in_measure(
         beat += note.duration
         if beat > measure.beats:
             raise ValueError("Too many actual beats in measure.")
-    print(len(result))
-    for i, r in enumerate(result):
-        print(i, r)
-        print()
+    # print(len(result))
+    # for i, r in enumerate(result):
+    #     print(i, r)
+    #     print()
     return result
 
 
