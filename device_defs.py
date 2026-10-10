@@ -175,13 +175,13 @@ def define_devices(
                 gpiozero.Button(pin=16, bounce_time=0.05),
                 relay=create_client(light_relays, {0: 11}),
             ),
-        DeviceName.JOYSTICK:
-            Joystick(
-                name=DeviceName.JOYSTICK,
-                up=gpiozero.Button(pin=4, bounce_time=0.05),
-                down=gpiozero.Button(pin=17, bounce_time=0.05),
-                left=gpiozero.Button(pin=27, bounce_time=0.05),
-                right=gpiozero.Button(pin=22, bounce_time=0.05),
-            ),
+        # DeviceName.JOYSTICK:
+        #     Joystick(
+        #         name=DeviceName.JOYSTICK,
+        #         up=gpiozero.Button(pin=4, bounce_time=0.05),
+        #         down=gpiozero.Button(pin=17, bounce_time=0.05),
+        #         left=gpiozero.Button(pin=27, bounce_time=0.05),
+        #         right=gpiozero.Button(pin=22, bounce_time=0.05),
+        #     ),
     }
 
