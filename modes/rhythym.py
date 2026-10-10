@@ -29,9 +29,9 @@ class Rhythm(MusicMode):
         """"""
         music = piece(
             self.init(),
-            self.section_a(bell=True),
+            # self.section_a(bell=True),
             # self.section_a(bell=False),
-            # self.buzzer_measure(),
+            self.buzzer_measure(),
             # self.section_b(),
             # self.ringer_measure(),
         )
