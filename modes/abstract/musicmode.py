@@ -6,6 +6,7 @@ import logging
 
 from .performancemode import PerformanceMode
 from music import Piece, Section, Part, Measure, MusicTask, play
+from task import Task
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -44,8 +45,13 @@ class MusicMode(PerformanceMode, ABC):
 
     def _schedule_task(self, task: MusicTask) -> None:
         """"""
-        print("_schedule_task", task.due)
-        self.schedule(task.action, task.due)
+        self.player.tasks.push(
+            Task(
+                action=task.action,
+                due=task.due,
+                owner=self,
+            )
+        )
 
     def play(
         self, 
