@@ -34,7 +34,7 @@ class Twelve(MusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         each_on = tuple(
             dict(
-                on=True,
+                # on=True,
                 brightness=100,
                 color=c,
                 transition=0.0,
