@@ -116,6 +116,7 @@ class PlayableDinNote(DinNote, PlayableReleasableNote, ABC):
     def play(self, bps: float) -> None:
         """Play note."""
         super().play(bps)
+        print("PLAY DIN", self.duration_original, bps)
         self.schedule_release(self.duration_original / bps)
 
 
