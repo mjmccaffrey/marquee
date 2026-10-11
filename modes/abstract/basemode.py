@@ -38,10 +38,13 @@ class BaseMode(ABC):
     def _create_children(self) -> None:
         """Create child mode(s) specified."""
         for child in self.children:
+            mode_index=self.lookup_mode_index(child)
+            assert self.player.modes[mode_index].cls.background
             mode = self.player.create_active_mode(
                 mode_index=self.lookup_mode_index(child),
                 parent=self,
             )
+            self.player.active_modes[mode_index] = mode  # Kludge.
             print(f"Created mode {child} {mode.index} {mode.name}")
 
     @abstractmethod
