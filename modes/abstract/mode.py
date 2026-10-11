@@ -33,6 +33,7 @@ class Mode(BaseMode, ABC):
         self.drums = self.devices[DeviceName.DRUMS.value]
         self.buzzer = self.devices[DeviceName.BUZZER.value]
         self.ringer = self.devices[DeviceName.RINGER.value]
+        super().__post_init__()
 
     @override
     def close(self) -> None:
