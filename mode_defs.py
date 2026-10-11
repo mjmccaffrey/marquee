@@ -73,7 +73,7 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
         delay=1,
         wheel_divisions=4,
     )
-    exec.add_mode("twelve_reprise", Twelve,
+    exec.add_mode("twelve_reprise", Twelve, brightness=40,
         children=(
             "alarm_dive",
             "cupola_wheel_divisions", 
