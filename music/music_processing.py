@@ -124,6 +124,7 @@ def _measure_to_tasks(
     beat = 0.0 
     result = []
     for note in measure.notes:
+        print('***', note, isinstance(note, PlayableReleasedNote))
         if not isinstance(note, PlayableRest):
             play_start = start + beat / bps
             result.append(
