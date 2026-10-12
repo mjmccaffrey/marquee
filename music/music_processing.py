@@ -160,13 +160,7 @@ def _measure_to_tasks(
     beat = 0.0 
     result = []
     for note in measure.notes:
-        if isinstance(note, PlayableNoteGroup):
-            result.extend(
-                _playable_notes_to_tasks(
-                    *note.notes, bps=bps, start=start, beat=beat,
-                )
-            )
-        elif not isinstance(note, PlayableRest):
+        if not isinstance(note, PlayableRest):
             result.extend(
                 _playable_notes_to_tasks(
                     note, bps=bps, start=start, beat=beat,

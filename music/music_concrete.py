@@ -167,8 +167,9 @@ class PlayableNoteGroup(PlayableNote):
 
     @override
     def play(self) -> None:
-        """Should never be called."""
-        raise NotImplementedError
+        """Play all notes in group, not quite concurrently."""
+        for note in self.notes:
+            note.play()
 
 
 NOTE_CONVERSIONS: dict[type[Element], type[PlayableNote]] = {
