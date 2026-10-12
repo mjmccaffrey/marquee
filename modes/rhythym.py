@@ -36,15 +36,11 @@ class Rhythm(MusicMode):
             self.ringer_measure(),
         )
         delay = self.play(music, tempo=140)
-        # print("MusicMode.play returned", delay)
-        # for t in self.player.tasks._schedule:
-        #     print(t.due)
         self.lights.set_channels(brightness=0, transition=8.0)
 
     def init(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            'init',
             drums(
                 '  |  𝅝>  |  𝄻  |  𝄻  |  𝄻  |  ',
             ),
@@ -53,7 +49,6 @@ class Rhythm(MusicMode):
     def section_a(self, bell: bool) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝅘𝅥𝅱 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀 𝅁
         return section(
-            'section_a',
             drums(
                 ' |  ♩ ♩ ♩ ♩  |  ♩> ♩ ♩ ♩  |  𝄾 ♪ ♪ ♪ ♪> ♪ ♪ ♪  |  ♩> ♩ ♩ ♩  | '
                 ' |  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  |  ♩> ♩ ♩ ♩  | '
@@ -69,18 +64,11 @@ class Rhythm(MusicMode):
                 ' |  𝄻 | ' * 7 + 
                 ' |  𝄽 𝄽 𝄽 ' + ('𝅘𝅥𝅲' if bell else '𝅁')
             ),
-            # actions(
-            #     ' |  𝄻 |  ' * 7 + 
-            #     ' |  𝄽 𝄽 𝄽 𝅘𝅥𝅲 𝅘𝅥𝅲 | ',
-            #     self.ringer.play if bell else lambda: None,
-            #     self.ringer.rest if bell else lambda: None,
-            # ),
         )
 
     def buzzer_measure(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            'buzzer',
             buzzer(' |  𝄾 𝅘𝅥𝅯 𝄿   ♪ 𝄾   ♪ 𝄾   𝅘𝅥𝅯 𝄿 𝅘𝅥𝅯 𝄿  | '),
             # part(
             #     measure(
@@ -108,7 +96,6 @@ class Rhythm(MusicMode):
     def ringer_measure(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         return section(
-            'ringer',
             ringer(
                 ' |  𝅗𝅥 𝄼  | ',
             ),
@@ -122,7 +109,6 @@ class Rhythm(MusicMode):
     def section_b(self) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝅘𝅥𝅱 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀 𝅁
         return section(
-            'section_b',
             drums(
                 '  |  3𝅘𝅥𝅰> 3𝅘𝅥𝅰 3𝅘𝅥𝅰 3𝅘𝅥𝅰 3𝅘𝅥𝅰 3𝅘𝅥𝅰  3𝅘𝅥𝅰> 3𝅘𝅥𝅰 3𝅘𝅥𝅰 3𝅘𝅥𝅰 3𝅘𝅥𝅰 3𝅘𝅥𝅰 '
                 '     3𝅘𝅥𝅯> 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯 3𝅘𝅥𝅯  '

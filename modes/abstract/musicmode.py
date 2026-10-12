@@ -52,7 +52,6 @@ class MusicMode(PerformanceMode, ABC):
             case Piece():
                 for _group in group.groups:
                     duration += self._play_group(_group, delay + duration, tempo)
-                    print("Section " + _group.name if isinstance(_group, Section) else "group in piece", delay)
                 measures = ()
             case Section() | Part():
                 measures = group.measures

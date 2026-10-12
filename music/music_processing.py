@@ -30,14 +30,12 @@ def part(*measures: Measure, accent: int = 0) -> Part:
 
 
 def section(
-    name: str,
     *parts: Part,
     beats: int = 4,
     tempo: int = 60,
 ) -> Section:
     """Produce Section."""
     return Section(
-        name,
         parts, 
         beats=beats,
         tempo=tempo,
