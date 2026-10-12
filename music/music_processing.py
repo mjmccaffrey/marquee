@@ -129,19 +129,19 @@ def _measure_to_tasks(
             if beat > measure.beats:
                 raise ValueError("Too many actual beats in measure.")
         else:
-            play = start + beat / bps
+            play_start = start + beat / bps
             result.append(
                 MusicTask(
                     action=note.play,
-                    due=EpochTime(play),
+                    due=EpochTime(play_start),
                 )
             )
             if isinstance(note, PlayableReleasedNote):
-                release = note.release_time(bps=bps, play_start=play)
+                release_start = note.release_time(bps, play_start)
                 result.append(
                     MusicTask(
                         action=note.release,
-                        due=EpochTime(release),
+                        due=EpochTime(release_start),
                     )
                 )
     return result

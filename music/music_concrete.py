@@ -335,6 +335,8 @@ class Section(Element):
             beat = next_beat
         if rest_accumulated:
             elements_out.append(Rest(duration=rest_accumulated))
+        for e in elements_out:
+            print(e)
         return Measure(tuple(elements_out), beats=beats)
 
 
