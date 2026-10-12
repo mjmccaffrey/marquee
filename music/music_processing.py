@@ -11,7 +11,7 @@ from .music_concrete import (
     Note, NoteGroup, Element, NOTE_CONVERSIONS,
     Part, Section, Piece, Measure, 
     PlayableMeasure, PlayableNote, PlayableNoteGroup, 
-    PlayableRest, PlayableReleasedNote,
+    PlayableRest, PlayableReleasedNote, ReleasedNote,
 )
 from schemas import EpochTime
 
@@ -121,7 +121,7 @@ def _note_group_to_playable(element, devices) -> PlayableNoteGroup:
     """"""
     note = cast(NoteGroup, element)
     assert not any(
-        isinstance(n, PlayableReleasedNote)
+        isinstance(n, ReleasedNote)
         for n in note.notes
     )
     playable_notes = tuple(
@@ -197,9 +197,6 @@ def _playable_notes_to_tasks(
         )
         if isinstance(note, PlayableReleasedNote):
             release_start = note.release_time(bps, play_start)
-            print()
-            print(f"{note=} {play_start=} {release_start=}")
-            print()
             result.append(
                 MusicTask(
                     action=note.release,
