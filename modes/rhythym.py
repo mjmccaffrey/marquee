@@ -52,6 +52,10 @@ class Rhythm(MusicMode):
 
     def section_a(self, bell: bool) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝅘𝅥𝅱 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀 𝅁
+        print(            ringer(
+                ' |  𝅗𝅥 𝄼  | ',
+            )
+        )
         return section(
             'section_a',
             ringer(
