@@ -54,6 +54,10 @@ class Rhythm(MusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝅘𝅥𝅱 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀 𝅁
         return section(
             'section_a',
+            ringer(
+                ' |  𝄻 | ' * 7 + '  𝄽 𝄽 𝅗𝅥  | '
+#                 ' |  𝄽 𝄽 𝄽 ' + ('𝅘𝅥𝅲' if bell else '𝅁') + ' | '
+            ),
             drums(
                 ' |  ♩ ♩ ♩ ♩  |  ♩> ♩ ♩ ♩  |  𝄾 ♪ ♪ ♪ ♪> ♪ ♪ ♪  |  ♩> ♩ ♩ ♩  | '
                 ' |  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  |  ♩> ♩ ♩ ♩  | '
@@ -64,10 +68,6 @@ class Rhythm(MusicMode):
             lights(
                 ' |  ♩  | ' * 8,
                 *[self.random_color() for _ in range(8)]
-            ),
-            ringer(
-                ' |  𝄻 | ' * 7 + '  𝄽 𝄽 𝅗𝅥  | '
-#                 ' |  𝄽 𝄽 𝄽 ' + ('𝅘𝅥𝅲' if bell else '𝅁') + ' | '
             ),
             # actions(
             #     ' |  𝄻 |  ' * 7 + 
