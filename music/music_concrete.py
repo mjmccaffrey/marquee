@@ -167,10 +167,8 @@ class PlayableNoteGroup(PlayableNote):
 
     @override
     def play(self) -> None:
-        """Play all notes in group, not quite concurrently."""
-        # print(f"{self.notes=}")
-        for note in self.notes:
-            note.play()
+        """Should never be called."""
+        raise NotImplementedError
 
 
 NOTE_CONVERSIONS: dict[type[Element], type[PlayableNote]] = {
@@ -282,8 +280,7 @@ class Section(Element):
         beat: float,
     ) -> Note | None:
         """Return all notes occuring on beat; 
-        multiple notes as NoteGroup,
-        a single note, or None."""
+        multiple notes as a NoteGroup, a single note, or None."""
         concurrent = []
         for i in range(len(elements_in)):
             if beat_next[i] == beat:

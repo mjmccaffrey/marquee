@@ -95,6 +95,41 @@ def _measure_to_playable(
     return PlayableMeasure(notes=notes, beats=measure.beats)
 
 
+def _note_to_playable(element: Element, devices: DeviceSet) -> PlayableNote:
+    """Return dict of attribute assignments."""
+    if type(element) == NoteGroup:
+        return _note_group_to_playable(element, devices)
+    else:
+        return _single_note_to_playable(element, devices)
+
+
+def _single_note_to_playable(element, devices) -> PlayableNote:
+    """"""
+    playable_type = NOTE_CONVERSIONS[type(element)]
+    note = cast(Note, element)
+    if note.device is None:
+        instrument = None 
+    else:
+        try:
+            instrument = devices[note.device.value]
+        except KeyError:
+            raise ValueError(f"No {note.device} instrument present.")
+    playable_args = dict(instrument=instrument)
+    args = asdict(note) | playable_args
+    return playable_type(**args)  # type: ignore
+
+
+def _note_group_to_playable(element, devices) -> PlayableNoteGroup:
+    """"""
+    note = cast(NoteGroup, element)
+    playable_notes = tuple(
+        _single_note_to_playable(n, devices)
+        for n in note.notes
+    )
+    args = asdict(note) | dict(notes=playable_notes)
+    return PlayableNoteGroup(**args)  # type: ignore
+
+
 def _measures_to_tasks(
     measures: tuple[PlayableMeasure, ...], 
     bps: float,
@@ -115,6 +150,7 @@ def _measures_to_tasks(
         for task in measure
     ]
 
+
 def _measure_to_tasks(
     measure: PlayableMeasure, 
     bps: float, 
@@ -124,71 +160,51 @@ def _measure_to_tasks(
     beat = 0.0 
     result = []
     for note in measure.notes:
-        print('***', note, isinstance(note, PlayableReleasedNote))
-        if not isinstance(note, PlayableRest):
-            play_start = start + beat / bps
-            result.append(
-                MusicTask(
-                    action=note.play,
-                    due=EpochTime(play_start),
+        if isinstance(note, PlayableNoteGroup):
+            result.extend(
+                _playable_notes_to_tasks(
+                    *note.notes, bps=bps, start=start, beat=beat,
                 )
             )
-            if isinstance(note, PlayableReleasedNote):
-                release_start = note.release_time(bps, play_start)
-                print()
-                print(f"{note=} {play_start=} {release_start=}")
-                print()
-                result.append(
-                    MusicTask(
-                        action=note.release,
-                        due=EpochTime(release_start),
-                    )
+        elif not isinstance(note, PlayableRest):
+            result.extend(
+                _playable_notes_to_tasks(
+                    note, bps=bps, start=start, beat=beat,
                 )
+            )
         beat += note.duration
         if beat > measure.beats:
             raise ValueError("Too many actual beats in measure.")
     return result
 
 
-def _note_to_playable(
-    element: Element, 
-    devices: DeviceSet,
-) -> PlayableNote:
-    """Return dict of attribute assignments."""
-    if type(element) == NoteGroup:
-        return _note_group_to_playable(element, devices)
-    else:
-        return _single_note_to_playable(element, devices)
-
-
-def _single_note_to_playable(
-    element, devices,
-) -> PlayableNote:
+def _playable_notes_to_tasks(
+    *notes: PlayableNote, 
+    bps: float, 
+    start: float, 
+    beat: float,
+) -> list[MusicTask]:
     """"""
-    playable_type = NOTE_CONVERSIONS[type(element)]
-    note = cast(Note, element)
-    if note.device is None:
-        instrument = None 
-    else:
-        try:
-            instrument = devices[note.device.value]
-        except KeyError:
-            raise ValueError(f"No {note.device} instrument present.")
-    playable_args = dict(instrument=instrument)
-    args = asdict(note) | playable_args
-    return playable_type(**args)  # type: ignore
-
-
-def _note_group_to_playable(
-        element, devices,
-) -> PlayableNoteGroup:
-    """"""
-    note = cast(NoteGroup, element)
-    playable_notes = tuple(
-        _note_to_playable(n, devices)
-        for n in note.notes
-    )
-    args = asdict(note) | dict(notes=playable_notes)
-    return PlayableNoteGroup(**args)  # type: ignore
-
+    result = []
+    for note in notes:
+        # Note is not a rest
+        play_start = start + beat / bps
+        result.append(
+            MusicTask(
+                action=note.play,
+                due=EpochTime(play_start),
+            )
+        )
+        if isinstance(note, PlayableReleasedNote):
+            release_start = note.release_time(bps, play_start)
+            print()
+            print(f"{note=} {play_start=} {release_start=}")
+            print()
+            result.append(
+                MusicTask(
+                    action=note.release,
+                    due=EpochTime(release_start),
+                )
+            )
+    return result
 

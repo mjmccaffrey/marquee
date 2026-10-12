@@ -30,10 +30,10 @@ class Rhythm(MusicMode):
         music = piece(
             self.init(),
             self.section_a(bell=True),
-            # self.section_a(bell=False),
-            # self.buzzer_measure(),
-            # self.section_b(),
-            # self.ringer_measure(),
+            self.section_a(bell=False),
+            self.buzzer_measure(),
+            self.section_b(),
+            self.ringer_measure(),
         )
         delay = self.play(music, tempo=140)
         # print("MusicMode.play returned", delay)
@@ -52,15 +52,8 @@ class Rhythm(MusicMode):
 
     def section_a(self, bell: bool) -> Section:
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝅘𝅥𝅱 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀 𝅁
-        print(            ringer(
-                ' |  𝅗𝅥 𝄼  | ',
-            )
-        )
         return section(
             'section_a',
-            ringer(
-                ' |  𝅗𝅥 𝄼  | ',
-            ),
             drums(
                 ' |  ♩ ♩ ♩ ♩  |  ♩> ♩ ♩ ♩  |  𝄾 ♪ ♪ ♪ ♪> ♪ ♪ ♪  |  ♩> ♩ ♩ ♩  | '
                 ' |  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  3♪> 3♪ 3♪  |  ♩> ♩ ♩ ♩  | '
@@ -71,6 +64,10 @@ class Rhythm(MusicMode):
             lights(
                 ' |  ♩  | ' * 8,
                 *[self.random_color() for _ in range(8)]
+            ),
+            ringer(
+                ' |  𝄻 | ' * 7 + 
+                ' |  𝄽 𝄽 𝄽 ' + ('𝅘𝅥𝅲' if bell else '𝅁')
             ),
             # actions(
             #     ' |  𝄻 |  ' * 7 + 
