@@ -66,8 +66,7 @@ class Rhythm(MusicMode):
                 *[self.random_color() for _ in range(8)]
             ),
             ringer(
-                ' |  𝄻 | ' * 7 + 
-                ' |  𝄽 𝄽 𝅗𝅥  | '
+                ' |  𝄻 | ' * 7 + '  𝄽 𝄽 𝅗𝅥  | '
 #                 ' |  𝄽 𝄽 𝄽 ' + ('𝅘𝅥𝅲' if bell else '𝅁') + ' | '
             ),
             # actions(
