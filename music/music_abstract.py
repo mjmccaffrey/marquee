@@ -110,7 +110,7 @@ class PlayableDinNote(DinNote, PlayableReleasedNote, ABC):
         # Duration is in .duration_original for notes in Sections,
         # and in .duration otherwise.
         duration = max(self.duration, self.duration_original)
-        return play_start + self.duration / bps
+        return play_start + duration / bps
 
 
 class ScheduleTask(Protocol):
