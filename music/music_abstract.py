@@ -32,6 +32,7 @@ class Note(Element, ABC):
     """Base for all musical notes."""
     device: DeviceName
     duration: float = 0.0
+    duration_original: float = 0.0
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -105,6 +106,10 @@ class PlayableDinNote(DinNote, PlayableReleasedNote, ABC):
     @override
     def release_time(self, bps: float, play_start: float) -> float:
         """"""
+        # Kludge.
+        # Duration is in .duration_original for notes in Sections,
+        # and in .duration otherwise.
+        duration = max(self.duration, self.duration_original)
         return play_start + self.duration / bps
 
 

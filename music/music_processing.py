@@ -124,11 +124,7 @@ def _measure_to_tasks(
     beat = 0.0 
     result = []
     for note in measure.notes:
-        if isinstance(note, PlayableRest):
-            beat += note.duration
-            if beat > measure.beats:
-                raise ValueError("Too many actual beats in measure.")
-        else:
+        if not isinstance(note, PlayableRest):
             play_start = start + beat / bps
             result.append(
                 MusicTask(
@@ -144,6 +140,9 @@ def _measure_to_tasks(
                         due=EpochTime(release_start),
                     )
                 )
+        beat += note.duration
+        if beat > measure.beats:
+            raise ValueError("Too many actual beats in measure.")
     return result
 
 

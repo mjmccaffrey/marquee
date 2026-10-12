@@ -294,13 +294,13 @@ class Section(Element):
                     assert isinstance(element, Note)
                     beat_next[i] = beat + element.duration
                     if not isinstance(element, Rest):
-                        concurrent.append(element)
-                        #     replace(
-                        #         element, 
-                        #         duration=0.0, 
-                        #         duration_original=element.duration,
-                        #     )
-                        # )
+                        concurrent.append(
+                            replace(
+                                element, 
+                                duration=0.0, 
+                                duration_original=element.duration,
+                            )
+                        )
         if len(concurrent) > 1:
             return NoteGroup(notes=tuple(concurrent))
         elif len(concurrent) == 1:
@@ -335,8 +335,6 @@ class Section(Element):
             beat = next_beat
         if rest_accumulated:
             elements_out.append(Rest(duration=rest_accumulated))
-        for e in elements_out:
-            print(e)
         return Measure(tuple(elements_out), beats=beats)
 
 
