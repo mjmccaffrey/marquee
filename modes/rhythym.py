@@ -67,7 +67,7 @@ class Rhythm(MusicMode):
             ),
             ringer(
                 ' |  𝄻 | ' * 7 + 
-                ' |  𝄽 𝄽 𝄽 𝅘𝅥𝅲  | '
+                ' |  𝄽 𝄽 𝅗𝅥  | '
 #                 ' |  𝄽 𝄽 𝄽 ' + ('𝅘𝅥𝅲' if bell else '𝅁') + ' | '
             ),
             # actions(
