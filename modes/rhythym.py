@@ -55,8 +55,7 @@ class Rhythm(MusicMode):
         return section(
             'section_a',
             ringer(
-                ' |  𝄻 | ' * 7 + '  𝄽 𝄽 𝅗𝅥  | '
-#                 ' |  𝄽 𝄽 𝄽 ' + ('𝅘𝅥𝅲' if bell else '𝅁') + ' | '
+                ' |  𝅗𝅥 𝄼  | ',
             ),
             drums(
                 ' |  ♩ ♩ ♩ ♩  |  ♩> ♩ ♩ ♩  |  𝄾 ♪ ♪ ♪ ♪> ♪ ♪ ♪  |  ♩> ♩ ♩ ♩  | '
