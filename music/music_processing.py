@@ -85,7 +85,6 @@ def _measure_to_playable(
     devices: DeviceSet,
 ) -> PlayableMeasure:
     """"""
-    # print(f"{measure=}")
     notes = tuple(
         _note_to_playable(e, devices)
         for e in measure.elements
@@ -128,10 +127,6 @@ def _note_group_to_playable(element, devices) -> PlayableNoteGroup:
         _single_note_to_playable(n, devices)
         for n in note.notes
     )
-    print()
-    for n in note.notes:
-        print(n)
-    print()
     args = asdict(note) | dict(notes=playable_notes)
     return PlayableNoteGroup(**args)  # type: ignore
 
