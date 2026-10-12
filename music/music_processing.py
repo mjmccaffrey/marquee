@@ -120,10 +120,18 @@ def _single_note_to_playable(element, devices) -> PlayableNote:
 def _note_group_to_playable(element, devices) -> PlayableNoteGroup:
     """"""
     note = cast(NoteGroup, element)
+    assert not any(
+        isinstance(n, PlayableReleasedNote)
+        for n in note.notes
+    )
     playable_notes = tuple(
         _single_note_to_playable(n, devices)
         for n in note.notes
     )
+    print()
+    for n in note.notes:
+        print(n)
+    print()
     args = asdict(note) | dict(notes=playable_notes)
     return PlayableNoteGroup(**args)  # type: ignore
 
