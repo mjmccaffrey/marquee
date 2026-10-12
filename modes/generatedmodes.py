@@ -48,6 +48,7 @@ class GeneratedModes(RandomFade):
                 ),
             ),
             parent=self,
+            record=False,
         )
         self.schedule(mode.execute, light_index * 2)
         return mode

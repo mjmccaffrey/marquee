@@ -74,21 +74,26 @@ class Player:
         mode_index: int | None = None,
         mode_definition: ModeDefinition | None = None,
         parent: BaseModeInterface | None = None,
-    ) -> Mode:
-        """Return a new mode instance.
-           Does not update self.active_modes."""
-        assert (mode_index is None) ^ (mode_definition is None)
-        definition = mode_definition or self.modes[cast(int, mode_index)]
-        _kwargs: dict[str, Any] = dict(
-            index=definition.index,
-            name=definition.name, 
-            serial=next(self._mode_serial),
-            player=self,
-            parent=parent,
-            devices=self.devices,
-            speed_factor=self.speed_factor,
-            ) | definition.kwargs
-        return definition.cls(**_kwargs)  # type: ignore
+        record: bool = True,
+    ) -> BaseModeInterface:
+        """Create new mode instance, clean up old, etc."""
+        new_mode = self._create_mode_instance(
+            mode_index, mode_definition, parent,
+        )
+        if record:
+            if new_mode.background:
+                # If bg mode of same type already present, delete it.
+                if new_mode.index in self.active_modes:
+                    self.delete_active_mode(new_mode.index)
+            else:
+                # If another fg mode already present, delete it.
+                modes = self.active_modes.values()
+                fg_mode = [m for m in modes if not m.background]
+                if fg_mode:
+                    self.delete_active_mode(fg_mode[0].index)
+            self.active_modes[new_mode.index] = new_mode
+        print(f'Created new active mode {new_mode.name}')
+        return new_mode
 
     def delete_active_mode(self, mode_index: int) -> None:
         """Delete the instance of mode_index, along
@@ -104,10 +109,10 @@ class Player:
         del self.active_modes[mode_index]
         self.tasks.delete_owned_by(mode)
 
-    def execute(self, starting_mode_index: int) -> bool:
+    def execute(self, mode_index: int) -> bool:
         """Main event loop.  Return whether to shut down 
            the system, or to just exit."""
-        self._effect_new_mode(starting_mode_index)
+        self.create_active_mode(mode_index).execute()
         try:
             while True:
                 try:
@@ -157,23 +162,26 @@ class Player:
         else:
             return True
 
-    def _effect_new_mode(self, mode_index: int):
-        """Create new mode instance, clean up old, etc."""
-        # Create new mode instance
-        new_mode = self.create_active_mode(mode_index)
-        if new_mode.background:
-            # If bg mode of same type already present, delete it.
-            if new_mode.index in self.active_modes:
-                self.delete_active_mode(new_mode.index)
-        else:
-            # If any fg mode already present, delete it.
-            modes = self.active_modes.values()
-            fg_mode = [m for m in modes if not m.background]
-            if fg_mode:
-                self.delete_active_mode(fg_mode[0].index)
-        self.active_modes[new_mode.index] = new_mode
-        print(f'Effected new active mode {new_mode.name.upper()}')
-        new_mode.execute()
+    def _create_mode_instance(
+        self, 
+        mode_index: int | None,
+        mode_definition: ModeDefinition | None,
+        parent: BaseModeInterface | None,
+    ) -> Mode:
+        """Return a new mode instance.
+           Does not update self.active_modes."""
+        assert (mode_index is None) ^ (mode_definition is None)
+        definition = mode_definition or self.modes[cast(int, mode_index)]
+        _kwargs: dict[str, Any] = dict(
+            index=definition.index,
+            name=definition.name, 
+            serial=next(self._mode_serial),
+            player=self,
+            parent=parent,
+            devices=self.devices,
+            speed_factor=self.speed_factor,
+            ) | definition.kwargs
+        return definition.cls(**_kwargs)  # type: ignore
 
     def _handle_interrupt(self, it: Interrupt) -> None:
         """"""
@@ -182,7 +190,7 @@ class Player:
             case CommandInterrupt():
                 self._send_api_command(it)
             case ChangeModeInterrupt():
-                self._effect_new_mode(it.mode_index)
+                self.create_active_mode(it.mode_index).execute()
             case ControlInterrupt():
                 # with suppress(ControlInterrupt):
                 if it.action == ControlAction.BUTTON_HELD:

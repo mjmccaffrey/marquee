@@ -7,11 +7,11 @@ from typing_extensions import override
 
 from instruments import BellSet, Buzzer, DrumSet, Ringer
 from .music_abstract import (
-    Element, Note, Accented, Pitched,
-    PlayableNote, ReleasableNote, PlayableReleasableNote,
+    Element, Note, Accented, Pitched, MusicTask,
+    PlayableNote, ReleasedNote, PlayableReleasedNote,
     DinNote, PlayableDinNote, LightNote, PlayableLightNote,
 )
-from schemas import DeviceName
+from schemas import DeviceName, EpochTime
 
 
 log = logging.getLogger('marquee.' + __name__)
@@ -29,7 +29,7 @@ class PlayableRest(Rest, PlayableNote):
     instrument: None = None
 
     @override
-    def play(self, bps: float) -> None:
+    def play(self) -> None:
         """Play single rest (do nothing)."""
         raise RuntimeError("PLAYING REST")
 
@@ -47,32 +47,36 @@ class PlayableActionNote(ActionNote, PlayableNote):
     instrument: None = None
 
     @override
-    def play(self, bps: float) -> None:
+    def play(self) -> None:
         """Play single ActionNote."""
         self.action()
 
 
 @dataclass(frozen=True, kw_only=True)
-class BellNote(ReleasableNote, Pitched):
+class BellNote(ReleasedNote, Pitched):
     """Note to strike and release 1 or more bells."""
     device: DeviceName = DeviceName.BELLS
 
 
 @dataclass(frozen=True, kw_only=True)
-class PlayableBellNote(BellNote, PlayableReleasableNote):
+class PlayableBellNote(BellNote, PlayableReleasedNote):
     """Note to strike and release 1 or more bells."""
     instrument: BellSet
 
     @override
-    def play(self, bps: float) -> None:
+    def play(self) -> None:
         """Play BellNote."""
         self.instrument.play(self.pitches)
-        self.schedule_release(self.instrument.release_time)
 
     @override
     def release(self) -> None:
         """Release BellNote."""
         self.instrument.release(self.pitches)
+
+    @override
+    def release_time(self, bps: float, play_start: float) -> float:
+        """"""
+        return play_start + self.instrument.release_time
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -87,7 +91,7 @@ class PlayableDrumNote(DrumNote, PlayableNote):
     instrument: DrumSet
 
     @override
-    def play(self, bps: float) -> None:
+    def play(self) -> None:
         """Play DrumNote."""
         self.instrument.play(self.accent, self.pitches)
 
@@ -102,7 +106,7 @@ class PlayableLightChannelNote(PlayableLightNote):
     """Note to execute light channel actions."""
 
     @override
-    def play(self, bps: float) -> None:
+    def play(self) -> None:
         """Play single LightChannelNote."""
         if self.kwargs:
             self.instrument.set_channels(**self.kwargs)
@@ -118,7 +122,7 @@ class PlayableLightRelayNote(PlayableLightNote):
     """Note to execute light relay actions."""
 
     @override
-    def play(self, bps: float) -> None:
+    def play(self) -> None:
         """Play single LightRelayNote."""
         if self.kwargs:
             self.instrument.set_relays(**self.kwargs)
@@ -162,11 +166,11 @@ class PlayableNoteGroup(PlayableNote):
     notes: tuple[PlayableNote, ...]
 
     @override
-    def play(self, bps: float) -> None:
+    def play(self) -> None:
         """Play all notes in group, not quite concurrently."""
         # print(f"{self.notes=}")
         for note in self.notes:
-            note.play(bps)
+            note.play()
 
 
 NOTE_CONVERSIONS: dict[type[Element], type[PlayableNote]] = {
@@ -290,13 +294,13 @@ class Section(Element):
                     assert isinstance(element, Note)
                     beat_next[i] = beat + element.duration
                     if not isinstance(element, Rest):
-                        concurrent.append(
-                            replace(
-                                element, 
-                                duration=0.0, 
-                                duration_original=element.duration,
-                            )
-                        )
+                        concurrent.append(element)
+                        #     replace(
+                        #         element, 
+                        #         duration=0.0, 
+                        #         duration_original=element.duration,
+                        #     )
+                        # )
         if len(concurrent) > 1:
             return NoteGroup(notes=tuple(concurrent))
         elif len(concurrent) == 1:

@@ -30,6 +30,7 @@ class PlayerResources(Protocol):
         mode_index: int | None = None,
         mode_definition: ModeDefinition | None = None,
         parent: BaseModeInterface | None = None,
+        record: bool = True,
     ) -> BaseModeInterface: ...
 
     def delete_active_mode(self, mode_index: int) -> None: ...

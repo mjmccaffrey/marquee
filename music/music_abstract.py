@@ -16,6 +16,13 @@ log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(frozen=True, kw_only=True)
+class MusicTask:
+    """"""
+    action: Callable
+    due: EpochTime
+
+
+@dataclass(frozen=True, kw_only=True)
 class Element(ABC):
     """Base for all musical items."""
 
@@ -25,7 +32,6 @@ class Note(Element, ABC):
     """Base for all musical notes."""
     device: DeviceName
     duration: float = 0.0
-    duration_original: float = 0.0
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -34,7 +40,7 @@ class PlayableNote(Note, ABC):
     instrument: Instrument
 
     @abstractmethod
-    def play(self, bps: float) -> None:
+    def play(self) -> None:
         """Play single Note."""
         self.instrument.play()
 
@@ -50,24 +56,12 @@ class Pitched(ABC):
 
 
 @dataclass(frozen=True, kw_only=True)
-class MusicTask:
-    """"""
-    action: Callable
-    due: EpochTime
-
-
-@dataclass(frozen=True, kw_only=True)
-class Scheduled(ABC):
-    schedule: Callable[[MusicTask], None]
-
-
-@dataclass(frozen=True, kw_only=True)
-class ReleasableNote(Note, ABC):
+class ReleasedNote(Note, ABC):
     """Note that involves releasing after playing."""
 
 
 @dataclass(frozen=True, kw_only=True)
-class PlayableReleasableNote(ReleasableNote, PlayableNote, Scheduled, ABC):
+class PlayableReleasedNote(ReleasedNote, PlayableNote, ABC):
     """Note that involves releasing after playing."""
     instrument: ReleaseableInstrument
 
@@ -75,15 +69,10 @@ class PlayableReleasableNote(ReleasableNote, PlayableNote, Scheduled, ABC):
         """Release note."""
         self.instrument.release()
 
-    def schedule_release(self, release_time: float) -> None:
-        """Schedule release of played note."""
-        self.schedule(
-            MusicTask(
-                action=self.release, 
-                due=EpochTime(time.time() + release_time),
-            )
-        )
-        print("SCHEDULE RELEASE", time.time(), release_time)
+    @abstractmethod
+    def release_time(cls, bps: float, play_start: float) -> float:
+        """"""
+
 
 @dataclass(frozen=True, kw_only=True)
 class LightNote(Note, ABC):
@@ -99,21 +88,24 @@ class PlayableLightNote(LightNote, PlayableNote, ABC):
 
 
 @dataclass(frozen=True, kw_only=True)
-class DinNote(ReleasableNote, ABC):
+class DinNote(ReleasedNote, ABC):
     """Note to play and rest a buzzer, ringer, etc."""
     device: DeviceName = field(init=False)
 
 
 @dataclass(frozen=True, kw_only=True)
-class PlayableDinNote(DinNote, PlayableReleasableNote, ABC):
+class PlayableDinNote(DinNote, PlayableReleasedNote, ABC):
     """Note to play and rest a buzzer, ringer, etc."""
 
     @override
-    def play(self, bps: float) -> None:
+    def play(self) -> None:
         """Play note."""
-        super().play(bps)
-        print("PLAY DIN", self.duration_original, bps)
-        self.schedule_release(self.duration_original / bps)
+        super().play()
+
+    @override
+    def release_time(self, bps: float, play_start: float) -> float:
+        """"""
+        return play_start + self.duration / bps
 
 
 class ScheduleTask(Protocol):

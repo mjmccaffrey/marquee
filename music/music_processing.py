@@ -1,18 +1,17 @@
 """Marquee Lighted Sign Project - music_processing"""
 
 from dataclasses import asdict
-from functools import partial
 import logging
 import time
 from typing import cast
 
 from devices.deviceset import DeviceSet
-from modes import Mode
-from .music_abstract import MusicTask, Scheduled, ScheduleTask
+from .music_abstract import MusicTask, ScheduleTask
 from .music_concrete import (
     Note, NoteGroup, Element, NOTE_CONVERSIONS,
     Part, Section, Piece, Measure, 
-    PlayableMeasure, PlayableNote, PlayableNoteGroup, PlayableRest,
+    PlayableMeasure, PlayableNote, PlayableNoteGroup, 
+    PlayableRest, PlayableReleasedNote,
 )
 from schemas import EpochTime
 
@@ -65,7 +64,7 @@ def play_measures(
         return 0.0
     bps = tempo / 60
     start = time.time() + delay
-    playable = _measures_to_playable(measures, devices, schedule)
+    playable = _measures_to_playable(measures, devices)
     tasks = _measures_to_tasks(playable, bps, start)
     for task in tasks:
         schedule(task)
@@ -75,11 +74,10 @@ def play_measures(
 def _measures_to_playable(
     measures: tuple[Measure, ...], 
     devices: DeviceSet,
-    schedule: ScheduleTask,
 ) -> tuple[PlayableMeasure, ...]:
     """"""
     return tuple(
-        _measure_to_playable(measure, devices, schedule)
+        _measure_to_playable(measure, devices)
         for measure in measures
     )
 
@@ -87,12 +85,11 @@ def _measures_to_playable(
 def _measure_to_playable(
     measure: Measure,
     devices: DeviceSet,
-    schedule: ScheduleTask,
 ) -> PlayableMeasure:
     """"""
     # print(f"{measure=}")
     notes = tuple(
-        _note_to_playable(e, devices, schedule)
+        _note_to_playable(e, devices)
         for e in measure.elements
     )
     return PlayableMeasure(notes=notes, beats=measure.beats)
@@ -127,37 +124,42 @@ def _measure_to_tasks(
     beat = 0.0 
     result = []
     for note in measure.notes:
-        if not isinstance(note, PlayableRest):
+        if isinstance(note, PlayableRest):
+            beat += note.duration
+            if beat > measure.beats:
+                raise ValueError("Too many actual beats in measure.")
+        else:
+            play = start + beat / bps
             result.append(
                 MusicTask(
-                    action=partial(note.play, bps),
-                    due=EpochTime(start + beat / bps),
+                    action=note.play,
+                    due=EpochTime(play),
                 )
             )
-        beat += note.duration
-        if beat > measure.beats:
-            raise ValueError("Too many actual beats in measure.")
-    # print(len(result))
-    # for i, r in enumerate(result):
-    #     print(i, r)
-    #     print()
+            if isinstance(note, PlayableReleasedNote):
+                release = note.release_time(bps=bps, play_start=play)
+                result.append(
+                    MusicTask(
+                        action=note.release,
+                        due=EpochTime(release),
+                    )
+                )
     return result
 
 
 def _note_to_playable(
     element: Element, 
     devices: DeviceSet,
-    schedule: ScheduleTask,
 ) -> PlayableNote:
     """Return dict of attribute assignments."""
     if type(element) == NoteGroup:
-        return _note_group_to_playable(element, devices, schedule)
+        return _note_group_to_playable(element, devices)
     else:
-        return _single_note_to_playable(element, devices, schedule)
+        return _single_note_to_playable(element, devices)
 
 
 def _single_note_to_playable(
-    element, devices, schedule,
+    element, devices,
 ) -> PlayableNote:
     """"""
     playable_type = NOTE_CONVERSIONS[type(element)]
@@ -170,19 +172,17 @@ def _single_note_to_playable(
         except KeyError:
             raise ValueError(f"No {note.device} instrument present.")
     playable_args = dict(instrument=instrument)
-    if issubclass(playable_type, Scheduled):
-        playable_args |= dict(schedule=schedule) 
     args = asdict(note) | playable_args
     return playable_type(**args)  # type: ignore
 
 
 def _note_group_to_playable(
-        element, devices, schedule,
+        element, devices,
 ) -> PlayableNoteGroup:
     """"""
     note = cast(NoteGroup, element)
     playable_notes = tuple(
-        _note_to_playable(n, devices, schedule)
+        _note_to_playable(n, devices)
         for n in note.notes
     )
     args = asdict(note) | dict(notes=playable_notes)

@@ -3,10 +3,9 @@
 from abc import ABC
 from dataclasses import dataclass
 import logging
-from typing import cast
 from typing_extensions import override
 
-from .mode import BaseMode, Mode
+from .mode import Mode
 from ..structural.sequencemode import SequenceMode
 from ..structural.sequences import rotate_build_flip
 from schemas import ControlName, DeviceName, ModeDefinition
@@ -79,6 +78,7 @@ class SelectMode(Mode, ABC):
                     ),
                 ),
                 parent=self,
+                record=False,
             )
             self.schedule(counter.execute)
             self.previous_desired = self.desired

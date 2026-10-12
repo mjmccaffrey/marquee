@@ -44,7 +44,7 @@ class BaseMode(ABC):
                 mode_index=self.lookup_mode_index(child),
                 parent=self,
             )
-            self.player.active_modes[mode_index] = mode  # Kludge.
+            self.schedule(mode.execute)
             print(f"Created mode {child} {mode.index} {mode.name}")
 
     @abstractmethod

@@ -78,6 +78,7 @@ class ColorSetDynamic(ColorSetMode):
                 kwargs=kwargs,
             ),
             parent=self,
+            record=False,
         )
         self.schedule(mode.execute)
 
