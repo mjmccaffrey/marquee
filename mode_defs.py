@@ -43,8 +43,13 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
         sequence=[
             ("rotate_sides_emulate", 60),
             ("even_odd_fade", 60),
+            ("comet_violet", 60),
             ("signs", 60),
+
+
             ("color_sets_presentation", 60),
+
+
             ("twelve", 60),
             ("rhythm", 60),
             ("twelve_reprise", 60),
@@ -85,7 +90,7 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
 
 
 def register_pyohio_2026_sign_modes(exec: Executor) -> None:
-    """PyOhio 2026 presentation."""
+    """PyOhio 2026 sign modes."""
     exec.add_mode("comet_violet", Comet,
         length=4,
         delay=0.1875,
@@ -151,10 +156,19 @@ def register_channel_modes(exec: Executor):
     )
     exec.add_mode("color_sets_presentation", ColorSetStatic,
         sequence=[
-            # ("vibrant", 5),
-            ("lush", 255),
+            ("honolulu", 255),
+            ("soho", 255),
+            ("blue_planet", 255),
+            ("orange_fields", 255),
+            ("chinatown", 255),
+            ("rio", 255),
+            ("tokyo", 255),
+            ("spring_blossom", 255),
+            ("bahrain", 255),
             ("cancun", 255),
-            ("party", 255),
+            ("arctic_aurora", 255),
+            ("fuschia_frost", 255),
+            ("winter_beauty", 255),
         ],
         transition=1.0,
     )

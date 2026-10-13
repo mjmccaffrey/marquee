@@ -211,7 +211,7 @@ class Player:
            followed by foreground mode instance if it exists."""
         print(f"{len(self.active_modes)=}")
         return sorted(
-            self.active_modes.values(), key=lambda m: not m.background,
+            self.active_modes.values(), key=lambda m: m.background,
         )
 
     def _send_api_command(self, it: CommandInterrupt) -> None:
