@@ -62,7 +62,7 @@ class AlarmDive(InterruptMode):
     @override
     def control_action(self, control: ControlName) -> bool:
         """Respond to control action and return True."""
-        if control == ControlName.BUTTON_CORDED_B:
+        if control == ControlName.BUTTON_CORDED_A:
             self.schedule(self.execute_interrupt)
             return True
         return super().control_action(control)

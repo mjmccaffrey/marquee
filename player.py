@@ -104,7 +104,7 @@ class Player:
             if instance.parent == mode:
                 self.delete_active_mode(instance.index)
         # Delete specified.
-        print(f'Deleting mode {mode.name} with parent {mode.parent}')
+        # print(f'Deleting mode {mode.name} with parent {mode.parent}')
         mode.close()
         del self.active_modes[mode_index]
         self.tasks.delete_owned_by(mode)
@@ -132,10 +132,10 @@ class Player:
 
     def execute_interrupt(self, interrupt: Interrupt) -> None:
         """"""
-        print()
-        print("Execute interrupt thread ID", threading.get_ident())
-        print(f"{interrupt=}")
-        print()
+        # print()
+        # print("Execute interrupt thread ID", threading.get_ident())
+        # print(f"{interrupt=}")
+        # print()
         self.interrupt = interrupt
         if self.interrupt_trigger.is_set():
             raise RuntimeError("TRIGGER IS ALREADY SET!")
@@ -209,7 +209,7 @@ class Player:
     def _modes_in_send_order(self) -> list[BaseModeInterface]:
         """Return background mode instances in creation order,
            followed by foreground mode instance if it exists."""
-        print(f"{len(self.active_modes)=}")
+        # print(f"{len(self.active_modes)=}")
         return sorted(
             self.active_modes.values(), key=lambda m: m.background,
         )
@@ -219,9 +219,9 @@ class Player:
            stopping if one returns True, presumably
            meaning that they handled the command."""
         for mode in self._modes_in_send_order():
-            # print(f"Sending API command to {mode.name}")
+            print(f"Sending API command to {mode.name}")
             if mode.command_action(it.command):
-                # print("Received True; stopping sending.")
+                print("Received True; stopping sending.")
                 break
 
     def _send_control_action(self, control: ControlName) -> None:
@@ -229,9 +229,9 @@ class Player:
            stopping if one returns True, presumably
            meaning that they handled the control action."""
         for mode in self._modes_in_send_order():
-            # print(f"Sending control action to {mode.name}")
+            print(f"Sending control action to {mode.name}")
             if mode.control_action(control):
-                # print("Received True; stopping sending.")
+                print("Received True; stopping sending.")
                 break
 
     def _sigterm_received(self, signal_number, stack_frame) -> None:
