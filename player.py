@@ -202,7 +202,7 @@ class Player:
 
     def _reset_interrupt(self):
         """Prepare for another interrupt."""
-        print("Reset interrupt thread ID", threading.get_ident())
+        # print("Reset interrupt thread ID", threading.get_ident())
         self.interrupt = None
         self.interrupt_trigger = threading.Event()
 
@@ -211,7 +211,7 @@ class Player:
            followed by foreground mode instance if it exists."""
         print(f"{len(self.active_modes)=}")
         return sorted(
-            self.active_modes.values(), key=lambda m: m.background,
+            self.active_modes.values(), key=lambda m: not m.background,
         )
 
     def _send_api_command(self, it: CommandInterrupt) -> None:

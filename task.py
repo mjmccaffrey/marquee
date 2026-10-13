@@ -92,7 +92,7 @@ class TaskSchedule:
         if self._schedule:
             task = self.peek()
             if task.due < now:
-                log.info(f"Running {task} {now - task.due} late")
+                # log.info(f"Running {task} {now - task.due} late")
                 self.pop()
                 return task
             else:
