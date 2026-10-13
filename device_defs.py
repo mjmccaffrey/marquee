@@ -160,13 +160,13 @@ def define_devices(
         DeviceName.BUTTON_CORDED_A:
             Button(
                 DeviceName.BUTTON_CORDED_A,
-                gpiozero.Button(pin=2, bounce_time=0.05),
+                gpiozero.Button(pin=3, bounce_time=0.05),
                 # signal_number=signal.SIGUSR1,  # type: ignore
             ),
         DeviceName.BUTTON_CORDED_B:
             Button(
                 DeviceName.BUTTON_CORDED_B,
-                gpiozero.Button(pin=3, bounce_time=0.05),
+                gpiozero.Button(pin=2, bounce_time=0.05),
                 # signal_number=signal.SIGUSR2,  # type: ignore
             ),
         DeviceName.BUTTON_GAME_START:
