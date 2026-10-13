@@ -157,7 +157,7 @@ def register_channel_modes(exec: Executor):
     exec.add_mode("color_sets_presentation", ColorSetStatic,
         sequence=[
             ("honolulu", 255),
-            ("soho", 255),
+            # ("soho", 255),
             ("blue_planet", 255),
             ("orange_fields", 255),
             ("chinatown", 255),

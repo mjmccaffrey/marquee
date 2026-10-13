@@ -33,7 +33,8 @@ class ColorSetMode(PerformanceMode, ABC):
     def control_action(self, control: ControlName) -> bool:
         """Respond to control action and return True."""
         match control:
-            case ControlName.BUTTON_CORDED_A | ControlName.BUTTON_REAR:
+            case ControlName.BUTTON_CORDED_A | ControlName.BUTTON_REAR \
+            if self.entry_index < 11:
                 self.clicker.play()
                 self.next_entry()
                 return True
