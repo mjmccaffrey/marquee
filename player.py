@@ -100,7 +100,7 @@ class Player:
            with any mode instances with instance as parent."""
         mode = self.active_modes[mode_index]
         # Delete children of specified.
-        for instance in self.active_modes.values():
+        for instance in list(self.active_modes.values()):
             if instance.parent == mode:
                 self.delete_active_mode(instance.index)
         # Delete specified.
@@ -185,7 +185,7 @@ class Player:
 
     def _handle_interrupt(self, it: Interrupt) -> None:
         """"""
-        print("Handling Interrupt: ", it)
+        # print("Handling Interrupt: ", it)
         match it:
             case CommandInterrupt():
                 self._send_api_command(it)
@@ -219,9 +219,9 @@ class Player:
            stopping if one returns True, presumably
            meaning that they handled the command."""
         for mode in self._modes_in_send_order():
-            print(f"Sending API command to {mode.name}")
+            # print(f"Sending API command to {mode.name}")
             if mode.command_action(it.command):
-                print("Received True; stopping sending.")
+                # print("Received True; stopping sending.")
                 break
 
     def _send_control_action(self, control: ControlName) -> None:
@@ -229,9 +229,9 @@ class Player:
            stopping if one returns True, presumably
            meaning that they handled the control action."""
         for mode in self._modes_in_send_order():
-            print(f"Sending control action to {mode.name}")
+            # print(f"Sending control action to {mode.name}")
             if mode.control_action(control):
-                print("Received True; stopping sending.")
+                # print("Received True; stopping sending.")
                 break
 
     def _sigterm_received(self, signal_number, stack_frame) -> None:

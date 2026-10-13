@@ -75,8 +75,8 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
         color_set_name='',
         brightness=100,
         transition=1,
-        delay=1,
-        wheel_divisions=4,
+        delay=0.75,
+        wheel_divisions=3,
     )
     exec.add_mode("twelve_reprise", Twelve, brightness=40,
         children=(

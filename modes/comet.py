@@ -62,7 +62,7 @@ class Comet(PerformanceMode):
 
     def execute_12(self) -> None:
         """"""
-        count = self.lights.count
+        count = 12
         self.head = (self.head + self.direction) % count
         if self.head == 0:
             self.color = next(self.colors)

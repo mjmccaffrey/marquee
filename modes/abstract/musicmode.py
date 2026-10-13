@@ -26,7 +26,7 @@ class MusicMode(PerformanceMode, ABC):
            Return the duration of the music in seconds."""
         duration = 0.0
         for group in groups:
-            print("musicmode.play")
+            # print("musicmode.play")
             duration += self._play_group(group, duration, tempo)
             # print(
             #     len(self.player.tasks), 
@@ -65,7 +65,6 @@ class MusicMode(PerformanceMode, ABC):
                 devices=self.devices,
                 schedule=self._schedule_task,
             )
-            print(f"{duration=}")
         return duration
 
     def _schedule_task(self, task: MusicTask) -> None:
