@@ -27,14 +27,14 @@ class PerformanceMode(Mode, ABC):
             # case b.REMOTE_C:
             #     self.clicker.click()
             #     new_mode = ModeIndex.BRIGHTNESS_SELECT
-            case ControlName.BUTTON_CORDED_A:
-                self.clicker.play()
-                self.previous_mode()
-                return True
-            case ControlName.BUTTON_CORDED_B:
-                self.clicker.play()
-                self.next_mode()
-                return True
+            # case ControlName.BUTTON_CORDED_A:
+            #     self.clicker.play()
+            #     self.previous_mode()
+            #     return True
+            # case ControlName.BUTTON_CORDED_B:
+            #     self.clicker.play()
+            #     self.next_mode()
+            #     return True
             case _:
                 return False
 
