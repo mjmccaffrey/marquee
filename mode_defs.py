@@ -167,7 +167,7 @@ def register_channel_modes(exec: Executor):
             ("bahrain", 255),
             ("cancun", 255),
             ("arctic_aurora", 255),
-            ("fuchia_frost", 255),
+            ("fuchsia_frost", 255),
             ("winter_beauty", 255),
         ],
         transition=1.0,
