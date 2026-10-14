@@ -48,6 +48,7 @@ class DeviceName(StrEnum):
     BUTTON_REAR = auto()
     BUTTON_CORDED_A = auto()
     BUTTON_CORDED_B = auto()
+    BUTTON_CORDED_C = auto()
     BUTTON_GAME_START = auto()
     BUZZER = auto()
     CLICKER = auto()
