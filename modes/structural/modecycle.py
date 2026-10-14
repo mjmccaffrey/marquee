@@ -45,10 +45,10 @@ class ModeCycle(Mode):
         """Pause or unpause and / or change to next mode in sequence."""
         if self.pause_before_each:
             if self.paused:
-                print("Unpausing")
+                # print("Unpausing")
                 self._execute_next_mode()
             else:
-                print("Pausing")
+                print("PAUSING")
                 self._delete_foreground_mode()
             self.paused = not self.paused
         else:
