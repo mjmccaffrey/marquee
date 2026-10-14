@@ -51,7 +51,7 @@ class Twelve(MusicMode):
             )
             for i in range(12)
         )
-        all_off = dict(on=False, transition=3.0)
+        all_off = dict(on=False, transition=2.9)
         music = piece(
             lights('| 𝄻 | 𝄻 | 𝄻 |'),
             lights('| ♪ ♪ ♪ ♩ ♩ ♪ | ♩ ♪ ♩ ♩ ♪ | 𝄽 ♩ 𝄽 𝄽 |', *each_on),
