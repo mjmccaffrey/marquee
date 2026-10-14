@@ -147,8 +147,8 @@ class PacManGame(GameMode):
                 game=self, 
                 state_event=Event.GHOST_STATE,
                 direction=+1,
-                wait_ticks=185 if self.level == 0 else 60,
-                emerge_ticks=195 if self.level == 0 else 70,
+                wait_ticks=55 if self.level == 0 else 60,
+                emerge_ticks=65 if self.level == 0 else 70,
             )
         )
         self.pinky = self.register_entity(
