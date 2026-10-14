@@ -45,17 +45,14 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
             ("even_odd_fade", 60),
             ("comet_violet", 60),
             ("signs", 60),
-
-
             ("color_sets_presentation", 60),
-
-
             ("twelve", 60),
             ("rhythm", 60),
             ("twelve_reprise", 60),
             ("doom_15", 60),
-            ("pacman_15", 60),
+            ("pacman_15", None),
             ("random_random_random", None),
+            ("pacman_15", None),
         ],
     )
     exec.add_mode("alarm_dive", AlarmDive)
@@ -95,7 +92,7 @@ def register_pyohio_2026_sign_modes(exec: Executor) -> None:
         length=4,
         delay=0.1875,
         color=Colors.VIOLET,
-        cupola_delay=10.0,
+        cupola_delay=1.0,
     )
     exec.add_mode("2026_sign", ModeCycle,
         sequence = [
@@ -170,7 +167,7 @@ def register_channel_modes(exec: Executor):
             ("fuchsia_frost", 255),
             ("winter_beauty", 255),
         ],
-        transition=1.0,
+        transition=0.66,
     )
     exec.add_mode('rotate_sides_emulate', RotateSides, delay=0.8)
     exec.add_sequence_mode("blink_alternate_medium",
