@@ -1,37 +1,30 @@
 """Marquee Lighted Sign Project - device_defs"""
 
-TEST = False
-
 import signal
-from collections.abc import Sequence
 
-import gpiozero
-if TEST:
-    from gpiozero import Device
-    from gpiozero.pins.mock import MockFactory
-import requests
-import urllib3
+from gpiozero import Button as _Button
 
 from devices.bulb import (
     Hue_BR30_Enhanced_Color, 
+    Sylvania_G25_Frosted_40,
 )
 from devices.button import Button, LightedButton
+from devices.buttonset import ButtonSet 
+from devices.devices_misc import ButtonName
 from devices.deviceset import DeviceSet
-from devices.hue import HueBridge, http, http_mock
+from devices.hue import HueBridge
 from devices.joystick import Joystick
-from devices.numato import NumatoRL320001, NumatoRL160001
-if TEST:
-    from devices.relaymodule import MockRelay16, MockRelay32
+from devices.numato import NumatoRL320001, NumatoRL160001, NumatoSSR80001
 from devices.relaymodule import CombinedRelayModule, create_client
 from devices.shelly import ShellyController, ShellyProDimmer2PM
-from instruments import Buzzer, Clicker, DrumSet, LightSet, Ringer
+from devices.tiltset import TiltSet
+from instruments import BellSet, Buzzer, ClickSet, DrumSet, LightSet, Ringer
 from light_defs import *
-from schemas import DeviceName
 
 HUE_APPLICATION_KEY = open('hue.key').read().strip()
 HUE_IP_ADDRESS = '192.168.64.130'
 
-HUE_BULB_IDS = [
+HUE_BULB_IDS_0 = [
     "79d6cc75-8eaa-450a-be32-6bc14695b11a",  # Labeled 3 - top left
     "1e5bbfc7-f3f1-47e1-bba9-18e70588f1e3",
     "b0338b37-5ed1-4ec2-b4be-5f9157ba62af",
@@ -44,26 +37,27 @@ HUE_BULB_IDS = [
     "be70ec73-1aca-41a8-afaa-3e9dab07c27a",  # Labeled 0 - right bottom
     "3d3132d3-528c-4e15-bba7-f587e1442ef2",  # Labeled 1
     "35c48818-a97b-4b67-bbc8-22a68e6be153",  # Labeled 2
-    "04098e6c-f416-4ce5-b91c-06e6004b2a23",  # 13
-    "a0906758-e0b5-45c3-8e19-85994f253bd7",  # 14
-    "359de043-2614-443f-8e44-fad407fdc854",  # 15
-    # "398bd880-e870-4d00-88ee-dce5aa83c17b",  # Donut
-    "5bed6538-94b3-4fb9-8b14-c32c81ec80fa",  # 16 Cupola
 ]
-HUE_GROUPS: dict[str, Sequence[int]] = {
+HUE_BULB_IDS_1 = [
+    "04098e6c-f416-4ce5-b91c-06e6004b2a23",
+    "a0906758-e0b5-45c3-8e19-85994f253bd7",
+    "359de043-2614-443f-8e44-fad407fdc854",
+    # "398bd880-e870-4d00-88ee-dce5aa83c17b",  # Donut
+    "5bed6538-94b3-4fb9-8b14-c32c81ec80fa",  # Cupola
+]
+HUE_BULB_IDS_2 = HUE_BULB_IDS_0 + HUE_BULB_IDS_1
+
+HUE_GROUPS_0: dict[str, list[int]] = {
     'top': LIGHTS_TOP,
     'right': LIGHTS_RIGHT,
     'bottom': LIGHTS_BOTTOM,
     'left': LIGHTS_LEFT,
-    'middle': [12, 13, 14],
     'even': [0, 2, 4, 6, 8, 10],
     'odd': [1, 3, 5, 7, 9, 11],
     '12': LIGHTS_CLOCKWISE,
-    '13': LIGHTS_CLOCKWISE + [Light.CP],
-    '15': range(15),
-    '16': range(16),
+    '13': LIGHTS_CLOCKWISE + [LIGHTS_CUPOLA]
 }
-HUE_ZONE_IDS: dict[str, list[str]] = {
+HUE_ZONE_IDS_0: dict[str, list[str]] = {
     # https://192.168.64.130/clip/v2/resource/zone
     # ↑ Lists zones, with names, and included bulbs
     # "services": [
@@ -74,11 +68,24 @@ HUE_ZONE_IDS: dict[str, list[str]] = {
     'right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
     'bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
     'left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68'],
-    'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
     'even': ['166bcc4f-9598-49e7-b853-a239be50b514'],
     'odd': ['587dddb8-bec3-4555-9f3b-b12b2fca918d'],
     '12': ['21c66184-6be0-4c79-832e-9308ee4501eb'],
     '13': ['af193689-f8a4-4ace-9cef-87264c9f5129'],
+}
+HUE_GROUPS_1 = {
+    'middle': [0, 1, 2],
+}
+HUE_ZONE_IDS_1 = {
+    'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
+}
+HUE_GROUPS_2 = HUE_GROUPS_0 | {
+    'middle': [12, 13, 14],
+    '15': range(15),
+    '16': range(16),
+}
+HUE_ZONE_IDS_2 = HUE_ZONE_IDS_0 | {
+    'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
     '15': ['e896f871-f666-4d40-a61c-f0b789f48330'],
     '16': ['82204b9c-610c-4975-8e40-e6882ce39118'],
 }
@@ -91,103 +98,190 @@ SHELLY_IP_ADDRESSES = [
     '192.168.64.116',
 ]
 
+
+def buttons(light_relays: NumatoRL160001) -> ButtonSet:
+    """Define button set."""
+    return ButtonSet(
+        body_back = Button(
+            ButtonName.BODY_BACK,
+            _Button(pin=26, bounce_time=0.10, hold_time=10), 
+            supports_hold=True,
+        ),
+        corded_a = Button(
+            ButtonName.CORDED_A,
+            _Button(pin=2, bounce_time=0.05),
+            signal_number=signal.SIGUSR1,  # type: ignore
+        ),
+        corded_b = Button(
+            ButtonName.CORDED_B,
+            _Button(pin=3, bounce_time=0.05),
+            signal_number=signal.SIGUSR2,  # type: ignore
+        ),
+        corded_c = Button(
+            ButtonName.CORDED_C,
+            _Button(pin=18, bounce_time=0.05),
+            signal_number=signal.SIGFPE,  # type: ignore
+        ),
+        game_start = LightedButton(
+            ButtonName.GAME_START,
+            _Button(pin=16, bounce_time=0.05),
+            relay=create_client(light_relays, BUTTON_TO_RELAY),
+        ),
+        remote_a = Button(
+            ButtonName.REMOTE_A,
+            _Button(pin=21, pull_up=False, bounce_time=0.10)  # 19
+
+        ),
+        remote_b = Button(
+            ButtonName.REMOTE_B,
+            _Button(pin=20, pull_up=False, bounce_time=0.10)  # 13
+        ),
+        remote_c = Button(
+            ButtonName.REMOTE_C,
+            _Button(pin=6, pull_up=False, bounce_time=0.10)
+        ),
+        remote_d = Button(
+            ButtonName.REMOTE_D,
+            _Button(pin=5, pull_up=False, bounce_time=0.10)
+        ),
+    )
+
+
+def joystick() -> Joystick:
+    """Define joystick."""
+    return Joystick(
+        up=_Button(pin=4, bounce_time=0.05),
+        down=_Button(pin=17, bounce_time=0.05),
+        left=_Button(pin=27, bounce_time=0.05),
+        right=_Button(pin=22, bounce_time=0.05),
+    )
+
+def tilts() -> TiltSet:
+    """"""
+    return TiltSet(
+        left=_Button(pin=13, pull_up=False, bounce_time=0.05),
+        right=_Button(pin=19, pull_up=False, bounce_time=0.05),
+    )
+
 def define_devices(
     brightness_factor: float,
     speed_factor: float,
 ) -> DeviceSet:
     """Create and return objects for all physical devices."""
-    if TEST:
-        drum_16_relays = MockRelay16()
-        drum_32_relays = MockRelay32()
-        drum_48_relays = CombinedRelayModule(drum_16_relays, drum_32_relays)
-        light_relays = MockRelay16()
-    else:
-        drum_16_relays = NumatoRL160001("/dev/marquee_drums_16")
-        drum_32_relays = NumatoRL320001("/dev/marquee_drums_32")
-        drum_48_relays = CombinedRelayModule(drum_16_relays, drum_32_relays)
-        light_relays = NumatoRL160001("/dev/marquee_lights")
+    drum_16_relays = NumatoRL160001("/dev/marquee_drums_16")
+    drum_32_relays = NumatoRL320001("/dev/marquee_drums_32")
+    drum_48_relays = CombinedRelayModule(drum_16_relays, drum_32_relays)
     drums = DrumSet(relays=create_client(drum_48_relays))
-    #
-    session = requests.Session()
-    session.headers = {'hue-application-key': HUE_APPLICATION_KEY}
-    session.verify = False
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    #
-    if TEST:
-        Device.pin_factory = MockFactory()
-    #
-    LIGHT_TO_RELAY = {
-                        15: 10, 
-                0:  6,  1:  7,  2:  8,
-        11:  5,                         3:  9,
-        10:  4, 12: 10, 13: 10, 14: 10, 4: 12,
-        9:  1,                         5: 13,
-                8:  0,  7: 15,  6: 14,
-    }
+    light_relays = NumatoRL160001("/dev/marquee_lights")
     lights = LightSet(
         count=LIGHT_COUNT,
         relays=create_client(light_relays, LIGHT_TO_RELAY),
         mirror=create_client(drum_16_relays, LIGHT_TO_RELAY),
         controller_type=HueBridge,
         controller_kwargs=dict(
+            application_key=HUE_APPLICATION_KEY,
             ip_address=HUE_IP_ADDRESS,
             bulb_model=Hue_BR30_Enhanced_Color,
-            session=session,
-            http=http_mock if TEST else http,
-            bulb_ids=HUE_BULB_IDS,
-            zone_ids=HUE_ZONE_IDS,
-            groups=HUE_GROUPS,
+            bulb_ids=HUE_BULB_IDS_0,
+            zone_ids=HUE_ZONE_IDS_0,
+            groups=HUE_GROUPS_0,
         ),
         brightness_factor_init=brightness_factor,
-        channel_enum=Light,
         speed_factor=speed_factor,
     )
-    clicker = Clicker(create_client(drum_16_relays, {0: 0, 1: 1}))
-    ringer = Ringer(create_client(light_relays, {0: 3}))
-    buzzer = Buzzer(create_client(light_relays, {0: 2}))
-    return {
-        DeviceName.DRUMS: drums, 
-        DeviceName.LIGHTS: lights, 
-        DeviceName.CLICKER: clicker, 
-        DeviceName.RINGER: ringer, 
-        DeviceName.BUZZER: buzzer, 
-        DeviceName.BUTTON_REAR:
-            Button(
-                DeviceName.BUTTON_REAR,
-                gpiozero.Button(pin=26, bounce_time=0.10, hold_time=10), 
-                supports_hold=True,
-            ),
-        DeviceName.BUTTON_CORDED_A:
-            Button(
-                DeviceName.BUTTON_CORDED_A,
-                gpiozero.Button(pin=3, bounce_time=0.05),
-                # signal_number=signal.SIGUSR1,  # type: ignore
-            ),
-        DeviceName.BUTTON_CORDED_B:
-            Button(
-                DeviceName.BUTTON_CORDED_B,
-                gpiozero.Button(pin=1, bounce_time=0.05),
-                # signal_number=signal.SIGUSR2,  # type: ignore
-            ),
-        DeviceName.BUTTON_CORDED_C:
-            Button(
-                DeviceName.BUTTON_CORDED_C,
-                gpiozero.Button(pin=2, bounce_time=0.05),
-                # signal_number=signal.SIGUSR2,  # type: ignore
-            ),
-        DeviceName.BUTTON_GAME_START:
-            LightedButton(
-                DeviceName.BUTTON_GAME_START,
-                gpiozero.Button(pin=16, bounce_time=0.05),
-                relay=create_client(light_relays, {0: 11}),
-            ),
-        DeviceName.JOYSTICK:
-            Joystick(
-                name=DeviceName.JOYSTICK,
-                up=gpiozero.Button(pin=4, bounce_time=0.05),
-                down=gpiozero.Button(pin=17, bounce_time=0.05),
-                left=gpiozero.Button(pin=27, bounce_time=0.05),
-                right=gpiozero.Button(pin=22, bounce_time=0.05),
-            ),
-    }
+    extra = LightSet(
+        count=4,
+        relays=create_client(light_relays, EXTRA_TO_RELAY),
+        mirror=None,
+        controller_type=HueBridge,
+        controller_kwargs=dict(
+            application_key=HUE_APPLICATION_KEY,
+            ip_address=HUE_IP_ADDRESS,
+            bulb_model=Hue_BR30_Enhanced_Color,
+            bulb_ids=HUE_BULB_IDS_1,
+            zone_ids=HUE_ZONE_IDS_1,
+            groups=HUE_GROUPS_1,
+        ),
+        brightness_factor_init=brightness_factor,
+        speed_factor=speed_factor,
+    )
+    combined = LightSet(
+        count=16,
+        relays=create_client(light_relays, COMBINED_TO_RELAY),
+        mirror=create_client(drum_16_relays, COMBINED_TO_RELAY),
+        controller_type=HueBridge,
+        controller_kwargs=dict(
+            application_key=HUE_APPLICATION_KEY,
+            ip_address=HUE_IP_ADDRESS,
+            bulb_model=Hue_BR30_Enhanced_Color,
+            bulb_ids=HUE_BULB_IDS_2,
+            zone_ids=HUE_ZONE_IDS_2,
+            groups=HUE_GROUPS_2,
+        ),
+        brightness_factor_init=brightness_factor,
+        speed_factor=speed_factor,
+    )
+
+    clicker = ClickSet(create_client(drum_16_relays, CLICK_TO_RELAY))
+    ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
+    buzzer = Buzzer(create_client(light_relays, BUZZER_TO_RELAY))
+    return DeviceSet(
+        buttons(light_relays), drums, 
+        lights, extra, combined, 
+        clicker, ringer, buzzer, joystick(), tilts(),
+    )
+
+
+def define_devices_shelly(
+    brightness_factor: float,
+    i: int,
+    speed_factor: float,
+) -> DeviceSet:
+    """Create and return objects for all physical devices."""
+    # bell_relays = NumatoSSR80001("/dev/marquee_bells")  # /dev/ttyACM1
+    # bells = BellSet(relays=bell_relays.create_client(
+    #     {i: i for i in range(bell_relays.relay_count)})
+    # )
+    drum_relays = NumatoRL160001("/dev/marquee_drums")  # /dev/ttyACM0
+    drums = DrumSet(relays=create_client(drum_relays))
+    light_relays = NumatoRL160001("/dev/marquee_lights")  # /dev/ttyACM2
+    lights = LightSet(
+        count=len(LIGHT_TO_RELAY),
+        relays=create_client(light_relays, LIGHT_TO_RELAY),
+        mirror=create_client(drum_relays, LIGHT_TO_RELAY),
+        controller_type=ShellyController,
+        controller_kwargs=dict(
+                bulb_model=Sylvania_G25_Frosted_40,
+                dimmers=[
+                    ShellyProDimmer2PM(
+                        ip_address=ip,
+                        bulb_model=Sylvania_G25_Frosted_40,
+                        channel_first_index=i * 2,
+                    )
+                    for i, ip in enumerate(SHELLY_IP_ADDRESSES)
+                ],
+        ),
+        brightness_factor_init=brightness_factor,
+        speed_factor=speed_factor,
+    )
+    extra = None
+    clicker = ClickSet(create_client(light_relays, CLICK_TO_RELAY))
+    ringer = Ringer(create_client(light_relays, RINGER_TO_RELAY))
+    buzzer = Buzzer(create_client(light_relays, BUZZER_TO_RELAY))
+    return DeviceSet(
+        buttons(light_relays), drums, 
+        lights, lights, lights, 
+        clicker, ringer, buzzer, joystick(), tilts(),
+    )
+
+
+BUTTON_TO_RELAY = {0: 11}
+RINGER_TO_RELAY = {0: 3}
+BUZZER_TO_RELAY = {0: 2}
+EXTRA_TO_RELAY = {0: 10, 1: 10, 2: 10, 3: 10}  # Kludge.
+
+COMBINED_TO_RELAY = (
+    LIGHT_TO_RELAY | {12: 10, 13: 10, 14: 10, 15: 10}  # Kludge.
+)
+CLICK_TO_RELAY = {0: 0, 1: 1}
 

@@ -5,6 +5,7 @@ from itertools import cycle, repeat
 import logging
 
 from devices.color import Color
+from light_defs import EXTRA_CUPOLA
 from . import PerformanceMode
             
 log = logging.getLogger('marquee.' + __name__)
@@ -44,25 +45,25 @@ class Comet(PerformanceMode):
     def execute_cupola(self) -> None:
         """Cycle cupola."""
         if self.cupola_lit:
-            self.lights.set_channels(
+            self.extra.set_channels(
                 brightness=0,
                 transition=self.cupola_delay,
-                index=self.lights.CP,
+                index=EXTRA_CUPOLA,
             )
         else:
-            self.lights.set_channels(
+            self.extra.set_channels(
                 brightness=100,
                 transition=self.cupola_delay,
                 color=self.color,
                 on=True,
-                index=self.lights.CP,
+                index=EXTRA_CUPOLA,
                 force=True,
             )
         self.cupola_lit = not self.cupola_lit
 
     def execute_12(self) -> None:
         """"""
-        count = 12
+        count = self.lights.count
         self.head = (self.head + self.direction) % count
         if self.head == 0:
             self.color = next(self.colors)

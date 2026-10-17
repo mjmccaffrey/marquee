@@ -1,21 +1,19 @@
 """Marquee Lighted Sign Project - basemode"""
 
 from abc import ABC, abstractmethod
-from collections.abc import Callable, Sequence
-from dataclasses import dataclass, field
+from collections.abc import Callable
+from dataclasses import dataclass
 import logging
 import sys
 import time
-from typing import NoReturn
+from typing import Any, NoReturn, Protocol, Self
 from typing_extensions import override
 
-from schemas import (
-    APICommand, BaseModeInterface, ChangeModeInterrupt, ControlName, 
-    EpochTime, InterruptSource,
-)
-from playerresources import PlayerResources
-from task import SeqTask, Task
-
+from devices.color import ColorSets
+from devices.devices_misc import ButtonName
+from event import EventSystem
+from task import SeqTask, Task, TaskSchedule
+from ..structural.modes_misc import ChangeMode, ModeDefinition
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -25,48 +23,26 @@ class BaseMode(ABC):
     """Base for (foreground and background) modes."""
     index: int
     name: str
-    serial: int  # Unique ID for every instance.
-    player: PlayerResources
-    background: bool = False
-    parent: BaseModeInterface | None = None
-    children: Sequence[str] = field(default_factory=tuple)
-
-    def __post_init__(self) -> None:
-        """Initialize."""
-        self._create_children()
-
-    def _create_children(self) -> None:
-        """Create child mode(s) specified."""
-        for child in self.children:
-            mode_index=self.lookup_mode_index(child)
-            assert self.player.modes[mode_index].cls.background
-            mode = self.player.create_active_mode(
-                mode_index=self.lookup_mode_index(child),
-                parent=self,
-            )
-            self.schedule(mode.execute)
-            print(f"Created mode {child} {mode.index} {mode.name}")
+    serial: int
+    speed_factor: float
+    create_mode_instance: 'CreateModeInstance'
+    delete_mode_instance: 'DeleteModeInstance'
+    replace_kwarg_values: 'ReplaceKwargValues'
+    events: EventSystem
+    tasks: TaskSchedule
+    modes: dict[int, ModeDefinition]
+    mode_ids: dict[str, int]
+    color_sets: ColorSets
+    parent: Self | None = None
 
     @abstractmethod
-    def control_action(self, control: ControlName) -> bool:
-        """Respond to control action and return True."""
-
-    @abstractmethod
-    def command_action(self, command: APICommand) -> bool:
-        """Respond to command."""
-
-    def close(self) -> None:
-        """Clean up before instance is discarded."""
+    def button_action(self, button: ButtonName) -> int | None:
+        """Respond to button being pressed.
+           Return index of new mode, if any."""
 
     def execute(self) -> None:
         """Play the mode."""
-
-    def lookup_mode_index(self, mode_id: str) -> int:
-        """Return index of the mode definition with id."""
-        try:
-            return self.player.mode_ids[mode_id]
-        except LookupError:
-            raise ValueError(f"Mode {mode_id} not defined.")
+        # raise RuntimeError("Method must be overridden.")
 
     @override
     def __repr__(self) -> str:
@@ -76,16 +52,17 @@ class BaseMode(ABC):
     def __str__(self) -> str:
         return f"Mode {self.index} {self.name}"
 
-    def change_mode(self, mode_index: int) -> None:
-        """Effects changing (active) mode to mode_index."""
-        def _change_mode() -> NoReturn:
-            """Raise ChangeModeInterrupt."""
-            log.info(f"Changing to mode {mode_index}")
-            raise ChangeModeInterrupt(
-                source=InterruptSource.MODE,
-                mode_index=mode_index,
-            )
-        self.schedule(_change_mode)
+    def change_mode(self, mode_index: int) -> NoReturn:
+        """Effects changing active mode to mode_index."""
+        log.info(f"Changing to mode {mode_index}")
+        raise ChangeMode(mode_index)
+
+    def lookup_mode_index(self, name: str) -> int:
+        """Return the index for the mode with name."""
+        try:
+            return self.mode_ids[name]
+        except LookupError:
+            raise ValueError(f"Mode {name} not defined.")
 
     def schedule(
         self, 
@@ -101,7 +78,7 @@ class BaseMode(ABC):
         def push_event():
             """Push task onto queue."""
             assert _action is not None
-            self.player.tasks.push(
+            self.tasks.push(
                 Task(
                     action=_action,
                     due=_due,
@@ -113,13 +90,13 @@ class BaseMode(ABC):
         def repeater():
             """Schedule next task. Call action."""
             nonlocal _due
-            _due = EpochTime(_due + due)
+            _due += due
             push_event()
             assert action is not None
             action()
 
-        due = due * self.player.speed_factor
-        _due = EpochTime(time.time() + due)
+        due = due * self.speed_factor
+        _due = time.time() + due
         if action is None:
             action = getattr(self, 'execute')
         _action = repeater if repeat else action
@@ -161,12 +138,30 @@ class BaseMode(ABC):
             value = upper + dif + 1
         return value
 
-    def _wrap_mode_index(self, delta: int) -> int:
-        """"""
-        return self.wrap_value(
-            lower=1, 
-            upper=max(self.player.modes), 
-            current=self.index,
-            delta=delta,
-        )
+class CreateModeInstance(Protocol):
+    """"""
+    def __call__(
+        self,
+        mode_index: int | None = None,
+        mode_definition: ModeDefinition | None = None,
+        kwargs: dict[str, Any] = {},
+        parent: BaseMode | None = None,  # !!! BaseMode
+    ) -> BaseMode:  # !!! BackgroundMode | Mode:
+        ...
+
+class DeleteModeInstance(Protocol):
+    """"""
+    def __call__(
+        self,
+        mode_index: int | None = None,
+    ) -> None:
+        ...
+
+class ReplaceKwargValues(Protocol):
+    """"""
+    def __call__(
+        self, 
+        kwargs: dict[str, Any],
+    ) -> dict[str, Any]:
+        ...
 

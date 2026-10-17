@@ -76,6 +76,7 @@ class ShellyController(LightController, bulb_comp=DimBulb):
         updates: Sequence['ChannelUpdate'], 
         group: str, 
         force: bool = False,
+        state_only: bool = False,
     ):
         """Update the 'all' zone, rather than individual channels.
            Not supported on these devices."""
@@ -179,6 +180,7 @@ class ShellyDimmer(LightController, ABC, bulb_comp=DimBulb):
         updates: Sequence['ChannelUpdate'], 
         group: str, 
         force: bool = False,
+        state_only: bool = False,
     ):
         """Update the 'all' zone, rather than individual channels.
            Not supported on these devices."""

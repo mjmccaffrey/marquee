@@ -4,9 +4,8 @@ from dataclasses import InitVar, dataclass
 import logging
 from typing_extensions import override
 
-from . import ColorSetMode
-from schemas import CycleSequence
-
+from light_defs import EXTRA_CUPOLA
+from . import ColorSetMode, CycleSequence
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -14,7 +13,7 @@ log = logging.getLogger('marquee.' + __name__)
 @dataclass(kw_only=True)
 class ColorSetStatic(ColorSetMode):
     """Play repeating sequence of color sets."""
-    sequence: InitVar[CycleSequence]
+    sequence: InitVar[CycleSequence]  # (color_set_name, seconds)
     brightness: int | None = None
     transition: float = 0.0
 
@@ -22,6 +21,7 @@ class ColorSetStatic(ColorSetMode):
     def __post_init__(self, sequence: CycleSequence) -> None:
         """Initialize."""
         super().__post_init__(sequence)
+        self.lights = self.combined
         self.lights.set_channels(on=True, force=True)
         self.direction = +1
         self.entry_index = -self.direction
@@ -36,7 +36,7 @@ class ColorSetStatic(ColorSetMode):
     def show_color_set(self):
         """Show color set. Schedule next set."""
         entry = self.entries[self.entry_index]
-        cs = self.lights.color_sets.by_set_name[entry.name]
+        cs = self.color_sets.by_set_name[entry.name]
         log.info(
             f"Displaying color set {cs.group}.{cs.name} "
             f"for {entry.seconds} seconds "
@@ -49,6 +49,5 @@ class ColorSetStatic(ColorSetMode):
             transition=self.transition, 
             **kwargs,  # type: ignore
         )
-        if entry.seconds is not None:
-            self.schedule(due=entry.seconds)
+        self.schedule(due=entry.seconds)
 

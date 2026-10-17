@@ -5,11 +5,11 @@ from dataclasses import dataclass
 import logging
 from typing_extensions import override
 
+from devices.devices_misc import ButtonName
 from .mode import Mode
+from ..structural.modes_misc import ModeDefinition
 from ..structural.sequencemode import SequenceMode
 from ..structural.sequences import rotate_build_flip
-from schemas import ControlName, DeviceName, ModeDefinition
-
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -36,20 +36,23 @@ class SelectMode(Mode, ABC):
         return self.wrap_value(self.lower, self.upper, self.desired, delta)
 
     @override
-    def control_action(self, control: ControlName) -> bool:
-        """Respond to control action and return True."""
-        self.player.tasks.delete_owned_by(self)
-        b = DeviceName
-        match control:
-            case b.BUTTON_REAR | b.BUTTON_CORDED_A | b.BUTTON_CORDED_B:
+    def button_action(self, button: ButtonName) -> None:
+        """Respond to button being pressed.
+           But first, delete the scheduled task which 
+           would have finalized the selection."""
+        self.tasks.delete_owned_by(self)
+        b = ButtonName
+        match button:
+            case b.BODY_BACK | b.CORDED_A | b.CORDED_B | b.REMOTE_A | b.REMOTE_D:
                 self.desired = self.update_desired(+1)
-                return True
-            # case b.REMOTE_B:
-            #     self.desired = self.update_desired(-1)
+            case b.REMOTE_B:
+                self.desired = self.update_desired(-1)
             case _:
-                return False
+                pass
+        return None
 
-    def step(self) -> int | None:
+    @override
+    def execute(self) -> int | None:
         """Return user's final selection if made, otherwise 
            schedule next execute and return None."""
         log.info(
@@ -64,21 +67,20 @@ class SelectMode(Mode, ABC):
             # Show user what desired mode number is currently selected.
             log.info(f"Desired is now {self.desired}")
             # self.lights.set_relays(ALL_OFF, special=self.special)
-            counter = self.player.create_active_mode(
+            counter = self.create_mode_instance(
                 mode_definition=ModeDefinition(
                     name='counter',
                     cls=SequenceMode,
-                    kwargs=dict(
-                        sequence=rotate_build_flip,
-                        sequence_kwargs=dict(count=self.desired),
-                        pre_delay=0.5,
-                        delay=0.25, 
-                        repeat=False,
-                        special=self.special,
-                    ),
                 ),
                 parent=self,
-                record=False,
+                kwargs=dict(
+                    sequence=rotate_build_flip,
+                    sequence_kwargs=dict(count=self.desired),
+                    pre_delay=0.5,
+                    delay=0.25, 
+                    repeat=False,
+                    special=self.special,
+                ),
             )
             self.schedule(counter.execute)
             self.previous_desired = self.desired

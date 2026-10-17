@@ -3,14 +3,13 @@
 from collections.abc import Callable
 import logging
 import time
-from typing import Any, cast, Protocol
+from typing import Any, Protocol
 
+from device_defs import DeviceSet
 from devices.color import ColorSets
-from devices.deviceset import DeviceSet
 from devices.specialparams import SpecialParams
-from modes import BaseMode, SequenceMode
+from modes import BaseMode, ModeDefinition, SequenceMode
 from player import Player
-from schemas import Device, ModeDefinition
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -33,25 +32,20 @@ class Executor:
         self.mode_menu: list[tuple[int, str]] = []
         self.modes: dict[int, ModeDefinition] = {}
         #
-        self._load_color_set_names()
-        self.commands: dict[str, Callable[[], None]] = {
-            'calibrate': self.command_calibrate,
-            'off': self.command_off,
-        }
-
-    def _load_color_set_names(self) -> None:
-        """Load color set identifiers.
-           Discard the actual colors. Kludge."""
-        color_sets = ColorSets()
+        self.color_sets = ColorSets('color_sets.json')
         self.color_ids: dict[str, str] = {
             e: sn
-            for i, (gn, sn) in enumerate(color_sets.each_set_name())
+            for i, (gn, sn) in enumerate(self.color_sets.each_set_name())
             for e in (str(i), sn)
         }
         self.color_menu: list[tuple[str, int, str]] = [
             (gn, i, sn)
-            for i, (gn, sn) in enumerate(color_sets.each_set_name())
+            for i, (gn, sn) in enumerate(self.color_sets.each_set_name())
         ]
+        self.commands: dict[str, Callable[[], None]] = {
+            'calibrate': self.command_calibrate,
+            'off': self.command_off,
+        }
 
     def close(self) -> None:
         """Close dependencies."""
@@ -104,8 +98,8 @@ class Executor:
 
     def execute(
         self, 
-        brightness_factor: float = 1.0,  # Must have defaults, because values 
-        speed_factor: float = 1.0,       # are only provided with 'mode'.
+        brightness_factor: float = 1.0,  # Must default; only
+        speed_factor: float = 1.0,       # provided with mode.
         color: str | None = None, 
         brightness: int | None = None,
         command: str | None = None, 
@@ -117,7 +111,9 @@ class Executor:
            Return True if system shutdown requested, else False."""
         shutdown = False
         self.devices = self.define_devices(brightness_factor, speed_factor)
-        self.lights = self.devices['lights']
+        if self.devices.extra is not None:
+            self.devices.extra.set_channels(on=False, index=[0,1,2])
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!
         if color is not None:
             assert brightness is not None
             self.execute_color(color, brightness)
@@ -131,8 +127,8 @@ class Executor:
 
     def execute_color(self, color: str, brightness: int) -> None:
         """Executes color operation."""
-        cs = self.devices['lights'].color_sets.by_set_name[color]
-        kwargs = cs.set_channels_kwargs(self.lights.count)
+        cs = self.color_sets.by_set_name[color]
+        kwargs = cs.set_channels_kwargs(self.devices.lights.count)
         kwargs |= dict(
             on=True,
             brightness=brightness,
@@ -147,10 +143,11 @@ class Executor:
         """Launches Player with the command-line specified mode.
            Returns the Player's exit / shutdown return value."""
         self.player: Player = self.create_player(
-            devices=self.devices,
-            mode_ids=self.mode_ids,
-            modes=self.modes, 
-            speed_factor=speed_factor,
+            self.modes, 
+            self.mode_ids,
+            self.color_sets,
+            self.devices,
+            speed_factor,
         )
         return self.player.execute(mode_index)
 
@@ -161,27 +158,32 @@ class Executor:
     ) -> None:
         """Executes the pattern operation."""
         if brightness_pattern is not None:
-            self.lights.set_channels(
+            self.devices.lights.set_channels(
                 brightness=brightness_pattern,
-                transition=self.lights.trans_min,
+                transition=self.devices.lights.trans_min,
             )
-            time.sleep(self.lights.trans_min)
+            time.sleep(self.devices.lights.trans_min)
         if light_pattern is not None:
-            self.lights.set_relays(light_pattern)
+            self.devices.lights.set_relays(light_pattern)
 
     def command_calibrate(self) -> None:
         """Calibrate all light sets supporting it."""
-        for lightset in [self.lights]:
-            if lightset is not None:
-                try:
-                    lightset.calibrate()
-                except NotImplementedError:
-                    pass
+        for lightset in [self.devices.lights, self.devices.extra]:
+            try:
+                lightset.calibrate()
+            except NotImplementedError:
+                pass
 
     def command_off(self) -> None:
         """Turn off all relays and potentially other devices."""
-        for device in self.devices.values():
-            cast(Device, device).off()
+        for d in (
+            # self.devices.bells, 
+            self.devices.drums, self.devices.lights,
+        ):
+            assert d.relays is not None
+            d.relays.set_state_of_devices('0' * d.relays.count)
+        if self.devices.extra is not None:
+            self.devices.extra.set_channels(on=False)
         log.info("Marquee hardware is now partially powered off.")
         log.info('')
 

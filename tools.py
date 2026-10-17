@@ -1,24 +1,21 @@
 """Marquee Lighted Sign Project - tools"""
 
 from collections.abc import Sequence
+from dataclasses import astuple, fields
 import json
 from pathlib import Path
 from typing import cast
 
 from devices.color import Color, ColorSets
+from instruments import LightSet
 from devices.hue import HueBridge
 from device_defs import define_devices
-from instruments import LightSet
-from schemas import DeviceName
 
 
 def setup():
-    global d, l, c, b, j, r
-    d = define_devices(1.0, 1.0)
-    b = d[DeviceName.BUZZER.value]
-    l = d[DeviceName.LIGHTS.value]
-    c = d[DeviceName.CLICKER.value]
-    r = d[DeviceName.RINGER.value]
+    global b, d, l, e, clicker, r, z, j, t, c
+    devices = define_devices(1.0, 1.0)
+    b, d, l, e, c, clicker, r, z, j, t = devices.astuple()
 
 
 def ppp(p: Sequence) -> None:
@@ -77,4 +74,26 @@ def apply_color_set_fixes():
         bi = next(i for i, b in enumerate(broken) if b[0] == sn)
         broken[bi] = [sn, gn, v]
     json.dump(broken, open('color_sets/color_sets_fixed.json', 'w'))
+
+# @dataclass(kw_only=True)
+# class BellTest(MusicMode):
+#     """Test all bells."""
+
+#     def __post_init__(self) -> None:
+#         """Initialize."""
+
+#     def execute(self) -> None:
+#         """Perform bell test."""
+#         for pitch in range(self.bells.pitch_levels):
+#             due = 0.5 * pitch
+#             self.schedule(
+#                 action = partial(self.bells.play, {pitch}),
+#                 due = due,
+#                 name = f"BellTest play {pitch}",
+#             )
+#             self.schedule(
+#                 action = partial(self.bells.release, {pitch}),
+#                 due = due + self.bells.release_time,
+#                 name = f"BellTest release {pitch}",
+#             )
 

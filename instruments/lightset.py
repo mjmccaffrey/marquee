@@ -1,30 +1,32 @@
 """Marquee Lighted Sign Project - lightset"""
 
 from collections.abc import Sequence
-from dataclasses import dataclass, field, InitVar
-from enum import IntEnum
+from dataclasses import dataclass, InitVar
 import logging
 import time
-from typing import Any, cast, TYPE_CHECKING
-from typing_extensions import override
+from typing import cast, Any
 
 from devices import rgbxy
 
-from devices.color import Color, Colors, ColorSets, RGB
+from devices.color import Color, Colors, RGB
 from devices.bulb import SmartBulb
 from devices.lightcontroller import ChannelUpdate, LightChannel, LightController
 from devices.relaymodule import RelayClient
 from devices.specialparams import ChannelParams, MirrorParams, SpecialParams
 from .lightsetinterface import SavedState
-from .instruments_abstract import RelayInstrument
-from schemas import DeviceName
-
 
 log = logging.getLogger('marquee.' + __name__)
 
+BrightnessParam = Sequence[int | None] | str | int | None
+
+def simplify_parameter(p: Any) -> Any:
+    """"""
+    if all(e == p[0] for e in p):
+        return p[0]
+    return p
 
 @dataclass
-class LightSet(RelayInstrument):
+class LightSet:
     """Supports all of the light-related devices."""
     count: int
     relays: RelayClient | None
@@ -32,22 +34,11 @@ class LightSet(RelayInstrument):
     controller_type: type[LightController]
     controller_kwargs: dict
     brightness_factor_init: InitVar[float]
-    channel_enum: InitVar[type[IntEnum]]
     speed_factor: float
-    device: DeviceName = DeviceName.LIGHTS
 
-    if TYPE_CHECKING:
-        def __getattr__(self, name: str) -> IntEnum: ...
-
-    def __post_init__(
-        self, 
-        brightness_factor_init: float,
-        channel_enum: type[IntEnum],
-    ) -> None:
+    def __post_init__(self, brightness_factor_init: float) -> None:
         """Initialize."""
         self._brightness_factor = brightness_factor_init
-        for channel in channel_enum:
-            setattr(self, channel.name, channel.value)
         self.smart_bulbs = issubclass(
             self.controller_type.bulb_comp, 
             SmartBulb,
@@ -58,7 +49,6 @@ class LightSet(RelayInstrument):
         self.update_order = {
             index: i for i, index in enumerate(indices)
         }
-        self.color_sets = ColorSets()
         self._init_relays()
         self._init_controller()
 
@@ -68,7 +58,6 @@ class LightSet(RelayInstrument):
             return
         assert self.relays.count == self.count
         self.relay_pattern = self.relays.get_state_of_devices()
-        # print(f"{self.relay_pattern}")
         if self.smart_bulbs:
             if all(r == '1' for r in self.relay_pattern):
                 log.info("***** Smart bulbs in use - light relays already ON. *****")
@@ -83,22 +72,10 @@ class LightSet(RelayInstrument):
         self.gamut = self.controller.bulb_model.gamut
         RGB.adjust_incomplete_colors(self.gamut or rgbxy.GamutC)
         self.colors = Colors(self.gamut or rgbxy.GamutC)
-        print(self.controller.channels, self.count)
         assert len(self.controller.channels) == self.count
         self.channels = self.controller.channels
         self.trans_min = self.controller.trans_min
         self.bulb_adjustments = self.controller.bulb_model.adjustments
-
-    @override
-    def off(self) -> None:
-        """Turn lights off logically, and then via relays as applicable."""
-        self.set_channels(on=False)
-        super().off()
-        
-    @override
-    def play(self) -> None:
-        """Should never be called."""
-        raise NotImplementedError
 
     def calibrate(self):
         """Calibrate lights, if supported by controller.
@@ -111,23 +88,22 @@ class LightSet(RelayInstrument):
 
     def set_channels(
         self, 
-        *,
-        brightness: Sequence[int | None] | str | int | None = None,
+        brightness: BrightnessParam = None,
+        transition: Sequence[float | None] | float | None = None,
         color: Sequence[Color | None] | Color | None = None,
         on: Sequence[int | bool | str | None] | bool | int | None = None,
-        transition: Sequence[float | None] | float | None = None,
-        index: Sequence[int] | int = (),
-        group: str = "",
+        index: Sequence[int] | int | None = None,
         force: bool = False,
+        group: str | None = None,
+        state_only: bool = False,
     ) -> None:
         """Set the channels per the supplied brightnesses
            (adjusted by brightness_factor), 
-           colors, and "on"s, with transition times.
-           Specify a subset of channels via index.
-           Force all specified channels to update 
-           (ignore tracked state) with force.
-           Specifying group forces that channel group 
-           to be used, ignoring index."""           
+           colors, and 'on's, with transition times.
+           Specify a subset of channels via indices.
+           If subset of channels specified, other parameters
+           must each be a single value.
+           Force all specified channels to update with force."""
         
         _index = self._convert_index(index)
         _group = self._determine_group(
@@ -137,9 +113,15 @@ class LightSet(RelayInstrument):
             brightness, transition, color, on, 
             [self.channels[i] for i in _index],
         )
-        if _group:
-            self.controller.update_channel_group(updates, _group, force)
+        if _group is not None:
+            self.controller.update_channel_group(
+                updates, _group, force, state_only,
+            )
         else:
+            # print(
+            #     "CHANNELS: ", 
+            #     ' '.join(str(u.channel.index) for u in updates)
+            # )
             self.controller.update_channels(updates, force)
 
     def _channel_updates(
@@ -158,32 +140,34 @@ class LightSet(RelayInstrument):
             zip(channels, _brightness, _transition, _color, _on)
         ]
         updates.sort(key=lambda u: self.update_order[u.channel.index])
+        # print(' '.join(str(u.channel.index) for u in updates))
         return updates
 
     def _determine_group(
         self, brightness, transition, color, on, group, index,
-    ) -> str:
+    ) -> str | None:
         """Return specified group, group that matches
             the specified indices, or None."""
         # print()
         # print(f"! {time.time()} {brightness=} {transition=} {color=} {on=} {group=} {index=}")
-        if group:
+        if group is None:
+            derived = self.controller.indices_in_group.get(frozenset(index))
+            if (
+                derived is not None and
+                not isinstance(brightness, Sequence) and
+                not isinstance(transition, Sequence) and
+                not isinstance(color, Sequence) and
+                not isinstance(on, Sequence)
+            ):
+                # print(index)
+                # print(self.controller.indices_in_group)
+                # print("DERIVED GROUP: ", derived)
+                return derived
+            else:
+                return None
+        else:
             print("SPECIFIED GROUP: ", group)
             return group
-        derived = self.controller.indices_in_group.get(frozenset(index))
-        if (
-            derived is not None and
-            not isinstance(brightness, Sequence) and
-            not isinstance(transition, Sequence) and
-            not isinstance(color, Sequence) and
-            not isinstance(on, Sequence)
-        ):
-            # print(index)
-            # print(self.controller.indices_in_group)
-            # print("DERIVED GROUP: ", derived)
-            return derived
-        else:
-            return ""
 
     def set_relays(
         self, 
@@ -204,7 +188,6 @@ class LightSet(RelayInstrument):
             return
         
         lights = self._convert_relay_pattern(light_pattern)
-        print('RELAY PATTERN', lights)
 
         if isinstance(special, MirrorParams):
             assert self.mirror is not None
@@ -214,18 +197,12 @@ class LightSet(RelayInstrument):
             self._set_channels_instead_of_relays(lights, special)
         else:
             assert self.relays is not None
-            self.relays.set_state_of_devices(lights)
+            # self.relays.set_state_of_devices(lights)
             self.relay_pattern = lights
 
     def update_channels(self, updates: Sequence['ChannelUpdate']):
         """Effect channel updates."""
         self.controller.update_channels(updates)
-
-    def simplify_parameter(self, p: Any) -> Any:
-        """"""
-        if all(e == p[0] for e in p):
-            return p[0]
-        return p
 
     def _set_channels_instead_of_relays(
             self,
@@ -234,7 +211,6 @@ class LightSet(RelayInstrument):
     ) -> None:
         """Set channels per the specified pattern and special.
            Adjust for brightness_factor."""
-        # print(light_pattern)
         brightness_values: dict[int, int | None] = {
             0: (int(special.brightness_off * self._brightness_factor)
                 if special.brightness_off is not None else None),
@@ -258,16 +234,16 @@ class LightSet(RelayInstrument):
         light_pattern = [int(p) for p in light_pattern]
         self.set_channels(
             force=True,
-            brightness=self.simplify_parameter(
+            brightness=simplify_parameter(
                 tuple(brightness_values[p] for p in light_pattern)
             ),
-            transition=self.simplify_parameter(
+            transition=simplify_parameter(
                 tuple(trans_values[p] for p in light_pattern)
             ),
-            color=self.simplify_parameter(
+            color=simplify_parameter(
                 tuple(color_values[p] for p in light_pattern)
             ),
-            on=self.simplify_parameter(
+            on=simplify_parameter(
                 tuple(on_values[p] for p in light_pattern)
             ),
         )
@@ -297,24 +273,13 @@ class LightSet(RelayInstrument):
             transition=transition,
         )
 
-    def change_brightness_factor(self, value: float) -> None:
-        """Set brightness_factor and adjust lights."""
-        print("Channels: ", [c.brightness for c in self.channels])
-        original = [
-            max(int(channel.brightness / self.brightness_factor), 1)
-            for channel in self.channels
-        ]
-        print("Original: ", original)
-        self.brightness_factor = value
-        self.set_channels(brightness=original)
-
     @property
     def brightness_factor(self) -> float:
         """Return brightness_factor."""
         return self._brightness_factor
     
     @brightness_factor.setter
-    def brightness_factor(self, value: float) -> None:
+    def brightness_factor(self, value) -> None:
         """Set brightness_factor. Lights not adjusted."""
         assert 0 <= value <= 1.0
         self._brightness_factor = value
@@ -322,15 +287,11 @@ class LightSet(RelayInstrument):
 
     def _convert_index(
         self,
-        index: Sequence[int] | int,
+        index: Sequence[int] | int | None,
     ) -> list[int]:
         """Return normalized index list.  If index is None, 
            return complete index list in scattered order."""
-        # print(index)
-        # print(type(index))
         match index:
-            case tuple() if not index:
-                result = list(range(self.count))
             case Sequence():
                 result = list(index)
             case None:
@@ -431,4 +392,18 @@ class LightSet(RelayInstrument):
             case _:
                 result = ("1" if pattern else "0") * self.count
         return result
+
+
+@dataclass
+class ClickSet:
+    """"""
+    relays: RelayClient
+
+    def click(self) -> None:
+        """Click the otherwise unused light relays."""
+        pattern = "".join(
+            "1" if p == "0" else "0" 
+            for p in self.relays.device_pattern
+        )
+        self.relays.set_state_of_devices(pattern)
 

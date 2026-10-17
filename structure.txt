@@ -1,25 +1,11 @@
 marquee
     Executor
-    Player / PlayerResources
-        APIServer
-        Interrupt
-            * InterruptSource
-            ChangeModeInterrupt
-            CommandInterrupt
-                * APICommand
-            ControlInterrupt
-                * ControlAction
+    Player
         Event
         Task
-    Device
-        * DeviceName
-        Control
-            * ControlName
+    devices
+        ButtonSet
             Button
-                * ButtonName
-                LightedButton
-            Joystick
-            TiltSet
         LightController
             HueBridge
             ShellyController
@@ -30,50 +16,41 @@ marquee
         RelayClient
             RelayModuleInterface
                 CombinedRelayModule
-            RelayModule
                 NumatoUSBRelayModule
-        Instrument
-            * InstrumentName
-            LightSetInterface
-                CombinedLightSet
-                LightSet
-            ActionInstrument
-            DinInstrument
-                Buzzer
-                Ringer
-            RelayInstrument
-                BellSet
-                Buzzer
-                Clicker
-                DinInstrument
-                DrumSet
-                Ringer
-            Releaseable Instrument
-                BellSet
-                DinInstrument
-            RestInstrument
-    BaseMode / BaseModeInterface
-        Mode
-            SelectMode
-            PerformanceMode
-                ColorSetMode
-                GameMode
-                InterruptMode
-                MusicMode
-                SequenceMode
-    Element
+    instruments
+        LightSetInterface
+            CombinedLightSet
+            LightSet
+        ActionInstrument
+        RelayInstrument
+            BellSet
+            Buzzer
+            DrumSet
+            Ringer
+        Releaseable Instrument
+            BellSet
+        RestInstrument
+    modes
+        BaseMode
+            Mode
+                SelectMode
+                PerformanceMode
+                    ColorSetMode
+                    GameMode
+                    InterruptMode
+                    MusicMode
+                    SequenceMode
+    music
         Piece
-        Section
-        Part
-        Measure
-        Note
-            ActionNote
-            BellNote
-            DrumNote
-            ReleasedNote
-                DinNote
-                    BuzzerNote
-                    RingerNote
-            Rest
-            NoteGroup
-
+            Section
+                Part
+                    Measure
+                        Element
+                            BaseNote
+                                ActionNote
+                                BellNote
+                                DrumNote
+                                Rest
+                            NoteGroup
+                    SequenceMeasure
+                    Sequence

@@ -1,25 +1,31 @@
 """Marquee Lighted Sign Project - deviceset"""
 
-from typing import NotRequired, TypedDict
-
-from devices.button import Button
+from dataclasses import dataclass, fields
+from devices.buttonset import ButtonSet
 from devices.joystick import Joystick
 from devices.tiltset import TiltSet
-from instruments import (
-    BellSet, Buzzer, Clicker, DrumSet, LightSet, Ringer,
-)
+from instruments import BellSet, Buzzer, ClickSet, DrumSet, LightSet, Ringer
 
-
-class DeviceSet(TypedDict):
-    button_rear: Button
-    button_corded_a: Button
-    button_corded_b: Button
-    button_game_start: NotRequired[Button]
-    buzzer: NotRequired[Buzzer]
-    clicker: Clicker
+@dataclass
+class DeviceSet:
+    # bells: BellSet
+    buttons: ButtonSet
     drums: DrumSet
-    joystick: NotRequired[Joystick]
     lights: LightSet
-    ringer: NotRequired[Ringer]
-    tilts: NotRequired[TiltSet]
+    extra: LightSet
+    combined: LightSet
+    clicker: ClickSet
+    ringer: Ringer
+    buzzer: Buzzer
+    joystick: Joystick
+    tilts: TiltSet
+
+    def astuple(self) -> tuple[
+        ButtonSet, DrumSet, 
+        LightSet, LightSet, LightSet, 
+        ClickSet, Ringer, Buzzer, Joystick, TiltSet,
+    ]:
+        """Return devices as a tuple, since dataclasses.astuple
+           will not work in this case."""
+        return tuple(getattr(self, f.name) for f in fields(self))
 

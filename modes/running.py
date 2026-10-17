@@ -7,7 +7,7 @@ from typing_extensions import override
 
 from devices.color import Colors, RGB
 from devices.lightcontroller import LightChannel, ChannelUpdate
-from .abstract.gamemode import Character, EntityGroup, GameMode, GameState
+from .abstract.gamemode import Character, EntityGroup, GameMode, GameState, Maze
 from .pacman import base_maze
 
 log = logging.getLogger('marquee.' + __name__)
@@ -40,19 +40,16 @@ class OneTwo(Dot, ABC):
 class One(OneTwo):
     """Grouped dots."""
     name: str = "One"
-    symbol: str = '1'
 
 @dataclass(kw_only=True, repr=False)
 class Two(OneTwo):
     """Grouped dots."""
     name: str = "Two"
-    symbol: str = '2'
 
 @dataclass(kw_only=True, repr=False)
 class Three(Dot):
     """Solitary dot."""
     name: str = "Three"
-    symbol: str = '3'
     color = Colors.BLUE
     direction = -1
     speed = 1

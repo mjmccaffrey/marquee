@@ -1,11 +1,10 @@
 """Marquee Lighted Sign Project - define_modes"""
 
 from devices.color import Colors
-from devices.specialparams import ChannelParams, EmulateParams
+from devices.specialparams import ChannelParams, EmulateParams, MirrorParams
 from executor import Executor
 from modes import *
 from modes.pacman import base_maze, passage_maze
-from schemas import ModeIndex
 
 
 def define_modes(exec: Executor) -> None:
@@ -26,36 +25,44 @@ def define_modes(exec: Executor) -> None:
 def register_special_modes(exec: Executor) -> None:
     """"""
     exec.add_mode("select_mode", ModeSelect, 
-        index=ModeIndex.MODE_SELECT.value, hidden=True,
+        index=ModeIndex.MODE_SELECT, hidden=True,
         previous="PREVIOUS_MODE",
     )
-    # exec.add_mode("select_brightness", BrightnessSelect, 
-    #     index=ModeIndex.BRIGHTNESS_SELECT, hidden=True,
-    # )
+    exec.add_mode("select_brightness", BrightnessSelect, 
+        index=ModeIndex.BRIGHTNESS_SELECT, hidden=True,
+    )
     exec.add_sequence_mode("all_off", all_off,
-        index=ModeIndex.DEFAULT.value,
+        index=ModeIndex.DEFAULT,
     )
 
 def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
     """PyOhio 2026 presentation."""
     exec.add_mode("2026_presentation", ModeCycle,
-        pause_before_each=True,
-        sequence=[
-            ("all_off", None),
-            ("rotate_sides_emulate", None),
-            ("even_odd_fade", None),
-            ("comet_violet", None),
-            ("signs", None),
-            ("color_sets_presentation", None),
-            ("twelve", None),
-            ("rhythm", None),
-            ("twelve_reprise", None),
-            ("doom_15", None),
-            ("pacman_15", None),
-            ("random_random_random", None),
-            ("pacman_15", None),
+        sequence = [
+            ("rotate_sides_emulate", 60),
+            ("pause", 999),
+            ("even_odd_fade", 60),
+            ("pause", 999),
+            ("signs", 60),
+            ("pause", 999),
+            ("color_sets_presentation", 60),
+            ("pause", 999),
+            ("twelve", 60),
+            ("pause", 999),
+            ("rhythm", 60),
+            ("pause", 999),
+            ("cupola_wheel_divisions", 0.1),
+            ("alarm_dive", 0.1),
+            ("twelve", 60),
+            ("pause", 999),
+            ("doom_15", 60),
+            ("pause", 999),
+            ("pacman_15", 60),
+            ("pause", 999),
+            ("random_random_random", 99999),
         ],
     )
+    exec.add_mode("pause", Pause)
     exec.add_mode("alarm_dive", AlarmDive)
     exec.add_mode("comet_wheel", Comet,
         length=9,
@@ -68,19 +75,14 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
         brightness=100,
         transition=1,
         delay=3,
+        direction=-1,
     )
     exec.add_mode("cupola_wheel_divisions", CupolaSequence,
         color_set_name='',
         brightness=100,
         transition=1,
-        delay=0.75,
-        wheel_divisions=3,
-    )
-    exec.add_mode("twelve_reprise", Twelve, brightness=40,
-        children=(
-            "alarm_dive",
-            "cupola_wheel_divisions", 
-        ),
+        delay=1,
+        wheel_divisions=4,
     )
     exec.add_mode("rhythm", Rhythm)
     exec.add_mode("signs", Signs)
@@ -88,18 +90,17 @@ def register_pyohio_2026_presentation_modes(exec: Executor) -> None:
 
 
 def register_pyohio_2026_sign_modes(exec: Executor) -> None:
-    """PyOhio 2026 sign modes."""
+    """PyOhio 2026 presentation."""
     exec.add_mode("comet_violet", Comet,
         length=4,
         delay=0.1875,
         color=Colors.VIOLET,
-        cupola_delay=1.0,
+        cupola_delay=10.0,
     )
     exec.add_mode("2026_sign", ModeCycle,
         sequence = [
-            # ("comet_violet", 300),
-            # ("color_sets_all", None)
-            ("random_random_random", None),
+            ("comet_violet", 180),
+            ("random_random_random", 180),
             # ("silent_fade_build", 180),
         ],
     )
@@ -117,12 +118,12 @@ def register_channel_modes(exec: Executor):
         sequence=[
         # ("party", 1),
         # ("cancun", 1),
-            ("race", 60),
+            ("race", 10),
         ],
-        pattern='0123456789abcdef',
-        mask='-***************',
+        pattern='0123456789ab',
+        mask='-***********',
         clockwise=True,
-        delay=10.0,
+        delay=0.4,
         brightness=35,
     )
     exec.add_mode("cs_chase_3", ColorSetDynamic, 
@@ -154,21 +155,12 @@ def register_channel_modes(exec: Executor):
     )
     exec.add_mode("color_sets_presentation", ColorSetStatic,
         sequence=[
-            ("honolulu", 255),
-            # ("soho", 255),
-            ("blue_planet", 255),
-            ("orange_fields", 255),
-            ("chinatown", 255),
-            ("rio", 255),
-            ("tokyo", 255),
-            ("spring_blossom", 255),
-            ("bahrain", 255),
-            ("cancun", 255),
-            ("arctic_aurora", 255),
-            ("fuchsia_frost", 255),
-            ("winter_beauty", 255),
+            # ("vibrant", 5),
+            ("lush", 5),
+            ("cancun", 5),
+            ("party", 5),
         ],
-        transition=0.66,
+        transition=1.0,
     )
     exec.add_mode('rotate_sides_emulate', RotateSides, delay=0.8)
     exec.add_sequence_mode("blink_alternate_medium",
@@ -181,7 +173,7 @@ def register_channel_modes(exec: Executor):
     )
     exec.add_sequence_mode("random_flip_fade_medium", 
         random_flip, 
-        sequence_kwargs=dict(light_pattern=ALL_OFF),
+        sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
         delay=0.5,
         # special=ChannelParams(),
         baseline=None,
@@ -235,7 +227,7 @@ def register_relay_modes(exec: Executor) -> None:
         special=EmulateParams(),
     )
     exec.add_sequence_mode("random_flip", random_flip, 
-        sequence_kwargs=dict(light_pattern=ALL_OFF),
+        sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
         delay=0.5, 
         baseline=None,
     )
@@ -258,7 +250,7 @@ def register_silent_modes(exec: Executor) -> None:
         )
     )
     exec.add_sequence_mode("silent_random_flip_medium", random_flip, 
-        sequence_kwargs=dict(light_pattern=ALL_OFF),
+        sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
         delay=2.0,
         special=ChannelParams(
             trans_on=0.5,
@@ -268,7 +260,7 @@ def register_silent_modes(exec: Executor) -> None:
         baseline=None,
     )
     exec.add_sequence_mode("silent_random_flip_fast", random_flip, 
-        sequence_kwargs=dict(light_pattern=ALL_OFF),
+        sequence_kwargs=dict(light_pattern='LIGHT_PATTERN'),
         delay=0.25,
         special=ChannelParams(),
         baseline=None,

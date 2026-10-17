@@ -5,6 +5,7 @@ from itertools import cycle
 import logging
 from typing_extensions import override
 
+from light_defs import EXTRA_CUPOLA
 from . import PerformanceMode
 
 log = logging.getLogger('marquee.' + __name__)
@@ -28,15 +29,16 @@ class CupolaSequence(PerformanceMode):
             wheel = self.lights.colors.wheel_colors(self.wheel_divisions)
             self.colors = cycle(wheel)
         else:
-            cs = self.lights.color_sets.by_set_name[self.color_set_name]
+            cs = self.color_sets.by_set_name[self.color_set_name]
             self.colors = cycle(cs.colors)
 
     @override
     def execute(self):
         """Change to next color."""
+        assert self.extra is not None
         color = next(self.colors)
-        self.lights.set_channels(
-            index=self.lights.CP,
+        self.extra.set_channels(
+            index=EXTRA_CUPOLA,
             color=color,
             brightness=self.brightness,
             on=True,
