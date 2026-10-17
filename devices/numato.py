@@ -8,13 +8,14 @@ from typing_extensions import override
 import serial
 
 from .relaymodule import (
-    DevicePattern, RelayClient, RelayHex, RelayPattern,
+    DevicePattern, RelayHex, RelayPattern,
+    RelayClient, RelayModule, 
 )
 
 log = logging.getLogger('marquee.' + __name__)
 
 
-class NumatoUSBRelayModule(ABC):
+class NumatoUSBRelayModule(RelayModule, ABC):
     """Supports Numato USB Relay Modules."""
     relay_count: ClassVar[int]
 
@@ -32,7 +33,7 @@ class NumatoUSBRelayModule(ABC):
         log.info(f"Initializing {self}")
         try:
             self._serial_port = serial.Serial(self.port_address, timeout=2)
-        except serial.serialutil.SerialException as e:  # type: ignore
+        except serial.SerialException as e:
             log.info('')
             log.info(f"*** Failed to open '{self.port_address}' ***")
             log.info(f"*** Error: {e} ***")
@@ -49,6 +50,7 @@ class NumatoUSBRelayModule(ABC):
         self._serial_port.close()
         log.info(f"Relay module {self} closed.")
 
+    @override
     def set_state_of_devices(
         self, 
         client: RelayClient,
@@ -62,6 +64,7 @@ class NumatoUSBRelayModule(ABC):
         self._set_relays(relay_hex)
         self.relay_pattern = relay_pattern
 
+    @override
     def get_state_of_devices(
         self, 
         client: RelayClient,
@@ -71,37 +74,6 @@ class NumatoUSBRelayModule(ABC):
            Return a client device pattern."""
         self.relay_pattern = self._get_relays()
         return self._relays_to_devices(client, self.relay_pattern)
-
-    def _devices_to_relays(
-            self,
-            client: RelayClient,
-            pattern: DevicePattern,
-        ) -> RelayPattern:
-        """Build relay pattern using client device pattern and
-           current state for relays not used by this client."""
-        top = self.relay_count - 1
-        return RelayPattern(
-            ''.join(
-                    pattern[client.relay_to_device[top - i]]
-                        if top - i in client.relay_to_device else
-                    relay
-                for i, relay in enumerate(self.relay_pattern)
-            )
-        )
-
-    def _relays_to_devices(
-            self,
-            client: RelayClient,
-            pattern: RelayPattern,
-        ) -> DevicePattern:
-        """Convert a relay pattern to a device pattern."""
-        top = self.relay_count - 1
-        return DevicePattern(
-            ''.join(
-                pattern[top - client.device_to_relay[d]]
-                for d in range(client.count)
-            )
-        )
 
     def _relays_to_relay_hex(self, pattern: RelayPattern) -> RelayHex:
         """Return relay hex pattern corresponding to relay pattern."""

@@ -5,8 +5,9 @@ from dataclasses import dataclass, field, replace
 from heapq import heapify, heappop, heappush
 import logging
 import time
-from typing import NoReturn
 from typing_extensions import override
+
+from schemas import EpochTime
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -14,7 +15,7 @@ log = logging.getLogger('marquee.' + __name__)
 @dataclass(order=True, frozen=True, repr=False)
 class Task:
     """Scheduled task."""
-    due: float
+    due: EpochTime
     owner: object 
     action: Callable = field(compare=False)
     name: str = ''
@@ -26,6 +27,7 @@ class Task:
     @override
     def __str__(self) -> str:
         return f"'{self.name}' {self.owner}"
+
 
 @dataclass
 class TaskSchedule:
@@ -66,16 +68,12 @@ class TaskSchedule:
     def pop(self) -> Task:
         """Remove and return next task from schedule."""
         task = heappop(self._schedule)
-        # log.debug(f"Task {task} removed from schedule.")
+        # log.info(f"Task {task} removed from schedule.")
         return task
 
     def push(self, task: Task) -> None:
         """Add task to schedule."""
         heappush(self._schedule, task)
-        # log.debug(self)
-        # log.debug('')
-        # log.debug(f"schedule length: {len(self._schedule)}")
-        # log.debug(f"Task {task} added to schedule.")
 
     def delay_all(self, delta: float):
         """Push all scheduled tasks back by delta seconds."""
@@ -86,57 +84,24 @@ class TaskSchedule:
         heapify(self._schedule)
         log.debug(f"{len(self._schedule)} tasks delayed by {delta} seconds.")
 
-    def wait(
-        self, 
-        seconds: float | None, 
-        wait_fn: Callable[[float | None], None | NoReturn],
-    ):
-        """Call wait_fn to wait seconds, or indefinitely if seconds is None.
-           wait_fn calls a threading.Task.wait method or equivalent."""
-        now: float
-        remaining: float
-        start: float
-        end: float
-
-        def next_task_or_wait() -> tuple[Task | None, float | None]:
-            """Return the next task if it is due, 
-               otherwise return seconds to wait."""
-            if self._schedule:
-                task = self.peek()
-                if task.due < now:
-                    log.debug(f"Running {task} {now - task.due} late")
-                    self.pop()
-                    return task, 0
-                elif seconds is None or task.due < end:
-                    log.debug(f"Waiting for {task} or button push")
-                    log.debug(f"Waiting for {task.due - now} or button push")
-                    return None, task.due - now
-                else:
-                    log.debug(f"Waiting for remaining {remaining} or button push; schedule not empty")
-                    return None, remaining
+    def next_task_or_wait_duration(self) -> Task | float | None:
+        """If the next task is due, return task.
+           Else return seconds until the next task.
+           Except if there are no more tasks, return None."""
+        now = time.time()
+        if self._schedule:
+            task = self.peek()
+            if task.due < now:
+                # log.info(f"Running {task} {now - task.due} late")
+                self.pop()
+                return task
             else:
-                if seconds is None:
-                    log.debug(f"Waiting for button push")
-                    return None, None
-                else:
-                    log.debug(f"Waiting for remaining {remaining} or button push; schedule empty")
-                    return None, remaining
+                # log.info(f"Waiting for {task.due - now} or interrupt")
+                return task.due - now
+        else:
+            # log.info(f"Waiting for interrupt")
+            return None
 
-        log.debug(f"Waiting {seconds=}")
-        start = time.time()
-        while True:
-            now = time.time()
-            if seconds is not None:
-                remaining = start + seconds - now
-                end = now + remaining
-                if now > end:
-                    log.debug(f"Exiting wait {now - end} late")
-                    break
-            task, duration = next_task_or_wait()
-            if task is not None:
-                task.action()
-            else:
-                wait_fn(duration)
 
 @dataclass
 class SeqTask:

@@ -10,15 +10,18 @@ from typing import cast
 from typing_extensions import override
 
 from devices.color import Colors, RGB
-from devices.devices_misc import ButtonName
-from light_defs import LIGHTS_CUPOLA
-from ..abstract.gamemode import Entity, EntityGroup, GameMode
+from devices.joystick import Joystick
+from ..abstract.gamemode import (
+    BoardRendition, SubEntity, Entity, EntityGroup, GameMode, render_empty,
+)
 from . import pacman_assets as assets
 from .pacman_assets import (
-    Dot, Fruit, Ghost, GhostState, PacMan, Pinky, Blinky, Sound,
-    passage_maze,
+    Dot, Fruit, Ghost, GhostState, PacMan, Pinky, Blinky, 
+    passage_maze, Sound,
+    render_ghost_and_ghost, render_pacman_and_ghost,
 )
-from devices.lightcontroller import LightChannel, ChannelUpdate
+from schemas import ControlName, DeviceName
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -51,18 +54,16 @@ class PacManGame(GameMode):
         super().__post_init__()
         self.pacman_coord = 7
         self.fruit_coord = 13 if self.maze == passage_maze else 7
-        self.lights = self.combined
         assert self.lights.gamut is not None  # Lights are color.
         RGB.adjust_incomplete_colors(self.lights.gamut)
         self.init_sound()
-        self.events.subscribe(Event.GHOST_STATE, self.ghost_state)
-        self.events.subscribe(Event.PACMAN_BITE, self.pacman_bite)
+        self.player.events.subscribe(Event.GHOST_STATE, self.ghost_state)
+        self.player.events.subscribe(Event.PACMAN_BITE, self.pacman_bite)
         self.state = GameState.PRE_GAME
         self.level: int
 
     def init_sound(self):
         """Load sounds."""
-        # pygame.mixer.init()
         self.sounds = {
             sound: pygame.mixer.Sound(f'modes/pacman/pacman_{sound}.wav')
             for sound in Sound
@@ -73,15 +74,16 @@ class PacManGame(GameMode):
         self.sounds[sound].play()
 
     @override
-    def button_action(self, button: ButtonName) -> int | None:
-        """Handle Game Start button push."""
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
         if (
-            button == ButtonName.GAME_START and
+            control == ControlName.BUTTON_GAME_START and
             self.state == GameState.PRE_GAME
         ):
             self.change_state(GameState.PRE_LEVEL_0)
+            return True
         else:
-            return super().button_action(button)
+            return super().control_action(control)
 
     def ghost_state(self, ghost: Ghost, state: GhostState) -> None:
         """"""
@@ -90,14 +92,14 @@ class PacManGame(GameMode):
                 pass
             case GhostState.EMERGING:
                 self.lights.set_channels(
-                    index=LIGHTS_CUPOLA,
+                    index=self.lights.CP,
                     on=True,
                     color=ghost.color,
                     brightness=80,
                 )
             case GhostState.CHASING:
                 self.lights.set_channels(
-                    index=LIGHTS_CUPOLA,
+                    index=self.lights.CP,
                     on=False,
                 )
 
@@ -120,6 +122,8 @@ class PacManGame(GameMode):
     def init_level(self) -> None:
         """Initialize either level."""
         super().init_level()
+        joystick: Joystick = self.devices[DeviceName.JOYSTICK.value]
+        joystick.reset()
         for index in self.maze.keys():
             dot = self.register_entity(
                 Dot(game=self, name=f"dot_{index}")
@@ -132,15 +136,19 @@ class PacManGame(GameMode):
             )
         )
         self.pacman = self.register_entity(
-            PacMan(game=self, bite_event=Event.PACMAN_BITE)
+            PacMan(
+                game=self, 
+                bite_event=Event.PACMAN_BITE,
+                joystick=joystick,
+            )
         )
         self.blinky = self.register_entity(
             Blinky(
                 game=self, 
                 state_event=Event.GHOST_STATE,
                 direction=+1,
-                wait_ticks=65 if self.level == 0 else 40,
-                emerge_ticks=75 if self.level == 0 else 50,
+                wait_ticks=55 if self.level == 0 else 60,
+                emerge_ticks=65 if self.level == 0 else 70,
             )
         )
         self.pinky = self.register_entity(
@@ -148,29 +156,40 @@ class PacManGame(GameMode):
                 game=self, 
                 state_event=Event.GHOST_STATE,
                 direction=-1,
-                wait_ticks=999989 if self.level == 0 else 90,
-                emerge_ticks=999999 if self.level == 0 else 100,
+                wait_ticks=999989 if self.level == 0 else 110,
+                emerge_ticks=999999 if self.level == 0 else 120,
             )
         )
         self.ghosts = (self.pinky, self.blinky)
         self.lights.set_channels(
             on=False,
-            index=LIGHTS_CUPOLA,
+            index=self.lights.CP,
         )
-        self.update_lights()
+        self.render_board()
 
     def play_level(self) -> None:
         """Play either level."""
         self.place_entity(self.pacman, self.pacman_coord)
         cast(Dot, self.board[self.pacman_coord][Dot]).bitten()
-        self.update_lights()
+        self.render_board()
         self.sounds[Sound.SIREN].play(-1)
         self.change_state(GameState.PLAY_GAME)
 
+    @override
+    def print_board(self, rendition: BoardRendition) -> None:
+        r = [s.symbol for s in rendition]
+        print()
+        print(f'   {r[0]} {r[1]} {r[2]}')
+        print(f' {r[11]}       {r[3]}')
+        print(f' {r[10]} {r[12]} {r[13]} {r[14]} {r[4]}')
+        print(f' {r[ 9]}       {r[5]}')
+        print(f'   {r[8]} {r[7]} {r[6]}')
+        print()
+    
     def pre_game_state(self) -> None:
         """Before game starts."""
         log.info("Waiting for Start Game button press")
-        self.buttons.game_start.set_light(True)
+        self.devices[ControlName.BUTTON_GAME_START.value].set_light(True)
         self.lights.set_channels(
             on=True,
             brightness=50,
@@ -217,7 +236,7 @@ class PacManGame(GameMode):
         self.sounds[Sound.SIREN].stop()
         self.sounds[Sound.EXTRAPAC].play(2)
         self.lights.set_channels(
-            index=LIGHTS_CUPOLA,
+            index=self.lights.CP,
             color=PacMan.color,
             brightness=PacMan.brightness,
             on=True,
@@ -230,7 +249,7 @@ class PacManGame(GameMode):
         self.sounds[Sound.SIREN].stop()
         self.play_sound(Sound.DEATH)
         self.lights.set_channels(
-            index=LIGHTS_CUPOLA,
+            index=self.lights.CP,
             color=self.lights.colors.RED,
             brightness=80,
             on=True,
@@ -276,7 +295,7 @@ class PacManGame(GameMode):
         if self.ghost_got_pacman():
             self.change_state(GameState.GAME_LOST)
             return
-        if self.tick == 16:
+        if self.tick == 26:
             self.place_entity(self.fruit, self.fruit_coord)
 
     def ghost_got_pacman(self) -> bool:
@@ -294,36 +313,19 @@ class PacManGame(GameMode):
         return False
 
     @override
-    def desired_light_state(
-            self, 
-            entities: EntityGroup, 
-            channel: LightChannel,
-        ) -> ChannelUpdate:
-        """Return ChannelUpdate given contents of maze square."""
-        # Empty square
+    def square_rendition(self, entities: EntityGroup) -> SubEntity:
+        """Return entity to render given contents of maze square."""
         if not entities:
-            return ChannelUpdate(channel=channel, on=False)
-        # Pac-Man and Ghost
+            return render_empty
         if (
             PacMan in entities and 
             any(type(ghost) in entities for ghost in self.ghosts)
         ):
-            brightness, color = Ghost.brightness, Colors.BLUE
-        # 2 Ghosts
+            return render_pacman_and_ghost
         elif len(list(e for e in entities if isinstance(e, Ghost))) > 1:
-            brightness, color = Pinky.brightness, Colors.BLUE
-        # Other
+            return render_ghost_and_ghost
         else:
-            s: list[Entity] = sorted(
+            return sorted(
                 entities.values(), key=lambda e: e.draw_priority,
-            )
-            brightness, color = s[-1].brightness, s[-1].color
-        #
-        return ChannelUpdate(
-            channel=channel,
-            brightness=brightness,
-            transition=0,
-            color=color,
-            on=True,
-        )
+            )[-1]
 

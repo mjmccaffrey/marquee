@@ -13,7 +13,6 @@ from .abstract.selectmode import SelectMode
 from .structural.brightnessselect import BrightnessSelect
 from .structural.modecycle import ModeCycle
 from .structural.modeselect import ModeSelect
-from .structural.modes_misc import *
 from .structural.sequencemode import LightSetBaseline, SequenceMode
 from .structural.sequences import *
 
@@ -26,14 +25,11 @@ from .comet import Comet
 from .doom import DoomGame
 from .evenoddfade import EvenOddFade
 from .pacman import PacManGame
-from .pause import Pause
 from .randomfade import RandomFade
 from .rotate import RotateSides
-from .running import Running
 from .rhythym import Rhythm
 from .signs import Signs
 from .silentfadebuild import SilentFadeBuild
-# from .tiltsensors import TiltSensors
 from .twelve import Twelve
 from .generatedmodes import GeneratedModes
 

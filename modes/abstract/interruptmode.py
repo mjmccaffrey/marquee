@@ -33,7 +33,7 @@ class InterruptMode(PerformanceMode, ABC):
 
     def save_and_pause(self):
         """"""
-        self.tasks.delay_all(self.total_time)
+        self.player.tasks.delay_all(self.total_time)
         pygame.mixer.music.pause()
         self.state = self.lights.current_state()
 

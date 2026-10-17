@@ -1,10 +1,11 @@
 """Marquee Lighted Sign Project - instruments __init__"""
 
-from .instruments import (
-    Instrument, ActionInstrument, BellSet, Buzzer, DrumSet, 
+from .instruments_abstract import (
+    Instrument, DinInstrument,
     LightChannelInstrument, LightRelayInstrument,
-    ReleaseableInstrument, RestInstrument, Ringer,
+    RelayInstrument, ReleaseableInstrument,
 )
-from .lightset import ClickSet, LightSet
-from .combinedlightset import CombinedLightSet
+from .instruments_concrete import BellSet, Buzzer, Clicker, DrumSet, Ringer
+from .lightset import LightSet
+from .lightsetinterface import LightSetInterface
 
