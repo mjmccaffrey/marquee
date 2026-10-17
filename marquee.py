@@ -64,7 +64,6 @@ def main() -> int:
     result = 1
     try:
         exec = setup()
-
         result = execute(exec)
     finally:
         cleanup(exec)

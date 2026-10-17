@@ -8,7 +8,7 @@ from typing_extensions import override
 
 
 class Device(ABC):
-    """"""
+    """Base for controls and instruments."""
     @abstractmethod
     def off(self) -> None:
         """Turn off device to the extent possible."""
@@ -61,7 +61,7 @@ class DeviceName(StrEnum):
 
 
 class APICommand(StrEnum):
-    """"""
+    """Every API command."""
     NEXT_ENTRY = auto()
     PREVIOUS_ENTRY = auto()
     NEXT_MODE = auto()
@@ -70,7 +70,7 @@ class APICommand(StrEnum):
 
 @dataclass
 class Control(Device, ABC):
-    """"""
+    """Base for input devices."""
     name: DeviceName
     execute_interrupt: Callable = field(init=False)
 
@@ -95,36 +95,39 @@ class InterruptSource(StrEnum):
 
 @dataclass
 class Interrupt(Exception, ABC):
-    """"""
+    """Event loop interrupts."""
     source: InterruptSource
 
 
 @dataclass
-class CommandInterrupt(Interrupt):
-    """"""
-    command: APICommand
-
-
-@dataclass
 class ChangeModeInterrupt(Interrupt):
-    """"""
+    """Create active mode and resolve conflicts
+       with other active modes."""
     mode_index: int
 
 
 @dataclass
+class CommandInterrupt(Interrupt):
+    """Send API command to active modes."""
+    command: APICommand
+
+
+@dataclass
 class ControlInterrupt(Interrupt):
-    """"""
+    """Send control action to active modes."""
     action: ControlAction
     control: ControlName
 
 
 @dataclass
 class Exit(Exception):
+    """Exit application."""
     shutdown: bool
 
 
 @dataclass
 class CycleEntry:
+    """Items in sequence or cycle of certain modes."""
     name: str | None
     seconds: float | None
     index: int | None = None
@@ -152,6 +155,7 @@ class BaseModeInterface(Protocol):
 
 @dataclass(kw_only=True)
 class ModeDefinition:
+    """Everything required to instantiate a mode."""
     index: int | None = None
     name: str
     cls: type[BaseModeInterface]
@@ -159,6 +163,7 @@ class ModeDefinition:
 
 
 class ModeIndex(IntEnum):
+    """"""
     MODE_SELECT = 0
     DEFAULT = 1
 

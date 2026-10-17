@@ -2,11 +2,21 @@ marquee
     Executor
     Player / PlayerResources
         APIServer
+        Interrupt
+            * InterruptSource
+            ChangeModeInterrupt
+            CommandInterrupt
+                * APICommand
+            ControlInterrupt
+                * ControlAction
         Event
         Task
-    devices
+    Device
+        * DeviceName
         Control
+            * ControlName
             Button
+                * ButtonName
                 LightedButton
             Joystick
             TiltSet
@@ -22,47 +32,48 @@ marquee
                 CombinedRelayModule
             RelayModule
                 NumatoUSBRelayModule
-    instruments
-        LightSetInterface
-            CombinedLightSet
-            LightSet
-        ActionInstrument
-        RelayInstrument
-            BellSet
-            Buzzer
-            DrumSet
-            Ringer
-        Releaseable Instrument
-            BellSet
-        RestInstrument
-    modes
-        BaseMode / BaseModeInterface
-            Mode
-                SelectMode
-                PerformanceMode
-                    ColorSetMode
-                    GameMode
-                    InterruptMode
-                    MusicMode
-                    SequenceMode
-    music
-        Piece
-            Section
-                Part
-                    Measure
-                        Element
-                            Note
-                                ActionNote
-                                BellNote
-                                DrumNote
-                                Rest
-                            NoteGroup
-                    SequenceMeasure
-                    Sequence
-    DeviceName
-        DeviceName
         Instrument
-        Clicker
-        Joystick
-        Tilts
+            * InstrumentName
+            LightSetInterface
+                CombinedLightSet
+                LightSet
+            ActionInstrument
+            DinInstrument
+                Buzzer
+                Ringer
+            RelayInstrument
+                BellSet
+                Buzzer
+                Clicker
+                DinInstrument
+                DrumSet
+                Ringer
+            Releaseable Instrument
+                BellSet
+                DinInstrument
+            RestInstrument
+    BaseMode / BaseModeInterface
+        Mode
+            SelectMode
+            PerformanceMode
+                ColorSetMode
+                GameMode
+                InterruptMode
+                MusicMode
+                SequenceMode
+    Element
+        Piece
+        Section
+        Part
+        Measure
+        Note
+            ActionNote
+            BellNote
+            DrumNote
+            ReleasedNote
+                DinNote
+                    BuzzerNote
+                    RingerNote
+            Rest
+            NoteGroup
 
