@@ -95,7 +95,7 @@ class InterruptSource(StrEnum):
 
 @dataclass
 class Interrupt(Exception, ABC):
-    """Event loop interrupts."""
+    """Player event loop interrupts."""
     source: InterruptSource
 
 

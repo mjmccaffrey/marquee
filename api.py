@@ -31,7 +31,7 @@ class Tag(StrEnum):
 
 
 class API:
-    """"""
+    """Access via webserver to Marquee internals."""
 
     def __init__(self, player: PlayerResources) -> None:
         """Initialize."""
@@ -42,7 +42,7 @@ class API:
         self._register_api_routes()
 
     def _build_mode_def_enum(self) -> None:
-        """"""
+        """Build enum of mode definitions."""
         if TYPE_CHECKING:
             class ModeDefEnum(IntEnum):
                 ONE = 1
@@ -55,7 +55,7 @@ class API:
             )
 
     def _start_api_server(self) -> None:
-        """"""
+        """Start Uvicorn and FastAPI."""
         self.app = FastAPI()
         self.server = APIServer(
             app=self.app, host="0.0.0.0", port=8000,
@@ -79,14 +79,14 @@ class API:
 
     @staticmethod
     def _mode_description(mode: ModeDefinition) -> str:
-        """"""
+        """Return uniform description of mode."""
         return (
             f"{mode.index} {mode.name}"
             f"{' (background)' if mode.cls.background else ''}"
         )
     
     def _register_api_routes(self) -> None:
-        """"""
+        """Register all routes / endpoints."""
         # Modes
         self.app.post("/mode/{mode_id}", tags=[Tag.MODES]) \
                      (self.create_active_mode)
@@ -163,13 +163,13 @@ class API:
         )
 
     def stop_overriding_joystick(self) -> None:
-        """"""
+        """Allow joystick to report actual direction."""
         print("JOYSTICK STOP")
         assert 'joystick' in self.player.devices
         self.player.devices['joystick'].override = None
 
     def override_joystick(self, direction: joystick.Direction) -> None:
-        """"""
+        """Force joystick to report direction."""
         print(f"JOYSTICK {direction}")
         assert 'joystick' in self.player.devices
         self.player.devices['joystick'].override = direction
@@ -179,7 +179,7 @@ class API:
     # ***** Outputs *****
 
     def set_brightness(self, factor: float) -> None:
-        """"""
+        """Set brightness_factor."""
         self.player.devices['lights'].change_brightness_factor(factor)
 
 
@@ -193,5 +193,4 @@ class API:
                 command=command,
             )
         )
-
 
