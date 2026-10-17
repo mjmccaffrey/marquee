@@ -4,7 +4,10 @@ from dataclasses import dataclass, field
 from enum import auto, StrEnum
 import logging
 
-from gpiozero import Button as _Button
+import gpiozero
+
+from schemas import Control
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -24,10 +27,10 @@ state_to_tilt = {
 
 
 @dataclass
-class TiltSet:
+class TiltSet(Control):
     """"""
-    left: _Button
-    right: _Button
+    left: gpiozero.Button
+    right: gpiozero.Button
     tilt: Tilt = field(init=False)
 
     def __post_init__(self) -> None:

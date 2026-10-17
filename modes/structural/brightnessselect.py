@@ -4,8 +4,9 @@ from dataclasses import dataclass
 import logging
 from typing_extensions import override
 
-from .modes_misc import ModeIndex
 from ..abstract.selectmode import SelectMode
+from schemas import ModeIndex
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -32,7 +33,7 @@ class BrightnessSelect(SelectMode):
     def execute(self) -> None:
         """Set current brightness_factor."""
         self.set_brightness_level(self.desired)
-        new = super().execute()
+        new = self.step()
         if new is not None:  # Final selection made.
             self.change_mode(ModeIndex.DEFAULT)
 

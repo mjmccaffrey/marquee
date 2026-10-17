@@ -2,14 +2,15 @@
 
 from dataclasses import InitVar, dataclass
 import logging
-from typing import Any
+from typing import Any, cast
 from typing_extensions import override
 
 from devices.specialparams import ChannelParams
 from . import (
-    ColorSetMode, CycleSequence, ModeDefinition,
-    LightSetBaseline, SequenceMode, chase, rotate,
+    ColorSetMode, LightSetBaseline, SequenceMode, chase, rotate,
 )
+from schemas import CycleSequence, ModeDefinition
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -19,7 +20,7 @@ class ColorSetDynamic(ColorSetMode):
     """Play repeating sequence of color sets.
        If mask is specified, it will rotate.
        Otherwise, pattern will rotate."""
-    sequence: InitVar[CycleSequence]  # (color_set_name, seconds)
+    sequence: InitVar[CycleSequence]
     brightness: int | None = None
     transition: float = 0.0
     pattern: str
@@ -38,7 +39,7 @@ class ColorSetDynamic(ColorSetMode):
     @override
     def execute(self):
         """Timer-invoked change to next color set."""
-        self.tasks.delete_owned_by(self)
+        self.player.tasks.delete_owned_by(self)
         self.entry_index = self.wrap_entry_index(self.direction)
         self.show_color_set()
 
@@ -46,13 +47,14 @@ class ColorSetDynamic(ColorSetMode):
     def show_color_set(self):
         """Show color set."""
         entry = self.entries[self.entry_index]
-        cs = self.color_sets.by_set_name[entry.name]
+        cs = self.lights.color_sets.by_set_name[entry.name]
         log.info(
             f"Chasing color set {cs.group}.{cs.name} "
             f"for {entry.seconds} seconds "
             f"({self.entry_index + 1} / {len(self.entries)})."
         )
-        self.schedule(due=entry.seconds)
+        if entry.seconds is not None:
+            self.schedule(due=entry.seconds)
         kwargs: dict[str, Any] = dict(
             baseline=LightSetBaseline(on=False),
             color_set_name=entry.name,
@@ -69,13 +71,14 @@ class ColorSetDynamic(ColorSetMode):
             kwargs |= dict(sequence=chase)
             sequence_kwargs |= dict(mask=self.mask)
         kwargs['sequence_kwargs'] = sequence_kwargs
-        mode = self.create_mode_instance(
+        mode = self.player.create_active_mode(
             mode_definition=ModeDefinition(
                 name='cs_rotate',
                 cls=SequenceMode,
+                kwargs=kwargs,
             ),
-            kwargs=kwargs,
             parent=self,
+            record=False,
         )
         self.schedule(mode.execute)
 

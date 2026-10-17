@@ -199,11 +199,11 @@ class ColorSets:
     by_set_name: BySetName
     by_group_name: ByGroupName
 
-    def __init__(self, source: str) -> None:
+    def __init__(self) -> None:
         """"""
         unordered = (
             self._basic_colors() |
-            self._load_color_sets(Path(source))
+            self._load_color_sets(Path('color_sets.json'))
         )
         self.by_group_name = self._create_color_groups(unordered)
         self.by_set_name = {
@@ -238,6 +238,7 @@ class ColorSets:
     @staticmethod
     def _load_color_sets(source: Path) -> BySetName:
         """Load color sets from file."""
+        # return {}
         with open(source) as f:
             data = json.load(f)
         return {

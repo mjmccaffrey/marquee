@@ -18,14 +18,14 @@ class ModeSelect(SelectMode):
         """Initialize."""
         super().setup(
             lower=1, 
-            upper=max(self.modes),
+            upper=max(self.player.modes),
             previous=self.previous,
         )
 
     @override
     def execute(self) -> None:
-        """Set current brightness_factor."""
-        new = super().execute()
+        """Set current mode."""
+        new = self.step()
         if new is not None:  # Final selection made.
             self.change_mode(new)
 

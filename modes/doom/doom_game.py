@@ -8,7 +8,7 @@ import logging
 import pygame
 from typing_extensions import override
 
-from light_defs import LIGHTS_BY_ROW, LIGHTS_BY_SIDE, LIGHTS_CUPOLA
+from light_defs import LIGHTS_BY_ROW, LIGHTS_BY_SIDE
 from task import SeqTask
 from .. import PerformanceMode
 from devices.color import Colors, RGB
@@ -33,7 +33,6 @@ class DoomGame(PerformanceMode):
         """Initialize board and characters."""
         super().__post_init__()
         if self.passage:  # 12 + 3 + 1 lights
-            self.lights = self.combined
             self.lights_by_row = deepcopy(LIGHTS_BY_ROW)
             self.lights_by_side = deepcopy(LIGHTS_BY_SIDE)
             self.lights_by_row[0].append(15)
@@ -50,7 +49,6 @@ class DoomGame(PerformanceMode):
 
     def init_sound(self):
         """"""
-        # pygame.mixer.init()
         self.sounds = {
             sound: pygame.mixer.Sound(f'modes/doom/doom_{sound}')
             for sound in Sound
@@ -72,7 +70,6 @@ class DoomGame(PerformanceMode):
 
     def slayer_teleports(self):
         """"""
-        print("PLAYER TELEPORTS")
         self.play_sound(Sound.TELEPORT)
         self.lights.set_channels(
             on=True,
@@ -84,7 +81,6 @@ class DoomGame(PerformanceMode):
 
     def slayer_appears(self):
         """"""
-        print("PLAYER APPEARS")
         self.play_sound(Sound.SLAYER_UMF)
         self.lights.set_channels(
             on=True,
@@ -96,7 +92,6 @@ class DoomGame(PerformanceMode):
 
     def barons_appear(self, step: int):
         """"""
-        print("BARONS APPEAR")
         self.play_sound(Sound.BARON_ROAR)
         self.lights.set_channels(
             on=True,
@@ -113,7 +108,6 @@ class DoomGame(PerformanceMode):
 
     def slayer_dies(self):
         """"""
-        print("SLAYER DIES")
         self.schedule(
             action=partial(self.play_sound, Sound.SLAYER_DEATH_2),
             due=0.0,
@@ -122,7 +116,7 @@ class DoomGame(PerformanceMode):
         #     on=True,
         #     brightness=100,
         #     color=Colors.RED,
-        #     index=LIGHTS_CUPOLA,
+        #     index=self.lights.CP,
         # )
         self.lights.set_channels(
             # group='ALL',
@@ -135,16 +129,15 @@ class DoomGame(PerformanceMode):
 
     def fade_lights(self):
         """"""
-        print("LIGHTS FADE")
         for i, row in enumerate(self.lights_by_row):
             self.schedule(
                 action=partial(
                     self.lights.set_channels,
                     on=False,
-                    transition=1.5,
+                    transition=3.0,
                     index=row,
                 ),
-                due=i / 2,
+                due=i,
             )
         
     @override
@@ -159,7 +152,7 @@ class DoomGame(PerformanceMode):
             SeqTask(partial(self.barons_appear, step=2), due=0.75),
             SeqTask(partial(self.barons_appear, step=1), due=0.75),
             SeqTask(self.slayer_dies, due=0.75),
-            SeqTask(self.fade_lights, due=1.0),
-            SeqTask(self.fade_music, due=3.0),
+            SeqTask(self.fade_lights, due=0.5),
+            SeqTask(self.fade_music, due=3.5),
         )
         

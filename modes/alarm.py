@@ -6,8 +6,9 @@ import pygame
 from typing_extensions import override
 
 from devices.color import Colors
-from devices.devices_misc import ButtonName
 from .abstract.interruptmode import InterruptMode
+from schemas import ControlName
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -21,12 +22,12 @@ class AlarmBell(InterruptMode):
     total_time: float = activity_time + restore_time
 
     @override
-    def button_action(self, button: ButtonName) -> int | None:
-        """"""
-        if button == ButtonName.CORDED_B:
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
+        if control == ControlName.BUTTON_CORDED_B:
             self.schedule()
-        else:
-            return super().button_action(button)
+            return True
+        return super().control_action(control)
 
     @override
     def execute_activity(self):
@@ -59,12 +60,12 @@ class AlarmDive(InterruptMode):
     restore_time: float = 4.0
 
     @override
-    def button_action(self, button: ButtonName) -> int | None:
-        """"""
-        if button == ButtonName.CORDED_B:
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
+        if control == ControlName.BUTTON_CORDED_C:
             self.schedule(self.execute_interrupt)
-        else:
-            return super().button_action(button)
+            return True
+        return super().control_action(control)
 
     @override
     def execute_activity(self):

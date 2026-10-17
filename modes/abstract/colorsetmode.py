@@ -5,9 +5,9 @@ from dataclasses import InitVar, dataclass
 import logging
 from typing_extensions import override
 
-from devices.devices_misc import ButtonName
+from schemas import CycleEntry, CycleSequence, ControlName
 from .performancemode import PerformanceMode
-from ..structural.modes_misc import CycleEntry, CycleSequence
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -30,20 +30,37 @@ class ColorSetMode(PerformanceMode, ABC):
         """Show color set. Schedule next set."""
 
     @override
-    def button_action(self, button: ButtonName) -> int | None:
-        """If direction button pushed, change displayed color set.
-           Otherwise, call parent's button handler."""
-        direction_buttons = {
-            ButtonName.CORDED_A: +1,
-            ButtonName.CORDED_B: -1,
-        }
-        if button in direction_buttons:
-            self.clicker.click()
-            self.tasks.delete_owned_by(self)
-            self.entry_index = self.wrap_entry_index(direction_buttons[button])
-            self.schedule(action=self.show_color_set)
-        else:
-            return super().button_action(button)
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
+        match control:
+            case ControlName.BUTTON_CORDED_A | ControlName.BUTTON_REAR \
+            if self.entry_index < 11:
+                self.clicker.play()
+                self.next_entry()
+                return True
+            case ControlName.BUTTON_CORDED_B:
+                self.clicker.play()
+                self.previous_entry()
+                return True
+            case _:
+                return super().control_action(control)
+
+    @override
+    def next_entry(self) -> bool:
+        self._change_entry(+1)
+        return True
+
+    @override
+    def previous_entry(self) -> bool:
+        self._change_entry(-1)
+        return True
+
+    def _change_entry(self, delta: int) -> None:
+        """"""
+        self.player.tasks.delete_owned_by(self)
+        self.entry_index = self.wrap_entry_index(delta)
+        print(f"{self.entry_index=}")
+        self.schedule(self.show_color_set)
 
     def expand_sequence(
         self, 
@@ -58,15 +75,15 @@ class ColorSetMode(PerformanceMode, ABC):
         if name == 'ALL':
             sequence = [
                 (n, seconds)
-                for n in self.color_sets.by_group_name
+                for n in self.lights.color_sets.by_group_name
             ]
         cs_sequence = []
         for name, seconds in sequence:
-            if name in self.color_sets.by_group_name:
-                for cs in self.color_sets.by_group_name[name]:
+            if name in self.lights.color_sets.by_group_name:
+                for cs in self.lights.color_sets.by_group_name[name]:
                     cs_sequence.append(CycleEntry(cs.name, seconds))
             else:
-                _ = self.color_sets.lookup(name)
+                _ = self.lights.color_sets.lookup(name)
                 cs_sequence.append(CycleEntry(name, seconds))
         return cs_sequence
 

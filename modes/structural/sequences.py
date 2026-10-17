@@ -115,7 +115,6 @@ def chase(pattern: str, mask: str, clockwise: bool) -> Iterator[str]:
             p if m == '*' else m
             for p, m in zip(pattern, rotated_mask)
         )
-        print(result)
         yield result
 
 

@@ -8,7 +8,10 @@ from typing import ClassVar
 from typing_extensions import override
 
 from devices.color import Color, Colors, RGB
-from ..abstract.gamemode import Character, Entity, GameMode, Maze, Square
+from devices.joystick import Joystick
+from ..abstract.gamemode import (
+    Character, Entity, GameMode, Maze, Square, SpecialRender,
+)
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -16,12 +19,14 @@ log = logging.getLogger('marquee.' + __name__)
 @dataclass(kw_only=True, repr=False, eq=True)
 class Dot(Entity):
     game: GameMode
+    symbol: str = '*'
     color: ClassVar[Color] = RGB(255, 176, 124)
     brightness: int = 50
     draw_priority: int = 1
 
     def bitten(self):
         """Change state accordingly of bitten dot."""
+        self.symbol = '.'
         self.brightness -= 40
 
     @property
@@ -33,6 +38,7 @@ class Dot(Entity):
 @dataclass(kw_only=True, repr=False, eq=True)
 class Fruit(Entity):
     game: GameMode
+    symbol: str = 'O'
     color: RGB
     name: str = "Fruit"
     brightness: int = 80
@@ -42,7 +48,9 @@ class Fruit(Entity):
 @dataclass(kw_only=True, repr=False)
 class PacMan(Character):
     game: GameMode
+    symbol: str = '<'
     bite_event: str
+    joystick: Joystick
     name: str = "PacMan"
     color: ClassVar[Color] = RGB(252, 234, 63)
     brightness: int = 80
@@ -51,7 +59,7 @@ class PacMan(Character):
 
     def next_coord(self):
         """Next square, based on joystick and maze."""
-        dir = self.game.joystick.direction
+        dir = self.joystick.direction
         if dir is None:
             return
         assert self.coord is not None
@@ -65,7 +73,7 @@ class PacMan(Character):
             self.game.move_character(self, coord)
             edible = {e for e in self.game.board[coord] if e in {Dot, Fruit}}
             for e in edible:
-                self.game.events.notify(self.bite_event, etype=e, coord=coord)
+                self.game.player.events.notify(self.bite_event, etype=e, coord=coord)
 
 
 class Sound(StrEnum):
@@ -102,7 +110,7 @@ class Ghost(Character, ABC):
     def change_state(self, state: GhostState) -> None:
         """"""
         self.state = state
-        self.game.events.notify(self.state_event, ghost=self, state=state)
+        self.game.player.events.notify(self.state_event, ghost=self, state=state)
 
     def waiting(self) -> None:
         """Waiting to enter emerge."""
@@ -147,25 +155,41 @@ class Ghost(Character, ABC):
 @dataclass(kw_only=True, repr=False)
 class Blinky(Ghost):
     name: str = "Blinky"
+    symbol: str = 'B'
     color: ClassVar[Color] = Colors.RED
 
 
 @dataclass(kw_only=True, repr=False)
 class Pinky(Ghost):
     name: str = "Pinky"
+    symbol: str = 'P'
     color: ClassVar[Color] = Colors.MAGENTA
 
 
 @dataclass(kw_only=True, repr=False)
 class Inky(Ghost):
     name: str = "Inky"
+    symbol: str = 'I'
     color: ClassVar[Color] = Colors.TEAL
 
 
 @dataclass(kw_only=True, repr=False)
 class Clyde(Ghost):
     name: str = "Clyde"
+    symbol: str = 'C'
     color: ClassVar[Color] = Colors.ORANGE
+
+
+render_ghost_and_ghost = SpecialRender(
+    name="GhostAndGhost",
+    symbol='G',
+    color=Colors.BLUE,
+)
+render_pacman_and_ghost = SpecialRender(
+    name="PacManAndGhost",
+    symbol='X',
+    color=Colors.RED,
+)
 
 
 base_maze: Maze = {
@@ -185,9 +209,9 @@ base_maze: Maze = {
         up=None, upright=None,
     ),
     3: Square(
-        down=4, downright=4, upright=4,
+        down=4, downright=4, downleft=4,
         left=2, up=2, upleft=2,
-        right=None, downleft=None,
+        right=None, upright=None,
     ),       
     4: Square(
         up=3, upleft=3, upright=3,
@@ -202,7 +226,7 @@ base_maze: Maze = {
     6: Square(
         left=7, downleft=7, upleft=7,
         up=5, right=5, upright=5,
-        down=None, downright=5,
+        down=None, downright=None,
     ),
     7: Square(
         left=8, upleft=8, downleft=8,
@@ -232,15 +256,15 @@ base_maze: Maze = {
 }
 passage_maze: Maze = base_maze | {
     4: Square(
-        up=3, upleft=3, upright=3,
-        down=5, downleft=5, downright=5,
-        left=14,
+        up=3, upright=3,
+        down=5, downright=5,
+        left=14, upleft=14, downleft=14, 
         right=None,
     ),
     10: Square(
-        down=9, downleft=9, downright=9,
-        up=11, upleft=11, upright=11,
-        right=12,
+        down=9, downleft=9, 
+        up=11, upleft=11, 
+        right=12, upright=12, downright=12,
         left=None,
     ),
     12: Square(

@@ -5,9 +5,9 @@ from dataclasses import dataclass
 import logging
 from typing_extensions import override
 
-from devices.devices_misc import ButtonName
 from .mode import Mode
-from ..structural.modes_misc import ModeIndex
+from schemas import ControlName, DeviceName, ModeIndex
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -17,33 +17,34 @@ class PerformanceMode(Mode, ABC):
     """Base for performance modes."""
 
     @override
-    def button_action(self, button: ButtonName) -> int | None:
-        """Respond to button being pressed.
-           Return index of new mode, if any."""
-        new_mode = None
-        b = ButtonName
-        match button:
-            case b.REMOTE_A | b.BODY_BACK:
-                new_mode = ModeIndex.MODE_SELECT
-            case b.REMOTE_C:
-                self.clicker.click()
-                new_mode = ModeIndex.BRIGHTNESS_SELECT
-            case b.REMOTE_B:
-                self.clicker.click()
-                new_mode = self.wrap_mode_index(-1)
-            case b.REMOTE_D:
-                self.clicker.click()
-                new_mode = self.wrap_mode_index(+1)
+    def control_action(self, control: ControlName) -> bool:
+        """Respond to control action and return True."""
+        b = DeviceName
+        match control:
+            case b.BUTTON_REAR:
+                self.change_mode(ModeIndex.MODE_SELECT)
+                return True
+            # case b.REMOTE_C:
+            #     self.clicker.click()
+            #     new_mode = ModeIndex.BRIGHTNESS_SELECT
+            # case ControlName.BUTTON_CORDED_A:
+            #     self.clicker.play()
+            #     self.previous_mode()
+            #     return True
+            # case ControlName.BUTTON_CORDED_B:
+            #     self.clicker.play()
+            #     self.next_mode()
+            #     return True
             case _:
-                pass
-        return new_mode
+                return False
 
-    def wrap_mode_index(self, delta: int) -> int:
-        """"""
-        return self.wrap_value(
-            lower=1, 
-            upper=max(self.modes), 
-            current=self.index,
-            delta=delta,
-        )
+    @override
+    def next_mode(self) -> bool:
+        self.change_mode(self._wrap_mode_index(+1))
+        return True
+    
+    @override
+    def previous_mode(self) -> bool:
+        self.change_mode(self._wrap_mode_index(-1))
+        return True
 

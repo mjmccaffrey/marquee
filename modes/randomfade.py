@@ -23,7 +23,6 @@ class RandomFade(PerformanceMode):
     def __post_init__(self) -> None:
         """Initialize."""
         super().__post_init__()
-        self.lights = self.combined
         # self.lights.set_relays(ALL_ON)
         self.lights.set_channels(on=True)
         self.brightnesses = self.lights.brightnesses()
@@ -60,7 +59,7 @@ class RandomFade(PerformanceMode):
         if self.color_set_name is None:
             new = self.lights.colors.random()
         else:
-            color_set = self.color_sets.by_set_name[self.color_set_name]
+            color_set = self.lights.color_sets.by_set_name[self.color_set_name]
             choice = random.choice(color_set.colors)
             new = XY(choice.x, choice.y)
         return new
