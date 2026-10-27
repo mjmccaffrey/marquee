@@ -1,0 +1,37 @@
+2026-10-26 15:36:24,786 - marquee - Exiting with unexpected error.
+2026-10-26 15:42:44,150 - marquee - Exiting with unexpected error.
+2026-10-26 15:44:42,157 - marquee - Invalid arguments.
+2026-10-26 15:46:59,723 - marquee - Invalid arguments.
+2026-10-26 15:57:08,949 - marquee - Invalid arguments.
+2026-10-26 16:02:33,309 - marquee - Invalid arguments.
+2026-10-26 16:03:15,699 - marquee - Invalid arguments.
+2026-10-26 16:07:23,960 - marquee - Invalid arguments.
+2026-10-26 20:00:33,641 - marquee - Invalid arguments.
+2026-10-26 20:03:15,294 - marquee - Invalid arguments.
+2026-10-26 20:39:11,379 - marquee - Invalid arguments.
+2026-10-26 20:39:35,862 - marquee - Exiting with unexpected error.
+2026-10-26 20:44:04,256 - marquee - Exiting with unexpected error.
+2026-10-26 20:47:25,992 - marquee.instruments.lightset - ***** Smart bulbs in use - light relays already ON. *****
+2026-10-26 20:47:25,993 - marquee.devices.hue - Initializing HueBridge @ 192.168.64.130
+2026-10-26 20:47:26,009 - marquee.executor - Marquee hardware is now partially powered off.
+2026-10-26 20:47:26,010 - marquee.executor - 
+2026-10-26 20:47:26,011 - marquee - Exiting without shutdown.
+2026-10-26 20:48:11,495 - marquee - Invalid arguments.
+2026-10-26 20:52:45,167 - marquee - Invalid arguments.
+2026-10-26 20:57:00,069 - marquee - Invalid arguments.
+2026-10-26 20:58:15,578 - marquee.devices.hue - Initializing HueBridge @ 192.168.64.130
+2026-10-26 20:58:17,604 - marquee.devices.hue - *** Failed to reach '192.168.64.130' ***
+2026-10-26 20:58:17,605 - marquee.devices.hue - *** Error: HTTPSConnectionPool(host='192.168.64.130', port=443): Max retries exceeded with url: /clip/v2/resource/light (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x0000015B4A7F41A0>, 'Connection to 192.168.64.130 timed out. (connect timeout=2.0)')) ***
+2026-10-26 20:58:17,606 - marquee - Exiting with unexpected error.
+2026-10-26 22:26:00,910 - marquee.devices.hue - Initializing HueBridge @ 192.168.64.130
+2026-10-26 22:26:02,915 - marquee.devices.hue - *** Failed to reach '192.168.64.130' ***
+2026-10-26 22:26:02,915 - marquee.devices.hue - *** Error: HTTPSConnectionPool(host='192.168.64.130', port=443): Max retries exceeded with url: /clip/v2/resource/light (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x0000018BFF0B81A0>, 'Connection to 192.168.64.130 timed out. (connect timeout=2.0)')) ***
+2026-10-26 22:26:02,916 - marquee - Exiting with unexpected error.
+2026-10-26 22:26:09,228 - marquee.instruments.lightset - ***** Smart bulbs in use - light relays already ON. *****
+2026-10-26 22:26:09,228 - marquee.devices.hue - Initializing HueBridge @ 192.168.64.130
+2026-10-26 22:26:09,231 - marquee.executor - Marquee hardware is now partially powered off.
+2026-10-26 22:26:09,231 - marquee.executor - 
+2026-10-26 22:26:09,232 - marquee - Exiting without shutdown.
+2026-10-26 22:26:13,370 - marquee - Invalid arguments.
+2026-10-26 22:27:43,181 - marquee - Invalid arguments.
+2026-10-26 22:28:33,078 - marquee - Invalid arguments.
