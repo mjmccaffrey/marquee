@@ -166,12 +166,14 @@ class Executor:
     ) -> None:
         """Executes the pattern operation."""
         if brightness_pattern is not None:
+            assert len(brightness_pattern) == self.lights.count
             self.lights.set_channels(
                 brightness=brightness_pattern,
                 transition=self.lights.trans_min,
             )
             time.sleep(self.lights.trans_min)
         if light_pattern is not None:
+            assert len(light_pattern) == self.lights.count
             self.lights.set_relays(light_pattern)
 
     def command_calibrate(self) -> None:
