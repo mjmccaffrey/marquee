@@ -1,0 +1,13 @@
+{
+    "include": [
+        "**/*.py",
+    ],
+    "exclude": [
+        "modes/old/*.py",
+    ],
+    "reportIncompatibleMethodOverride": true,
+    "reportIncompatibleVariableOverride": false,
+    "reportPossiblyUnboundVariable": false,
+    "reportMatchNotExhaustive": true,
+    "reportImplicitOverride": true,
+}

@@ -1,0 +1,186 @@
+"""Marquee Lighted Sign Project - schemas"""
+
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from enum import auto, IntEnum, StrEnum
+from types import SimpleNamespace
+from typing import Any, Callable, NewType, Protocol
+from typing_extensions import override
+
+
+class Device(ABC):
+    """Base for controls and instruments."""
+    @abstractmethod
+    def off(self) -> None:
+        """Turn off device to the extent possible."""
+
+
+class ButtonName(StrEnum):
+    """Every button."""
+    REAR = auto()
+    CORDED_A = auto()
+    CORDED_B = auto()
+    GAME_START = auto()
+
+
+class ControlName(StrEnum):
+    """Every control."""
+    BUTTON_REAR = auto()
+    BUTTON_CORDED_A = auto()
+    BUTTON_CORDED_B = auto()
+    BUTTON_CORDED_C = auto()
+    BUTTON_GAME_START = auto()
+    JOYSTICK = auto()
+    TILTS = auto()
+
+
+class InstrumentName(StrEnum):
+    """Every instrument."""
+    BELLS = auto()
+    BUZZER = auto()
+    CLICKER = auto()
+    DRUMS = auto()
+    LIGHTS = auto()
+    RINGER = auto()
+
+
+class DeviceName(StrEnum):
+    """Every device (controls | instruments)."""
+    BELLS = auto()
+    BUTTON_REAR = auto()
+    BUTTON_CORDED_A = auto()
+    BUTTON_CORDED_B = auto()
+    BUTTON_CORDED_C = auto()
+    BUTTON_GAME_START = auto()
+    BUZZER = auto()
+    CLICKER = auto()
+    DRUMS = auto()
+    JOYSTICK = auto()
+    LIGHTS = auto()
+    RINGER = auto()
+    TILTS = auto()
+
+
+class APICommand(StrEnum):
+    """Every API command."""
+    NEXT_ENTRY = auto()
+    PREVIOUS_ENTRY = auto()
+    NEXT_MODE = auto()
+    PREVIOUS_MODE = auto()
+
+
+@dataclass
+class Control(Device, ABC):
+    """Base for input devices."""
+    name: DeviceName
+    execute_interrupt: Callable = field(init=False)
+
+    @override
+    def off(self) -> None:
+        """Do nothing; most controls cannot turn off."""
+
+
+class ControlAction(StrEnum):
+    """Every control action."""
+    BUTTON_HELD = auto()
+    BUTTON_PRESSED = auto()
+
+
+class InterruptSource(StrEnum):
+    """Every control action source."""
+    API = auto()
+    GPIO = auto()
+    MODE = auto()
+    SIGNAL = auto()
+
+
+@dataclass
+class Interrupt(Exception, ABC):
+    """Player event loop interrupts."""
+    source: InterruptSource
+
+
+@dataclass
+class ChangeModeInterrupt(Interrupt):
+    """Create active mode and resolve conflicts
+       with other active modes."""
+    mode_index: int
+
+
+@dataclass
+class CommandInterrupt(Interrupt):
+    """Send API command to active modes."""
+    command: APICommand
+
+
+@dataclass
+class ControlInterrupt(Interrupt):
+    """Send control action to active modes."""
+    action: ControlAction
+    control: ControlName
+
+
+@dataclass
+class Exit(Exception):
+    """Exit application."""
+    shutdown: bool
+
+
+@dataclass
+class CycleEntry:
+    """Items in sequence or cycle of certain modes."""
+    name: str | None
+    seconds: float | None
+    index: int | None = None
+
+
+CycleSequence = list[tuple[str, int | None]]
+
+
+class BaseModeInterface(Protocol):
+    """Interface to BaseMode."""
+    background: bool
+    index: int
+    name: str
+    parent: 'BaseModeInterface | None'
+    serial: int
+
+    def close(self) -> None: ...
+
+    def command_action(self, command: APICommand) -> bool: ...
+
+    def control_action(self, control: ControlName) -> bool: ...
+
+    def execute(self) -> None: ...
+
+
+@dataclass(kw_only=True)
+class ModeDefinition:
+    """Everything required to instantiate a mode."""
+    index: int | None = None
+    name: str
+    cls: type[BaseModeInterface]
+    kwargs: dict[str, Any] = field(default_factory=dict)
+
+
+class ModeIndex(IntEnum):
+    """"""
+    MODE_SELECT = 0
+    DEFAULT = 1
+
+
+class SetupDevices(Protocol):
+    """Call signature to return the device set."""
+    def __call__(
+        self,
+        brightness_factor: float,
+        speed_factor: float,
+        testing: bool,
+    ) -> dict[DeviceName, Any]:  # DeviceSet:
+        ...
+
+
+EpochTime = NewType("EpochTime", float)
+
+LightConfig = SimpleNamespace
+
