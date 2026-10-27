@@ -7,18 +7,20 @@ from typing import cast
 
 from devices.color import Color, ColorSets
 from devices.hue import HueBridge
-from device_defs import define_devices
 from instruments import LightSet
 from schemas import DeviceName
+from systems import SystemName, systems
 
 
-def setup():
+def setup(system: str, testing: bool):
     global d, l, c, b, j, r
-    d = define_devices(1.0, 1.0)
-    b = d[DeviceName.BUZZER.value]
-    l = d[DeviceName.LIGHTS.value]
-    c = d[DeviceName.CLICKER.value]
-    r = d[DeviceName.RINGER.value]
+    d = systems[SystemName(system)].setup_devices(
+        brightness_factor=1.0, speed_factor=1.0, testing=testing,
+    )
+    b = d[DeviceName.BUZZER]
+    l = d[DeviceName.LIGHTS]
+    c = d[DeviceName.CLICKER]
+    r = d[DeviceName.RINGER]
 
 
 def ppp(p: Sequence) -> None:

@@ -17,7 +17,7 @@ from devices.relaymodule import RelayClient
 from devices.specialparams import ChannelParams, MirrorParams, SpecialParams
 from .lightsetinterface import SavedState
 from .instruments_abstract import RelayInstrument
-from schemas import DeviceName
+from schemas import DeviceName, LightConfig
 
 
 log = logging.getLogger('marquee.' + __name__)
@@ -34,6 +34,7 @@ class LightSet(RelayInstrument):
     brightness_factor_init: InitVar[float]
     channel_enum: InitVar[type[IntEnum]]
     speed_factor: float
+    config: LightConfig
     device: DeviceName = DeviceName.LIGHTS
 
     if TYPE_CHECKING:

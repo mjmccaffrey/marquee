@@ -1,6 +1,6 @@
 """Marquee Lighted Sign Project - deviceset"""
 
-from typing import NotRequired, TypedDict
+from typing import TypedDict
 
 from devices.button import Button
 from devices.joystick import Joystick
@@ -10,16 +10,16 @@ from instruments import (
 )
 
 
-class DeviceSet(TypedDict):
+class DeviceSet(TypedDict, total=False):
     button_rear: Button
     button_corded_a: Button
     button_corded_b: Button
-    button_game_start: NotRequired[Button]
-    buzzer: NotRequired[Buzzer]
+    button_game_start: Button
+    buzzer: Buzzer
     clicker: Clicker
     drums: DrumSet
-    joystick: NotRequired[Joystick]
+    joystick: Joystick
     lights: LightSet
-    ringer: NotRequired[Ringer]
-    tilts: NotRequired[TiltSet]
+    ringer: Ringer
+    tilts: TiltSet
 

@@ -9,27 +9,27 @@ from .abstract.musicmode import MusicMode
 from .abstract.performancemode import PerformanceMode
 from .abstract.selectmode import SelectMode
 
-# Structure modes etc.
+# Structural modes etc.
 from .structural.brightnessselect import BrightnessSelect
 from .structural.modecycle import ModeCycle
 from .structural.modeselect import ModeSelect
 from .structural.sequencemode import LightSetBaseline, SequenceMode
-from .structural.sequences import *
+from .structural.sequences import opposite, Sequences
 
 # Performance & Game modes
-from .alarm import AlarmBell, AlarmDive
-from .colorsetstatic import ColorSetStatic
-from .colorsetdynamic import ColorSetDynamic
-from .cupolacycle import CupolaSequence
-from .comet import Comet
-from .doom import DoomGame
-from .evenoddfade import EvenOddFade
-from .pacman import PacManGame
-from .randomfade import RandomFade
-from .rotate import RotateSides
-from .rhythym import Rhythm
-from .signs import Signs
-from .silentfadebuild import SilentFadeBuild
-from .twelve import Twelve
-from .generatedmodes import GeneratedModes
+from .concrete.alarm import AlarmBell, AlarmDive
+from .concrete.colorsetstatic import ColorSetStatic
+from .concrete.colorsetdynamic import ColorSetDynamic
+from .concrete.cupolacycle import CupolaSequence
+from .concrete.comet import Comet
+from .concrete.doom import DoomGame
+from .concrete.evenoddfade import EvenOddFade
+from .concrete.pacman import PacManGame
+from .concrete.randomfade import RandomFade
+from .concrete.rotate import RotateSides
+from .concrete.rhythym import Rhythm
+from .concrete.signs import Signs
+from .concrete.silentfadebuild import SilentFadeBuild
+from .concrete.twelve import Twelve
+from .concrete.generatedmodes import GeneratedModes
 

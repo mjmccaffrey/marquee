@@ -1,14 +1,17 @@
 """Marquee Lighted Sign Project - argument"""
 
 from argparse import (
-    Action, ArgumentParser, ArgumentError, ArgumentTypeError, Namespace
+    Action, ArgumentParser, ArgumentError, ArgumentTypeError, 
+    Namespace, _SubParsersAction
 )
 from collections.abc import Callable
 from itertools import groupby
+from functools import partial
 from typing import Any, NoReturn
 from typing_extensions import override
 
-from device_defs import LIGHT_COUNT
+from schemas import LightConfig
+from systems import SystemName
 
 
 class ArgumentParserImproved(ArgumentParser):
@@ -57,45 +60,63 @@ def str_to_bool(arg: str) -> bool:
         raise ValueError()
 
 
+def str_to_system_name(arg: str) -> SystemName:
+    """Validates and converts a system name."""
+    try:
+        return SystemName(arg.lower())
+    except ValueError:
+        raise ValueError()
+
+
 def display_help(
     mode_menu: list[tuple[int, str]], 
     color_menu: list[tuple[str, int, str]],
     commands: dict[str, Callable],
 ) -> None:
     """"Display the command-line syntax."""
-    print('')
+    print("")
     print("Usage:")
-    print("  marquee.py mode [mode_index | mode_name]")
-    print("                  [--brightness_factor=[0 - 1.0]]")
-    print("                  [--speed_factor=(0 - 5.0]]")
-    print("  marquee.py pattern [--dimmer=[pattern] &| --relay=[pattern]]")
-    print("                     [--derive_missing=[true|false]]")
-    print("  marquee.py color [set_index | set_name]")
-    print("  marquee.py command [command_name]")
-    print('')
+    print("   marquee.py ")
+    print("      [--system={system_name}]")
+    print("      [--testing={true | false}]")
+    print("      mode {mode_index} | {mode_name}")
+    print("          [--brightness_factor={[0 - 1.0]}]")
+    print("          [--speed_factor={(0 - 5.0]}]")
+    print("      pattern --dimmer={pattern} &| --relay={pattern}")
+    print("          [--derive_missing={true | false}]")
+    print("      color {set_index} | {set_name}")
+    print("      command {command_name}")
+    print("")
+    # print("System: Defaults to marquee. Determines which {system}_devices file is used.")
+    print("Systems:")
+    for system_name in SystemName:
+        print(f'   {system_name.value}')
+    # print("Testing: Defaults to false. Determines whether mocks are used in {system}_devices.")
+    # print("")
+    print("")
     print("Modes:")
     for index, name in mode_menu:
         print(f'   {index:>2}   {name}')
-    print('')
+    print("")
     print("Patterns: Specify --dimmer, --relay, or both.")
-    print(f"  dimmer: {LIGHT_COUNT} hex values, each 0..A (0%..100%)")
-    print(f"  relay: {LIGHT_COUNT} binary values")
-    print("  derive_missing:")
+    print(f"   dimmer: <light_count> hex values, each 0..A (0%..100%)")
+    print(f"   relay: <light_count> binary values")
+    print("   derive_missing:")
     print("      If true (default) and only one pattern is specified,")
     print("      the missing pattern will be assumed.")
     print("      If false, the state of the device set without a pattern")
     print("      will not be initialized at startup.")
-    print('')
+    print("")
     print("Colors:")
     for group_name, sets in groupby(color_menu, lambda e: e[0]):
         print(f'   {group_name}')
         for _, index, set_name in sets:
             print(f'     {index:>3}   {set_name}')
-    print('')
+    print("")
     print("Commands:")
     for command in commands:
-        print(f'  {command}')
-    print('')
+        print(f'   {command}')
+    print("")
 
 
 def validate_brightness_factor(arg: str) -> float:
@@ -128,7 +149,7 @@ def validate_light_pattern(arg: str) -> str:
     """ Return arg if it is a valid light pattern, 
         otherwise raise exception. """
     if not (
-        len(arg) == LIGHT_COUNT and 
+        # len(arg) == light_config.count and 
         all(e in {"0", "1"} for e in arg)
     ): 
         raise ValueError(f"Invalid light pattern: {arg}")
@@ -140,11 +161,70 @@ def validate_brightness_pattern(arg: str) -> str:
         otherwise raise exception. """
     arg_normalized = arg.upper()
     if not (
-        len(arg_normalized) == LIGHT_COUNT and 
+        # len(arg_normalized) == light_config.count and 
         all(e in "0123456789AF" for e in arg_normalized)
     ): 
         raise ValueError(f"Invalid brightness pattern: {arg}")
     return arg_normalized
+
+
+def add_color_operation(sub_p: _SubParsersAction, choices: list[str]):
+    """Define color operation."""
+    color_p = sub_p.add_parser('color')
+    color_p.add_argument('color_id', choices=choices)
+    color_p.add_argument(
+        'brightness', 
+        optional=True, 
+        type=int,
+        choices=range(0, 101),
+        default=100,
+    )
+
+
+def add_command_operation(sub_p: _SubParsersAction, choices: list[str]):
+    """Define command operation."""
+    command_p = sub_p.add_parser('command')
+    command_p.add_argument('command_name', choices=choices)
+
+
+def add_mode_operation(sub_p: _SubParsersAction, choices: list[str]):
+    """Define mode operation."""
+    mode_p = sub_p.add_parser('mode')
+    mode_p.add_argument('mode_id', choices=choices)
+    mode_p.add_argument(
+        'brightness_factor', 
+        optional=True, 
+        type=validate_brightness_factor,
+        default=1.0,
+    )
+    mode_p.add_argument(
+        'speed_factor', 
+        optional=True, 
+        type=validate_speed_factor, 
+        default=1.0,
+    )
+
+
+def add_pattern_operation(sub_p: _SubParsersAction):
+    """Define pattern operation."""
+    pattern_p = sub_p.add_parser('pattern')
+    pattern_p.add_argument(
+        'relay', 
+        optional=True, 
+        type=validate_light_pattern,
+    )
+    pattern_p.add_argument(
+        'dimmer', 
+        optional=True, 
+        type=validate_brightness_pattern,
+    )
+    pattern_p.add_argument(
+        'derive_missing', 
+        optional=True, 
+        # dest='derive_missing', 
+        type=str_to_bool, 
+        default=True,
+    )
 
 
 def parse_arguments(
@@ -153,69 +233,27 @@ def parse_arguments(
     commands: dict[str, Callable],
 ) -> Namespace:
     """ Parse the command-line arguments. """
-
-    def color_op():
-        """Define color operation."""
-        color_p = sub_p.add_parser('color')
-        color_p.add_argument('color_id', choices=color_ids.keys())
-        color_p.add_argument(
-            'brightness', 
-            optional=True, 
-            type=int,
-            choices=range(0, 101),
-            default=100,
-        )
-
-    def command_op():
-        """Define command operation."""
-        command_p = sub_p.add_parser('command')
-        command_p.add_argument('command_name', choices=commands.keys())
-
-    def mode_op():
-        """Define mode operation."""
-        mode_p = sub_p.add_parser('mode')
-        mode_choices = mode_ids.keys()
-        mode_p.add_argument('mode_id', choices=mode_choices)
-        mode_p.add_argument(
-            'brightness_factor', 
-            optional=True, 
-            type=validate_brightness_factor,
-            default=1.0,
-        )
-        mode_p.add_argument(
-            'speed_factor', 
-            optional=True, 
-            type=validate_speed_factor, 
-            default=1.0,
-        )
-
-    def pattern_op():
-        """Define pattern operation."""
-        pattern_p = sub_p.add_parser('pattern')
-        pattern_p.add_argument(
-            'relay', 
-            optional=True, 
-            type=validate_light_pattern,
-            )
-        pattern_p.add_argument(
-            'dimmer', 
-            optional=True, 
-            type=validate_brightness_pattern,
-        )
-        pattern_p.add_argument(
-            'derive_missing', 
-            optional=True, 
-            dest='derive_missing', 
-            type=str_to_bool, 
-            default=True,
-        )
-
     top_p = ArgumentParserImproved(exit_on_error=False)
+    top_p.add_argument(
+        'system',
+        optional=True,
+        dest='system_name',
+        type=str_to_system_name,
+        default=SystemName.MARQUEE,
+    )
+    top_p.add_argument(
+        'testing', 
+        optional=True, 
+        type=str_to_bool, 
+        default=False,
+    )
+    #
     sub_p = top_p.add_subparsers(dest='operation', required=True)
-    color_op()
-    command_op()
-    mode_op()
-    pattern_op()
+    add_color_operation(sub_p, list(color_ids.keys()))
+    add_command_operation(sub_p, list(commands.keys()))
+    add_mode_operation(sub_p, list(mode_ids.keys()))
+    add_pattern_operation(sub_p)
+    #
     try:
         return top_p.parse_args()
     except (ArgumentError, ArgumentTypeError, ValueError) as err:
@@ -234,22 +272,26 @@ def process_arguments(
         parsed = parse_arguments(mode_ids, color_ids, commands)
     except ValueError as err:
         raise
+    args = {
+        "system_name": parsed.system_name,
+        "testing": parsed.testing,
+    }
     match parsed.operation:
         case 'color':
-            args = {
+            args |= {
                 "color": color_ids[parsed.color_id],
                 "brightness": parsed.brightness,
             }
         case 'command':
-            args = {"command": parsed.command_name}
+            args |= {"command": parsed.command_name}
         case 'mode':
-            args = {
+            args |= {
                 "mode_index": mode_ids[parsed.mode_id],
                 "brightness_factor": parsed.brightness_factor,
                 "speed_factor": parsed.speed_factor,
             }
         case 'pattern':
-            args = {}
+            args |= {}
             if parsed.relay:
                 args |= {"light_pattern": parsed.relay}
             if parsed.dimmer:

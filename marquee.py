@@ -5,16 +5,15 @@ import sys
 
 from argument import display_help, process_arguments
 from executor import Executor
+from modes.definitions import define_modes
 from player import Player
-from device_defs import define_devices
-from mode_defs import define_modes
 
 
 def setup() -> Executor:
     """Setup logging, executor, and mode definitions. 
        Return executor."""
     setup_logging()
-    exec = Executor(Player, define_devices)
+    exec = Executor(Player)
     define_modes(exec)
     return exec
 
@@ -44,9 +43,16 @@ def execute(exec: Executor) -> int:
             exec.commands,
         )
     except ValueError:
-        display_help(exec.mode_menu, exec.color_menu, exec.commands)
+        display_help(
+            exec.mode_menu, 
+            exec.color_menu, 
+            exec.commands,
+        )
         return 2
     else:
+        print()
+        print(kwargs)
+        print()
         shutdown = exec.execute(**kwargs)
         return 3 if shutdown else 0
 

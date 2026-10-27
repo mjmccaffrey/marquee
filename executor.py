@@ -3,14 +3,16 @@
 from collections.abc import Callable
 import logging
 import time
-from typing import Any, cast, Protocol
+from typing import Any, cast
 
 from devices.color import ColorSets
 from devices.deviceset import DeviceSet
 from devices.specialparams import SpecialParams
 from modes import BaseMode, SequenceMode
 from player import Player
-from schemas import Device, ModeDefinition
+from schemas import Device, DeviceName, ModeDefinition, SetupDevices
+from systems import SystemName, systems
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -20,14 +22,9 @@ class Executor:
        If a mode is specified, creates and turns control over 
        to a Player object."""
 
-    def __init__(
-        self,
-        create_player: Callable[..., Player],
-        define_devices: 'SetupDevices',
-    ) -> None:
+    def __init__(self, create_player: Callable[..., Player]) -> None:
         """Init the (single) executor."""
         self.create_player = create_player
-        self.define_devices = define_devices
         #
         self.mode_ids: dict[str, int] = {}
         self.mode_menu: list[tuple[int, str]] = []
@@ -104,6 +101,8 @@ class Executor:
 
     def execute(
         self, 
+        system_name: SystemName,
+        testing: bool,
         brightness_factor: float = 1.0,  # Must have defaults, because values 
         speed_factor: float = 1.0,       # are only provided with 'mode'.
         color: str | None = None, 
@@ -116,8 +115,13 @@ class Executor:
         """Effect the command-line specified command, mode or pattern(s).
            Return True if system shutdown requested, else False."""
         shutdown = False
-        self.devices = self.define_devices(brightness_factor, speed_factor)
-        self.lights = self.devices['lights']
+        system_data = systems[system_name]
+        self.light_config = system_data.light_config
+        self.devices = system_data.setup_devices(
+            brightness_factor, speed_factor, testing,
+        )
+        assert 'lights' in self.devices
+        self.lights = self.devices[DeviceName.LIGHTS]
         if color is not None:
             assert brightness is not None
             self.execute_color(color, brightness)
@@ -131,7 +135,8 @@ class Executor:
 
     def execute_color(self, color: str, brightness: int) -> None:
         """Executes color operation."""
-        cs = self.devices['lights'].color_sets.by_set_name[color]
+        assert 'lights' in self.devices
+        cs = self.devices[DeviceName.LIGHTS].color_sets.by_set_name[color]
         kwargs = cs.set_channels_kwargs(self.lights.count)
         kwargs |= dict(
             on=True,
@@ -184,14 +189,4 @@ class Executor:
             cast(Device, device).off()
         log.info("Marquee hardware is now partially powered off.")
         log.info('')
-
-
-class SetupDevices(Protocol):
-    """Call signature to return the device set."""
-    def __call__(
-        self,
-        brightness_factor: float,
-        speed_factor: float,
-    ) -> DeviceSet:
-        ...
 

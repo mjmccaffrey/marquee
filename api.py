@@ -180,6 +180,7 @@ class API:
 
     def set_brightness(self, factor: float) -> None:
         """Set brightness_factor."""
+        assert 'lights' in self.player.devices
         self.player.devices['lights'].change_brightness_factor(factor)
 
 

@@ -7,7 +7,7 @@ from typing_extensions import override
 
 from .mode import Mode
 from ..structural.sequencemode import SequenceMode
-from ..structural.sequences import rotate_build_flip
+from ..structural.sequences import Sequences
 from schemas import ControlName, DeviceName, ModeDefinition
 
 
@@ -69,7 +69,7 @@ class SelectMode(Mode, ABC):
                     name='counter',
                     cls=SequenceMode,
                     kwargs=dict(
-                        sequence=rotate_build_flip,
+                        sequence=Sequences.rotate_build_flip,
                         sequence_kwargs=dict(count=self.desired),
                         pre_delay=0.5,
                         delay=0.25, 

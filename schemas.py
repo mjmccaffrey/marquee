@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import auto, IntEnum, StrEnum
+from types import SimpleNamespace
 from typing import Any, Callable, NewType, Protocol
 from typing_extensions import override
 
@@ -168,5 +169,18 @@ class ModeIndex(IntEnum):
     DEFAULT = 1
 
 
+class SetupDevices(Protocol):
+    """Call signature to return the device set."""
+    def __call__(
+        self,
+        brightness_factor: float,
+        speed_factor: float,
+        testing: bool,
+    ) -> dict[DeviceName, Any]:  # DeviceSet:
+        ...
+
+
 EpochTime = NewType("EpochTime", float)
+
+LightConfig = SimpleNamespace
 
