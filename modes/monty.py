@@ -66,7 +66,7 @@ class Monty(MusicMode):
         music = piece(
             lights('| ♩ ♩ ♩ ♩ |', *each_side_red),
             lights('| ♩ ♩ ♩ ♩ |', *each_side_gold),
-            lights('| 𝅗𝅥 𝅗𝅥 | 𝅗𝅥 𝅗𝅥 |', *each_side_tri),
+            lights('| ♩ ♩ ♩ ♩ |', *each_side_tri),
         )
         self.play(music, tempo=120)
         Colors.DEEP_GOLD
