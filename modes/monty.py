@@ -6,7 +6,7 @@ import pygame
 from typing_extensions import override
 
 from devices.color import Colors
-from ..light_defs import *
+from ..device_defs import *
 from . import MusicMode
 from music import lights, piece
 
@@ -62,5 +62,5 @@ class Monty(MusicMode):
         Colors.RED
         Colors.ROSE
         Colors.WHITE
-        
+
 
