@@ -24,6 +24,7 @@ from .cupolacycle import CupolaSequence
 from .comet import Comet
 from .doom import DoomGame
 from .evenoddfade import EvenOddFade
+from .monty import Monty
 from .pacman import PacManGame
 from .randomfade import RandomFade
 from .rotate import RotateSides
