@@ -1,4 +1,4 @@
-"""Marquee Lighted Sign Project - twelve"""
+"""Marquee Lighted Sign Project - monty"""
 
 from dataclasses import dataclass
 import logging
@@ -6,6 +6,7 @@ import pygame
 from typing_extensions import override
 
 from devices.color import Colors
+from ..light_defs import *
 from . import MusicMode
 from music import lights, piece
 
@@ -13,7 +14,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 
 @dataclass(kw_only=True)
-class Twelve(MusicMode):
+class Monty(MusicMode):
     """"""
     brightness: int
 
@@ -21,45 +22,45 @@ class Twelve(MusicMode):
     def execute(self):
         """"""
         self.lights.set_channels(
-            on=False,
-            # brightness=self.brightness,
-            # color=Colors.WHEEL,
+            on=True,
+            brightness=self.brightness,
+            color=Colors.DEEP_GOLD,
         )
-        pygame.mixer.music.load('modes/twelve.mp3')
+        pygame.mixer.music.load('modes/monty.mp3')
         pygame.mixer.music.play()
         self.schedule(due=0.25, action=self.perform)
 
     def perform(self):
         """Play music and lights."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        each_on = tuple(
+        each_side_red = tuple(
             dict(
-                on=True,
-                brightness=100,
-                color=c,
-                transition=0.0,
-                index=(i + 2) % 12,
-                force=True,
+                color=Colors.RED,
+                transition=0.1,
+                index=lights,
             )
-            for i, c in enumerate(Colors.WHEEL)
+            for lights in [
+                LIGHTS_TOP, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_BOTTOM,
+            ]
         )
-        each_off = tuple(
+        each_side_gold = tuple(
             dict(
-                on=False,
-                transition=0.8,
-                index=i,
+                color=Colors.DEEP_GOLD,
+                transition=0.1,
+                index=lights,
             )
-            for i in range(12)
+            for lights in [
+                LIGHTS_BOTTOM, LIGHTS_LEFT + LIGHTS_RIGHT, LIGHTS_TOP, [Light.CP],
+            ]
         )
-        all_off = dict(on=False, transition=2.9)
         music = piece(
-            lights('| 𝄻 | 𝄻 | 𝄻 |'),
-            lights('| ♪ ♪ ♪ ♩ ♩ ♪ | ♩ ♪ ♩ ♩ ♪ | 𝄽 ♩ 𝄽 𝄽 |', *each_on),
-            lights('| 𝄽 𝄽 |', beats=2),
-            lights('| 3♩ 3♩ 3♩ 3♩ 3♩ 3♩ | 3♩ 3♩ 3♩ 3♩ 3♩ 3♩ |', *each_off),
-            lights('| 𝄽 𝄽 𝄽 |', beats=3),
-            lights('| ♪ ♪ ♪ ♩ ♩ ♪ | ♩ ♪ ♩ ♩ ♪ | 𝄽 ♩ 𝄽 𝄽 |', *each_on),
-            lights('| 𝄻 | ♩ |', all_off),
+            lights('| ♩ ♩ ♩ ♩ |', *each_side_red),
+            lights('| ♩ ♩ ♩ ♩ |', *each_side_gold),
         )
-        self.play(music, tempo=160)
+        self.play(music, tempo=120)
+        Colors.DEEP_GOLD
+        Colors.RED
+        Colors.ROSE
+        Colors.WHITE
+        
 
