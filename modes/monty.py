@@ -28,7 +28,7 @@ class Monty(MusicMode):
         )
         pygame.mixer.music.load('modes/monty.mp3')
         pygame.mixer.music.play()
-        self.schedule(due=0.25, action=self.perform)
+        self.schedule(due=0.5, action=self.perform)
 
     def perform(self):
         """Play music and lights."""

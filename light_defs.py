@@ -44,6 +44,9 @@ LIGHTS_BY_COLUMN = [
 LIGHTS_CLOCKWISE = [
     i for side in LIGHTS_BY_SIDE for i in side
 ]
+LIGHTS_1_OF_3 = [0, 3, 6, 9]
+LIGHTS_2_OF_3 =  [1, 4, 7, 10]
+LIGHTS_3_OF_3 =  [2, 5, 8, 11]
 LIGHT_COUNT = 16
 ALL_HIGH = "A" * LIGHT_COUNT
 ALL_LOW = "0" * LIGHT_COUNT
