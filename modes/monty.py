@@ -36,7 +36,7 @@ class Monty(MusicMode):
         each_side_red = tuple(
             dict(
                 color=Colors.RED,
-                transition=0.1,
+                transition=0.0,
                 index=lights,
             )
             for lights in [
@@ -46,7 +46,7 @@ class Monty(MusicMode):
         each_side_gold = tuple(
             dict(
                 color=Colors.DEEP_GOLD,
-                transition=0.1,
+                transition=0.0,
                 index=lights,
             )
             for lights in [
