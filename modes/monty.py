@@ -53,9 +53,20 @@ class Monty(MusicMode):
                 LIGHTS_BOTTOM, LIGHTS_LEFT + LIGHTS_RIGHT, LIGHTS_TOP, [Light.CP],
             ]
         )
+        each_side_tri = tuple(
+            dict(
+                color=(Colors.RED, Colors.YELLOW, Colors.WHITE),
+                transition=0.0,
+                index=lights,
+            )
+            for lights in [
+                LIGHTS_TOP, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_BOTTOM,
+            ]
+        )
         music = piece(
             lights('| ♩ ♩ ♩ ♩ |', *each_side_red),
             lights('| ♩ ♩ ♩ ♩ |', *each_side_gold),
+            lights('| 𝅗𝅥 𝅗𝅥 | 𝅗𝅥 𝅗𝅥 |', *each_side_tri),
         )
         self.play(music, tempo=120)
         Colors.DEEP_GOLD
