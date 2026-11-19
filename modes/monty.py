@@ -6,7 +6,7 @@ import pygame
 from typing_extensions import override
 
 from devices.color import Colors
-from ..device_defs import *
+from light_defs import *
 from . import MusicMode
 from music import lights, piece
 
