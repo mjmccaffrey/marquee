@@ -173,6 +173,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 json=command.params,
                 timeout=2.0,
             )
+            print(f"Group: {id}")
             # print(f"{group=} {i=} {command.params}")
         for index in self.groups[group]:
             channel = self.channels[index]
