@@ -17,6 +17,7 @@ from music import actions, lights, piece
 log = logging.getLogger('marquee.' + __name__)
 
 ORANGE_YELLOW = RGB(255, 190, 0)
+WHITE = RGB(250, 249, 246)
 
 
 def rotate(d: tuple, i: int) -> tuple:
@@ -72,7 +73,7 @@ class Monty(MusicMode):
             ]
         ]
         bottom_up[-1]['color'] = ORANGE_YELLOW
-        colors = (ORANGE_YELLOW, Colors.WHITE, Colors.RED)
+        colors = (ORANGE_YELLOW, WHITE, Colors.RED)
         color_rotation = tuple(
             c 
             for i in range(36)
