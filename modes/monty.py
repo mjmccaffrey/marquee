@@ -1,6 +1,5 @@
 """Marquee Lighted Sign Project - monty"""
 
-from collections import deque
 from dataclasses import dataclass
 from itertools import cycle
 import logging
@@ -15,9 +14,9 @@ from music import lights, piece
 log = logging.getLogger('marquee.' + __name__)
 
 
-def rotate(d: deque, i: int) -> tuple:
-    d.rotate(i)
-    return tuple(d)
+def rotate(d: tuple, i: int) -> tuple:
+    i %= len(d)
+    return d[:i] + d[i:]
 
 
 @dataclass(kw_only=True)
@@ -70,7 +69,7 @@ class Monty(MusicMode):
                 LIGHTS_TOP, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_BOTTOM,
             ]
         )
-        colors=deque((Colors.RED, Colors.YELLOW, Colors.WHITE))
+        colors=(Colors.RED, Colors.YELLOW, Colors.WHITE)
         colors_rotating = tuple(
             rotate(colors, i)
             for i in range(10)
@@ -83,9 +82,11 @@ class Monty(MusicMode):
             )
             for group, colors in zip(
                 cycle(("1_of_3", "2_of_3", "3_of_3")),
-                colors_rotating,
+                colors_rotating
             )
         )
+        for r in rotate_colors:
+            print(r)
         music = piece(
             lights('| ♩ ♩ ♩ ♩ |', *each_side_red),
             lights('| ♩ ♩ ♩ ♩ |', *each_side_gold),
