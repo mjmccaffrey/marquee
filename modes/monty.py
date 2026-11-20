@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from itertools import cycle
 import logging
 import pygame
+import time
 from typing_extensions import override
 
 from devices.color import Colors
@@ -32,6 +33,7 @@ class Monty(MusicMode):
             brightness=self.brightness,
             color=Colors.RED,
         )
+        time.sleep(10)
         pygame.mixer.music.load('modes/monty.mp3')
         pygame.mixer.music.play()
         self.schedule(due=0.5, action=self.perform)
@@ -59,6 +61,11 @@ class Monty(MusicMode):
                 LIGHTS_BOTTOM, LIGHTS_LEFT + LIGHTS_RIGHT, LIGHTS_TOP, [Light.CP],
             ]
         )
+        
+        ?? rather than first 2 cycles, turn off all lights progressively before bell ding, making it more obvious?
+        ?? or, have them fade over 7 beats before bell ding?
+        
+        
         colors = (Colors.DEEP_GOLD, Colors.WHITE, Colors.RED)
         color_rotation = tuple(
             c 
@@ -77,8 +84,12 @@ class Monty(MusicMode):
         music = piece(
             lights('| ♩ ♩ ♩ ♩ |', *top_down),
             lights('| ♩ ♩ ♩ ♩ |', *bottom_up),
-            lights('| ♩ ♩ ♩ ♩ |' * 10, *rotate_colors),
+            lights('| ♩ ♩ ♩ ♩ |' * 9, *rotate_colors),
         )
         self.play(music, tempo=120)
+        self.lights.set_channels(
+            brightness=0,
+            transition=2.0
+        )
 
 
