@@ -17,7 +17,7 @@ from music import actions, lights, piece
 log = logging.getLogger('marquee.' + __name__)
 
 ORANGE_YELLOW = RGB(255, 190, 0)
-WHITE = RGB(250, 249, 246)
+WHITE = RGB(255, 253, 210)
 
 
 def rotate(d: tuple, i: int) -> tuple:
