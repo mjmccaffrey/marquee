@@ -61,7 +61,7 @@ class Monty(MusicMode):
         )
         each_side_tri = tuple(
             dict(
-                color=(Colors.RED, Colors.YELLOW, Colors.WHITE),
+                color=(Colors.RED, Colors.DEEP_GOLD, Colors.WHITE),
                 transition=0.0,
                 index=lights,
             )
@@ -70,9 +70,9 @@ class Monty(MusicMode):
             ]
         )
         colors = (Colors.RED, Colors.YELLOW, Colors.WHITE)
-        colors_rotating = tuple(
+        color_rotation = tuple(
             c 
-            for i in range(12)
+            for i in range(24)
             for c in rotate(colors, i)
         )
         thirds = cycle(("1_of_3", "2_of_3", "3_of_3"))
@@ -82,7 +82,7 @@ class Monty(MusicMode):
                 transition=0.0,
                 group=group,
             )
-            for group, color in zip(thirds, colors_rotating)
+            for group, color in zip(thirds, color_rotation)
         )
         for r in rotate_colors:
             print(r)
