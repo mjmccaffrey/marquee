@@ -15,6 +15,11 @@ from music import lights, piece
 log = logging.getLogger('marquee.' + __name__)
 
 
+def rotate(d: deque) -> tuple:
+    d.rotate(1)
+    return tuple(d)
+
+
 @dataclass(kw_only=True)
 class Monty(MusicMode):
     """"""
@@ -67,8 +72,8 @@ class Monty(MusicMode):
         )
         colors=deque((Colors.RED, Colors.YELLOW, Colors.WHITE))
         colors_rotating = tuple(
-            colors.rotate(i)
-            for i in range(10)
+            rotate(colors)
+            for _ in range(10)
         )
         rotate_colors = tuple(
             dict(
