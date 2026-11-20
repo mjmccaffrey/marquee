@@ -30,7 +30,7 @@ class Monty(MusicMode):
         self.lights.set_channels(
             on=True,
             brightness=self.brightness,
-            color=Colors.ROSE,  # DEEP_GOLD,
+            color=Colors.RED,
         )
         pygame.mixer.music.load('modes/monty.mp3')
         pygame.mixer.music.play()
@@ -39,9 +39,9 @@ class Monty(MusicMode):
     def perform(self):
         """Play music and lights."""
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
-        each_side_red = tuple(
+        top_down = tuple(
             dict(
-                color=Colors.RED,
+                color=Colors.DEEP_GOLD,
                 transition=0.0,
                 index=lights,
             )
@@ -49,9 +49,9 @@ class Monty(MusicMode):
                 LIGHTS_TOP, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_BOTTOM,
             ]
         )
-        each_side_gold = tuple(
+        bottom_up = tuple(
             dict(
-                color=Colors.DEEP_GOLD,
+                color=Colors.RED,
                 transition=0.0,
                 index=lights,
             )
@@ -59,17 +59,7 @@ class Monty(MusicMode):
                 LIGHTS_BOTTOM, LIGHTS_LEFT + LIGHTS_RIGHT, LIGHTS_TOP, [Light.CP],
             ]
         )
-        each_side_tri = tuple(
-            dict(
-                color=(Colors.RED, Colors.DEEP_GOLD, Colors.WHITE),
-                transition=0.0,
-                index=lights,
-            )
-            for lights in [
-                LIGHTS_TOP, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_BOTTOM,
-            ]
-        )
-        colors = (Colors.RED, Colors.DEEP_GOLD, Colors.WHITE)
+        colors = (Colors.DEEP_GOLD, Colors.WHITE, Colors.RED)
         color_rotation = tuple(
             c 
             for i in range(36)
@@ -85,15 +75,10 @@ class Monty(MusicMode):
             for group, color in zip(thirds, color_rotation)
         )
         music = piece(
-            lights('| ♩ ♩ ♩ ♩ |', *each_side_red),
-            lights('| ♩ ♩ ♩ ♩ |', *each_side_gold),
-            # lights('| ♩ ♩ ♩ ♩ |', *each_side_tri),
-            lights('| ♩ ♩ ♩ ♩ | ♩ ♩ ♩ ♩ |' * 8, *rotate_colors),
+            lights('| ♩ ♩ ♩ ♩ |', *top_down),
+            lights('| ♩ ♩ ♩ ♩ |', *bottom_up),
+            lights('| ♩ ♩ ♩ ♩ |' * 10, *rotate_colors),
         )
         self.play(music, tempo=120)
-        Colors.DEEP_GOLD
-        Colors.RED
-        Colors.ROSE
-        Colors.WHITE
 
 
