@@ -62,10 +62,6 @@ class Monty(MusicMode):
             ]
         )
         
-        ?? rather than first 2 cycles, turn off all lights progressively before bell ding, making it more obvious?
-        ?? or, have them fade over 7 beats before bell ding?
-        
-        
         colors = (Colors.DEEP_GOLD, Colors.WHITE, Colors.RED)
         color_rotation = tuple(
             c 
