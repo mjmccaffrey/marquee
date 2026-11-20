@@ -10,7 +10,7 @@ from typing_extensions import override
 from devices.color import Colors
 from light_defs import *
 from . import MusicMode
-from music import lights, piece
+from music import actions, lights, piece
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -81,11 +81,13 @@ class Monty(MusicMode):
             lights('| ♩ ♩ ♩ ♩ |', *top_down),
             lights('| ♩ ♩ ♩ ♩ |', *bottom_up),
             lights('| ♩ ♩ ♩ ♩ |' * 9, *rotate_colors),
+            actions(
+                '| ♩ |', 
+                lambda: self.lights.set_channels(
+                    brightness=0,
+                    transition=2.0
+                )
+            )
         )
         self.play(music, tempo=120)
-        self.lights.set_channels(
-            brightness=0,
-            transition=2.0
-        )
-
 
