@@ -33,6 +33,10 @@ class Monty(MusicMode):
             brightness=self.brightness,
             color=Colors.RED,
         )
+        self.lights.set_channels(
+            on=False,
+            index=Light.CP,
+        )
         time.sleep(10)
         pygame.mixer.music.load('modes/monty.mp3')
         pygame.mixer.music.play()
@@ -55,13 +59,13 @@ class Monty(MusicMode):
             dict(
                 color=Colors.RED,
                 transition=0.0,
+                on=True,
                 index=lights,
             )
             for lights in [
                 LIGHTS_BOTTOM, LIGHTS_LEFT + LIGHTS_RIGHT, LIGHTS_TOP, [Light.CP],
             ]
-        )
-        
+        )        
         colors = (Colors.DEEP_GOLD, Colors.WHITE, Colors.RED)
         color_rotation = tuple(
             c 
@@ -84,7 +88,7 @@ class Monty(MusicMode):
             actions(
                 '| ♩ |', 
                 lambda: self.lights.set_channels(
-                    brightness=0,
+                    on=False,
                     transition=2.0
                 )
             )
