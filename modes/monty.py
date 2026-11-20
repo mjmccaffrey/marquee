@@ -90,7 +90,7 @@ class Monty(MusicMode):
             actions(
                 '| ♩ |', 
                 lambda: self.lights.set_channels(
-                    color=Colors.RED,
+                    color=Colors.DEEP_GOLD,
                     transition=2.0
                 )
             )
