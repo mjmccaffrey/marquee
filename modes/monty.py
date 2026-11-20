@@ -71,7 +71,7 @@ class Monty(MusicMode):
                 LIGHTS_BOTTOM, LIGHTS_LEFT + LIGHTS_RIGHT, LIGHTS_TOP, [Light.CP],
             ]
         ]
-        bottom_up[-1]['color'] = ORANGE_YELLOW
+        bottom_up[-1]['color'] = Colors.YELLOW
         colors = (ORANGE_YELLOW, Colors.WHITE, Colors.RED)
         color_rotation = tuple(
             c 
