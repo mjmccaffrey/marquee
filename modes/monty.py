@@ -90,7 +90,7 @@ class Monty(MusicMode):
             lights('| ♩ ♩ ♩ ♩ |', *each_side_red),
             lights('| ♩ ♩ ♩ ♩ |', *each_side_gold),
             # lights('| ♩ ♩ ♩ ♩ |', *each_side_tri),
-            lights('| ♩ ♩ ♩ ♩ | ♩ ♩ ♩ ♩ |', *rotate_colors),
+            lights('| ♩ ♩ ♩ ♩ | ♩ ♩ ♩ ♩ |' * 4, *rotate_colors),
         )
         self.play(music, tempo=120)
         Colors.DEEP_GOLD
