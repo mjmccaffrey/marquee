@@ -5,6 +5,7 @@ from itertools import cycle
 import logging
 import pygame
 import time
+from typing import Any
 from typing_extensions import override
 
 from devices.color import Colors
@@ -55,7 +56,7 @@ class Monty(MusicMode):
                 LIGHTS_TOP, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_BOTTOM,
             ]
         )
-        bottom_up = tuple(
+        bottom_up: list[dict[str, Any]] = [
             dict(
                 color=Colors.RED,
                 transition=0.0,
@@ -65,7 +66,8 @@ class Monty(MusicMode):
             for lights in [
                 LIGHTS_BOTTOM, LIGHTS_LEFT + LIGHTS_RIGHT, LIGHTS_TOP, [Light.CP],
             ]
-        )        
+        ]
+        bottom_up[-1]['color'] = Colors.DEEP_GOLD
         colors = (Colors.DEEP_GOLD, Colors.WHITE, Colors.RED)
         color_rotation = tuple(
             c 
