@@ -16,7 +16,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 def rotate(d: tuple, i: int) -> tuple:
     i %= len(d)
-    return d[:i] + d[i:]
+    return d[i:] + d[:i]
 
 
 @dataclass(kw_only=True)
