@@ -69,21 +69,20 @@ class Monty(MusicMode):
                 LIGHTS_TOP, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_BOTTOM,
             ]
         )
-        colors=(Colors.RED, Colors.YELLOW, Colors.WHITE)
+        colors = (Colors.RED, Colors.YELLOW, Colors.WHITE)
         colors_rotating = tuple(
-            rotate(colors, i)
-            for i in range(10)
+            c 
+            for i in range(12)
+            for c in rotate(colors, i)
         )
+        thirds = cycle(("1_of_3", "2_of_3", "3_of_3"))
         rotate_colors = tuple(
             dict(
-                color=colors,
+                color=color,
                 transition=0.0,
                 group=group,
             )
-            for group, colors in zip(
-                cycle(("1_of_3", "2_of_3", "3_of_3")),
-                colors_rotating
-            )
+            for group, color in zip(thirds, colors_rotating)
         )
         for r in rotate_colors:
             print(r)
