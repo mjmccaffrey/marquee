@@ -1,6 +1,8 @@
 """Marquee Lighted Sign Project - monty"""
 
+from collections import deque
 from dataclasses import dataclass
+from itertools import cycle
 import logging
 import pygame
 from typing_extensions import override
@@ -63,10 +65,27 @@ class Monty(MusicMode):
                 LIGHTS_TOP, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_BOTTOM,
             ]
         )
+        colors=deque((Colors.RED, Colors.YELLOW, Colors.WHITE))
+        colors_rotating = tuple(
+            colors.rotate(i)
+            for i in range(10)
+        )
+        rotate_colors = tuple(
+            dict(
+                color=colors,
+                transition=0.0,
+                group=group,
+            )
+            for group, colors in zip(
+                cycle(("1_of_3", "2_of_3", "3_of_3")),
+                colors_rotating,
+            )
+        )
         music = piece(
             lights('| ♩ ♩ ♩ ♩ |', *each_side_red),
             lights('| ♩ ♩ ♩ ♩ |', *each_side_gold),
-            lights('| ♩ ♩ ♩ ♩ |', *each_side_tri),
+            # lights('| ♩ ♩ ♩ ♩ |', *each_side_tri),
+            lights('| ♩ ♩ ♩ ♩ | ♩ ♩ ♩ ♩ |', *rotate_colors),
         )
         self.play(music, tempo=120)
         Colors.DEEP_GOLD

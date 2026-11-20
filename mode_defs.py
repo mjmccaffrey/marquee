@@ -15,7 +15,7 @@ def define_modes(exec: Executor) -> None:
     register_pyohio_2026_presentation_modes(exec)
     register_pyohio_2026_sign_modes(exec)
 
-    exec.add_mode("monty", Monty, brightness=50)
+    exec.add_mode("monty", Monty, brightness=20)
     exec.add_mode("pacman_12", PacManGame, maze=base_maze)
     exec.add_mode("pacman_15", PacManGame, maze=passage_maze)
     exec.add_mode("doom_12", DoomGame, passage=False)
