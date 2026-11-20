@@ -30,7 +30,7 @@ class Monty(MusicMode):
         self.lights.set_channels(
             on=True,
             brightness=self.brightness,
-            color=Colors.DEEP_GOLD,
+            color=Colors.ROSE,  # DEEP_GOLD,
         )
         pygame.mixer.music.load('modes/monty.mp3')
         pygame.mixer.music.play()
@@ -72,7 +72,7 @@ class Monty(MusicMode):
         colors = (Colors.RED, Colors.YELLOW, Colors.WHITE)
         color_rotation = tuple(
             c 
-            for i in range(24)
+            for i in range(36)
             for c in rotate(colors, i)
         )
         thirds = cycle(("1_of_3", "2_of_3", "3_of_3"))
@@ -84,13 +84,11 @@ class Monty(MusicMode):
             )
             for group, color in zip(thirds, color_rotation)
         )
-        for r in rotate_colors:
-            print(r)
         music = piece(
             lights('| ♩ ♩ ♩ ♩ |', *each_side_red),
             lights('| ♩ ♩ ♩ ♩ |', *each_side_gold),
             # lights('| ♩ ♩ ♩ ♩ |', *each_side_tri),
-            lights('| ♩ ♩ ♩ ♩ | ♩ ♩ ♩ ♩ |' * 4, *rotate_colors),
+            lights('| ♩ ♩ ♩ ♩ | ♩ ♩ ♩ ♩ |' * 8, *rotate_colors),
         )
         self.play(music, tempo=120)
         Colors.DEEP_GOLD
