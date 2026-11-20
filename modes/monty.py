@@ -69,7 +69,7 @@ class Monty(MusicMode):
                 LIGHTS_TOP, LIGHTS_LEFT, LIGHTS_RIGHT, LIGHTS_BOTTOM,
             ]
         )
-        colors = (Colors.RED, Colors.YELLOW, Colors.WHITE)
+        colors = (Colors.RED, Colors.DEEP_GOLD, Colors.WHITE)
         color_rotation = tuple(
             c 
             for i in range(36)
