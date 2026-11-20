@@ -48,7 +48,7 @@ class Monty(MusicMode):
         # 𝅝 𝅗𝅥 ♩ ♪ 𝅘𝅥𝅯 𝅘𝅥𝅰 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀
         top_down = tuple(
             dict(
-                color=Colors.DEEP_GOLD,
+                color=Colors.ORANGE,
                 transition=0.0,
                 index=lights,
             )
@@ -67,8 +67,8 @@ class Monty(MusicMode):
                 LIGHTS_BOTTOM, LIGHTS_LEFT + LIGHTS_RIGHT, LIGHTS_TOP, [Light.CP],
             ]
         ]
-        bottom_up[-1]['color'] = Colors.DEEP_GOLD
-        colors = (Colors.DEEP_GOLD, Colors.WHITE, Colors.RED)
+        bottom_up[-1]['color'] = Colors.ORANGE
+        colors = (Colors.ORANGE, Colors.WHITE, Colors.RED)
         color_rotation = tuple(
             c 
             for i in range(36)
@@ -90,7 +90,7 @@ class Monty(MusicMode):
             actions(
                 '| ♩ |', 
                 lambda: self.lights.set_channels(
-                    color=Colors.DEEP_GOLD,
+                    color=Colors.ORANGE,
                     transition=2.0
                 )
             )
