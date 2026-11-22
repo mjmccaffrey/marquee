@@ -173,6 +173,7 @@ class HueBridge(LightController, bulb_comp=HueBulb):
                 json=command.params,
                 timeout=2.0,
             )
+        print(command.params)
         for index in self.groups[group]:
             channel = self.channels[index]
             channel.update_state(replace(updates_to_send, channel=channel))
