@@ -8,7 +8,7 @@ import time
 from typing import Any
 from typing_extensions import override
 
-from devices.color import Colors, RGB
+from devices.color import RGB
 from light_defs import *
 from . import MusicMode
 from music import actions, lights, piece
@@ -17,6 +17,7 @@ from music import actions, lights, piece
 log = logging.getLogger('marquee.' + __name__)
 
 ORANGE_YELLOW = RGB(255, 190, 0)
+RED = RGB(255, 0, 0)
 WHITE = RGB(255, 253, 210)
 
 
@@ -37,7 +38,7 @@ class Monty(MusicMode):
         self.lights.set_channels(
             on=True,
             brightness=self.brightness,
-            color=Colors.RED,
+            color=RED,
         )
         self.lights.set_channels(
             on=False,
@@ -63,7 +64,7 @@ class Monty(MusicMode):
         )
         bottom_up: list[dict[str, Any]] = [
             dict(
-                color=Colors.RED,
+                color=RED,
                 transition=0.0,
                 on=True,
                 index=lights,
@@ -73,7 +74,7 @@ class Monty(MusicMode):
             ]
         ]
         bottom_up[-1]['color'] = ORANGE_YELLOW
-        colors = (ORANGE_YELLOW, WHITE, Colors.RED)
+        colors = (ORANGE_YELLOW, WHITE, RED)
         color_rotation = tuple(
             c 
             for i in range(36)
@@ -83,7 +84,7 @@ class Monty(MusicMode):
         rotate_colors = tuple(
             dict(
                 brightness=
-                    self.brightness * (0.3 if color == Colors.WHITE else 1.0),
+                    self.brightness * (0.3 if color == WHITE else 1.0),
                 color=color,
                 transition=0.0,
                 group=group,
