@@ -82,6 +82,8 @@ class Monty(MusicMode):
         thirds = cycle(("1_of_3", "2_of_3", "3_of_3"))
         rotate_colors = tuple(
             dict(
+                brightness=
+                    self.brightness * (0.6 if color == Colors.WHITE else 1.0),
                 color=color,
                 transition=0.0,
                 group=group,
