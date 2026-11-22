@@ -43,7 +43,7 @@ class Monty(MusicMode):
             on=False,
             index=Light.CP,
         )
-        time.sleep(10)
+        time.sleep(6)
         pygame.mixer.music.load('modes/monty.mp3')
         pygame.mixer.music.play()
         self.schedule(due=0.5, action=self.perform)
@@ -83,7 +83,7 @@ class Monty(MusicMode):
         rotate_colors = tuple(
             dict(
                 brightness=
-                    self.brightness * (0.6 if color == Colors.WHITE else 1.0),
+                    self.brightness * (0.5 if color == Colors.WHITE else 1.0),
                 color=color,
                 transition=0.0,
                 group=group,
