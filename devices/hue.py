@@ -160,9 +160,9 @@ class HueBridge(LightController, bulb_comp=HueBulb):
         force: bool = False,
     ):
         """Update all zones in the specified group."""
-        # print(f"Update in: {updates[0]}")
+        print(f"Update in: {updates[0]}")
         updates_to_send = self._channel_group_updates(updates, force)
-        # print(f"Update out: {updates_to_send}")
+        print(f"Update out: {updates_to_send}")
 
         command = updates[0].channel._make_set_command(updates_to_send)
         for i, id in enumerate(self.zone_ids[group]):
