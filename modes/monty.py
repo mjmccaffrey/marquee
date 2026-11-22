@@ -83,7 +83,7 @@ class Monty(MusicMode):
         rotate_colors = tuple(
             dict(
                 brightness=
-                    self.brightness * (0.5 if color == Colors.WHITE else 1.0),
+                    self.brightness * (0.3 if color == Colors.WHITE else 1.0),
                 color=color,
                 transition=0.0,
                 group=group,
