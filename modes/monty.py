@@ -16,7 +16,7 @@ from music import actions, lights, piece
 
 log = logging.getLogger('marquee.' + __name__)
 
-ORANGE_YELLOW = RGB(255, 219, 88)  # 222, 26)
+ORANGE_YELLOW = RGB(255, 128, 0)  # 222, 26)
 RED = RGB(255, 0, 0)
 WHITE = RGB(182, 182, 182)
 
