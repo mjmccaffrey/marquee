@@ -44,7 +44,7 @@ class Monty(MusicMode):
             on=False,
             index=Light.CP,
         )
-        time.sleep(6)
+        time.sleep(5)
         pygame.mixer.music.load('modes/monty.mp3')
         pygame.mixer.music.play()
         self.schedule(due=0.5, action=self.perform)
@@ -103,5 +103,5 @@ class Monty(MusicMode):
                 )
             )
         )
-        self.play(music, tempo=120)
+        self.play(music, tempo=12)
 
