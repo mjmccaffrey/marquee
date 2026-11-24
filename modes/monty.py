@@ -103,5 +103,5 @@ class Monty(MusicMode):
                 )
             )
         )
-        self.play(music, tempo=30)
+        self.play(music, tempo=120)
 
