@@ -1,6 +1,5 @@
 """Marquee Lighted Sign Project - devices_marquee"""
 
-from collections.abc import Sequence
 from enum import IntEnum
 import signal
 from typing import Any
@@ -18,6 +17,7 @@ from devices.button import Button, LightedButton
 from devices.deviceset import DeviceSet
 from devices.hue import HueBridge, http, http_mock
 from devices.joystick import Joystick
+from devices.lightcontroller import ChannelGroup
 from devices.numato import NumatoRL320001, NumatoRL160001
 from devices.relaymodule import MockRelay16, MockRelay32
 from devices.relaymodule import CombinedRelayModule, create_client
@@ -47,7 +47,7 @@ class Light(IntEnum):
 
 light_config = LightConfig()
 c, l = light_config, Light
-c.enum = l
+c.enum , c.count = l, len(l)
 c.by_row = [
     [       l.TL, l.TM, l.TR,       ],
     [ l.LU,                   l.RT, ],
@@ -66,7 +66,8 @@ c.column_c = [l.TM, l.BM]
 c.column_d = [l.TR, l.BR]
 c.by_column = [c.left, c.column_b, c.column_c, c.column_d, c.right]
 c.clockwise = [l for side in c.by_side for l in side]
-c.count = len(l)
+c.even = [l.TL, l.TR, l.RM, l.BR, l.BL, l.LM]
+c.odd = [l.TM, l.RT, l.RB, l.BM, l.LB, l.LU]
 
 
 HUE_APPLICATION_KEY = open('systems/hue_marquee.key').read().strip()
@@ -90,38 +91,49 @@ HUE_BULB_IDS = [
     "359de043-2614-443f-8e44-fad407fdc854",  # 15
     "5bed6538-94b3-4fb9-8b14-c32c81ec80fa",  # 16 Cupola
 ]
-HUE_GROUPS: dict[str, Sequence[int]] = {
-    'top': light_config.top,
-    'right': light_config.right,
-    'bottom': light_config.bottom,
-    'left': light_config.left,
-    'middle': light_config.middle,
-    'even': [l.TL, l.TR, l.RM, l.BR, l.BL, l.LM],
-    'odd': [l.TM, l.RT, l.RB, l.BM, l.LB, l.LU],
-    '12': list(range(12)),
-    '13': list(range(12)) + [l.CP],
-    '15': list(range(15)),
-    '16': list(range(16)),
+HUE_GROUPS: dict[str, ChannelGroup] = {
+    'top': ChannelGroup(
+        light_config.top, '4cfe20b3-43ae-409e-8d21-ea84f96daef8'
+    ),
+    'right': ChannelGroup(
+        light_config.right, '63818e6a-a041-472d-870d-20f5a5ddd9c3'
+    ),
+    'bottom': ChannelGroup(
+        light_config.bottom, '94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'
+    ),
+    'left': ChannelGroup(
+        light_config.left, 'f444479d-e7ee-4b76-bf7f-9cbf10ebfb68'
+    ),
+    'middle': ChannelGroup(
+        light_config.middle, '1afc2cc8-cbf8-484b-b2d6-46575b2cef97'
+    ),
+    'even': ChannelGroup(
+        light_config.even, '166bcc4f-9598-49e7-b853-a239be50b514'
+    ),
+    'odd': ChannelGroup(
+        light_config.odd, '587dddb8-bec3-4555-9f3b-b12b2fca918d'
+    ),
+    '12': ChannelGroup(
+        list(range(12)), '21c66184-6be0-4c79-832e-9308ee4501eb'
+    ),
+    '13': ChannelGroup(
+        list(range(12)) + [l.CP], 'af193689-f8a4-4ace-9cef-87264c9f5129'
+    ),
+    '15': ChannelGroup(
+        list(range(15)), 'e896f871-f666-4d40-a61c-f0b789f48330'
+    ),
+    '16': ChannelGroup(
+        list(range(16)), '82204b9c-610c-4975-8e40-e6882ce39118'
+    ),
 }
-HUE_ZONE_IDS: dict[str, list[str]] = {
+    # HUE_ZONE_IDS:
     # https://192.168.64.130/clip/v2/resource/zone
     # ↑ Lists zones, with names, and included bulbs
     # "services": [
     #     {
     #         "rid": "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
     #         "rtype": "grouped_light"
-    'top': ['4cfe20b3-43ae-409e-8d21-ea84f96daef8'],
-    'right': ['63818e6a-a041-472d-870d-20f5a5ddd9c3'],
-    'bottom': ['94136ba4-d8dd-449e-a0ce-411ca6a9e9d7'],
-    'left': ['f444479d-e7ee-4b76-bf7f-9cbf10ebfb68'],
-    'middle': ['1afc2cc8-cbf8-484b-b2d6-46575b2cef97'],
-    'even': ['166bcc4f-9598-49e7-b853-a239be50b514'],
-    'odd': ['587dddb8-bec3-4555-9f3b-b12b2fca918d'],
-    '12': ['21c66184-6be0-4c79-832e-9308ee4501eb'],
-    '13': ['af193689-f8a4-4ace-9cef-87264c9f5129'],
-    '15': ['e896f871-f666-4d40-a61c-f0b789f48330'],
-    '16': ['82204b9c-610c-4975-8e40-e6882ce39118'],
-}
+
 SHELLY_IP_ADDRESSES = [
     '192.168.64.111',
     '192.168.64.112',
@@ -178,8 +190,7 @@ def setup_devices(
             session=session,
             http=http_mock if testing else http,
             bulb_ids=HUE_BULB_IDS,
-            zone_ids=HUE_ZONE_IDS,
-            groups=HUE_GROUPS,
+            channel_groups=HUE_GROUPS,
         ),
         brightness_factor_init=brightness_factor,
         channel_enum=Light,
@@ -189,6 +200,11 @@ def setup_devices(
     clicker = Clicker(create_client(drum_16_relays, {0: 0, 1: 1}))
     ringer = Ringer(create_client(light_relays, {0: 3}))
     buzzer = Buzzer(create_client(light_relays, {0: 2}))
+    game_button_1 = gpiozero.Button(pin=16, bounce_time=0.05)
+    game_button_2 = gpiozero.Button(pin=4, bounce_time=0.05)
+    game_button_3 = gpiozero.Button(pin=17, bounce_time=0.05)
+    game_button_4 = gpiozero.Button(pin=27, bounce_time=0.05)
+    game_button_5 = gpiozero.Button(pin=22, bounce_time=0.05)
     return {
         DeviceName.DRUMS: drums, 
         DeviceName.LIGHTS: lights, 
@@ -222,16 +238,16 @@ def setup_devices(
         DeviceName.BUTTON_GAME_START:
             LightedButton(
                 DeviceName.BUTTON_GAME_START,
-                gpiozero.Button(pin=16, bounce_time=0.05),
+                game_button_1,
                 relay=create_client(light_relays, {0: 11}),
             ),
         DeviceName.JOYSTICK:
             Joystick(
                 name=DeviceName.JOYSTICK,
-                up=gpiozero.Button(pin=4, bounce_time=0.05),
-                down=gpiozero.Button(pin=17, bounce_time=0.05),
-                left=gpiozero.Button(pin=27, bounce_time=0.05),
-                right=gpiozero.Button(pin=22, bounce_time=0.05),
+                up=game_button_2,
+                down=game_button_3,
+                left=game_button_4,
+                right=game_button_5,
             ),
     }
 

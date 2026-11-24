@@ -1,26 +1,25 @@
 """Marquee Lighted Sign Project - marquee (main)"""
 
+import enum
 import logging
 import sys
 
 from argument import display_help, process_arguments
 from executor import Executor
-from modes.definitions import define_modes
+from modes import define_modes
 from player import Player
 
 
-def setup() -> Executor:
-    """Setup logging, executor, and mode definitions. 
-       Return executor."""
-    setup_logging()
-    exec = Executor(Player)
-    define_modes(exec)
-    return exec
+class ExitCode(enum.IntEnum):
+    """Application exit codes."""
+    NORMAL = 0
+    UNEXPECTED = 1
+    INVALID = 2
+    SHUTDOWN = 3
 
 
-def setup_logging() -> None:
+def setup_logging() -> logging.Logger:
     """Setup logging."""
-    global log
     log = logging.getLogger('marquee')
     log.setLevel(logging.DEBUG)
     filelog = logging.FileHandler('marquee.log')
@@ -32,9 +31,10 @@ def setup_logging() -> None:
     conlog.setFormatter(format)
     log.addHandler(filelog)
     log.addHandler(conlog)
+    return log
 
 
-def execute(exec: Executor) -> int:
+def execute(exec: Executor) -> ExitCode:
     """Validate arguments, execute. Return exit code."""
     try:
         kwargs = process_arguments(
@@ -48,13 +48,13 @@ def execute(exec: Executor) -> int:
             exec.color_menu, 
             exec.commands,
         )
-        return 2
+        return ExitCode.INVALID
     else:
         print()
         print(kwargs)
         print()
         shutdown = exec.execute(**kwargs)
-        return 3 if shutdown else 0
+        return ExitCode.SHUTDOWN if shutdown else ExitCode.NORMAL
 
 
 def cleanup(exec: Executor) -> None:
@@ -65,21 +65,26 @@ def cleanup(exec: Executor) -> None:
         pass
 
 
-def main() -> int:
+def main() -> ExitCode:
     """Execute Marquee application."""
-    result = 1
+    result = ExitCode.UNEXPECTED
     try:
-        exec = setup()
+        log = setup_logging()
+        exec = Executor(Player)
+        define_modes(exec)
         result = execute(exec)
     finally:
         cleanup(exec)
         match result:
-            case 0: log.error("Exiting without shutdown.")
-            case 1: 
+            case ExitCode.NORMAL:
+                log.error("Exiting without shutdown.")
+            case ExitCode.UNEXPECTED: 
                 log.error("Exiting with unexpected error.")
                 raise
-            case 2: log.error("Invalid arguments.")
-            case 3: log.error("Exiting with shutdown.")
+            case ExitCode.INVALID:
+                log.error("Invalid arguments.")
+            case ExitCode.SHUTDOWN:
+                log.error("Exiting with shutdown.")
             case _:
                 raise RuntimeError
     return result

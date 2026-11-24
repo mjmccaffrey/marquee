@@ -11,6 +11,8 @@ from typing_extensions import override
 from devices.color import Color, Colors
 from devices.specialparams import ActionParams, EmulateParams
 from ..abstract.performancemode import PerformanceMode
+from ..structural.sequences import Sequences
+
 
 log = logging.getLogger('marquee.' + __name__)
 
@@ -24,6 +26,7 @@ class LightSetBaseline:
     on: bool | None = None
     transition: float | None = None
 
+
 DEFAULT_BASELINE = LightSetBaseline(
     relay=False,
     brightness=100,
@@ -36,7 +39,7 @@ DEFAULT_BASELINE = LightSetBaseline(
 @dataclass(kw_only=True)
 class SequenceMode(PerformanceMode):
     """Executes all sequence-based modes."""
-    sequence: Callable[[], Iterable]
+    sequence: Callable[[Any], Iterable]
     pre_delay: float = 0.0
     delay: tuple[float, ...] | float | None = None
     stop: int | None = None
@@ -64,34 +67,40 @@ class SequenceMode(PerformanceMode):
     @override
     def execute(self) -> None:
         """Execute sequence with delay seconds between steps.
-           If stop is specified, end the sequence 
-           just before the nth pattern."""
+           If stop is specified, end the sequence just before the nth pattern.
+           Takes at most the first MAX_STEPS patterns from the sequence,
+           so that an infinite # of tasks are not scheduled.
+           For infinite sequences, use repeat."""
+        MAX_STEPS = 5
         delay_iter = (
             itertools.cycle(self.delay) 
             if isinstance(self.delay, Iterable) else
             itertools.repeat(self.delay)
         )
-        for i, pattern in enumerate(self.sequence(**self.sequence_kwargs)):
+        sequences = Sequences(self.lights.config)
+        sequence = self.sequence(
+            sequences,  # self
+            **self.sequence_kwargs,
+        )
+        patterns = itertools.islice(sequence, MAX_STEPS)
+        due = self.pre_delay
+        for i, pattern in enumerate(patterns): 
             if self.stop is not None and i == self.stop:
                 break
             action = self.action_partial(pattern)
-            delay = next(delay_iter)
-            due = (
-                self.pre_delay
-                if delay is None else 
-                self.pre_delay + i * delay
-            )
             self.schedule(
                 action=action,
                 due=due,
                 name=f"SequenceMode execute {i} {pattern}",
             )
+            delay = next(delay_iter)
             if delay is None:
                 return
+            due += delay
         if self.repeat: 
             self.schedule(
                 action=self.execute,
-                due=(i + 1) * delay,
+                due=due,
                 name="SequenceMode continue",
             )
 

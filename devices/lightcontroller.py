@@ -26,9 +26,9 @@ class LightController(ABC):
     ip_address: str
     bulb_model: Bulb
     channel_first_index: int
-    groups: dict[str, Sequence[int]] = field(default_factory=dict)
-    session: requests.Session = field(init=False)
     channels: Sequence['LightChannel'] = field(init=False)
+    groups: dict[str, 'ChannelGroup'] = field(default_factory=dict)
+    session: requests.Session = field(init=False)
 
     def __init_subclass__(cls, bulb_comp: type[Bulb]) -> None:
         cls.bulb_comp = bulb_comp
@@ -41,8 +41,8 @@ class LightController(ABC):
                 f"for controller {type(self).__name__}."
             )
         self.indices_in_group: dict[frozenset[int], str] = {
-            frozenset(i): g
-            for g, i in self.groups.items()
+            frozenset(group.indices): name
+            for name, group in self.groups.items()
         }
 
     @override
@@ -181,4 +181,11 @@ class ChannelCommand:
     channel: 'LightChannel'
     url: str
     params: dict
+
+@dataclass
+class ChannelGroup:
+    """"""
+    # name: str
+    indices: Sequence[int]
+    id: str
 

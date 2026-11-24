@@ -1,5 +1,21 @@
 Marquee Lighted Sign Project - configuration
 
+
+    * Raspberry Pi Zero
+        * hostname: control
+        * nmcli radio wifi on
+        * nmcli device wifi rescan
+        * nmcli device wifi list
+        * sudo nmcli device wifi connect Edwards --ask
+        * nmcli connection show --active
+        * ip a
+        * sudo nmtui
+
+sudo apt update
+sudo apt install git
+
+
+
 * **Ethernet Devices**
     * Raspberry Pi Zero 2
         * WiFi

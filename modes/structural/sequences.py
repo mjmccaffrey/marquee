@@ -8,9 +8,6 @@ import random
 from schemas import LightConfig
 
 
-MAX_YIELDS = 50   # !!!
-
-
 def opposite(pattern: Sequence) -> str:
     """Return pattern or element with the state(s) flipped."""
     return "".join("1" if str(p) == "0" else "0" for p in pattern)
@@ -152,7 +149,7 @@ class Sequences:
         Starts with setting all lights to the opposite of pattern."""
         opp = opposite(pattern)
         random_gen = self._random_light_gen()
-        for _ in range(MAX_YIELDS):
+        while True:
             index = next(random_gen)
             yield ''.join(
                 opp * index +
@@ -165,7 +162,7 @@ class Sequences:
         Pass in current / starting state of lights."""
         lights = list(light_pattern)
         random_gen = self._random_light_gen()
-        for _ in range(MAX_YIELDS):
+        while True:
             index = next(random_gen)
             lights[index] = opposite(lights[index])
             yield ''.join(e for e in lights)

@@ -22,16 +22,6 @@ HUE_IP_ADDRESS = '192.168.64.130'
 HUE_BULB_IDS = [
     # "398bd880-e870-4d00-88ee-dce5aa83c17b",  # Donut
 ]
-HUE_GROUPS: dict[str, Sequence[int]] = {
-}
-HUE_ZONE_IDS: dict[str, list[str]] = {
-    # https://192.168.64.130/clip/v2/resource/zone
-    # ↑ Lists zones, with names, and included bulbs
-    # "services": [
-    #     {
-    #         "rid": "2339a4b8-5dd2-438e-9c91-ed0fdb59180e",
-    #         "rtype": "grouped_light"
-}
 
 
 class Light(IntEnum):
@@ -80,8 +70,6 @@ def setup_devices(
             session=session,
             http=http,
             bulb_ids=HUE_BULB_IDS,
-            zone_ids=HUE_ZONE_IDS,
-            groups=HUE_GROUPS,
         ),
         brightness_factor_init=brightness_factor,
         channel_enum=Light,

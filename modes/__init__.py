@@ -1,5 +1,7 @@
 """Marquee Lighted Sign Project - modes __init__"""
 
+from .definitions import define_modes
+
 # Abstract modes
 from .abstract.basemode import BaseMode
 from .abstract.colorsetmode import ColorSetMode
