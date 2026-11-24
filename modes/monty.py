@@ -18,7 +18,7 @@ log = logging.getLogger('marquee.' + __name__)
 
 ORANGE_YELLOW = RGB(255, 222, 26)
 RED = RGB(255, 0, 0)
-WHITE = RGB(255, 253, 210)
+WHITE = RGB(182, 182, 182)
 
 
 def rotate(d: tuple, i: int) -> tuple:
